@@ -1,0 +1,38 @@
+name: Source correction
+description: Correct or improve a source, confidence label, season stamp, or attribution.
+title: "Source correction: "
+labels: [source, provenance]
+body:
+  - type: textarea
+    id: claim
+    attributes:
+      label: Claim or number being corrected
+      description: Identify the exact claim, figure, quote, or source badge.
+    validations:
+      required: true
+  - type: textarea
+    id: correction
+    attributes:
+      label: Proposed correction
+      description: Explain the correction and whether it affects source, season, confidence, or wording.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Source URL
+      description: Provide the best available source.
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: Suggested confidence label
+      options:
+        - official-data
+        - pitcher-own-words
+        - coach-observed
+        - reputable-analysis
+        - secondhand-attributed
+        - community-firsthand
+        - unverified
