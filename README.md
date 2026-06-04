@@ -1,33 +1,73 @@
-# Pitch Atlas
+# React + TypeScript + Vite
 
-Welcome to **Pitch Atlas**, an app dedicated to cataloging and archiving the nuances, techniques, and creativity behind pitching in baseball and beyond. This open-source resource aspires to be the definitive collection for pitch grips, throwing mechanisms, and the subtle artistry that makes each pitcher unique.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Vision
-Pitch Atlas is a platform where pitchers, coaches, and enthusiasts alike can come together to learn, share, and innovate. Starting from verified grips and textbook mechanics, the app evolves into a community-driven knowledge hub, where even a curious 12-year-old might teach a pitching legend something new.
+Currently, two official plugins are available:
 
-## Goals
-- Create a foundation with detailed explanations and visuals of "textbook" pitch grips and mechanics.
-- Build a vibrant community where users can:
-  - Share unique pitch variations.
-  - Discuss nuanced mechanics.
-  - Vote and elevate creative and effective posts.
-- Maintain high instructional standards verified by experts.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Planned Technology Stack
-- **Backend**: Supabase for authentication and database storage.
-- **Frontend**: React/Next.js for an interactive web app.
-- **Deployment**: Cloudflare Pages and potential app store integration via React Native.
-- **Other**: GitHub for version control and collaboration.
+## React Compiler
 
-## Initial Steps
-1. Configure Supabase for authentication (email/password) and database schema.
-2. Build a basic frontend for viewing pitches and uploading grips.
-3. Create community features (e.g., comments, voting system).
-4. Deploy and validate the app with early adopters.
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Contributing
-Contributions are welcome! If you have insights, ideas, or just want to be part of the journey, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+## Expanding the ESLint configuration
 
----
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-### 🚀 Let's make Pitch Atlas the definitive pitching resource!
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+```
