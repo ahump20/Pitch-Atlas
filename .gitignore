@@ -1,12 +1,40 @@
+# dependencies
 node_modules
+node_modules/.tmp
+.pnpm-store/
+
+# build output
 dist
 dist-ssr
-*.local
-.DS_Store
-.vite
-node_modules/.tmp
+out/
+build/
 coverage
-*.log
+
+# vite / cache
+.vite
+
+# environment
 .env
 .env.*
 !.env.example
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# misc local
+*.local
+
+# Cloudflare / tooling
+.wrangler/
+.dev.vars

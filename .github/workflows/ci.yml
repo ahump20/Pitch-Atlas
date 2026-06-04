@@ -1,0 +1,72 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Check for Node app
+        id: node_app
+        shell: bash
+        run: |
+          if [ -f package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No package.json yet. Repo foundation is present; Node verification will start once the app is initialized."
+          fi
+
+      - name: Setup Node
+        if: steps.node_app.outputs.present == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+
+      - name: Require npm lockfile
+        if: steps.node_app.outputs.present == 'true'
+        shell: bash
+        run: |
+          test -f package-lock.json || (echo "package-lock.json is required" && exit 1)
+
+      - name: Install
+        if: steps.node_app.outputs.present == 'true'
+        run: npm ci
+
+      - name: Typecheck
+        if: steps.node_app.outputs.present == 'true'
+        run: npm run typecheck
+
+      - name: Lint
+        if: steps.node_app.outputs.present == 'true'
+        run: npm run lint
+
+      - name: Test
+        if: steps.node_app.outputs.present == 'true'
+        run: npm run test
+
+      - name: Build
+        if: steps.node_app.outputs.present == 'true'
+        run: npm run build

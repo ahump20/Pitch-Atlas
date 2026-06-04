@@ -1,0 +1,33 @@
+name: Pitch claim review
+description: Review whether a pitch claim is properly labeled by provenance.
+title: "Pitch claim review: "
+labels: [claim-review, provenance]
+body:
+  - type: textarea
+    id: claim
+    attributes:
+      label: Claim
+      description: Paste or describe the pitch claim.
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Is this canonical, master-attributed, community-firsthand, data-backed, approximate, or unverified?
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Source stack
+      description: Add URLs, screenshots, quotes, or notes. Do not paste copyrighted long passages.
+  - type: checkboxes
+    id: guardrails
+    attributes:
+      label: Guardrails
+      options:
+        - label: This is not asking whether the pitch is correct, only whether the claim is properly sourced and labeled.
+          required: true
+        - label: This does not include medical, injury-prevention, workload, or youth-prescription advice.
+          required: true
