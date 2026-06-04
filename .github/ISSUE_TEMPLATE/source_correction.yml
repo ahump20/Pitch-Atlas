@@ -1,0 +1,38 @@
+name: Source correction
+description: Suggest a correction to a source attribution or provenance label
+title: "source-correction: "
+labels:
+  - source-correction
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Pitch Atlas is sourced, not corrected. Use this form to report source/provenance issues.
+  - type: textarea
+    id: claim
+    attributes:
+      label: Claim being challenged
+      description: Quote the exact displayed claim.
+    validations:
+      required: true
+  - type: textarea
+    id: current_source
+    attributes:
+      label: Current source/provenance label
+      description: What source label is currently shown?
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_source
+    attributes:
+      label: Proposed source or correction
+      description: Provide URL/reference and explain why it is better.
+    validations:
+      required: true
+  - type: checkboxes
+    id: confirmation
+    attributes:
+      label: Confirmation
+      options:
+        - label: I am proposing a source/provenance correction, not a "single correct" pitching claim.
+          required: true

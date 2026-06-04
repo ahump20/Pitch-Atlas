@@ -1,33 +1,44 @@
 # Pitch Atlas
 
-Welcome to **Pitch Atlas**, an app dedicated to cataloging and archiving the nuances, techniques, and creativity behind pitching in baseball and beyond. This open-source resource aspires to be the definitive collection for pitch grips, throwing mechanisms, and the subtle artistry that makes each pitcher unique.
+Pitch Atlas is a **standalone product** (separate from Blaze Sports Intel) for exploring how pitches are described across sources.
 
-## Vision
-Pitch Atlas is a platform where pitchers, coaches, and enthusiasts alike can come together to learn, share, and innovate. Starting from verified grips and textbook mechanics, the app evolves into a community-driven knowledge hub, where even a curious 12-year-old might teach a pitching legend something new.
+## v1 scope (this repository)
 
-## Goals
-- Create a foundation with detailed explanations and visuals of "textbook" pitch grips and mechanics.
-- Build a vibrant community where users can:
-  - Share unique pitch variations.
-  - Discuss nuanced mechanics.
-  - Vote and elevate creative and effective posts.
-- Maintain high instructional standards verified by experts.
+Pitch Atlas v1 is a **four-seam visual proof**, not a full MVP.
 
-## Planned Technology Stack
-- **Backend**: Supabase for authentication and database storage.
-- **Frontend**: React/Next.js for an interactive web app.
-- **Deployment**: Cloudflare Pages and potential app store integration via React Native.
-- **Other**: GitHub for version control and collaboration.
+Core principle:
 
-## Initial Steps
-1. Configure Supabase for authentication (email/password) and database schema.
-2. Build a basic frontend for viewing pitches and uploading grips.
-3. Create community features (e.g., comments, voting system).
-4. Deploy and validate the app with early adopters.
+> **Sourced, not corrected. Many ways can work. Claims are labeled by provenance.**
 
-## Contributing
-Contributions are welcome! If you have insights, ideas, or just want to be part of the journey, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+v1 includes:
+- one four-seam canonical record
+- three sourced master variants
+- an honest empty community panel
 
----
+v1 does **not** include:
+- authentication
+- fake community posts, fake counts, or fake badges
+- runtime API calls (no live Statcast/Baseball Savant/Rapsodo fetches)
 
-### 🚀 Let's make Pitch Atlas the definitive pitching resource!
+## Safety, rights, and content boundaries
+
+- No MLB/team/player photos, logos, footage, or likenesses.
+- No medical, injury-prevention, or youth-prescription claims.
+- Claims are presented with source context and provenance labels.
+
+## Local development
+
+```bash
+npm ci
+npm run dev
+```
+
+## Local verification commands
+
+```bash
+npm run typecheck
+npm run lint
+npm run test -- --run
+npm run build
+npm run preview
+```

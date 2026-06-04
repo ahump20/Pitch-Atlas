@@ -1,0 +1,39 @@
+name: Pitch claim review
+description: Request review of a pitch claim and provenance labeling
+title: "pitch-claim-review: "
+labels:
+  - review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template to review whether a pitch claim is clearly labeled by provenance.
+  - type: textarea
+    id: claim
+    attributes:
+      label: Pitch claim
+      description: Quote the claim exactly as displayed.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source and season context
+      description: List cited source(s), date/season context, and links.
+    validations:
+      required: true
+  - type: dropdown
+    id: label_quality
+    attributes:
+      label: Provenance label quality
+      options:
+        - Clear and sufficient
+        - Needs clarification
+        - Missing or misleading
+    validations:
+      required: true
+  - type: textarea
+    id: recommendation
+    attributes:
+      label: Recommended update
+      description: Suggest precise wording/labeling changes.
