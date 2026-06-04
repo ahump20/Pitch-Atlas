@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+/*
+  The Instrument Plate.
+  Six colors, two fonts, one radius scale. One accent: oxblood seam-red.
+  No second color enters the system.
+*/
+@theme {
+  --color-stage: #0a0b0d;       /* deepest: page background + 3D stage */
+  --color-panel: #121419;       /* raised panels */
+  --color-machined: #1c1f26;    /* hairlines, borders, inset surfaces */
+  --color-ink: #e8eaed;         /* primary text - AAA on stage */
+  --color-dim: #9aa0ab;         /* secondary text - AA on stage */
+  --color-seam: #a8322d;        /* the one accent: oxblood, pulled from the stitching */
+
+  --font-prose: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Commit Mono", "Martian Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --tracking-label: 0.18em;
+  }
+
+  html {
+    background-color: var(--color-stage);
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-stage);
+    color: var(--color-ink);
+    font-family: var(--font-prose);
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-seam) 38%, transparent);
+    color: var(--color-ink);
+  }
+
+  :where(a, button, [tabindex], summary, input, [role="button"]):focus-visible {
+    outline: 2px solid var(--color-seam);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-machined) var(--color-stage);
+  }
+  *::-webkit-scrollbar { width: 11px; height: 11px; }
+  *::-webkit-scrollbar-track { background: var(--color-stage); }
+  *::-webkit-scrollbar-thumb {
+    background: var(--color-machined);
+    border: 3px solid var(--color-stage);
+  }
+}
+
+@layer components {
+  /* Hairline rule that marks every tier; fades to the right, never a full box. */
+  .hairline {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      var(--color-machined) 0%,
+      var(--color-machined) 64%,
+      transparent 100%
+    );
+  }
+
+  /* Mono micro-label: source badges, gauge labels, tier index, on-ball annotations. */
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-dim);
+  }
+}
+
+/*
+  Reduced motion safety net. Components also branch on the hook for the
+  static-ball / schematic end-state, but this kills any stray transition.
+*/
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

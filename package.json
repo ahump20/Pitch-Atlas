@@ -1,0 +1,49 @@
+{
+  "name": "pitch-atlas",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "A sourced, interactive reference for how pitches are gripped and thrown. Sourced, not corrected.",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "three": "0.184.0",
+    "@react-three/fiber": "9.6.1",
+    "@react-three/drei": "10.7.7",
+    "@fontsource/hanken-grotesk": "5.2.8",
+    "@fontsource/commit-mono": "5.2.5"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.16",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.184.1",
+    "@vitejs/plugin-react": "6.0.2",
+    "vite": "8.0.16",
+    "typescript": "6.0.3",
+    "tailwindcss": "4.3.0",
+    "@tailwindcss/vite": "4.3.0",
+    "vitest": "4.1.8",
+    "@testing-library/react": "16.3.2",
+    "@testing-library/jest-dom": "6.9.1",
+    "@testing-library/user-event": "14.6.1",
+    "jsdom": "29.1.1",
+    "eslint": "10.4.1",
+    "@eslint/js": "10.0.1",
+    "typescript-eslint": "8.60.1",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "eslint-plugin-react-refresh": "0.5.2",
+    "globals": "17.6.0"
+  }
+}

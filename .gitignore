@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+node_modules/.tmp
+coverage
+*.log
+.env
+.env.*
+!.env.example
