@@ -1,4 +1,4 @@
-import { PitchSpecimen } from '../ball/PitchSpecimen'
+import { HeroSpecimen } from '../ball/HeroSpecimen'
 
 /*
   Tier 00. Dark stage, the specimen, two lines of headline, one line of intent,
@@ -13,7 +13,7 @@ export function Hero() {
     >
       <div className="order-1 md:order-2 md:col-span-6 lg:col-span-7">
         <div className="relative mx-auto aspect-square w-full max-w-[min(80vw,540px)]">
-          <PitchSpecimen className="h-full w-full" />
+          <HeroSpecimen className="h-full w-full" />
         </div>
         <p className="mono-label mt-4 text-center md:text-right">
           Specimen 00 / seam-informed schematic

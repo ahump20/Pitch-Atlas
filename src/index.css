@@ -92,6 +92,48 @@
 }
 
 /*
+  The signature move. As the hero recedes, the 3D specimen dissolves in place
+  into the 2D schematic of the same seam-point function. Native scroll-driven
+  animation: no scroll listener, no per-frame re-render. Browsers without support
+  keep the ball visible and the schematic hidden, a graceful no-op.
+*/
+.dissolve-layer {
+  position: absolute;
+  inset: 0;
+}
+.dissolve-schem {
+  opacity: 0;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .dissolve-ball {
+      animation: specimen-dissolve-out linear both;
+      animation-timeline: view();
+      animation-range: exit 5% exit 78%;
+    }
+    .dissolve-schem {
+      animation: specimen-dissolve-in linear both;
+      animation-timeline: view();
+      animation-range: exit 12% exit 88%;
+    }
+  }
+}
+@keyframes specimen-dissolve-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes specimen-dissolve-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/*
   Reduced motion safety net. Components also branch on the hook for the
   static-ball / schematic end-state, but this kills any stray transition.
 */
