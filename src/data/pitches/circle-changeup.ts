@@ -1,4 +1,4 @@
-import type { PitchAtlasEntry, SeamAnchoredPoint } from '../types'
+import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim, secondhand } from '../sources'
 import { sharedSeam } from './_shared-seam'
 
@@ -19,6 +19,49 @@ const fingerPlacement: SeamAnchoredPoint[] = [
   { seamT: 0.355, lift: 0.02, label: 'Middle', finger: 'middle', note: 'Across the top, leading the three fingers that grip the ball.' },
   { seamT: 0.86, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Curled to meet the index in a circle; the ball sits deeper in the hand.' },
 ]
+
+const gripModel: GripModel = {
+  defaultView: 'thumb',
+  ballDepth: 'deep-in-hand',
+  fingerSpacing: 'wide',
+  primaryPressureFinger: 'middle',
+  thumbRole: 'Thumb curls toward the index to form the inside circle.',
+  palmGapCue: 'The ball sits deeper than a fastball, closer to the palm.',
+  releaseCue: 'Keep fastball arm speed and let the deeper grip take speed off.',
+  visualCaveat: 'Grip geometry is schematic and shows a standard circle-change family; individual circle size varies by hand.',
+  contacts: [
+    {
+      finger: 'index',
+      label: 'Index circle',
+      seamT: 0.305,
+      lift: 0.02,
+      seamRelation: 'Curls toward thumb on the inside of the ball',
+      pressureRole: 'Forms the loose circle, not the main drive',
+      cue: 'Circle, do not pinch',
+      curl: 0.82,
+    },
+    {
+      finger: 'middle',
+      label: 'Middle top',
+      seamT: 0.355,
+      lift: 0.02,
+      seamRelation: 'Across the top of the ball',
+      pressureRole: 'Main top-finger control',
+      cue: 'Fastball arm, deeper hold',
+      curl: 0.34,
+    },
+    {
+      finger: 'thumb',
+      label: 'Thumb circle',
+      seamT: 0.86,
+      lift: 0,
+      seamRelation: 'Meets the index on the inner side',
+      pressureRole: 'Completes the OK circle',
+      cue: 'Loose circle, palm side',
+      curl: 0.8,
+    },
+  ],
+}
 
 export const circleChange: PitchAtlasEntry = {
   canonical: {
@@ -52,6 +95,7 @@ export const circleChange: PitchAtlasEntry = {
       ),
     ],
     fingerPlacement,
+    gripModel,
     mechanics: claim(
       'The arm matches the fastball; the velocity comes off from the deeper grip and the loosened circle, not a softer throw. A slight pronation at release tilts the axis arm-side, so the ball fades toward the throwing hand and tumbles as it crosses.',
       'driveline-changeup',

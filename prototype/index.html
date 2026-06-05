@@ -1,0 +1,893 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Baseball Atlas - Pitch Atlas prototype</title>
+    <style>
+      :root {
+        --paper: #f3ece0;
+        --paper-2: #ebe2d2;
+        --stage: #16120d;
+        --press: #1e1811;
+        --ink: #221a10;
+        --ink-2: #5f5645;
+        --ink-3: #8c8270;
+        --bone: #f3ece0;
+        --bone-2: #c8bca6;
+        --seam: #b23a30;
+        --seam-deep: #85251f;
+        --skin: #d19a72;
+        --skin-light: #e7b48d;
+        color-scheme: light;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.035;
+        mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      }
+
+      a,
+      button {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .display {
+        font-family: Georgia, "Times New Roman", serif;
+        letter-spacing: -0.01em;
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .masthead {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        border-bottom: 1px solid color-mix(in srgb, var(--ink-3) 28%, transparent);
+        background: color-mix(in srgb, var(--paper) 92%, transparent);
+        backdrop-filter: blur(10px);
+      }
+
+      .masthead-inner,
+      section {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .masthead-inner {
+        display: flex;
+        min-height: 60px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--ink);
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        width: 24px;
+        height: 24px;
+        border: 1px solid color-mix(in srgb, var(--ink-3) 56%, transparent);
+        border-radius: 50%;
+        position: relative;
+      }
+
+      .brand-mark::before,
+      .brand-mark::after {
+        content: "";
+        position: absolute;
+        top: 5px;
+        bottom: 5px;
+        width: 8px;
+        border: 2px solid var(--seam);
+      }
+
+      .brand-mark::before {
+        left: 4px;
+        border-right: 0;
+        border-radius: 999px 0 0 999px;
+      }
+
+      .brand-mark::after {
+        right: 4px;
+        border-left: 0;
+        border-radius: 0 999px 999px 0;
+      }
+
+      .brand span {
+        display: block;
+        line-height: 1;
+      }
+
+      .brand span + span {
+        padding-top: 4px;
+        color: var(--ink-2);
+        font-size: 0.6rem;
+      }
+
+      .nav {
+        display: flex;
+        gap: 18px;
+      }
+
+      .nav a {
+        color: var(--ink-2);
+        text-decoration: none;
+      }
+
+      .nav a:hover {
+        color: var(--seam);
+      }
+
+      .stage {
+        width: 100%;
+        max-width: none;
+        background:
+          radial-gradient(circle at 62% 32%, rgba(178, 58, 48, 0.23), transparent 34%),
+          linear-gradient(115deg, rgba(243, 236, 224, 0.08) 0 1px, transparent 1px 100%),
+          var(--stage);
+        background-size: auto, 34px 34px, auto;
+        color: var(--bone);
+      }
+
+      .hero-inner {
+        width: min(1120px, calc(100% - 32px));
+        min-height: calc(100svh - 60px);
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+        align-items: center;
+        gap: 48px;
+        padding: 54px 0 72px;
+      }
+
+      h1 {
+        margin: 16px 0 0;
+        max-width: 9ch;
+        font-size: clamp(3rem, 7.2vw, 5.4rem);
+        line-height: 0.94;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(2rem, 4.4vw, 3.5rem);
+        line-height: 1;
+      }
+
+      h3 {
+        margin: 0;
+      }
+
+      p {
+        line-height: 1.65;
+      }
+
+      .lead {
+        max-width: 52ch;
+        color: var(--bone-2);
+        font-size: 1.08rem;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 34px;
+      }
+
+      .button,
+      .control {
+        border: 1px solid color-mix(in srgb, var(--bone) 28%, transparent);
+        border-radius: 2px;
+        background: transparent;
+        color: inherit;
+        padding: 12px 16px;
+        text-decoration: none;
+      }
+
+      .button.primary,
+      .control[aria-pressed="true"] {
+        border-color: var(--seam);
+        background: var(--seam);
+        color: var(--bone);
+      }
+
+      .canvas-wrap {
+        position: relative;
+        width: min(100%, 560px);
+        aspect-ratio: 1;
+        margin-left: auto;
+      }
+
+      .canvas-wrap::after {
+        content: "";
+        position: absolute;
+        left: 12%;
+        right: 12%;
+        bottom: 4%;
+        height: 13%;
+        border-radius: 50%;
+        background: radial-gradient(closest-side, rgba(0, 0, 0, 0.42), transparent);
+      }
+
+      canvas {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      section {
+        padding: 88px 0;
+      }
+
+      .tier {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--ink-2);
+        margin-bottom: 28px;
+      }
+
+      .tier::after {
+        content: "";
+        height: 1px;
+        flex: 1;
+        background: linear-gradient(90deg, color-mix(in srgb, var(--ink-3) 55%, transparent), transparent);
+      }
+
+      .rail-grid,
+      .cue-grid,
+      .release-grid,
+      .evidence-grid {
+        display: grid;
+        gap: 16px;
+      }
+
+      .rail-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        margin-top: 32px;
+      }
+
+      .pitch-card,
+      .cue,
+      .release-step,
+      .evidence-row {
+        border-top: 1px solid color-mix(in srgb, var(--ink-3) 42%, transparent);
+        padding-top: 18px;
+      }
+
+      .pitch-card {
+        min-height: 180px;
+        border: 1px solid color-mix(in srgb, var(--ink-3) 32%, transparent);
+        background: color-mix(in srgb, var(--paper-2) 62%, transparent);
+        padding: 18px;
+        text-align: left;
+        color: var(--ink);
+      }
+
+      .pitch-card[aria-pressed="true"] {
+        border-color: var(--seam);
+      }
+
+      .pitch-card p,
+      .cue p,
+      .release-step p,
+      .evidence-row p {
+        color: var(--ink-2);
+        margin-bottom: 0;
+      }
+
+      .lab-band {
+        width: 100%;
+        max-width: none;
+        background:
+          linear-gradient(90deg, rgba(243, 236, 224, 0.07) 1px, transparent 1px),
+          linear-gradient(0deg, rgba(243, 236, 224, 0.07) 1px, transparent 1px),
+          var(--stage);
+        background-size: 42px 42px;
+        color: var(--bone);
+      }
+
+      .lab-inner {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 88px 0;
+        display: grid;
+        grid-template-columns: minmax(320px, 0.9fr) 1fr;
+        gap: 48px;
+      }
+
+      .lab-band .tier,
+      .lab-band .mono,
+      .lab-band p {
+        color: var(--bone-2);
+      }
+
+      .lab-band h2,
+      .lab-band h3 {
+        color: var(--bone);
+      }
+
+      .control-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .cue-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 26px 0;
+      }
+
+      .cue {
+        border-color: color-mix(in srgb, var(--bone) 22%, transparent);
+      }
+
+      .contact-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 20px;
+        padding: 0;
+        list-style: none;
+      }
+
+      .contact-list li {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 12px;
+        border-top: 1px solid color-mix(in srgb, var(--bone) 16%, transparent);
+        padding-top: 12px;
+      }
+
+      .dot {
+        width: 11px;
+        height: 11px;
+        margin-top: 6px;
+        border-radius: 999px;
+        background: var(--skin-light);
+      }
+
+      .release-grid {
+        grid-template-columns: 0.75fr 1.25fr;
+        align-items: start;
+      }
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 20px;
+      }
+
+      .movement {
+        max-width: none;
+        width: 100%;
+        background: color-mix(in srgb, var(--paper-2) 66%, transparent);
+      }
+
+      .movement-inner {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+      }
+
+      .evidence-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      footer {
+        border-top: 1px solid color-mix(in srgb, var(--ink-3) 38%, transparent);
+        background: var(--paper-2);
+        padding: 48px 16px;
+      }
+
+      footer > div {
+        width: min(1120px, 100%);
+        margin: 0 auto;
+      }
+
+      @media (max-width: 820px) {
+        .nav {
+          display: none;
+        }
+
+        .hero-inner,
+        .lab-inner,
+        .release-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-inner .canvas-wrap {
+          order: -1;
+          margin: 0 auto;
+        }
+
+        .rail-grid,
+        .cue-grid,
+        .steps,
+        .evidence-grid {
+          grid-template-columns: 1fr;
+        }
+
+        h1 {
+          max-width: 11ch;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="masthead-inner">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="mono">Baseball Atlas<span>Pitch Atlas</span></span>
+        </a>
+        <nav class="nav mono" aria-label="Prototype sections">
+          <a href="#atlas">Atlas</a>
+          <a href="#grip-lab">Grip Lab</a>
+          <a href="#release-room">Release</a>
+          <a href="#movement">Movement</a>
+          <a href="#evidence">Evidence</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <div class="stage">
+        <div class="hero-inner">
+          <div>
+            <p class="mono">Baseball Atlas / Pitch Atlas</p>
+            <h1 class="display">Hold the pitch before you measure it.</h1>
+            <p class="lead">
+              Pitch Atlas is the launch module for Baseball Atlas: grip, thumb, seams, finger pads,
+              palm gap, and release feel first. The numbers sit below the craft path.
+            </p>
+            <div class="cta-row mono">
+              <a class="button primary" href="#grip-lab">Enter Grip Lab</a>
+              <a class="button" href="#movement">Translate movement</a>
+            </div>
+          </div>
+          <div class="canvas-wrap">
+            <canvas id="heroCanvas" width="900" height="900" aria-label="Canvas grip theater preview"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <section id="atlas">
+        <div class="tier mono">00 Pitch family rail</div>
+        <h2 class="display">Pick the family, then the hold.</h2>
+        <p>
+          Five sourced pitch states are shown here as grip families first: fastballs, offspeed, and
+          breaking balls. Selecting one updates the grip theater, release room, and evidence copy.
+        </p>
+        <div id="pitchRail" class="rail-grid"></div>
+      </section>
+
+      <div id="grip-lab" class="lab-band">
+        <div class="lab-inner">
+          <div>
+            <div class="tier mono">01 Grip Lab</div>
+            <div class="canvas-wrap">
+              <canvas id="gripCanvas" width="900" height="900" aria-label="Canvas grip theater with hand and ball"></canvas>
+            </div>
+            <div class="control-row mono" id="viewControls" aria-label="View controls"></div>
+            <div class="control-row mono" id="handControls" aria-label="Hand controls"></div>
+          </div>
+          <div>
+            <p class="mono" id="familyLabel"></p>
+            <h2 class="display" id="pitchName"></h2>
+            <p id="pitchTagline"></p>
+            <div class="cue-grid">
+              <div class="cue">
+                <p class="mono">Ball depth</p>
+                <h3 id="ballDepth"></h3>
+              </div>
+              <div class="cue">
+                <p class="mono">Spacing</p>
+                <h3 id="spacing"></h3>
+              </div>
+              <div class="cue">
+                <p class="mono">Thumb</p>
+                <h3 id="thumbRole"></h3>
+              </div>
+              <div class="cue">
+                <p class="mono">Release feel</p>
+                <h3 id="releaseCue"></h3>
+              </div>
+            </div>
+            <ul class="contact-list" id="contacts"></ul>
+          </div>
+        </div>
+      </div>
+
+      <section id="release-room">
+        <div class="tier mono">02 Release Room</div>
+        <div class="release-grid">
+          <div>
+            <h2 class="display">Translate the hold into a release.</h2>
+            <p id="releaseIntro"></p>
+          </div>
+          <div class="steps" id="releaseSteps"></div>
+        </div>
+      </section>
+
+      <div id="movement" class="movement">
+        <div class="movement-inner">
+          <section>
+            <div class="tier mono">03 Movement translation</div>
+            <h2 class="display" id="movementHeadline"></h2>
+            <p id="movementPlain"></p>
+            <p class="mono">Measured movement and source ledgers stay below this point in the production app.</p>
+          </section>
+        </div>
+      </div>
+
+      <section id="evidence">
+        <div class="tier mono">04 Evidence Ledger</div>
+        <h2 class="display">Numbers belong after the hand understands the pitch.</h2>
+        <div class="evidence-grid">
+          <div class="evidence-row">
+            <p class="mono">Source model</p>
+            <h3>Sourced, not corrected</h3>
+            <p>Claims keep confidence labels and caveats.</p>
+          </div>
+          <div class="evidence-row">
+            <p class="mono">Master variants</p>
+            <h3>Pro examples below</h3>
+            <p>Measured figures are not the first viewport.</p>
+          </div>
+          <div class="evidence-row">
+            <p class="mono">Community</p>
+            <h3>Empty until safe</h3>
+            <p>No fabricated posts, counts, or freshness.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        <p class="display">Baseball Atlas / Pitch Atlas</p>
+        <p class="mono">Prototype only. Production source remains the React/Vite app.</p>
+      </div>
+    </footer>
+
+    <script>
+      const pitches = [
+        {
+          id: "four-seam",
+          name: "Four-seam fastball",
+          family: "Fastballs",
+          tagline: "The pitch you trust for a strike. It travels the straightest and arrives the fastest.",
+          depth: "Out in the fingers",
+          spacing: "Slight spread",
+          thumb: "Thumb supports underneath, centered below the top two fingers.",
+          release: "Let the index and middle pads roll backspin off the top of the ball.",
+          movement: "It rides less than a spinless ball. It never literally rises.",
+          contacts: [
+            ["Index pad", "Across the wide horseshoe seam", 0.34, -0.18],
+            ["Middle pad", "Across the wide horseshoe seam", 0.5, -0.18],
+            ["Thumb", "Under the index-middle window", 0.42, 0.56],
+          ],
+        },
+        {
+          id: "two-seam",
+          name: "Two-seam fastball",
+          family: "Fastballs",
+          tagline: "The fastball that lets the seams help the ball run.",
+          depth: "Out in the fingers",
+          spacing: "Slight spread",
+          thumb: "Thumb balances from below, slightly off center.",
+          release: "Stay through the inside seam and let the ball run.",
+          movement: "It trades straight carry for arm-side run and sink.",
+          contacts: [
+            ["Index pad", "Along the narrow seam", 0.38, -0.25],
+            ["Middle pad", "Along the paired narrow seam", 0.52, -0.22],
+            ["Thumb", "Under the seam lane", 0.46, 0.58],
+          ],
+        },
+        {
+          id: "circle-change",
+          name: "Circle changeup",
+          family: "Offspeed",
+          tagline: "Fastball arm speed, deeper hand feel, slower ball.",
+          depth: "Deeper in the hand",
+          spacing: "Wide spacing",
+          thumb: "Thumb and index form the circle on the inside edge.",
+          release: "Throw it with fastball intent and let the grip take speed off.",
+          movement: "It arrives slower with fade, sink, or both depending on pressure.",
+          contacts: [
+            ["Index", "Circle edge", 0.28, -0.05],
+            ["Middle pad", "Pressure finger", 0.52, -0.2],
+            ["Thumb", "Circle support", 0.22, 0.46],
+          ],
+        },
+        {
+          id: "twelve-six",
+          name: "12-6 curveball",
+          family: "Breaking balls",
+          tagline: "Middle finger pressure and a pull-down finish.",
+          depth: "Deeper in the hand",
+          spacing: "Fingers close",
+          thumb: "Thumb anchors the back seam.",
+          release: "Middle finger owns the seam pressure through the pull-down.",
+          movement: "It wants a steep top-to-bottom break.",
+          contacts: [
+            ["Middle pad", "Owns the seam", 0.52, -0.18],
+            ["Index", "Light guide", 0.38, -0.22],
+            ["Thumb", "Back seam anchor", 0.48, 0.58],
+          ],
+        },
+        {
+          id: "slider",
+          name: "Slider",
+          family: "Breaking balls",
+          tagline: "Fastball look, off-center pressure, late tilt.",
+          depth: "Neutral depth",
+          spacing: "Fingers close",
+          thumb: "Thumb supports the off-center pressure.",
+          release: "Stay behind it, then let the ball slip off the side pressure.",
+          movement: "It moves laterally and down, with tighter shape than a curve.",
+          contacts: [
+            ["Index", "Beside the seam", 0.4, -0.18],
+            ["Middle pad", "Main pressure", 0.52, -0.16],
+            ["Thumb", "Under-side support", 0.36, 0.52],
+          ],
+        },
+      ];
+
+      const state = { pitch: pitches[0], view: "top", hand: "right" };
+      const views = ["top", "side", "thumb"];
+      const hands = ["right", "left"];
+
+      function byId(id) {
+        return document.getElementById(id);
+      }
+
+      function drawGrip(canvas, compact = false) {
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = w * 0.5;
+        const cy = h * 0.48;
+        const r = w * (compact ? 0.27 : 0.31);
+        const sign = state.hand === "left" ? -1 : 1;
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.save();
+        ctx.translate(cx, cy);
+        if (state.hand === "left") ctx.scale(-1, 1);
+
+        const palmGap = state.pitch.depth === "Deeper in the hand" ? 0.84 : 1.07;
+        ctx.globalAlpha = 0.96;
+        ctx.fillStyle = "#c9926b";
+        roundedEllipse(ctx, r * 0.42, r * palmGap, r * 0.76, r * 0.38, -0.25);
+        ctx.fill();
+
+        ctx.globalAlpha = 1;
+        const ball = ctx.createRadialGradient(-r * 0.32, -r * 0.38, r * 0.12, 0, 0, r);
+        ball.addColorStop(0, "#fffaf0");
+        ball.addColorStop(0.56, "#f1e8d4");
+        ball.addColorStop(1, "#d4c7ad");
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = ball;
+        ctx.fill();
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "rgba(34,26,16,0.22)";
+        ctx.stroke();
+
+        drawSeams(ctx, r);
+        drawFingers(ctx, r);
+        drawLabels(ctx, r, sign);
+        ctx.restore();
+      }
+
+      function roundedEllipse(ctx, x, y, rx, ry, rot) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(rot);
+        ctx.beginPath();
+        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+        ctx.restore();
+      }
+
+      function drawSeams(ctx, r) {
+        ctx.strokeStyle = "#b23a30";
+        ctx.lineWidth = 7;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        if (state.view === "side") {
+          ctx.ellipse(-r * 0.2, 0, r * 0.24, r * 0.88, 0.18, -1.34, 1.34);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.ellipse(r * 0.35, 0, r * 0.26, r * 0.84, -0.14, Math.PI - 1.24, Math.PI + 1.24);
+          ctx.stroke();
+        } else if (state.view === "thumb") {
+          ctx.ellipse(0, r * 0.08, r * 0.72, r * 0.22, 0.06, 0, Math.PI * 2);
+          ctx.stroke();
+        } else {
+          ctx.moveTo(-r * 0.72, -r * 0.58);
+          ctx.bezierCurveTo(-r * 0.12, -r * 0.1, -r * 0.12, r * 0.1, -r * 0.72, r * 0.58);
+          ctx.moveTo(r * 0.72, -r * 0.58);
+          ctx.bezierCurveTo(r * 0.12, -r * 0.1, r * 0.12, r * 0.1, r * 0.72, r * 0.58);
+          ctx.stroke();
+        }
+      }
+
+      function drawFingers(ctx, r) {
+        const yTop = state.view === "thumb" ? -r * 0.06 : -r * 0.84;
+        const thumbY = state.view === "thumb" ? r * 0.25 : r * 0.72;
+        const spread = state.pitch.spacing === "Wide spacing" ? 0.44 : state.pitch.spacing === "Fingers close" ? 0.2 : 0.3;
+        const topContacts = state.pitch.contacts.slice(0, 2);
+        topContacts.forEach((contact, i) => {
+          const x = (i === 0 ? -spread : spread) * r;
+          drawFinger(ctx, x, yTop, contact[0], i === 1 && state.pitch.name.includes("Curve"));
+        });
+        drawThumb(ctx, -r * 0.42, thumbY);
+      }
+
+      function drawFinger(ctx, x, y, label, raised) {
+        ctx.save();
+        ctx.fillStyle = raised ? "rgba(231,180,141,0.72)" : "#e7b48d";
+        ctx.strokeStyle = "rgba(34,26,16,0.25)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 58, 96, 0.06, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "rgba(42,29,16,0.18)";
+        ctx.beginPath();
+        ctx.ellipse(x, y + 18, 46, 52, 0.06, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#16120d";
+        ctx.font = "bold 20px ui-monospace, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(label.split(" ")[0].toUpperCase(), x, y - 78);
+        ctx.restore();
+      }
+
+      function drawThumb(ctx, x, y) {
+        ctx.save();
+        ctx.fillStyle = "#e1a87c";
+        ctx.strokeStyle = "rgba(34,26,16,0.25)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.ellipse(x, y, 82, 56, -0.55, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        if (state.pitch.id === "circle-change") {
+          ctx.strokeStyle = "#16120d";
+          ctx.lineWidth = 8;
+          ctx.beginPath();
+          ctx.arc(x + 54, y - 34, 44, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.fillStyle = "#16120d";
+        ctx.font = "bold 19px ui-monospace, monospace";
+        ctx.textAlign = "center";
+        ctx.fillText("THUMB", x, y + 82);
+        ctx.restore();
+      }
+
+      function drawLabels(ctx, r, sign) {
+        ctx.save();
+        ctx.scale(sign, 1);
+        ctx.fillStyle = "rgba(22,18,13,0.88)";
+        ctx.strokeStyle = "rgba(243,236,224,0.26)";
+        ctx.lineWidth = 1;
+        ctx.font = "18px ui-monospace, monospace";
+        const label = state.view.toUpperCase() + " VIEW / " + state.hand.toUpperCase() + " HAND";
+        const width = ctx.measureText(label).width + 28;
+        ctx.beginPath();
+        ctx.rect(-width / 2, r + 72, width, 40);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#f3ece0";
+        ctx.textAlign = "center";
+        ctx.fillText(label, 0, r + 98);
+        ctx.restore();
+      }
+
+      function renderControls() {
+        byId("viewControls").innerHTML = views
+          .map((view) => `<button class="control" data-view="${view}" aria-pressed="${state.view === view}">${view}</button>`)
+          .join("");
+        byId("handControls").innerHTML = hands
+          .map((hand) => `<button class="control" data-hand="${hand}" aria-pressed="${state.hand === hand}">${hand} hand</button>`)
+          .join("");
+      }
+
+      function renderPitchRail() {
+        byId("pitchRail").innerHTML = pitches
+          .map(
+            (p, i) => `<button class="pitch-card" data-pitch="${p.id}" aria-pressed="${state.pitch.id === p.id}">
+              <span class="mono">${String(i).padStart(2, "0")} / ${p.family}</span>
+              <h3 class="display">${p.name}</h3>
+              <p>${p.tagline}</p>
+            </button>`,
+          )
+          .join("");
+      }
+
+      function renderText() {
+        byId("familyLabel").textContent = `${state.pitch.family} / ${state.pitch.id}`;
+        byId("pitchName").textContent = state.pitch.name;
+        byId("pitchTagline").textContent = state.pitch.tagline;
+        byId("ballDepth").textContent = state.pitch.depth;
+        byId("spacing").textContent = state.pitch.spacing;
+        byId("thumbRole").textContent = state.pitch.thumb;
+        byId("releaseCue").textContent = state.pitch.release;
+        byId("contacts").innerHTML = state.pitch.contacts
+          .map((c) => `<li><span class="dot"></span><span><strong>${c[0]}</strong><br />${c[1]}</span></li>`)
+          .join("");
+        byId("releaseIntro").textContent = `${state.pitch.name}: ${state.pitch.release}`;
+        byId("releaseSteps").innerHTML = [
+          ["Hold", state.pitch.depth],
+          ["Pressure", state.pitch.contacts[1][1]],
+          ["Leave", state.pitch.release],
+        ]
+          .map((s, i) => `<article class="release-step"><span class="mono">0${i + 1} ${s[0]}</span><h3>${s[1]}</h3></article>`)
+          .join("");
+        byId("movementHeadline").textContent = state.pitch.movement;
+        byId("movementPlain").textContent = "The production app keeps detailed spin, break, and source records here, after the visitor has already seen the grip and release sequence.";
+      }
+
+      function render() {
+        renderPitchRail();
+        renderControls();
+        renderText();
+        drawGrip(byId("heroCanvas"), true);
+        drawGrip(byId("gripCanvas"));
+      }
+
+      document.addEventListener("click", (event) => {
+        const pitchButton = event.target.closest("[data-pitch]");
+        const viewButton = event.target.closest("[data-view]");
+        const handButton = event.target.closest("[data-hand]");
+        if (pitchButton) state.pitch = pitches.find((p) => p.id === pitchButton.dataset.pitch) || state.pitch;
+        if (viewButton) state.view = viewButton.dataset.view;
+        if (handButton) state.hand = handButton.dataset.hand;
+        if (pitchButton || viewButton || handButton) render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>

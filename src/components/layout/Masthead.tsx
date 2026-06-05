@@ -1,4 +1,5 @@
 import { PITCHES } from '../../data/pitches'
+import { SITE } from '../../config/site'
 import { useSelectedPitch } from '../../hooks/useSelectedPitch'
 import { scrollToId } from '../../lib/scroll'
 
@@ -12,9 +13,10 @@ import { scrollToId } from '../../lib/scroll'
 
 const NAV: { label: string; id: string }[] = [
   { label: 'Atlas', id: 'atlas' },
-  { label: 'Grips', id: 'grip-lab' },
-  { label: 'What it does', id: 'what-it-does' },
-  { label: 'Masters', id: 'masters' },
+  { label: 'Grip Lab', id: 'grip-lab' },
+  { label: 'Release', id: 'release-room' },
+  { label: 'Movement', id: 'movement-translation' },
+  { label: 'Evidence', id: 'evidence-ledger' },
   { label: 'Sources', id: 'sources' },
 ]
 
@@ -43,7 +45,10 @@ export function Masthead() {
           className="flex items-center gap-2.5"
         >
           <SeamMark />
-          <span className="font-mono text-sm font-semibold tracking-[0.22em] text-ink">PITCH ATLAS</span>
+          <span className="flex flex-col leading-none">
+            <span className="font-mono text-xs font-semibold tracking-[0.2em] text-ink">{SITE.siteName}</span>
+            <span className="pt-0.5 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-2">{SITE.moduleName}</span>
+          </span>
         </a>
 
         <nav aria-label="Sections" className="hidden items-center gap-6 md:flex">

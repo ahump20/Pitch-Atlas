@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from 'rea
 import * as THREE from 'three'
 import { Html } from '@react-three/drei'
 import { seamSamples, seamPoint } from '../../../lib/seam'
-import type { SeamAnchoredPoint } from '../../../data/types'
+import type { Handedness, SeamAnchoredPoint } from '../../../data/types'
 
 /*
   The specimen geometry. Original, parametric, no downloaded model:
@@ -31,6 +31,135 @@ const SKIN: Record<SeamAnchoredPoint['finger'], string> = {
 }
 
 const clampByte = (n: number) => Math.max(0, Math.min(255, n))
+
+type GripRenderablePoint = SeamAnchoredPoint & { curl?: number }
+
+interface PadModel {
+  key: string
+  label: string
+  finger: SeamAnchoredPoint['finger']
+  color: string
+  normal: THREE.Vector3
+  quaternion: THREE.Quaternion
+  discPos: THREE.Vector3
+  padPos: THREE.Vector3
+  labelPos: THREE.Vector3
+  discR: number
+  scale: THREE.Vector3
+  curl: number
+}
+
+function mirrorBasePoint(base: { x: number; y: number; z: number }, handedness: Handedness) {
+  return new THREE.Vector3(handedness === 'left' ? -base.x : base.x, base.y, base.z)
+}
+
+function CapsuleBetween({
+  from,
+  to,
+  radius,
+  color,
+  opacity = 1,
+}: {
+  from: THREE.Vector3
+  to: THREE.Vector3
+  radius: number
+  color: string
+  opacity?: number
+}) {
+  const { center, quaternion, length } = useMemo(() => {
+    const dir = to.clone().sub(from)
+    const segmentLength = Math.max(0.01, dir.length())
+    const centerPoint = from.clone().add(to).multiplyScalar(0.5)
+    const q = new THREE.Quaternion().setFromUnitVectors(
+      new THREE.Vector3(0, 1, 0),
+      dir.normalize(),
+    )
+    return { center: centerPoint, quaternion: q, length: segmentLength }
+  }, [from, to])
+
+  return (
+    <mesh position={center} quaternion={quaternion}>
+      <capsuleGeometry args={[radius, Math.max(0.01, length - radius * 2), 6, 14]} />
+      <meshPhysicalMaterial
+        color={color}
+        roughness={0.54}
+        clearcoat={0.18}
+        clearcoatRoughness={0.44}
+        sheen={0.42}
+        sheenColor="#ffd8be"
+        transparent={opacity < 1}
+        opacity={opacity}
+      />
+    </mesh>
+  )
+}
+
+function GripHand({
+  pads,
+  handedness,
+}: {
+  pads: PadModel[]
+  handedness: Handedness
+}) {
+  const handSign = handedness === 'left' ? -1 : 1
+  const topPads = pads.filter((p) => p.finger !== 'thumb')
+  const thumb = pads.find((p) => p.finger === 'thumb')
+  const palmCenter = useMemo(() => new THREE.Vector3(0.36 * handSign, -0.52, 0.84), [handSign])
+  const wristCenter = useMemo(() => new THREE.Vector3(0.58 * handSign, -1.02, 0.8), [handSign])
+
+  return (
+    <group>
+      <mesh position={palmCenter} rotation={[0.22, 0.04 * handSign, -0.2 * handSign]} scale={[0.62, 0.36, 0.2]}>
+        <sphereGeometry args={[1, 40, 24]} />
+        <meshPhysicalMaterial
+          color="#d19a72"
+          roughness={0.58}
+          clearcoat={0.18}
+          clearcoatRoughness={0.45}
+          sheen={0.55}
+          sheenColor="#ffd8be"
+          transparent
+          opacity={0.94}
+        />
+      </mesh>
+
+      <CapsuleBetween from={wristCenter} to={palmCenter} radius={0.17} color="#ca926a" opacity={0.82} />
+
+      {topPads.map((pad, index) => {
+        const spread = (index - (topPads.length - 1) / 2) * 0.14
+        const knuckle = pad.padPos
+          .clone()
+          .add(new THREE.Vector3((0.22 + spread) * handSign, -0.42 - pad.curl * 0.15, 0.28))
+        const root = pad.padPos
+          .clone()
+          .add(new THREE.Vector3((0.52 + spread) * handSign, -0.82 - pad.curl * 0.1, 0.5))
+        return (
+          <group key={`${pad.key}-finger`}>
+            <CapsuleBetween from={pad.padPos.clone().add(pad.normal.clone().multiplyScalar(0.05))} to={knuckle} radius={0.075} color={pad.color} />
+            <CapsuleBetween from={knuckle} to={root} radius={0.085} color="#d19a72" />
+          </group>
+        )
+      })}
+
+      {thumb ? (
+        <>
+          <CapsuleBetween
+            from={thumb.padPos.clone().add(thumb.normal.clone().multiplyScalar(0.05))}
+            to={thumb.padPos.clone().add(new THREE.Vector3(0.28 * handSign, -0.35, 0.24))}
+            radius={0.09}
+            color={thumb.color}
+          />
+          <CapsuleBetween
+            from={thumb.padPos.clone().add(new THREE.Vector3(0.28 * handSign, -0.35, 0.24))}
+            to={palmCenter.clone().add(new THREE.Vector3(-0.12 * handSign, 0.05, 0.08))}
+            radius={0.105}
+            color="#cf976e"
+          />
+        </>
+      ) : null}
+    </group>
+  )
+}
 
 /* Procedural leather: a warm off-white albedo with faint mottling and a neutral
    normal map with fine pores and a few soft scuffs. Generated on a canvas so the
@@ -91,9 +220,13 @@ function makeLeatherTextures(): { albedo: THREE.CanvasTexture; normal: THREE.Can
 export function Ball({
   fingerPlacement,
   showGrip = true,
+  showHand = false,
+  handedness = 'right',
 }: {
-  fingerPlacement: SeamAnchoredPoint[]
+  fingerPlacement: GripRenderablePoint[]
   showGrip?: boolean
+  showHand?: boolean
+  handedness?: Handedness
 }) {
   const sphereRef = useRef<THREE.Mesh>(null)
   const stitchRef = useRef<THREE.InstancedMesh>(null)
@@ -129,8 +262,8 @@ export function Ball({
   const pads = useMemo(
     () =>
       fingerPlacement.map((g) => {
-        const base = seamPoint(g.seamT * Math.PI * 2, R)
-        const nrm = new THREE.Vector3(base.x, base.y, base.z).normalize()
+        const base = mirrorBasePoint(seamPoint(g.seamT * Math.PI * 2, R), handedness)
+        const nrm = base.clone().normalize()
         const isThumb = g.finger === 'thumb'
         const padQ = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), nrm)
         const discPos = nrm.clone().multiplyScalar(R + g.lift + 0.005)
@@ -139,18 +272,21 @@ export function Ball({
         return {
           key: g.label,
           label: g.label,
+          finger: g.finger,
           color: SKIN[g.finger] ?? '#e3ad84',
+          normal: nrm,
           quaternion: padQ,
           discPos,
           padPos,
           labelPos,
           discR: isThumb ? 0.34 : 0.27,
+          curl: g.curl ?? (isThumb ? 0.46 : 0.2),
           scale: isThumb
             ? new THREE.Vector3(0.27, 0.34, 0.07)
             : new THREE.Vector3(0.18, 0.26, 0.07),
         }
       }),
-    [fingerPlacement],
+    [fingerPlacement, handedness],
   )
 
   // 216 stitches: 108 pairs straddling the seam, each slanted into the herringbone V.
@@ -215,6 +351,8 @@ export function Ball({
       <instancedMesh ref={stitchRef} args={[stitchGeometry, undefined, STITCH_PAIRS * 2]}>
         <meshPhysicalMaterial color="#c0392b" roughness={0.5} clearcoat={0.25} sheen={0.5} sheenColor="#e0685a" />
       </instancedMesh>
+
+      {showHand && showGrip ? <GripHand pads={pads} handedness={handedness} /> : null}
 
       {showGrip
         ? pads.map((p) => (

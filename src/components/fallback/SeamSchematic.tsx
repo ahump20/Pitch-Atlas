@@ -36,6 +36,7 @@ export interface SeamSchematicProps {
   gyro?: boolean
   /** Grip contacts to draw as labeled pads on the seam (the no-WebGL grip lab). */
   grip?: SeamAnchoredPoint[]
+  surface?: 'paper' | 'stage'
   title?: string
 }
 
@@ -46,6 +47,7 @@ export function SeamSchematic({
   spinAxis = SPIN_AXIS,
   gyro = false,
   grip,
+  surface = 'paper',
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
 }: SeamSchematicProps) {
   const uid = useId()
@@ -74,6 +76,7 @@ export function SeamSchematic({
   }, [spinAxis])
 
   const axisAsDot = gyro || axis.inPlane < 0.34
+  const stageSurface = surface === 'stage'
 
   const gripDots = useMemo(() => {
     if (!grip) return []
@@ -101,17 +104,38 @@ export function SeamSchematic({
       <title>{title}</title>
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#3a2f24" />
-          <stop offset="62%" stopColor="#241c14" />
-          <stop offset="100%" stopColor="#100b07" />
+          <stop offset="0%" stopColor={stageSurface ? '#fffaf0' : '#3a2f24'} />
+          <stop offset="62%" stopColor={stageSurface ? '#f0e6d2' : '#241c14'} />
+          <stop offset="100%" stopColor={stageSurface ? '#d7c9b0' : '#100b07'} />
         </radialGradient>
         <marker id={arrowId} markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
           <path d="M0.5 0.5 L6 3.5 L0.5 6.5 Z" fill="var(--color-ink-3)" />
         </marker>
       </defs>
 
+      {stageSurface && gripDots.length ? (
+        <g opacity="0.72">
+          <ellipse cx={CX - 46} cy={CY + 26} rx="54" ry="34" fill="#c9926b" />
+          <path
+            d={`M${CX - 94} ${CY + 54} C${CX - 72} ${CY + 78} ${CX - 26} ${CY + 76} ${CX - 4} ${CY + 48}`}
+            fill="none"
+            stroke="#c9926b"
+            strokeWidth="22"
+            strokeLinecap="round"
+          />
+        </g>
+      ) : null}
+
       <circle cx={CX} cy={CY} r={R} fill={`url(#${gradId})`} />
-      <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-ink-3)" strokeOpacity="0.5" strokeWidth="1" />
+      <circle
+        cx={CX}
+        cy={CY}
+        r={R}
+        fill="none"
+        stroke={stageSurface ? 'var(--color-bone)' : 'var(--color-ink-3)'}
+        strokeOpacity={stageSurface ? '0.24' : '0.5'}
+        strokeWidth="1"
+      />
 
       {showAxis && !axisAsDot ? (
         <line
@@ -177,6 +201,29 @@ export function SeamSchematic({
             strokeLinecap="round"
           />
         ))}
+
+      {stageSurface && gripDots.length ? (
+        <g opacity="0.8">
+          {gripDots.map((g) => {
+            const isThumb = /thumb/i.test(g.label)
+            const rootX = isThumb ? CX - 58 : CX - 88
+            const rootY = isThumb ? CY + 58 : Math.min(CY - 42, g.y - 28)
+            return (
+              <line
+                key={`hand-${g.key}`}
+                x1={rootX}
+                y1={rootY}
+                x2={g.x}
+                y2={g.y}
+                stroke={isThumb ? '#e1a87c' : '#e7b48d'}
+                strokeWidth={isThumb ? '16' : '13'}
+                strokeLinecap="round"
+                opacity={g.front ? 0.86 : 0.42}
+              />
+            )
+          })}
+        </g>
+      ) : null}
 
       {/* grip pads — back contacts dimmed, front contacts labeled */}
       {gripDots.map((g) => (

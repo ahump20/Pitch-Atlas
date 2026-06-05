@@ -10,7 +10,7 @@ export function Community({ entry }: { entry: PitchAtlasEntry }) {
   const { community } = entry
   return (
     <section id="community" className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-      <TierMarker index="04" label="Community" />
+      <TierMarker index="06" label="Community" />
 
       <div className="grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-12">
         <div className="flex flex-col gap-5 md:col-span-4">

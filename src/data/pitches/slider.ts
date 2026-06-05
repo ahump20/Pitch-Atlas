@@ -1,4 +1,4 @@
-import type { PitchAtlasEntry, SeamAnchoredPoint } from '../types'
+import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim } from '../sources'
 import { sharedSeam } from './_shared-seam'
 
@@ -19,6 +19,49 @@ const fingerPlacement: SeamAnchoredPoint[] = [
   { seamT: 0.44, lift: 0.02, label: 'Middle', finger: 'middle', note: 'Riding a seam, pressure biased to the index side.' },
   { seamT: 0.74, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Underneath, supporting; the ball slides off the hand at release.' },
 ]
+
+const gripModel: GripModel = {
+  defaultView: 'side',
+  ballDepth: 'neutral',
+  fingerSpacing: 'touching',
+  primaryPressureFinger: 'middle',
+  thumbRole: 'Thumb supports underneath while the top fingers sit off-center.',
+  palmGapCue: 'Firm but not buried; the ball needs room to slide off the side.',
+  releaseCue: 'The fingers pull down the side so the ball spirals like a football.',
+  visualCaveat: 'Grip geometry is schematic and shows a gyro-slider family; sweepers and spiked sliders shift the finger posture.',
+  contacts: [
+    {
+      finger: 'index',
+      label: 'Index off-center',
+      seamT: 0.4,
+      lift: 0.02,
+      seamRelation: 'Close to middle, toward the outer third',
+      pressureRole: 'Guides the off-center release',
+      cue: 'Close, not wide',
+      curl: 0.34,
+    },
+    {
+      finger: 'middle',
+      label: 'Middle seam',
+      seamT: 0.44,
+      lift: 0.02,
+      seamRelation: 'Rides the seam near the outer third',
+      pressureRole: 'Primary slider pressure',
+      cue: 'Let it slide off this side',
+      curl: 0.38,
+    },
+    {
+      finger: 'thumb',
+      label: 'Thumb',
+      seamT: 0.74,
+      lift: 0,
+      seamRelation: 'Underneath as support',
+      pressureRole: 'Balances the off-center top fingers',
+      cue: 'Support, do not squeeze',
+      curl: 0.44,
+    },
+  ],
+}
 
 export const slider: PitchAtlasEntry = {
   canonical: {
@@ -52,6 +95,7 @@ export const slider: PitchAtlasEntry = {
       ),
     ],
     fingerPlacement,
+    gripModel,
     mechanics: claim(
       'It lives in the gap between the fastball and the curve, about 6 to 10 mph off the four-seam, thrown with a firmer wrist and a side-of-the-ball finger pull rather than a curve\'s over-the-top snap. The arm mimics the fastball; the late, short glove-side bite comes from gyro-dominant spin and from gravity acting on a ball with little Magnus lift.',
       'driveline-slider',

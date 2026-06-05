@@ -4,7 +4,7 @@ import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useInView } from '../../hooks/useInView'
 import { SpecimenBoundary } from './SpecimenBoundary'
-import type { PitchAtlasEntry } from '../../data/types'
+import type { GripView, Handedness, PitchAtlasEntry } from '../../data/types'
 
 /*
   A 3D specimen stage that degrades safely: no WebGL or a thrown context falls
@@ -19,6 +19,10 @@ const BallScene = lazy(() => import('./three/BallScene'))
 export function BallStage({
   entry,
   grip = false,
+  hand = false,
+  view = entry.canonical.gripModel.defaultView,
+  handedness = 'right',
+  surface = 'paper',
   vectors = false,
   faceGrip = false,
   autoSpin = true,
@@ -26,6 +30,10 @@ export function BallStage({
 }: {
   entry: PitchAtlasEntry
   grip?: boolean
+  hand?: boolean
+  view?: GripView
+  handedness?: Handedness
+  surface?: 'paper' | 'stage'
   vectors?: boolean
   faceGrip?: boolean
   autoSpin?: boolean
@@ -40,7 +48,8 @@ export function BallStage({
       className={cn}
       spinAxis={entry.motion.spinAxis}
       gyro={entry.motion.gyro}
-      grip={grip ? entry.canonical.fingerPlacement : undefined}
+      grip={grip ? entry.canonical.gripModel.contacts : undefined}
+      surface={surface}
       title={`A ${entry.canonical.name} specimen. The seam is the closed figure-eight curve laid on the ball, oriented to the pitch's spin axis.`}
     />
   )
@@ -56,6 +65,9 @@ export function BallStage({
             spin={autoSpin && !reduced}
             active={inView}
             grip={grip}
+            hand={hand}
+            view={view}
+            handedness={handedness}
             vectors={vectors}
             faceGrip={faceGrip}
           />

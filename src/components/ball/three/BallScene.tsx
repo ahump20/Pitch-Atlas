@@ -6,7 +6,7 @@ import { Ball } from './Ball'
 import { Vectors } from './Vectors'
 import { Studio } from './Studio'
 import { v, seamPoint } from '../../../lib/seam'
-import type { PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
+import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
 
 /*
   The 3D specimen. frameloop is on-demand: the spin loop self-sustains by
@@ -41,19 +41,35 @@ function faceGripQuaternion(placement: SeamAnchoredPoint[]): THREE.Quaternion {
   return q.premultiply(tilt)
 }
 
+function viewQuaternion(view: GripView): THREE.Quaternion {
+  const q = new THREE.Quaternion()
+  if (view === 'side') {
+    q.setFromEuler(new THREE.Euler(-0.2, -0.64, 0.03))
+    return q
+  }
+  if (view === 'thumb') {
+    q.setFromEuler(new THREE.Euler(0.78, 0.16, 0.04))
+    return q
+  }
+  q.setFromEuler(new THREE.Euler(-0.08, 0.02, 0.04))
+  return q
+}
+
 function FaceGroup({
   faceGrip,
+  view,
   placement,
   children,
 }: {
   faceGrip: boolean
+  view: GripView
   placement: SeamAnchoredPoint[]
   children: ReactNode
 }) {
-  const quaternion = useMemo(
-    () => (faceGrip ? faceGripQuaternion(placement) : new THREE.Quaternion()),
-    [faceGrip, placement],
-  )
+  const quaternion = useMemo(() => {
+    const faced = faceGrip ? faceGripQuaternion(placement) : new THREE.Quaternion()
+    return viewQuaternion(view).multiply(faced)
+  }, [faceGrip, placement, view])
   return <group quaternion={quaternion}>{children}</group>
 }
 
@@ -96,6 +112,9 @@ export default function BallScene({
   spin,
   active,
   grip = false,
+  hand = false,
+  view = entry.canonical.gripModel.defaultView,
+  handedness = 'right',
   vectors = false,
   faceGrip = false,
 }: {
@@ -103,10 +122,13 @@ export default function BallScene({
   spin: boolean
   active: boolean
   grip?: boolean
+  hand?: boolean
+  view?: GripView
+  handedness?: Handedness
   vectors?: boolean
   faceGrip?: boolean
 }) {
-  const placement = entry.canonical.fingerPlacement
+  const placement = entry.canonical.gripModel.contacts
   return (
     <Canvas
       frameloop="demand"
@@ -122,9 +144,9 @@ export default function BallScene({
       <Studio />
 
       <group>
-        <FaceGroup faceGrip={faceGrip} placement={placement}>
+        <FaceGroup faceGrip={faceGrip} view={view} placement={placement}>
           <SpinGroup axis={entry.motion.spinAxis} active={spin && active}>
-            <Ball fingerPlacement={placement} showGrip={grip} />
+            <Ball fingerPlacement={placement} showGrip={grip} showHand={hand} handedness={handedness} />
           </SpinGroup>
         </FaceGroup>
         {vectors ? <Vectors motion={entry.motion} /> : null}

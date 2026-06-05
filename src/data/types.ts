@@ -109,6 +109,36 @@ export interface SeamAnchoredPoint {
   note?: string
 }
 
+export type GripView = 'top' | 'side' | 'thumb'
+export type Handedness = 'right' | 'left'
+export type BallDepth = 'out-in-fingers' | 'neutral' | 'deep-in-hand'
+export type FingerSpacing = 'touching' | 'slight-spread' | 'wide'
+
+export interface GripContactModel {
+  finger: SeamAnchoredPoint['finger']
+  label: string
+  /** Shared seam parameter so the 2D fallback, 3D pad, and prose cue agree. */
+  seamT: number
+  lift: number
+  seamRelation: string
+  pressureRole: string
+  cue: string
+  /** 0..1 authored curl hint for the procedural hand. */
+  curl: number
+}
+
+export interface GripModel {
+  defaultView: GripView
+  ballDepth: BallDepth
+  fingerSpacing: FingerSpacing
+  primaryPressureFinger: SeamAnchoredPoint['finger']
+  thumbRole: string
+  palmGapCue: string
+  releaseCue: string
+  visualCaveat: string
+  contacts: GripContactModel[]
+}
+
 /** A named, sourced break figure (IVB for a fastball, drop for a curve, run for a sinker, sweep for a slider). */
 export interface BreakReading {
   label: string
@@ -141,6 +171,7 @@ export interface CanonicalPitchRecord {
   /** The grip broken into its sourced parts (placement, spacing, thumb, pressure). */
   gripDetails: Claim<string>[]
   fingerPlacement: SeamAnchoredPoint[]
+  gripModel: GripModel
   mechanics: Claim<string>
   physics: PhysicsReference
   /** A representative sourced quote, when one genuinely exists. */
