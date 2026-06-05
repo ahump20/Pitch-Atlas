@@ -1,20 +1,47 @@
 @import "tailwindcss";
 
 /*
-  The Instrument Plate.
-  Six colors, two fonts, one radius scale. One accent: oxblood seam-red.
-  No second color enters the system.
+  The Leather Skin.
+  Warm parchment + aged leather. Two surface families: light paper for reading,
+  a deep warm stage for the hero and colophon where the white ball glows. One
+  accent: leather-thread red, pulled from the stitching. No second hue enters.
 */
 @theme {
-  --color-stage: #0a0b0d;       /* deepest: page background + 3D stage */
-  --color-panel: #121419;       /* raised panels */
-  --color-machined: #1c1f26;    /* hairlines, borders, inset surfaces */
-  --color-ink: #e8eaed;         /* primary text - AAA on stage */
-  --color-dim: #9aa0ab;         /* secondary text - AA on stage */
-  --color-seam: #a8322d;        /* the one accent: oxblood, pulled from the stitching */
+  /* light surfaces — most of the site reads on these */
+  --color-paper: #f3ece0;       /* warm parchment: primary light surface */
+  --color-paper-2: #ebe2d2;     /* deeper parchment: alternating sections, cards */
 
+  /* dark surfaces — hero + colophon chamber, and the grip-lab stage */
+  --color-stage: #16120d;       /* deep warm chamber: makes the white ball glow */
+  --color-press: #1e1811;       /* slightly raised dark: cards on the stage */
+
+  /* ink — text on light surfaces */
+  --color-ink: #221a10;         /* primary ink */
+  --color-ink-2: #5f5645;       /* secondary ink */
+  --color-ink-3: #8c8270;       /* tertiary ink, hairlines */
+
+  /* bone — text on dark surfaces */
+  --color-bone: #f3ece0;        /* primary text on the stage */
+  --color-bone-2: #c8bca6;      /* secondary text on the stage */
+
+  /* the one accent: leather-thread red */
+  --color-seam: #b23a30;
+  --color-seam-deep: color-mix(in srgb, var(--color-seam) 74%, #190a08);
+
+  /* provenance badge colors — subtle, only on labels */
+  --color-ok: #3c7a52;          /* official-data */
+  --color-amber: #a9762a;       /* reputable-analysis */
+  --color-sand: #8a7253;        /* secondhand */
+
+  /* compatibility aliases — keep pre-migration utilities resolving while the
+     grep-driven migration lands. A safety rail, not the finished design. */
+  --color-panel: var(--color-paper-2);
+  --color-machined: color-mix(in srgb, var(--color-ink-3) 38%, transparent);
+  --color-dim: var(--color-ink-2);
+
+  --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
   --font-prose: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Commit Mono", "Martian Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: "Martian Mono", "Commit Mono", ui-monospace, "SFMono-Regular", monospace;
 
   --radius-xs: 1px;
   --radius-sm: 2px;
@@ -23,19 +50,19 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
     --tracking-label: 0.18em;
   }
 
   html {
-    background-color: var(--color-stage);
+    background-color: var(--color-paper);
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
   }
 
   body {
     margin: 0;
-    background-color: var(--color-stage);
+    background-color: var(--color-paper);
     color: var(--color-ink);
     font-family: var(--font-prose);
     font-feature-settings: "kern" 1, "liga" 1;
@@ -45,7 +72,7 @@
   }
 
   ::selection {
-    background-color: color-mix(in srgb, var(--color-seam) 38%, transparent);
+    background-color: color-mix(in srgb, var(--color-seam) 28%, transparent);
     color: var(--color-ink);
   }
 
@@ -57,13 +84,13 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-machined) var(--color-stage);
+    scrollbar-color: var(--color-ink-3) var(--color-paper-2);
   }
   *::-webkit-scrollbar { width: 11px; height: 11px; }
-  *::-webkit-scrollbar-track { background: var(--color-stage); }
+  *::-webkit-scrollbar-track { background: var(--color-paper-2); }
   *::-webkit-scrollbar-thumb {
-    background: var(--color-machined);
-    border: 3px solid var(--color-stage);
+    background: var(--color-ink-3);
+    border: 3px solid var(--color-paper-2);
   }
 }
 
@@ -87,7 +114,37 @@
     line-height: 1;
     letter-spacing: var(--tracking-label);
     text-transform: uppercase;
-    color: var(--color-dim);
+    color: var(--color-ink-2);
+  }
+
+  /* Editorial display serif: hero headline, section titles, pitch names, pull-quotes.
+     The italic is the warmth. */
+  .display {
+    font-family: var(--font-display);
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    letter-spacing: -0.012em;
+  }
+
+  /* Dark chamber. Hero + colophon sit on the warm stage with bone text; the white
+     ball glows against it. Sections opt in by adding this class. */
+  .on-stage {
+    background-color: var(--color-stage);
+    color: var(--color-bone);
+  }
+
+  /* Film-grain atmosphere. One fixed multiply layer over the whole page — no
+     gradient mesh, no glass. ~3.5% so it reads as paper tooth, not noise. */
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .grain-overlay { opacity: 0.025; }
   }
 }
 

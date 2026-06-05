@@ -184,5 +184,22 @@ export const slider: PitchAtlasEntry = {
     columns: ['Rank', 'Variant', 'Adoption', 'Source tier'],
   },
 
+  guide: {
+    family: 'The late bite',
+    tagline: 'It looks like the fastball, then breaks late and short to the glove side. The hitter sees a red dot.',
+    feel: 'Firm wrist. Stay on the side of the ball and let it slide off — think of throwing a tight spiral.',
+    steps: [
+      'Set your index and middle fingers close together, just off-center toward the outer third of the ball.',
+      'Ride the middle finger on a seam, bias the pressure to the index side, thumb supporting underneath.',
+      'Keep the hand slightly behind the ball and let it slip off the fingers like a thrown football.',
+      'Use your fastball arm; the late, short break comes from the spin, not from muscling it.',
+    ],
+    does: {
+      headline: 'It spins like a thrown football, so it barely fights gravity.',
+      plain:
+        'Most of a slider’s spin points straight at the catcher, so it does almost no lifting work. With little to hold it up, it drops more than the fastball, and the small tilt left in the spin bends it glove-side — late, short, and hard to read until it is too late.',
+    },
+  },
+
   seam: sharedSeam,
 }

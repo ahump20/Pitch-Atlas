@@ -204,5 +204,22 @@ export const fourSeam: PitchAtlasEntry = {
     columns: ['Rank', 'Variant', 'Adoption', 'Source tier'],
   },
 
+  guide: {
+    family: 'The straight one',
+    tagline: 'The pitch you trust for a strike. It travels the straightest and arrives the fastest.',
+    feel: 'Loose in the fingertips. Let it come off the pads clean — never squeeze it.',
+    steps: [
+      'Lay your index and middle fingers flat across the wide part of the horseshoe seam — the part that faces away from you.',
+      'Keep them about a finger-width apart. Pressed close is fine; just do not spread them wide.',
+      'Rest your thumb underneath on smooth leather, centered below the two fingers.',
+      'Hold it out toward the fingertips with a little daylight to the palm, and stay loose.',
+    ],
+    does: {
+      headline: 'It fights gravity longer than your eye expects.',
+      plain:
+        'Clean backspin pushes up on the ball the whole way to the plate, so it falls less than a ball thrown with no spin. The hitter swings where they expect it — and it arrives a touch higher. That is carry. It rides; it never literally rises.',
+    },
+  },
+
   seam: sharedSeam,
 }

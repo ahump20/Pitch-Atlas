@@ -25,9 +25,9 @@ export function Colophon({ entry }: { entry: PitchAtlasEntry }) {
   const { seam } = entry
 
   return (
-    <footer className="border-t border-machined/70">
+    <footer id="sources" className="scroll-mt-24 border-t border-ink-3/30 bg-paper-2">
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <p className="max-w-[58ch] font-prose text-2xl leading-snug text-ink md:text-[1.75rem]">
+        <p className="display max-w-[58ch] text-2xl italic leading-snug text-ink md:text-[1.75rem]">
           Sourced, not corrected. Many ways can work. Claims are labeled by provenance.
         </p>
         <p className="mono-label mt-5">As of {asOf}. Sources last checked, not auto-refreshed.</p>
@@ -39,16 +39,16 @@ export function Colophon({ entry }: { entry: PitchAtlasEntry }) {
               {LEGEND_ORDER.map((c) => (
                 <li key={c} className="flex flex-col gap-1">
                   <ConfidenceLabel confidence={c} />
-                  <span className="max-w-[44ch] text-sm leading-snug text-dim/85">
+                  <span className="max-w-[44ch] text-sm leading-snug text-ink-2/85">
                     {CONFIDENCE_META[c].meaning}
                   </span>
                 </li>
               ))}
             </ul>
-            <p className="mt-6 max-w-[46ch] text-sm leading-snug text-dim/85">
+            <p className="mt-6 max-w-[46ch] text-sm leading-snug text-ink-2/85">
               A value marked with a leading approximate sign is rounded, era-dependent, or
               methodology-bound. The seam render is a {seam.accuracyLevel}, documented in{' '}
-              <span className="font-mono text-dim">{seam.calibrationDoc}</span>.
+              <span className="font-mono text-ink-2">{seam.calibrationDoc}</span>.
             </p>
           </div>
 
@@ -64,11 +64,21 @@ export function Colophon({ entry }: { entry: PitchAtlasEntry }) {
           </div>
         </div>
 
-        <p className="mt-14 max-w-[72ch] border-t border-machined/70 pt-8 text-sm leading-relaxed text-dim/85">
+        <p className="mt-14 max-w-[72ch] border-t border-ink-3/30 pt-8 text-sm leading-relaxed text-ink-2">
           No MLB, team, or player photos, logos, footage, or likenesses. Original geometry, diagrams,
           and words. Instructional text is paraphrased and cited, never copied. No runtime API calls:
           every figure here is static and sourced in the repository.
         </p>
+
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-ink-3/30 pt-8">
+          <span className="display text-lg text-ink">Pitch Atlas</span>
+          <a
+            href="https://pitch-atlas.com"
+            className="mono-label transition-colors hover:text-seam"
+          >
+            pitch-atlas.com
+          </a>
+        </div>
       </div>
     </footer>
   )

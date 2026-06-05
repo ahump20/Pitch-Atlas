@@ -90,8 +90,8 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
 
   return (
     <group>
-      <Arrow dir={axisDir} length={1.5} color="#9aa0ab" />
-      <Arrow dir={axisNeg} length={1.5} color="#9aa0ab" />
+      <Arrow dir={axisDir} length={1.5} color="#8c8270" />
+      <Arrow dir={axisNeg} length={1.5} color="#8c8270" />
 
       <group position={force.base}>
         <Arrow dir={force.dir} length={force.length} color="#a8322d" glow radius={0.016} />
@@ -108,7 +108,7 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
           so the separate axis label is suppressed to avoid colliding with it. */}
       {!motion.gyro ? (
         <Html position={axisLabelPos} center zIndexRange={[15, 0]} wrapperClass="pointer-events-none">
-          <span className={`${LABEL} text-dim`}>Spin axis</span>
+          <span className={`${LABEL} text-ink-2`}>Spin axis</span>
         </Html>
       ) : null}
       <Html position={forceLabelPos} center zIndexRange={[15, 0]} wrapperClass="pointer-events-none">

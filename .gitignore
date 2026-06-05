@@ -38,3 +38,10 @@ pnpm-debug.log*
 # Cloudflare / tooling
 .wrangler/
 .dev.vars
+
+# local visual-verification screenshots
+artifacts/
+
+# private reference (copyrighted) + design-handoff leftovers — never commit
+Pitching-Grips-101.pdf
+Baseball example/

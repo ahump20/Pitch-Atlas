@@ -41,15 +41,15 @@ export function CarryDiagram({
       <title>{title}</title>
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#262a33" />
-          <stop offset="62%" stopColor="#15171d" />
-          <stop offset="100%" stopColor="#0b0c0f" />
+          <stop offset="0%" stopColor="#3a2f24" />
+          <stop offset="62%" stopColor="#241c14" />
+          <stop offset="100%" stopColor="#100b07" />
         </radialGradient>
       </defs>
 
       {/* release point */}
-      <circle cx="30" cy="64" r="2.5" fill="var(--color-dim)" />
-      <text x="30" y="52" fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">
+      <circle cx="30" cy="64" r="2.5" fill="var(--color-ink-2)" />
+      <text x="30" y="52" fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">
         RELEASE
       </text>
 
@@ -57,7 +57,7 @@ export function CarryDiagram({
       <path
         d={`M 30 64 C 150 96, 240 134, ${GHOST.x} ${GHOST.y}`}
         fill="none"
-        stroke="var(--color-dim)"
+        stroke="var(--color-ink-2)"
         strokeWidth="1.25"
         strokeDasharray="3 4"
         opacity="0.8"
@@ -71,14 +71,14 @@ export function CarryDiagram({
       />
 
       {/* spinless phantom ball */}
-      <circle cx={GHOST.x} cy={GHOST.y} r={GHOST.r} fill="#101218" stroke="var(--color-dim)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
-      <text x={GHOST.x} y={GHOST.y + GHOST.r + 13} fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="8.5" letterSpacing="1" textAnchor="middle">
+      <circle cx={GHOST.x} cy={GHOST.y} r={GHOST.r} fill="#1a130b" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
+      <text x={GHOST.x} y={GHOST.y + GHOST.r + 13} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8.5" letterSpacing="1" textAnchor="middle">
         SPINLESS
       </text>
 
       {/* real ball with its seam */}
       <circle cx={REAL.x} cy={REAL.y} r={REAL.r} fill={`url(#${gradId})`} />
-      <circle cx={REAL.x} cy={REAL.y} r={REAL.r} fill="none" stroke="var(--color-machined)" strokeWidth="0.8" />
+      <circle cx={REAL.x} cy={REAL.y} r={REAL.r} fill="none" stroke="var(--color-ink-3)" strokeWidth="0.8" />
       {realSeam
         .filter((s) => !s.front)
         .map((s, i) => (
