@@ -211,13 +211,13 @@ export const twelveSix: PitchAtlasEntry = {
     steps: [
       'Run your middle finger along a seam and rest your thumb on the back seam, the ball pinched between them.',
       'Let your index lie alongside with almost no pressure, or tuck its knuckle for a sharper bite.',
-      'Throw the front of the ball, not the back — that is what makes the topspin.',
+      'Throw the front of the ball, not the back. That is what makes the topspin.',
       'Keep fastball arm speed and pull down hard and short, like chopping straight down.',
     ],
     does: {
       headline: 'Topspin drags it down off a cliff.',
       plain:
-        'Where the fastball spins backward, the curve spins forward. That topspin pulls the ball down late — it looks like a fastball out of the hand, then the floor drops out. A true twelve-to-six falls almost straight, with little sideways break.',
+        'Where the fastball spins backward, the curve spins forward. That topspin pulls the ball down late. It looks like a fastball out of the hand, then the floor drops out. A true twelve-to-six falls almost straight, with little sideways break.',
     },
   },
 

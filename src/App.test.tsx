@@ -42,16 +42,19 @@ describe('App (no-WebGL render is complete)', () => {
     expect(screen.getByText(/As of .*\d{4}\./)).toBeInTheDocument()
   })
 
-  it('has an honest empty field-notes state and a keyboard skip link', () => {
+  it('renders the four-state field-notes surface and a keyboard skip link', () => {
     render(<App />)
-    expect(screen.getByText(/No field notes yet\./)).toBeInTheDocument()
+    // the live Field Notes section mounts its own heading + four-state surface
+    // (loading/error/empty/ready); without a backend in jsdom it stays honest.
+    expect(screen.getByText(/Field notes for the/)).toBeInTheDocument()
     expect(screen.getByText('Skip to content')).toHaveAttribute('href', '#main')
   })
 
-  it('does not fabricate the dropped community state', () => {
+  it('shows no fabricated community count before real data loads', () => {
     render(<App />)
-    // no live notes, no invented counts, no fake "X people waiting"
-    expect(screen.getByText(/No signup count is shown until it is real\./)).toBeInTheDocument()
+    // the "<n> live" count only renders once notes load from the database; at
+    // first paint no invented count is shown. No fake "X people waiting" either.
+    expect(screen.queryByText(/\d+\s+live/)).toBeNull()
   })
 
   it('shows no failure signatures anywhere in the rendered text', () => {

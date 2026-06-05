@@ -136,7 +136,7 @@ export function PitchFamilyRail({ entry }: { entry: PitchAtlasEntry }) {
                     <div className="flex h-full flex-col gap-3 rounded-sm border border-dashed border-navy/25 p-5 opacity-70">
                       <span className="mono-label">In the works</span>
                       <h4 className="display text-xl leading-tight text-ink-2">{r.name}</h4>
-                      <p className="text-sm leading-relaxed text-ink-3">{r.note}</p>
+                      <p className="text-sm leading-relaxed text-ink-2">{r.note}</p>
                     </div>
                   </li>
                 ))}

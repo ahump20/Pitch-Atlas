@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
-      content="A living field manual for pitching grips: textbook foundations, verified master variants, and community field notes, all labeled by source. Sourced, not corrected. Many ways can work."
+      content="A living field manual for pitching grips: textbook foundations, verified master variants, and community field notes, every claim labeled by its source."
     />
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#f3ece0" />
@@ -35,12 +35,41 @@
       content="Textbook foundations, verified master variants, and community field notes on how pitchers grip and shape the baseball. Sourced, not corrected."
     />
     <meta name="twitter:image" content="https://pitch-atlas.com/og-image.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://pitch-atlas.com/#website",
+            "name": "Pitch Atlas",
+            "url": "https://pitch-atlas.com/",
+            "description": "A living field manual for pitching grips: textbook foundations, verified master variants, and community field notes, every claim labeled by its source.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "CreativeWork",
+            "@id": "https://pitch-atlas.com/#field-manual",
+            "name": "Pitch Atlas: The Living Field Manual for Pitching Grips",
+            "url": "https://pitch-atlas.com/",
+            "headline": "How pitchers grip and shape the baseball, labeled by source.",
+            "abstract": "Grip-first reference for five pitches (four-seam, sinker, circle change, 12-6 curve, slider) with sourced master variants and physics. Sourced, not corrected.",
+            "isAccessibleForFree": true,
+            "inLanguage": "en",
+            "dateModified": "2026-06-04",
+            "creator": { "@type": "Organization", "name": "Pitch Atlas" },
+            "isPartOf": { "@id": "https://pitch-atlas.com/#website" }
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <noscript>
-      Pitch Atlas is a static reference. JavaScript renders the interactive specimen, but the grips,
-      physics, sources, and master variants are all readable text and remain available without it.
+      Pitch Atlas renders its interactive grips, physics, and sourced master variants with
+      JavaScript. Please enable JavaScript to read the field manual.
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>

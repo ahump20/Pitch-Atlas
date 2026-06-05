@@ -35,6 +35,9 @@ export function App() {
         Skip to content
       </a>
       <Masthead />
+      <div className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+        Now viewing: {entry.canonical.name}
+      </div>
       <main id="main" tabIndex={-1} className="outline-none">
         <AtlasHero entry={entry} />
         <HowItWorks />

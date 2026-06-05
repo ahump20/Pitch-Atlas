@@ -233,14 +233,14 @@ export const twoSeam: PitchAtlasEntry = {
     feel: 'Same effort as the four-seam. Stay behind it and let the seams do the work.',
     steps: [
       'Set your index and middle fingers along the two narrow seams where they run close together, not across the horseshoe.',
-      'Keep the same width and softness as your four-seam — a finger-width apart, held out in the hand.',
+      'Keep the same width and softness as your four-seam: a finger-width apart, held out in the hand.',
       'Rest your thumb underneath on the leather; some pitchers ride the side of the thumb against a seam.',
-      'Throw it like a fastball. The grip makes the movement — you do not have to.',
+      'Throw it like a fastball. The grip makes the movement. You do not have to.',
     ],
     does: {
       headline: 'It runs toward your arm and settles at the knees.',
       plain:
-        'Running along the seams tilts the spin, so the ball tails toward your throwing hand and rides far less than a four-seam — which is why it sinks by comparison. You trade a little pure life for movement that buys ground balls and weak contact.',
+        'Running along the seams tilts the spin, so the ball tails toward your throwing hand and rides far less than a four-seam, which is why it sinks by comparison. You trade a little pure life for movement that buys ground balls and weak contact.',
     },
   },
 
