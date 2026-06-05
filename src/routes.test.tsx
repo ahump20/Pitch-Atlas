@@ -62,6 +62,13 @@ describe('Pitch chapters', () => {
     expect(screen.getAllByText('Paul Skenes').length).toBeGreaterThan(0)
   })
 
+  it('files Wainwright as a master on the 12-6 curve page', async () => {
+    renderRoute('/pitch/twelve-six')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('12-6 curveball')
+    expect(screen.getAllByText('Adam Wainwright').length).toBeGreaterThan(0)
+    expect(screen.getByText('26 wRC+')).toBeInTheDocument()
+  })
+
   it('shows the 404 for an unknown specimen', async () => {
     renderRoute('/pitch/knuckleball')
     expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
@@ -72,7 +79,7 @@ describe('The Craftsmen', () => {
   it('lists the masters and the legend in the hall', async () => {
     renderRoute('/craftsmen')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The arms that defined the pitches.')
-    for (const name of ['Bob Gibson', 'Nolan Ryan', 'Roger Clemens', 'Greg Maddux', 'Johan Santana', 'Paul Skenes', 'The gyroball']) {
+    for (const name of ['Bob Gibson', 'Nolan Ryan', 'Roger Clemens', 'Greg Maddux', 'Johan Santana', 'Adam Wainwright', 'Paul Skenes', 'The gyroball']) {
       expect(screen.getAllByText(name).length).toBeGreaterThan(0)
     }
   })
@@ -82,6 +89,13 @@ describe('The Craftsmen', () => {
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Bob Gibson')
     expect(screen.getByText(/about 90 percent mental/)).toBeInTheDocument()
     expect(screen.getByText('1.12')).toBeInTheDocument()
+  })
+
+  it('renders the Wainwright chapter linked to its 12-6 specimen', async () => {
+    renderRoute('/craftsmen/adam-wainwright')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Adam Wainwright')
+    expect(screen.getByText('2,202')).toBeInTheDocument()
+    expect(screen.getByText(/Study the 12-6 curveball/)).toBeInTheDocument()
   })
 
   it('files the gyroball as a legend with a myth-versus-physics block', async () => {
@@ -100,7 +114,7 @@ describe('Sources', () => {
 })
 
 describe('No failure signatures', () => {
-  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/craftsmen', '/craftsmen/johan-santana', '/sources'])(
+  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources'])(
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)

@@ -679,6 +679,53 @@ export const SOURCES = {
     url: 'https://blogs.fangraphs.com/red-sox-prospect-hunter-dobbins-has-added-a-splinker-and-upped-his-velo/',
     retrievedAt: RETRIEVED_2,
   },
+
+  // --- The Craftsmen + 12-6 master: Adam Wainwright ---
+  'wainwright-fangraphs-grip': {
+    id: 'wainwright-fangraphs-grip',
+    label: 'FanGraphs, Nick Kingham, Mark Prior, and Adam Wainwright on Crafting Their Curveballs (David Laurila)',
+    url: 'https://blogs.fangraphs.com/nick-kingham-mark-prior-and-adam-wainwright-on-crafting-their-curveballs/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'wainwright-espn-curve': {
+    id: 'wainwright-espn-curve',
+    label: "ESPN, The secret to Adam Wainwright's success: a curveball like none other (Buster Olney)",
+    url: 'https://www.espn.com/mlb/insider/story/_/id/34178817/the-secret-st-louis-cardinals-righty-adam-wainwright-success-curveball-other',
+    retrievedAt: RETRIEVED_2,
+  },
+  'wainwright-fangraphs-curve': {
+    id: 'wainwright-fangraphs-curve',
+    label: "FanGraphs, Checking in on Adam Wainwright's Curveball",
+    url: 'https://blogs.fangraphs.com/checking-in-on-adam-wainwrights-curveball/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'savant-wainwright': {
+    id: 'savant-wainwright',
+    label: 'Baseball Savant (Statcast), Adam Wainwright',
+    url: 'https://baseballsavant.mlb.com/savant-player/adam-wainwright-425794',
+    retrievedAt: RETRIEVED_2,
+    season: '2023',
+  },
+  'wainwright-bref': {
+    id: 'wainwright-bref',
+    label: 'Baseball-Reference, Adam Wainwright',
+    url: 'https://www.baseball-reference.com/players/w/wainwad01.shtml',
+    retrievedAt: RETRIEVED_2,
+  },
+  'wainwright-nlcs-wiki': {
+    id: 'wainwright-nlcs-wiki',
+    label: 'Wikipedia, 2006 National League Championship Series',
+    url: 'https://en.wikipedia.org/wiki/2006_National_League_Championship_Series',
+    retrievedAt: RETRIEVED_2,
+    season: '2006',
+  },
+  'wainwright-2000-stlredbirds': {
+    id: 'wainwright-2000-stlredbirds',
+    label: 'STLRedbirds.com, September 23, 2021: Adam Wainwright throws his 2,000th strikeout',
+    url: 'https://www.stlredbirds.com/2023/03/18/september-23-2021-adam-wainwright-throws-his-2000th-strikeout/',
+    retrievedAt: RETRIEVED_2,
+    season: '2021',
+  },
 } satisfies Record<string, Source>
 
 export type SourceId = keyof typeof SOURCES

@@ -175,7 +175,7 @@ const skenes: Craftsman = {
   hand: 'right',
   signaturePitch: 'Splinker',
   signaturePitchSlug: 'splinker',
-  specimenNo: 'C-06',
+  specimenNo: 'C-07',
   tagline: 'The modern phenom whose splinker, a pitch he found by accident, is already one of the best in baseball.',
   intro:
     'Skenes reached the majors in 2024 and was the NL Rookie of the Year that fall. His signature is the "splinker," a sinker-splitter hybrid his catcher named, thrown in the mid-90s with splitter-like dive off a 98 mph four-seam look. He still thinks of it as a sinker.',
@@ -243,6 +243,47 @@ const santana: Craftsman = {
   rights: 'original',
 }
 
+const wainwright: Craftsman = {
+  slug: 'adam-wainwright',
+  name: 'Adam Wainwright',
+  kind: 'craftsman',
+  era: '2005-2023',
+  hand: 'right',
+  signaturePitch: '12-6 curveball',
+  signaturePitchSlug: 'twelve-six',
+  specimenNo: 'C-06',
+  tagline: 'One curveball, one team, eighteen seasons: a 75-mph hook so trusted it ended a pennant on a called strike three.',
+  intro:
+    'Wainwright spent his whole career with the St. Louis Cardinals, and he spent it leaning on one pitch. The curveball was big and slow and arrived at the same speed no matter how hard he threw it, and it buckled knees from his rookie September to his final start. His brother taught it to him as a kid. He threw it on top of the ball and well out in front, with a double-jointed thumb that put extra spin on the end of it, and when the biggest at-bat of his life arrived, he threw it again.',
+  signature: claim(
+    'A big, slow curveball thrown on top of the ball and released well out in front, so it stayed hidden until it broke. His grip was a little around the seam, and he had a double-jointed thumb he could turn over at release to add spin on the end of the pitch. In his prime it was a true over-the-top 12-6; as his arm slot dropped with age it took on more side-to-side, a two-plane 2-to-7 shape.',
+    'wainwright-fangraphs-grip',
+    'pitcher-own-words',
+    { note: 'His own account to FanGraphs: the around-the-seam grip, the double-jointed thumb, the out-front release, and the 12-6 flattening toward 2-to-7 as he aged.' },
+  ),
+  mentalEdge: claim(
+    'His edge was one pitch he trusted completely. He could throw the curve as hard as he wanted and it still came out 75 mph, the same every time, so he could throw it in any count without tipping speed. He was blunt about how much rested on it: without the curveball, he said, he never gets out of A-ball. Hitters knew it was coming and could not lay off; Joey Votto compared reading it to a ball dropped off a ladder, impossible to tell ball from strike.',
+    'wainwright-espn-curve',
+    'pitcher-own-words',
+    { note: 'The "75 mph however hard I throw it" and "out of A-ball" lines are Wainwright\'s own, via ESPN. Votto\'s "ladder" description is a hitter\'s, from the same piece.' },
+  ),
+  quote: claim(
+    'If I didn’t have my curveball, I don’t get out of A-ball.',
+    'wainwright-espn-curve',
+    'pitcher-own-words',
+    { note: 'To ESPN, on how completely his career rested on the one pitch.' },
+  ),
+  numbers: [
+    { label: 'Career strikeouts', claim: claim('2,202', 'wainwright-bref', 'official-data', { note: 'All with the Cardinals; the 2,000th came on the curve in 2021.' }) },
+    { label: 'Career wins', claim: claim('200', 'wainwright-bref', 'official-data', { note: 'Plus two Gold Gloves, three All-Star selections, and four top-three Cy Young finishes, all in St. Louis.' }) },
+    { label: 'Opponent line vs. the curve (career)', claim: claim('26 wRC+', 'wainwright-fangraphs-curve', 'official-data', { note: 'Roughly 74% below league-average offense against the pitch over his career; 100 is average.' }) },
+    { label: 'Curve, 2023 (Statcast)', claim: claim('71.5 mph · 16.5 in glove-side · 13.5 in drop', 'savant-wainwright', 'official-data', { note: 'Late-career the curve swept as a two-plane 2-to-7, not the over-the-top 12-6 of his prime.' }) },
+    { label: 'The Beltran strikeout', claim: claim('NLCS Game 7, 2006', 'wainwright-nlcs-wiki', 'reputable-analysis', { note: 'Rookie Wainwright froze Carlos Beltran on a 0-2 curve, bases loaded and two outs, to clinch the pennant and send St. Louis to the World Series.' }) },
+    { label: '2,000th strikeout', claim: claim('on the curve, 2021', 'wainwright-2000-stlredbirds', 'reputable-analysis', { note: 'The 85th pitcher to reach 2,000; with Bob Gibson, the only two to collect all 2,000 as Cardinals.' }) },
+  ],
+  rights: 'original',
+}
+
 const gyroball: Craftsman = {
   slug: 'gyroball',
   name: 'The gyroball',
@@ -283,7 +324,7 @@ const gyroball: Craftsman = {
   The hall, in reading order: six craftsmen oldest to newest, then the legend.
   Adding an arm is one import and one array entry.
 */
-export const CRAFTSMEN: Craftsman[] = [gibson, ryan, clemens, maddux, santana, skenes, gyroball]
+export const CRAFTSMEN: Craftsman[] = [gibson, ryan, clemens, maddux, santana, wainwright, skenes, gyroball]
 
 const BY_SLUG: Record<string, Craftsman> = Object.fromEntries(
   CRAFTSMEN.map((c) => [c.slug, c]),

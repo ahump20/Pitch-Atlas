@@ -163,7 +163,7 @@ export const twelveSix: PitchAtlasEntry = {
       'Topspin instead of backspin, so the Magnus force points down and joins gravity. It falls straight, 12 to 6, far more than a spinless ball would.',
     foundationCaption: 'Topspin points the Magnus force down. It drops far more than a spinless ball, with little sideways break.',
     mastersIntro:
-      'A textbook 12-6 and the power curve beside it, to show where the straight-down line ends. The visual is our own seam schematic; every figure is season-stamped and sourced.',
+      'A textbook 12-6, the curve that anchored a career beside it, and a power curve to show where the straight-down line ends. The visual is our own seam schematic; every figure is season-stamped and sourced.',
   },
 
   masterVariants: [
@@ -179,6 +179,25 @@ export const twelveSix: PitchAtlasEntry = {
         { label: 'Spin direction', claim: claim('5:30, 85% active', 'savant-kershaw', 'official-data', { note: '2024 observed clock, near pure topspin.' }) },
         { label: 'Spin rate', claim: claim('~2,242 rpm', 'savant-kershaw', 'reputable-analysis', { approximate: true, note: 'Recent-season arsenal figure.' }) },
       ],
+      rights: 'original',
+    },
+    {
+      tier: 'verified-attributed',
+      pitcher: 'Adam Wainwright',
+      context: 'The "Uncle Charlie" that anchored a 200-win Cardinals career and ended the 2006 pennant on a called strike three. A true over-the-top 12-6 in his prime; as his arm slot dropped with age it flattened into a two-plane 2-to-7, the bridge between Kershaw\'s straight-down curve and Morton\'s power 1-7. He said it came out 75 mph no matter how hard he threw it.',
+      verifiedPro: true,
+      numbers: [
+        { label: 'Velocity', claim: claim('71.5 mph', 'savant-wainwright', 'official-data', { note: '2023. In his prime he capped it near 75 by feel; by his final year Statcast had it in the low 70s.' }) },
+        { label: 'Induced vertical break', claim: claim('-13.5 in', 'savant-wainwright', 'official-data', { note: '2023. Negative is induced drop.' }) },
+        { label: 'Horizontal break', claim: claim('16.5 in glove-side', 'savant-wainwright', 'official-data', { note: '2023. Heavy glove-side run: late-career it swept as a 2-to-7, not a pure straight-down 12-6.' }) },
+        { label: 'Opponent line vs. the curve (career)', claim: claim('26 wRC+', 'wainwright-fangraphs-curve', 'official-data', { note: 'Roughly 74% below league-average offense against it over his career; 100 is average.' }) },
+      ],
+      quote: claim(
+        'I could throw it as hard as I could possibly throw it, and it’s going to come out 75 mph.',
+        'wainwright-espn-curve',
+        'pitcher-own-words',
+        { note: 'To ESPN, on the curve’s built-in speed limit.' },
+      ),
       rights: 'original',
     },
     {
