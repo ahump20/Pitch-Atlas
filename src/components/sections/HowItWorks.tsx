@@ -76,7 +76,7 @@ export function HowItWorks() {
                 ) : null}
                 <div className="flex items-baseline justify-between">
                   <span className="font-mono text-sm tabular-nums text-navy">{layer.no}</span>
-                  <span className="mono-label">{layer.tier}</span>
+                  <span className={`mono-label ${isMasters ? 'text-teal' : ''}`}>{layer.tier}</span>
                 </div>
                 <h3 className="display text-2xl text-ink">{layer.label}</h3>
                 <p className="text-[0.9375rem] leading-relaxed text-ink-2">{layer.body}</p>

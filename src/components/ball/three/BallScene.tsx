@@ -112,21 +112,21 @@ export default function BallScene({
   spin,
   active,
   grip = false,
-  hand = false,
   view = entry.canonical.gripModel.defaultView,
   handedness = 'right',
   vectors = false,
   faceGrip = false,
+  activeContact,
 }: {
   entry: PitchAtlasEntry
   spin: boolean
   active: boolean
   grip?: boolean
-  hand?: boolean
   view?: GripView
   handedness?: Handedness
   vectors?: boolean
   faceGrip?: boolean
+  activeContact?: string
 }) {
   const placement = entry.canonical.gripModel.contacts
   return (
@@ -146,7 +146,7 @@ export default function BallScene({
       <group>
         <FaceGroup faceGrip={faceGrip} view={view} placement={placement}>
           <SpinGroup axis={entry.motion.spinAxis} active={spin && active}>
-            <Ball fingerPlacement={placement} showGrip={grip} showHand={hand} handedness={handedness} />
+            <Ball fingerPlacement={placement} showGrip={grip} handedness={handedness} activeContact={activeContact} />
           </SpinGroup>
         </FaceGroup>
         {vectors ? <Vectors motion={entry.motion} /> : null}

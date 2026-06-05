@@ -15,5 +15,8 @@ export default defineConfig({
     globals: true,
     css: false,
     restoreMocks: true,
+    // Inline react-tweet so Vite transforms it (and no-ops its bundled CSS module
+    // imports under css:false); otherwise Node tries to load .module.css as JS.
+    server: { deps: { inline: ['react-tweet'] } },
   },
 })

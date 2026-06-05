@@ -19,24 +19,24 @@ const BallScene = lazy(() => import('./three/BallScene'))
 export function BallStage({
   entry,
   grip = false,
-  hand = false,
   view = entry.canonical.gripModel.defaultView,
   handedness = 'right',
   surface = 'paper',
   vectors = false,
   faceGrip = false,
   autoSpin = true,
+  activeContact,
   className = '',
 }: {
   entry: PitchAtlasEntry
   grip?: boolean
-  hand?: boolean
   view?: GripView
   handedness?: Handedness
   surface?: 'paper' | 'stage'
   vectors?: boolean
   faceGrip?: boolean
   autoSpin?: boolean
+  activeContact?: string
   className?: string
 }) {
   const webgl = useWebGLSupport()
@@ -65,11 +65,11 @@ export function BallStage({
             spin={autoSpin && !reduced}
             active={inView}
             grip={grip}
-            hand={hand}
             view={view}
             handedness={handedness}
             vectors={vectors}
             faceGrip={faceGrip}
+            activeContact={activeContact}
           />
         </Suspense>
       </SpecimenBoundary>

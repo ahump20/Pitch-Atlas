@@ -41,9 +41,9 @@ export function CarryDiagram({
       <title>{title}</title>
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#3a2f24" />
-          <stop offset="62%" stopColor="#241c14" />
-          <stop offset="100%" stopColor="#100b07" />
+          <stop offset="0%" stopColor="#16171C" />
+          <stop offset="62%" stopColor="#101116" />
+          <stop offset="100%" stopColor="#070709" />
         </radialGradient>
       </defs>
 
@@ -71,7 +71,7 @@ export function CarryDiagram({
       />
 
       {/* spinless phantom ball */}
-      <circle cx={GHOST.x} cy={GHOST.y} r={GHOST.r} fill="#1a130b" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
+      <circle cx={GHOST.x} cy={GHOST.y} r={GHOST.r} fill="#101116" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
       <text x={GHOST.x} y={GHOST.y + GHOST.r + 13} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8.5" letterSpacing="1" textAnchor="middle">
         SPINLESS
       </text>

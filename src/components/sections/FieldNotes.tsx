@@ -525,7 +525,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
     <section id="field-notes" className="scroll-mt-24">
       <div className="relative overflow-hidden bg-stage">
         <img src="/brand/workbench.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-70" />
-        <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(13,13,9,0.92) 0%, rgba(13,13,9,0.62) 52%, rgba(13,13,9,0.30) 100%)' }} />
+        <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(11,11,13,0.92) 0%, rgba(11,11,13,0.62) 52%, rgba(11,11,13,0.30) 100%)' }} />
         <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
           <p className="mono-label-stage">Tier 03 / Field Notes</p>
           <h2 className="display mt-4 max-w-[16ch] text-[2.4rem] leading-[1.02] text-bone md:text-5xl">Field notes from the bullpen.</h2>

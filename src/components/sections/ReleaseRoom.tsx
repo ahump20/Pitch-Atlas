@@ -1,7 +1,9 @@
 import type { PitchAtlasEntry } from '../../data/types'
-import { BallStage } from '../ball/BallStage'
 import { TierMarker } from '../layout/TierMarker'
 import { ClaimProse } from '../provenance/ClaimProse'
+import { StreamableFacade } from '../embeds/StreamableFacade'
+
+const GIBSON_EMBED = 'https://streamable.com/m/play-ball-bob-gibson-pitching-demonstration'
 
 function ReleaseArc() {
   return (
@@ -19,7 +21,7 @@ function ReleaseArc() {
         { x: 412, y: 78, r: 8, label: 'leave' },
       ].map((p) => (
         <g key={p.label}>
-          <circle cx={p.x} cy={p.y} r={p.r} fill="#f3ece0" stroke="var(--color-seam)" strokeWidth="2" />
+          <circle cx={p.x} cy={p.y} r={p.r} fill="var(--color-paper)" stroke="var(--color-seam)" strokeWidth="2" />
           <path d={`M${p.x - p.r * 0.55} ${p.y - 2} Q${p.x} ${p.y + 4} ${p.x + p.r * 0.55} ${p.y - 2}`} fill="none" stroke="var(--color-seam)" strokeWidth="1.5" strokeLinecap="round" />
           <text x={p.x} y={p.y + 34} textAnchor="middle" fontFamily="var(--font-mono)" fontSize="9" letterSpacing="1.4" fill="var(--color-ink-2)">
             {p.label.toUpperCase()}
@@ -87,20 +89,20 @@ export function ReleaseRoom({ entry }: { entry: PitchAtlasEntry }) {
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 border-t border-ink-3/30 pt-10 md:grid-cols-12">
-        <div className="md:col-span-5">
-          <div className="relative mx-auto aspect-square w-full max-w-[360px]">
-            <BallStage
-              entry={entry}
-              grip
-              hand
-              faceGrip
-              autoSpin={false}
-              view="side"
-              className="h-full w-full"
-            />
-          </div>
+        <div className="md:col-span-7">
+          <p className="mono-label mb-3 text-navy">Film Room / watch a master</p>
+          <StreamableFacade
+            embedSrc={GIBSON_EMBED}
+            watchHref={GIBSON_EMBED}
+            title="Bob Gibson, pitching demonstration"
+            credit="Bob Gibson · via Streamable"
+          />
+          <p className="mt-3 max-w-[52ch] text-sm leading-relaxed text-ink-2">
+            The schematic shows the release path. This is the release: Gibson walking through the
+            delivery himself. Real hand, real ball, real finish, no model can fake it.
+          </p>
         </div>
-        <div className="flex items-center md:col-span-7">
+        <div className="flex items-center md:col-span-5">
           <ClaimProse claim={canonical.mechanics} proseClassName="text-lg leading-relaxed text-ink" />
         </div>
       </div>
