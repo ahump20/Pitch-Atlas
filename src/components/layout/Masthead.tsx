@@ -50,7 +50,7 @@ export function Masthead() {
             <span className="font-prose text-[15px] font-bold uppercase tracking-[0.05em] text-navy">
               {SITE.siteName}
             </span>
-            <span className="pt-0.5 font-mono text-[8.5px] uppercase tracking-[0.2em] text-ink-2">
+            <span className="pt-0.5 font-mono text-[10px] uppercase tracking-[0.2em] text-ink-2">
               {SITE.moduleName}
             </span>
           </span>

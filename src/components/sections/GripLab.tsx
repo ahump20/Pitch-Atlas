@@ -142,7 +142,7 @@ function GripLabInner({ entry }: { entry: PitchAtlasEntry }) {
                 />
                 {showFingers ? 'Hide hand' : 'Show hand'}
               </button>
-              <span className="mono-label text-bone-2">Drag to inspect</span>
+              <span className="mono-label text-bone-2">Drag to inspect, or use the View buttons</span>
             </div>
           </div>
 

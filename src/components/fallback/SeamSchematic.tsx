@@ -77,6 +77,10 @@ export function SeamSchematic({
 
   const axisAsDot = gyro || axis.inPlane < 0.34
   const stageSurface = surface === 'stage'
+  // An empty title marks a purely decorative use (a thumbnail inside an
+  // aria-hidden card). Hide it from assistive tech instead of emitting an
+  // unnamed role="img", so the decorative case is self-describing.
+  const decorative = !title
 
   const gripDots = useMemo(() => {
     if (!grip) return []
@@ -97,11 +101,10 @@ export function SeamSchematic({
     <svg
       viewBox="0 0 240 240"
       className={className}
-      role="img"
-      aria-label={title}
+      {...(decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-label': title })}
       xmlns="http://www.w3.org/2000/svg"
     >
-      <title>{title}</title>
+      {decorative ? null : <title>{title}</title>}
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
           <stop offset="0%" stopColor={stageSurface ? '#fffaf0' : '#3a2f24'} />

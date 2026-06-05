@@ -40,6 +40,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           src="/brand/workbench.webp"
           alt=""
           aria-hidden="true"
+          loading="lazy"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover opacity-70"
         />
         <div
@@ -134,14 +136,14 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                   </dl>
                 </div>
               </article>
-              <p className="mt-3 text-xs leading-relaxed text-ink-3">
+              <p className="mt-3 text-xs leading-relaxed text-ink-2">
                 The shape every note will take. Nothing above is a real submission. No field note is live yet.
               </p>
             </div>
 
             <div className="rounded-sm border border-navy/15 bg-paper-2/50 p-6">
               <div className="mb-4 flex items-center gap-3">
-                <img src="/brand/seal.webp" alt="" width={36} height={36} aria-hidden="true" className="opacity-80" />
+                <img src="/brand/seal-128.webp" alt="" width={36} height={36} loading="lazy" decoding="async" aria-hidden="true" className="opacity-80" />
                 <h3 className="display text-xl text-ink">Not open yet, on purpose.</h3>
               </div>
 
@@ -166,7 +168,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                 Join the waitlist
                 <span aria-hidden="true">→</span>
               </a>
-              <p className="mt-3 text-xs leading-relaxed text-ink-3">
+              <p className="mt-3 text-xs leading-relaxed text-ink-2">
                 Posting opens after moderation and youth-safety review are live. Coach and parent
                 verification are part of the launch. No signup count is shown until it is real.
               </p>

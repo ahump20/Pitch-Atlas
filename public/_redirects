@@ -1,0 +1,4 @@
+# SPA fallback: unknown paths render the app shell (hash routing takes over)
+# instead of Cloudflare's unbranded default 404. Real static files
+# (robots.txt, sitemap.xml, /assets/*, brand images) are served before this.
+/*  /index.html  200
