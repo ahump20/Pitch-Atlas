@@ -18,7 +18,7 @@
   /* ink — text on light surfaces */
   --color-ink: #221a10;         /* primary ink */
   --color-ink-2: #5f5645;       /* secondary ink */
-  --color-ink-3: #8c8270;       /* tertiary ink, hairlines */
+  --color-ink-3: #6a6150;       /* tertiary ink, hairlines (AA-compliant on parchment) */
 
   /* bone — text on dark surfaces */
   --color-bone: #f3ece0;        /* primary text on the stage */

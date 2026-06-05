@@ -57,7 +57,7 @@ export function BallStage({
   if (!webgl) return schematic(className)
 
   return (
-    <div ref={ref} className={`relative ${className}`}>
+    <div ref={ref} aria-hidden="true" className={`relative ${className}`}>
       <SpecimenBoundary fallback={schematic('h-full w-full')}>
         <Suspense fallback={schematic('h-full w-full')}>
           <BallScene

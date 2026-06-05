@@ -16,10 +16,10 @@ export function SourceBadge({
       href={source.url}
       target="_blank"
       rel="noreferrer noopener"
-      className={`mono-label inline-flex items-baseline gap-1 underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-ink hover:decoration-seam ${className}`}
+      className={`mono-label inline-flex min-w-0 max-w-full items-baseline gap-1 underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-ink hover:decoration-seam ${className}`}
       title={`${source.label}${source.season ? ` / ${source.season}` : ''}. Opens in a new tab.`}
     >
-      <span className="max-w-[26ch] truncate">{source.label}</span>
+      <span className="min-w-0 max-w-[26ch] truncate">{source.label}</span>
       {source.season ? <span className="opacity-70">/ {source.season}</span> : null}
       <span aria-hidden="true">{'↗'}</span>
     </a>

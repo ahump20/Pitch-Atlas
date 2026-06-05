@@ -108,7 +108,7 @@ export const SOURCE_TIER_OPTIONS: {
   { value: 'community-firsthand', label: 'My own report', requiresNote: false },
   { value: 'coach-observed', label: 'A coach I work with reported it', requiresNote: false },
   { value: 'secondhand-attributed', label: 'Relayed from someone else', requiresNote: true },
-  { value: 'unverified', label: 'A hunch — untested', requiresNote: true },
+  { value: 'unverified', label: 'A hunch - untested', requiresNote: true },
 ]
 
 /** Raw row shape returned by the field_notes select. */
@@ -149,9 +149,9 @@ function friendlyDbError(error: { message?: string } | null): string {
   if (raw.includes('content_blocked:'))
     return raw.split('content_blocked:')[1]?.trim() || 'That note contains language we do not allow here.'
   if (raw.includes('rate_limit:'))
-    return raw.split('rate_limit:')[1]?.trim() || 'Too many notes in a short time — please slow down.'
+    return raw.split('rate_limit:')[1]?.trim() || 'Too many notes in a short time - please slow down.'
   if (raw.includes('weak_tier_requires_note'))
-    return 'A relayed or untested claim needs a short source note — say where it came from.'
+    return 'A relayed or untested claim needs a short source note - say where it came from.'
   return raw || 'Could not save that just now. Try again.'
 }
 

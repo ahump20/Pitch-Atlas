@@ -423,7 +423,7 @@ function SubmitForm({
         </div>
 
         <div className="flex flex-col gap-4">
-          <Field label="Submitted by" hint="A handle, 2–40 characters. No real name needed.">
+          <Field label="Submitted by" hint="A handle, 2-40 characters. No real name needed.">
             <input className={inputClass} value={form.displayName} maxLength={FIELD_NOTE_CONSTRAINTS.displayName.max} onChange={(e) => set('displayName', e.target.value)} placeholder="e.g. RHP_threequarter" />
           </Field>
 
@@ -547,7 +547,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
               <p className="mt-4 max-w-[58ch] leading-relaxed text-ink-2">
                 There is no single correct way to throw a pitch, but there are better and worse claims. A funny
                 line should never outrank a tested grip. So notes do not rise on raw votes. They rise on weighted
-                signals — provenance and adoption first.
+                signals - provenance and adoption first.
               </p>
             </div>
 
