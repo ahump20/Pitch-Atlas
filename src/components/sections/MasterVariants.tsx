@@ -1,22 +1,19 @@
-import { fourSeam } from '../../data/pitches/four-seam'
+import type { PitchAtlasEntry } from '../../data/types'
 import { TierMarker } from '../layout/TierMarker'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { SourcedValue } from '../provenance/SourcedValue'
 
 /*
   Tier 02. A sourced ledger, full-width rows, not three cards. Each entry is
-  stamped with our own four-seam schematic (never a player image) and carries
+  stamped with our own seam schematic (never a player image) and carries
   season-stamped, confidence-labeled figures that link to their source.
 */
-export function MasterVariants() {
-  const { masterVariants } = fourSeam
+export function MasterVariants({ entry }: { entry: PitchAtlasEntry }) {
+  const { masterVariants, display } = entry
   return (
     <section id="masters" className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
       <TierMarker index="02" label="Master variants" />
-      <p className="mb-12 max-w-[60ch] text-lg leading-relaxed text-dim">
-        Three ways the same pitch wins. The visual is our own schematic of the four-seam reference.
-        Every figure is season-stamped and links to its source.
-      </p>
+      <p className="mb-12 max-w-[60ch] text-lg leading-relaxed text-dim">{display.mastersIntro}</p>
 
       <div className="flex flex-col">
         {masterVariants.map((variant) => (

@@ -1,11 +1,13 @@
 import { useId, useMemo } from 'react'
-import { SPIN_AXIS, SEAM_VIEW_TILT, v } from '../../lib/seam'
+import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
 
 /*
   The 2D twin of the 3D ball, drawn from the same seam-point function. Roles:
   the no-WebGL visual, the reduced-motion specimen, and the target the 3D ball
   dissolves into. Static by design. The 3D layer owns motion; this owns truth.
+  The seam is one baseball cover for every pitch; the axis line is the pitch's
+  own spin axis. A gyro pitch's axis points at the viewer, so it reads as a dot.
 */
 
 const SEG = 280
@@ -17,6 +19,10 @@ export interface SeamSchematicProps {
   className?: string
   showAxis?: boolean
   showStitches?: boolean
+  /** The pitch's render-space spin axis. Defaults to the four-seam's near-horizontal backspin. */
+  spinAxis?: Vec3
+  /** Gyro pitch (slider): the axis points toward the viewer and reads as a red dot. */
+  gyro?: boolean
   title?: string
 }
 
@@ -24,6 +30,8 @@ export function SeamSchematic({
   className = '',
   showAxis = true,
   showStitches = true,
+  spinAxis = SPIN_AXIS,
+  gyro = false,
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
 }: SeamSchematicProps) {
   const uid = useId()
@@ -38,15 +46,20 @@ export function SeamSchematic({
   )
 
   const axis = useMemo(() => {
-    const a = v.rotateAxis(SPIN_AXIS, SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+    const a = v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
     const reach = R * 1.34
     return {
       x1: CX - a.x * reach,
       y1: CY + a.y * reach,
       x2: CX + a.x * reach,
       y2: CY - a.y * reach,
+      // in-plane length tells us whether the axis lies along the screen (line) or
+      // points at the viewer (dot, for a gyro pitch).
+      inPlane: Math.hypot(a.x, a.y),
     }
-  }, [])
+  }, [spinAxis])
+
+  const axisAsDot = gyro || axis.inPlane < 0.34
 
   return (
     <svg
@@ -71,7 +84,7 @@ export function SeamSchematic({
       <circle cx={CX} cy={CY} r={R} fill={`url(#${gradId})`} />
       <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-machined)" strokeWidth="1" />
 
-      {showAxis ? (
+      {showAxis && !axisAsDot ? (
         <line
           x1={axis.x1}
           y1={axis.y1}
@@ -84,6 +97,13 @@ export function SeamSchematic({
           markerStart={`url(#${arrowId})`}
           opacity="0.9"
         />
+      ) : null}
+
+      {showAxis && axisAsDot ? (
+        <>
+          <circle cx={CX} cy={CY} r="6.5" fill="none" stroke="var(--color-dim)" strokeWidth="1" strokeDasharray="2 3" opacity="0.7" />
+          <circle cx={CX} cy={CY} r="3" fill="var(--color-seam)" />
+        </>
       ) : null}
 
       {runs

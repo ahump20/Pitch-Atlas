@@ -4,20 +4,30 @@ import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import { Ball } from './Ball'
 import { Vectors } from './Vectors'
-import { SPIN_AXIS } from '../../../lib/seam'
+import { v } from '../../../lib/seam'
+import type { PitchAtlasEntry } from '../../../data/types'
 
 /*
   The 3D specimen. frameloop is on-demand: the spin loop self-sustains by
   invalidating each frame while active, and halts the moment the ball is paused
   (reduced motion) or scrolled off screen. OrbitControls invalidates on drag, so
-  inspection works with zero idle GPU cost.
+  inspection works with zero idle GPU cost. The spin axis and grip come from the
+  selected pitch.
 */
-function SpinGroup({ active, children }: { active: boolean; children: ReactNode }) {
+function SpinGroup({
+  axis: axisVec,
+  active,
+  children,
+}: {
+  axis: { x: number; y: number; z: number }
+  active: boolean
+  children: ReactNode
+}) {
   const groupRef = useRef<THREE.Group>(null)
-  const axis = useMemo(
-    () => new THREE.Vector3(SPIN_AXIS.x, SPIN_AXIS.y, SPIN_AXIS.z).normalize(),
-    [],
-  )
+  const axis = useMemo(() => {
+    const n = v.normalize(axisVec)
+    return new THREE.Vector3(n.x, n.y, n.z).normalize()
+  }, [axisVec])
   const invalidate = useThree((s) => s.invalidate)
 
   useEffect(() => {
@@ -36,7 +46,15 @@ function SpinGroup({ active, children }: { active: boolean; children: ReactNode 
   return <group ref={groupRef}>{children}</group>
 }
 
-export default function BallScene({ spin, active }: { spin: boolean; active: boolean }) {
+export default function BallScene({
+  entry,
+  spin,
+  active,
+}: {
+  entry: PitchAtlasEntry
+  spin: boolean
+  active: boolean
+}) {
   return (
     <Canvas
       frameloop="demand"
@@ -49,10 +67,10 @@ export default function BallScene({ spin, active }: { spin: boolean; active: boo
       <directionalLight position={[-5, 1, -4]} intensity={0.7} />
 
       <group scale={0.8}>
-        <SpinGroup active={spin && active}>
-          <Ball />
+        <SpinGroup axis={entry.motion.spinAxis} active={spin && active}>
+          <Ball fingerPlacement={entry.canonical.fingerPlacement} />
         </SpinGroup>
-        <Vectors />
+        <Vectors motion={entry.motion} />
       </group>
 
       <OrbitControls

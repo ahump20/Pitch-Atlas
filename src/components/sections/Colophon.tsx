@@ -1,8 +1,7 @@
-import type { ClaimConfidence } from '../../data/types'
+import type { ClaimConfidence, PitchAtlasEntry } from '../../data/types'
 import { CONFIDENCE_META } from '../../data/types'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
-import { fourSeam } from '../../data/pitches/four-seam'
 import { ConfidenceLabel } from '../provenance/ConfidenceLabel'
 import { SourceBadge } from '../provenance/SourceBadge'
 
@@ -20,10 +19,10 @@ const LEGEND_ORDER: ClaimConfidence[] = [
   The colophon treats sources as a credential. The "as of" line computes from the
   most recent retrievedAt across the registry, never a hardcoded freshness string.
 */
-export function Colophon() {
+export function Colophon({ entry }: { entry: PitchAtlasEntry }) {
   const sources = allSources()
   const asOf = asOfDate(latestRetrievedAt(sources))
-  const { seam } = fourSeam
+  const { seam } = entry
 
   return (
     <footer className="border-t border-machined/70">

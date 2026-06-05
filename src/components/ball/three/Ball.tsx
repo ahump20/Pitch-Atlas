@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
 import { Html } from '@react-three/drei'
 import { seamSamples, seamPoint } from '../../../lib/seam'
-import { fourSeam } from '../../../data/pitches/four-seam'
+import type { SeamAnchoredPoint } from '../../../data/types'
 
 /*
   The specimen geometry. Original, parametric, no downloaded model:
@@ -11,16 +11,22 @@ import { fourSeam } from '../../../data/pitches/four-seam'
    - 108 instanced stitches placed and slanted along that same curve
    - grip markers anchored to seam parameters, with labels that occlude behind
      the ball (Phase C)
-  The 3D seam and the 2D schematic are the same math, so they can never disagree.
+  The cover is one baseball for every pitch; only the grip contacts and the spin
+  axis change. The 3D seam and the 2D schematic are the same math, so they can
+  never disagree.
 */
 
 const R = 1
 const STITCHES = 108
 const SEAM_SAMPLES = 256
 
-const fingerPlacement = fourSeam.canonical.fingerPlacement
-
-export function Ball({ showGrip = true }: { showGrip?: boolean }) {
+export function Ball({
+  fingerPlacement,
+  showGrip = true,
+}: {
+  fingerPlacement: SeamAnchoredPoint[]
+  showGrip?: boolean
+}) {
   const sphereRef = useRef<THREE.Mesh>(null)
   const stitchRef = useRef<THREE.InstancedMesh>(null)
   const occluders = useMemo<RefObject<THREE.Object3D>[]>(
@@ -60,7 +66,7 @@ export function Ball({ showGrip = true }: { showGrip?: boolean }) {
           position: new THREE.Vector3(base.x * lift, base.y * lift, base.z * lift),
         }
       }),
-    [],
+    [fingerPlacement],
   )
 
   useLayoutEffect(() => {

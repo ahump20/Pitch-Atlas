@@ -1,4 +1,4 @@
-import { fourSeam } from '../../data/pitches/four-seam'
+import type { PitchAtlasEntry } from '../../data/types'
 import { TierMarker } from '../layout/TierMarker'
 
 /*
@@ -6,8 +6,8 @@ import { TierMarker } from '../layout/TierMarker'
   shape is legible, but it carries no rows, no counts, no fabricated posts. The
   safety and provenance promises sit beside it.
 */
-export function Community() {
-  const { community } = fourSeam
+export function Community({ entry }: { entry: PitchAtlasEntry }) {
+  const { community } = entry
   return (
     <section id="community" className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
       <TierMarker index="03" label="Community" />
