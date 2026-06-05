@@ -1,52 +1,70 @@
 @import "tailwindcss";
 
 /*
-  The Leather Skin.
-  Warm parchment + aged leather. Two surface families: light paper for reading,
-  a deep warm stage for the hero and colophon where the white ball glows. One
-  accent: leather-thread red, pulled from the stitching. No second hue enters.
+  Heritage Athletic.
+  Near-black is the field and the breathing room. Two hard-contrast accents do
+  the talking: a Battle/Cardinal red and an Oilers-Titans powder blue. Navy and
+  cream are the prestige and the warmth - navy-on-red is an old-school stamp,
+  never a text pairing. A Grizzlies-throwback teal is a rare jolt. The only
+  warm object on the page is the real leather ball: cream cover, red seams.
 */
 @theme {
-  /* light surfaces — most of the site reads on these */
-  --color-paper: #f3ece0;       /* warm parchment: primary light surface */
-  --color-paper-2: #ebe2d2;     /* deeper parchment: alternating sections, cards */
+  /* light surfaces — the cream pages. Warm but de-mudded; rhymes with the ball. */
+  --color-paper: #F4EEE0;       /* cream: primary light surface */
+  --color-paper-2: #EAE2D2;     /* deeper cream: alternating sections, cards */
 
-  /* dark surfaces — hero + colophon chamber, and the grip-lab stage */
-  --color-stage: #16120d;       /* deep warm chamber: makes the white ball glow */
-  --color-press: #1e1811;       /* slightly raised dark: cards on the stage */
+  /* dark surfaces — the dominant near-black field. Cool, not brown. Gives the
+     red, powder, and cream room to breathe. */
+  --color-stage: #0B0B0D;       /* cool near-black chamber: the white ball glows */
+  --color-press: #15161A;       /* raised near-black: cards on the stage */
 
-  /* ink — text on light surfaces */
-  --color-ink: #221a10;         /* primary ink */
-  --color-ink-2: #5f5645;       /* secondary ink */
-  --color-ink-3: #6a6150;       /* tertiary ink, hairlines (AA-compliant on parchment) */
+  /* ink — text on cream surfaces. Cool near-black, matches the field. */
+  --color-ink: #14161B;         /* primary ink */
+  --color-ink-2: #3F4654;       /* secondary ink: cool slate */
+  --color-ink-3: #5C6473;       /* tertiary ink, hairlines (AA on cream) */
 
-  /* bone — text on dark surfaces */
-  --color-bone: #f3ece0;        /* primary text on the stage */
-  --color-bone-2: #c8bca6;      /* secondary text on the stage */
+  /* bone — cream text on the near-black field */
+  --color-bone: #F2ECDD;        /* primary text on the stage */
+  --color-bone-2: #C7BEA8;      /* secondary text on the stage; also sits on navy */
 
-  /* the one action accent: stitch red, pulled from the brand mark. Seams, active
-     states, CTAs, source emphasis. Never decoration. */
-  --color-seam: #a92a22;
-  --color-seam-deep: color-mix(in srgb, var(--color-seam) 74%, #190a08);
+  /* accent #1: the red. Houston Oilers / Titans Battle Red, reads as Cardinal
+     red. Seams, CTAs, active states, source emphasis, the force vector. Large /
+     graphic / icon on the dark field — never body text on near-black. */
+  --color-seam: #C8102E;
+  --color-seam-deep: color-mix(in srgb, var(--color-seam) 80%, #2A0A10);
 
-  /* navy: the archive + brand structural ink. A NEUTRAL, never a second accent.
+  /* accent #2: powder blue. Oilers-Titans Columbia blue. The bright tint clears
+     AA as text on near-black; the deep tint is for fills/borders on cream. */
+  --color-powder: #6CACE4;
+  --color-powder-deep: #4B92DB;
+
+  /* navy: Cardinals navy. Prestige + structure, a NEUTRAL not a third accent.
      Specimen borders, brand plates, stamps, archive frames, source emphasis on
-     light surfaces. Lifted from the wordmark and the app-icon field. */
-  --color-navy: #06233a;
-  --color-navy-2: #0d3a5f;     /* lifted navy: hover borders, plate edges */
+     cream. "Navy on red" is a decorative stamp combo only. */
+  --color-navy: #0C2340;
+  --color-navy-2: #15406E;     /* lifted navy: hover borders, plate edges */
   --color-navy-line: color-mix(in srgb, var(--color-navy) 22%, transparent);
 
-  /* deep parchment edge + glove leather, from the card-frame and workbench assets */
-  --color-paper-3: #d8be8a;
-  --color-leather: #5a331f;
+  /* teal: Vancouver/Memphis Grizzlies throwback turquoise. A RARE jolt — at most
+     one moment per section. Dark variant for text on cream, bright for data on
+     near-black. Defined here; applied sparingly. */
+  --color-teal: #12726E;
+  --color-teal-bright: #00A2A0;
 
-  /* provenance badge colors — subtle, only on labels */
-  --color-ok: #3c7a52;          /* official-data */
-  --color-amber: #a9762a;       /* reputable-analysis */
-  --color-sand: #8a7253;        /* secondhand */
+  /* cream + CTA text helpers */
+  --color-cream: #F4EEE0;       /* semantic alias of the cream surface */
+  --color-cta-text: #FFFFFF;    /* text on the red CTA field */
 
-  /* compatibility aliases — keep pre-migration utilities resolving while the
-     grep-driven migration lands. A safety rail, not the finished design. */
+  /* cream/sand edge + glove leather, from the card-frame and workbench assets */
+  --color-paper-3: #D8CFB8;
+  --color-leather: #7A4A2E;
+
+  /* provenance badge colors — subtle, only on labels. Status, not accents. */
+  --color-ok: #2E7D55;          /* official-data */
+  --color-amber: #B07A1E;       /* reputable-analysis */
+  --color-sand: #8A7A5E;        /* secondhand */
+
+  /* compatibility aliases — keep pre-migration utilities resolving. */
   --color-panel: var(--color-paper-2);
   --color-machined: color-mix(in srgb, var(--color-ink-3) 38%, transparent);
   --color-dim: var(--color-ink-2);
@@ -145,8 +163,8 @@
     width: 100%;
     background: linear-gradient(
       to right,
-      rgba(245, 236, 224, 0.22) 0%,
-      rgba(245, 236, 224, 0.22) 64%,
+      rgba(242, 236, 221, 0.22) 0%,
+      rgba(242, 236, 221, 0.22) 64%,
       transparent 100%
     );
   }
@@ -185,7 +203,7 @@
      so cards read as lifted leather, never as flat boxes. */
   .theater-card {
     background-color: var(--color-press);
-    border: 1px solid rgba(245, 236, 224, 0.10);
+    border: 1px solid rgba(242, 236, 221, 0.10);
   }
   .theater-card-hover {
     transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
@@ -198,7 +216,7 @@
   /* The spotlight pool behind the focal ball on the stage. A warm key from above,
      so the white leather glows against the chamber. Finish over composition. */
   .stage-spot {
-    background: radial-gradient(circle at 50% 40%, rgba(255, 244, 226, 0.13), transparent 60%);
+    background: radial-gradient(circle at 50% 40%, rgba(238, 240, 246, 0.12), transparent 60%);
   }
 
   /* One-shot scroll reveal: starts a touch low and faded, settles into place the
@@ -224,6 +242,28 @@
     transform: none;
     transition: none;
   }
+}
+
+/*
+  Embedded tweet, brought onto the field manual's surface. react-tweet ships a
+  blue-link Twitter look; these overrides reseat it on the cream inset card with
+  the manual's prose font and a parchment hairline, so it reads as a cited
+  source, not a social widget.
+*/
+.react-tweet-theme {
+  --tweet-container-margin: 0;
+  --tweet-font-family: var(--font-prose);
+  --tweet-bg-color: var(--color-paper);
+  --tweet-bg-color-hover: var(--color-paper);
+  --tweet-color-blue-secondary: var(--color-navy);
+  --tweet-color-blue-secondary-hover: color-mix(in srgb, var(--color-navy) 8%, transparent);
+  --tweet-font-color: var(--color-ink);
+  --tweet-font-color-secondary: var(--color-ink-2);
+  --tweet-border: 1px solid var(--color-navy-line);
+  --tweet-color-red-primary: var(--color-seam);
+  --tweet-color-green-primary: var(--color-ok);
+  --tweet-twitter-icon-color: var(--color-navy);
+  --tweet-verified-blue-color: var(--color-powder-deep);
 }
 
 /*

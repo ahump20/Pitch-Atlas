@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import * as THREE from 'three'
 import { Html } from '@react-three/drei'
 import { seamSamples, seamPoint } from '../../../lib/seam'
@@ -10,35 +10,38 @@ import type { Handedness, SeamAnchoredPoint } from '../../../data/types'
    - a red seam tube swept along the shared figure-eight curve from seam.ts
    - 216 instanced stitches: 108 double-stitch pairs straddling the seam in the
      classic herringbone V
-   - pressed fingertip pads anchored to seam parameters, each on a soft seating
-     disc, with labels that occlude behind the ball
+   - sourced grip pins anchored to seam parameters: a marker disc on the leather
+     and a label that occludes behind the ball and opens its cue on hover/active
+  No hand. The grip contacts ARE the information now — each pin carries the
+  finger, the pressure role, and the sourced cue, exactly as the prose lists it.
+  Real hands come from the real footage elsewhere on the page, never a fake model.
   The cover is one baseball for every pitch; only the grip contacts and the spin
   axis change. The 3D seam and the 2D schematic are the same math, so they can
-  never disagree. The prettier stitches are still a seam-informed schematic — the
-  cover geometry is not calibrated (docs/seam-calibration.md).
+  never disagree.
 */
 
 const R = 1
 const STITCH_PAIRS = 108
 
-// Skin tones per finger for the pressed pads.
-const SKIN: Record<SeamAnchoredPoint['finger'], string> = {
-  index: '#e7b48d',
-  middle: '#e3ad84',
-  ring: '#dba87f',
-  thumb: '#e1a87c',
-  pinky: '#e3ad84',
-}
+// Grip pins are data markers, not skin: powder-blue from the heritage palette.
+const PIN = '#4B92DB'
 
 const clampByte = (n: number) => Math.max(0, Math.min(255, n))
 
-type GripRenderablePoint = SeamAnchoredPoint & { curl?: number }
+/** What the ball needs per contact. GripContactModel satisfies this superset. */
+type GripContactPoint = SeamAnchoredPoint & {
+  pressureRole?: string
+  seamRelation?: string
+  cue?: string
+  curl?: number
+}
 
 interface PadModel {
   key: string
   label: string
   finger: SeamAnchoredPoint['finger']
-  color: string
+  pressureRole?: string
+  cue?: string
   normal: THREE.Vector3
   quaternion: THREE.Quaternion
   discPos: THREE.Vector3
@@ -46,118 +49,63 @@ interface PadModel {
   labelPos: THREE.Vector3
   discR: number
   scale: THREE.Vector3
-  curl: number
 }
 
 function mirrorBasePoint(base: { x: number; y: number; z: number }, handedness: Handedness) {
   return new THREE.Vector3(handedness === 'left' ? -base.x : base.x, base.y, base.z)
 }
 
-function CapsuleBetween({
-  from,
-  to,
-  radius,
-  color,
-  opacity = 1,
+/* The pin's DOM. A compact dot + finger label always; on hover or when its prose
+   row is active, it opens the pressure role and the one-line cue. Only the pill
+   is interactive so it never steals a drag from the ball. */
+function GripPin({
+  label,
+  pressureRole,
+  cue,
+  active,
 }: {
-  from: THREE.Vector3
-  to: THREE.Vector3
-  radius: number
-  color: string
-  opacity?: number
+  label: string
+  pressureRole?: string
+  cue?: string
+  active: boolean
 }) {
-  const { center, quaternion, length } = useMemo(() => {
-    const dir = to.clone().sub(from)
-    const segmentLength = Math.max(0.01, dir.length())
-    const centerPoint = from.clone().add(to).multiplyScalar(0.5)
-    const q = new THREE.Quaternion().setFromUnitVectors(
-      new THREE.Vector3(0, 1, 0),
-      dir.normalize(),
-    )
-    return { center: centerPoint, quaternion: q, length: segmentLength }
-  }, [from, to])
+  const [hover, setHover] = useState(false)
+  const open = (hover || active) && Boolean(cue || pressureRole)
 
   return (
-    <mesh position={center} quaternion={quaternion}>
-      <capsuleGeometry args={[radius, Math.max(0.01, length - radius * 2), 6, 14]} />
-      <meshPhysicalMaterial
-        color={color}
-        roughness={0.54}
-        clearcoat={0.18}
-        clearcoatRoughness={0.44}
-        sheen={0.42}
-        sheenColor="#ffd8be"
-        transparent={opacity < 1}
-        opacity={opacity}
-      />
-    </mesh>
-  )
-}
-
-function GripHand({
-  pads,
-  handedness,
-}: {
-  pads: PadModel[]
-  handedness: Handedness
-}) {
-  const handSign = handedness === 'left' ? -1 : 1
-  const topPads = pads.filter((p) => p.finger !== 'thumb')
-  const thumb = pads.find((p) => p.finger === 'thumb')
-  const palmCenter = useMemo(() => new THREE.Vector3(0.36 * handSign, -0.52, 0.84), [handSign])
-  const wristCenter = useMemo(() => new THREE.Vector3(0.58 * handSign, -1.02, 0.8), [handSign])
-
-  return (
-    <group>
-      <mesh position={palmCenter} rotation={[0.22, 0.04 * handSign, -0.2 * handSign]} scale={[0.62, 0.36, 0.2]}>
-        <sphereGeometry args={[1, 40, 24]} />
-        <meshPhysicalMaterial
-          color="#d19a72"
-          roughness={0.58}
-          clearcoat={0.18}
-          clearcoatRoughness={0.45}
-          sheen={0.55}
-          sheenColor="#ffd8be"
-          transparent
-          opacity={0.94}
+    <div className="flex flex-col items-center gap-1 select-none">
+      <span
+        onPointerEnter={() => setHover(true)}
+        onPointerLeave={() => setHover(false)}
+        className={`pointer-events-auto flex items-center gap-1 whitespace-nowrap rounded-sm border bg-stage/85 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone transition-colors ${
+          active ? 'border-powder/70' : 'border-bone/20'
+        }`}
+      >
+        <span
+          aria-hidden="true"
+          className="rounded-full transition-all"
+          style={{
+            backgroundColor: PIN,
+            width: active ? 8 : 6,
+            height: active ? 8 : 6,
+            boxShadow: active ? `0 0 0 3px color-mix(in srgb, ${PIN} 30%, transparent)` : 'none',
+          }}
         />
-      </mesh>
-
-      <CapsuleBetween from={wristCenter} to={palmCenter} radius={0.17} color="#ca926a" opacity={0.82} />
-
-      {topPads.map((pad, index) => {
-        const spread = (index - (topPads.length - 1) / 2) * 0.14
-        const knuckle = pad.padPos
-          .clone()
-          .add(new THREE.Vector3((0.22 + spread) * handSign, -0.42 - pad.curl * 0.15, 0.28))
-        const root = pad.padPos
-          .clone()
-          .add(new THREE.Vector3((0.52 + spread) * handSign, -0.82 - pad.curl * 0.1, 0.5))
-        return (
-          <group key={`${pad.key}-finger`}>
-            <CapsuleBetween from={pad.padPos.clone().add(pad.normal.clone().multiplyScalar(0.05))} to={knuckle} radius={0.075} color={pad.color} />
-            <CapsuleBetween from={knuckle} to={root} radius={0.085} color="#d19a72" />
-          </group>
-        )
-      })}
-
-      {thumb ? (
-        <>
-          <CapsuleBetween
-            from={thumb.padPos.clone().add(thumb.normal.clone().multiplyScalar(0.05))}
-            to={thumb.padPos.clone().add(new THREE.Vector3(0.28 * handSign, -0.35, 0.24))}
-            radius={0.09}
-            color={thumb.color}
-          />
-          <CapsuleBetween
-            from={thumb.padPos.clone().add(new THREE.Vector3(0.28 * handSign, -0.35, 0.24))}
-            to={palmCenter.clone().add(new THREE.Vector3(-0.12 * handSign, 0.05, 0.08))}
-            radius={0.105}
-            color="#cf976e"
-          />
-        </>
+        {label}
+      </span>
+      {open ? (
+        <span className="pointer-events-none max-w-[15rem] rounded-sm border border-powder/30 bg-stage/92 px-2 py-1 text-center">
+          {pressureRole ? (
+            <span className="block font-mono text-[9px] uppercase tracking-[0.12em] text-powder">
+              {pressureRole}
+            </span>
+          ) : null}
+          {cue ? (
+            <span className="mt-0.5 block text-[11px] leading-snug text-bone-2">{cue}</span>
+          ) : null}
+        </span>
       ) : null}
-    </group>
+    </div>
   )
 }
 
@@ -170,14 +118,14 @@ function makeLeatherTextures(): { albedo: THREE.CanvasTexture; normal: THREE.Can
   const c = document.createElement('canvas')
   c.width = c.height = size
   const ctx = c.getContext('2d')!
-  ctx.fillStyle = '#efe8d8'
+  ctx.fillStyle = '#EDE6D6'
   ctx.fillRect(0, 0, size, size)
   for (let i = 0; i < 9000; i++) {
     const x = Math.random() * size
     const y = Math.random() * size
     const r = Math.random() * 2.4 + 0.4
     ctx.globalAlpha = 0.05 + Math.random() * 0.06
-    ctx.fillStyle = Math.random() > 0.5 ? '#fffaf0' : '#d8cdb6'
+    ctx.fillStyle = Math.random() > 0.5 ? '#FBF7EC' : '#D6CDB8'
     ctx.beginPath()
     ctx.arc(x, y, r, 0, Math.PI * 2)
     ctx.fill()
@@ -220,13 +168,13 @@ function makeLeatherTextures(): { albedo: THREE.CanvasTexture; normal: THREE.Can
 export function Ball({
   fingerPlacement,
   showGrip = true,
-  showHand = false,
   handedness = 'right',
+  activeContact,
 }: {
-  fingerPlacement: GripRenderablePoint[]
+  fingerPlacement: GripContactPoint[]
   showGrip?: boolean
-  showHand?: boolean
   handedness?: Handedness
+  activeContact?: string
 }) {
   const sphereRef = useRef<THREE.Mesh>(null)
   const stitchRef = useRef<THREE.InstancedMesh>(null)
@@ -257,8 +205,8 @@ export function Ball({
   )
   const stitchGeometry = useMemo(() => new THREE.CapsuleGeometry(0.011, 0.05, 4, 8), [])
 
-  // Grip pads: each contact placed on the leather, oriented so its flat face sits
-  // on the surface and its long axis runs along the finger's approach.
+  // Grip pins: each contact placed on the leather, oriented so its marker disc
+  // sits on the surface, with the sourced cue carried up to the label.
   const pads = useMemo(
     () =>
       fingerPlacement.map((g) => {
@@ -273,18 +221,18 @@ export function Ball({
           key: g.label,
           label: g.label,
           finger: g.finger,
-          color: SKIN[g.finger] ?? '#e3ad84',
+          pressureRole: g.pressureRole,
+          cue: g.cue,
           normal: nrm,
           quaternion: padQ,
           discPos,
           padPos,
           labelPos,
           discR: isThumb ? 0.34 : 0.27,
-          curl: g.curl ?? (isThumb ? 0.46 : 0.2),
           scale: isThumb
             ? new THREE.Vector3(0.27, 0.34, 0.07)
             : new THREE.Vector3(0.18, 0.26, 0.07),
-        }
+        } satisfies PadModel
       }),
     [fingerPlacement, handedness],
   )
@@ -333,45 +281,43 @@ export function Ball({
           map={textures.albedo}
           normalMap={textures.normal}
           normalScale={new THREE.Vector2(0.35, 0.35)}
-          color="#f4eee0"
+          color="#F1EADA"
           roughness={0.62}
           clearcoat={0.22}
           clearcoatRoughness={0.55}
           sheen={0.4}
           sheenRoughness={0.8}
-          sheenColor="#fff6e8"
+          sheenColor="#FFFCF2"
           envMapIntensity={0.85}
         />
       </mesh>
 
       <mesh geometry={tubeGeometry}>
-        <meshPhysicalMaterial color="#9e2b22" roughness={0.62} clearcoat={0.15} sheen={0.3} sheenColor="#c75046" />
+        <meshPhysicalMaterial color="#C8102E" roughness={0.62} clearcoat={0.15} sheen={0.3} sheenColor="#E2544E" />
       </mesh>
 
       <instancedMesh ref={stitchRef} args={[stitchGeometry, undefined, STITCH_PAIRS * 2]}>
-        <meshPhysicalMaterial color="#c0392b" roughness={0.5} clearcoat={0.25} sheen={0.5} sheenColor="#e0685a" />
+        <meshPhysicalMaterial color="#D11A33" roughness={0.5} clearcoat={0.25} sheen={0.5} sheenColor="#EC6A5C" />
       </instancedMesh>
-
-      {showHand && showGrip ? <GripHand pads={pads} handedness={handedness} /> : null}
 
       {showGrip
         ? pads.map((p) => (
             <group key={p.key}>
-              {/* seating shadow — reads the pad as pressed in, not floating */}
+              {/* seating shadow — reads the marker as pressed in, not floating */}
               <mesh position={p.discPos} quaternion={p.quaternion}>
                 <circleGeometry args={[p.discR, 40]} />
-                <meshBasicMaterial color="#2a1d10" transparent opacity={0.16} depthWrite={false} />
+                <meshBasicMaterial color="#0B0B0D" transparent opacity={0.16} depthWrite={false} />
               </mesh>
-              {/* the pressed fingertip pad */}
+              {/* the contact marker disc */}
               <mesh position={p.padPos} quaternion={p.quaternion} scale={p.scale}>
                 <sphereGeometry args={[1, 40, 28]} />
                 <meshPhysicalMaterial
-                  color={p.color}
+                  color={PIN}
                   roughness={0.5}
                   clearcoat={0.35}
                   clearcoatRoughness={0.35}
                   sheen={0.6}
-                  sheenColor="#ffd9c0"
+                  sheenColor="#DCE7F2"
                 />
               </mesh>
               <Html
@@ -379,12 +325,13 @@ export function Ball({
                 center
                 occlude={occluders}
                 zIndexRange={[20, 0]}
-                wrapperClass="pointer-events-none"
               >
-                <span className="pointer-events-none flex select-none items-center gap-1 whitespace-nowrap rounded-sm border border-bone/20 bg-stage/85 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone">
-                  <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: p.color }} />
-                  {p.label}
-                </span>
+                <GripPin
+                  label={p.label}
+                  pressureRole={p.pressureRole}
+                  cue={p.cue}
+                  active={activeContact === p.label}
+                />
               </Html>
             </group>
           ))

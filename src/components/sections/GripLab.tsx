@@ -3,14 +3,10 @@ import type { GripView, Handedness, PitchAtlasEntry } from '../../data/types'
 import { StageTierMarker } from '../layout/StageTierMarker'
 import { BallStage } from '../ball/BallStage'
 import { ClaimProse } from '../provenance/ClaimProse'
+import { PitchingNinjaTweet } from '../embeds/PitchingNinjaTweet'
 
-const FINGER_DOT: Record<string, string> = {
-  index: '#e7b48d',
-  middle: '#e3ad84',
-  ring: '#dba87f',
-  thumb: '#e1a87c',
-  pinky: '#e3ad84',
-}
+// Grip pins are powder-blue data markers, matched to the 3D ball.
+const PIN = '#4B92DB'
 
 const VIEW_OPTIONS: { id: GripView; label: string; note: string }[] = [
   { id: 'top', label: 'Top', note: 'finger pads' },
@@ -44,11 +40,12 @@ function GripLabInner({ entry }: { entry: PitchAtlasEntry }) {
   const [showFingers, setShowFingers] = useState(true)
   const [view, setView] = useState<GripView>(canonical.gripModel.defaultView)
   const [handedness, setHandedness] = useState<Handedness>('right')
+  const [activeContact, setActiveContact] = useState<string | undefined>(undefined)
 
   return (
     <section id="grip-lab" className="on-stage relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.08]" aria-hidden="true">
-        <div className="h-full w-full bg-[linear-gradient(90deg,rgba(243,236,224,0.08)_1px,transparent_1px),linear-gradient(0deg,rgba(243,236,224,0.08)_1px,transparent_1px)] bg-[size:42px_42px]" />
+        <div className="h-full w-full bg-[linear-gradient(90deg,rgba(242,236,221,0.08)_1px,transparent_1px),linear-gradient(0deg,rgba(242,236,221,0.08)_1px,transparent_1px)] bg-[size:42px_42px]" />
       </div>
 
       <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
@@ -65,12 +62,12 @@ function GripLabInner({ entry }: { entry: PitchAtlasEntry }) {
               <BallStage
                 entry={entry}
                 grip={showFingers}
-                hand={showFingers}
                 view={view}
                 handedness={handedness}
                 surface="stage"
                 faceGrip
                 autoSpin={false}
+                activeContact={activeContact}
                 className="h-full w-full"
               />
             </div>
@@ -131,16 +128,16 @@ function GripLabInner({ entry }: { entry: PitchAtlasEntry }) {
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-bone/15 pt-4">
               <button
                 type="button"
-                data-grip-toggle="hand"
+                data-grip-toggle="pins"
                 aria-pressed={showFingers}
                 onClick={() => setShowFingers((v) => !v)}
                 className="inline-flex items-center gap-2 rounded-sm border border-bone/25 px-3.5 py-2 font-mono text-xs uppercase tracking-[0.12em] text-bone transition-colors hover:border-bone"
               >
                 <span
                   aria-hidden="true"
-                  className={`h-2 w-2 rounded-full ${showFingers ? 'bg-seam' : 'bg-bone/35'}`}
+                  className={`h-2 w-2 rounded-full ${showFingers ? 'bg-powder' : 'bg-bone/35'}`}
                 />
-                {showFingers ? 'Hide hand' : 'Show hand'}
+                {showFingers ? 'Hide pins' : 'Show pins'}
               </button>
               <span className="mono-label text-bone-2">Drag to inspect, or use the View buttons</span>
             </div>
@@ -185,25 +182,47 @@ function GripLabInner({ entry }: { entry: PitchAtlasEntry }) {
               <p className="mono-label mt-2 text-bone-2">Palm gap cue</p>
             </div>
 
-            <ul className="grid grid-cols-1 gap-3">
-              {canonical.gripModel.contacts.map((contact) => (
-                <li key={contact.label} className="grid grid-cols-[auto_1fr] gap-3 border-t border-bone/15 pt-3">
-                  <span
-                    aria-hidden="true"
-                    className="mt-1 h-3 w-3 rounded-full"
-                    style={{ backgroundColor: FINGER_DOT[contact.finger] ?? '#e3ad84' }}
-                  />
-                  <span>
-                    <span className="block font-mono text-xs uppercase tracking-[0.12em] text-bone">
-                      {contact.label} / {contact.pressureRole}
+            <ul className="grid grid-cols-1 gap-px">
+              {canonical.gripModel.contacts.map((contact) => {
+                const active = activeContact === contact.label
+                return (
+                  <li
+                    key={contact.label}
+                    onPointerEnter={() => setActiveContact(contact.label)}
+                    onPointerLeave={() => setActiveContact(undefined)}
+                    className={`grid cursor-default grid-cols-[auto_1fr] gap-3 border-t pt-3 transition-colors ${
+                      active ? 'border-powder/60' : 'border-bone/15'
+                    }`}
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="mt-1 h-3 w-3 rounded-full transition-all"
+                      style={{
+                        backgroundColor: PIN,
+                        boxShadow: active ? `0 0 0 4px color-mix(in srgb, ${PIN} 28%, transparent)` : 'none',
+                      }}
+                    />
+                    <span>
+                      <span className="block font-mono text-xs uppercase tracking-[0.12em] text-bone">
+                        {contact.label} / {contact.pressureRole}
+                      </span>
+                      <span className="mt-1 block text-sm leading-relaxed text-bone-2">
+                        {contact.seamRelation}. {contact.cue}.
+                      </span>
                     </span>
-                    <span className="mt-1 block text-sm leading-relaxed text-bone-2">
-                      {contact.seamRelation}. {contact.cue}.
-                    </span>
-                  </span>
-                </li>
-              ))}
+                  </li>
+                )
+              })}
             </ul>
+
+            <div className="rounded-sm border border-bone/15 bg-paper p-4">
+              <p className="mono-label mb-3 text-navy">See it live / via @PitchingNinja</p>
+              <PitchingNinjaTweet />
+              <p className="mt-3 text-xs leading-relaxed text-ink-3">
+                The grip is the cause. This is the effect, the same pitch shot in a real bullpen.
+                Sourced, not corrected.
+              </p>
+            </div>
 
             {guide ? (
               <ol className="flex flex-col gap-4">

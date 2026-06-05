@@ -15,7 +15,7 @@ export function Hero({ entry }: { entry: PitchAtlasEntry }) {
   return (
     <section id="top" className="on-stage relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.12]" aria-hidden="true">
-        <div className="h-full w-full bg-[radial-gradient(circle_at_58%_36%,rgba(176,224,230,0.16),transparent_36%),linear-gradient(115deg,rgba(243,236,224,0.08)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
+        <div className="h-full w-full bg-[radial-gradient(circle_at_58%_36%,rgba(108,172,228,0.18),transparent_36%),linear-gradient(115deg,rgba(242,236,221,0.08)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
       </div>
 
       <div className="relative mx-auto grid min-h-[calc(100dvh-6.5rem)] max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-10 md:grid-cols-12 md:gap-8 md:px-8 md:pb-20 md:pt-14">
@@ -64,12 +64,11 @@ export function Hero({ entry }: { entry: PitchAtlasEntry }) {
             <div
               aria-hidden="true"
               className="absolute inset-[4%] rounded-full"
-              style={{ background: 'radial-gradient(circle at 50% 46%, rgba(255,246,232,0.14), transparent 64%)' }}
+              style={{ background: 'radial-gradient(circle at 50% 46%, rgba(238,240,246,0.12), transparent 64%)' }}
             />
             <BallStage
               entry={entry}
               grip
-              hand
               faceGrip
               autoSpin={false}
               surface="stage"

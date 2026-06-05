@@ -23,7 +23,7 @@ function accentIndex(variant: MasterVariantRecord): number {
 function VerifiedStamp() {
   return (
     <span
-      className="inline-flex select-none items-center rounded-[2px] border border-navy/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-navy shadow-[inset_0_0_0_1px_rgba(169,42,34,0.25)]"
+      className="inline-flex select-none items-center rounded-[2px] border border-navy/60 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.16em] text-navy shadow-[inset_0_0_0_1px_rgba(200,16,46,0.25)]"
       style={{ transform: 'rotate(-2deg)' }}
       title="Verified, attributed: figures tied to a named pitcher and traced to a cited source."
     >

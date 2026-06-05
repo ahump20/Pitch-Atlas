@@ -65,9 +65,9 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
       <title>{title}</title>
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#3a2f24" />
-          <stop offset="62%" stopColor="#241c14" />
-          <stop offset="100%" stopColor="#100b07" />
+          <stop offset="0%" stopColor="#16171C" />
+          <stop offset="62%" stopColor="#101116" />
+          <stop offset="100%" stopColor="#070709" />
         </radialGradient>
       </defs>
 
@@ -82,7 +82,7 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
       <text x={CX + CLAMP + 18} y={CY - 6} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">ARM</text>
 
       {/* spinless reference */}
-      <circle cx={CX} cy={CY} r={BALL_R} fill="#1a130b" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.65" />
+      <circle cx={CX} cy={CY} r={BALL_R} fill="#101116" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.65" />
       <text x={CX} y={CY + 3} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="7" letterSpacing="0.5" textAnchor="middle" opacity="0.8">NO SPIN</text>
 
       {/* displacement connector */}

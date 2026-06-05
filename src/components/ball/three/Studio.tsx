@@ -37,8 +37,8 @@ export function Studio() {
   return (
     <>
       <Environment map={envRT.texture} background={false} />
-      <directionalLight color="#fff4e2" intensity={2.5} position={[3, 4.5, 4]} />
-      <directionalLight color="#cfe0ff" intensity={0.5} position={[-4, -1, 2]} />
+      <directionalLight color="#FFF6EC" intensity={2.5} position={[3, 4.5, 4]} />
+      <directionalLight color="#CFE0F4" intensity={0.5} position={[-4, -1, 2]} />
       <directionalLight color="#ffffff" intensity={1.1} position={[-2, 3, -5]} />
     </>
   )

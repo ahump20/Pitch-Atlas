@@ -90,17 +90,17 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
 
   return (
     <group>
-      <Arrow dir={axisDir} length={1.5} color="#8c8270" />
-      <Arrow dir={axisNeg} length={1.5} color="#8c8270" />
+      <Arrow dir={axisDir} length={1.5} color="#C7BEA8" />
+      <Arrow dir={axisNeg} length={1.5} color="#C7BEA8" />
 
       <group position={force.base}>
-        <Arrow dir={force.dir} length={force.length} color="#a8322d" glow radius={0.016} />
+        <Arrow dir={force.dir} length={force.length} color="#C8102E" glow radius={0.016} />
       </group>
 
       {motion.gyro ? (
         <mesh position={redDotPos}>
           <sphereGeometry args={[0.07, 18, 18]} />
-          <meshStandardMaterial color="#a8322d" emissive="#a8322d" emissiveIntensity={0.5} roughness={0.4} />
+          <meshStandardMaterial color="#C8102E" emissive="#C8102E" emissiveIntensity={0.5} roughness={0.4} />
         </mesh>
       ) : null}
 
@@ -108,15 +108,15 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
           so the separate axis label is suppressed to avoid colliding with it. */}
       {!motion.gyro ? (
         <Html position={axisLabelPos} center zIndexRange={[15, 0]} wrapperClass="pointer-events-none">
-          <span className={`${LABEL} text-ink-2`}>Spin axis</span>
+          <span className={`${LABEL} text-bone-2`}>Spin axis</span>
         </Html>
       ) : null}
       <Html position={forceLabelPos} center zIndexRange={[15, 0]} wrapperClass="pointer-events-none">
-        <span className={`${LABEL} text-seam`}>{motion.forceLabel}</span>
+        <span className={`${LABEL} text-bone`}>{motion.forceLabel}</span>
       </Html>
       {motion.gyro ? (
         <Html position={redDotPos} center zIndexRange={[16, 0]} wrapperClass="pointer-events-none">
-          <span className={`${LABEL} text-seam mt-7 block`}>Red dot</span>
+          <span className={`${LABEL} text-bone mt-7 block`}>Red dot</span>
         </Html>
       ) : null}
     </group>
