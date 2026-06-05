@@ -145,6 +145,12 @@ function IdentityStrip({
 }
 
 // ---- one field note ----
+const REPORT_REASONS: { value: string; label: string }[] = [
+  { value: 'abusive-unsafe', label: 'Abusive / unsafe' },
+  { value: 'off-topic', label: 'Off-topic' },
+  { value: 'spam', label: 'Spam' },
+]
+
 function NoteCard({
   note,
   onTried,
@@ -154,8 +160,20 @@ function NoteCard({
   note: CommunityNote
   onTried: (id: string) => void
   onHelpful: (id: string) => void
-  onReport: (id: string) => void
+  onReport: (id: string, reason: string) => Promise<void> | void
 }) {
+  const [reportState, setReportState] = useState<'idle' | 'choosing' | 'sending' | 'done' | 'failed'>('idle')
+
+  async function flag(reason: string) {
+    setReportState('sending')
+    try {
+      await onReport(note.id, reason)
+      setReportState('done')
+    } catch {
+      setReportState('failed')
+    }
+  }
+
   const context = [
     labelFor(PLAYER_LEVELS, note.playerLevel),
     labelFor(ARM_SLOTS, note.armSlot),
@@ -227,13 +245,50 @@ function NoteCard({
             </button>
           </>
         )}
-        <button
-          type="button"
-          onClick={() => onReport(note.id)}
-          className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam"
-        >
-          Report
-        </button>
+        {reportState === 'idle' ? (
+          <button
+            type="button"
+            onClick={() => setReportState('choosing')}
+            className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam"
+          >
+            Report
+          </button>
+        ) : reportState === 'sending' ? (
+          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagging…</span>
+        ) : reportState === 'done' ? (
+          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">
+            Flagged for review — thank you
+          </span>
+        ) : reportState === 'failed' ? (
+          <button
+            type="button"
+            onClick={() => setReportState('choosing')}
+            className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-seam hover:text-ink"
+          >
+            Couldn't send — tap to retry
+          </button>
+        ) : (
+          <span className="ml-auto flex flex-wrap items-center gap-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flag as</span>
+            {REPORT_REASONS.map((r) => (
+              <button
+                key={r.value}
+                type="button"
+                onClick={() => flag(r.value)}
+                className="rounded-sm border border-navy/25 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-2 hover:border-seam hover:text-seam"
+              >
+                {r.label}
+              </button>
+            ))}
+            <button
+              type="button"
+              onClick={() => setReportState('idle')}
+              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-ink"
+            >
+              Cancel
+            </button>
+          </span>
+        )}
       </div>
     </article>
   )
@@ -458,15 +513,14 @@ function SubmitForm({
 export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
   const { community, canonical, display } = entry
   const slug = display.slug
+  const live = community.enabled
   const { status, error, notes, identity, refresh, submit, toggleTried, toggleHelpful, report, claim } =
-    useFieldNotes(slug)
+    useFieldNotes(slug, live)
 
-  async function handleReport(id: string) {
-    try {
-      await report(id, 'reader-flag')
-    } catch {
-      /* the report queue is best-effort from the reader's side */
-    }
+  // Let failures surface. NoteCard awaits this and shows a retry state if the
+  // report did not land — a safety report must never claim success it didn't earn.
+  async function handleReport(id: string, reason: string) {
+    await report(id, reason)
   }
 
   return (
@@ -532,54 +586,81 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             </div>
           </div>
 
-          {/* right: the live loop — identity + submit */}
+          {/* right: the live loop when open; an honest preview until then */}
           <div className="flex flex-col gap-6 md:col-span-6">
-            <IdentityStrip identity={identity} onClaim={claim} />
-            <SubmitForm pitchSlug={slug} pitchName={canonical.name} defaultName={identity?.displayName ?? null} onSubmit={submit} />
+            {live ? (
+              <>
+                <IdentityStrip identity={identity} onClaim={claim} />
+                <SubmitForm pitchSlug={slug} pitchName={canonical.name} defaultName={identity?.displayName ?? null} onSubmit={submit} />
+              </>
+            ) : (
+              <div className="rounded-sm border border-navy/15 bg-paper-2/60 p-6">
+                <p className="mono-label text-navy">The living layer</p>
+                <h3 className="display mt-3 text-xl text-ink md:text-2xl">Field notes open soon.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-2">
+                  Soon you will log your own grip tweak, mark the ones you have tried, and flag anything off —
+                  anonymously, or under a handle you keep. {community.safetyNote}
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* the ranked notes for this pitch — four states */}
-        <div className="mt-16">
-          <div className="mb-6 flex items-end justify-between gap-4 border-b border-navy/12 pb-4">
-            <h3 className="display text-2xl text-ink md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
-            <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} live` : ''}</span>
+        {/* the ranked notes for this pitch — four states, only when the layer is open */}
+        {live ? (
+          <div className="mt-16">
+            <div className="mb-6 flex items-end justify-between gap-4 border-b border-navy/12 pb-4">
+              <h3 className="display text-2xl text-ink md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
+              <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} live` : ''}</span>
+            </div>
+
+            {status === 'loading' ? (
+              <div className="flex flex-col gap-4" aria-busy="true">
+                {[0, 1, 2].map((i) => (
+                  <div key={i} className="h-28 animate-pulse rounded-sm border border-navy/10 bg-paper-2/50" />
+                ))}
+              </div>
+            ) : status === 'error' ? (
+              <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-seam/40 px-6 py-14 text-center">
+                <p className="max-w-[48ch] leading-relaxed text-ink-2">
+                  Couldn't load the field notes just now — {error}. This is usually a passing hiccup.
+                </p>
+                <button type="button" onClick={refresh} className="rounded-sm border border-navy px-4 py-2 font-mono text-xs tracking-wide text-ink hover:bg-paper-2">
+                  Try again
+                </button>
+              </div>
+            ) : notes.length === 0 ? (
+              <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-navy/25 px-6 py-16 text-center">
+                <img src="/brand/seal.webp" alt="" width={56} height={56} className="opacity-80" aria-hidden="true" />
+                <p className="max-w-[46ch] leading-relaxed text-ink-2">
+                  No field notes yet. The first one shapes the bar for this pitch — add how you throw it above.
+                </p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-4">
+                {notes.map((note) => (
+                  <NoteCard key={note.id} note={note} onTried={toggleTried} onHelpful={toggleHelpful} onReport={handleReport} />
+                ))}
+              </div>
+            )}
+
+            {/* community guidelines + the flagging mechanism — the UGC floor, in plain sight */}
+            <div className="mt-6 max-w-[78ch] rounded-sm border border-navy/15 bg-paper-2/50 p-5">
+              <p className="mono-label text-navy">Keeping the bullpen honest</p>
+              <p className="mt-2 text-sm leading-relaxed text-ink-2">
+                Keep notes about pitching. No abuse, no personal attacks, no off-topic spam, nothing aimed at minors.
+                Field notes are community-submitted — they are not vetted before they post, and any note can be hidden
+                after review. See a problem with a note? Use <span className="text-ink">Report</span> on it; a note flagged
+                by enough people is hidden automatically until it is checked.
+              </p>
+            </div>
           </div>
+        ) : null}
 
-          {status === 'loading' ? (
-            <div className="flex flex-col gap-4" aria-busy="true">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className="h-28 animate-pulse rounded-sm border border-navy/10 bg-paper-2/50" />
-              ))}
-            </div>
-          ) : status === 'error' ? (
-            <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-seam/40 px-6 py-14 text-center">
-              <p className="max-w-[48ch] leading-relaxed text-ink-2">
-                Couldn't load the field notes just now — {error}. This is usually a passing hiccup.
-              </p>
-              <button type="button" onClick={refresh} className="rounded-sm border border-navy px-4 py-2 font-mono text-xs tracking-wide text-ink hover:bg-paper-2">
-                Try again
-              </button>
-            </div>
-          ) : notes.length === 0 ? (
-            <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-navy/25 px-6 py-16 text-center">
-              <img src="/brand/seal.webp" alt="" width={56} height={56} className="opacity-80" aria-hidden="true" />
-              <p className="max-w-[46ch] leading-relaxed text-ink-2">
-                No field notes yet for this pitch. The first one shapes the bar — add how you throw it above.
-              </p>
-            </div>
-          ) : (
-            <div className="flex flex-col gap-4">
-              {notes.map((note) => (
-                <NoteCard key={note.id} note={note} onTried={toggleTried} onHelpful={toggleHelpful} onReport={handleReport} />
-              ))}
-            </div>
-          )}
-
-          <p className="mt-8 max-w-[78ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
-            {community.safetyNote} {community.provenanceNote}
-          </p>
-        </div>
+        {/* honest in both modes: how the layer sources, and that no count is invented */}
+        <p className="mt-12 max-w-[78ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+          {community.provenanceNote} No signup count is shown until it is real.
+        </p>
       </div>
     </section>
   )

@@ -222,7 +222,7 @@ export const slider: PitchAtlasEntry = {
 
   community: {
     enabled: false,
-    safetyNote: 'Community variants will launch with age-aware visibility, source labels, and coach and parent safeguards.',
+    safetyNote: 'When the community layer opens, every note will carry a source and confidence label, a content filter will block abusive language, and any note can be flagged — it hides automatically once enough people report it.',
     provenanceNote:
       'When they open, every community variant will carry the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.',
     columns: ['Rank', 'Variant', 'Adoption', 'Source tier'],

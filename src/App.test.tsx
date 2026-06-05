@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach } from 'vitest'
+import { describe, it, expect, afterEach, vi } from 'vitest'
 import { act, render, screen, within } from '@testing-library/react'
 import { App } from './App'
 
@@ -6,7 +6,28 @@ import { App } from './App'
   Smoke tests against the no-WebGL path (jsdom has no WebGL, so the page renders
   through its honest static fallback) plus the specimen routing. The hash carries
   the selected pitch, so each test resets it.
+
+  The community layer ships gated (community.enabled === false), so the page renders
+  its honest "opening soon" preview and the hook makes no Supabase calls. We still
+  mock the hook so a test can never reach the network. The live loop is verified
+  end-to-end against the real backend, not here.
 */
+vi.mock('./hooks/useFieldNotes', () => ({
+  useFieldNotes: () => ({
+    status: 'ready' as const,
+    error: null,
+    notes: [],
+    identity: null,
+    refresh: () => {},
+    submit: async () => {
+      throw new Error('submit is not exercised in unit tests')
+    },
+    toggleTried: async () => {},
+    toggleHelpful: async () => {},
+    report: async () => {},
+    claim: async () => {},
+  }),
+}))
 
 const HERO_H1 = 'The living field manual for pitching grips.'
 
@@ -42,9 +63,9 @@ describe('App (no-WebGL render is complete)', () => {
     expect(screen.getByText(/As of .*\d{4}\./)).toBeInTheDocument()
   })
 
-  it('has an honest empty field-notes state and a keyboard skip link', () => {
+  it('shows the community layer as an honest unlaunched preview, plus a skip link', () => {
     render(<App />)
-    expect(screen.getByText(/No field notes yet\./)).toBeInTheDocument()
+    expect(screen.getByText(/Field notes open soon\./)).toBeInTheDocument()
     expect(screen.getByText('Skip to content')).toHaveAttribute('href', '#main')
   })
 
