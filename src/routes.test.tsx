@@ -113,8 +113,53 @@ describe('Sources', () => {
   })
 })
 
+describe('The Repertoire', () => {
+  it('catalogs every accepted pitch by family, including the kick change', async () => {
+    renderRoute('/repertoire')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Every accepted pitch, by family.')
+    expect(screen.getAllByText('Kick Change').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Splitter').length).toBeGreaterThan(0)
+  })
+
+  it('files the knuckle-slurve honestly as not a pitch', async () => {
+    renderRoute('/repertoire')
+    await screen.findByRole('heading', { level: 1 })
+    expect(screen.getAllByText(/Knuckle-Slurve/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Not a pitch').length).toBeGreaterThan(0)
+  })
+})
+
+describe('Lost Pitches of the Negro Leagues', () => {
+  it('leads the hall with the documented anchors', async () => {
+    renderRoute('/lost-pitches')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Lost Pitches of the Negro Leagues.')
+    for (const name of ["Satchel Paige's Hesitation Pitch", "Hilton Smith's Curveball", "Chet Brewer's Emery Ball"]) {
+      expect(screen.getAllByText(name).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('renders the hesitation-pitch chapter with the documented Harridge ruling', async () => {
+    renderRoute('/lost-pitches/satchel-paige-hesitation-pitch')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent("Satchel Paige's Hesitation Pitch")
+    expect(screen.getAllByText(/Will Harridge/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Documented').length).toBeGreaterThan(0)
+  })
+
+  it('files the Paige showman arsenal as a flagged legend', async () => {
+    renderRoute('/lost-pitches/paige-showman-arsenal')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('the showman layer')
+    expect(screen.getAllByText('Legend').length).toBeGreaterThan(0)
+  })
+
+  it('shows the 404 for an unknown lost pitch', async () => {
+    renderRoute('/lost-pitches/not-a-real-pitch')
+    expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
+  })
+})
+
 describe('No failure signatures', () => {
-  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources'])(
+  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)

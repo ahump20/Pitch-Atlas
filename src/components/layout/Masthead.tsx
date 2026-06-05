@@ -13,7 +13,9 @@ import { SITE } from '../../config/site'
 
 const NAV: { label: string; to: string }[] = [
   { label: 'Atlas', to: '/' },
+  { label: 'Repertoire', to: '/repertoire' },
   { label: 'Craftsmen', to: '/craftsmen' },
+  { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
 ]
 

@@ -1,0 +1,176 @@
+import { useParams, Link } from 'react-router-dom'
+import { useSeoMeta } from '@unhead/react'
+import type { Claim, LostPitch } from '../data/types'
+import { DOCUMENTATION_META } from '../data/types'
+import { LOST_PITCHES, lostPitchBySlug } from '../data/lost-pitches'
+import { SITE } from '../config/site'
+import { TierMarker } from '../components/layout/TierMarker'
+import { ClaimProse } from '../components/provenance/ClaimProse'
+import { SourcedValue } from '../components/provenance/SourcedValue'
+import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
+import { SourceBadge } from '../components/provenance/SourceBadge'
+import { ClaimNote } from '../components/provenance/SourcedValue'
+import { NotFound } from './NotFound'
+
+/*
+  One lost pitch, one chapter: what it was, why it is lost, a real sourced quote when
+  one exists, and the surviving record. The documentation tier rides in the hero so
+  the reader knows, before the first sentence, how solid the ground is. The legend
+  tier wears the seam accent. No specimen cross-link and no seam schematic here —
+  these pitches were never filed, and that absence is the whole point.
+*/
+
+function Quote({ quote }: { quote: Claim<string> }) {
+  return (
+    <figure className="border-l-2 border-seam/60 pl-6">
+      <blockquote className="display max-w-[40ch] text-2xl italic leading-snug text-ink md:text-3xl">
+        &ldquo;{quote.value}&rdquo;
+      </blockquote>
+      <figcaption className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1">
+        <ConfidenceLabel confidence={quote.confidence} />
+        {quote.source ? (
+          <>
+            <span aria-hidden="true" className="text-ink-3">/</span>
+            <SourceBadge source={quote.source} />
+          </>
+        ) : null}
+      </figcaption>
+      {quote.note ? <ClaimNote>{quote.note}</ClaimNote> : null}
+    </figure>
+  )
+}
+
+function ChapterNav({ prev, next }: { prev?: LostPitch; next?: LostPitch }) {
+  return (
+    <nav aria-label="Lost pitch chapters" className="border-t border-navy/15 bg-paper-2/50">
+      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
+        <div className="md:justify-self-start">
+          {prev ? (
+            <Link to={`/lost-pitches/${prev.slug}`} className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-navy/40 px-4 py-3 transition-colors hover:border-l-seam hover:bg-paper-2">
+              <span className="mono-label text-ink-3">← Previous</span>
+              <span className="display text-lg text-ink">{prev.name}</span>
+            </Link>
+          ) : null}
+        </div>
+        <Link to="/lost-pitches" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-navy/20 px-4 py-3 text-center transition-colors hover:border-seam md:justify-self-center">
+          <span className="mono-label text-navy">Lost Pitches</span>
+          <span className="text-sm leading-snug text-ink-2">Back to the archive →</span>
+        </Link>
+        <div className="md:justify-self-end">
+          {next ? (
+            <Link to={`/lost-pitches/${next.slug}`} className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-navy/40 px-4 py-3 text-right transition-colors hover:border-r-seam hover:bg-paper-2">
+              <span className="mono-label text-ink-3">Next →</span>
+              <span className="display text-lg text-ink">{next.name}</span>
+            </Link>
+          ) : null}
+        </div>
+      </div>
+    </nav>
+  )
+}
+
+export function LostPitchChapter() {
+  const { slug } = useParams<{ slug: string }>()
+  const pitch = slug ? lostPitchBySlug(slug) : undefined
+
+  const idx = pitch ? LOST_PITCHES.findIndex((p) => p.slug === pitch.slug) : -1
+  const prev = idx > 0 ? LOST_PITCHES[idx - 1] : undefined
+  const next = idx >= 0 && idx < LOST_PITCHES.length - 1 ? LOST_PITCHES[idx + 1] : undefined
+
+  useSeoMeta(
+    pitch
+      ? {
+          title: `${pitch.name} | Lost Pitches | ${SITE.siteName}`,
+          description: `${pitch.tagline} ${pitch.intro}`.slice(0, 200),
+          ogTitle: `${pitch.name} | ${SITE.siteName}`,
+          ogDescription: pitch.tagline,
+          ogUrl: `${SITE.canonicalDomain}/lost-pitches/${pitch.slug}`,
+        }
+      : { title: `Lost pitch not found | ${SITE.siteName}` },
+  )
+
+  if (!pitch) return <NotFound />
+
+  const tierMeta = DOCUMENTATION_META[pitch.tier]
+  const isLegend = pitch.tier === 'legend'
+
+  return (
+    <>
+      <section className="on-stage relative overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
+          <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(200,16,46,0.15),transparent_42%),linear-gradient(115deg,rgba(242,236,221,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
+        </div>
+        <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
+          <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
+            <Link to="/" className="transition-colors hover:text-bone">The Atlas</Link>
+            <span aria-hidden="true">/</span>
+            <Link to="/lost-pitches" className="transition-colors hover:text-bone">Lost Pitches</Link>
+            <span aria-hidden="true">/</span>
+            <span className="text-bone-2">{pitch.specimenNo}</span>
+          </nav>
+          <p className="mono-label-stage">{pitch.era}</p>
+          <h1 className="display mt-4 max-w-[16ch] text-[2.7rem] leading-[0.98] text-bone md:text-[4.6rem]">
+            {pitch.name}
+          </h1>
+          <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-bone-2">{pitch.tagline}</p>
+          <p
+            className={`mt-7 inline-flex items-center gap-2 rounded-sm border px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] ${
+              isLegend ? 'border-seam/50 text-seam' : 'border-bone/25 text-bone'
+            }`}
+            title={tierMeta.meaning}
+          >
+            {tierMeta.label}
+          </p>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+        <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.75rem]">{pitch.intro}</p>
+      </section>
+
+      <section className="bg-paper-2/50">
+        <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+          <TierMarker index="01" label="What it was" />
+          <ClaimProse claim={pitch.what} proseClassName="max-w-[64ch] text-xl leading-relaxed text-ink" />
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+        <TierMarker index="02" label="Why it is lost" />
+        <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
+          <div className={pitch.quote ? 'md:col-span-7' : 'md:col-span-12'}>
+            <ClaimProse claim={pitch.whyLost} proseClassName="text-xl leading-relaxed text-ink" />
+          </div>
+          {pitch.quote ? (
+            <div className="md:col-span-5">
+              <Quote quote={pitch.quote} />
+            </div>
+          ) : null}
+        </div>
+      </section>
+
+      {pitch.numbers.length > 0 ? (
+        <section className="bg-paper-2/50">
+          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+            <TierMarker index="03" label="The surviving record" />
+            <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
+              {pitch.numbers.map((n, i) => (
+                <div key={n.label} className="border-t border-navy/12 pt-3">
+                  <div className="mono-label mb-2.5 text-navy">{n.label}</div>
+                  <SourcedValue claim={n.claim} valueClassName="text-lg md:text-xl" accent={i === 0} />
+                </div>
+              ))}
+            </div>
+            <p className="mt-10 max-w-[78ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+              Every figure here is what the recovered record can actually support, labeled by its source
+              and its confidence. Where the legend says more than the record can prove, the gap is shown,
+              not filled.
+            </p>
+          </div>
+        </section>
+      ) : null}
+
+      <ChapterNav prev={prev} next={next} />
+    </>
+  )
+}

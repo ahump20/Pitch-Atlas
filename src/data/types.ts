@@ -362,3 +362,119 @@ export interface Craftsman {
   legendNote?: Claim<string>
   rights: RightsStatus
 }
+
+/*
+  The Repertoire. A field-wide catalog of every pitch a coach, a pitcher, or the
+  official tracking taxonomy would call accepted, grouped by family. It is a
+  lighter record than a filed specimen: a sourced one-line grip and one-line
+  movement, a status, and a cross-link to the full specimen when the atlas has one
+  on file. It does not fabricate grip geometry or measured physics for a pitch the
+  atlas has not filed; an unfiled pitch carries an honest one-liner and links out
+  to its source. Same provenance discipline as everything else: every line is a
+  Claim. Honesty about the edges is the point: an alias, an illusion, and a
+  colloquialism that is not a real pitch are all filed and labeled as such.
+*/
+export type RepertoireFamily =
+  | 'fastball'
+  | 'breaking'
+  | 'offspeed'
+  | 'specialty'
+  | 'banned'
+
+export type RepertoireStatus =
+  | 'standard' // a workhorse pitch thrown across the game today
+  | 'niche' // real and current, but used by a minority of arms
+  | 'rare' // thrown by very few
+  | 'near-extinct' // documented but almost gone from the pro game
+  | 'banned' // outlawed by rule (the doctored pitches)
+  | 'alias' // a name for a pitch filed elsewhere (running fastball -> two-seam)
+  | 'illusion' // physically not what the name claims (rising fastball)
+  | 'not-a-pitch' // a colloquialism, not a classified pitch (knuckle-slurve)
+
+export interface RepertoireEntry {
+  id: string
+  name: string
+  family: RepertoireFamily
+  status: RepertoireStatus
+  /** Short alternate names, for the index and search. */
+  aka?: string[]
+  /** One-line sourced grip. */
+  grip: Claim<string>
+  /** One-line sourced movement, or what the pitch does. */
+  movement: Claim<string>
+  /** Velocity band as plain text, e.g. "88-95 mph". Optional; some have none. */
+  velocity?: string
+  /** For an alias / illusion / not-a-pitch, the real pitch it resolves to. Sourced. */
+  relationship?: Claim<string>
+  /** Representative arms, plain text. Never a likeness. */
+  notableThrowers?: string
+  /** Cross-link to a filed full specimen (/pitch/<slug>) when the atlas has it. */
+  filedSlug?: string
+}
+
+/*
+  Lost Pitches of the Negro Leagues. A wing built on one honest asymmetry: the
+  statistics are being recovered, but the technique mostly never will be. A box
+  score survives; a grip does not. So every entry wears a documentation tier
+  rather than pretending to a precision the record cannot support. The tier IS the
+  feature. Same provenance model as the Craftsmen: our framing is original, every
+  claim carries its source and the honest confidence an adversarial pass
+  recommended, and a quote appears only when a real one was found. Nothing here is
+  a likeness; nothing smooths legend into fact.
+*/
+export type LostPitchKind =
+  | 'pitch' // a lost pitch or delivery (the hesitation pitch, the bee ball)
+  | 'pitcher' // an arm whose craft is the surviving record (Hilton Smith, Rube Foster)
+  | 'doctored' // the doctored-ball family that diverged from the segregated majors
+
+export type DocumentationTier =
+  | 'documented' // a hard paper trail: a rule change, a Hall-of-Famer on the record
+  | 'partial' // attested but thin: a name and a description, no grip
+  | 'legend' // a showman label or oral tradition, shipped flagged, never as fact
+
+/** Human-readable label + meaning for each documentation tier. */
+export const DOCUMENTATION_META: Record<
+  DocumentationTier,
+  { label: string; meaning: string }
+> = {
+  documented: {
+    label: 'Documented',
+    meaning:
+      'A hard paper trail: a rule change, league records, or a named eyewitness on the record.',
+  },
+  partial: {
+    label: 'Partially documented',
+    meaning: 'Attested but thin. A name and a description survive; the grip does not.',
+  },
+  legend: {
+    label: 'Legend',
+    meaning:
+      'A showman label or oral tradition. Shipped flagged, shown to mark the gap, never as fact.',
+  },
+}
+
+export interface LostPitch {
+  /** URL slug for /lost-pitches/<slug>. Stable, kebab-case. */
+  slug: string
+  name: string
+  kind: LostPitchKind
+  /** Career span or active years, e.g. "1920s-1940s" or "active 1937-1948". */
+  era: string
+  /** How solid the record is. Drives the tier marker and the reading order. */
+  tier: DocumentationTier
+  /** Hall index for the archive plate, e.g. "N-01". */
+  specimenNo: string
+  /** Our one-line framing of why this entry is in the wing. Original words. */
+  tagline: string
+  /** Original framing paragraph. Carries no measured figure it cannot source. */
+  intro: string
+  /** What the pitch was, or how the arm threw it. Sourced. */
+  what: Claim<string>
+  /** Why the technique is lost or unrecoverable. Sourced or reputable-analysis. */
+  whyLost: Claim<string>
+  /** Sourced facts and figures. Reuses the craftsman number shape. */
+  numbers: CraftsmanNumber[]
+  /** A real, verbatim, sourced quote. Present only when one was actually found. */
+  quote?: Claim<string>
+  rights: RightsStatus
+}

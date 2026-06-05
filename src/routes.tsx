@@ -2,8 +2,11 @@ import type { RouteObject } from 'react-router-dom'
 import { RootLayout } from './components/layout/RootLayout'
 import { AtlasHome } from './pages/AtlasHome'
 import { PitchChapter } from './pages/PitchChapter'
+import { RepertoirePage } from './pages/RepertoirePage'
 import { CraftsmenHall } from './pages/CraftsmenHall'
 import { CraftsmanChapter } from './pages/CraftsmanChapter'
+import { LostPitchesHall } from './pages/LostPitchesHall'
+import { LostPitchChapter } from './pages/LostPitchChapter'
 import { SourcesPage } from './pages/SourcesPage'
 import { NotFound } from './pages/NotFound'
 
@@ -21,8 +24,11 @@ export const routes: RouteObject[] = [
     children: [
       { index: true, Component: AtlasHome },
       { path: 'pitch/:slug', Component: PitchChapter },
+      { path: 'repertoire', Component: RepertoirePage },
       { path: 'craftsmen', Component: CraftsmenHall },
       { path: 'craftsmen/:slug', Component: CraftsmanChapter },
+      { path: 'lost-pitches', Component: LostPitchesHall },
+      { path: 'lost-pitches/:slug', Component: LostPitchChapter },
       { path: 'sources', Component: SourcesPage },
       { path: '*', Component: NotFound },
     ],
