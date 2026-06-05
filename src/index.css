@@ -117,6 +117,28 @@
     color: var(--color-ink-2);
   }
 
+  /* The mono micro-label on the dark stage: same letterforms, bone ink. */
+  .mono-label-stage {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--color-bone-2);
+  }
+
+  /* Hairline tuned for the dark stage: bone fade instead of machined brown. */
+  .hairline-stage {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(
+      to right,
+      rgba(245, 236, 224, 0.22) 0%,
+      rgba(245, 236, 224, 0.22) 64%,
+      transparent 100%
+    );
+  }
+
   /* Editorial display serif: hero headline, section titles, pitch names, pull-quotes.
      The italic is the warmth. */
   .display {
@@ -145,6 +167,50 @@
   }
   @media (prefers-reduced-motion: reduce) {
     .grain-overlay { opacity: 0.025; }
+  }
+
+  /* A raised panel on the dark stage. The press surface plus a hairline of bone
+     so cards read as lifted leather, never as flat boxes. */
+  .theater-card {
+    background-color: var(--color-press);
+    border: 1px solid rgba(245, 236, 224, 0.10);
+  }
+  .theater-card-hover {
+    transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.25s ease;
+  }
+  .theater-card-hover:hover {
+    border-color: color-mix(in srgb, var(--color-seam) 55%, transparent);
+    background-color: color-mix(in srgb, var(--color-press) 88%, var(--color-bone));
+  }
+
+  /* The spotlight pool behind the focal ball on the stage. A warm key from above,
+     so the white leather glows against the chamber. Finish over composition. */
+  .stage-spot {
+    background: radial-gradient(circle at 50% 40%, rgba(255, 244, 226, 0.13), transparent 60%);
+  }
+
+  /* One-shot scroll reveal: starts a touch low and faded, settles into place the
+     first time it enters view. JS toggles .is-visible; this is just the easing. */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Stillness for anyone who asks for it: reveals show immediately, no travel. */
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 

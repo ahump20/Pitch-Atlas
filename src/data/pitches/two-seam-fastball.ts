@@ -1,4 +1,4 @@
-import type { PitchAtlasEntry, SeamAnchoredPoint } from '../types'
+import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim } from '../sources'
 import { sharedSeam } from './_shared-seam'
 
@@ -21,6 +21,49 @@ const fingerPlacement: SeamAnchoredPoint[] = [
   { seamT: 0.17, lift: 0.02, label: 'Middle', finger: 'middle', note: 'Beside the index, the pair running with the seams.' },
   { seamT: 0.62, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Underneath on the leather, slightly off-center for control.' },
 ]
+
+const gripModel: GripModel = {
+  defaultView: 'top',
+  ballDepth: 'out-in-fingers',
+  fingerSpacing: 'slight-spread',
+  primaryPressureFinger: 'index',
+  thumbRole: 'Thumb supports underneath and can sit slightly off-center.',
+  palmGapCue: 'Held like a fastball: out in the fingers, not choked into the palm.',
+  releaseCue: 'Throw fastball effort and let the along-seam contact tilt the axis.',
+  visualCaveat: 'Grip geometry is schematic and shows the standard along-seam family, not every one-seam or sinker variant.',
+  contacts: [
+    {
+      finger: 'index',
+      label: 'Index seam',
+      seamT: 0.12,
+      lift: 0.02,
+      seamRelation: 'Runs along one narrow seam',
+      pressureRole: 'Starts the arm-side bias',
+      cue: 'Along the seam, not across it',
+      curl: 0.2,
+    },
+    {
+      finger: 'middle',
+      label: 'Middle seam',
+      seamT: 0.17,
+      lift: 0.02,
+      seamRelation: 'Runs along the paired narrow seam',
+      pressureRole: 'Pairs with index to guide run',
+      cue: 'Same width as fastball',
+      curl: 0.2,
+    },
+    {
+      finger: 'thumb',
+      label: 'Thumb',
+      seamT: 0.62,
+      lift: 0,
+      seamRelation: 'Under leather, slightly off-center',
+      pressureRole: 'Balances control under the seam pair',
+      cue: 'Do not pinch it tight',
+      curl: 0.38,
+    },
+  ],
+}
 
 export const twoSeam: PitchAtlasEntry = {
   canonical: {
@@ -54,6 +97,7 @@ export const twoSeam: PitchAtlasEntry = {
       ),
     ],
     fingerPlacement,
+    gripModel,
     mechanics: claim(
       'The release rolls the fingers over the outer half of the ball, adding side-spin to the backspin and tilting the axis toward the arm. A lower slot adds more of that tilt; on one-seam grips the seam orientation adds late sink without changing the slot. The cue is a downhill plane attacked at the knees, a pitch built to be hit on the ground.',
       'driveline-sinker',

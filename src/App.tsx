@@ -1,17 +1,17 @@
 import { Masthead } from './components/layout/Masthead'
-import { Hero } from './components/sections/Hero'
-import { Atlas } from './components/sections/Atlas'
+import { AtlasHero } from './components/sections/AtlasHero'
+import { PitchFamilyRail } from './components/sections/PitchFamilyRail'
 import { GripLab } from './components/sections/GripLab'
-import { WhatItDoes } from './components/sections/WhatItDoes'
-import { MasterVariants } from './components/sections/MasterVariants'
-import { Community } from './components/sections/Community'
+import { ReleaseRoom } from './components/sections/ReleaseRoom'
+import { MovementTranslation } from './components/sections/WhatItDoes'
+import { EvidenceLedger } from './components/sections/EvidenceLedger'
 import { Colophon } from './components/sections/Colophon'
 import { useSelectedPitch } from './hooks/useSelectedPitch'
 import { scrollToId } from './lib/scroll'
 
 /*
-  The page. Grip first: Hero -> Atlas -> Grip Lab -> What it does -> Masters ->
-  Community -> Colophon. The selected pitch flows from the URL hash into every
+  The page. Grip first: Hero -> pitch family rail -> Grip Lab -> Release Room ->
+  Movement Translation -> Evidence Ledger -> Colophon. The selected pitch flows from the URL hash into every
   section; switching a pitch updates them in place, so a pick from the Atlas lands
   you in the Grip Lab without a jump to the top.
 */
@@ -32,12 +32,12 @@ export function App() {
       </a>
       <Masthead />
       <main id="main" tabIndex={-1} className="outline-none">
-        <Hero entry={entry} />
-        <Atlas entry={entry} />
+        <AtlasHero entry={entry} />
+        <PitchFamilyRail entry={entry} />
         <GripLab entry={entry} />
-        <WhatItDoes entry={entry} />
-        <MasterVariants entry={entry} />
-        <Community entry={entry} />
+        <ReleaseRoom entry={entry} />
+        <MovementTranslation entry={entry} />
+        <EvidenceLedger entry={entry} />
       </main>
       <Colophon entry={entry} />
       <div className="grain-overlay" aria-hidden="true" />

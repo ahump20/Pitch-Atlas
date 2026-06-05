@@ -1,4 +1,4 @@
-import type { PitchAtlasEntry, SeamAnchoredPoint } from '../types'
+import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim, secondhand } from '../sources'
 import { sharedSeam } from './_shared-seam'
 
@@ -20,6 +20,49 @@ const fingerPlacement: SeamAnchoredPoint[] = [
   { seamT: 0.355, lift: 0.02, label: 'Middle', finger: 'middle', note: 'Beside the index, about a finger-width over.' },
   { seamT: 0.83, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Underneath, on the leather, centered below the two fingers.' },
 ]
+
+const gripModel: GripModel = {
+  defaultView: 'top',
+  ballDepth: 'out-in-fingers',
+  fingerSpacing: 'slight-spread',
+  primaryPressureFinger: 'middle',
+  thumbRole: 'Thumb supports underneath, centered below the top two fingers.',
+  palmGapCue: 'A little daylight stays between ball and palm so the ball leaves clean.',
+  releaseCue: 'Let the index and middle pads roll backspin off the top of the ball.',
+  visualCaveat: 'Grip geometry is schematic, tuned from sourced grip descriptions and private visual reference, not measured from an athlete scan.',
+  contacts: [
+    {
+      finger: 'index',
+      label: 'Index pad',
+      seamT: 0.305,
+      lift: 0.02,
+      seamRelation: 'Across the wide horseshoe seam',
+      pressureRole: 'Guides the straight release',
+      cue: 'Close to middle, not spread wide',
+      curl: 0.18,
+    },
+    {
+      finger: 'middle',
+      label: 'Middle pad',
+      seamT: 0.355,
+      lift: 0.02,
+      seamRelation: 'Across the wide horseshoe seam',
+      pressureRole: 'Primary fastball pressure',
+      cue: 'Flat pad across the seam',
+      curl: 0.18,
+    },
+    {
+      finger: 'thumb',
+      label: 'Thumb',
+      seamT: 0.83,
+      lift: 0,
+      seamRelation: 'Under smooth leather, sometimes touching seam',
+      pressureRole: 'Balances the ball under the finger pair',
+      cue: 'Under the index-middle window',
+      curl: 0.42,
+    },
+  ],
+}
 
 export const fourSeam: PitchAtlasEntry = {
   canonical: {
@@ -64,6 +107,7 @@ export const fourSeam: PitchAtlasEntry = {
       ),
     ],
     fingerPlacement,
+    gripModel,
     mechanics: claim(
       'Thrown over the top with the fingers behind the ball. The release rolls backspin off the fingertips so all four seams cross the oncoming air each revolution. That is the name: four seams biting the airflow per turn.',
       'wiki-four-seam',

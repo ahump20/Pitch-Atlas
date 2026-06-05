@@ -29,16 +29,16 @@ function buildGauges(entry: PitchAtlasEntry): Gauge[] {
   return gauges
 }
 
-export function WhatItDoes({ entry }: { entry: PitchAtlasEntry }) {
+export function MovementTranslation({ entry }: { entry: PitchAtlasEntry }) {
   const { canonical, motion, guide, display } = entry
   const { voice } = canonical
   const isCarry = motion.breakView === 'carry'
   const [open, setOpen] = useState(false)
 
   return (
-    <section id="what-it-does" className="bg-paper-2/60">
+    <section id="movement-translation" className="bg-paper-2/60">
       <div className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-        <TierMarker index="02" label="What it does" />
+        <TierMarker index="03" label="Movement translation" />
 
         <div className="max-w-[40ch]">
           <h2 className="display text-3xl leading-[1.1] text-ink md:text-[2.6rem]">
@@ -56,7 +56,7 @@ export function WhatItDoes({ entry }: { entry: PitchAtlasEntry }) {
         >
           <summary className="flex cursor-pointer list-none items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-ink-2 transition-colors hover:text-ink">
             <span aria-hidden="true" className="text-seam transition-transform group-open:rotate-90">›</span>
-            The physics, if you want it
+            The measured movement, if you want it
           </summary>
 
           <div className="mt-8 flex flex-col gap-10">
@@ -70,7 +70,7 @@ export function WhatItDoes({ entry }: { entry: PitchAtlasEntry }) {
                   ) : null}
                 </div>
                 <p className="mono-label mt-3 text-center">
-                  Spin axis and the {motion.forceLabel.toLowerCase()} force, drawn in render space
+                  Spin axis and force direction, drawn in render space
                 </p>
               </div>
 
@@ -113,3 +113,5 @@ export function WhatItDoes({ entry }: { entry: PitchAtlasEntry }) {
     </section>
   )
 }
+
+export const WhatItDoes = MovementTranslation

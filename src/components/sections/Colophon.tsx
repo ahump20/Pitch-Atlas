@@ -1,4 +1,5 @@
 import type { ClaimConfidence, PitchAtlasEntry } from '../../data/types'
+import { SITE } from '../../config/site'
 import { CONFIDENCE_META } from '../../data/types'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
@@ -71,9 +72,9 @@ export function Colophon({ entry }: { entry: PitchAtlasEntry }) {
         </p>
 
         <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-ink-3/30 pt-8">
-          <span className="display text-lg text-ink">Pitch Atlas</span>
+          <span className="display text-lg text-ink">{SITE.siteName}</span>
           <a
-            href="https://pitch-atlas.com"
+            href={SITE.canonicalDomain}
             className="mono-label transition-colors hover:text-seam"
           >
             pitch-atlas.com

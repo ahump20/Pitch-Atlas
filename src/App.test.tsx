@@ -15,9 +15,12 @@ afterEach(() => {
 describe('App (no-WebGL render is complete)', () => {
   it('renders the four-seam reference and every tier', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
-    expect(screen.getByText('The atlas')).toBeInTheDocument()
-    expect(screen.getByText('The grip')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hold the pitch before you measure it.')
+    expect(screen.getByText('Pitch family rail')).toBeInTheDocument()
+    expect(screen.getAllByText('Grip Lab').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Release Room').length).toBeGreaterThan(0)
+    expect(screen.getByText('Movement translation')).toBeInTheDocument()
+    expect(screen.getByText('Evidence Ledger')).toBeInTheDocument()
     expect(screen.getByText('Master variants')).toBeInTheDocument()
     expect(screen.getByText('Community')).toBeInTheDocument()
   })
@@ -65,7 +68,7 @@ describe('Specimen index (routing)', () => {
     window.location.hash = '#/slider'
     render(<App />)
     // the hero headline is fixed; the selected pitch leads the Grip Lab
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hold the pitch before you measure it.')
     const lab = within(document.getElementById('grip-lab') as HTMLElement)
     expect(lab.getByRole('heading', { level: 2 })).toHaveTextContent('Slider')
   })
@@ -79,7 +82,7 @@ describe('Specimen index (routing)', () => {
       window.dispatchEvent(new Event('hashchange'))
     })
     expect(lab().getByRole('heading', { level: 2 })).toHaveTextContent('12-6 curveball')
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hold the pitch before you measure it.')
   })
 
   it('marks the active specimen with aria-current', () => {

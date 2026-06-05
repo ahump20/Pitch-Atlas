@@ -9,6 +9,8 @@ export function scrollToId(id: string, focus = false): void {
   const el = document.getElementById(id)
   if (!el) return
   const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
-  el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+  const offset = window.innerWidth >= 768 ? 118 : 96
+  const top = el.getBoundingClientRect().top + window.scrollY - offset
+  window.scrollTo({ top: Math.max(0, top), behavior: reduce ? 'auto' : 'smooth' })
   if (focus) (el as HTMLElement).focus({ preventScroll: true })
 }

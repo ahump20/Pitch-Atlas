@@ -12,7 +12,7 @@ export function MasterVariants({ entry }: { entry: PitchAtlasEntry }) {
   const { masterVariants, display } = entry
   return (
     <section id="masters" className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-      <TierMarker index="03" label="Master variants" />
+      <TierMarker index="05" label="Master variants" />
       <p className="mb-12 max-w-[60ch] text-lg leading-relaxed text-ink-2">{display.mastersIntro}</p>
 
       <div className="flex flex-col">
