@@ -65,25 +65,25 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
       <title>{title}</title>
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#262a33" />
-          <stop offset="62%" stopColor="#15171d" />
-          <stop offset="100%" stopColor="#0b0c0f" />
+          <stop offset="0%" stopColor="#3a2f24" />
+          <stop offset="62%" stopColor="#241c14" />
+          <stop offset="100%" stopColor="#100b07" />
         </radialGradient>
       </defs>
 
       {/* axis guides */}
-      <line x1={CX} y1={CY - CLAMP - 14} x2={CX} y2={CY + CLAMP + 14} stroke="var(--color-machined)" strokeWidth="1" />
-      <line x1={CX - CLAMP - 14} y1={CY} x2={CX + CLAMP + 14} y2={CY} stroke="var(--color-machined)" strokeWidth="1" />
+      <line x1={CX} y1={CY - CLAMP - 14} x2={CX} y2={CY + CLAMP + 14} stroke="var(--color-ink-3)" strokeWidth="1" />
+      <line x1={CX - CLAMP - 14} y1={CY} x2={CX + CLAMP + 14} y2={CY} stroke="var(--color-ink-3)" strokeWidth="1" />
 
       {/* pole labels: words, not a handedness claim */}
-      <text x={CX} y={CY - CLAMP - 20} fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">RIDE</text>
-      <text x={CX} y={CY + CLAMP + 28} fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">DROP</text>
-      <text x={CX - CLAMP - 18} y={CY - 6} fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">GLOVE</text>
-      <text x={CX + CLAMP + 18} y={CY - 6} fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">ARM</text>
+      <text x={CX} y={CY - CLAMP - 20} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">RIDE</text>
+      <text x={CX} y={CY + CLAMP + 28} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">DROP</text>
+      <text x={CX - CLAMP - 18} y={CY - 6} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">GLOVE</text>
+      <text x={CX + CLAMP + 18} y={CY - 6} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="8" letterSpacing="1.5" textAnchor="middle">ARM</text>
 
       {/* spinless reference */}
-      <circle cx={CX} cy={CY} r={BALL_R} fill="#101218" stroke="var(--color-dim)" strokeWidth="1" strokeDasharray="3 3" opacity="0.65" />
-      <text x={CX} y={CY + 3} fill="var(--color-dim)" fontFamily="var(--font-mono)" fontSize="7" letterSpacing="0.5" textAnchor="middle" opacity="0.8">NO SPIN</text>
+      <circle cx={CX} cy={CY} r={BALL_R} fill="#1a130b" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.65" />
+      <text x={CX} y={CY + 3} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="7" letterSpacing="0.5" textAnchor="middle" opacity="0.8">NO SPIN</text>
 
       {/* displacement connector */}
       <line x1={CX} y1={CY} x2={ballX} y2={ballY} stroke="var(--color-seam)" strokeWidth="1" strokeDasharray="2 3" opacity="0.55" />
@@ -123,7 +123,7 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
 
       {/* the real pitch with its seam */}
       <circle cx={ballX} cy={ballY} r={BALL_R} fill={`url(#${gradId})`} />
-      <circle cx={ballX} cy={ballY} r={BALL_R} fill="none" stroke="var(--color-machined)" strokeWidth="0.8" />
+      <circle cx={ballX} cy={ballY} r={BALL_R} fill="none" stroke="var(--color-ink-3)" strokeWidth="0.8" />
       {realSeam
         .filter((s) => !s.front)
         .map((s, i) => (

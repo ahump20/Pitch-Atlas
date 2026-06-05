@@ -243,6 +243,30 @@ export interface PitchDisplay {
   mastersIntro: string
 }
 
+/**
+ * The plain-language coaching layer the Grip Lab and What-it-does sections read.
+ * Original paraphrase in a coach's voice, never copied from any guide. It carries
+ * no measured figures: every number stays in `canonical.physics` behind its Claim
+ * and Source, so the prose here can be read freely without smuggling unsourced data.
+ * Optional and backwards-compatible — a pitch without a guide still renders.
+ */
+export interface GripGuide {
+  /** Short display family label, e.g. "The straight one", "The runner". */
+  family: string
+  /** One-line plain-language promise of what the pitch is for. */
+  tagline: string
+  /** What the grip should feel like in the hand. */
+  feel: string
+  /** Numbered, plain-language grip steps. Paraphrased, never copied. */
+  steps: string[]
+  does: {
+    /** Plain-English headline for the What-it-does section. */
+    headline: string
+    /** One jargon-free paragraph: what the pitch does. No measured numbers. */
+    plain: string
+  }
+}
+
 export interface PitchAtlasEntry {
   canonical: CanonicalPitchRecord
   motion: PitchMotion
@@ -250,4 +274,6 @@ export interface PitchAtlasEntry {
   masterVariants: MasterVariantRecord[]
   community: CommunityVariantPreview
   seam: SeamGeometryReference
+  /** Plain-language coaching layer. Optional; sections fall back when absent. */
+  guide?: GripGuide
 }

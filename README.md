@@ -50,8 +50,8 @@ Community variants are not live yet. When they launch, they launch with age-awar
 
 - **Build:** Vite + React + TypeScript + Tailwind CSS v4 (CSS-first, no `tailwind.config.js`).
 - **3D:** Three.js with React Three Fiber and drei, classic WebGLRenderer. The 3D ball is original parametric geometry, not a downloaded model.
-- **Fonts (self-hosted, no runtime external request):** Hanken Grotesk for prose, Commit Mono for data, gauges, source badges, and on-ball annotations.
-- **Deploy:** Cloudflare Pages (static).
+- **Fonts (self-hosted, no runtime external request):** Newsreader for editorial display, Hanken Grotesk for prose, Martian Mono for data, gauges, source badges, and on-ball annotations.
+- **Deploy:** Cloudflare Pages (static), live at [pitch-atlas.com](https://pitch-atlas.com).
 - **Routing:** the selected specimen lives in the URL hash (`#/<slug>`), so each pitch is deep-linkable with no router dependency and no server rewrite.
 - **Community backend:** none yet. Later: Cloudflare D1 + KV + Supabase auth + one Worker.
 

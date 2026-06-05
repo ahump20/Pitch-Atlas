@@ -15,8 +15,9 @@ afterEach(() => {
 describe('App (no-WebGL render is complete)', () => {
   it('renders the four-seam reference and every tier', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The four-seam fastball.')
-    expect(screen.getByText('Foundation')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
+    expect(screen.getByText('The atlas')).toBeInTheDocument()
+    expect(screen.getByText('The grip')).toBeInTheDocument()
     expect(screen.getByText('Master variants')).toBeInTheDocument()
     expect(screen.getByText('Community')).toBeInTheDocument()
   })
@@ -63,18 +64,22 @@ describe('Specimen index (routing)', () => {
   it('deep-links a specimen from the hash', () => {
     window.location.hash = '#/slider'
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The slider.')
-    expect(screen.getByText('Spun like a football.')).toBeInTheDocument()
+    // the hero headline is fixed; the selected pitch leads the Grip Lab
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
+    const lab = within(document.getElementById('grip-lab') as HTMLElement)
+    expect(lab.getByRole('heading', { level: 2 })).toHaveTextContent('Slider')
   })
 
   it('switches specimen live when the hash changes', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The four-seam fastball.')
+    const lab = () => within(document.getElementById('grip-lab') as HTMLElement)
+    expect(lab().getByRole('heading', { level: 2 })).toHaveTextContent('Four-seam fastball')
     act(() => {
       window.location.hash = '#/twelve-six'
       window.dispatchEvent(new Event('hashchange'))
     })
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The 12-6 curveball.')
+    expect(lab().getByRole('heading', { level: 2 })).toHaveTextContent('12-6 curveball')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
   })
 
   it('marks the active specimen with aria-current', () => {
@@ -89,6 +94,7 @@ describe('Specimen index (routing)', () => {
     render(<App />)
     // the skip link points at #main, an in-page anchor, never #/<slug>
     expect(screen.getByText('Skip to content')).toHaveAttribute('href', '#main')
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('The slider.')
+    const lab = within(document.getElementById('grip-lab') as HTMLElement)
+    expect(lab.getByRole('heading', { level: 2 })).toHaveTextContent('Slider')
   })
 })
