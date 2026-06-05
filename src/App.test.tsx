@@ -42,11 +42,11 @@ describe('App (no-WebGL render is complete)', () => {
     expect(screen.getByText(/As of .*\d{4}\./)).toBeInTheDocument()
   })
 
-  it('renders the four-state field-notes surface and a keyboard skip link', () => {
+  it('shows the community layer as an honest unlaunched preview and a skip link', () => {
     render(<App />)
-    // the live Field Notes section mounts its own heading + four-state surface
-    // (loading/error/empty/ready); without a backend in jsdom it stays honest.
-    expect(screen.getByText(/Field notes for the/)).toBeInTheDocument()
+    // the layer ships gated (community.enabled === false): the surface shows its
+    // "opening soon" preview, makes no Supabase calls, and renders no live list.
+    expect(screen.getByText(/Field notes open soon\./)).toBeInTheDocument()
     expect(screen.getByText('Skip to content')).toHaveAttribute('href', '#main')
   })
 

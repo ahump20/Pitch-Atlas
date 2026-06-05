@@ -138,6 +138,23 @@ interface FieldNoteRow {
 const NOTE_COLUMNS =
   'id, pitch_slug, author_id, display_name, tweak, player_level, arm_slot, velocity_band, intent, claimed_result_kind, claimed_result_note, sample_size, evidence_url, evidence_label, source_tier, note, adoption_count, helpful_count, base_rank, created_at'
 
+/**
+ * Turn a Postgres/PostgREST error into a sentence a contributor can act on. The
+ * safety triggers raise prefixed messages ("content_blocked: …", "rate_limit: …");
+ * the "Sourced, not corrected" CHECK surfaces by constraint name. Anything else
+ * falls back to its own message.
+ */
+function friendlyDbError(error: { message?: string } | null): string {
+  const raw = error?.message ?? ''
+  if (raw.includes('content_blocked:'))
+    return raw.split('content_blocked:')[1]?.trim() || 'That note contains language we do not allow here.'
+  if (raw.includes('rate_limit:'))
+    return raw.split('rate_limit:')[1]?.trim() || 'Too many notes in a short time — please slow down.'
+  if (raw.includes('weak_tier_requires_note'))
+    return 'A relayed or untested claim needs a short source note — say where it came from.'
+  return raw || 'Could not save that just now. Try again.'
+}
+
 function mapRow(row: FieldNoteRow, viewerId: string, tried: Set<string>, helpful: Set<string>): CommunityNote {
   return {
     id: row.id,
@@ -210,10 +227,16 @@ export async function setDisplayName(name: string): Promise<void> {
     .from('profiles')
     .update({ display_name: name })
     .eq('id', user.id)
-  if (error) throw error
+  if (error) throw new Error(friendlyDbError(error))
 }
 
-/** Ranked, visible field notes for one pitch, marked with the viewer's own actions. */
+/**
+ * Ranked, visible field notes for one pitch, marked with the viewer's own actions.
+ * Sorts on `base_rank` — the live ranking, computed by a DB trigger via
+ * `note_base_rank()`. The richer model in lib/field-notes-rank.ts is the future
+ * convergence target (needs view instrumentation); see its header for the plan.
+ * RLS already drops hidden / unapproved notes, so what comes back is the public set.
+ */
 export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
   const viewerId = await ensureSession()
 
@@ -263,7 +286,7 @@ export async function submitNote(input: NewFieldNote): Promise<CommunityNote> {
     })
     .select(NOTE_COLUMNS)
     .single()
-  if (error) throw error
+  if (error) throw new Error(friendlyDbError(error))
 
   return mapRow(data as FieldNoteRow, viewerId, new Set(), new Set())
 }
@@ -301,11 +324,16 @@ export async function setHelpful(noteId: string, on: boolean): Promise<void> {
   }
 }
 
-/** Flag a note for review. Writes to the moderation queue; admins triage it. */
+/**
+ * Flag a note for review. Writes to the moderation queue; admins triage it, and
+ * once enough distinct accounts flag a note the database auto-hides it pending
+ * review. One report per account per note is enforced by a unique index — a
+ * repeat flag from the same account (23505) is treated as already-reported.
+ */
 export async function reportNote(noteId: string, reason: string): Promise<void> {
   await ensureSession()
   const { error } = await supabase.from('note_reports').insert({ note_id: noteId, reason })
-  if (error) throw error
+  if (error && error.code !== '23505') throw new Error(friendlyDbError(error))
 }
 
 /**

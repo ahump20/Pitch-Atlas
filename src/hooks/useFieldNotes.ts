@@ -38,9 +38,14 @@ function message(err: unknown): string {
   loads the ranked notes and the contributor's identity, and exposes optimistic
   Tried This / Helpful toggles that revert on failure. Re-loads when the selected
   pitch changes. The view branches on `status` for loading / error / empty / ready.
+
+  `enabled` gates the whole thing. While the community layer is a preview the hook
+  makes NO Supabase calls (no anonymous sign-in, no fetch), so a visitor who cannot
+  use the loop never mints an account. It still runs (Rules of Hooks); it just sits
+  idle at status 'ready' with no notes until the layer is opened.
 */
-export function useFieldNotes(pitchSlug: string): UseFieldNotes {
-  const [status, setStatus] = useState<FieldNotesStatus>('loading')
+export function useFieldNotes(pitchSlug: string, enabled = true): UseFieldNotes {
+  const [status, setStatus] = useState<FieldNotesStatus>(enabled ? 'loading' : 'ready')
   const [error, setError] = useState<string | null>(null)
   const [notes, setNotes] = useState<CommunityNote[]>([])
   const [identity, setIdentity] = useState<CommunityIdentity | null>(null)
@@ -49,6 +54,7 @@ export function useFieldNotes(pitchSlug: string): UseFieldNotes {
   const refresh = useCallback(() => setReloadKey((k) => k + 1), [])
 
   useEffect(() => {
+    if (!enabled) return
     let cancelled = false
     /* eslint-disable react-hooks/set-state-in-effect -- reset the surface to loading and clear any prior error before the async fetch; canonical fetch-on-mount, not a cascading-render bug */
     setStatus('loading')
@@ -71,7 +77,7 @@ export function useFieldNotes(pitchSlug: string): UseFieldNotes {
     return () => {
       cancelled = true
     }
-  }, [pitchSlug, reloadKey])
+  }, [pitchSlug, reloadKey, enabled])
 
   const reloadIdentity = useCallback(async () => {
     try {

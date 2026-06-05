@@ -11,9 +11,20 @@ import { RANK_WEIGHTS } from '../data/field-notes'
   The ranking model. Pure and deterministic. Provenance is the heaviest weight by
   design: in a youth-accessible product, vote counts on grip information measure
   popularity, not evidence, so they are capped and normalized. A coach-observed,
-  sourced note cannot be buried by a popular but unsupported one. This file is
-  the single source of truth the future Worker imports; the client never sees raw
-  scores.
+  sourced note cannot be buried by a popular but unsupported one.
+
+  RECONCILIATION (2026-06-05): two ranking implementations exist on purpose.
+    - LIVE PATH: the database function `note_base_rank()` (a trigger writes
+      field_notes.base_rank on every insert and engagement change). The live
+      surface sorts on that column — see listNotes() in lib/community.ts. It is a
+      coarse 4-factor precompute (provenance, adoption, helpful, sample) because
+      the server cannot cheaply see per-visitor context or view counts.
+    - THIS FILE: the richer 5-factor model (adds usefulness-vs-views and
+      per-visitor context match). It needs view instrumentation and a visitor
+      context the live loop does not yet collect, so it is NOT wired in yet.
+  Convergence step (future): instrument view counts, then move ranking into a
+  Worker that imports this function and replaces the base_rank sort. Until then,
+  treat base_rank as canonical for display and this file as the target model.
 */
 
 /** Visitor context, declared optionally per session. Never stored, never inferred. */

@@ -206,9 +206,14 @@ export interface PitchVariantRecord {
   safety?: SafetyFlag
 }
 
-/** v1: structure only, never populated with fabricated posts or counts. */
+/**
+ * The community (Field Notes) layer. `enabled` gates the live write/rank/flag loop:
+ * while false the surface shows an honest preview and makes no Supabase calls;
+ * flip to true (with a moderator account + bot protection in place) to open it.
+ * Never carries fabricated posts or counts — live notes come from the database.
+ */
 export interface CommunityVariantPreview {
-  enabled: false
+  enabled: boolean
   safetyNote: string
   provenanceNote: string
   columns: string[]
