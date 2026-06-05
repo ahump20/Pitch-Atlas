@@ -1,11 +1,16 @@
 import { useId, useMemo } from 'react'
-import { SPIN_AXIS, SEAM_VIEW_TILT, v } from '../../lib/seam'
+import { SPIN_AXIS, SEAM_VIEW_TILT, seamPoint, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
+import type { SeamAnchoredPoint } from '../../data/types'
 
 /*
   The 2D twin of the 3D ball, drawn from the same seam-point function. Roles:
   the no-WebGL visual, the reduced-motion specimen, and the target the 3D ball
   dissolves into. Static by design. The 3D layer owns motion; this owns truth.
+  The seam is one baseball cover for every pitch; the axis line is the pitch's
+  own spin axis. A gyro pitch's axis points at the viewer, so it reads as a dot.
+  When grip contacts are supplied it also lays labeled pads on the seam, so the
+  no-WebGL path still teaches where the fingers go.
 */
 
 const SEG = 280
@@ -13,10 +18,24 @@ const R = 86
 const CX = 120
 const CY = 120
 
+const SKIN: Record<SeamAnchoredPoint['finger'], string> = {
+  index: '#e7b48d',
+  middle: '#e3ad84',
+  ring: '#dba87f',
+  thumb: '#e1a87c',
+  pinky: '#e3ad84',
+}
+
 export interface SeamSchematicProps {
   className?: string
   showAxis?: boolean
   showStitches?: boolean
+  /** The pitch's render-space spin axis. Defaults to the four-seam's near-horizontal backspin. */
+  spinAxis?: Vec3
+  /** Gyro pitch (slider): the axis points toward the viewer and reads as a red dot. */
+  gyro?: boolean
+  /** Grip contacts to draw as labeled pads on the seam (the no-WebGL grip lab). */
+  grip?: SeamAnchoredPoint[]
   title?: string
 }
 
@@ -24,6 +43,9 @@ export function SeamSchematic({
   className = '',
   showAxis = true,
   showStitches = true,
+  spinAxis = SPIN_AXIS,
+  gyro = false,
+  grip,
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
 }: SeamSchematicProps) {
   const uid = useId()
@@ -38,15 +60,35 @@ export function SeamSchematic({
   )
 
   const axis = useMemo(() => {
-    const a = v.rotateAxis(SPIN_AXIS, SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+    const a = v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
     const reach = R * 1.34
     return {
       x1: CX - a.x * reach,
       y1: CY + a.y * reach,
       x2: CX + a.x * reach,
       y2: CY - a.y * reach,
+      // in-plane length tells us whether the axis lies along the screen (line) or
+      // points at the viewer (dot, for a gyro pitch).
+      inPlane: Math.hypot(a.x, a.y),
     }
-  }, [])
+  }, [spinAxis])
+
+  const axisAsDot = gyro || axis.inPlane < 0.34
+
+  const gripDots = useMemo(() => {
+    if (!grip) return []
+    return grip.map((g) => {
+      const p = v.rotateAxis(seamPoint(g.seamT * Math.PI * 2, 1), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+      return {
+        key: g.label,
+        label: g.label,
+        color: SKIN[g.finger] ?? '#e3ad84',
+        x: CX + p.x * R,
+        y: CY - p.y * R,
+        front: p.z >= 0,
+      }
+    })
+  }, [grip])
 
   return (
     <svg
@@ -59,31 +101,38 @@ export function SeamSchematic({
       <title>{title}</title>
       <defs>
         <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor="#262a33" />
-          <stop offset="62%" stopColor="#15171d" />
-          <stop offset="100%" stopColor="#0b0c0f" />
+          <stop offset="0%" stopColor="#3a2f24" />
+          <stop offset="62%" stopColor="#241c14" />
+          <stop offset="100%" stopColor="#100b07" />
         </radialGradient>
         <marker id={arrowId} markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
-          <path d="M0.5 0.5 L6 3.5 L0.5 6.5 Z" fill="var(--color-dim)" />
+          <path d="M0.5 0.5 L6 3.5 L0.5 6.5 Z" fill="var(--color-ink-3)" />
         </marker>
       </defs>
 
       <circle cx={CX} cy={CY} r={R} fill={`url(#${gradId})`} />
-      <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-machined)" strokeWidth="1" />
+      <circle cx={CX} cy={CY} r={R} fill="none" stroke="var(--color-ink-3)" strokeOpacity="0.5" strokeWidth="1" />
 
-      {showAxis ? (
+      {showAxis && !axisAsDot ? (
         <line
           x1={axis.x1}
           y1={axis.y1}
           x2={axis.x2}
           y2={axis.y2}
-          stroke="var(--color-dim)"
+          stroke="var(--color-ink-3)"
           strokeWidth="1"
           strokeDasharray="2 3"
           markerEnd={`url(#${arrowId})`}
           markerStart={`url(#${arrowId})`}
           opacity="0.9"
         />
+      ) : null}
+
+      {showAxis && axisAsDot ? (
+        <>
+          <circle cx={CX} cy={CY} r="6.5" fill="none" stroke="var(--color-ink-3)" strokeWidth="1" strokeDasharray="2 3" opacity="0.7" />
+          <circle cx={CX} cy={CY} r="3" fill="var(--color-seam)" />
+        </>
       ) : null}
 
       {runs
@@ -128,6 +177,27 @@ export function SeamSchematic({
             strokeLinecap="round"
           />
         ))}
+
+      {/* grip pads — back contacts dimmed, front contacts labeled */}
+      {gripDots.map((g) => (
+        <g key={g.key} opacity={g.front ? 1 : 0.35}>
+          <circle cx={g.x} cy={g.y} r="6.5" fill="#2a1d10" opacity="0.18" />
+          <circle cx={g.x} cy={g.y} r="4.6" fill={g.color} stroke="#2a1d10" strokeOpacity="0.35" strokeWidth="0.6" />
+          {g.front ? (
+            <text
+              x={g.x}
+              y={g.y - 9}
+              fill="var(--color-ink)"
+              fontFamily="var(--font-mono)"
+              fontSize="7.5"
+              letterSpacing="0.8"
+              textAnchor="middle"
+            >
+              {g.label.toUpperCase()}
+            </text>
+          ) : null}
+        </g>
+      ))}
     </svg>
   )
 }

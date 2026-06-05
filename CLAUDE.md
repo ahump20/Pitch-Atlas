@@ -15,16 +15,18 @@ a change to one of these without the others is a regression.
 
 ## What this repo is
 
-This is v1 — a single four-seam fastball visual proof, not the full MVP. The app
-is built and committed. It proves two things:
+Pitch Atlas is a five-pitch, grip-first atlas, built and committed. Five sourced
+specimens (four-seam, sinker, circle change, 12-6 curve, slider) navigate by
+hash; the page leads with the grip a human can hold, then tucks the physics
+behind a disclosure. Production home: **pitch-atlas.com**. It proves two things:
 
-- the signature medium: an original-geometry interactive 3D ball that dissolves
-  on scroll into a 2D schematic of the same seam-point function, then a gravity
-  ghost of the induced-vertical-break gap; fully usable with zero WebGL.
+- the signature medium: an original-geometry interactive 3D ball — warm aged
+  leather, pressed fingertip pads on the seam — that dissolves on scroll into a
+  2D schematic of the same seam-point function; fully usable with zero WebGL.
 - the provenance model: every visible number carries a `Source` and a
   `confidence` label; nothing is faked.
 
-Do not add (these are out of scope for v1 and excluded on purpose):
+Do not add (excluded on purpose):
 
 - auth
 - uploads
@@ -34,11 +36,12 @@ Do not add (these are out of scope for v1 and excluded on purpose):
 - fake adoption counts
 - fake verified-pro badges
 - runtime external API calls
-- a second pitch
+- fabricated numbers for a not-yet-sourced pitch (roadmap cards stay honest teasers)
 
-The data model already names the full future shape (canonical record, master
-variants, community variants, reproduction logs). v1 populates only the
-four-seam canonical record and three sourced master variants, and renders an
+The data model names the full future shape (canonical record, master variants,
+community variants, reproduction logs). It populates five canonical records and
+their sourced master variants, adds an optional plain-language `GripGuide` per
+pitch (no measured numbers — those stay in `canonical.physics`), and renders an
 honest empty state for community. Extend that shape; do not gut it.
 
 ## Repository discipline
@@ -63,7 +66,7 @@ in:
   `ClaimConfidence`, the pitch records)
 - `src/data/sources.ts` — the citation registry plus the `claim`, `secondhand`,
   `unverified`, `latestRetrievedAt`, and `allSources` helpers
-- `src/data/pitches/four-seam.ts` — the four-seam record
+- `src/data/pitches/*.ts` — the five pitch records (`index.ts` exports `PITCHES`)
 
 Every `Source` record carries `id`, `label`, `url`, `retrievedAt`, and optional
 `season`. `retrievedAt` is a real ISO date and is the only thing the colophon's

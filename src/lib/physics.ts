@@ -57,3 +57,29 @@ export function activeSpinSplit(totalRpm: number, efficiencyPct: number): SpinSp
  * span is approximate and depends on the arm.
  */
 export const CARRY_GAP_AVG_IN = 16
+
+/*
+  Render-space frame (the 3D stage as the viewer sees it):
+    +x: camera right        +y: up        +z: toward the camera
+  The pitch travels away from the camera toward the plate, so its render-space
+  velocity points in -z. Every pitch carries a unit spin axis in THIS frame, and
+  the Magnus force it draws is spin x velocity, computed, never hand-placed. The
+  four-seam's authored axis reproduces its verified straight-up arrow.
+*/
+export const RENDER_VELOCITY: Vec3 = { x: 0, y: 0, z: -1 }
+
+/** Direction of the Magnus force in render space for a given unit spin axis. */
+export function magnusForceRender(spinAxis: Vec3): Vec3 {
+  return v.normalize(v.cross(spinAxis, RENDER_VELOCITY))
+}
+
+/**
+ * Transverse (active) fraction of the spin, 0..1: |spin x velocity| with unit
+ * vectors is sin(angle between axis and flight), which is exactly the share of
+ * spin that does Magnus work. A four-seam returns ~1 (all transverse); a gyro
+ * slider returns a small number (mostly bullet spin). Used to scale the drawn
+ * force arrow so its length reads the real efficiency.
+ */
+export function magnusStrength(spinAxis: Vec3): number {
+  return v.length(v.cross(v.normalize(spinAxis), RENDER_VELOCITY))
+}

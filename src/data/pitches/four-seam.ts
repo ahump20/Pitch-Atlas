@@ -1,5 +1,6 @@
 import type { PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim, secondhand } from '../sources'
+import { sharedSeam } from './_shared-seam'
 
 /*
   The four-seam fastball record. v1 content.
@@ -83,10 +84,14 @@ export const fourSeam: PitchAtlasEntry = {
       activeSpinPct: claim('Near 100% for elite arms. Verlander led four-seamers at 98.5% in 2019.', 'mlb-active-spin', 'official-data', {
         note: 'Active spin is the transverse share of total spin that drives movement. The league mean sits well below elite.',
       }),
-      inducedVerticalBreakIn: claim('League average about +16 in. Good near +18, elite +20 and up.', 'mlb-ivb', 'official-data', {
-        note: 'The +16 in average is the official 2024 league mean. The good and elite tiers are analyst conventions, not MLB-defined.',
-      }),
-      magnus: claim(
+      primaryBreak: {
+        label: 'Induced vertical break',
+        accent: true,
+        claim: claim('League average about +16 in. Good near +18, elite +20 and up.', 'mlb-ivb', 'official-data', {
+          note: 'The +16 in average is the official 2024 league mean. The good and elite tiers are analyst conventions, not MLB-defined.',
+        }),
+      },
+      teaching: claim(
         'Backspin throws a Magnus force upward, but it stays smaller than the ball weight, so the pitch drops less than a spinless one. It rides. It does not rise.',
         'tht-kagan',
         'reputable-analysis',
@@ -96,6 +101,30 @@ export const fourSeam: PitchAtlasEntry = {
       ),
     },
     rights: 'original',
+  },
+
+  motion: {
+    // The four-seam's verified render axis: near-horizontal backspin with a slight
+    // tilt so the ball does not read as lifeless. magnusForceRender of this axis
+    // reproduces the straight-up Magnus arrow. breakView 'carry' keeps the gravity ghost.
+    spinAxis: { x: 1, y: 0.12, z: 0 },
+    forceLabel: 'Magnus',
+    ivbInches: 16,
+    horizontalInches: 0,
+    horizontalDir: 'none',
+    breakView: 'carry',
+  },
+
+  display: {
+    slug: 'four-seam',
+    shortName: 'Four-seam',
+    specimenNo: '00',
+    heroSub: 'Measured, not described.',
+    heroIntro:
+      'Pure backspin across the horseshoe. A Magnus force against the fall. This is how the pitch rides.',
+    foundationCaption: 'It rides less than a spinless ball. It never literally rises.',
+    mastersIntro:
+      'Three ways the same pitch wins. The visual is our own schematic of the four-seam reference. Every figure is season-stamped and links to its source.',
   },
 
   masterVariants: [
@@ -175,22 +204,22 @@ export const fourSeam: PitchAtlasEntry = {
     columns: ['Rank', 'Variant', 'Adoption', 'Source tier'],
   },
 
-  seam: {
-    equationPlain: 'x = 2 sin t + sin 3t,   y = 2 cos t - cos 3t,   z = 2√2 cos 2t',
-    parameterization: 't from 0 to 2π, each point normalized to the ball radius, the whole curve rotated by the spin-axis quaternion.',
-    stitchCount: claim('108 double stitches, 216 individual', 'wiki-baseball-ball', 'reputable-analysis', {
-      note: 'A manufacturing convention, not a number written into the rulebook, which fixes only weight and circumference.',
-    }),
-    accuracyLevel: 'seam-informed schematic',
-    accuracyNote: claim(
-      'The published closed-form figure-eight seam curve is laid on the sphere, but the exact regulation cover constants and the full 108-stitch pattern are approximated, not measured.',
-      'mathcurve',
-      'reputable-analysis',
-      {
-        approximate: true,
-        note: 'The canonical degree-6 cover constants were not pinnable this run, so the documented figure-eight closed form stands in. The honest label is seam-informed schematic, never seam-accurate.',
-      },
-    ),
-    calibrationDoc: 'docs/seam-calibration.md',
+  guide: {
+    family: 'The straight one',
+    tagline: 'The pitch you trust for a strike. It travels the straightest and arrives the fastest.',
+    feel: 'Loose in the fingertips. Let it come off the pads clean — never squeeze it.',
+    steps: [
+      'Lay your index and middle fingers flat across the wide part of the horseshoe seam — the part that faces away from you.',
+      'Keep them about a finger-width apart. Pressed close is fine; just do not spread them wide.',
+      'Rest your thumb underneath on smooth leather, centered below the two fingers.',
+      'Hold it out toward the fingertips with a little daylight to the palm, and stay loose.',
+    ],
+    does: {
+      headline: 'It fights gravity longer than your eye expects.',
+      plain:
+        'Clean backspin pushes up on the ball the whole way to the plate, so it falls less than a ball thrown with no spin. The hitter swings where they expect it — and it arrives a touch higher. That is carry. It rides; it never literally rises.',
+    },
   },
+
+  seam: sharedSeam,
 }

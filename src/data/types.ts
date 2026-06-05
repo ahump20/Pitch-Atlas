@@ -7,6 +7,8 @@
   badge. The reader judges. The atlas only sources.
 */
 
+import type { Vec3 } from '../lib/seam'
+
 export type ClaimConfidence =
   | 'official-data' // measured, published by the source of record (Statcast / MLB)
   | 'pitcher-own-words' // the athlete said it
@@ -107,13 +109,25 @@ export interface SeamAnchoredPoint {
   note?: string
 }
 
+/** A named, sourced break figure (IVB for a fastball, drop for a curve, run for a sinker, sweep for a slider). */
+export interface BreakReading {
+  label: string
+  claim: Claim<string>
+  /** Paint this gauge as the one hero number. Use once per pitch. */
+  accent?: boolean
+}
+
 export interface PhysicsReference {
   spinAxis: Claim<string>
   spinRateRpm: Claim<string>
-  activeSpinPct: Claim<string>
-  inducedVerticalBreakIn: Claim<string>
-  /** The one sentence that dissolves the "rising fastball" myth. */
-  magnus: Claim<string>
+  /** Optional: not every pitch has a clean active-spin story (changeups, sliders). */
+  activeSpinPct?: Claim<string>
+  /** The defining break this pitch is known for. */
+  primaryBreak: BreakReading
+  /** A second movement axis when the pitch has one (a sinker's sink under its run). */
+  secondaryBreak?: BreakReading
+  /** The one teaching sentence: what makes this pitch move the way it does. */
+  teaching: Claim<string>
 }
 
 export type PitchFamily = 'fastball' | 'breaking' | 'offspeed'
@@ -188,9 +202,78 @@ export interface SeamGeometryReference {
   calibrationDoc: string
 }
 
+/**
+ * The visualization spec, in render space (rights: original; a presentation
+ * choice, never a measured claim). +x camera-right, +y up, +z toward the camera;
+ * the pitch flies toward -z. The spin axis drives the 3D spin, the axis arrow,
+ * and the schematic; the Magnus force is derived from it, not stored.
+ */
+export interface PitchMotion {
+  /** Unit spin axis in render space. */
+  spinAxis: Vec3
+  /** Label on the drawn force arrow ("Magnus", "Magnus, down", "Gyro spin"). */
+  forceLabel: string
+  /** Gyro-dominant pitch (slider): shows the red dot toward the viewer, short force arrow. */
+  gyro?: boolean
+  /** Signed induced vertical break, inches. + rides above a spinless ball, - drops below it. Sourced. */
+  ivbInches: number
+  /** Horizontal break magnitude, inches (absolute). Sourced. */
+  horizontalInches: number
+  /** Catcher's-eye direction of the horizontal break. */
+  horizontalDir: 'arm-side' | 'glove-side' | 'none'
+  /** Which break diagram the Foundation renders: the four-seam's carry side-view, or the catcher's-eye movement plot. */
+  breakView: 'carry' | 'movement'
+}
+
+/** The pitch-specific display copy the sections render. */
+export interface PitchDisplay {
+  /** URL hash slug for deep-linking this specimen (#/<slug>). Short and stable. */
+  slug: string
+  /** Short name for the specimen index switcher ("Four-seam", "Sinker", "Slider"). */
+  shortName: string
+  /** Two-digit specimen number for the masthead index and hero figure label. */
+  specimenNo: string
+  /** The line under the hero headline. */
+  heroSub: string
+  /** The hero intro paragraph. */
+  heroIntro: string
+  /** The gauge-rail caption in Foundation. */
+  foundationCaption: string
+  /** The intro paragraph above the master-variant ledger. */
+  mastersIntro: string
+}
+
+/**
+ * The plain-language coaching layer the Grip Lab and What-it-does sections read.
+ * Original paraphrase in a coach's voice, never copied from any guide. It carries
+ * no measured figures: every number stays in `canonical.physics` behind its Claim
+ * and Source, so the prose here can be read freely without smuggling unsourced data.
+ * Optional and backwards-compatible — a pitch without a guide still renders.
+ */
+export interface GripGuide {
+  /** Short display family label, e.g. "The straight one", "The runner". */
+  family: string
+  /** One-line plain-language promise of what the pitch is for. */
+  tagline: string
+  /** What the grip should feel like in the hand. */
+  feel: string
+  /** Numbered, plain-language grip steps. Paraphrased, never copied. */
+  steps: string[]
+  does: {
+    /** Plain-English headline for the What-it-does section. */
+    headline: string
+    /** One jargon-free paragraph: what the pitch does. No measured numbers. */
+    plain: string
+  }
+}
+
 export interface PitchAtlasEntry {
   canonical: CanonicalPitchRecord
+  motion: PitchMotion
+  display: PitchDisplay
   masterVariants: MasterVariantRecord[]
   community: CommunityVariantPreview
   seam: SeamGeometryReference
+  /** Plain-language coaching layer. Optional; sections fall back when absent. */
+  guide?: GripGuide
 }

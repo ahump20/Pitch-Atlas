@@ -12,18 +12,28 @@ A four-seam fastball can be thrown a dozen credible ways. Pitch Atlas does not a
 
 This principle governs the README, the UI copy, and the data model in equal measure.
 
-## What v1 is
+## What the atlas is
 
-v1 is a single reference prototype for the **four-seam fastball**. It is a visual proof of two things and nothing more:
+A navigable index of pitch specimens. Five are live, in the order they teach best, each its own deep-linkable page (`#/four-seam`, `#/two-seam`, `#/circle-change`, `#/twelve-six`, `#/slider`):
 
-1. **The signature medium.** An original-geometry interactive 3D ball that teaches a pitch: the backspin axis, the Magnus force, the carry that makes the pitch ride. It dissolves on scroll into a 2D schematic of the same seam-point function, then into a gravity ghost that draws the induced-vertical-break gap as a dimension line.
+| Specimen | The pitch it teaches |
+|---|---|
+| 00 Four-seam | Pure backspin, Magnus up, the ball that rides |
+| 01 Sinker | The axis tilted toward the arm, ride traded for run and sink |
+| 02 Circle change | Fastball arm, the velocity off, arm-side fade |
+| 03 12-6 curve | The fastball mirrored, topspin, Magnus down, the ball that drops |
+| 04 Slider | Gyro spin pointed at the plate, almost no Magnus, late and short |
+
+Every specimen proves the same two things:
+
+1. **The signature medium.** An original-geometry interactive 3D ball that teaches the pitch. A pitch is defined by its spin axis, so the axis is authored and the **Magnus force is computed from it, not hand-placed** (`spin × velocity`): it points up for the four-seam, down for the curve, leaned for the sinker and change, and runs short for the gyro slider, whose force arrow shrinks because most of its spin does no work. The hero dissolves on scroll into a 2D schematic of the same seam-point function. The four-seam shows a gravity-ghost carry diagram; the breaking and offspeed pitches show a catcher's-eye movement plot, both scaled from sourced break figures and labeled schematic.
 2. **The provenance model.** Every visible number carries a source and a confidence label. Nothing is faked. The page is fully usable with zero WebGL.
 
-v1 deliberately excludes auth, real community posts, voting, reproduction logs, any second pitch, and any runtime API call. The data model names the full future shape (canonical record, master variants, community variants, reproduction logs); v1 populates only the four-seam canonical record and three sourced master variants, and shows an honest empty state for community.
+The atlas deliberately excludes auth, real community posts, voting, reproduction logs, and any runtime API call. The data model names the full future shape (canonical record, master variants, community variants, reproduction logs); today it populates the five canonical records and their sourced master variants, and shows an honest empty state for community. Every figure was sourced by parallel research and put through an independent verification pass before it was allowed onto a page; the corrections that pass forced are noted in the data files.
 
 ## Provenance and rights policy
 
-- **No MLB, team, or player photos, logos, footage, or likenesses.** v1 uses original 3D geometry, original diagrams, and outbound source links only. A master-variant visual is our own re-posed schematic tuned to a sourced figure, never a player image.
+- **No MLB, team, or player photos, logos, footage, or likenesses.** The atlas uses original 3D geometry, original diagrams, and outbound source links only. A master-variant visual is our own seam schematic, never a player image.
 - **No copied instructional prose.** Grip and mechanics text is paraphrased in our own words and cited with a link.
 - **Every real-player number carries a `Source`** (`id`, `label`, `url`, `retrievedAt`, optional `season`) and a `confidence` label. Anything that cannot be verified renders as `approximate` or `unverified`. Nothing ships bare.
 - **No runtime API dependencies.** All data is static and sourced in the repo. There are no runtime calls to Statcast, Baseball Savant, Rapsodo, TrackMan, MLB, or any external source.
@@ -34,15 +44,16 @@ The seam geometry, equation, constants, coordinate system, and stitch-count assu
 
 ## Youth and safety
 
-Community variants are not in v1. When they launch, they launch with age-aware visibility, source labels, and coach and parent safeguards. Pitch Atlas makes no medical, injury-prevention, or age-appropriate-prescription claims. Grip and workload copy stays descriptive and sourced, never prescriptive.
+Community variants are not live yet. When they launch, they launch with age-aware visibility, source labels, and coach and parent safeguards. Pitch Atlas makes no medical, injury-prevention, or age-appropriate-prescription claims. Grip and workload copy stays descriptive and sourced, never prescriptive.
 
 ## Stack
 
 - **Build:** Vite + React + TypeScript + Tailwind CSS v4 (CSS-first, no `tailwind.config.js`).
 - **3D:** Three.js with React Three Fiber and drei, classic WebGLRenderer. The 3D ball is original parametric geometry, not a downloaded model.
-- **Fonts (self-hosted, no runtime external request):** Hanken Grotesk for prose, Commit Mono for data, gauges, source badges, and on-ball annotations.
-- **Deploy:** Cloudflare Pages (static).
-- **Community backend:** none in v1. Later: Cloudflare D1 + KV + Supabase auth + one Worker.
+- **Fonts (self-hosted, no runtime external request):** Newsreader for editorial display, Hanken Grotesk for prose, Martian Mono for data, gauges, source badges, and on-ball annotations.
+- **Deploy:** Cloudflare Pages (static), live at [pitch-atlas.com](https://pitch-atlas.com).
+- **Routing:** the selected specimen lives in the URL hash (`#/<slug>`), so each pitch is deep-linkable with no router dependency and no server rewrite.
+- **Community backend:** none yet. Later: Cloudflare D1 + KV + Supabase auth + one Worker.
 
 ## Develop
 

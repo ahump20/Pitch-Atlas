@@ -6,7 +6,7 @@ import { SourceBadge } from './SourceBadge'
 /** A muted prose note attached to a claim (caveats, disagreements, methodology). */
 export function ClaimNote({ children }: { children: ReactNode }) {
   return (
-    <p className="max-w-[62ch] text-[0.8125rem] leading-snug text-dim/85">{children}</p>
+    <p className="max-w-[62ch] text-[0.8125rem] leading-snug text-ink-2/85">{children}</p>
   )
 }
 
@@ -43,7 +43,7 @@ export function SourcedValue({
         <ConfidenceLabel confidence={claim.confidence} />
         {claim.source ? (
           <>
-            <span aria-hidden="true" className="text-machined">
+            <span aria-hidden="true" className="text-ink-3">
               /
             </span>
             <SourceBadge source={claim.source} />

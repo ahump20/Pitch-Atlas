@@ -24,7 +24,7 @@ export function ClaimProse({
         <ConfidenceLabel confidence={claim.confidence} />
         {claim.source ? (
           <>
-            <span aria-hidden="true" className="text-machined">
+            <span aria-hidden="true" className="text-ink-3">
               /
             </span>
             <SourceBadge source={claim.source} />

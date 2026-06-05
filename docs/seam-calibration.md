@@ -1,8 +1,8 @@
 # Seam calibration
 
-This documents the geometry behind the four-seam specimen so the claim on the
-page is auditable. The page says **seam-informed schematic**, not seam-accurate,
-and this file is why.
+This documents the geometry behind every specimen so the claim on the page is
+auditable. The page says **seam-informed schematic**, not seam-accurate, and this
+file is why.
 
 ## The curve
 
@@ -61,6 +61,29 @@ Schematic or approximate, and therefore not claimed as measured:
   216-pass herringbone.
 - Grip-marker seam positions (`fingerPlacement` in the four-seam record) are
   tuned visually to read correctly, not measured from a real grip.
+
+## Across the atlas
+
+The cover is one baseball for every pitch. All five specimens share the same seam
+curve, the same stitch geometry, and the same `sharedSeam` record; nothing about
+the leather changes from pitch to pitch. What changes per specimen is three
+things, all carried in each pitch's `motion` block:
+
+- **The spin axis** (`motion.spinAxis`, render space), authored per pitch: pure
+  backspin for the four-seam, tilted toward the arm for the sinker and change,
+  topspin for the curve, pointed at the plate for the gyro slider.
+- **The Magnus force**, which is **not stored but computed** from that axis as
+  `spin × velocity` (`magnusForceRender` in `src/lib/physics.ts`). Its drawn
+  length scales with `magnusStrength`, the transverse-spin fraction, so a gyro
+  slider's arrow is short because most of its spin does no Magnus work. A data
+  test asserts the drawn force direction agrees in sign with each pitch's sourced
+  induced vertical break.
+- **The grip contacts** (`fingerPlacement`), tuned visually per pitch, the same
+  schematic caveat as the four-seam.
+
+So the axis-to-seam registration is still a schematic, not a measured grip: the
+seam does not rotate to match each spin axis. That is part of why the label
+remains seam-informed schematic across the whole atlas.
 
 ## Sources
 
