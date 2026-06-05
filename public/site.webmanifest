@@ -1,0 +1,14 @@
+{
+  "name": "Pitch Atlas",
+  "short_name": "Pitch Atlas",
+  "description": "The living field manual for pitching grips. Sourced, not corrected.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f3ece0",
+  "theme_color": "#06233a",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/brand/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}
