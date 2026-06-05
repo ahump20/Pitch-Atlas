@@ -8,21 +8,23 @@ import { App } from './App'
   the selected pitch, so each test resets it.
 */
 
+const HERO_H1 = 'The living field manual for pitching grips.'
+
 afterEach(() => {
   window.location.hash = ''
 })
 
 describe('App (no-WebGL render is complete)', () => {
-  it('renders the four-seam reference and every tier', () => {
+  it('renders the field manual and every layer', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hold the pitch before you measure it.')
-    expect(screen.getByText('Pitch family rail')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(HERO_H1)
+    expect(screen.getByText('How the Atlas works')).toBeInTheDocument()
+    expect(screen.getByText('The catalog')).toBeInTheDocument()
     expect(screen.getAllByText('Grip Lab').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Release Room').length).toBeGreaterThan(0)
     expect(screen.getByText('Movement translation')).toBeInTheDocument()
-    expect(screen.getByText('Evidence Ledger')).toBeInTheDocument()
-    expect(screen.getByText('Master variants')).toBeInTheDocument()
-    expect(screen.getByText('Community')).toBeInTheDocument()
+    expect(screen.getByText('Master files')).toBeInTheDocument()
+    expect(screen.getByText(/Field notes from the bullpen/)).toBeInTheDocument()
   })
 
   it('shows real, sourced master-variant figures', () => {
@@ -40,16 +42,22 @@ describe('App (no-WebGL render is complete)', () => {
     expect(screen.getByText(/As of .*\d{4}\./)).toBeInTheDocument()
   })
 
-  it('has an honest empty community state and a keyboard skip link', () => {
+  it('has an honest empty field-notes state and a keyboard skip link', () => {
     render(<App />)
-    expect(screen.getByText('Empty')).toBeInTheDocument()
+    expect(screen.getByText(/No field notes yet\./)).toBeInTheDocument()
     expect(screen.getByText('Skip to content')).toHaveAttribute('href', '#main')
+  })
+
+  it('does not fabricate the dropped community state', () => {
+    render(<App />)
+    // no live notes, no invented counts, no fake "X people waiting"
+    expect(screen.getByText(/No signup count is shown until it is real\./)).toBeInTheDocument()
   })
 
   it('shows no failure signatures anywhere in the rendered text', () => {
     const { container } = render(<App />)
     const text = container.textContent ?? ''
-    for (const bad of ['undefined', 'NaN', '[object Object]', 'Math.random', 'Loading...', 'TODO', 'placeholder']) {
+    for (const bad of ['undefined', 'NaN', '[object Object]', 'Math.random', 'Loading...', 'TODO', 'placeholder', 'Baseball Atlas']) {
       expect(text).not.toContain(bad)
     }
   })
@@ -68,7 +76,7 @@ describe('Specimen index (routing)', () => {
     window.location.hash = '#/slider'
     render(<App />)
     // the hero headline is fixed; the selected pitch leads the Grip Lab
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hold the pitch before you measure it.')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(HERO_H1)
     const lab = within(document.getElementById('grip-lab') as HTMLElement)
     expect(lab.getByRole('heading', { level: 2 })).toHaveTextContent('Slider')
   })
@@ -82,7 +90,7 @@ describe('Specimen index (routing)', () => {
       window.dispatchEvent(new Event('hashchange'))
     })
     expect(lab().getByRole('heading', { level: 2 })).toHaveTextContent('12-6 curveball')
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Hold the pitch before you measure it.')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(HERO_H1)
   })
 
   it('marks the active specimen with aria-current', () => {

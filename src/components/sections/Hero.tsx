@@ -3,51 +3,60 @@ import { SITE } from '../../config/site'
 import { scrollToId } from '../../lib/scroll'
 import { BallStage } from '../ball/BallStage'
 
+/*
+  The hero states the product, not just the pitch: a living field manual where
+  textbook foundations, verified masters, and community field notes all wear the
+  label of where they came from. The interactive specimen stays the right-hand
+  actor; the modern pitch object inside an archival frame is the whole point.
+*/
 export function Hero({ entry }: { entry: PitchAtlasEntry }) {
   const { canonical, display, seam } = entry
 
   return (
     <section id="top" className="on-stage relative overflow-hidden">
       <div className="absolute inset-0 opacity-[0.12]" aria-hidden="true">
-        <div className="h-full w-full bg-[radial-gradient(circle_at_58%_36%,rgba(178,58,48,0.22),transparent_36%),linear-gradient(115deg,rgba(243,236,224,0.08)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
+        <div className="h-full w-full bg-[radial-gradient(circle_at_58%_36%,rgba(176,224,230,0.16),transparent_36%),linear-gradient(115deg,rgba(243,236,224,0.08)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
       </div>
 
-      <div className="relative mx-auto grid min-h-[calc(100dvh-6.5rem)] max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-10 md:grid-cols-12 md:gap-8 md:px-8 md:pb-20 md:pt-16">
+      <div className="relative mx-auto grid min-h-[calc(100dvh-6.5rem)] max-w-6xl grid-cols-1 items-center gap-10 px-5 pb-16 pt-10 md:grid-cols-12 md:gap-8 md:px-8 md:pb-20 md:pt-14">
         <div className="order-2 md:order-1 md:col-span-6">
-          <p className="mono-label text-bone-2">
-            {SITE.siteName} / {SITE.moduleName}
-          </p>
-          <h1 className="display mt-4 max-w-[9ch] text-[3rem] leading-[0.95] text-bone md:text-[4.8rem]">
-            Hold the pitch before you measure it.
+          <p className="mono-label text-bone-2">{SITE.siteName} / {SITE.sourcePrinciple}</p>
+          <h1 className="display mt-4 max-w-[15ch] text-[2.6rem] leading-[0.98] text-bone md:text-[4.2rem]">
+            The living field manual for pitching grips.
           </h1>
-          <p className="mt-6 max-w-[48ch] text-lg leading-relaxed text-bone-2">
-            {SITE.moduleName} is the launch module for {SITE.siteName}: grip, thumb, seams,
-            finger pads, palm gap, and release feel first. Spin language sits below the
-            craft path where it belongs.
+          <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-bone-2">
+            Textbook foundations, verified master variants, and community field notes on how pitchers
+            grip and shape the baseball. Every claim labeled by its source, not declared right or wrong.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <a
-              href="#grip-lab"
+              href="#atlas"
               onClick={(e) => {
                 e.preventDefault()
-                scrollToId('grip-lab')
+                scrollToId('atlas')
               }}
               className="inline-flex items-center gap-2 rounded-sm border border-seam bg-seam px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:bg-seam-deep active:translate-y-px"
             >
-              Enter Grip Lab
+              Explore the Atlas
               <span aria-hidden="true">↓</span>
             </a>
             <a
-              href="#movement-translation"
+              href="#field-notes"
               onClick={(e) => {
                 e.preventDefault()
-                scrollToId('movement-translation')
+                scrollToId('field-notes')
               }}
-              className="inline-flex items-center rounded-sm border border-bone/30 px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:border-bone"
+              className="inline-flex items-center gap-2.5 rounded-sm border border-bone/30 px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:border-bone"
             >
-              Translate movement
+              Add a Field Note
+              <span className="rounded-sm border border-bone/25 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.12em] text-bone-2">
+                soon
+              </span>
             </a>
           </div>
+          <p className="mt-7 max-w-[46ch] font-mono text-xs leading-relaxed tracking-[0.04em] text-bone-2/80">
+            Foundation. Masters. Field Notes. The three layers of the record, each labeled by source.
+          </p>
         </div>
 
         <div className="order-1 md:order-2 md:col-span-6">

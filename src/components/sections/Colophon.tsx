@@ -71,14 +71,18 @@ export function Colophon({ entry }: { entry: PitchAtlasEntry }) {
           every figure here is static and sourced in the repository.
         </p>
 
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-ink-3/30 pt-8">
-          <span className="display text-lg text-ink">{SITE.siteName}</span>
-          <a
-            href={SITE.canonicalDomain}
-            className="mono-label transition-colors hover:text-seam"
-          >
-            pitch-atlas.com
-          </a>
+        <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-ink-3/30 pt-8">
+          <img
+            src="/brand/wordmark-pitcher.webp"
+            alt={SITE.siteName}
+            className="h-10 w-auto rounded-sm md:h-12"
+          />
+          <div className="flex flex-col items-end gap-1">
+            <a href={SITE.canonicalDomain} className="mono-label transition-colors hover:text-seam">
+              pitch-atlas.com
+            </a>
+            <span className="mono-label text-ink-3">{SITE.tagline}</span>
+          </div>
         </div>
       </div>
     </footer>

@@ -45,3 +45,5 @@ artifacts/
 # private reference (copyrighted) + design-handoff leftovers — never commit
 Pitching-Grips-101.pdf
 Baseball example/
+# heavy brand source (AI-generated PNGs); optimized webp lives in public/brand/
+Brand Image Assets/

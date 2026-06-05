@@ -24,9 +24,21 @@
   --color-bone: #f3ece0;        /* primary text on the stage */
   --color-bone-2: #c8bca6;      /* secondary text on the stage */
 
-  /* the one accent: leather-thread red */
-  --color-seam: #b23a30;
+  /* the one action accent: stitch red, pulled from the brand mark. Seams, active
+     states, CTAs, source emphasis. Never decoration. */
+  --color-seam: #a92a22;
   --color-seam-deep: color-mix(in srgb, var(--color-seam) 74%, #190a08);
+
+  /* navy: the archive + brand structural ink. A NEUTRAL, never a second accent.
+     Specimen borders, brand plates, stamps, archive frames, source emphasis on
+     light surfaces. Lifted from the wordmark and the app-icon field. */
+  --color-navy: #06233a;
+  --color-navy-2: #0d3a5f;     /* lifted navy: hover borders, plate edges */
+  --color-navy-line: color-mix(in srgb, var(--color-navy) 22%, transparent);
+
+  /* deep parchment edge + glove leather, from the card-frame and workbench assets */
+  --color-paper-3: #d8be8a;
+  --color-leather: #5a331f;
 
   /* provenance badge colors — subtle, only on labels */
   --color-ok: #3c7a52;          /* official-data */
