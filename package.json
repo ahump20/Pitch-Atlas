@@ -23,6 +23,7 @@
     "@fontsource/newsreader": "^5.2.10",
     "@react-three/drei": "10.7.7",
     "@react-three/fiber": "9.6.1",
+    "@supabase/supabase-js": "^2.107.0",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "three": "0.184.0"
