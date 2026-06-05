@@ -1,0 +1,47 @@
+# Pitch Atlas
+
+> A living field manual for how pitchers grip and shape a baseball. Grip first,
+> then the physics. Every claim is labeled by its source, not declared right or
+> wrong. Principle: "Sourced, not corrected. Many ways can work."
+
+Pitch Atlas (https://pitch-atlas.com/) is a static, single-page reference. The
+interactive specimen renders with JavaScript, but the substance is plain text:
+grips, release feel, movement physics, master variants, and a full source list.
+
+## How the record is built
+
+Three layers per pitch:
+
+- Foundation: the canonical grip, release, and physics, in plain language. The
+  part most coaches agree on.
+- Masters: how named arms actually throw it. Each figure is season-stamped and
+  confidence-labeled, one click from its source.
+- Field Notes: the live community layer. Anyone can post a field note
+  anonymously, mark notes tried or helpful, and claim a handle by email; notes
+  rank by evidence and context, not by who shouts loudest. Counts come from the
+  database, never fabricated.
+
+## Confidence labels
+
+Every visible number carries a provenance label: official-data (Statcast / MLB),
+reputable-analysis, secondhand-attributed, pitcher's-own-words, coach-observed,
+community-firsthand, or unverified. A leading "approximate" sign marks a real but
+rounded, era-dependent, or methodology-bound figure. Nothing is faked; freshness
+is computed from when sources were last checked (as of 2026-06-04), never
+hardcoded.
+
+## Pitch specimens
+
+- Four-seam fastball: the straightest, fastest pitch; backspin carry.
+- Two-seam fastball (sinker): tails arm-side and sinks; a ground-ball pitch.
+- Circle changeup: fastball look, arrives a beat slower; wrecks timing.
+- 12-6 curveball: topspin drop, twelve o'clock to six.
+- Slider: late, short glove-side break; the hitter sees a red dot.
+
+## Source families cited
+
+MLB.com Statcast Glossary, Baseball Savant (Statcast), Driveline Baseball,
+FanGraphs, The Hardball Times, Pitcher List, Wikipedia, eFastball, and Plate
+Crate, among others. Grip prose is paraphrased and cited, never copied. No MLB,
+team, or player photos, logos, footage, or likenesses are used; all geometry and
+diagrams are original.

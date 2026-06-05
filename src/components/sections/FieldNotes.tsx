@@ -62,7 +62,7 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
     <label className="block">
       <span className={labelClass}>{label}</span>
       {children}
-      {hint ? <span className="mt-1 block text-xs leading-snug text-ink-3">{hint}</span> : null}
+      {hint ? <span className="mt-1 block text-xs leading-snug text-ink-2">{hint}</span> : null}
     </label>
   )
 }
@@ -90,7 +90,7 @@ function IdentityStrip({
     try {
       await onClaim(email)
       setState('sent')
-      setMsg('Check your email — click the link to claim this account. Your credit stays put.')
+      setMsg('Check your email. Click the link to claim this account. Your credit stays put.')
     } catch (err) {
       setState('error')
       setMsg(err instanceof Error ? err.message : 'Could not send the link. Try again.')
@@ -109,16 +109,16 @@ function IdentityStrip({
       </p>
 
       {claimed ? (
-        <p className="mt-3 text-xs leading-relaxed text-ink-3">
+        <p className="mt-3 text-xs leading-relaxed text-ink-2">
           Your account is claimed. Your notes and credit follow you on any device you sign in on.
         </p>
       ) : state === 'sent' ? (
         <p className="mt-3 rounded-sm border border-navy/15 bg-paper px-3 py-2 text-xs leading-relaxed text-ink-2">{msg}</p>
       ) : (
         <form onSubmit={claim} className="mt-3">
-          <p className="mb-2 text-xs leading-relaxed text-ink-3">
+          <p className="mb-2 text-xs leading-relaxed text-ink-2">
             You can take part with no account. Add an email to keep your {score > 0 ? `${score} ` : ''}points and
-            notes if you switch devices — never required.
+            notes if you switch devices, never required.
           </p>
           <div className="flex gap-2">
             <input
@@ -337,12 +337,12 @@ function SubmitForm({
       <div className="rounded-sm border border-navy/15 bg-paper p-5">
         <h3 className="display text-xl text-ink">Log a field note</h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-2">
-          Throw the {pitchName.toLowerCase()} with a wrinkle of your own? Add it. Label where it comes from —
+          Throw the {pitchName.toLowerCase()} with a wrinkle of your own? Add it. Label where it comes from:
           your own report, a coach, or a hunch. Sourced, not corrected.
         </p>
         {done ? (
           <p className="mt-3 rounded-sm border border-navy/15 bg-paper-2/60 px-3 py-2 text-xs leading-relaxed text-ink-2">
-            Posted. It is live below — thank you for shaping the bar.
+            Posted. It is live below. Thank you for shaping the bar.
           </p>
         ) : null}
         <button
@@ -391,7 +391,7 @@ function SubmitForm({
             </Field>
             <Field label="Velocity">
               <select className={inputClass} value={form.velocityBand} onChange={(e) => set('velocityBand', e.target.value as '' | VelocityBand)}>
-                <option value="">—</option>
+                <option value="">-</option>
                 {VELOCITY_BANDS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </Field>
@@ -447,7 +447,7 @@ function SubmitForm({
             >
               {busy ? 'Posting…' : 'Post field note'} <span aria-hidden="true">→</span>
             </button>
-            <span className="text-xs leading-snug text-ink-3">Posts under your handle. You can take part anonymously.</span>
+            <span className="text-xs leading-snug text-ink-2">Posts under your handle. You can take part anonymously.</span>
           </div>
         </div>
       </div>
@@ -472,7 +472,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
   return (
     <section id="field-notes" className="scroll-mt-24">
       <div className="relative overflow-hidden bg-stage">
-        <img src="/brand/workbench.webp" alt="" aria-hidden="true" className="absolute inset-0 h-full w-full object-cover opacity-70" />
+        <img src="/brand/workbench.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-70" />
         <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(13,13,9,0.92) 0%, rgba(13,13,9,0.62) 52%, rgba(13,13,9,0.30) 100%)' }} />
         <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
           <p className="mono-label-stage">Tier 03 / Field Notes</p>
@@ -555,7 +555,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           ) : status === 'error' ? (
             <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-seam/40 px-6 py-14 text-center">
               <p className="max-w-[48ch] leading-relaxed text-ink-2">
-                Couldn't load the field notes just now — {error}. This is usually a passing hiccup.
+                Couldn't load the field notes just now: {error}. This is usually a passing hiccup.
               </p>
               <button type="button" onClick={refresh} className="rounded-sm border border-navy px-4 py-2 font-mono text-xs tracking-wide text-ink hover:bg-paper-2">
                 Try again
@@ -563,9 +563,9 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             </div>
           ) : notes.length === 0 ? (
             <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-navy/25 px-6 py-16 text-center">
-              <img src="/brand/seal.webp" alt="" width={56} height={56} className="opacity-80" aria-hidden="true" />
+              <img src="/brand/seal-128.webp" alt="" width={56} height={56} loading="lazy" decoding="async" className="opacity-80" aria-hidden="true" />
               <p className="max-w-[46ch] leading-relaxed text-ink-2">
-                No field notes yet for this pitch. The first one shapes the bar — add how you throw it above.
+                No field notes yet for this pitch. The first one shapes the bar. Add how you throw it above.
               </p>
             </div>
           ) : (

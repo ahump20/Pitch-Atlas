@@ -53,7 +53,7 @@
 
   --font-display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
   --font-prose: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Martian Mono", "Commit Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-mono: "Martian Mono", ui-monospace, "SFMono-Regular", monospace;
 
   --radius-xs: 1px;
   --radius-sm: 2px;
@@ -281,4 +281,16 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+/*
+  Print: a field manual gets printed. Drop the dark stage to white ink-on-paper,
+  remove the grain wash and spotlight pools, and never waste toner on the canvas.
+*/
+@media print {
+  html, body { background: #fff !important; color: #000 !important; }
+  .on-stage { background: #fff !important; color: #000 !important; }
+  .on-stage .text-bone, .on-stage .text-bone-2 { color: #000 !important; }
+  .grain-overlay, .stage-spot { display: none !important; }
+  canvas { display: none !important; }
 }

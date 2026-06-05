@@ -50,8 +50,10 @@ export function useFieldNotes(pitchSlug: string): UseFieldNotes {
 
   useEffect(() => {
     let cancelled = false
+    /* eslint-disable react-hooks/set-state-in-effect -- reset the surface to loading and clear any prior error before the async fetch; canonical fetch-on-mount, not a cascading-render bug */
     setStatus('loading')
     setError(null)
+    /* eslint-enable react-hooks/set-state-in-effect */
     ;(async () => {
       try {
         await ensureSession()

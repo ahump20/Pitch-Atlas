@@ -127,7 +127,7 @@ export function MasterFiles({ entry }: { entry: PitchAtlasEntry }) {
         </div>
       ) : (
         <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-navy/25 px-6 py-16 text-center">
-          <img src="/brand/seal.webp" alt="" width={64} height={64} className="opacity-80" aria-hidden="true" />
+          <img src="/brand/seal-128.webp" alt="" width={64} height={64} loading="lazy" decoding="async" className="opacity-80" aria-hidden="true" />
           <p className="max-w-[46ch] leading-relaxed text-ink-2">
             No master files for this pitch yet. A master is filed only when a named arm and a cited source
             both exist. Nothing is added to fill the page.
