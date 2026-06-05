@@ -313,3 +313,52 @@ export interface PitchAtlasEntry {
   /** Plain-language coaching layer. Optional; sections fall back when absent. */
   guide?: GripGuide
 }
+
+/*
+  The Craftsmen wing. A curated hall of arms who defined a pitch, plus the one
+  pitch that is a legend rather than a person (the gyroball). Same provenance
+  discipline as the pitch records: the intro and tagline are our original
+  framing, but every quote and number is a Claim carrying its own Source and
+  confidence, and a quote is present only when a real one was found. Nothing here
+  is a likeness; the visual actor is the seam specimen of their signature pitch.
+*/
+export type CraftsmanKind =
+  | 'craftsman' // a real pitcher
+  | 'legend' // the gyroball: a pitch-as-myth, shipped flagged, never as verified fact
+
+export interface CraftsmanNumber {
+  label: string
+  claim: Claim<string>
+}
+
+export interface Craftsman {
+  /** URL slug for /craftsmen/<slug>. Stable, kebab-case. */
+  slug: string
+  name: string
+  kind: CraftsmanKind
+  /** Career span or status, e.g. "1959-1975" or "Active since 2024". */
+  era: string
+  /** Throwing hand. Omitted for a legend (the gyroball is a pitch, not a person). */
+  hand?: Handedness
+  /** Display name of the pitch they are known for, e.g. "Slider", "Splitter". */
+  signaturePitch: string
+  /** Cross-link target to a filed /pitch/<slug>, when the atlas has that pitch. */
+  signaturePitchSlug?: string
+  /** Hall index for the archive plate, e.g. "C-01". */
+  specimenNo: string
+  /** Our one-line framing of why this arm is in the hall. Original words. */
+  tagline: string
+  /** Original framing paragraph. Carries no measured figures. */
+  intro: string
+  /** How they threw or shaped the signature pitch (or, for a legend, its physics). Sourced. */
+  signature: Claim<string>
+  /** The competitive / psychological edge: how they thought about pitching. Sourced. Omitted for a legend. */
+  mentalEdge?: Claim<string>
+  /** Sourced career or pitch numbers. */
+  numbers: CraftsmanNumber[]
+  /** A real, verbatim, sourced quote. Present only when one was actually found. */
+  quote?: Claim<string>
+  /** Legend only (the gyroball): the myth-versus-physics note. Flagged, never fact. */
+  legendNote?: Claim<string>
+  rights: RightsStatus
+}

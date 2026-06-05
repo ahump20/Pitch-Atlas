@@ -1,5 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { createHead, UnheadProvider } from '@unhead/react/client'
+import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
 // Self-hosted fonts. No runtime request to Google Fonts or any external host.
 // Display: Newsreader (serif, italics carry the warmth). Prose: Hanken Grotesk.
@@ -22,13 +24,27 @@ import '@fontsource/martian-mono/600.css'
 import 'react-tweet/theme.css'
 
 import './index.css'
-import { App } from './App'
+import { routes } from './routes'
 
-const rootEl = document.getElementById('root')
-if (!rootEl) throw new Error('Pitch Atlas: root element #root not found')
+/*
+  The client entry. The manual is a multi-page site now: a data router holds the
+  routes, an Unhead provider manages per-page titles and meta, and the build-time
+  prerender writes a real HTML file per route. We render (rather than hydrate)
+  over the prerendered markup so the client-only 3D upgrades cleanly without a
+  hydration mismatch; the prerendered HTML still serves SEO and first paint.
+*/
+// The prerender plugin injects each route's HTML into <div id="app">, so the
+// client mounts on the same node.
+const rootEl = document.getElementById('app')
+if (!rootEl) throw new Error('Pitch Atlas: mount element #app not found')
+
+const head = createHead()
+const router = createBrowserRouter(routes)
 
 createRoot(rootEl).render(
   <StrictMode>
-    <App />
+    <UnheadProvider head={head}>
+      <RouterProvider router={router} />
+    </UnheadProvider>
   </StrictMode>,
 )

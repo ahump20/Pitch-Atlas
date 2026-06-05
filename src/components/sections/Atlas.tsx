@@ -1,6 +1,6 @@
+import { Link } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
-import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
-import { scrollToId } from '../../lib/scroll'
+import type { PitchFamily } from '../../data/types'
 import { countSources } from '../../lib/entry-stats'
 import { TierMarker } from '../layout/TierMarker'
 import { SeamSchematic } from '../fallback/SeamSchematic'
@@ -35,18 +35,19 @@ const ROADMAP_PITCHES: RoadmapPitch[] = [
     note: 'A fastball grip that cuts late and short. The sourced specimen opens as the atlas grows.',
   },
   {
-    name: 'Splitter',
-    family: 'offspeed',
-    note: 'A fastball look with a deeper split between the fingers. Its sourced record is in progress.',
+    name: 'Sweeper',
+    family: 'breaking',
+    note: 'The slider taken sideways: a wide, late horizontal break. Its sourced record is in progress.',
   },
 ]
 
-function selectPitch(slug: string) {
-  if (typeof window !== 'undefined') window.location.hash = `#/${slug}`
-  scrollToId('grip-lab')
-}
-
-export function PitchFamilyRail({ entry }: { entry: PitchAtlasEntry }) {
+/*
+  The catalog: the home page's table of contents. Every pitch is its own page,
+  reached by a real route, grouped by family. The "in the works" cards keep the
+  growth honest, a dashed plate rather than a fake entry. The pitch count is
+  computed from the data, never hardcoded.
+*/
+export function PitchFamilyRail() {
   return (
     <section id="atlas" className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
       <TierMarker index="00" label="The catalog" />
@@ -55,9 +56,9 @@ export function PitchFamilyRail({ entry }: { entry: PitchAtlasEntry }) {
           <h2 className="display text-3xl leading-tight text-ink md:text-4xl">Pick a specimen, open its file.</h2>
         </div>
         <p className="max-w-[62ch] text-lg leading-relaxed text-ink-2 md:col-span-8">
-          Five pitches are filed today, each its own deep-linkable specimen. Choose a family, study where
-          the fingers and thumb sit, then move through release, movement, master files, and the field
-          notes opening beneath them.
+          {PITCHES.length} pitches are filed today, each its own page. Choose a family, then open a
+          specimen to study where the fingers and thumb sit, the release, the movement, the master
+          files, and the field notes opening beneath them.
         </p>
       </div>
 
@@ -80,22 +81,12 @@ export function PitchFamilyRail({ entry }: { entry: PitchAtlasEntry }) {
 
               <ul className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {pitches.map((p) => {
-                  const active = p.display.slug === entry.display.slug
                   const sources = countSources(p)
                   return (
                     <li key={p.display.slug}>
-                      <a
-                        href={`#/${p.display.slug}`}
-                        aria-current={active ? 'true' : undefined}
-                        onClick={(e) => {
-                          e.preventDefault()
-                          selectPitch(p.display.slug)
-                        }}
-                        className={`group relative flex h-full flex-col gap-4 rounded-sm border-l-2 p-5 transition-colors ${
-                          active
-                            ? 'border-l-seam bg-paper-2/80 ring-1 ring-inset ring-navy/15'
-                            : 'border-l-navy/40 bg-paper-2/30 hover:border-l-seam hover:bg-paper-2/60'
-                        }`}
+                      <Link
+                        to={`/pitch/${p.display.slug}`}
+                        className="group relative flex h-full flex-col gap-4 rounded-sm border-l-2 border-l-navy/40 bg-paper-2/30 p-5 transition-colors hover:border-l-seam hover:bg-paper-2/60"
                       >
                         <span aria-hidden="true" className="absolute right-2.5 top-2.5 h-2.5 w-2.5 border-r border-t border-navy/30" />
                         <div className="flex items-baseline justify-between">
@@ -124,9 +115,9 @@ export function PitchFamilyRail({ entry }: { entry: PitchAtlasEntry }) {
                           <span aria-hidden="true" className="text-ink-3">·</span>
                           <span className="mono-label">{p.masterVariants.length} master files</span>
                           <span aria-hidden="true" className="text-ink-3">·</span>
-                          <span className="mono-label text-ink-3">field notes soon</span>
+                          <span className="mono-label text-seam">Open file →</span>
                         </div>
-                      </a>
+                      </Link>
                     </li>
                   )
                 })}

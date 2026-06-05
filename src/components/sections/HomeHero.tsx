@@ -1,16 +1,17 @@
+import { Link } from 'react-router-dom'
 import type { PitchAtlasEntry } from '../../data/types'
 import { SITE } from '../../config/site'
 import { scrollToId } from '../../lib/scroll'
 import { BallStage } from '../ball/BallStage'
 
 /*
-  The hero states the product, not just the pitch: a living field manual where
-  textbook foundations, verified masters, and community field notes all wear the
-  label of where they came from. The interactive specimen stays the right-hand
-  actor; the modern pitch object inside an archival frame is the whole point.
+  The home hero states the product, not a single pitch. The interactive specimen
+  is the right-hand actor: a real seam-true baseball inside an archival frame.
+  The two calls send the reader into the two wings of the manual, the pitch
+  catalog just below and the Craftsmen hall.
 */
-export function Hero({ entry }: { entry: PitchAtlasEntry }) {
-  const { canonical, display, seam } = entry
+export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
+  const { canonical, display, seam } = featured
 
   return (
     <section id="top" className="on-stage relative overflow-hidden">
@@ -25,8 +26,9 @@ export function Hero({ entry }: { entry: PitchAtlasEntry }) {
             The living field manual for pitching grips.
           </h1>
           <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-bone-2">
-            Textbook foundations, verified master variants, and community field notes on how pitchers
-            grip and shape the baseball. Every claim labeled by its source, not declared right or wrong.
+            Textbook foundations, verified master variants, and the craftsmen who defined the craft.
+            Every claim is labeled by its source, not declared right or wrong. Open a pitch, study the
+            hand, then read the legends who made it move.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <a
@@ -37,22 +39,16 @@ export function Hero({ entry }: { entry: PitchAtlasEntry }) {
               }}
               className="inline-flex items-center gap-2 rounded-sm border border-seam bg-seam px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:bg-seam-deep active:translate-y-px"
             >
-              Explore the Atlas
+              Browse the pitches
               <span aria-hidden="true">↓</span>
             </a>
-            <a
-              href="#field-notes"
-              onClick={(e) => {
-                e.preventDefault()
-                scrollToId('field-notes')
-              }}
-              className="inline-flex items-center gap-2.5 rounded-sm border border-bone/30 px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:border-bone"
+            <Link
+              to="/craftsmen"
+              className="inline-flex items-center gap-2 rounded-sm border border-bone/30 px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:border-bone"
             >
-              Add a Field Note
-              <span className="rounded-sm border border-bone/25 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.12em] text-bone-2">
-                soon
-              </span>
-            </a>
+              Meet the Craftsmen
+              <span aria-hidden="true">→</span>
+            </Link>
           </div>
           <p className="mt-7 max-w-[46ch] font-mono text-xs leading-relaxed tracking-[0.04em] text-bone-2/80">
             Foundation. Masters. Field Notes. The three layers of the record, each labeled by source.
@@ -67,7 +63,7 @@ export function Hero({ entry }: { entry: PitchAtlasEntry }) {
               style={{ background: 'radial-gradient(circle at 50% 46%, rgba(238,240,246,0.12), transparent 64%)' }}
             />
             <BallStage
-              entry={entry}
+              entry={featured}
               grip
               faceGrip
               autoSpin={false}

@@ -1,11 +1,12 @@
-import { scrollToId } from '../../lib/scroll'
+import { Link } from 'react-router-dom'
 
 /*
   The product premise, stated once and recurring as a motif: Foundation, Masters,
   Field Notes. Three layers of the same record, each labeled by where it came
   from and ranked by evidence, never declared right or wrong. Not three identical
   cards: the Foundation reads as textbook, the Masters as a navy archive plate
-  (the trust hook), the Field Notes as a parchment note not yet open.
+  (the trust hook), the Field Notes as a parchment note not yet open. Each layer
+  links into the four-seam chapter, where it is shown in full.
 */
 
 const LAYERS = [
@@ -14,7 +15,7 @@ const LAYERS = [
     label: 'Foundation',
     tier: 'Textbook',
     body: 'The canonical grip, release, and physics. Diagram-first, plain language, the part everyone agrees on.',
-    target: 'grip-lab',
+    to: '/pitch/four-seam#grip-lab',
     cta: 'Open the Grip Lab',
   },
   {
@@ -22,7 +23,7 @@ const LAYERS = [
     label: 'Masters',
     tier: 'Verified, attributed',
     body: 'How named arms actually throw it. Every figure season-stamped, confidence-labeled, and one click from its source.',
-    target: 'masters',
+    to: '/pitch/four-seam#masters',
     cta: 'Read the Master Files',
   },
   {
@@ -30,7 +31,7 @@ const LAYERS = [
     label: 'Field Notes',
     tier: 'Community, sourced',
     body: 'The variants pitchers discover by hand, ranked by evidence and context, not by who shouts loudest. Opening soon.',
-    target: 'field-notes',
+    to: '/pitch/four-seam#field-notes',
     cta: 'See how it works',
   },
 ] as const
@@ -54,7 +55,7 @@ export function HowItWorks() {
         </div>
 
         <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {LAYERS.map((layer, i) => {
+          {LAYERS.map((layer) => {
             const isMasters = layer.label === 'Masters'
             const isSoon = layer.label === 'Field Notes'
             return (
@@ -80,19 +81,15 @@ export function HowItWorks() {
                 </div>
                 <h3 className="display text-2xl text-ink">{layer.label}</h3>
                 <p className="text-[0.9375rem] leading-relaxed text-ink-2">{layer.body}</p>
-                <a
-                  href={`#${layer.target}`}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    scrollToId(layer.target)
-                  }}
+                <Link
+                  to={layer.to}
                   className={`mt-auto inline-flex items-center gap-1.5 pt-2 font-mono text-xs uppercase tracking-[0.1em] transition-colors ${
                     isMasters ? 'text-navy hover:text-seam' : 'text-ink-2 hover:text-seam'
                   }`}
                 >
                   {layer.cta}
-                  <span aria-hidden="true">{i === 0 ? '↓' : '→'}</span>
-                </a>
+                  <span aria-hidden="true">→</span>
+                </Link>
               </div>
             )
           })}

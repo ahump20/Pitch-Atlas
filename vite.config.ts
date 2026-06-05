@@ -1,10 +1,13 @@
 import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
+import reactSsg from 'vite-plugin-react-ssg'
 
-// Static build for Cloudflare Pages. No SSR.
+// Static build for Cloudflare Pages. The site is a traditional Vite React SPA;
+// vite-plugin-react-ssg (apply: 'build' only, so it never touches dev or tests)
+// prerenders a real HTML file per route after the build for SEO and first paint.
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), reactSsg()],
   build: {
     target: 'es2022',
     sourcemap: false,

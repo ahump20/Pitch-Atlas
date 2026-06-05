@@ -8,6 +8,9 @@ import type { Claim, ClaimConfidence, Source } from './types'
 */
 
 const RETRIEVED = '2026-06-04'
+// The Craftsmen wing and the two new specimens were sourced a day later. Kept on
+// its own constant so the colophon "as of" line stays honest about the newest check.
+const RETRIEVED_2 = '2026-06-05'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -352,6 +355,329 @@ export const SOURCES = {
     label: "FanGraphs, Sergio Romo's No-Dot Slider Revealed",
     url: 'https://blogs.fangraphs.com/sergio-romos-no-dot-slider-revealed/',
     retrievedAt: RETRIEVED,
+  },
+
+  // --- The Craftsmen: Bob Gibson ---
+  'gibson-fangraphs': {
+    id: 'gibson-fangraphs',
+    label: 'FanGraphs, Remembering the Intense and Indomitable Bob Gibson',
+    url: 'https://blogs.fangraphs.com/remembering-the-intense-and-indomitable-bob-gibson-1935-2020/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'gibson-wiki': {
+    id: 'gibson-wiki',
+    label: 'Wikipedia, Bob Gibson',
+    url: 'https://en.wikipedia.org/wiki/Bob_Gibson',
+    retrievedAt: RETRIEVED_2,
+  },
+  'gibson-almanac': {
+    id: 'gibson-almanac',
+    label: 'Baseball Almanac, Bob Gibson Quotes',
+    url: 'https://www.baseball-almanac.com/quotes/bob_gibson_quotes.shtml',
+    retrievedAt: RETRIEVED_2,
+  },
+  'gibson-hof-1968': {
+    id: 'gibson-hof-1968',
+    label: "National Baseball Hall of Fame, Gibson's 1968 season",
+    url: 'https://baseballhall.org/discover/inside-pitch/gibson-completes-fantastic-1968-season-with-NL-MVP-honors',
+    retrievedAt: RETRIEVED_2,
+    season: '1968',
+  },
+  'gibson-cbs-backup': {
+    id: 'gibson-cbs-backup',
+    label: "CBS Sports, Bob Gibson's back-up slider",
+    url: 'https://www.cbssports.com/mlb/news/gif-bob-gibsons-back-up-slider/',
+    retrievedAt: RETRIEVED_2,
+  },
+
+  // --- The Craftsmen: Nolan Ryan ---
+  'ryan-espn': {
+    id: 'ryan-espn',
+    label: "ESPN, There's never been another pitcher like Nolan Ryan",
+    url: 'https://www.espn.com/mlb/story/_/id/29171065/legendary-dominating-historically-wild-there-never-another-pitcher-nolan-ryan',
+    retrievedAt: RETRIEVED_2,
+  },
+  'ryan-sabr': {
+    id: 'ryan-sabr',
+    label: 'Society for American Baseball Research, Nolan Ryan (BioProject)',
+    url: 'https://sabr.org/bioproj/person/nolan-ryan/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'ryan-hof': {
+    id: 'ryan-hof',
+    label: 'National Baseball Hall of Fame, Nolan Ryan',
+    url: 'https://baseballhall.org/hall-of-famers/ryan-nolan',
+    retrievedAt: RETRIEVED_2,
+  },
+  'ryan-almanac': {
+    id: 'ryan-almanac',
+    label: 'Baseball Almanac, Nolan Ryan career register',
+    url: 'https://www.baseball-almanac.com/players/player.php?p=ryanno01',
+    retrievedAt: RETRIEVED_2,
+  },
+  'ryan-wiki': {
+    id: 'ryan-wiki',
+    label: 'Wikipedia, Nolan Ryan',
+    url: 'https://en.wikipedia.org/wiki/Nolan_Ryan',
+    retrievedAt: RETRIEVED_2,
+  },
+
+  // --- The Craftsmen: Roger Clemens ---
+  'clemens-espn-classic': {
+    id: 'clemens-espn-classic',
+    label: 'ESPN Classic, Clemens thrives on confrontation',
+    url: 'https://www.espn.com/classic/biography/s/clemens_roger.html',
+    retrievedAt: RETRIEVED_2,
+  },
+  'clemens-almanac': {
+    id: 'clemens-almanac',
+    label: 'Baseball Almanac, Roger Clemens Quotes',
+    url: 'https://www.baseball-almanac.com/quotes/roger_clemens_quotes.shtml',
+    retrievedAt: RETRIEVED_2,
+  },
+  'clemens-wiki': {
+    id: 'clemens-wiki',
+    label: 'Wikipedia, Roger Clemens',
+    url: 'https://en.wikipedia.org/wiki/Roger_Clemens',
+    retrievedAt: RETRIEVED_2,
+  },
+  'clemens-sabr-1986': {
+    id: 'clemens-sabr-1986',
+    label: 'SABR Games Project, April 29, 1986: Clemens strikes out 20',
+    url: 'https://sabr.org/gamesproj/game/april-29-1986-roger-clemens-becomes-first-pitcher-to-strike-out-20-in-nine-innings/',
+    retrievedAt: RETRIEVED_2,
+    season: '1986',
+  },
+  'clemens-mlb-1996': {
+    id: 'clemens-mlb-1996',
+    label: 'MLB.com Cut4, Clemens strikes out 20 Tigers',
+    url: 'https://www.mlb.com/cut4/roger-clemens-strikes-out-20-tigers/c-150116768',
+    retrievedAt: RETRIEVED_2,
+    season: '1996',
+  },
+
+  // --- The Craftsmen: Greg Maddux ---
+  'maddux-daringfireball': {
+    id: 'maddux-daringfireball',
+    label: 'Daring Fireball, quoting Thomas Boswell (Washington Post, Jan 7, 2014)',
+    url: 'https://daringfireball.net/linked/2014/01/13/maddux',
+    retrievedAt: RETRIEVED_2,
+  },
+  'maddux-lbs': {
+    id: 'maddux-lbs',
+    label: 'Larry Brown Sports, the Maddux / Tony Gwynn quote (via Boswell)',
+    url: 'https://larrybrownsports.com/baseball/greg-maddux-awesome-tony-gwynn-quote/232778',
+    retrievedAt: RETRIEVED_2,
+  },
+  'maddux-wiki': {
+    id: 'maddux-wiki',
+    label: 'Wikipedia, Greg Maddux',
+    url: 'https://en.wikipedia.org/wiki/Greg_Maddux',
+    retrievedAt: RETRIEVED_2,
+  },
+  'maddux-almanac': {
+    id: 'maddux-almanac',
+    label: 'Baseball Almanac, Greg Maddux Quotes',
+    url: 'https://www.baseball-almanac.com/quotes/greg_maddux_quotes.shtml',
+    retrievedAt: RETRIEVED_2,
+  },
+
+  // --- The Craftsmen + splinker specimen: Paul Skenes ---
+  'skenes-mlb-confidence': {
+    id: 'skenes-mlb-confidence',
+    label: "MLB.com, Skenes' newest pitch is his confidence pitch (Alex Stumpf)",
+    url: 'https://www.mlb.com/news/paul-skenes-adds-splinker-to-pitch-mix',
+    retrievedAt: RETRIEVED_2,
+    season: '2024',
+  },
+  'skenes-fox': {
+    id: 'skenes-fox',
+    label: 'FOX Sports, Paul Skenes and his splinker at the All-Star Game',
+    url: 'https://www.foxsports.com/stories/mlb/must-watch-tv-paul-skenes-his-splinker-take-center-stage-mlb-all-star-game',
+    retrievedAt: RETRIEVED_2,
+    season: '2024',
+  },
+  'skenes-mlb-arsenal': {
+    id: 'skenes-mlb-arsenal',
+    label: "MLB.com, Explaining Skenes' expanding arsenal (Mike Petriello)",
+    url: 'https://www.mlb.com/news/paul-skenes-pitch-arsenal-breakdown',
+    retrievedAt: RETRIEVED_2,
+    season: '2025',
+  },
+  'skenes-mlb-debut': {
+    id: 'skenes-mlb-debut',
+    label: "MLB.com, A splinker? Skenes' hybrid pitch (debut, Alex Stumpf)",
+    url: 'https://www.mlb.com/news/paul-skenes-splinker-fools-hitters-in-mlb-debut',
+    retrievedAt: RETRIEVED_2,
+    season: '2024',
+  },
+  'skenes-yahoo': {
+    id: 'skenes-yahoo',
+    label: 'Yahoo Sports, Paul Skenes reveals how he throws his splinker',
+    url: 'https://sports.yahoo.com/article/pirates-paul-skenes-reveals-throws-195218605.html',
+    retrievedAt: RETRIEVED_2,
+    season: '2024',
+  },
+
+  // --- The Craftsmen + circle-change master: Johan Santana ---
+  'santana-sabr': {
+    id: 'santana-sabr',
+    label: 'Society for American Baseball Research, Johan Santana (BioProject)',
+    url: 'https://sabr.org/bioproj/person/johan-santana/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'santana-twinsalmanac': {
+    id: 'santana-twinsalmanac',
+    label: 'The Twins Almanac, Johan Santana',
+    url: 'https://twinsalmanac.com/johansantana/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'santana-wiki': {
+    id: 'santana-wiki',
+    label: 'Wikipedia, Johan Santana',
+    url: 'https://en.wikipedia.org/wiki/Johan_Santana',
+    retrievedAt: RETRIEVED_2,
+  },
+  'santana-fastballs': {
+    id: 'santana-fastballs',
+    label: 'Fast Balls, Tales of the changeup: an analysis of Johan Santana (PITCHf/x)',
+    url: 'https://fastballs.wordpress.com/2010/05/19/tales-of-the-changeup-an-analysis-of-johan-santana/',
+    retrievedAt: RETRIEVED_2,
+    season: '2007',
+  },
+  'santana-fangraphs-nohit': {
+    id: 'santana-fangraphs-nohit',
+    label: 'FanGraphs, Johan Santana Rides Changeup to No-Hitter',
+    url: 'https://blogs.fangraphs.com/johan-santana-rides-changeup-to-no-hitter/',
+    retrievedAt: RETRIEVED_2,
+    season: '2012',
+  },
+
+  // --- The gyroball (legend) ---
+  'gyro-sabr-brj': {
+    id: 'gyro-sabr-brj',
+    label: 'SABR Baseball Research Journal, An Analysis of the Gyroball (Nathan & Baldwin)',
+    url: 'https://baseball.physics.illinois.edu/BRJGyro.pdf',
+    retrievedAt: RETRIEVED_2,
+    season: '2007',
+  },
+  'gyro-bp': {
+    id: 'gyro-bp',
+    label: "Baseball Prospectus, Schrodinger's Bat: Searching for the Gyroball (Dan Fox)",
+    url: 'https://www.baseballprospectus.com/news/article/6419/schrodingers-bat-searching-for-the-gyroball/',
+    retrievedAt: RETRIEVED_2,
+    season: '2007',
+  },
+  'gyro-deadspin': {
+    id: 'gyro-deadspin',
+    label: 'Deadspin, Unspinning the Mythical Gyroball (Barry Petchesky)',
+    url: 'https://deadspin.com/unspinning-the-mythical-gyroball-the-demon-miracle-pit-1451016294/',
+    retrievedAt: RETRIEVED_2,
+  },
+  'gyro-illinois': {
+    id: 'gyro-illinois',
+    label: 'University of Illinois News Bureau, Is the so-called gyroball just hype? (Alan Nathan)',
+    url: 'https://news.illinois.edu/is-the-so-called-gyroball-just-hype/',
+    retrievedAt: RETRIEVED_2,
+  },
+
+  // --- The splitter (split-finger fastball) specimen ---
+  'sutter-hof': {
+    id: 'sutter-hof',
+    label: 'National Baseball Hall of Fame, Sutter remembered as pioneer of the split-finger',
+    url: 'https://baseballhall.org/discover/Sutter-remembered-as-pioneer-of-split-fingered-fastball',
+    retrievedAt: RETRIEVED_2,
+  },
+  'sutter-wiki': {
+    id: 'sutter-wiki',
+    label: 'Wikipedia, Bruce Sutter',
+    url: 'https://en.wikipedia.org/wiki/Bruce_Sutter',
+    retrievedAt: RETRIEVED_2,
+  },
+  'wiki-splitter': {
+    id: 'wiki-splitter',
+    label: 'Wikipedia, Split-finger fastball',
+    url: 'https://en.wikipedia.org/wiki/Split-finger_fastball',
+    retrievedAt: RETRIEVED_2,
+  },
+  'gausman-conversation': {
+    id: 'gausman-conversation',
+    label: "The Conversation, the physics of Kevin Gausman's splitter",
+    url: 'https://theconversation.com/how-the-physics-of-baseball-explains-blue-jay-kevin-gausmans-signature-pitch-268732',
+    retrievedAt: RETRIEVED_2,
+  },
+  'gausman-rpp': {
+    id: 'gausman-rpp',
+    label: "Rockland Peak Performance, what makes Gausman's splitter effective",
+    url: 'https://rocklandpeakperformance.com/what-makes-kevin-gausmans-splitter-so-effective/',
+    retrievedAt: RETRIEVED_2,
+    season: '2021',
+  },
+  'gausman-jays': {
+    id: 'gausman-jays',
+    label: "Jays Journal, Gausman's splitter is one of the best pitches in baseball",
+    url: 'https://jaysjournal.com/kevin-gausman-s-splitter-has-been-one-of-the-best-pitches-in-baseball-01js0g3za211',
+    retrievedAt: RETRIEVED_2,
+  },
+  'ohtani-mlb-splitter': {
+    id: 'ohtani-mlb-splitter',
+    label: "MLB.com, Ohtani's splitter still the most unhittable pitch",
+    url: 'https://www.mlb.com/news/shohei-ohtani-splitter-still-most-unhittable-pitch',
+    retrievedAt: RETRIEVED_2,
+    season: '2021',
+  },
+  'tanaka-br': {
+    id: 'tanaka-br',
+    label: "Bleacher Report, Masahiro Tanaka's splitter",
+    url: 'https://bleacherreport.com/articles/2102823-masahiro-tanakas-splitter-and-the-10-best-strikeout-pitches-of-mlb',
+    retrievedAt: RETRIEVED_2,
+  },
+  'schilling-wiki': {
+    id: 'schilling-wiki',
+    label: 'Wikipedia, Curt Schilling',
+    url: 'https://en.wikipedia.org/wiki/Curt_Schilling',
+    retrievedAt: RETRIEVED_2,
+  },
+  'driveline-splitters': {
+    id: 'driveline-splitters',
+    label: 'Driveline Baseball Help, Pitch Grips: Splitters',
+    url: 'https://help.drivelinebaseball.com/portal/en/kb/articles/pitch-grips-splitters',
+    retrievedAt: RETRIEVED_2,
+  },
+
+  // --- The splinker (sinker-splitter hybrid) specimen ---
+  'duran-mlb': {
+    id: 'duran-mlb',
+    label: "MLB.com, Meet the 'splinker' pitch (Jhoan Duran, Do-Hyoung Park)",
+    url: 'https://www.mlb.com/news/jhoan-duran-on-his-unique-splinker-pitch',
+    retrievedAt: RETRIEVED_2,
+    season: '2022',
+  },
+  'duran-fangraphs': {
+    id: 'duran-fangraphs',
+    label: 'FanGraphs, Jhoan Duran and the One True Split-Finger Fastball',
+    url: 'https://blogs.fangraphs.com/jhoan-duran-and-the-one-true-split-finger-fastball/',
+    retrievedAt: RETRIEVED_2,
+    season: '2025',
+  },
+  'miller-mlb': {
+    id: 'miller-mlb',
+    label: 'MLB.com, Mason Miller adds a splinker',
+    url: 'https://www.mlb.com/news/mason-miller-adds-splinker-to-pitching-arsenal',
+    retrievedAt: RETRIEVED_2,
+    season: '2024',
+  },
+  'joyce-mlb': {
+    id: 'joyce-mlb',
+    label: 'MLB.com, Ben Joyce on adding a splinker',
+    url: 'https://www.mlb.com/news/ben-joyce-on-adding-a-splinker-to-his-arsenal',
+    retrievedAt: RETRIEVED_2,
+  },
+  'dobbins-fangraphs': {
+    id: 'dobbins-fangraphs',
+    label: 'FanGraphs, Red Sox prospect Hunter Dobbins has added a splinker',
+    url: 'https://blogs.fangraphs.com/red-sox-prospect-hunter-dobbins-has-added-a-splinker-and-upped-his-velo/',
+    retrievedAt: RETRIEVED_2,
   },
 } satisfies Record<string, Source>
 

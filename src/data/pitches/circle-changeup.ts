@@ -221,6 +221,19 @@ export const circleChange: PitchAtlasEntry = {
       ],
       rights: 'original',
     },
+    {
+      tier: 'verified-attributed',
+      pitcher: 'Johan Santana',
+      context: 'The historical benchmark, and the honest one. Widely called the best changeup of its era, built on identical arm action rather than movement; the data shows the deception, not the velocity gap, did the work. He has his own chapter in the Craftsmen.',
+      verifiedPro: true,
+      numbers: [
+        { label: 'Fastball-to-change gap (2007)', claim: claim('~10 mph (93.0 / 83.1)', 'santana-fastballs', 'reputable-analysis', { approximate: true, note: 'PITCHf/x, 2007. The pitch was reputed to have a 15-20 mph gap; the measured separation is closer to a normal MLB changeup, so the deception is what made it elite.' }) },
+        { label: 'Career changeup value (since 2002)', claim: claim('133.4 runs (the leader)', 'santana-fangraphs-nohit', 'reputable-analysis') },
+        { label: 'No-hitter changeups (2012)', claim: claim('38 thrown, 9 of 27 outs', 'santana-fangraphs-nohit', 'reputable-analysis') },
+        { label: 'Cy Young Awards', claim: claim('2, both unanimous (2004, 2006)', 'santana-twinsalmanac', 'reputable-analysis') },
+      ],
+      rights: 'original',
+    },
   ],
 
   community: {
