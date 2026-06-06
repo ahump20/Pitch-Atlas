@@ -2,8 +2,12 @@
   "name": "Pitch Atlas",
   "short_name": "Pitch Atlas",
   "description": "The living field manual for pitching grips. Sourced, not corrected.",
+  "lang": "en",
+  "id": "/",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
+  "categories": ["sports", "education", "reference"],
   "background_color": "#f3ece0",
   "theme_color": "#f3ece0",
   "icons": [

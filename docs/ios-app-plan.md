@@ -164,3 +164,77 @@ thing cheap and safe enough to start now. Phase 1 waits for evidence from Phase 
 That sequencing is the whole point: get the app feel into pitchers' hands this
 week, learn what they actually return for, and spend the real build on the proven
 loop.
+
+## Reality check (pressure-tested 2026-06-06)
+
+This plan was written before anyone checked it against the actual code and the
+current state of the platforms. Pressure-tested two days later, here's where it
+holds and where it oversells. The phasing call is right and stays. Three claims
+need correcting, and a few things were left out.
+
+**Phase 0 is mostly already done.** The "small configuration file and an icon set"
+— the manifest, the three icons, the home-screen meta tags — are already in the
+site. Add-to-home-screen and full-screen launch already work today. The only real
+remaining piece of Phase 0 is the part the plan waved through as free: **offline**.
+Offline needs a service worker (the bit of code that lets a page load with no
+signal), and that's the one piece of genuine engineering here — and the one with a
+trap. On a live site, a careless service worker pins everyone who installed it to
+the old version even after you ship a fix. So Phase 0's true scope is: a
+carefully-built offline layer where the live version always wins and the user is
+asked before updating, plus a few minutes of iOS polish (done). Not "a config file
+this week."
+
+**"Reuse the code, maintain one thing" is half true.** The brain reuses: the
+sourced data, the pitch content, the physics, and the Supabase backend all travel
+to the phone app unchanged — and that's the expensive, valuable part. But every
+screen gets rebuilt. A phone app written in Expo doesn't run web pages; the whole
+visual surface (~64 files) is rewritten in phone-native building blocks. The honest
+line is "one data layer, two front ends," not "one codebase." Still worth it — the
+hard part is the brain — but go in knowing the body gets rebuilt.
+
+**The 3D ball on the phone is not "well-trodden" — it's the riskiest single
+piece.** The tool for drawing the 3D ball on a phone is, by its own maintainers'
+description, unstable and incomplete on real devices right now. So the phone plan
+is: ship the 2D grip diagram as the default (it already exists, built from the same
+seam math, so it can't disagree with the 3D version), and treat the 3D ball as a
+stretch goal — proven out with a one-day throwaway test on a real iPhone before
+it's promised on the App Store. The zero-WebGL floor that already protects the
+website is exactly what makes this safe.
+
+**What the plan left out:**
+
+- **Measurement.** The whole plan rests on "ship it, watch the behavior, decide
+  with evidence." There's nothing in the site today that watches anything. Deciding
+  Phase 1 with evidence needs three or four private, first-party signals — did they
+  add it to the home screen, did they open a grip, did they write a note, did they
+  come back a week later — and those have to be built (honestly, no vanity counts)
+  for the evidence to exist.
+- **What Phase 0 actually proves.** Phase 0 honestly tests whether pitchers keep
+  the icon and open it. It does not test the "saved arsenal" lock-in, because that
+  feature isn't built yet (the sign-in that would carry it exists; the saved
+  arsenal it locks in does not). Don't claim Phase 0 validates lock-in — it
+  validates utility.
+- **The App Store gates are realer than "things to know."** For an app whose whole
+  point is uploading your own grip video, Apple's user-content rules require a way
+  to block another user and some form of content screening — neither exists yet —
+  plus a published contact. And the youth-audience posture (parent-managed minor
+  accounts) is written down but not built: there's no age field anywhere. None of
+  this touches Phase 0 (Apple never reviews a website), but it decides the Phase 1
+  architecture, so the age/minors call has to be made before the build, not at
+  submission.
+- **The collaborative bullpen** is designed in writing but has zero live-session
+  plumbing built. It's a real Phase 1 build, not a switch to flip.
+
+**The four decisions that actually shape the build** (the rest is settled):
+
+1. **The offline update strategy** — the one that makes Phase 0 safe or dangerous:
+   the live version always wins when online, only the fingerprinted asset files are
+   stored offline, and the user gets a "new version — reload" tap. Tested on a
+   preview before it touches the real site.
+2. **Account model / what Phase 0 validates:** keep Phase 0 honest as a utility
+   test; the saved-arsenal lock-in is a Phase 1 claim.
+3. **Minors + uploads:** decide between "17+ and no minors" (simplest, sidesteps
+   the consent machinery) and real age-banding — before Phase 1, because it changes
+   the architecture.
+4. **The 3D ball on native:** the 2D diagram is the shipping default; native 3D is
+   contingent on a one-day device test.

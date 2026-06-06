@@ -257,6 +257,28 @@ This is the mechanism that lets the product change without losing itself.
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
 
+### 2026-06-06: iOS plan pressure-tested — Phase 0 rescoped to the service worker; reuse and 3D claims corrected
+
+**Decision.** The phased iOS approach stands. But the committed plan was checked
+against the repo and current platform facts, and three claims were corrected: (1)
+add-to-home-screen installability is already shipped, so Phase 0's only real
+remaining work is a safe offline service worker plus minor iOS meta polish (the
+polish landed with this entry); (2) Expo reuse is "one data layer, two UIs," not
+"one codebase" — the data/physics/Supabase brain ports, the entire UI is rebuilt;
+(3) react-three-fiber on native is currently unstable on real devices, so the 2D
+seam schematic is the native default and the 3D ball is a contingent stretch goal.
+The plan now also names what it omitted: first-party measurement, the
+service-worker update strategy, the offline write-conflict model, the App Store
+user-block + content-screening gates, and a real minors/age posture.
+**Why.** "Decide Phase 1 with evidence" only works if the plan states the real cost
+and the real remaining work. The original prose softened the three hardest parts
+and mis-scoped a mostly-finished Phase 0 as the week's work.
+**Touches.** `docs/ios-app-plan.md` (Reality-check section), `public/site.webmanifest`
+and `index.html` (the safe Phase 0 polish), and the roadmap above.
+**Respects.** Real, never faked (no overstated readiness; measurement must be
+honest first-party signal). Four states or it isn't done (a service worker can
+never strand an installed pitcher on a stale build).
+
 ### 2026-06-06: Rights policy loosened from "no photos" to "no *unlicensed agency* photos"
 
 **Decision.** Real grip photos may ship, from clean sources only (original BSI
