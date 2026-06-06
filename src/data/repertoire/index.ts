@@ -118,6 +118,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
   {
     id: "cutter",
     name: "Cutter",
+    filedSlug: "cutter",
     family: "fastball",
     status: "standard",
     aka: ["cut fastball", "FC"],
@@ -376,6 +377,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
   {
     id: "forkball",
     name: "Forkball",
+    filedSlug: "forkball",
     family: "offspeed",
     status: "near-extinct",
     aka: ["ghost fork (Senga variant)"],
@@ -443,6 +445,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
   {
     id: "sweeper",
     name: "Sweeper",
+    filedSlug: "sweeper",
     family: "breaking",
     status: "standard",
     aka: ["ST (Statcast code)", "sweeping slider"],
@@ -635,6 +638,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
   {
     id: "knuckleball",
     name: "Knuckleball",
+    filedSlug: "knuckleball",
     family: "specialty",
     status: "near-extinct",
     aka: ["knuckler", "knuckle ball", "the dancer"],
@@ -661,6 +665,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
   {
     id: "eephus",
     name: "Eephus",
+    filedSlug: "eephus",
     family: "specialty",
     status: "rare",
     aka: ["blooper", "blooper ball", "rainbow", "rainbow ball", "folly floater", "LaLob"],

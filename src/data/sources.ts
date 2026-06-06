@@ -1193,6 +1193,149 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_4,
     season: '2021',
   },
+
+  // --- The knuckleball specimen (2026-06-06) ---
+  'mlb-glossary-knuckleball': {
+    id: 'mlb-glossary-knuckleball',
+    label: 'MLB.com Statcast Glossary, Knuckleball (KN)',
+    url: 'https://www.mlb.com/glossary/pitch-types/knuckleball',
+    retrievedAt: RETRIEVED_4,
+  },
+  'wiki-knuckleball': {
+    id: 'wiki-knuckleball',
+    label: 'Wikipedia, Knuckleball',
+    url: 'https://en.wikipedia.org/wiki/Knuckleball',
+    retrievedAt: RETRIEVED_4,
+  },
+  'fangraphs-dickey-knuckle': {
+    id: 'fangraphs-dickey-knuckle',
+    label: "FanGraphs, Tracking R.A. Dickey's Knuckleball",
+    url: 'https://blogs.fangraphs.com/tracking-r-a-dickeys-knuckleball/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'fangraphs-waldron-knuckle': {
+    id: 'fangraphs-waldron-knuckle',
+    label: 'FanGraphs, Matt Waldron and His Knuckleball Are Sticking Around',
+    url: 'https://blogs.fangraphs.com/matt-waldron-and-his-knuckleball-are-sticking-around/',
+    retrievedAt: RETRIEVED_4,
+    season: '2024',
+  },
+  'illinois-dickey-knuckle': {
+    id: 'illinois-dickey-knuckle',
+    label: 'University of Illinois Physics of Baseball (Alan Nathan), R.A. Dickey knuckleball analysis',
+    url: 'https://baseball.physics.illinois.edu/DickeyPitch103a.html',
+    retrievedAt: RETRIEVED_4,
+    season: '2012',
+  },
+  'si-waldron-knuckle': {
+    id: 'si-waldron-knuckle',
+    label: "Sports Illustrated, Matt Waldron's record-low-spin knuckleball",
+    url: 'https://www.si.com/mlb/2024/04/08/matt-waldron-knuckleball-padres-giants',
+    retrievedAt: RETRIEVED_4,
+    season: '2024',
+  },
+
+  // --- The cutter specimen (2026-06-06) ---
+  'wiki-cut-fastball': {
+    id: 'wiki-cut-fastball',
+    label: 'Wikipedia, Cut fastball',
+    url: 'https://en.wikipedia.org/wiki/Cut_fastball',
+    retrievedAt: RETRIEVED_4,
+  },
+  'savant-clase': {
+    id: 'savant-clase',
+    label: 'Baseball Savant (Statcast), Emmanuel Clase',
+    url: 'https://baseballsavant.mlb.com/savant-player/emmanuel-clase-661403',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'savant-burnes': {
+    id: 'savant-burnes',
+    label: 'Baseball Savant (Statcast), Corbin Burnes',
+    url: 'https://baseballsavant.mlb.com/savant-player/corbin-burnes-669203',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'br-rivera-cutter': {
+    id: 'br-rivera-cutter',
+    label: "Bleacher Report, Visual Breakdown of the Rise & Dominance of Mariano Rivera's Cutter",
+    url: 'https://bleacherreport.com/articles/1737396-visual-breakdown-of-the-rise-dominance-of-mariano-riveras-cutter',
+    retrievedAt: RETRIEVED_4,
+    season: '2007-2008',
+  },
+
+  // --- The forkball specimen (2026-06-06) ---
+  'mlb-glossary-forkball': {
+    id: 'mlb-glossary-forkball',
+    label: 'MLB.com Statcast Glossary, Forkball (FO)',
+    url: 'https://www.mlb.com/glossary/pitch-types/forkball',
+    retrievedAt: RETRIEVED_4,
+  },
+  'bp-forkball': {
+    id: 'bp-forkball',
+    label: 'Baseball Prospectus, Spinning Yarn: The Forkball',
+    url: 'https://www.baseballprospectus.com/news/article/12558/spinning-yarn-the-forkball/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'mlb-sasaki-fork': {
+    id: 'mlb-sasaki-fork',
+    label: "MLB.com, Roki Sasaki's forkball and splitter explained",
+    url: 'https://www.mlb.com/news/roki-sasaki-s-forkball-and-splitter-explained',
+    retrievedAt: RETRIEVED_4,
+    season: '2026',
+  },
+  'fangraphs-senga-ghostfork': {
+    id: 'fangraphs-senga-ghostfork',
+    label: "FanGraphs, A (Ghost) Fork in the Road: Senga's Premier Pitch",
+    url: 'https://blogs.fangraphs.com/a-ghost-fork-in-the-road-what-can-we-expect-from-sengas-premier-pitch/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'fangraphs-senga-kodai': {
+    id: 'fangraphs-senga-kodai',
+    label: "FanGraphs, Cracking the Kodai to Senga's Success",
+    url: 'https://blogs.fangraphs.com/cracking-the-kodai-to-sengas-success/',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'bref-nomo': {
+    id: 'bref-nomo',
+    label: 'Baseball-Reference, Hideo Nomo',
+    url: 'https://www.baseball-reference.com/players/n/nomohi01.shtml',
+    retrievedAt: RETRIEVED_4,
+  },
+  'sabr-nomo': {
+    id: 'sabr-nomo',
+    label: 'Society for American Baseball Research, Hideo Nomo (BioProject)',
+    url: 'https://sabr.org/bioproj/person/hideo-nomo/',
+    retrievedAt: RETRIEVED_4,
+  },
+
+  // --- The eephus specimen (2026-06-06) ---
+  'mlb-glossary-eephus': {
+    id: 'mlb-glossary-eephus',
+    label: 'MLB.com Statcast Glossary, Eephus (EP)',
+    url: 'https://www.mlb.com/glossary/pitch-types/eephus',
+    retrievedAt: RETRIEVED_4,
+  },
+  'tht-sewell-eephus': {
+    id: 'tht-sewell-eephus',
+    label: 'The Hardball Times, Rip Sewell, the Eephus, and the All-Star Game',
+    url: 'https://tht.fangraphs.com/rip-sewell-the-eephus-and-the-all-star-game/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'ledoux-eephus': {
+    id: 'ledoux-eephus',
+    label: 'James LeDoux, A Statcast study of the eephus pitch',
+    url: 'https://jamesrledoux.com/projects/eephus/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'mlb-greinke-54': {
+    id: 'mlb-greinke-54',
+    label: "MLB.com, Zack Greinke sits on the mound and throws a 54 mph pitch",
+    url: 'https://www.mlb.com/news/zack-greinke-sits-on-mound-throws-54-mph-pitch',
+    retrievedAt: RETRIEVED_4,
+    season: '2020',
+  },
 } satisfies Record<string, Source>
 
 export type SourceId = keyof typeof SOURCES

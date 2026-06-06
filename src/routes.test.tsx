@@ -75,7 +75,7 @@ describe('Pitch chapters', () => {
   })
 
   it('shows the 404 for an unknown specimen', async () => {
-    renderRoute('/pitch/knuckleball')
+    renderRoute('/pitch/does-not-exist')
     expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
   })
 })
@@ -143,8 +143,8 @@ describe('The Pitch Index', () => {
 
 describe('Basic pitch files', () => {
   it('renders a basic file for an unfiled pitch with an honest marker and a discussion', async () => {
-    renderRoute('/repertoire/cutter')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Cutter')
+    renderRoute('/repertoire/slurve')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Slurve')
     expect(screen.getByText('Basic file')).toBeInTheDocument()
     expect(screen.getAllByText('Discussion').length).toBeGreaterThan(0)
   })
@@ -189,7 +189,7 @@ describe('Lost Pitches of the Negro Leagues', () => {
 })
 
 describe('No failure signatures', () => {
-  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/cutter', '/repertoire/knuckleball', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
+  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/pitch/sweeper', '/pitch/cutter', '/pitch/knuckleball', '/pitch/forkball', '/pitch/eephus', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/slurve', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)
