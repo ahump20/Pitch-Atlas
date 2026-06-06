@@ -1,0 +1,22 @@
+-- Pitch Atlas — grant EXECUTE on is_admin() to the API roles (2026-06-06)
+-- ----------------------------------------------------------------------------
+-- Sibling fix to 20260606150000_field_notes_anon_grants.sql. After granting the
+-- table privileges, a live anonymous read of field_notes still failed with:
+--   permission denied for function is_admin  (code 42501)
+--
+-- The RLS policies on field_notes / note_tries / note_helpful / note_reports all
+-- reference public.is_admin() in their USING / WITH CHECK clauses. The function is
+-- SECURITY DEFINER (so its body safely reads public.profiles), but EXECUTE on the
+-- function itself was never granted to anon / authenticated — and SECURITY DEFINER
+-- governs whose privileges the body runs with, not who may call it. So policy
+-- evaluation itself raised 42501 for every role, and the table GRANTs alone were
+-- not enough to open the Field Notes layer.
+--
+-- Granting EXECUTE lets the policies evaluate; RLS and the safety triggers remain
+-- the real gatekeepers. Verified after this grant: an anonymous session reads
+-- field_notes / note_tries / note_helpful / profiles with HTTP 200 (honestly empty,
+-- no error) and a contribution insert succeeds under RLS with author_id stamped
+-- from auth.uid() and visibility defaulting to 'approved'.
+-- ----------------------------------------------------------------------------
+
+grant execute on function public.is_admin() to anon, authenticated;

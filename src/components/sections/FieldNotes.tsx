@@ -655,9 +655,11 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           </div>
         ) : null}
 
-        {/* honest in both modes: how the layer sources its notes */}
+        {/* how the layer sources its notes — present tense once open, the preview copy until then */}
         <p className="mt-12 max-w-[78ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
-          {community.provenanceNote}
+          {live
+            ? 'Every community variant carries the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.'
+            : community.provenanceNote}
         </p>
       </div>
     </section>

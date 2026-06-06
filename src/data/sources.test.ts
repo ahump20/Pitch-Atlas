@@ -74,8 +74,10 @@ describe('provenance integrity, every pitch', () => {
         expect(entry.seam.accuracyLevel).toBe('seam-informed schematic')
       })
 
-      it('keeps community an honest empty state with no fabricated rows or counts', () => {
-        expect(entry.community.enabled).toBe(false)
+      it('keeps the live community layer free of fabricated rows or counts in the data', () => {
+        // The layer is open; live notes come from the database. The static data
+        // must never ship hardcoded rows or counts — that is the anti-mock guarantee.
+        expect(entry.community.enabled).toBe(true)
         expect(entry.community.columns).toHaveLength(4)
         expect('rows' in entry.community).toBe(false)
         expect('adoption' in entry.community).toBe(false)
