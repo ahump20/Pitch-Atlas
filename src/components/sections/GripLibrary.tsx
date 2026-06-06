@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
-import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL } from '../../data/grips'
+import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
 
 /*
   The visual grip library, refractor-native. Every card is a real photograph of
@@ -136,6 +136,11 @@ export function AttackPlan() {
             )
           })}
         </ol>
+      </div>
+
+      <div className="mt-8 max-w-[74ch] border-t border-bone/10 pt-6">
+        <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-cyan">On command and the arm slot</p>
+        <p className="mt-2 text-[15px] leading-relaxed text-bone-2">{GRIP_LIBRARY_COMMAND_NOTE}</p>
       </div>
 
       <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">

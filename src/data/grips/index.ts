@@ -234,6 +234,10 @@ export const GRIP_LIBRARY_INTRO =
 export const GRIP_LIBRARY_ARSENAL =
   'In games I worked a four-pitch mix: the four-seam and two-seam fastballs, the three-finger changeup, and the 12-6 curve. The splitter and the football change were situational — pitches I carried and threw here and there, not ones I leaned on. What follows is a pitcher’s own account of his own pitches, not tracked data.'
 
+/** His own note on command and the arm slot — why the variation cost him nothing. */
+export const GRIP_LIBRARY_COMMAND_NOTE =
+  'I never noticed a big difference in movement or control from switching pitches — or from switching it up — because I never really had issues with velocity, command, or movement. Those were fundamentals, drilled into me. And I would seamlessly, sometimes intentionally, drop down to three-quarters. It felt the same to me, but it gives a different look to a hitter who is already guessing anyway.'
+
 /** How Austin attacked hitters — his own game plan, in his words. A pitcher's account. */
 export interface AttackStep {
   label: string
