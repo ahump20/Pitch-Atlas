@@ -15,6 +15,10 @@ const RETRIEVED_2 = '2026-06-05'
 // sourced in the same 2026-06-05 research pass; kept on its own constant so a later
 // refresh of either wing can move independently without backdating the others.
 const RETRIEVED_3 = '2026-06-05'
+// The sweeper / knuckleball / cutter / sinker / forkball / eephus specimens were
+// sourced in a 2026-06-06 research pass, each citation re-checked by an adversarial
+// fetch of the page. Its own constant keeps the colophon "as of" line honest.
+const RETRIEVED_4 = '2026-06-06'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1139,6 +1143,55 @@ export const SOURCES = {
     label: "Trivia Mafia — Satchel Paige, The Man of 19 Pitches (quotes Negro Leagues Baseball Museum's Bob Kendrick; the \"19 pitches\" oral-tradition source)",
     url: "https://www.triviamafia.com/fridayknowitall/leroy-satchel-paige",
     retrievedAt: RETRIEVED_3,
+  },
+
+  // --- The sweeper specimen (2026-06-06) ---
+  'mlb-glossary-sweeper': {
+    id: 'mlb-glossary-sweeper',
+    label: 'MLB.com Statcast Glossary, Sweeper (ST)',
+    url: 'https://www.mlb.com/glossary/pitch-types/sweeper',
+    retrievedAt: RETRIEVED_4,
+  },
+  'mlb-ohtani-2025-statcast': {
+    id: 'mlb-ohtani-2025-statcast',
+    label: "MLB.com, Shohei Ohtani's 2025 pitching debut — a Statcast breakdown",
+    url: 'https://www.mlb.com/news/shohei-ohtani-2025-pitching-debut-statcast-breakdown',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'savant-ohtani': {
+    id: 'savant-ohtani',
+    label: 'Baseball Savant (Statcast), Shohei Ohtani',
+    url: 'https://baseballsavant.mlb.com/savant-player/shohei-ohtani-660271',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'savant-peralta': {
+    id: 'savant-peralta',
+    label: 'Baseball Savant (Statcast), Freddy Peralta',
+    url: 'https://baseballsavant.mlb.com/savant-player/freddy-peralta-642547',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'savant-darvish': {
+    id: 'savant-darvish',
+    label: 'Baseball Savant (Statcast), Yu Darvish',
+    url: 'https://baseballsavant.mlb.com/savant-player/yu-darvish-506433',
+    retrievedAt: RETRIEVED_4,
+    season: '2025',
+  },
+  'fangraphs-ssw-mainstream': {
+    id: 'fangraphs-ssw-mainstream',
+    label: 'FanGraphs, The Seam-Shifted Revolution Is Headed for the Mainstream',
+    url: 'https://blogs.fangraphs.com/the-seam-shifted-revolution-is-headed-for-the-mainstream/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'driveline-ssw-quality': {
+    id: 'driveline-ssw-quality',
+    label: 'Driveline Baseball, The Impact of Seam-Shifted Wakes on Pitch Quality',
+    url: 'https://www.drivelinebaseball.com/2021/03/the-impact-of-seam-shifted-wakes-on-pitch-quality/',
+    retrievedAt: RETRIEVED_4,
+    season: '2021',
   },
 } satisfies Record<string, Source>
 

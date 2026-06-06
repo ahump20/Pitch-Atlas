@@ -84,7 +84,7 @@
     grid-template-columns:repeat(auto-fill, minmax(312px,1fr));
     align-items:start;
   }
-  @media(min-width:1040px){ .featured{ grid-column:span 2; } }
+  @media(min-width:1040px){ .tilt.featured{ grid-column:span 2; } }
 
   /* ───────────────────────── the card: chrome bezel ──────────────────── */
   .tilt{ perspective:1300px; }
@@ -476,7 +476,7 @@ function card(p){
   const horizTxt = p.dir==='none' ? `0<small>″</small>` : `${p.horiz}<small>″ ${p.dir==='arm-side'?'arm':'glove'}</small>`;
   const approxTag = p.approx ? `<span class="approx">≈ approx</span>` : '';
   return `
-  <div class="tilt">
+  <div class="tilt${p.ref?' featured':''}">
     <article class="card${p.ref?' featured':''}" style="--hue:${fam.hue}; --accent:${fam.accent}">
       <div class="field">
         <div class="holo"></div>

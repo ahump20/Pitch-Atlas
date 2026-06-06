@@ -6,6 +6,7 @@ import { twelveSix } from './twelve-six-curveball'
 import { slider } from './slider'
 import { splitter } from './splitter'
 import { splinker } from './splinker'
+import { sweeper } from './sweeper'
 
 /*
   The atlas index. Order is the documented build order: four-seam first, then the
@@ -20,6 +21,7 @@ export const PITCHES: PitchAtlasEntry[] = [
   slider,
   splitter,
   splinker,
+  sweeper,
 ]
 
 const BY_SLUG: Record<string, PitchAtlasEntry> = Object.fromEntries(
