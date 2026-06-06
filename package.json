@@ -18,6 +18,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@fontsource/anton": "^5.2.7",
     "@fontsource/commit-mono": "5.2.5",
     "@fontsource/hanken-grotesk": "5.2.8",
     "@fontsource/martian-mono": "^5.2.7",

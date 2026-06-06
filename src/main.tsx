@@ -19,6 +19,8 @@ import '@fontsource/hanken-grotesk/700.css'
 import '@fontsource/martian-mono/400.css'
 import '@fontsource/martian-mono/500.css'
 import '@fontsource/martian-mono/600.css'
+// Athletic condensed: the refractor logotype, specimen numbers, banners, big stats.
+import '@fontsource/anton/400.css'
 
 // Embedded-tweet base styles; brand overrides live in index.css (.react-tweet-theme).
 import 'react-tweet/theme.css'

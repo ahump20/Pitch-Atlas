@@ -1,163 +1,216 @@
-import { useMemo, useState } from 'react'
-import type { RepertoireFamily } from '../../data/types'
+import { type CSSProperties, useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
+import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
-import { LOST_PITCH_TIERS, lostPitchesByTier } from '../../data/lost-pitches'
-import { GridSection } from '../layout/GridSection'
-import { IndexCard } from '../index/IndexCard'
+import { LOST_PITCHES } from '../../data/lost-pitches'
 
 /*
-  The Pitch Index: the front door. Every accepted pitch by family, then the lost
-  pitches of the Negro Leagues as a second tier — one searchable, filterable
-  directory that routes a visitor to any pitch they want to learn or discuss. A
-  filed pitch opens its full specimen; an unfiled one opens its basic file; a lost
-  pitch opens its archive page. The default (no query, no filter) renders the whole
-  list so the prerendered HTML carries every pitch; the filter hydrates on top.
+  The Pitch Index directory, in the refractor language. Every accepted pitch by
+  family as a scouting row: a seam glyph, the name, a Filed tag when the atlas has
+  a full specimen, the sourced aka + velocity, a status tier, and the open
+  affordance — "Open specimen" to /pitch/<slug> when filed, else "Basic file" to
+  /repertoire/<id>. Sticky controls search name/aka/family and filter by family or
+  by filed. The Lost Pitches wing sits one click away in its own hall. Default
+  state (no query, all) renders every row, so the prerendered HTML carries the
+  whole index; the filter hydrates on top. Foil is decoration; every line is sourced.
 */
 
-type FamilyFilter = RepertoireFamily | 'lost' | 'all'
+type FamilyFilter = RepertoireFamily | 'filed' | 'all'
+
+/* status tier -> void-tuned accent + label. Glyph-not-only-hue: the label always shows. */
+const STATUS: Record<RepertoireStatus, { color: string; label: string }> = {
+  standard: { color: 'var(--color-ok-bright)', label: 'Standard' },
+  niche: { color: 'var(--color-teal-glow)', label: 'Niche' },
+  rare: { color: 'var(--color-amber-bright)', label: 'Rare' },
+  'near-extinct': { color: 'var(--color-sand-bright)', label: 'Near-extinct' },
+  banned: { color: 'var(--color-seam-bright)', label: 'Banned' },
+  alias: { color: 'var(--color-violet)', label: 'Alias' },
+  illusion: { color: 'var(--color-orange)', label: 'Illusion' },
+  'not-a-pitch': { color: 'var(--color-ink-3)', label: 'Not a pitch' },
+}
+
+/* family accent, matching the prototype's per-family worlds. */
+const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
+  fastball: '#37D6FF',
+  offspeed: '#7CFF52',
+  breaking: '#8A6BFF',
+  specialty: '#FFC23C',
+  banned: '#FF2D44',
+}
 
 const FILTERS: { key: FamilyFilter; label: string }[] = [
   { key: 'all', label: 'All' },
-  { key: 'fastball', label: 'Fastballs' },
+  { key: 'fastball', label: 'Fastball' },
   { key: 'offspeed', label: 'Offspeed' },
   { key: 'breaking', label: 'Breaking' },
   { key: 'specialty', label: 'Specialty' },
   { key: 'banned', label: 'Banned' },
-  { key: 'lost', label: 'Lost pitches' },
+  { key: 'filed', label: 'Filed specimens' },
 ]
+
+/* A small static seam glyph: cream ball, family-tinted meridian, red horseshoe. */
+function SeamGlyph({ color }: { color: string }) {
+  return (
+    <svg viewBox="0 0 40 40" aria-hidden="true" className="h-10 w-10 flex-none">
+      <circle cx="20" cy="20" r="14" fill="#EFE7D4" />
+      <circle cx="20" cy="20" r="14" fill="none" stroke={color} strokeWidth="1" opacity="0.4" />
+      <path d="M11 13 Q17 20 11 27" fill="none" stroke="#FF2433" strokeWidth="1.6" strokeLinecap="round" />
+      <path d="M29 13 Q23 20 29 27" fill="none" stroke="#FF2433" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string }) {
+  const filed = !!entry.filedSlug
+  const status = STATUS[entry.status]
+  const aka = entry.aka?.join(', ')
+  return (
+    <Link
+      to={filed ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`}
+      className={`rfx-entry ${filed ? 'is-filed' : ''}`}
+      style={{ '--gc': accent } as CSSProperties}
+    >
+      <span className="rfx-statpill absolute right-3.5 top-3.5" style={{ color: status.color }}>
+        {status.label}
+      </span>
+      <SeamGlyph color={accent} />
+      <span className="min-w-0 flex-1">
+        <span className="flex flex-wrap items-center gap-2 pr-20">
+          <span className="font-prose text-[15px] font-bold text-bone">{entry.name}</span>
+          {filed ? <span className="rfx-filedtag">Filed</span> : null}
+        </span>
+        {aka ? <span className="mt-1 block text-[11.5px] leading-snug text-ink-3">{aka}</span> : null}
+        {entry.velocity ? (
+          <span className="mt-1.5 block font-mono text-[9.5px] leading-snug text-bone-2">{entry.velocity}</span>
+        ) : null}
+        <span
+          className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
+          style={{ color: filed ? '#caa14a' : 'var(--color-ink-3)' }}
+        >
+          {filed ? 'Open specimen' : 'Basic file'} <span aria-hidden="true">→</span>
+        </span>
+      </span>
+    </Link>
+  )
+}
 
 export function PitchIndex({ id }: { id?: string }) {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<FamilyFilter>('all')
-
   const q = query.trim().toLowerCase()
 
-  const repertoireGroups = useMemo(() => {
+  const groups = useMemo(() => {
     return REPERTOIRE_FAMILIES.map((fam) => {
-      const entries = repertoireByFamily(fam.family).filter((e) => {
-        if (!q) return true
-        const hay = [e.name, ...(e.aka ?? []), e.notableThrowers ?? '', e.movement.value]
-          .join(' ')
-          .toLowerCase()
-        return hay.includes(q)
-      })
+      let entries = repertoireByFamily(fam.family)
+      if (filter === 'filed') entries = entries.filter((e) => e.filedSlug)
+      else if (filter !== 'all') entries = entries.filter(() => fam.family === filter)
+      if (q) {
+        entries = entries.filter((e) =>
+          [e.name, ...(e.aka ?? []), e.family].join(' ').toLowerCase().includes(q),
+        )
+      }
       return { fam, entries }
-    })
-  }, [q])
+    }).filter((g) => g.entries.length > 0)
+  }, [q, filter])
 
-  const lostGroups = useMemo(() => {
-    return LOST_PITCH_TIERS.map((t) => {
-      const pitches = lostPitchesByTier(t.tier).filter((p) => {
-        if (!q) return true
-        const hay = [p.name, p.tagline, p.intro].join(' ').toLowerCase()
-        return hay.includes(q)
-      })
-      return { t, pitches }
-    })
-  }, [q])
-
-  const showRepertoire = filter === 'all' || filter !== 'lost'
-  const showLost = filter === 'all' || filter === 'lost'
-
-  const visibleRepertoire = repertoireGroups.filter(
-    (g) => (filter === 'all' || g.fam.family === filter) && g.entries.length > 0,
-  )
-  const visibleLost = lostGroups.filter((g) => g.pitches.length > 0)
-
-  const repertoireCount = visibleRepertoire.reduce((n, g) => n + g.entries.length, 0)
-  const lostCount = visibleLost.reduce((n, g) => n + g.pitches.length, 0)
-  const total =
-    (showRepertoire ? repertoireCount : 0) + (showLost ? lostCount : 0)
+  const total = groups.reduce((n, g) => n + g.entries.length, 0)
+  const countLabel = `${total} ${total === 1 ? 'pitch' : 'pitches'}${
+    filter === 'all' ? '' : filter === 'filed' ? ' · filed specimens' : ` · ${filter}`
+  }${q ? ` · matching "${query.trim()}"` : ''}`
 
   return (
-    <div id={id} className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
-      {/* Filter bar */}
-      <div className="mb-10 flex flex-col gap-5 border-b border-navy/12 pb-6">
-        <label className="relative block">
-          <span className="sr-only">Search pitches</span>
-          <input
-            type="search"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search a pitch — slider, cutter, eephus, heater…"
-            className="w-full rounded-sm border border-navy/20 bg-paper px-4 py-3 font-prose text-base text-ink placeholder:text-ink-3 focus:border-seam focus:outline-none"
-          />
+    <div id={id}>
+      {/* Sticky controls */}
+      <div className="sticky top-16 z-20 -mx-5 mt-6 bg-[#070509]/92 px-5 py-4 backdrop-blur-md md:-mx-8 md:px-8">
+        <label className="block">
+          <span className="sr-only">Search the Pitch Index</span>
+          <span className="relative flex items-center">
+            <span aria-hidden="true" className="pointer-events-none absolute left-4 text-lg text-cyan">⌕</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search a pitch, an alias, a family…"
+              className="rfx-input pl-10"
+            />
+          </span>
         </label>
-        <div className="flex flex-wrap items-center gap-2">
-          {FILTERS.map((f) => {
-            const active = filter === f.key
-            return (
-              <button
-                key={f.key}
-                type="button"
-                onClick={() => setFilter(f.key)}
-                aria-pressed={active}
-                className={`mono-label rounded-sm border px-3 py-1.5 transition-colors ${
-                  active
-                    ? 'border-seam bg-seam/8 text-seam'
-                    : 'border-navy/20 text-ink-2 hover:border-navy/40 hover:text-ink'
-                }`}
-              >
-                {f.label}
-              </button>
-            )
-          })}
+        <div className="mt-3 flex flex-wrap gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              aria-pressed={filter === f.key}
+              onClick={() => setFilter(f.key)}
+              className="rfx-chip"
+            >
+              {f.label}
+            </button>
+          ))}
         </div>
-        <p className="mono-label text-ink-3">
-          {total} {total === 1 ? 'pitch' : 'pitches'}
-          {q ? ` matching "${query.trim()}"` : ''}
-        </p>
+        <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">{countLabel}</p>
       </div>
 
       {/* Empty state */}
       {total === 0 ? (
-        <p className="py-12 text-lg text-ink-2">
-          No pitches match{q ? ` "${query.trim()}"` : ' that filter'}. Try a different name or clear the
-          search.
-        </p>
-      ) : null}
-
-      {/* Repertoire groups */}
-      {showRepertoire
-        ? visibleRepertoire.map(({ fam, entries }, idx) => (
-            <GridSection
-              key={fam.family}
-              index={String(idx + 1).padStart(2, '0')}
-              label={fam.label}
-              blurb={filter === 'all' ? fam.blurb : undefined}
-              className={idx > 0 ? 'mt-16' : ''}
-            >
-              {entries.map((e) => (
-                <IndexCard key={e.id} variant="repertoire" entry={e} />
-              ))}
-            </GridSection>
-          ))
-        : null}
-
-      {/* Lost pitches tier */}
-      {showLost && visibleLost.length > 0 ? (
-        <div className={showRepertoire && visibleRepertoire.length > 0 ? 'mt-20 border-t border-navy/15 pt-16' : ''}>
-          <p className="mono-label mb-2 text-seam">The archive</p>
-          <h2 className="display mb-3 text-3xl leading-tight text-navy">Lost pitches of the Negro Leagues</h2>
-          <p className="mb-10 max-w-[64ch] text-base leading-relaxed text-ink-2">
-            The statistics are being recovered; the technique mostly never will be. Filed by how solid the
-            record is — documented anchors first, legend flagged.
+        <div className="py-16 text-center">
+          <p className="rfx-athletic rfx-skew text-3xl text-bone-2">No pitch by that name</p>
+          <p className="mt-2.5 text-[13px] text-ink-3">
+            Try a family, an alias, or clear the search. The index only shows what the atlas has actually filed.
           </p>
-          {visibleLost.map(({ t, pitches }) => (
-            <GridSection
-              key={t.tier}
-              index={t.index}
-              label={t.label}
-              cols="md:grid-cols-2 lg:grid-cols-3"
-              className="mt-12 first:mt-0"
-            >
-              {pitches.map((p) => (
-                <IndexCard key={p.slug} variant="lost" pitch={p} />
-              ))}
-            </GridSection>
-          ))}
         </div>
       ) : null}
+
+      {/* Family groups */}
+      {groups.map(({ fam, entries }) => {
+        const accent = FAMILY_ACCENT[fam.family]
+        return (
+          <section key={fam.family} className="mt-9">
+            <div
+              className="mb-4 flex items-baseline gap-3.5 border-b pb-2.5"
+              style={{ borderColor: `color-mix(in srgb, ${accent} 36%, transparent)` }}
+            >
+              <h2 className="rfx-athletic rfx-skew text-[clamp(22px,3.4vw,34px)]" style={{ color: accent }}>
+                {fam.label}
+              </h2>
+              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
+                {entries.length} in family
+              </span>
+            </div>
+            <div className="grid gap-[11px] [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
+              {entries.map((e) => (
+                <EntryRow key={e.id} entry={e} accent={accent} />
+              ))}
+            </div>
+          </section>
+        )
+      })}
+
+      {/* Lost Pitches wing callout */}
+      <Link
+        to="/lost-pitches"
+        className="group relative mt-12 block overflow-hidden rounded-[20px] border p-[clamp(24px,3vw,40px)] transition-colors"
+        style={{
+          borderColor: 'color-mix(in srgb, var(--color-teal-glow) 34%, transparent)',
+          background:
+            'radial-gradient(90% 70% at 75% 10%, rgba(31,182,166,0.28), #0a0810), var(--color-press)',
+        }}
+      >
+        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-teal-glow">A wing of its own</p>
+        <h3 className="rfx-athletic rfx-skew mt-2 text-[clamp(24px,4vw,40px)] text-bone">
+          Lost Pitches of the Negro Leagues
+        </h3>
+        <p className="mt-3 max-w-[62ch] text-[14px] leading-relaxed text-bone-2">
+          The statistics are being recovered; the technique mostly never will be. A box score survives; a
+          grip does not. So every entry wears a documentation tier — Documented, Partial, or Legend — instead
+          of faking a precision the record cannot support. The tier is the feature.
+        </p>
+        <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone">
+          Enter the wing
+          <span className="text-teal-glow transition-transform group-hover:translate-x-1">→</span>
+          <span className="text-ink-3">· {LOST_PITCHES.length} filed</span>
+        </span>
+      </Link>
     </div>
   )
 }

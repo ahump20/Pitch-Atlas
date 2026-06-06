@@ -64,7 +64,7 @@ function PostBody({
   return (
     <article className={depth > 0 ? 'border-l-2 border-navy/15 pl-4' : ''}>
       <div className="flex flex-wrap items-baseline gap-x-2">
-        <span className="display text-base text-navy">{post.displayName}</span>
+        <span className="rfx-athletic rfx-skew text-base text-cyan">{post.displayName}</span>
         <span className="mono-label text-ink-3">{timeAgo(post.createdAt)}</span>
         {post.viewerIsAuthor ? <span className="mono-label text-seam">you</span> : null}
       </div>
@@ -208,7 +208,7 @@ function Composer({
       {/* Media: gated behind a one-time terms acceptance. */}
       {acceptedTerms ? (
         <div className="flex flex-col gap-2">
-          <label htmlFor={fileId} className="mono-label cursor-pointer text-seam transition-colors hover:text-navy">
+          <label htmlFor={fileId} className="mono-label cursor-pointer text-seam transition-colors hover:text-cyan">
             + Add photos or video
           </label>
           <input
@@ -431,7 +431,7 @@ export function DiscussionPanel({
           className="flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left"
         >
           <span className="flex items-center gap-3">
-            <span className="mono-label text-navy">Discussion</span>
+            <span className="mono-label text-cyan">Discussion</span>
             <span className="text-sm text-ink-2">
               {variant === 'compact' ? topicName : `Talk through the ${topicName.toLowerCase()}`}
             </span>

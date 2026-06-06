@@ -1,11 +1,11 @@
 import { Link } from 'react-router-dom'
 import { SITE } from '../../config/site'
+import { BrandMark } from '../brand/BrandMark'
 
 /*
-  The slim site footer, present on every page. Not the colophon: the full
-  provenance legend and source registry live at /sources. This is a compact
-  index back into the three wings of the manual, plus the wordmark and the
-  principle that governs all of it.
+  The slim site footer on the void. Not the colophon — the full provenance legend
+  and source registry live at /sources. A compact index back into the three wings,
+  the brand lockup, and the principle that governs all of it.
 */
 
 const LINKS: { label: string; to: string }[] = [
@@ -17,19 +17,11 @@ const LINKS: { label: string; to: string }[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-navy/15 bg-paper-2">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-8">
+    <footer className="border-t border-bone/10 bg-[#08060d]">
+      <div className="mx-auto flex max-w-[1320px] flex-col gap-8 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-8">
         <div className="flex flex-col gap-3">
-          <img
-            src="/brand/wordmark-pitcher-96.webp"
-            alt={SITE.siteName}
-            width={171}
-            height={96}
-            loading="lazy"
-            decoding="async"
-            className="h-9 w-auto rounded-sm"
-          />
-          <p className="mono-label text-ink-2">{SITE.tagline}</p>
+          <BrandMark size="md" />
+          <p className="mono-label-stage">{SITE.tagline}</p>
         </div>
 
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -37,7 +29,7 @@ export function SiteFooter() {
             <Link
               key={l.to}
               to={l.to}
-              className="mono-label text-ink-2 transition-colors hover:text-seam"
+              className="mono-label-stage transition-colors hover:text-bone"
             >
               {l.label}
             </Link>
@@ -45,10 +37,10 @@ export function SiteFooter() {
         </nav>
 
         <div className="flex flex-col gap-1 md:items-end">
-          <a href={SITE.canonicalDomain} className="mono-label transition-colors hover:text-seam">
+          <a href={SITE.canonicalDomain} className="mono-label-stage transition-colors hover:text-bone">
             pitch-atlas.com
           </a>
-          <span className="mono-label text-ink-3">{SITE.sourcePrinciple}</span>
+          <span className="mono-label-stage text-ink-3">{SITE.sourcePrinciple}</span>
         </div>
       </div>
     </footer>

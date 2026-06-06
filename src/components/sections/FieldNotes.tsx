@@ -100,7 +100,7 @@ function IdentityStrip({
   return (
     <div className="rounded-sm border border-navy/15 bg-paper-2/60 p-5">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="mono-label text-navy">Your bullpen card</p>
+        <p className="mono-label text-cyan">Your bullpen card</p>
         <span className="font-mono text-xs tabular-nums text-ink-2">{score} pts</span>
       </div>
       <p className="mt-2 text-sm leading-relaxed text-ink-2">
@@ -186,7 +186,7 @@ function NoteCard({
     <article className="rounded-sm border border-navy/15 border-l-2 border-l-navy bg-paper p-5 md:p-6">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-          <span className="display text-base text-navy md:text-lg">{note.displayName}</span>
+          <span className="rfx-athletic rfx-skew text-base text-cyan md:text-lg">{note.displayName}</span>
           {context ? <span className="text-xs text-ink-3">{context}</span> : null}
         </div>
         <div className="flex items-center gap-3">
@@ -388,7 +388,7 @@ function SubmitForm({
   if (!open) {
     return (
       <div className="rounded-sm border border-navy/15 bg-paper p-5">
-        <h3 className="display text-xl text-ink">Log a field note</h3>
+        <h3 className="rfx-athletic rfx-skew text-xl text-ink">Log a field note</h3>
         <p className="mt-2 text-sm leading-relaxed text-ink-2">
           Throw the {pitchName.toLowerCase()} with a wrinkle of your own? Add it. Label where it comes from:
           your own report, a coach, or a hunch. Sourced, not corrected.
@@ -416,7 +416,7 @@ function SubmitForm({
     <form onSubmit={submit} className="rounded-sm border-2 border-navy bg-paper p-1.5 shadow-[0_2px_0_0_var(--color-navy-line)]">
       <div className="rounded-[2px] border border-seam/30 p-5">
         <div className="mb-4 flex items-center justify-between">
-          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-navy">New field note · {pitchName}</span>
+          <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">New field note · {pitchName}</span>
           <button type="button" onClick={() => setOpen(false)} className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam">
             Cancel
           </button>
@@ -528,7 +528,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(11,11,13,0.92) 0%, rgba(11,11,13,0.62) 52%, rgba(11,11,13,0.30) 100%)' }} />
         <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
           <p className="mono-label-stage">Tier 03 / Field Notes</p>
-          <h2 className="display mt-4 max-w-[16ch] text-[2.4rem] leading-[1.02] text-bone md:text-5xl">Field notes from the bullpen.</h2>
+          <h2 className="rfx-athletic rfx-skew mt-4 max-w-[16ch] text-[2.4rem] leading-[1.02] text-bone md:text-5xl">Field notes from the bullpen.</h2>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed text-bone-2">
             Every pitcher fiddles. A thumb creeps lower, a seam catches more leather, a cue from a coach
             suddenly makes the pitch move. Pitch Atlas keeps those experiments visible, labeled, and debated,
@@ -542,8 +542,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           {/* left: how notes rank + vocabulary (kept — the brand's quality promise) */}
           <div className="flex flex-col gap-8 md:col-span-6">
             <div>
-              <p className="mono-label text-navy">How notes rank</p>
-              <h3 className="display mt-3 text-2xl leading-snug text-ink md:text-3xl">Evidence and context, never who shouts loudest.</h3>
+              <p className="mono-label text-cyan">How notes rank</p>
+              <h3 className="rfx-athletic rfx-skew mt-3 text-2xl leading-snug text-ink md:text-3xl">Evidence and context, never who shouts loudest.</h3>
               <p className="mt-4 max-w-[58ch] leading-relaxed text-ink-2">
                 There is no single correct way to throw a pitch, but there are better and worse claims. A funny
                 line should never outrank a tested grip. So notes do not rise on raw votes. They rise on weighted
@@ -557,7 +557,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                 return (
                   <li key={signal.key} className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1 border-t border-navy/12 py-4">
                     <div className="flex w-28 flex-col gap-1.5 sm:w-32">
-                      <span className="font-mono text-sm tabular-nums text-navy">{pct}%</span>
+                      <span className="font-mono text-sm tabular-nums text-cyan">{pct}%</span>
                       <span aria-hidden="true" className="h-1 rounded-full bg-navy/10">
                         <span className="block h-1 rounded-full bg-navy" style={{ width: `${pct}%` }} />
                       </span>
@@ -572,7 +572,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             </ul>
 
             <div>
-              <p className="mono-label text-navy">The vocabulary</p>
+              <p className="mono-label text-cyan">The vocabulary</p>
               <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
                 {FIELD_NOTE_PRIMITIVES.map((p) => (
                   <div key={p.term} className="flex flex-col gap-0.5 border-t border-navy/10 pt-2.5">
@@ -593,8 +593,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
               </>
             ) : (
               <div className="rounded-sm border border-navy/15 bg-paper-2/60 p-6">
-                <p className="mono-label text-navy">The living layer</p>
-                <h3 className="display mt-3 text-xl text-ink md:text-2xl">Field notes open soon.</h3>
+                <p className="mono-label text-cyan">The living layer</p>
+                <h3 className="rfx-athletic rfx-skew mt-3 text-xl text-ink md:text-2xl">Field notes open soon.</h3>
                 <p className="mt-3 text-sm leading-relaxed text-ink-2">
                   Soon you will log your own grip tweak, mark the ones you have tried, and flag anything off,
                   anonymously or under a handle you keep. {community.safetyNote}
@@ -608,7 +608,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         {live ? (
           <div className="mt-16">
             <div className="mb-6 flex items-end justify-between gap-4 border-b border-navy/12 pb-4">
-              <h3 className="display text-2xl text-ink md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
+              <h3 className="rfx-athletic rfx-skew text-2xl text-ink md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
               <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} live` : ''}</span>
             </div>
 
@@ -644,7 +644,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
 
             {/* community guidelines + the flagging mechanism, the UGC floor in plain sight */}
             <div className="mt-6 max-w-[78ch] rounded-sm border border-navy/15 bg-paper-2/50 p-5">
-              <p className="mono-label text-navy">Keeping the bullpen honest</p>
+              <p className="mono-label text-cyan">Keeping the bullpen honest</p>
               <p className="mt-2 text-sm leading-relaxed text-ink-2">
                 Keep notes about pitching. No abuse, no personal attacks, no off-topic spam, nothing aimed at minors.
                 Field notes are community-submitted: they are not vetted before they post, and any note can be hidden

@@ -53,3 +53,5 @@ Pitcher Analysis Assets/
 agent-skills/
 # packaged skill/plugin artifacts (built elsewhere, not product source) — never commit
 claude-plugin/
+# Austin's raw grip source photos — converted to webp for the grip library, not shipped
+My Pitch Grips/
