@@ -94,7 +94,7 @@ const goldStyle: CSSProperties = {
 
 function sourceLabel(claim: Claim<string>): string {
   if (claim.source) return claim.source.label
-  return claim.note
+  return claim.note ?? 'Source note unavailable'
 }
 
 function filedRecord(entry: PitchAtlasEntry, index: number): CardRecord {

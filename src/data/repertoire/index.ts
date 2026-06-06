@@ -217,7 +217,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Taught widely as a first off-speed pitch; less common at the major-league level than the circle change.",
-    plain: "The simplest changeup, and usually the first one a young pitcher learns. Lay three fingers over the ball and seat it back toward the palm, and the same fastball arm motion comes out slower. The hitter swings early because he can't tell it's slow until it's nearly on him.",
+    plain: "The simplest changeup, and usually the first one a young pitcher learns. Lay three close fingers over the ball, seat it back toward the palm, and the same fastball arm motion comes out slower. The hitter swings early because he can't tell it's slow until it's nearly on him.",
   },
   {
     id: "circle-changeup",
@@ -243,6 +243,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
     ),
     notableThrowers: "Pedro Martinez (who relied on it as a signature out pitch); the most common changeup grip in the modern game.",
     filedSlug: "circle-change",
+    plain: "A circle change needs a visible thumb-index circle on the side of the ball. If the hand cannot comfortably make that circle, do not force the label; a three-finger or football/palm change may be the cleaner fit.",
   },
   {
     id: "palmball",
@@ -268,7 +269,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "palmball-football-change-naming",
     ),
     notableThrowers: "Trevor Hoffman, whose palmball-grip changeup is the modern gold standard and his career out pitch; earlier practitioners include Roy Halladay.",
-    plain: "An old-school slow ball. You bury the ball deep in your palm, almost like palming a football, and squeeze. The whole hand drains the speed while the arm still looks like a fastball, so it arrives soft and late with a little sink.",
+    plain: "An old-school slow ball. You bury the ball deep in your palm, almost like palming a football, and squeeze. In a live grip photo, four fingers together on the ball is the giveaway. The whole hand drains the speed while the arm still looks like a fastball, so it arrives soft and late with a little sink.",
   },
   {
     id: "vulcan-changeup",
@@ -355,7 +356,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
     aka: ["split-finger fastball", "split-finger", "splitfinger"],
     velocity: "Averages roughly 85 mph for right-handers (between four-seam ~92 and changeup ~83)",
     grip: claim(
-      "Split the index and middle fingers onto different sides of the ball, wider than a normal fastball grip but not jammed as deep or wide as a forkball.",
+      "Split the index and middle fingers onto different sides of the ball, wider than a normal fastball grip but not jammed as deep or wide as a forkball. Visually, it can look close to a two-seam on smaller hands; the tell is that the fingers sit outside the seam tracks instead of riding them.",
       "wiki-splitter",
       "reputable-analysis",
     ),
