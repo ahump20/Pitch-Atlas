@@ -47,3 +47,7 @@ Pitching-Grips-101.pdf
 Baseball example/
 # heavy brand source (AI-generated PNGs); optimized webp lives in public/brand/
 Brand Image Assets/
+# research & source material: copyrighted PDFs, DRM-locked audiobooks, internal notes — never commit
+Pitcher Analysis Assets/
+# stray nested repo (unrelated agent-skills clone, carries its own .git) — never commit
+agent-skills/
