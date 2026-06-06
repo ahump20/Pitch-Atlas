@@ -34,16 +34,14 @@ export function GripCompare() {
       <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
         <div>
           <span className="mono-label text-ink-3">Arm slot (both grips)</span>
-          <div className="mt-1.5 inline-flex overflow-hidden rounded-sm border border-navy/25" role="group" aria-label="Grip view, both balls">
+          <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-cyan/30" role="group" aria-label="Grip view, both balls">
             {VIEWS.map((v) => (
               <button
                 key={v.id}
                 type="button"
                 onClick={() => setView(v.id)}
                 aria-pressed={view === v.id}
-                className={`px-4 py-1.5 font-mono text-xs uppercase tracking-[0.1em] transition-colors ${
-                  view === v.id ? 'bg-navy text-paper' : 'bg-paper text-ink-2 hover:text-seam'
-                }`}
+                className="rfx-seg"
               >
                 {v.label}
               </button>
@@ -52,16 +50,14 @@ export function GripCompare() {
         </div>
         <div>
           <span className="mono-label text-ink-3">Handedness</span>
-          <div className="mt-1.5 inline-flex overflow-hidden rounded-sm border border-navy/25">
+          <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-cyan/30">
             {(['right', 'left'] as const).map((h) => (
               <button
                 key={h}
                 type="button"
                 onClick={() => setHand(h)}
                 aria-pressed={hand === h}
-                className={`px-4 py-1.5 font-mono text-xs uppercase tracking-[0.1em] transition-colors ${
-                  hand === h ? 'bg-navy text-paper' : 'bg-paper text-ink-2 hover:text-seam'
-                }`}
+                className="rfx-seg"
               >
                 {h === 'right' ? 'RHP' : 'LHP'}
               </button>
@@ -78,7 +74,7 @@ export function GripCompare() {
               <select
                 value={i === 0 ? aSlug : bSlug}
                 onChange={(e) => (i === 0 ? setA(e.target.value) : setB(e.target.value))}
-                className="mt-1.5 w-full rounded-sm border border-navy/25 bg-paper px-3 py-2 font-mono text-sm text-ink"
+                className="rfx-select mt-1.5"
                 aria-label={i === 0 ? 'First grip' : 'Second grip'}
               >
                 {PITCHES.map((p) => (

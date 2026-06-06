@@ -63,16 +63,14 @@ export function MovementMap() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <span className="mono-label text-ink-3">Handedness</span>
-        <div className="inline-flex overflow-hidden rounded-sm border border-navy/25">
+        <div className="inline-flex overflow-hidden rounded-lg border border-cyan/30">
           {(['RHP', 'LHP'] as const).map((h) => (
             <button
               key={h}
               type="button"
               onClick={() => setHand(h)}
               aria-pressed={hand === h}
-              className={`px-4 py-1.5 font-mono text-xs uppercase tracking-[0.12em] transition-colors ${
-                hand === h ? 'bg-navy text-paper' : 'bg-paper text-ink-2 hover:text-seam'
-              }`}
+              className="rfx-seg"
             >
               {h}
             </button>

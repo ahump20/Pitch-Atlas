@@ -222,16 +222,14 @@ export function PitchClassifier() {
 
           <div>
             <span className="mono-label text-ink-3">Handedness (optional)</span>
-            <div className="mt-1.5 inline-flex overflow-hidden rounded-sm border border-navy/25">
+            <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-cyan/30">
               {(['off', 'R', 'L'] as const).map((h) => (
                 <button
                   key={h}
                   type="button"
                   onClick={() => setHand(h)}
                   aria-pressed={hand === h}
-                  className={`px-4 py-1.5 font-mono text-xs uppercase tracking-[0.1em] transition-colors ${
-                    hand === h ? 'bg-navy text-paper' : 'bg-paper text-ink-2 hover:text-seam'
-                  }`}
+                  className="rfx-seg"
                 >
                   {h === 'off' ? 'None' : `${h}HP`}
                 </button>

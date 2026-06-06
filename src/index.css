@@ -602,6 +602,30 @@
     --color-navy-2: #36486b;
     --color-navy-line: rgba(194, 199, 214, 0.14);
   }
+
+  /* dark refractor <select>: appearance reset, cyan chevron + focus ring. The
+     tool pages (Compare, Grips) use native selects; this reseats them on the void
+     instead of leaving the browser's light system control. */
+  .rfx-select {
+    appearance: none; -webkit-appearance: none;
+    width: 100%; background-color: #0a0810; color: var(--color-bone);
+    border: 1px solid color-mix(in srgb, var(--color-cyan) 35%, transparent);
+    border-radius: 10px; padding: 9px 34px 9px 13px;
+    font-family: var(--font-mono); font-size: 13px; line-height: 1.2; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%2337D6FF' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .rfx-select:focus-visible {
+    border-color: var(--color-cyan); outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cyan) 22%, transparent);
+  }
+  .rfx-select option { background: #0a0810; color: var(--color-bone); }
+
+  /* segmented toggle (RHP/LHP, view switches): off = ghost, on = cyan fill. */
+  .rfx-seg { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    padding: 8px 14px; color: var(--color-bone-2); background: transparent; cursor: pointer; transition: color .2s, background .2s; }
+  .rfx-seg[aria-pressed="true"], .rfx-seg.is-on { color: #06121b; background: var(--color-cyan); font-weight: 600; }
 }
 
 @keyframes rfx-slide { to { background-position: 300% 0; } }
@@ -657,4 +681,11 @@
 
   /* hairline rule on the void (was the warm machined brown) */
   --color-machined: rgba(198, 208, 226, 0.20);
+
+  /* inline prose-link blue (text-columbia), undefined before; columbia blue reads on void */
+  --color-columbia: #5AA9E6;
 }
+
+/* native range + check controls pick up the cyan accent on the void */
+input[type="range"] { accent-color: var(--color-cyan); }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }

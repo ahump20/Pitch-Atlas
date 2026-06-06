@@ -25,11 +25,9 @@ const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random'
 describe('Atlas home', () => {
   it('leads with the hero and makes the Pitch Index the front door', async () => {
     renderRoute('/')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(
-      'The living field manual for pitching grips.',
-    )
-    // the Pitch Index is the dominant home section, and it lists real pitches
-    expect(screen.getByText('Every pitch, gripped and sourced. Find the one you want.')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Pitch Atlas')
+    // the Pitch Index is the dominant home section: the specimen set plus the front-door teaser
+    expect(screen.getByText('A searchable directory of every accepted pitch.')).toBeInTheDocument()
     expect(screen.getAllByText('Eephus').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
     // the two side wings still have a door
@@ -52,7 +50,7 @@ describe('Pitch chapters', () => {
     renderRoute('/pitch/four-seam')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Four-seam fastball')
     expect(screen.getByText('2,530 rpm')).toBeInTheDocument()
-    expect(screen.getByText('Master files')).toBeInTheDocument()
+    expect(screen.getByText('Master Files')).toBeInTheDocument()
   })
 
   it('renders the new splitter specimen with its pioneer master', async () => {
@@ -121,7 +119,7 @@ describe('Sources', () => {
 describe('The Pitch Index', () => {
   it('catalogs every accepted pitch by family, including the kick change', async () => {
     renderRoute('/repertoire')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Every accepted pitch, by family.')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The Pitch Index')
     expect(screen.getAllByText('Kick Change').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
@@ -137,7 +135,7 @@ describe('The Pitch Index', () => {
   it('also surfaces the lost-pitches wing in the index', async () => {
     renderRoute('/repertoire')
     await screen.findByRole('heading', { level: 1 })
-    expect(screen.getAllByText('Lost pitches of the Negro Leagues').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Lost Pitches of the Negro Leagues').length).toBeGreaterThan(0)
   })
 })
 

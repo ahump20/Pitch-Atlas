@@ -27,9 +27,9 @@ export function ReloadPrompt() {
       aria-live="polite"
       className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
     >
-      <div className="flex w-full max-w-sm items-center gap-3 rounded-sm border border-navy/40 bg-press px-4 py-3 text-bone shadow-xl">
+      <div className="flex w-full max-w-sm items-center gap-3 rounded-xl border border-cyan/30 bg-[#0a0810] px-4 py-3 text-bone shadow-2xl shadow-black/60">
         <div className="min-w-0 flex-1">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-powder">
+          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-cyan">
             {needRefresh ? 'Update ready' : 'Saved offline'}
           </p>
           <p className="mt-0.5 text-sm text-bone-2">
@@ -42,7 +42,7 @@ export function ReloadPrompt() {
           <button
             type="button"
             onClick={() => updateServiceWorker(true)}
-            className="shrink-0 rounded-sm bg-seam px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-cta-text"
+            className="shrink-0 rounded-lg bg-cyan px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-[#06121b] font-semibold"
           >
             Reload
           </button>

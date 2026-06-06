@@ -103,7 +103,7 @@ export function TunnelPlot() {
           <select
             value={aSlug}
             onChange={(e) => setA(e.target.value)}
-            className="mt-1.5 w-full rounded-sm border border-navy/25 bg-paper px-3 py-2 font-mono text-sm text-ink"
+            className="rfx-select mt-1.5"
             aria-label="First pitch to compare"
           >
             {PITCHES.map((p) => (
@@ -118,7 +118,7 @@ export function TunnelPlot() {
           <select
             value={bSlug}
             onChange={(e) => setB(e.target.value)}
-            className="mt-1.5 w-full rounded-sm border border-navy/25 bg-paper px-3 py-2 font-mono text-sm text-ink"
+            className="rfx-select mt-1.5"
             aria-label="Second pitch to compare"
           >
             {PITCHES.map((p) => (
@@ -130,16 +130,14 @@ export function TunnelPlot() {
         </label>
         <div className="block">
           <span className="mono-label text-ink-3">Handedness</span>
-          <div className="mt-1.5 inline-flex overflow-hidden rounded-sm border border-navy/25">
+          <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-cyan/30">
             {(['RHP', 'LHP'] as const).map((h) => (
               <button
                 key={h}
                 type="button"
                 onClick={() => setHand(h)}
                 aria-pressed={hand === h}
-                className={`px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] transition-colors ${
-                  hand === h ? 'bg-navy text-paper' : 'bg-paper text-ink-2 hover:text-seam'
-                }`}
+                className="rfx-seg"
               >
                 {h}
               </button>

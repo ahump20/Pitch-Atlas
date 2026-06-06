@@ -41,9 +41,9 @@ export function SectionHero({
       </div>
       <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
         {breadcrumb}
-        <p className="mono-label-stage">{eyebrow}</p>
+        <p className="rfx-skick">{eyebrow}</p>
         {badge ? <div className="mt-4">{badge}</div> : null}
-        <h1 className="display mt-4 max-w-[20ch] text-[2.6rem] leading-[1.0] text-bone md:text-[4.4rem]">
+        <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[2.8rem] leading-[0.92] text-bone md:text-[4.8rem]">
           {title}
         </h1>
         {sub ? (
