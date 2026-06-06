@@ -251,12 +251,12 @@ export const fourSeam: PitchAtlasEntry = {
   guide: {
     family: 'The straight one',
     tagline: 'The pitch you trust for a strike. It travels the straightest and arrives the fastest.',
-    feel: 'Loose in the fingertips. Let it come off the pads clean. Never squeeze it.',
+    feel: 'Least resistance. Loose in the fingertips, shallow in the hand. Let it sling cleanly off the pads.',
     steps: [
       'Lay your index and middle fingers flat across the wide part of the horseshoe seam, the part that faces away from you.',
       'Keep them about a finger-width apart. Pressed close is fine; just do not spread them wide.',
       'Rest your thumb underneath on smooth leather, centered below the two fingers.',
-      'Hold it out toward the fingertips with a little daylight to the palm, and stay loose.',
+      'Hold it out toward the fingertips with a little daylight to the palm. Stay loose so the hand adds the least resistance it can.',
     ],
     does: {
       headline: 'It fights gravity longer than your eye expects.',

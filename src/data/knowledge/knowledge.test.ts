@@ -97,4 +97,17 @@ describe('knowledge wings, provenance integrity', () => {
       expect(s.retrievedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
     }
   })
+
+  it('keeps the grip-resistance and fastball-first coaching frames', () => {
+    const pitchDesign = wingBySlug('pitch-design')
+    const sequencing = wingBySlug('sequencing')
+
+    const pitchDesignText = pitchDesign?.sections.flatMap((s) => s.paragraphs).join(' ') ?? ''
+    const sequencingText = sequencing?.sections.flatMap((s) => s.paragraphs).join(' ') ?? ''
+
+    expect(pitchDesignText).toContain('The four-seam is the least-resistance version')
+    expect(pitchDesignText).toContain('more surface area, more fingers, deeper palm contact')
+    expect(sequencingText).toContain('fastball versus offspeed')
+    expect(sequencingText).toContain('fastball-first timing problem')
+  })
 })
