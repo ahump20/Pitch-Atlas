@@ -320,11 +320,166 @@ const gyroball: Craftsman = {
   rights: 'original',
 }
 
+const niekro: Craftsman = {
+  slug: 'phil-niekro',
+  name: 'Phil Niekro',
+  kind: 'craftsman',
+  era: '1964-1987',
+  hand: 'right',
+  signaturePitch: 'Knuckleball',
+  signaturePitchSlug: 'knuckleball',
+  specimenNo: 'C-08',
+  tagline: 'The only knuckleballer to win 300 games — a Hall of Fame career built on the one pitch nobody, himself included, could fully explain.',
+  intro:
+    'They called him Knucksie. On a floating knuckleball his father taught him, Phil Niekro pitched more innings than any pitcher who started in the live-ball era and threw deep into his late 40s, long after a fastball would have left him. The knuckleball is usually a last resort; for Niekro it was a 300-win, Hall of Fame career.',
+  signature: claim(
+    'A true no-spin knuckleball: he arched the first two fingers of his right hand so only their tips and nails touched the ball, forsaking all humanly imparted spin and letting the seams and the air do the rest. With almost nothing on it, the pitch fluttered late and unpredictably — and because it asked so little of the arm, it let him pitch into his 48th year.',
+    'niekro-fangraphs',
+    'reputable-analysis',
+    { note: 'The fingertip-and-nail grip description is from the FanGraphs remembrance; he learned the pitch from his father and from minor-leaguer Nick McKay (SABR).' },
+  ),
+  mentalEdge: claim(
+    'Durability as a weapon. Teammate Dale Murphy called him the ultimate gamer and competitor, and the record bears it out: the most innings of any live-ball-era starter, and the oldest pitcher ever to throw a shutout, at 46 years and 188 days — a mark that stood nearly 25 years until Jamie Moyer passed it. A pitch that spares the arm let him simply outlast everyone.',
+    'niekro-wiki',
+    'reputable-analysis',
+    { note: 'The "ultimate gamer" characterization is Murphy\'s, via FanGraphs; the longevity records are from Wikipedia and the Hall of Fame.' },
+  ),
+  numbers: [
+    { label: 'Career wins-losses', claim: claim('318-274', 'niekro-hof', 'reputable-analysis', { note: 'Confirmed by the Hall of Fame and Wikipedia.' }) },
+    { label: 'Career strikeouts', claim: claim('3,342', 'niekro-hof', 'reputable-analysis') },
+    { label: 'Innings pitched', claim: claim('5,404.1', 'niekro-wiki', 'reputable-analysis', { note: 'The most of any pitcher who started in the post-1920 live-ball era.' }) },
+    { label: 'Oldest to throw a shutout', claim: claim('46 years, 188 days', 'niekro-wiki', 'reputable-analysis', { note: 'A record until Jamie Moyer (47 years, 170 days) in May 2010.' }) },
+    { label: 'Hall of Fame', claim: claim('Inducted 1997', 'niekro-hof', 'reputable-analysis', { note: 'The only knuckleballer to win 300+ games.' }) },
+  ],
+  quote: claim(
+    "I figured if there's any way I'm going to win my 300th game by striking the guy out, I was going to do it with the pitch that won the first game for me.",
+    'niekro-fangraphs',
+    'pitcher-own-words',
+    { note: 'On finishing his 300th win with the knuckleball.' },
+  ),
+  rights: 'original',
+}
+
+const hubbell: Craftsman = {
+  slug: 'carl-hubbell',
+  name: 'Carl Hubbell',
+  kind: 'craftsman',
+  era: '1928-1943',
+  hand: 'left',
+  signaturePitch: 'Screwball',
+  specimenNo: 'C-09',
+  tagline: 'The screwball master who struck out five Hall of Famers in a row — and deformed his own arm doing it.',
+  intro:
+    'They called him King Carl and the Meal Ticket. Carl Hubbell threw the screwball, a pitch that breaks the wrong way, so well that in the 1934 All-Star Game he struck out Babe Ruth, Lou Gehrig, Jimmie Foxx, Al Simmons, and Joe Cronin in succession. The pitch fed him for a decade and left his throwing arm permanently turned, his palm facing outward at rest.',
+  signature: claim(
+    'A screwball thrown over the top with exactly the same motion as his fastball — the deception, he said, was not the break but the change of speed. To make it, he had to defy nature and twist his wrist to the right at release, so the ball broke down and to the left, away from a right-handed hitter. Years of that twist left his left palm facing out instead of in.',
+    'hubbell-sabr',
+    'reputable-analysis',
+    { note: 'The same-motion delivery, the wrist twist, and the change-of-speed framing are from SABR; the palm-out deformity is confirmed by SABR and RetroSimba.' },
+  ),
+  mentalEdge: claim(
+    'Matchless control, and a sequence built on it: he used the curveball to set up the screwball, so by the time the screwball arrived the hitter had already been moved off balance. It is why he could throw a backwards-breaking pitch for strikes in any count without giving the at-bat away.',
+    'hubbell-sabr',
+    'reputable-analysis',
+  ),
+  numbers: [
+    { label: '1934 All-Star Game', claim: claim('5 straight strikeouts', 'hubbell-asg-sabr', 'reputable-analysis', { note: 'Ruth, Gehrig, Foxx, Simmons, and Cronin in succession, after a leadoff single and a walk left two on with nobody out.' }) },
+    { label: 'Career wins-losses', claim: claim('253-154', 'hubbell-wiki', 'reputable-analysis') },
+    { label: 'Career ERA', claim: claim('2.98', 'hubbell-hof', 'reputable-analysis') },
+    { label: 'Consecutive wins', claim: claim('24', 'hubbell-hof', 'reputable-analysis', { note: 'An all-time record, 16 in 1936 and 8 in 1937.' }) },
+    { label: 'NL MVP', claim: claim('1933 and 1936', 'hubbell-wiki', 'reputable-analysis', { note: 'In 1936 (26-6) he was the first-ever unanimous NL MVP.' }) },
+  ],
+  quote: claim(
+    "The screwball's an unnatural pitch. Nature never intended a man to turn his hand like that throwing rocks at a bear.",
+    'hubbell-almanac',
+    'pitcher-own-words',
+  ),
+  rights: 'original',
+}
+
+const rivera: Craftsman = {
+  slug: 'mariano-rivera',
+  name: 'Mariano Rivera',
+  kind: 'craftsman',
+  era: '1995-2013',
+  hand: 'right',
+  signaturePitch: 'Cutter',
+  signaturePitchSlug: 'cutter',
+  specimenNo: 'C-10',
+  tagline: 'The greatest closer ever, built on one pitch he discovered by accident — and the first player voted into the Hall of Fame unanimously.',
+  intro:
+    'Mariano Rivera is the rarest thing in the game: a pitcher everyone knew was throwing one pitch, who threw it anyway, for nineteen years, better than anyone has thrown anything. The cutter arrived by accident in 1997, playing catch. He never really changed it, and it carried him to the all-time saves record and a unanimous Hall of Fame call.',
+  signature: claim(
+    'Essentially one pitch his whole career: a cutter that looked like a four-seam fastball until it broke late to his glove side, in on the hands of a left-handed hitter, splitting bats at the thin part of the barrel. Ryan Klesko famously broke three bats in a single at-bat against it in the 1999 World Series.',
+    'rivera-wiki',
+    'reputable-analysis',
+    { note: 'The bat-breaking mechanism and the Klesko at-bat are from the Wikipedia cut-fastball article; the one-pitch career is documented in his Wikipedia biography.' },
+  ),
+  mentalEdge: claim(
+    'Total acceptance, total repetition. By his own account he did not change a thing about the pitch once he found it — no grip, no motion — and threw it in front of hitters who knew it was coming. The edge was a closer\'s calm welded to a pitch precise enough that knowing did not help.',
+    'rivera-cbs-cutter',
+    'reputable-analysis',
+  ),
+  numbers: [
+    { label: 'Career saves', claim: claim('652', 'rivera-hof', 'reputable-analysis', { note: 'The all-time record.' }) },
+    { label: 'Career ERA+', claim: claim('205', 'rivera-bref', 'reputable-analysis', { note: 'The best all-time among pitchers with 1,000+ innings; career ERA 2.21.' }) },
+    { label: 'Postseason ERA', claim: claim('0.70', 'rivera-wiki', 'reputable-analysis', { note: 'The lowest in MLB history, over 141 postseason innings, with 42 postseason saves.' }) },
+    { label: 'World Series titles', claim: claim('5', 'rivera-wiki', 'reputable-analysis', { note: '1996, 1998-2000, 2009; World Series MVP in 1999.' }) },
+    { label: 'Hall of Fame vote', claim: claim('425 of 425 (100%)', 'rivera-bbwaa', 'reputable-analysis', { note: 'The first player ever elected unanimously, breaking Ken Griffey Jr.\'s prior record.' }) },
+  ],
+  quote: claim(
+    'The Lord gave it to me. Oh, the Lord. Definitely.',
+    'rivera-cbs-cutter',
+    'pitcher-own-words',
+    { note: 'On the 1997 accidental discovery of the cutter while playing catch with Ramiro Mendoza.' },
+  ),
+  rights: 'original',
+}
+
+const hamels: Craftsman = {
+  slug: 'cole-hamels',
+  name: 'Cole Hamels',
+  kind: 'craftsman',
+  era: '2006-2020',
+  hand: 'left',
+  signaturePitch: 'Circle changeup',
+  signaturePitchSlug: 'circle-change',
+  specimenNo: 'C-11',
+  tagline: 'A left-handed changeup artist whose out-pitch carried him to a World Series MVP — the southpaw answer to Santana.',
+  intro:
+    'Cole Hamels threw a changeup good enough to start a championship. A power lefty with an ordinary-looking fastball, he made his living on a circle change he could throw in any count, and in October 2008 he rode it to both the NLCS and World Series MVP. Where Johan Santana was the right-handed model of the disguised changeup, Hamels was its left-handed counterpart.',
+  signature: claim(
+    'A circle changeup he learned in high school, thrown from the same release point as his fastball and curve so all three came out looking identical — the deception was the sameness, not the movement. He varied it on purpose: slower for swings and misses, firmer for ground balls. He developed it after breaking his arm in high school pushed him toward an off-speed pitch.',
+    'hamels-espn-crasnick',
+    'reputable-analysis',
+    { note: 'The grip origin (HS coach Mark Furtak, Rancho Bernardo) and the slow-vs-firm variation are from ESPN; the same-release-point deception is from the FanGraphs JAWS profile; the broken-arm origin is from Wikipedia.' },
+  ),
+  mentalEdge: claim(
+    'He turned a two-pitch guessing game into a three-way one. As he put it, adding the changeup meant a hitter went from a 50-50 fastball-or-curve guess to a one-in-three — and because all three left his hand the same way, the extra option was pure friction, not a tell.',
+    'hamels-espn-crasnick',
+    'reputable-analysis',
+  ),
+  numbers: [
+    { label: '2008 postseason', claim: claim('4-0, 1.80 ERA', 'hamels-espn-2008', 'reputable-analysis', { note: 'Across five starts; NLCS MVP and World Series MVP, a rare double.' }) },
+    { label: 'Career strikeouts', claim: claim('2,560', 'hamels-statmuse', 'reputable-analysis') },
+    { label: 'Career wins-losses', claim: claim('163-122', 'hamels-statmuse', 'reputable-analysis', { note: 'With a 3.43 ERA over 2,698 innings.' }) },
+    { label: 'Career WAR', claim: claim('59.0', 'hamels-fangraphs-jaws', 'reputable-analysis', { note: '123 ERA+; a four-time All-Star.' }) },
+  ],
+  quote: claim(
+    'It just rolls off my fingers.',
+    'hamels-espn-crasnick',
+    'pitcher-own-words',
+    { note: 'On the feel of his changeup.' },
+  ),
+  rights: 'original',
+}
+
 /*
-  The hall, in reading order: six craftsmen oldest to newest, then the legend.
-  Adding an arm is one import and one array entry.
+  The hall, in reading order: the established craftsmen oldest to newest, the
+  roundout (a knuckleballer, a screwball master, a one-pitch closer, a changeup
+  lefty), then the legend. Adding an arm is one const and one array entry.
 */
-export const CRAFTSMEN: Craftsman[] = [gibson, ryan, clemens, maddux, santana, wainwright, skenes, gyroball]
+export const CRAFTSMEN: Craftsman[] = [gibson, ryan, clemens, maddux, santana, wainwright, skenes, niekro, hubbell, rivera, hamels, gyroball]
 
 const BY_SLUG: Record<string, Craftsman> = Object.fromEntries(
   CRAFTSMEN.map((c) => [c.slug, c]),

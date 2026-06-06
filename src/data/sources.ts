@@ -1336,6 +1336,146 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_4,
     season: '2020',
   },
+
+  // --- The Craftsmen roundout: Phil Niekro (2026-06-06) ---
+  'niekro-wiki': {
+    id: 'niekro-wiki',
+    label: 'Wikipedia, Phil Niekro',
+    url: 'https://en.wikipedia.org/wiki/Phil_Niekro',
+    retrievedAt: RETRIEVED_4,
+  },
+  'niekro-fangraphs': {
+    id: 'niekro-fangraphs',
+    label: 'FanGraphs, Remembering Phil Niekro, King of the Knuckleballers',
+    url: 'https://blogs.fangraphs.com/remembering-phil-niekro-king-of-the-knuckleballers-1939-2020/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'niekro-hof': {
+    id: 'niekro-hof',
+    label: 'National Baseball Hall of Fame, Phil Niekro',
+    url: 'https://baseballhall.org/hall-of-famers/niekro-phil',
+    retrievedAt: RETRIEVED_4,
+  },
+  'niekro-sabr': {
+    id: 'niekro-sabr',
+    label: 'Society for American Baseball Research, Phil Niekro (BioProject)',
+    url: 'https://sabr.org/bioproj/person/phil-niekro/',
+    retrievedAt: RETRIEVED_4,
+  },
+
+  // --- The Craftsmen roundout: Carl Hubbell ---
+  'hubbell-sabr': {
+    id: 'hubbell-sabr',
+    label: 'Society for American Baseball Research, Carl Hubbell (BioProject)',
+    url: 'https://sabr.org/bioproj/person/carl-hubbell/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'hubbell-hof': {
+    id: 'hubbell-hof',
+    label: 'National Baseball Hall of Fame, Carl Hubbell',
+    url: 'https://baseballhall.org/hall-of-famers/hubbell-carl',
+    retrievedAt: RETRIEVED_4,
+  },
+  'hubbell-asg-sabr': {
+    id: 'hubbell-asg-sabr',
+    label: 'SABR Games Project, July 10, 1934: Carl Hubbell strikes out five Hall of Famers in a row',
+    url: 'https://sabr.org/gamesproj/game/july-10-1934-carl-hubbell-strikes-out-five-hall-of-famers-in-a-row-at-all-star-game/',
+    retrievedAt: RETRIEVED_4,
+    season: '1934',
+  },
+  'hubbell-wiki': {
+    id: 'hubbell-wiki',
+    label: 'Wikipedia, Carl Hubbell',
+    url: 'https://en.wikipedia.org/wiki/Carl_Hubbell',
+    retrievedAt: RETRIEVED_4,
+  },
+  'hubbell-almanac': {
+    id: 'hubbell-almanac',
+    label: 'Baseball Almanac, Carl Hubbell Quotes',
+    url: 'https://www.baseball-almanac.com/quotes/carl_hubbell_quotes.shtml',
+    retrievedAt: RETRIEVED_4,
+  },
+  'hubbell-retrosimba': {
+    id: 'hubbell-retrosimba',
+    label: 'RetroSimba, Carl Hubbell: giant among pitchers knew glory, tragedy',
+    url: 'https://retrosimba.com/2018/11/24/carl-hubbell-giant-among-pitchers-knew-glory-tragedy/',
+    retrievedAt: RETRIEVED_4,
+  },
+
+  // --- The Craftsmen roundout: Mariano Rivera ---
+  'rivera-wiki': {
+    id: 'rivera-wiki',
+    label: 'Wikipedia, Mariano Rivera',
+    url: 'https://en.wikipedia.org/wiki/Mariano_Rivera',
+    retrievedAt: RETRIEVED_4,
+  },
+  'rivera-cbs-cutter': {
+    id: 'rivera-cbs-cutter',
+    label: "CBS Sports, Mariano Rivera: birth of the cutter was a gift from God",
+    url: 'https://www.cbssports.com/mlb/news/mariano-rivera-birth-of-the-cutter-was-gift-from-god-part-4-of-5/',
+    retrievedAt: RETRIEVED_4,
+    season: '1997',
+  },
+  'rivera-hof': {
+    id: 'rivera-hof',
+    label: 'National Baseball Hall of Fame, Mariano Rivera',
+    url: 'https://baseballhall.org/hall-of-famers/rivera-mariano',
+    retrievedAt: RETRIEVED_4,
+  },
+  'rivera-bref': {
+    id: 'rivera-bref',
+    label: 'Baseball-Reference, Mariano Rivera',
+    url: 'https://www.baseball-reference.com/players/r/riverma01.shtml',
+    retrievedAt: RETRIEVED_4,
+  },
+  'rivera-bbwaa': {
+    id: 'rivera-bbwaa',
+    label: 'BBWAA, Rivera, Halladay, Martinez and Mussina elected to the Hall of Fame',
+    url: 'https://bbwaa.com/19-hof/',
+    retrievedAt: RETRIEVED_4,
+    season: '2019',
+  },
+  'rivera-si': {
+    id: 'rivera-si',
+    label: 'Sports Illustrated, Mariano Rivera voted into the Hall of Fame unanimously',
+    url: 'https://www.si.com/mlb/2019/01/22/mariano-rivera-voted-baseball-hall-fame-unanimous-total',
+    retrievedAt: RETRIEVED_4,
+    season: '2019',
+  },
+
+  // --- The Craftsmen roundout: Cole Hamels ---
+  'hamels-espn-crasnick': {
+    id: 'hamels-espn-crasnick',
+    label: 'ESPN, Jerry Crasnick on Cole Hamels and his changeup',
+    url: 'https://www.espn.com/mlb/columns/story?columnist=crasnick_jerry&id=2878204',
+    retrievedAt: RETRIEVED_4,
+    season: '2007',
+  },
+  'hamels-espn-2008': {
+    id: 'hamels-espn-2008',
+    label: 'ESPN, Phillies pitcher Hamels earns World Series MVP',
+    url: 'https://www.espn.com/mlb/playoffs2008/news/story?id=3671956',
+    retrievedAt: RETRIEVED_4,
+    season: '2008',
+  },
+  'hamels-statmuse': {
+    id: 'hamels-statmuse',
+    label: 'StatMuse, Cole Hamels career stats',
+    url: 'https://www.statmuse.com/mlb/player/cole-hamels-24707/career-stats',
+    retrievedAt: RETRIEVED_4,
+  },
+  'hamels-fangraphs-jaws': {
+    id: 'hamels-fangraphs-jaws',
+    label: 'FanGraphs, JAWS and the 2026 Hall of Fame Ballot: Cole Hamels (Jay Jaffe)',
+    url: 'https://blogs.fangraphs.com/jaws-and-the-2026-hall-of-fame-ballot-cole-hamels/',
+    retrievedAt: RETRIEVED_4,
+  },
+  'hamels-wiki': {
+    id: 'hamels-wiki',
+    label: 'Wikipedia, Cole Hamels',
+    url: 'https://en.wikipedia.org/wiki/Cole_Hamels',
+    retrievedAt: RETRIEVED_4,
+  },
 } satisfies Record<string, Source>
 
 export type SourceId = keyof typeof SOURCES
