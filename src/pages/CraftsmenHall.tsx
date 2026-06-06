@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { CRAFTSMEN } from '../data/craftsmen'
 import { CraftsmanCard } from '../components/craftsmen/CraftsmanCard'
 import { TierMarker } from '../components/layout/TierMarker'
+import { SectionHero } from '../components/layout/SectionHero'
+import { Breadcrumb } from '../components/layout/Breadcrumb'
 
 /*
   The Craftsmen wing: a curated hall of arms who defined a pitch, plus the one
@@ -27,28 +28,16 @@ export function CraftsmenHall() {
 
   return (
     <>
-      <section className="on-stage relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
-          <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(108,172,228,0.16),transparent_40%),linear-gradient(115deg,rgba(242,236,221,0.07)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-          <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
-            <Link to="/" className="transition-colors hover:text-bone">The Atlas</Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-bone-2">The Craftsmen</span>
-          </nav>
-          <p className="mono-label-stage">The hall</p>
-          <h1 className="display mt-4 max-w-[16ch] text-[2.6rem] leading-[1.0] text-bone md:text-[4.4rem]">
-            The arms that defined the pitches.
-          </h1>
-          <p className="mt-6 max-w-[58ch] text-lg leading-relaxed text-bone-2">
-            A pitch is a tool; a craftsman is who made it sing. This wing is the mental and physical
-            edge of pitching, the intimidation, the conviction, the deception, told through the arms
-            who owned a single pitch. Plus one pitch that is a legend rather than a person. Every quote
-            and number is labeled by its source.
-          </p>
-        </div>
-      </section>
+      <SectionHero
+        breadcrumb={
+          <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'The Craftsmen' }]} />
+        }
+        eyebrow="The hall"
+        title="The arms that defined the pitches."
+        sub={
+          <>The arms that owned a pitch — and the one pitch that is a legend, not a person. Every quote sourced.</>
+        }
+      />
 
       <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
         <TierMarker index="C" label="The masters" />

@@ -15,10 +15,12 @@ a change to one of these without the others is a regression.
 
 ## What this repo is
 
-Pitch Atlas is a five-pitch, grip-first atlas, built and committed. Five sourced
-specimens (four-seam, sinker, circle change, 12-6 curve, slider) navigate by
-hash; the page leads with the grip a human can hold, then tucks the physics
-behind a disclosure. Production home: **pitch-atlas.com**. It proves two things:
+Pitch Atlas is a grip-first atlas with a searchable **Pitch Index** front door.
+Seven sourced specimens (four-seam, two-seam, circle change, 12-6 curve, slider,
+splitter, splinker) each get a deep multi-page route (`/pitch/<slug>`, real
+prerendered HTML via react-router + vite-plugin-react-ssg); the page leads with the
+grip a human can hold, then tucks the physics behind a disclosure. Production home:
+**pitch-atlas.com**. It proves two things:
 
 - the signature medium: an original-geometry interactive 3D ball — warm aged
   leather, pressed fingertip pads on the seam — that dissolves on scroll into a
@@ -26,23 +28,39 @@ behind a disclosure. Production home: **pitch-atlas.com**. It proves two things:
 - the provenance model: every visible number carries a `Source` and a
   `confidence` label; nothing is faked.
 
-Do not add (excluded on purpose):
+The front door is the **Pitch Index** (`/repertoire`): a searchable directory of
+every accepted pitch by family plus the lost-pitches wing, routing a filed pitch to
+its full specimen and an unfiled pitch to a basic file (sourced one-liners + a
+plain-language lede + an honest "fuller breakdown coming" marker). Seven filed
+specimens carry the deep 3D treatment.
 
-- auth
-- uploads
-- comments
-- voting
-- fake community posts
-- fake adoption counts
-- fake verified-pro badges
-- runtime external API calls
-- fabricated numbers for a not-yet-sourced pitch (roadmap cards stay honest teasers)
+Community is now LIVE (the earlier "not in v1" exclusion is superseded, 2026-06-06):
+every pitch and topic carries a **discussion** layer — Supabase-backed, anonymous
+sign-in, one-level replies, and native photo/video uploads behind a mandatory
+safety floor (own-the-rights terms gate, magic-byte type validation, per-kind size
+caps, banned-term filter, per-account rate limits, report-driven auto-hide that
+stops serving a hidden item the instant its row flips). The runbook + the honest
+list of deferred limits live in `docs/community-media-moderation.md`. Tables:
+`discussion_posts` / `discussion_media` / `discussion_reports` (migration
+`supabase/migrations/20260606090000_discussion_forum.sql`); the structured
+`field_notes` grip-tweak engine stays alongside it, dormant.
 
-The data model names the full future shape (canonical record, master variants,
-community variants, reproduction logs). It populates five canonical records and
-their sourced master variants, adds an optional plain-language `GripGuide` per
-pitch (no measured numbers — those stay in `canonical.physics`), and renders an
-honest empty state for community. Extend that shape; do not gut it.
+Still excluded on purpose (these have NOT changed):
+
+- fake community posts, fake adoption counts, fake verified-pro badges (community
+  content is real, contributor-supplied, and source-labeled — never seeded)
+- runtime external API calls for pitch data
+- fabricated numbers, geometry, or physics for a not-yet-measured pitch (roadmap
+  and basic cards stay honest; the basic page renders a schematic ball, not a fake
+  movement plot)
+- copied instructional prose; MLB/team/player photos, logos, footage, likenesses
+
+The data model names the full shape (canonical record, master variants, community,
+reproduction logs). It populates seven canonical records + their sourced master
+variants, an optional plain-language `GripGuide` per filed pitch and an optional
+`plain` lede per repertoire entry (no measured numbers — those stay in
+`canonical.physics`/the Claims), and the live discussion layer. Extend that shape;
+do not gut it.
 
 ## Repository discipline
 
@@ -95,8 +113,12 @@ Wikipedia, or any source. Paraphrase and cite.
 
 Do not make medical, injury-prevention, workload, or youth-prescription claims.
 
-Community variants are not in v1. When they launch they launch with age-aware
-visibility, source labels, and coach/parent safeguards.
+The community discussion layer is live (2026-06-06) with the safeguards it always
+promised: a standing safety note (grip/technique only — no medical, injury,
+workload, or youth-training prescription), source labels, anonymous sign-in, an
+own-the-rights upload-terms gate, and report-driven auto-hide. Make no medical,
+injury, workload, or youth-prescription claims in product copy or community
+guardrails.
 
 ## Seam accuracy
 

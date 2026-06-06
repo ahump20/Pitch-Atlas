@@ -9,6 +9,7 @@ import { ReleaseRoom } from '../components/sections/ReleaseRoom'
 import { MovementTranslation } from '../components/sections/WhatItDoes'
 import { MasterFiles } from '../components/sections/MasterFiles'
 import { FieldNotes } from '../components/sections/FieldNotes'
+import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { NotFound } from './NotFound'
 
 /*
@@ -90,6 +91,7 @@ export function PitchChapter() {
       <MovementTranslation entry={entry} />
       <MasterFiles entry={entry} />
       <FieldNotes entry={entry} />
+      <DiscussionPanel topicKey={entry.display.slug} topicName={entry.canonical.name} />
       <ChapterNav prev={prev} next={next} />
     </>
   )

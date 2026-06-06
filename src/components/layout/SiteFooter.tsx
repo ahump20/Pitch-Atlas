@@ -9,8 +9,9 @@ import { SITE } from '../../config/site'
 */
 
 const LINKS: { label: string; to: string }[] = [
-  { label: 'The Atlas', to: '/' },
+  { label: 'The Pitch Index', to: '/repertoire' },
   { label: 'The Craftsmen', to: '/craftsmen' },
+  { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
 ]
 

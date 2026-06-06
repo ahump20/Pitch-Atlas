@@ -29,7 +29,7 @@ Every specimen proves the same two things:
 1. **The signature medium.** An original-geometry interactive 3D ball that teaches the pitch. A pitch is defined by its spin axis, so the axis is authored and the **Magnus force is computed from it, not hand-placed** (`spin × velocity`): it points up for the four-seam, down for the curve, leaned for the sinker and change, and runs short for the gyro slider, whose force arrow shrinks because most of its spin does no work. The hero dissolves on scroll into a 2D schematic of the same seam-point function. The four-seam shows a gravity-ghost carry diagram; the breaking and offspeed pitches show a catcher's-eye movement plot, both scaled from sourced break figures and labeled schematic.
 2. **The provenance model.** Every visible number carries a source and a confidence label. Nothing is faked. The page is fully usable with zero WebGL.
 
-The atlas deliberately excludes auth, real community posts, voting, reproduction logs, and any runtime API call. The data model names the full future shape (canonical record, master variants, community variants, reproduction logs); today it populates the five canonical records and their sourced master variants, and shows an honest empty state for community. Every figure was sourced by parallel research and put through an independent verification pass before it was allowed onto a page; the corrections that pass forced are noted in the data files.
+The front door is the **Pitch Index**: a searchable directory of every accepted pitch by family, plus the lost pitches of the Negro Leagues. A filed pitch opens its full specimen; an unfiled pitch opens a basic file with its sourced one-liners and a plain-language read; nothing fabricates geometry or physics for a pitch the atlas has not measured. Every pitch and topic also carries a **discussion** layer (Supabase-backed, opt-in, anonymous sign-in, native photo/video uploads behind a safety floor — see below). What stays excluded on purpose: any runtime API call for pitch data, and any *fabricated* community content — no fake posts, no fake adoption counts, no fake verified-pro badges. Every figure was sourced by parallel research and put through an independent verification pass before it was allowed onto a page; the corrections that pass forced are noted in the data files.
 
 ## Provenance and rights policy
 
@@ -44,7 +44,7 @@ The seam geometry, equation, constants, coordinate system, and stitch-count assu
 
 ## Youth and safety
 
-Community variants are not live yet. When they launch, they launch with age-aware visibility, source labels, and coach and parent safeguards. Pitch Atlas makes no medical, injury-prevention, or age-appropriate-prescription claims. Grip and workload copy stays descriptive and sourced, never prescriptive.
+The discussion layer is live, with the safeguards it always promised: a standing safety note (grip and technique only — no medical, injury, workload, or youth-training prescription), source labels, anonymous sign-in, and report-driven auto-hide. Native uploads ride a safety floor — a one-time terms acceptance (own-the-rights, no copyrighted footage, no minors), magic-byte type validation, per-kind size caps, and report-driven takedown that stops serving a hidden item the instant its row flips. The full runbook and the honest list of deferred limitations (no automated content scanning, no bot protection yet) live in [`docs/community-media-moderation.md`](docs/community-media-moderation.md). Pitch Atlas itself makes no medical, injury-prevention, or age-appropriate-prescription claims.
 
 ## Stack
 
@@ -53,7 +53,7 @@ Community variants are not live yet. When they launch, they launch with age-awar
 - **Fonts (self-hosted, no runtime external request):** Newsreader for editorial display, Hanken Grotesk for prose, Martian Mono for data, gauges, source badges, and on-ball annotations.
 - **Deploy:** Cloudflare Pages (static), live at [pitch-atlas.com](https://pitch-atlas.com).
 - **Routing:** the selected specimen lives in the URL hash (`#/<slug>`), so each pitch is deep-linkable with no router dependency and no server rewrite.
-- **Community backend:** none yet. Later: Cloudflare D1 + KV + Supabase auth + one Worker.
+- **Community backend:** Supabase (anonymous sign-in + Postgres with row-level security + Storage for uploads). The publishable key ships in the bundle by design; RLS is the boundary. Per-topic discussion with one-level replies and native media, governed by the safety floor in `docs/community-media-moderation.md`.
 
 ## Develop
 
@@ -69,7 +69,7 @@ npm run preview    # serve the production build
 
 ## Honesty contract
 
-No auth. No fake community posts. No fake adoption counts. No fake verified-pro badges. No hardcoded freshness strings. No MLB, team, or player photos, logos, footage, or likenesses. No copied instructional prose. No unsourced grip claims. No runtime API dependencies. Unsourced becomes `unverified` or `approximate`.
+No fake community posts. No fake adoption counts. No fake verified-pro badges. No hardcoded freshness strings. No MLB, team, or player photos, logos, footage, or likenesses. No copied instructional prose. No unsourced grip claims. No runtime API dependency for pitch data. No fabricated geometry or physics for a pitch the atlas has not measured. Community content is real, contributor-supplied, source-labeled, and moderated — never seeded with fakes. Unsourced becomes `unverified` or `approximate`.
 
 ## License
 

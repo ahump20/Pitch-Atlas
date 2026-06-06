@@ -39,6 +39,7 @@ function Fallback() {
 
 export function PitchingNinjaTweet() {
   const [mounted, setMounted] = useState(false)
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only mount flag for hydration-safe embed render
   useEffect(() => setMounted(true), [])
 
   if (!mounted || !tweet || !tweet.id_str) return <Fallback />

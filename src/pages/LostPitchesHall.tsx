@@ -1,9 +1,10 @@
-import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { LOST_PITCHES, LOST_PITCH_TIERS, lostPitchesByTier } from '../data/lost-pitches'
 import { LostPitchCard } from '../components/lost-pitches/LostPitchCard'
 import { TierMarker } from '../components/layout/TierMarker'
+import { SectionHero } from '../components/layout/SectionHero'
+import { Breadcrumb } from '../components/layout/Breadcrumb'
 
 /*
   Lost Pitches of the Negro Leagues. A wing built on one honest asymmetry: the
@@ -27,30 +28,20 @@ export function LostPitchesHall() {
 
   return (
     <>
-      <section className="on-stage relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
-          <div className="h-full w-full bg-[radial-gradient(circle_at_70%_30%,rgba(200,16,46,0.16),transparent_40%),linear-gradient(115deg,rgba(242,236,221,0.07)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
-        </div>
-        <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-          <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
-            <Link to="/" className="transition-colors hover:text-bone">The Atlas</Link>
-            <span aria-hidden="true">/</span>
-            <span className="text-bone-2">Lost Pitches</span>
-          </nav>
-          <p className="mono-label-stage">The recovered archive</p>
-          <h1 className="display mt-4 max-w-[16ch] text-[2.6rem] leading-[1.0] text-bone md:text-[4.4rem]">
-            Lost Pitches of the Negro Leagues.
-          </h1>
-          <p className="mt-6 max-w-[62ch] text-lg leading-relaxed text-bone-2">
-            A box score can tell you Smokey Joe Williams struck out twenty-seven in twelve innings. It
-            cannot tell you the grip, the spin, or the sequence. That gap is the wing. The statistics are
-            being recovered, game by game, from microfilm and box scores; the technique mostly never will
-            be. So everything here is filed by how solid the record is, not smoothed into a single
-            confident voice. The documented anchors lead. The legend tier is kept on purpose, flagged, to
-            show the line between a sourced record and a good story.
-          </p>
-        </div>
-      </section>
+      <SectionHero
+        accent="seam"
+        breadcrumb={
+          <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Lost Pitches' }]} />
+        }
+        eyebrow="The recovered archive"
+        title="Lost Pitches of the Negro Leagues."
+        sub={
+          <>
+            The statistics are being recovered; the technique mostly never will be. Filed by how solid the
+            record is — documented anchors first, legend flagged.
+          </>
+        }
+      />
 
       {count === 0 ? (
         <section className="mx-auto max-w-6xl px-5 py-20 md:px-8">

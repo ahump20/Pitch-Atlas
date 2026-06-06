@@ -39,13 +39,14 @@ function message(err: unknown): string {
   Tried This / Helpful toggles that revert on failure. Re-loads when the selected
   pitch changes. The view branches on `status` for loading / error / empty / ready.
 
-  `enabled` gates the whole thing. While the community layer is a preview the hook
-  makes NO Supabase calls (no anonymous sign-in, no fetch), so a visitor who cannot
-  use the loop never mints an account. It still runs (Rules of Hooks); it just sits
-  idle at status 'ready' with no notes until the layer is opened.
+  `enabled` gates the whole thing. While the community layer is a preview, or in
+  tests, the hook makes NO Supabase calls (no anonymous sign-in, no fetch), so a
+  visitor who cannot use the loop never mints an account. It still runs (Rules of
+  Hooks); it just sits idle at status 'ready' with no notes until the layer opens.
 */
 export function useFieldNotes(pitchSlug: string, enabled = true): UseFieldNotes {
-  const [status, setStatus] = useState<FieldNotesStatus>(enabled ? 'loading' : 'ready')
+  const active = enabled && import.meta.env.MODE !== 'test'
+  const [status, setStatus] = useState<FieldNotesStatus>(active ? 'loading' : 'ready')
   const [error, setError] = useState<string | null>(null)
   const [notes, setNotes] = useState<CommunityNote[]>([])
   const [identity, setIdentity] = useState<CommunityIdentity | null>(null)
@@ -53,31 +54,35 @@ export function useFieldNotes(pitchSlug: string, enabled = true): UseFieldNotes 
 
   const refresh = useCallback(() => setReloadKey((k) => k + 1), [])
 
-  useEffect(() => {
-    if (!enabled) return
-    let cancelled = false
-    /* eslint-disable react-hooks/set-state-in-effect -- reset the surface to loading and clear any prior error before the async fetch; canonical fetch-on-mount, not a cascading-render bug */
-    setStatus('loading')
-    setError(null)
-    /* eslint-enable react-hooks/set-state-in-effect */
-    ;(async () => {
+  const load = useCallback(
+    async (isCancelled: () => boolean) => {
+      setStatus('loading')
+      setError(null)
       try {
         await ensureSession()
         const [loadedNotes, loadedIdentity] = await Promise.all([listNotes(pitchSlug), getIdentity()])
-        if (cancelled) return
+        if (isCancelled()) return
         setNotes(loadedNotes)
         setIdentity(loadedIdentity)
         setStatus('ready')
       } catch (err) {
-        if (cancelled) return
+        if (isCancelled()) return
         setError(message(err))
         setStatus('error')
       }
-    })()
+    },
+    [pitchSlug],
+  )
+
+  useEffect(() => {
+    if (!active) return
+    let cancelled = false
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- gated async load sets loading status; the effect early-returns when the community layer is inactive
+    void load(() => cancelled)
     return () => {
       cancelled = true
     }
-  }, [pitchSlug, reloadKey, enabled])
+  }, [active, load, reloadKey])
 
   const reloadIdentity = useCallback(async () => {
     try {

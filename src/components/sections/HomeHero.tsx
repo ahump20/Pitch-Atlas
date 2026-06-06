@@ -26,16 +26,15 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
             The living field manual for pitching grips.
           </h1>
           <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-bone-2">
-            Textbook foundations, verified master variants, and the craftsmen who defined the craft.
-            Every claim is labeled by its source, not declared right or wrong. Open a pitch, study the
-            hand, then read the legends who made it move.
+            Every pitch, gripped and sourced — from the four-seam to the banned doctored ball. Open the
+            hand, then read who made it move.
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <a
-              href="#atlas"
+              href="#index"
               onClick={(e) => {
                 e.preventDefault()
-                scrollToId('atlas')
+                scrollToId('index')
               }}
               className="inline-flex items-center gap-2 rounded-sm border border-seam bg-seam px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:bg-seam-deep active:translate-y-px"
             >
@@ -50,9 +49,6 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
               <span aria-hidden="true">→</span>
             </Link>
           </div>
-          <p className="mt-7 max-w-[46ch] font-mono text-xs leading-relaxed tracking-[0.04em] text-bone-2/80">
-            Foundation. Masters. Field Notes. The three layers of the record, each labeled by source.
-          </p>
         </div>
 
         <div className="order-1 md:order-2 md:col-span-6">

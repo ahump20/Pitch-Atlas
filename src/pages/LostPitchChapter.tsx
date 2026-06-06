@@ -6,6 +6,7 @@ import { LOST_PITCHES, lostPitchBySlug } from '../data/lost-pitches'
 import { SITE } from '../config/site'
 import { TierMarker } from '../components/layout/TierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
+import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { SourcedValue } from '../components/provenance/SourcedValue'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
@@ -169,6 +170,8 @@ export function LostPitchChapter() {
           </div>
         </section>
       ) : null}
+
+      <DiscussionPanel topicKey={`lost:${pitch.slug}`} topicName={pitch.name} variant="compact" />
 
       <ChapterNav prev={prev} next={next} />
     </>

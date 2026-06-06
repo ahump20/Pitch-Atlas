@@ -3,6 +3,7 @@ import { RootLayout } from './components/layout/RootLayout'
 import { AtlasHome } from './pages/AtlasHome'
 import { PitchChapter } from './pages/PitchChapter'
 import { RepertoirePage } from './pages/RepertoirePage'
+import { RepertoireChapter } from './pages/RepertoireChapter'
 import { CraftsmenHall } from './pages/CraftsmenHall'
 import { CraftsmanChapter } from './pages/CraftsmanChapter'
 import { LostPitchesHall } from './pages/LostPitchesHall'
@@ -25,6 +26,7 @@ export const routes: RouteObject[] = [
       { index: true, Component: AtlasHome },
       { path: 'pitch/:slug', Component: PitchChapter },
       { path: 'repertoire', Component: RepertoirePage },
+      { path: 'repertoire/:id', Component: RepertoireChapter },
       { path: 'craftsmen', Component: CraftsmenHall },
       { path: 'craftsmen/:slug', Component: CraftsmanChapter },
       { path: 'lost-pitches', Component: LostPitchesHall },

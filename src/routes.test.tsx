@@ -23,22 +23,27 @@ function renderRoute(path: string) {
 const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random', 'Loading...', 'TODO', 'Baseball Atlas']
 
 describe('Atlas home', () => {
-  it('renders the product hero and the table of contents', async () => {
+  it('leads with the hero and makes the Pitch Index the front door', async () => {
     renderRoute('/')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent(
       'The living field manual for pitching grips.',
     )
-    expect(screen.getByText('How the Atlas works')).toBeInTheDocument()
-    expect(screen.getByText('The catalog')).toBeInTheDocument()
-    expect(screen.getByText('The arms that defined the pitches.')).toBeInTheDocument()
+    // the Pitch Index is the dominant home section, and it lists real pitches
+    expect(screen.getByText('Every pitch, gripped and sourced. Find the one you want.')).toBeInTheDocument()
+    expect(screen.getAllByText('Eephus').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
+    // the two side wings still have a door
+    expect(screen.getAllByText('The Craftsmen').length).toBeGreaterThan(0)
   })
 
-  it('lists every specimen in the masthead index', async () => {
+  it('shows one clear primary nav, not the old per-pitch strip', async () => {
     renderRoute('/')
-    const nav = await screen.findByRole('navigation', { name: 'Specimen index' })
-    for (const name of ['Four-seam', 'Sinker', 'Circle change', '12-6 curve', 'Slider', 'Splitter', 'Splinker']) {
-      expect(within(nav).getByText(name)).toBeInTheDocument()
+    const nav = await screen.findByRole('navigation', { name: 'Primary' })
+    for (const label of ['Pitch Index', 'Craftsmen', 'Sources']) {
+      expect(within(nav).getByText(label)).toBeInTheDocument()
     }
+    // the redundant per-pitch specimen strip is gone
+    expect(screen.queryByRole('navigation', { name: 'Specimen index' })).not.toBeInTheDocument()
   })
 })
 
@@ -113,13 +118,13 @@ describe('Sources', () => {
   })
 })
 
-describe('The Repertoire', () => {
+describe('The Pitch Index', () => {
   it('catalogs every accepted pitch by family, including the kick change', async () => {
     renderRoute('/repertoire')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Every accepted pitch, by family.')
     expect(screen.getAllByText('Kick Change').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Splitter').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
   })
 
   it('files the knuckle-slurve honestly as not a pitch', async () => {
@@ -127,6 +132,31 @@ describe('The Repertoire', () => {
     await screen.findByRole('heading', { level: 1 })
     expect(screen.getAllByText(/Knuckle-Slurve/).length).toBeGreaterThan(0)
     expect(screen.getAllByText('Not a pitch').length).toBeGreaterThan(0)
+  })
+
+  it('also surfaces the lost-pitches wing in the index', async () => {
+    renderRoute('/repertoire')
+    await screen.findByRole('heading', { level: 1 })
+    expect(screen.getAllByText('Lost pitches of the Negro Leagues').length).toBeGreaterThan(0)
+  })
+})
+
+describe('Basic pitch files', () => {
+  it('renders a basic file for an unfiled pitch with an honest marker and a discussion', async () => {
+    renderRoute('/repertoire/cutter')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Cutter')
+    expect(screen.getByText('Basic file')).toBeInTheDocument()
+    expect(screen.getAllByText('Discussion').length).toBeGreaterThan(0)
+  })
+
+  it('redirects a filed pitch id straight to its full specimen', async () => {
+    renderRoute('/repertoire/four-seam-fastball')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Four-seam fastball')
+  })
+
+  it('shows the 404 for an unknown pitch id', async () => {
+    renderRoute('/repertoire/not-a-real-pitch')
+    expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
   })
 })
 
@@ -159,7 +189,7 @@ describe('Lost Pitches of the Negro Leagues', () => {
 })
 
 describe('No failure signatures', () => {
-  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
+  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/cutter', '/repertoire/knuckleball', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)

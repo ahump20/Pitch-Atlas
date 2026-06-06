@@ -113,6 +113,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "The one-seam grip is a relatively new, still-evolving pitch-design concept; attribution to specific pitchers like Wainwright comes from analysis and reporting rather than league pitch-classification data." },
     ),
     notableThrowers: "Adam Wainwright is the most-cited practitioner; the grip has become a pitch-design tool for sinkerballers hunting seam-shifted-wake movement.",
+    plain: "A sinker with a twist: one finger rides a single seam so the seam itself, not the spin, steers the ball. It's a newer pitch-lab idea built to squeeze out extra sink and run.",
   },
   {
     id: "cutter",
@@ -138,6 +139,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Clase's 99.5 mph average and 103.0 mph max are cited from Statcast figures reported by MLB.com." },
     ),
     notableThrowers: "Mariano Rivera, whose cutter is the canonical example; Emmanuel Clase throws the hardest cutter on record — he averaged 99.5 mph in 2024, topped out at 103.0 mph, and used it 78% of the time.",
+    plain: "A fastball with a small, late dart at the end. You hold it almost like a heater but slide the fingers slightly off-center, and it veers just enough to clip the bat handle and snap it. For some arms it's basically a hard slider.",
   },
   {
     id: "running-fastball",
@@ -162,6 +164,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Used colloquially for any pitcher whose two-seamer or sinker is run-dominant.",
+    plain: "Not really its own pitch. It's just a nickname for a two-seamer or sinker that mostly runs sideways toward the pitcher's arm side instead of dropping. Same grip, different label.",
   },
   {
     id: "rising-fastball",
@@ -187,6 +190,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Treated as an optical illusion: no true rising fastball (Magnus force exceeding gravity) has realistically been thrown at MLB-attainable spin rates, per Alan Nathan and the Hardball Times physics analysis." },
     ),
     notableThrowers: "Invoked for high-carry four-seamers (e.g., Shota Imanaga's deceptive 'rising' heater); the rise itself is perceptual, not physical.",
+    plain: "The rise is an illusion. The ball never actually climbs. It's a high-backspin four-seamer that drops less than your eyes expect, so your brain reads the gap as the ball jumping up. No human has thrown one that truly rises.",
   },
   {
     id: "straight-three-finger-changeup",
@@ -212,6 +216,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Taught widely as a first off-speed pitch; less common at the major-league level than the circle change.",
+    plain: "The simplest changeup, and usually the first one a young pitcher learns. Lay three fingers over the ball and seat it back toward the palm, and the same fastball arm motion comes out slower. The hitter swings early because he can't tell it's slow until it's nearly on him.",
   },
   {
     id: "circle-changeup",
@@ -262,6 +267,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "palmball-football-change-naming",
     ),
     notableThrowers: "Trevor Hoffman, whose palmball-grip changeup is the modern gold standard and his career out pitch; earlier practitioners include Roy Halladay.",
+    plain: "An old-school slow ball. You bury the ball deep in your palm, almost like palming a football, and squeeze. The whole hand drains the speed while the arm still looks like a fastball, so it arrives soft and late with a little sink.",
   },
   {
     id: "vulcan-changeup",
@@ -286,6 +292,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Joe Nelson (associated with originating and popularizing the grip).",
+    plain: "Named for the Star Trek hand sign. You wedge the ball between your middle and ring fingers to make a 'V,' which kills spin and makes the ball tumble and drop. It comes in slow off fastball arm speed and acts a lot like a splitter.",
   },
   {
     id: "fosh",
@@ -311,6 +318,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Often loosely linked to the Maddux name in popular discussion, but the documented origin is Mike Boddicker, not Mike Maddux; corrected to match the source." },
     ),
     notableThrowers: "Mike Boddicker, Trevor Hoffman, Johan Santana, Jason Frasor.",
+    plain: "A soft, low-spin pitch that sits halfway between a split-finger and a plain changeup. Thrown right, it behaves like a breaking changeup or a gentle splitter, and it's an early cousin of today's kick change.",
   },
   {
     id: "kick-change",
@@ -336,6 +344,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Hayden Birdsong (Giants); popularized through Tread Athletics; quickly adopted by other MLB pitchers.",
+    plain: "A recent twist on the changeup that spread fast around the league. You spike a knuckle onto a seam and 'kick' the ball's spin at release, which buys splitter-like drop at higher-than-usual changeup speed. It's the trendy modern version of an old idea.",
   },
   {
     id: "splitter",
@@ -388,6 +397,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Wikipedia confirms the forkball, Senga's ghost fork, and the deep-grip lineage; the FanGraphs analysis supplies Sasaki's specific low-spin (~492 rpm) NPB-developed forkball, which Wikipedia does not detail." },
     ),
     notableThrowers: "Kodai Senga ('ghost fork'), Roki Sasaki; historically Roy Face, Hideo Nomo.",
+    plain: "The splitter's older, more extreme ancestor. The ball is jammed deeper and wider between the fingers and thrown with a wrist snap, so it tumbles and dives hard at the plate. It's gone rare, surviving mostly through Japanese-trained pitchers.",
   },
   {
     id: "slider",
@@ -428,6 +438,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Sergio Romo (the no-dot slider)",
+    plain: "A slider that barely breaks. The ball spins end-over-end like a thrown football, pointed at the plate, so almost none of that spin bends it. It just looks like a fastball, then drops late and hard. The missing red dot is why hitters swing right through it.",
   },
   {
     id: "sweeper",
@@ -448,6 +459,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { approximate: true },
     ),
     notableThrowers: "Shohei Ohtani, Yu Darvish",
+    plain: "A slider built to sweep sideways instead of dive. It's spun almost like a top so it slides a long way across the zone with little drop. It earned its own tracking label a few years ago and became the breaking ball everyone wanted.",
   },
   {
     id: "slurve",
@@ -467,6 +479,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "official-data",
     ),
     notableThrowers: "Often applied to breaking balls that sit between a true slider and a true curve",
+    plain: "A slider-curve in-betweener. It breaks on a diagonal, dropping more than a slider but sweeping sideways more than a true curve. The name fits any breaking ball that won't sit cleanly in either bucket.",
   },
   {
     id: "slutter",
@@ -487,6 +500,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Tyler Glasnow has publicly used the name 'slutter' for a hybrid of his; one outlet (Korked Bats) reported his version as a splitter-cutter while others describe a cutter-slider, so the precise blend behind the nickname is contested. The cut-slider sense used here is the broadly described one." },
     ),
     notableThrowers: "Tyler Glasnow has discussed his own version; Jake Arrieta's breaking ball has been cited as a tracking example",
+    plain: "A cutter and a slider blended into one. It's harder and tighter than a slider and holds its fastball look longer, but breaks glove-side more than a cutter. It blurs the two so much that tracking systems keep flipping the label.",
   },
   {
     id: "curveball",
@@ -507,6 +521,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { approximate: true },
     ),
     notableThrowers: "Clayton Kershaw, Sandy Koufax",
+    plain: "The classic dropping pitch. You roll your wrist and fingers over the top so the ball spins forward, and that topspin plus gravity bends it down. It comes in slower than a slider with a bigger, looping break to throw off a hitter's timing.",
   },
   {
     id: "twelve-six-curveball",
@@ -546,6 +561,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Often called the 'spike curve' by MLB players and coaches",
+    plain: "A curveball with a firmer grip. You spike one fingertip into a seam for a stronger hold, which often gives a tighter, harder break. Despite the name it has nothing to do with a knuckleball, so most players just call it the spike curve.",
   },
   {
     id: "slow-curve",
@@ -566,6 +582,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { approximate: true },
     ),
     notableThrowers: "Zack Greinke",
+    plain: "A curveball thrown way down in speed, a big slow looping change of pace meant to wreck a hitter's timing. Dialed down far enough, it starts to blur into the lobbing eephus.",
   },
   {
     id: "screwball",
@@ -586,6 +603,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "The 'fear of arm injury keeps it nearly dead' framing is the prevailing belief rather than settled medical fact — the SABR article explicitly argues the screwball was wrongly blamed for Hubbell's elbow. No injury or medical claim is asserted here, only the pitch's reputation and rarity." },
     ),
     notableThrowers: "Carl Hubbell, Fernando Valenzuela, Christy Mathewson",
+    plain: "A pitch that breaks the 'wrong' way, in toward a same-handed hitter, the opposite of a curve. It's thrown by twisting the wrist backward from how a curve is thrown. One of the rarest pitches in the game, and it has nearly disappeared.",
   },
   {
     id: "knuckle-slurve",
@@ -612,6 +630,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "relationship -> knuckle-curve + slurve. Neither MLB nor any tracking system classifies a 'knuckle-slurve'; this is the honest 'not a pitch' verdict." },
     ),
     notableThrowers: "None — not a classified pitch",
+    plain: "Not really its own pitch. It's a casual mashup name for something sitting between a spike curve and a slurve. No tracking system recognizes it, so whatever gets called this would just register as one of those two.",
   },
   {
     id: "knuckleball",
@@ -637,6 +656,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Ground truth said 'extinct after R.A. Dickey'; refined for accuracy — Steven Wright threw it as a full-time knuckleballer after Dickey, through 2019. The shared claim that no full-time knuckleballer remains today holds." },
     ),
     notableThrowers: "R.A. Dickey, Tim Wakefield, Phil Niekro, Hoyt Wilhelm, Steven Wright, Charlie Hough",
+    plain: "The pitch with almost no spin. You push it off your fingertips and nails so it barely turns on the way in, and the air catching the seams makes it flutter and dart on a path nobody can predict, not even the pitcher. Almost gone from the majors now.",
   },
   {
     id: "eephus",
@@ -663,6 +683,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "The hunting-accident origin is documented in biographical accounts (RetroSimba, UPI obituary), not in the Wikipedia eephus entry, which lists only an earliest recorded use of June 1, 1943 and does not mention the accident. Williams may have been slightly in front of the box at contact, but the homer stood." },
     ),
     notableThrowers: "Rip Sewell, Bill Lee, Dave LaRoche, Orlando Hernandez, Yu Darvish, Zack Greinke",
+    plain: "The big rainbow lob. It floats way up in a high arc before dropping through the strike zone, sometimes barely faster than a soft toss. The whole trick is timing: a hitter set for a fastball swings too early and too hard.",
   },
   {
     id: "shuuto",
@@ -687,6 +708,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Hiroki Kuroda, Masumi Kuwata, Noboru Akiyama, Yu Darvish",
+    plain: "A Japanese name for a pitch that runs and sinks in toward a same-handed hitter, boring in on his hands. Despite the exotic label, players who caught it say it's basically a two-seamer, the arm-side mirror of a cutter.",
   },
   {
     id: "gyroball",
@@ -738,6 +760,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Correction to ground truth: the February 9, 1920 ban PREDATES Ray Chapman's death (August 16, 1920), so the ban was not 'after' Chapman. Chapman's death followed the ban and drove the separate clean-ball reforms and accelerated full enforcement after the 1920 season — it did not cause the February vote. February 9 date confirmed via SABR ('Spitball and the End of the Deadball Era' / SABR Century); the 17-pitcher and Grimes-1934 facts confirmed via Wikipedia." },
     ),
     notableThrowers: "Burleigh Grimes, Gaylord Perry, Ed Walsh",
+    plain: "Illegal since 1920. A pitcher wets one spot on the ball so his fingers slip off it, stripping the spin that holds a pitch up, and it dives sharply and unpredictably. It's outlawed, and any pitcher caught throwing it gets tossed.",
   },
   {
     id: "emery-ball",
@@ -762,6 +785,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Russ Ford, Joe Niekro (alleged)",
+    plain: "Illegal since 1920. One side of the ball gets scuffed rough with sandpaper or a hidden sharp edge, and the rough patch throws the air off balance so the ball swerves in ways a clean ball never would. Outlawed, and scuffing the ball is cheating.",
   },
   {
     id: "shine-ball",
@@ -787,6 +811,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Eddie Cicotte",
+    plain: "Illegal since 1920. The opposite trick from the scuffball: one side gets polished slick instead of roughed up. The smooth-versus-rough contrast bends the air and gives the ball surprise late movement. It was banned along with the other doctored pitches.",
   },
   {
     id: "vaseline-ball",
@@ -812,6 +837,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Perry's specific concealment methods are relayed through his own accounts and secondary reporting; they are anecdotal/self-reported rather than independently documented in-game findings." },
     ),
     notableThrowers: "Gaylord Perry (alleged)",
+    plain: "Illegal since 1920. A spitball with grease, usually Vaseline, swapped in for spit because it's easier to hide. The lost friction makes the ball dive and break the same way. Outlawed, and throwing it is cheating.",
   },
   {
     id: "mudball",
@@ -836,6 +862,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Deadball-era spitballers (broadly attributed)",
+    plain: "Illegal since 1920. Mud is packed onto one side of the ball, loading and roughening it so the ball flies off balance and breaks erratically. The twist: rubbing every new ball all over with special mud is required and legal; piling it on one side to make it move is what's banned.",
   },
 ]
 
@@ -870,4 +897,15 @@ export const REPERTOIRE_FAMILIES: { family: RepertoireFamily; label: string; blu
 
 export function repertoireByFamily(family: RepertoireFamily): RepertoireEntry[] {
   return REPERTOIRE.filter((e) => e.family === family)
+}
+
+/** Entries without a filed specimen — the ones that get a basic /repertoire/<id> page. */
+export const BASIC_REPERTOIRE: RepertoireEntry[] = REPERTOIRE.filter((e) => !e.filedSlug)
+
+const BY_ID: Record<string, RepertoireEntry> = Object.fromEntries(
+  REPERTOIRE.map((e) => [e.id, e]),
+)
+
+export function repertoireById(id: string): RepertoireEntry | undefined {
+  return BY_ID[id]
 }

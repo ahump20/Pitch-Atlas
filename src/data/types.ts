@@ -410,6 +410,14 @@ export interface RepertoireEntry {
   notableThrowers?: string
   /** Cross-link to a filed full specimen (/pitch/<slug>) when the atlas has it. */
   filedSlug?: string
+  /**
+   * Optional plain-language lede for the basic detail page: a friendly one- or
+   * two-sentence summary of what the pitch is and why it matters, in a coach's
+   * voice. Original paraphrase, carrying no measured figure (those stay in the
+   * grip/movement Claims). Absent -> the basic page leads with the sourced claims
+   * and still shows the "fuller breakdown coming" marker.
+   */
+  plain?: string
 }
 
 /*
