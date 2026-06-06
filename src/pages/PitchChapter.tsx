@@ -21,6 +21,7 @@ import { CONFIDENCE_COLOR } from '../components/provenance/RefractorClaim'
 import { CONFIDENCE_META } from '../data/types'
 import { FieldNotes } from '../components/sections/FieldNotes'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
+import { SpecimenGrips } from '../components/sections/GripLibrary'
 import { NotFound } from './NotFound'
 
 /*
@@ -751,6 +752,7 @@ export function PitchChapter() {
       </div>
       <ChapterHero entry={entry} />
       <GripLabSection entry={entry} accentColor={accentColor} />
+      <SpecimenGrips photos={entry.canonical.gripImages ?? []} accentColor={accentColor} />
       <ReleaseSection entry={entry} accentColor={accentColor} />
       <MovementSection entry={entry} accentColor={accentColor} />
       <MasterFilesSection entry={entry} accentColor={accentColor} />

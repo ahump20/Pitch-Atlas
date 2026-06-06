@@ -1,0 +1,248 @@
+import type { GripView, PitchFamily, VisualReference } from '../types'
+
+/*
+  The visual grip library — the clean-channel photo layer.
+
+  Every image here is a real photograph of one grip in one hand: Austin Humphrey's,
+  on his own ball, shot 2026-06-06. That makes the whole set `bsi-original` /
+  `rights: original` by construction — owned outright, no agency photo, no
+  identifiable third party, nothing scraped. The captions and the per-grip notes
+  are his own first-person account of how he holds and thinks about each pitch.
+  His words are the primary source; we restate, we do not invent.
+
+  Sourced, not corrected: this is one pitcher's hand, not the canonical "right"
+  grip. Where his grip diverges from the textbook (short fingers on the splitter,
+  no circle change at all), the note says so plainly. The library teaches the
+  *tells* a flat schematic can't — fingertips crossing a seam vs. riding it, the
+  splitter sitting just outside the laces, the four-finger smother of a football
+  change. The specimen pages reuse these same references through `gripImages`.
+*/
+
+const CAPTURED = '2026-06-06'
+
+function shot(file: string, view: GripView, caption: string, alt: string): VisualReference {
+  return {
+    src: `/grips/${file}`,
+    view,
+    caption,
+    alt,
+    kind: 'bsi-original',
+    rights: 'original',
+    attribution: 'Austin Humphrey',
+    capturedAt: CAPTURED,
+  }
+}
+
+export interface GripLibraryEntry {
+  /** Library slug (also the gripImages lookup key). */
+  id: string
+  label: string
+  family: PitchFamily
+  /** Links to the filed specimen chapter when one exists. */
+  specimenSlug?: string
+  /** Links to the basic repertoire file when the grip lives there instead. */
+  repertoireId?: string
+  /** Austin's first-person note on the grip — the primary source for this entry. */
+  note: string
+  /** His own account of how the pitch moved and how he used it. A pitcher's report, not tracked data. */
+  movement?: string
+  photos: VisualReference[]
+}
+
+export const AUSTIN_GRIPS: GripLibraryEntry[] = [
+  {
+    id: 'four-seam',
+    label: 'Four-seam fastball',
+    family: 'fastball',
+    specimenSlug: 'four-seam',
+    note:
+      'Two fingers on the ball, and the four-seam should be a dead giveaway. The fingertips cross the seam slightly — the very ends of the pads catching across it, not riding parallel to it. There is barely any pressure on it at all, and that is why it goes the fastest and the truest. It is the bread and butter of everything: the easiest pitch to place in the zone and the most consistent pitch in the game.',
+    movement:
+      'My best pitch, and the one I had pinpoint command of — it went straight and I could put it anywhere in the zone. The life came late: it tended to explode into the glove at the very last second. That last-second hop is the carry the four-seam is known for — the eye reads it as rising when it is really just falling less than expected.',
+    photos: [
+      shot(
+        'four-seam-7163.webp',
+        'top',
+        'Top of the grip: index and middle fingertips laid across the seam at the wide horseshoe, thumb tucked underneath.',
+        'A right hand gripping a baseball four-seam style, two fingertips crossing the horseshoe seam with the thumb underneath.',
+      ),
+      shot(
+        'four-seam-7164.webp',
+        'thumb',
+        'From underneath — the thumb on smooth leather, centered below the two top fingers.',
+        'The underside of a four-seam grip, the thumb supporting the ball centered below the two top fingers.',
+      ),
+      shot(
+        'four-seam-7165.webp',
+        'side',
+        'The same hold from the side, the fingertips just catching across the seam.',
+        'A side view of a four-seam fastball grip, fingertips crossing the seam.',
+      ),
+    ],
+  },
+  {
+    id: 'two-seam',
+    label: 'Two-seam fastball',
+    family: 'fastball',
+    specimenSlug: 'two-seam',
+    note:
+      'Two fingers on the ball again, but here they line up with the seams like the ball is running down a train track — both fingers riding along the narrow seams instead of crossing them. That is the tell that separates it from the four-seam.',
+    movement:
+      'The second pitch I mastered. I lived with it in on the hands to right-handed hitters, because it had explosive late tail — it ran arm-side at the very last second, right in on a righty.',
+    photos: [
+      shot(
+        'two-seam-7166.webp',
+        'top',
+        'Two fingers running along the narrow seams — the train-track look that names the pitch.',
+        'A hand gripping a baseball two-seam style, index and middle fingers running along the two narrow parallel seams.',
+      ),
+      shot(
+        'two-seam-7168.webp',
+        'side',
+        'The seams as rails: the fingers sit on the two seams where they run closest together.',
+        'A two-seam fastball grip viewed from the front, fingers resting on the parallel seams.',
+      ),
+      shot(
+        'two-seam-7167.webp',
+        'thumb',
+        'From beneath, the thumb braced under the ball.',
+        'The underside of a two-seam grip, the thumb supporting from below.',
+      ),
+    ],
+  },
+  {
+    id: 'twelve-six',
+    label: '12-6 curveball',
+    family: 'breaking',
+    specimenSlug: 'twelve-six',
+    note:
+      'Two fingers lined up and cornered against the seam, with no other pressure on the ball but the thumb. The grip is so distinct you do not even need to see the release slot to know it is a 12-6 — the fingers tucked tight to one seam give it away.',
+    movement:
+      'A genuine 12-6 when it was working: it came in with real loop and then fell off the table at the last second. The down-mover in my mix — more loop than the changeup, and a sharper drop.',
+    photos: [
+      shot(
+        'twelve-six-7170.webp',
+        'top',
+        'Top-down: the two fingers tucked together and cornered against a single seam, the rest of the ball left open.',
+        'A hand gripping a baseball for a 12-6 curveball, two fingers together cornered against one seam.',
+      ),
+      shot(
+        'twelve-six-7169.webp',
+        'side',
+        'From the side — the fingers pinched to the seam, thumb braced underneath.',
+        'A side view of a 12-6 curveball grip, two fingers against the seam with the thumb under the ball.',
+      ),
+      shot(
+        'twelve-six-7171.webp',
+        'side',
+        'Set in the hand, the knuckles bent over the seam before the spin goes on.',
+        'A 12-6 curveball grip held in the hand, the fingers bent over the seam.',
+      ),
+    ],
+  },
+  {
+    id: 'splitter',
+    label: 'Split-finger fastball',
+    family: 'offspeed',
+    specimenSlug: 'splitter',
+    note:
+      'Gripped almost exactly like the two-seam, except the fingers spread out wider — just outside the laces instead of right on them. With short, stubby fingers like mine you can barely see the difference. Those same short fingers are the reason I have never been able to throw a circle change.',
+    movement:
+      'I threw this some as a harder version of the changeup — it let me stay at full arm velocity and feel more like a fastball than a traditional change at release, then drop. The fastball-tilt change, not a soft one.',
+    photos: [
+      shot(
+        'splitter-7175.webp',
+        'top',
+        'Index and middle split wide, sitting just outside the seams rather than on them.',
+        'A hand gripping a baseball splitter style, index and middle fingers spread wide just outside the seams.',
+      ),
+      shot(
+        'splitter-7177.webp',
+        'top',
+        'Top-down — the gap between the two fingers is the whole pitch.',
+        'A top view of a split-finger grip, two fingers spread apart over the ball.',
+      ),
+      shot(
+        'splitter-7176.webp',
+        'side',
+        'From the side, the fingers straddle the seams with the ball set back in the hand.',
+        'A side view of a splitter grip, the fingers straddling the seams.',
+      ),
+    ],
+  },
+  {
+    id: 'palmball',
+    label: 'Football change (palmball)',
+    family: 'offspeed',
+    repertoireId: 'palmball',
+    note:
+      'My football change. The giveaway is the hand together, all four fingers touching the ball. The more fingers you put on it, the more it slows down coming out — instead of getting slingshotted off the fingertips and snapped with the wrist, the whole hand drags the speed off it while the arm still looks like a fastball.',
+    movement:
+      'I only threw this much for about one summer, here and there. It sat between my curve and my three-finger change: the same release slot as the 12-6 — palm pointed back toward me instead of out at the batter — but a break in between the two.',
+    photos: [
+      shot(
+        'palmball-7179.webp',
+        'top',
+        'Four fingers laid together across the top of the ball, seated deep toward the palm — the football-change smother.',
+        'A hand gripping a baseball with all four fingers together across the top, the football change or palmball grip.',
+      ),
+      shot(
+        'palmball-7178.webp',
+        'side',
+        'From the side, the ball buried deep in the hand under all four fingers.',
+        'A side view of a football-change grip with the ball set deep in the palm under four fingers.',
+      ),
+    ],
+  },
+  {
+    id: 'three-finger-change',
+    label: 'Three-finger changeup',
+    family: 'offspeed',
+    repertoireId: 'straight-three-finger-changeup',
+    note:
+      'Three fingers set very close together across the ball. Same idea as the football change, just a touch less hand on it — more fingers than a fastball means more surface and more drag, so it leaves softer than the arm speed says it should.',
+    movement:
+      'My fourth pitch, and one I threw a lot in games. It came in looking like a fastball and dropped with less break than the curve — not as sharp or as consistent, but it sold the fastball look right up until it died.',
+    photos: [
+      shot(
+        'three-finger-change-7174.webp',
+        'top',
+        'Three fingers seated close together across the top of the ball.',
+        'A hand gripping a baseball with three fingers close together across the top, a three-finger changeup grip.',
+      ),
+      shot(
+        'three-finger-change-7172.webp',
+        'side',
+        'From the side, the three fingers across the top with the ball set back in the hand.',
+        'A side view of a three-finger changeup grip.',
+      ),
+      shot(
+        'three-finger-change-7173.webp',
+        'thumb',
+        'From underneath, the three fingertips coming over the top edge.',
+        'The underside of a three-finger changeup grip.',
+      ),
+    ],
+  },
+]
+
+/** The grips a hitter cannot see — the through-line that ties the library together. */
+export const GRIP_LIBRARY_INTRO =
+  'Every grip here answers one question: how much resistance is the hand putting on the ball? The four-seam has almost none, so it leaves the fastest and the truest. Stack on fingers and surface — the three-finger and football changes — and the ball drags out softer while the arm still sells a fastball. That is the whole game at the plate: a hitter sits on the fastball and adjusts, because if he sits off-speed the fastball is already in the mitt.'
+
+/** Austin's actual in-game arsenal — the mix he leaned on versus the ones he carried. */
+export const GRIP_LIBRARY_ARSENAL =
+  'In games I worked a four-pitch mix: the four-seam and two-seam fastballs, the three-finger changeup, and the 12-6 curve. The splitter and the football change were situational — pitches I carried and threw here and there, not ones I leaned on. What follows is a pitcher’s own account of his own pitches, not tracked data.'
+
+/** Photos for a grip, looked up by library id, specimen slug, or repertoire id. */
+export function gripPhotosFor(key: string): VisualReference[] {
+  const entry = AUSTIN_GRIPS.find(
+    (g) => g.id === key || g.specimenSlug === key || g.repertoireId === key,
+  )
+  return entry?.photos ?? []
+}
+
+/** The library entry for a grip, by any of its keys. */
+export function gripEntryFor(key: string): GripLibraryEntry | undefined {
+  return AUSTIN_GRIPS.find((g) => g.id === key || g.specimenSlug === key || g.repertoireId === key)
+}

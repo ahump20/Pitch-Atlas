@@ -2,45 +2,60 @@ import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
+import { GripLibrary } from '../components/sections/GripLibrary'
 import { GripCompare } from '../components/sections/GripCompare'
 
 /*
-  Grip Theater, two-up. Two grips under one shared arm slot — the deception of
-  "same release, different grip" made visible. The stage leads; the payoff (what
-  the two pitches do after release) lives on the movement tunnel, linked below.
+  The Grip Library. The page leads with the real article — photographed grips in
+  one pitcher's hand, owned outright, captioned in his own words (the visual,
+  clean-channel layer the atlas was built to carry). The "same release, different
+  grip" comparison tool follows as the interactive payoff: the schematic balls let
+  you turn any two grips together to feel the deception a hitter faces.
 */
 export function GripsPage() {
   useSeoMeta({
-    title: `Same release, different grip: compare two grips | ${SITE.siteName}`,
+    title: `The Grip Library: real grips, in the hand | ${SITE.siteName}`,
     description:
-      'Two filed grips side by side under one shared arm slot — turn the view and both balls turn together. The deception a hitter faces is that the delivery is identical and only the grip, the part they cannot see, has changed.',
-    ogTitle: `Same release, different grip | ${SITE.siteName}`,
-    ogDescription: 'Two grips, one arm slot — the deception, made visible. Sourced, not corrected.',
+      'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright, sourced not corrected. Plus the same-release, different-grip comparison tool.',
+    ogTitle: `The Grip Library | ${SITE.siteName}`,
+    ogDescription: 'Real grips, in the hand. The part a hitter never gets to see. Sourced, not corrected.',
     ogUrl: `${SITE.canonicalDomain}/grips`,
   })
 
   return (
     <>
       <SectionHero
-        breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Compare grips' }]} />}
-        eyebrow="Grip theater"
-        title="Same release, different grip."
+        breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Grip Library' }]} />}
+        eyebrow="Grip library"
+        title="Grips, from the hand."
         sub={
           <>
-            A hitter reads the delivery, not the hand. Put two grips side by side under one shared arm slot and
-            the trick becomes obvious: the part they can see is identical, and the part that decides the pitch
-            is the part they can&rsquo;t.
+            The grip is the one thing a hitter never gets to see. These are the real ones — photographed in
+            one pitcher&rsquo;s hand, on his own ball, owned outright and captioned in his own words. Not the
+            textbook&rsquo;s idea of correct; one arm&rsquo;s actual hold. Sourced, not corrected.
           </>
         }
       />
 
       <section className="bg-paper">
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
-          <GripCompare />
-          <p className="mt-10 max-w-[72ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
-            Each ball is our own seam geometry, oriented to the grip — schematic, not a player&rsquo;s hand. With
-            no WebGL it falls back to the 2D seam diagram from the same geometry, so the grip still reads.
+          <GripLibrary />
+        </div>
+      </section>
+
+      <section className="border-t border-bone/10 bg-press">
+        <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
+          <p className="rfx-skick text-cyan">Same release, different grip</p>
+          <h2 className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">Two grips, one arm slot</h2>
+          <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
+            A hitter reads the delivery, not the hand. Put two grips side by side under one shared arm slot and
+            the trick becomes obvious: the part they can see is identical, and the part that decides the pitch is
+            the part they can&rsquo;t. These balls are our own seam geometry, oriented to the grip — schematic,
+            not a hand — and with no WebGL they fall back to the 2D seam diagram, so the grip still reads.
           </p>
+          <div className="mt-9">
+            <GripCompare />
+          </div>
         </div>
       </section>
     </>

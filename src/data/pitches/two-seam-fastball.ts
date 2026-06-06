@@ -1,5 +1,6 @@
 import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim } from '../sources'
+import { gripPhotosFor } from '../grips'
 import { sharedSeam } from './_shared-seam'
 
 /*
@@ -150,6 +151,7 @@ export const twoSeam: PitchAtlasEntry = {
       ),
     },
     rights: 'original',
+    gripImages: gripPhotosFor('two-seam'),
   },
 
   motion: {

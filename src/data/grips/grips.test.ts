@@ -1,0 +1,81 @@
+import { describe, it, expect } from 'vitest'
+import { AUSTIN_GRIPS, gripPhotosFor } from './index'
+import { PITCHES } from '../pitches'
+import type { VisualReference } from '../types'
+
+/*
+  The visual grip library, enforced in data. A grip photo only ships if it is
+  labeled (alt + caption), pointed at a real path under /grips/, and cleanly
+  sourced for its channel: owned-outright photos need no attribution, every other
+  channel must name who to credit and link the rights. The filed specimens must
+  actually expose their photos. File-on-disk existence is verified at build/preview
+  (the SSG render and the live load), not here, since the unit tier has no node fs
+  types. An unlabeled, mis-channeled, duplicated, or unwired image fails the build.
+*/
+
+const ALL_PHOTOS: VisualReference[] = AUSTIN_GRIPS.flatMap((g) => g.photos)
+
+const VALID_KINDS = ['bsi-original', 'community', 'creative-commons', 'public-domain', 'licensed']
+const VALID_VIEWS = ['top', 'side', 'thumb']
+
+describe('grip library data', () => {
+  it('has grips, each with a note and at least one photo', () => {
+    expect(AUSTIN_GRIPS.length).toBeGreaterThan(0)
+    for (const g of AUSTIN_GRIPS) {
+      expect(g.photos.length, `${g.label} has no photos`).toBeGreaterThan(0)
+      expect(g.note.trim().length, `${g.label} has no note`).toBeGreaterThan(0)
+      expect(g.label.trim().length).toBeGreaterThan(0)
+    }
+  })
+
+  it('links every grip to a real home (specimen or repertoire id)', () => {
+    for (const g of AUSTIN_GRIPS) {
+      expect(
+        Boolean(g.specimenSlug || g.repertoireId),
+        `${g.label} has no specimen or repertoire link`,
+      ).toBe(true)
+    }
+  })
+
+  for (const photo of ALL_PHOTOS) {
+    describe(photo.src, () => {
+      it('is fully labeled and lives under /grips/', () => {
+        expect(photo.alt.trim().length, 'alt is required for the accessibility floor').toBeGreaterThan(0)
+        expect(photo.caption.trim().length, 'caption is required').toBeGreaterThan(0)
+        expect(photo.src.startsWith('/grips/'), 'grip photos live under /grips/').toBe(true)
+        expect(photo.src.endsWith('.webp'), 'grip photos are optimized webp').toBe(true)
+        expect(VALID_KINDS).toContain(photo.kind)
+        if (photo.view) expect(VALID_VIEWS).toContain(photo.view)
+      })
+
+      it('carries rights appropriate to its channel', () => {
+        expect(photo.rights.length).toBeGreaterThan(0)
+        if (photo.kind !== 'bsi-original' && photo.kind !== 'public-domain') {
+          // community / creative-commons / licensed must name credit and link rights
+          expect(
+            photo.attribution?.trim().length,
+            `${photo.src} (${photo.kind}) needs attribution`,
+          ).toBeGreaterThan(0)
+          expect(photo.source, `${photo.src} (${photo.kind}) needs a rights source`).toBeTruthy()
+        }
+      })
+    })
+  }
+
+  it('uses each image file only once', () => {
+    const srcs = ALL_PHOTOS.map((p) => p.src)
+    expect(new Set(srcs).size).toBe(srcs.length)
+  })
+})
+
+describe('filed specimens expose their real grip photos', () => {
+  const FILED = ['four-seam', 'two-seam', 'twelve-six', 'splitter']
+  for (const slug of FILED) {
+    it(`${slug} resolves grip photos and wires canonical.gripImages`, () => {
+      expect(gripPhotosFor(slug).length, `${slug} has no grip photos`).toBeGreaterThan(0)
+      const entry = PITCHES.find((e) => e.display.slug === slug)
+      expect(entry, `no specimen for ${slug}`).toBeTruthy()
+      expect(entry?.canonical.gripImages?.length, `${slug} canonical.gripImages not wired`).toBeGreaterThan(0)
+    })
+  }
+})
