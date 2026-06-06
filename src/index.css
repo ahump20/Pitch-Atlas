@@ -613,3 +613,48 @@
   .rfx-holo, .rfx-diamond { animation: none !important; }
   .rfx-card { opacity: 1 !important; transform: none !important; animation: none !important; }
 }
+
+/* ============================================================
+   SITEWIDE CREAM→VOID REMAP  ·  feat/refractor-redesign
+   The whole app renders inside .rfx-void (see RootLayout); the site is dark-only
+   now. Every page and shared component not yet hand-built in the rfx-* language
+   still leans on the Heritage cream tokens — paper / ink / navy / seam / ok /
+   amber / sand. We remap those token VALUES once, here, to their void
+   equivalents, so the existing Tailwind utilities (bg-paper, text-ink,
+   text-navy, border-navy/15, text-seam) and cream component classes
+   (.mono-label, .hairline, provenance badges) recolor in place — readable on the
+   void, no per-file rewrite. The dark-stage tokens (--color-stage /
+   --color-press / --color-bone) are intentionally left untouched, and the
+   refractor tokens (void / cyan / *-bright) are never overridden. An unlayered
+   :root, last in source order, wins the cascade over the @theme blocks above. */
+:root {
+  color-scheme: dark;
+
+  /* surfaces: cream → void + near-void panels */
+  --color-paper: #070509;
+  --color-paper-2: #100c18;
+  --color-paper-3: #161120;
+  --color-cream: #070509;
+  --color-panel: #100c18;
+
+  /* ink: near-black text → bone on the void */
+  --color-ink: #F6F1E6;
+  --color-ink-2: #C2C7D6;
+  --color-ink-3: #7C8294;
+
+  /* navy (text, borders, hovers, plate edges) → light cool slate so it reads on void */
+  --color-navy: #C6D0E2;
+  --color-navy-2: #E4EAF4;
+  --color-navy-line: rgba(198, 208, 226, 0.14);
+
+  /* accents tuned for the void */
+  --color-seam: #FF2D44;
+  --color-seam-deep: color-mix(in srgb, #FF2D44 78%, #2A0A10);
+  --color-ok: #34E27E;
+  --color-amber: #FFC23C;
+  --color-sand: #CDBA8E;
+  --color-powder: #7FC6FF;
+
+  /* hairline rule on the void (was the warm machined brown) */
+  --color-machined: rgba(198, 208, 226, 0.20);
+}
