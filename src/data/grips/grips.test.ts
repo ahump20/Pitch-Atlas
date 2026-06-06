@@ -15,7 +15,7 @@ import type { VisualReference } from '../types'
 
 const ALL_PHOTOS: VisualReference[] = AUSTIN_GRIPS.flatMap((g) => g.photos)
 
-const VALID_KINDS = ['bsi-original', 'community', 'creative-commons', 'public-domain', 'licensed']
+const VALID_KINDS = ['first-party', 'community', 'creative-commons', 'public-domain', 'licensed']
 const VALID_VIEWS = ['top', 'side', 'thumb']
 
 describe('grip library data', () => {
@@ -50,7 +50,7 @@ describe('grip library data', () => {
 
       it('carries rights appropriate to its channel', () => {
         expect(photo.rights.length).toBeGreaterThan(0)
-        if (photo.kind !== 'bsi-original' && photo.kind !== 'public-domain') {
+        if (photo.kind !== 'first-party' && photo.kind !== 'public-domain') {
           // community / creative-commons / licensed must name credit and link rights
           expect(
             photo.attribution?.trim().length,

@@ -4,7 +4,7 @@ import type { GripView, PitchFamily, VisualReference } from '../types'
   The visual grip library — the clean-channel photo layer.
 
   Every image here is a real photograph of one grip in one hand: Austin Humphrey's,
-  on his own ball, shot 2026-06-06. That makes the whole set `bsi-original` /
+  on his own ball, shot 2026-06-06. That makes the whole set `first-party` /
   `rights: original` by construction — owned outright, no agency photo, no
   identifiable third party, nothing scraped. The captions and the per-grip notes
   are his own first-person account of how he holds and thinks about each pitch.
@@ -26,7 +26,7 @@ function shot(file: string, view: GripView, caption: string, alt: string): Visua
     view,
     caption,
     alt,
-    kind: 'bsi-original',
+    kind: 'first-party',
     rights: 'original',
     attribution: 'Austin Humphrey',
     capturedAt: CAPTURED,

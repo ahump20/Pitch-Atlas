@@ -117,7 +117,7 @@ never ship.
 Real grip photos may ship, from clean sources only. The full policy is in
 `docs/NORTHSTAR.md` (Rights & visual policy). In short:
 
-- **Ships:** original BSI photography and geometry (`rights: original`); community
+- **Ships:** first-party photography and geometry (`rights: original`); community
   own-grip uploads through the own-the-rights gate (`rights: original`,
   `confidence: community-firsthand`); verified Creative Commons / public-domain
   photos with attribution (`rights: public-domain` or `licensed`); paid or

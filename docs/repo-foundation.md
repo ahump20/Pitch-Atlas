@@ -5,7 +5,7 @@ This repo foundation is intentionally separate from product implementation. It s
 ## Foundation decisions
 
 - Existing repo: `ahump20/Pitch-Atlas`
-- Product: standalone, not Blaze Sports Intel
+- Product: standalone — its own brand, not affiliated with any other company
 - v1 scope: four-seam visual proof
 - Principle: sourced, not corrected
 - Node: 24 LTS

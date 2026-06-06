@@ -5,7 +5,7 @@ import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GR
 
 /*
   The visual grip library, refractor-native. Every card is a real photograph of
-  one grip in Austin's hand (bsi-original, owned outright), captioned in his own
+  one grip in Austin's hand (first-party, owned outright), captioned in his own
   words. The ball is still the artifact — here it is the real ball, not the
   schematic — and no third party is in frame. Four states are honored by
   construction: the data is static so there is no loading/empty/fetch state, and a
@@ -17,7 +17,7 @@ import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GR
 const VIEW_LABEL: Record<GripView, string> = { top: 'Top', side: 'Side', thumb: 'Underside' }
 
 const KIND_LABEL: Record<VisualReference['kind'], string> = {
-  'bsi-original': 'Original',
+  'first-party': 'Original',
   community: 'Community',
   'creative-commons': 'Creative Commons',
   'public-domain': 'Public domain',

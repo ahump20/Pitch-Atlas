@@ -33,7 +33,7 @@ The front door is the **Pitch Index**: a searchable directory of every accepted 
 
 ## Provenance and rights policy
 
-- **Real grip photos ship only from clean sources.** Original BSI photography and geometry, community own-grip uploads (through the own-the-rights gate), verified Creative Commons and public-domain photos with attribution, and properly licensed images. What never ships: unlicensed agency or photographer photos of identifiable players, team or league logos and marks, and broadcast footage. The grip is the lesson, not the celebrity; the full policy lives in [`docs/NORTHSTAR.md`](docs/NORTHSTAR.md).
+- **Real grip photos ship only from clean sources.** First-party photography and geometry, community own-grip uploads (through the own-the-rights gate), verified Creative Commons and public-domain photos with attribution, and properly licensed images. What never ships: unlicensed agency or photographer photos of identifiable players, team or league logos and marks, and broadcast footage. The grip is the lesson, not the celebrity; the full policy lives in [`docs/NORTHSTAR.md`](docs/NORTHSTAR.md).
 - **No copied instructional prose.** Grip and mechanics text is paraphrased in our own words and cited with a link.
 - **Every real-player number carries a `Source`** (`id`, `label`, `url`, `retrievedAt`, optional `season`) and a `confidence` label. Anything that cannot be verified renders as `approximate` or `unverified`. Nothing ships bare.
 - **No runtime API dependencies.** All data is static and sourced in the repo. There are no runtime calls to Statcast, Baseball Savant, Rapsodo, TrackMan, MLB, or any external source.

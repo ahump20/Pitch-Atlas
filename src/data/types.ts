@@ -168,7 +168,7 @@ export interface PhysicsReference {
   renders, and the zero-WebGL floor applies (every image carries alt text).
 */
 export type VisualReferenceKind =
-  | 'bsi-original' // our own photography or render, owned outright
+  | 'first-party' // the creator's own photography or render, owned outright
   | 'community' // a contributor's own-grip upload, through the own-the-rights gate
   | 'creative-commons' // CC-licensed; attribution required
   | 'public-domain' // no rights encumbrance

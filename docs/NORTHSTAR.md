@@ -1,6 +1,6 @@
 # Pitch Atlas: Northstar & Evolution Charter
 
-Owner: Austin Humphrey (Blaze Sports Intel)
+Owner: Austin Humphrey
 Started: 2026-06-06 (the web app was ~48 hours old)
 Status: living document. This is the one that outlasts the code.
 
@@ -144,7 +144,7 @@ load-bearing ones in the Decision Log, and keep the Core intact while you do.
 
 The old rule was a blanket "no photos at all." That was too strict, and it's now
 loosened on purpose. Here's the precise version, written around one goal: real,
-accurate visual references that can't get Blaze Sports Intel sued.
+accurate visual references that can't get the project sued.
 
 The thing that sues you over a photo of a named pitcher gripping a ball is not the
 player and it is not trademark. It's the **photo agency** (Getty, AP, MLB Photos)
@@ -156,7 +156,7 @@ carry a bill.
 
 **Ships in the product:**
 
-- **Original BSI photography and geometry.** Our own grip photos, our own diagrams,
+- **First-party photography and geometry.** Our own grip photos, our own diagrams,
   the parametric 3D ball. We own these outright. Most accurate of all, because we
   control the framing. `rights: original`.
 - **Community own-grip uploads.** A real pitcher's real hand on a real ball, through
@@ -224,7 +224,7 @@ Horizon, in rough priority. None of this is a promise; it's the current read.
   plan is `docs/ios-app-plan.md`.
 - **The visual grip library.** Stand up the clean-channel photo layer so a grip
   carries a real reference image, not just geometry. Community uploads first; CC and
-  original BSI shots alongside.
+  first-party shots alongside.
 - **Deeper atlas.** More filed specimens, more craftsmen, the long tail of the
   encyclopedia promoted from one-liners to full files as the sourcing clears the bar.
 - **The return habit.** The structured field-note / grip-tweak engine that turns
@@ -281,7 +281,7 @@ never strand an installed pitcher on a stale build).
 
 ### 2026-06-06: Rights policy loosened from "no photos" to "no *unlicensed agency* photos"
 
-**Decision.** Real grip photos may ship, from clean sources only (original BSI
+**Decision.** Real grip photos may ship, from clean sources only (first-party
 photography, community own-rights uploads, verified Creative Commons / public
 domain, paid licenses). Scraped copyrighted agency/photographer images of
 identifiable players still never ship; they stay private research.
