@@ -27,6 +27,7 @@ const MOBILE_NAV: { label: string; to: string }[] = [
   { label: 'Build the Break', to: '/sandbox' },
   { label: 'Movement map', to: '/movement-map' },
   { label: 'Compare two pitches', to: '/compare' },
+  { label: 'Compare two grips', to: '/grips' },
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },

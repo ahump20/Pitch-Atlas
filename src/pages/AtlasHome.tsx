@@ -12,6 +12,7 @@ const TOOLS: { label: string; to: string; blurb: string }[] = [
   { label: 'Build the Break', to: '/sandbox', blurb: 'Set the spin axis, rate, and efficiency and watch the break redraw live.' },
   { label: 'The Movement Map', to: '/movement-map', blurb: 'Every filed pitch on one catcher’s-eye quadrant, with an RHP/LHP mirror.' },
   { label: 'Compare two pitches', to: '/compare', blurb: 'Overlay any two pitches to see the shared tunnel and the late separation.' },
+  { label: 'Compare two grips', to: '/grips', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
   { label: 'The Kinetic Chain', to: '/kinetic-chain', blurb: 'Step the delivery phase by phase with the sourced joint angles and velocities.' },
 ]
 

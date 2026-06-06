@@ -16,6 +16,7 @@ import { MovementMapPage } from './pages/MovementMapPage'
 import { ComparePage } from './pages/ComparePage'
 import { KineticChainPage } from './pages/KineticChainPage'
 import { ClassifyPage } from './pages/ClassifyPage'
+import { GripsPage } from './pages/GripsPage'
 import { NotFound } from './pages/NotFound'
 
 /*
@@ -46,6 +47,7 @@ export const routes: RouteObject[] = [
       { path: 'compare', Component: ComparePage },
       { path: 'kinetic-chain', Component: KineticChainPage },
       { path: 'classify', Component: ClassifyPage },
+      { path: 'grips', Component: GripsPage },
       { path: '*', Component: NotFound },
     ],
   },
