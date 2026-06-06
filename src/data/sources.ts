@@ -20,6 +20,10 @@ const RETRIEVED_3 = '2026-06-05'
 // fetch of the page. Its own constant keeps the colophon "as of" line honest.
 const RETRIEVED_4 = '2026-06-06'
 
+// The Repertoire expansion (the recovered 2026-06-06 deep-research run) was
+// re-verified and authored 2026-06-06; its own constant keeps the colophon honest.
+const RETRIEVED_5 = '2026-06-06'
+
 export const SOURCES = {
   'mlb-active-spin': {
     id: 'mlb-active-spin',
@@ -1475,6 +1479,60 @@ export const SOURCES = {
     label: 'Wikipedia, Cole Hamels',
     url: 'https://en.wikipedia.org/wiki/Cole_Hamels',
     retrievedAt: RETRIEVED_4,
+  },
+  'exp-wikipedia-shuuto': {
+    id: 'exp-wikipedia-shuuto',
+    label: "Wikipedia — Shuuto (razor shuuto / Masaji Hiramatsu)",
+    url: 'https://en.wikipedia.org/wiki/Shuuto',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-br-bullpen-hiramatsu': {
+    id: 'exp-br-bullpen-hiramatsu',
+    label: "Baseball-Reference Bullpen — Masaji Hiramatsu (thrower biography; cited in brief, corroborated by search snippet, not independently re-fetched — page returns 403 to automated requests)",
+    url: 'https://www.baseball-reference.com/bullpen/Masaji_Hiramatsu',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-baltimore-sun-reckless-richards': {
+    id: 'exp-baltimore-sun-reckless-richards',
+    label: "The Baltimore Sun — \"'Reckless' Richards cracks open O's coffers\"",
+    url: 'https://www.baltimoresun.com/2003/10/29/reckless-richards-cracks-open-os-coffers/',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-sabr-paul-richards-bio': {
+    id: 'exp-sabr-paul-richards-bio',
+    label: "SABR BioProject — Paul Richards",
+    url: 'https://sabr.org/bioproj/person/paul-richards/',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-mlb-airbender-explainer': {
+    id: 'exp-mlb-airbender-explainer',
+    label: "MLB.com — \"Devin Williams brings unique Airbender pitch to Yankees\"",
+    url: 'https://www.mlb.com/news/devin-williams-airbender-pitch-explainer',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-fangraphs-unicorn-changeup': {
+    id: 'exp-fangraphs-unicorn-changeup',
+    label: "FanGraphs — \"Devin Williams and the Unicorn Changeup\"",
+    url: 'https://blogs.fangraphs.com/devin-williams-and-the-unicorn-changeup/',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-azsnakepit-deathball': {
+    id: 'exp-azsnakepit-deathball',
+    label: "AZ Snake Pit (SB Nation): \"The Deathball: An Important Pitch to the Dbacks in 2025 That You've Likely Never Heard Of\" (Jeff Irving, Jan 2025)",
+    url: 'https://www.azsnakepit.com/2025/1/6/24336678/the-deathball-an-important-pitch-to-the-dbacks-in-2025-that-youve-likely-never-heard-of',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-mlb-dead-fish-valdez': {
+    id: 'exp-mlb-dead-fish-valdez',
+    label: "MLB.com — César Valdez's 'Dead Fish' changeup analyzed",
+    url: 'https://www.mlb.com/news/cesar-valdez-s-dead-fish-changeup-analyzed',
+    retrievedAt: RETRIEVED_5,
+  },
+  'exp-baltsun-dead-fish-valdez': {
+    id: 'exp-baltsun-dead-fish-valdez',
+    label: "Baltimore Sun — How César Valdez's 'Dead Fish' changeup became a weapon at the back end of the Orioles' bullpen",
+    url: 'https://www.baltimoresun.com/2020/09/19/how-csar-valdezs-dead-fish-changeup-became-a-weapon-at-the-backend-of-the-orioles-bullpen/',
+    retrievedAt: RETRIEVED_5,
   },
 } satisfies Record<string, Source>
 
