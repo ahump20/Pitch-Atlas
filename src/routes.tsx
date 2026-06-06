@@ -9,6 +9,7 @@ import { CraftsmanChapter } from './pages/CraftsmanChapter'
 import { LostPitchesHall } from './pages/LostPitchesHall'
 import { LostPitchChapter } from './pages/LostPitchChapter'
 import { SourcesPage } from './pages/SourcesPage'
+import { SandboxPage } from './pages/SandboxPage'
 import { NotFound } from './pages/NotFound'
 
 /*
@@ -32,6 +33,7 @@ export const routes: RouteObject[] = [
       { path: 'lost-pitches', Component: LostPitchesHall },
       { path: 'lost-pitches/:slug', Component: LostPitchChapter },
       { path: 'sources', Component: SourcesPage },
+      { path: 'sandbox', Component: SandboxPage },
       { path: '*', Component: NotFound },
     ],
   },
