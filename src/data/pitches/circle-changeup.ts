@@ -247,10 +247,10 @@ export const circleChange: PitchAtlasEntry = {
   guide: {
     family: 'The deception',
     tagline: 'It looks exactly like the fastball and arrives a beat slower. It wrecks a hitter’s timing.',
-    feel: 'Fastball arm speed, always. Let the grip take the speed off, never your arm.',
+    feel: 'Fastball arm speed, always. More surface area and deeper hand contact take the speed off, not a slower arm.',
     steps: [
       'Make an OK sign: curl your index down to meet your thumb on the side of the ball, forming a visible circle.',
-      'Let the ball sit deeper in your hand, toward the palm, with the middle and ring fingers across the top.',
+      'Let the ball sit deeper in your hand, toward the palm, with more surface on the ball than a fastball.',
       'Throw it with fastball arm speed and the same release; the deep grip eats the velocity for you.',
       'Let the palm turn out toward your arm side at release. Never try to spin it by hand.',
     ],
