@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Pitch Atlas · Specimen Cards (concept)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=Martian+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ───────────────────────── Heritage Athletic tokens (from src/index.css) ──────────────────── */
+  :root{
+    --stage:#0B0B0D; --press:#15161A;
+    --paper:#F4EEE0; --paper-2:#EAE2D2; --paper-3:#D8CFB8;
+    --ink:#14161B; --ink-2:#3F4654; --ink-3:#5C6473;
+    --bone:#F2ECDD; --bone-2:#C7BEA8;
+    --seam:#C8102E; --seam-deep:#9c1224;
+    --powder:#6CACE4; --powder-deep:#4B92DB;
+    --navy:#0C2340; --navy-2:#15406E;
+    --teal:#12726E; --teal-bright:#00A2A0;
+    --leather:#7A4A2E;
+    --ok:#2E7D55; --amber:#B07A1E; --sand:#8A7A5E;
+    --font-display:"Newsreader", ui-serif, Georgia, "Times New Roman", serif;
+    --font-prose:"Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-mono:"Martian Mono", ui-monospace, "SFMono-Regular", monospace;
+  }
+
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; }
+  body{
+    background:
+      radial-gradient(120% 80% at 50% -10%, #16171d 0%, var(--stage) 46%, #050506 100%),
+      var(--stage);
+    color:var(--bone);
+    font-family:var(--font-prose);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding:clamp(20px,4vw,56px) clamp(14px,4vw,56px) 80px;
+    position:relative;
+  }
+  /* faint registration grid on the stage */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.5;
+    background-image:
+      radial-gradient(circle at center, rgba(199,190,168,.05) 0 1px, transparent 1.6px);
+    background-size:26px 26px;
+    mask-image:radial-gradient(120% 90% at 50% 30%, #000 30%, transparent 90%);
+  }
+
+  /* ───────────────────────── masthead ──────────────────── */
+  .wrap{ max-width:1320px; margin:0 auto; position:relative; z-index:1; }
+  .masthead{
+    display:flex; flex-wrap:wrap; gap:18px 28px; align-items:flex-end; justify-content:space-between;
+    border-bottom:1px solid color-mix(in srgb,var(--navy-2) 55%,transparent);
+    padding-bottom:18px; margin-bottom:8px;
+  }
+  .mast-l{ max-width:640px; }
+  .kicker{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.34em; text-transform:uppercase;
+    color:var(--seam); display:flex; align-items:center; gap:10px; margin:0 0 12px;
+  }
+  .kicker::before{ content:""; width:24px; height:1px; background:var(--seam); display:inline-block; }
+  h1{
+    font-family:var(--font-display); font-weight:600; font-size:clamp(30px,5vw,52px);
+    line-height:.98; letter-spacing:-.012em; margin:0; color:var(--bone);
+  }
+  h1 em{ font-style:italic; font-weight:500; color:var(--bone-2); }
+  .dek{ margin:14px 0 0; color:var(--bone-2); font-size:15px; line-height:1.55; max-width:60ch; }
+  .mast-r{ text-align:right; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.16em; color:var(--bone-2); line-height:1.9; text-transform:uppercase; }
+  .mast-r b{ color:var(--bone); font-weight:600; }
+
+  /* ───────────────────────── legend / placard ──────────────────── */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px 10px; margin:22px 0 30px;
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--bone-2);
+  }
+  .legend span{ display:inline-flex; align-items:center; gap:7px; border:1px solid color-mix(in srgb,var(--navy-2) 45%,transparent); border-radius:2px; padding:4px 9px; background:rgba(12,35,64,.16); }
+  .swatch{ width:18px; height:0; border-top-width:2px; border-top-style:solid; display:inline-block; }
+  .dotk{ width:8px; height:8px; border-radius:50%; display:inline-block; }
+
+  /* ───────────────────────── the grid ──────────────────── */
+  .set{
+    display:grid; gap:clamp(20px,2.4vw,30px);
+    grid-template-columns:repeat(auto-fill, minmax(312px,1fr));
+    align-items:start;
+  }
+  @media(min-width:1040px){ .featured{ grid-column:span 2; } }
+
+  /* ───────────────────────── the card: chrome bezel ──────────────────── */
+  .tilt{ perspective:1300px; }
+  .card{
+    --rx:0deg; --ry:0deg;
+    position:relative; border-radius:14px; padding:9px;
+    transform:rotateX(var(--ry)) rotateY(var(--rx));
+    transform-style:preserve-3d; transition:transform .35s cubic-bezier(.2,.7,.2,1);
+    will-change:transform;
+    /* brushed-metal bezel */
+    background:
+      linear-gradient(148deg,#3c3f47 0%,#e2e4e8 14%,#74777f 30%,#191a1f 48%,#cdd0d6 64%,#4a4c53 80%,#26282d 100%);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.28) inset,
+      0 -1px 0 rgba(0,0,0,.55) inset,
+      0 30px 60px -26px rgba(0,0,0,.85),
+      0 8px 18px -10px rgba(0,0,0,.7);
+  }
+  /* machined ring + edge bevel */
+  .card::before{
+    content:""; position:absolute; inset:3px; border-radius:11px; pointer-events:none; z-index:2;
+    background:linear-gradient(148deg,rgba(255,255,255,.42),transparent 22%,transparent 78%,rgba(0,0,0,.4));
+    mix-blend-mode:overlay;
+  }
+
+  .field{
+    position:relative; border-radius:7px; overflow:hidden;
+    background:linear-gradient(177deg,#171821 0%,#101116 55%,#0c0d12 100%);
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--navy-2) 55%,transparent) inset, 0 18px 38px -16px #000 inset;
+    padding:18px 18px 16px;
+    min-height:100%;
+  }
+  /* base diagonal sheen (always present, premium even at rest) */
+  .field::after{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:3;
+    background:linear-gradient(125deg, rgba(255,255,255,.08) 0%, transparent 24%, transparent 60%, rgba(255,255,255,.05) 78%, transparent 100%);
+    mix-blend-mode:soft-light;
+  }
+  /* holographic foil — per-family hue, shifts with pointer */
+  .holo{
+    content:""; position:absolute; inset:0; pointer-events:none; z-index:4; border-radius:7px;
+    background:
+      repeating-linear-gradient(112deg, transparent 0 7px, rgba(255,255,255,.05) 7px 8px),
+      conic-gradient(from 200deg at var(--gx,28%) var(--gy,18%),
+        hsl(var(--hue), 85%, 62%), hsl(calc(var(--hue) + 55), 80%, 60%),
+        hsl(calc(var(--hue) + 130), 78%, 58%), hsl(calc(var(--hue) + 210), 82%, 60%),
+        hsl(var(--hue), 85%, 62%));
+    background-size:auto, 220% 220%;
+    background-position:0 0, var(--gx,28%) var(--gy,18%);
+    mix-blend-mode:color-dodge; opacity:.11;
+  }
+  /* specular glare follows pointer */
+  .glare{
+    position:absolute; inset:0; pointer-events:none; z-index:6; border-radius:7px;
+    background:radial-gradient(440px circle at var(--px,30%) var(--py,12%), rgba(255,255,255,.20), transparent 46%);
+    mix-blend-mode:soft-light; opacity:0; transition:opacity .35s;
+  }
+  .card:hover .glare{ opacity:1; }
+  .card:hover .holo{ opacity:.16; }
+
+  .featured .holo{ animation:drift 9s ease-in-out infinite alternate; }
+  @keyframes drift{
+    0%{ background-position:0 0, 12% 8%; }
+    100%{ background-position:0 0, 78% 64%; }
+  }
+
+  .inner{ position:relative; z-index:7; } /* content above all foil layers */
+
+  /* ───────────────────────── card header / labels ──────────────────── */
+  .row{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .plate{
+    font-family:var(--font-mono); font-size:9.5px; letter-spacing:.18em; text-transform:uppercase;
+    color:var(--bone-2); border:1px solid color-mix(in srgb,var(--navy-2) 60%,transparent);
+    padding:4px 8px; border-radius:2px; background:rgba(12,35,64,.22); white-space:nowrap;
+  }
+  .plate.accentframe{ border-color:color-mix(in srgb,var(--accent) 55%,transparent); color:color-mix(in srgb,var(--accent) 80%, var(--bone)); }
+  .rule{ height:1px; background:linear-gradient(90deg, color-mix(in srgb,var(--accent) 60%,transparent), transparent); margin:13px 0 11px; }
+
+  .name{
+    font-family:var(--font-display); font-weight:600; letter-spacing:-.01em; line-height:.96;
+    font-size:clamp(26px,3.2vw,38px); color:var(--bone); margin:0;
+  }
+  .featured .name{ font-size:clamp(32px,3.6vw,46px); }
+  .sub{ font-family:var(--font-display); font-style:italic; font-weight:500; color:color-mix(in srgb,var(--accent) 72%,var(--bone)); font-size:15px; margin:6px 0 0; }
+  .tag{ color:var(--bone-2); font-size:12.5px; line-height:1.5; margin:9px 0 0; max-width:46ch; }
+
+  /* ───────────────────────── seam specimen window ──────────────────── */
+  .window{
+    position:relative; margin:15px 0 14px; border-radius:5px; overflow:hidden;
+    background:radial-gradient(120% 120% at 50% 16%, #1b1d25 0%, #0c0d12 70%);
+    box-shadow:0 0 0 1px color-mix(in srgb,var(--navy-2) 50%,transparent) inset, 0 14px 30px -18px #000 inset;
+  }
+  .window svg{ display:block; width:100%; height:auto; }
+  .ghostno{
+    position:absolute; right:-4px; bottom:-22px; z-index:0; pointer-events:none;
+    font-family:var(--font-display); font-weight:600; font-style:italic;
+    font-size:160px; line-height:1; color:color-mix(in srgb,var(--accent) 16%, transparent);
+    letter-spacing:-.04em;
+  }
+  .featured .ghostno{ font-size:220px; }
+
+  /* ───────────────────────── stat strip ──────────────────── */
+  .strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:color-mix(in srgb,var(--navy-2) 40%,transparent); border:1px solid color-mix(in srgb,var(--navy-2) 40%,transparent); border-radius:3px; overflow:hidden; }
+  .cell{ background:rgba(8,10,16,.72); padding:9px 10px; display:flex; flex-direction:column; gap:3px; }
+  .cell .k{ font-family:var(--font-mono); font-size:8.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); }
+  .cell .vv{ font-family:var(--font-mono); font-size:15px; font-weight:600; color:var(--bone); letter-spacing:.01em; }
+  .cell .vv small{ font-size:10px; color:var(--bone-2); font-weight:500; }
+
+  /* ───────────────────────── hero reading + confidence ──────────────────── */
+  .reading{ margin-top:13px; display:flex; gap:11px; }
+  .reading .mvt{ flex:0 0 auto; }
+  .reading .txt{ flex:1; min-width:0; }
+  .rk{ font-family:var(--font-mono); font-size:9px; letter-spacing:.16em; text-transform:uppercase; color:color-mix(in srgb,var(--accent) 78%,var(--bone)); margin:0 0 4px; }
+  .rtext{ font-size:12.5px; line-height:1.5; color:var(--bone); margin:0; }
+  .badge{ display:inline-flex; align-items:center; gap:6px; margin-top:8px; font-family:var(--font-mono); font-size:9px; letter-spacing:.1em; text-transform:uppercase; color:var(--bone-2); }
+  .badge .d{ width:8px; height:8px; border-radius:50%; box-shadow:0 0 8px -1px currentColor; }
+  .approx{ margin-left:6px; padding:1px 5px; border:1px solid var(--sand); border-radius:2px; color:var(--sand); font-size:8px; letter-spacing:.08em; }
+
+  /* ───────────────────────── footer specimen notes ──────────────────── */
+  .foot{ margin-top:14px; padding-top:11px; border-top:1px dashed color-mix(in srgb,var(--navy-2) 50%,transparent); display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .foot .meta{ font-family:var(--font-mono); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); line-height:1.7; }
+  .foot .meta b{ color:var(--bone-2); font-weight:600; }
+  /* foil authenticity seal */
+  .seal{ flex:0 0 auto; width:42px; height:42px; border-radius:50%; position:relative; display:grid; place-items:center;
+    background:conic-gradient(from 0deg, #b9bcc2, #6a6d75, #eef0f3, #595c63, #c9ccd2, #6a6d75, #b9bcc2);
+    box-shadow:0 0 0 1px rgba(0,0,0,.4), 0 2px 6px -2px #000, 0 0 0 3px rgba(255,255,255,.05) inset; }
+  .seal::before{ content:""; position:absolute; inset:5px; border-radius:50%; background:radial-gradient(circle at 35% 30%, #2a2c31, #111216); box-shadow:0 0 0 1px rgba(255,255,255,.1) inset; }
+  .seal span{ position:relative; z-index:1; font-family:var(--font-mono); font-size:7px; letter-spacing:.06em; color:var(--bone-2); text-align:center; line-height:1.1; }
+
+  /* page footer */
+  .pagefoot{ margin-top:46px; padding-top:20px; border-top:1px solid color-mix(in srgb,var(--navy-2) 45%,transparent);
+    display:flex; flex-wrap:wrap; gap:14px 26px; justify-content:space-between; align-items:baseline;
+    font-family:var(--font-mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); }
+  .pagefoot b{ color:var(--bone-2); }
+  .pagefoot .creed{ color:var(--bone-2); max-width:60ch; text-transform:none; letter-spacing:0; font-family:var(--font-prose); font-size:12.5px; line-height:1.55; }
+
+  @media(prefers-reduced-motion:reduce){
+    .card{ transition:none; }
+    .featured .holo{ animation:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="mast-l">
+      <p class="kicker">Blaze Sports Intel · Pitch Atlas</p>
+      <h1>The Specimen Series<br><em>seven pitches, filed as objects</em></h1>
+      <p class="dek">A collectible-card treatment for the filed specimens. The pitcher is gone; the pitch is the artifact. Each seam is the real figure-eight from <code style="font-family:var(--font-mono);font-size:.85em;color:var(--bone-2)">lib/seam.ts</code> — the same curve the 3D ball draws — and every number is the actual sourced reading from the atlas, carrying its confidence.</p>
+    </div>
+    <div class="mast-r">
+      <div>Concept preview</div>
+      <div><b>07</b> specimens</div>
+      <div>2D · CSS chrome · SVG seam</div>
+      <div>Sources, not corrected</div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <span><i class="swatch" style="border-top-color:var(--powder-deep)"></i> Spin axis</span>
+    <span><i class="dotk" style="background:var(--seam)"></i> Stitched seam / red-dot</span>
+    <span><i class="swatch" style="border-top-color:var(--seam);border-top-style:dashed"></i> Break vector</span>
+    <span><i class="dotk" style="background:var(--ok)"></i> Official data</span>
+    <span><i class="dotk" style="background:var(--amber)"></i> Reputable analysis</span>
+    <span>⌖ Registration marks</span>
+  </div>
+
+  <main class="set" id="set"></main>
+
+  <footer class="pagefoot">
+    <div class="creed">Sourced, not corrected. Every figure wears its source and confidence — a Statcast reading and a beat-writer paraphrase never share a badge. The leather is a seam-informed schematic, not seam-accurate. Nothing here is faked, and no number ships bare.</div>
+    <div style="text-align:right">
+      <div><b>Blaze Sports Intel</b></div>
+      <div>Sports Intelligence Put Simply</div>
+      <div>pitch-atlas.com</div>
+    </div>
+  </footer>
+</div>
+
+<script>
+/* ============================================================================
+   The one seam-point function — ported verbatim from src/lib/seam.ts and
+   src/lib/seam2d.ts so the card's seam is the atlas's seam, not a redraw.
+   ============================================================================ */
+const v = {
+  scale:(a,s)=>({x:a.x*s,y:a.y*s,z:a.z*s}),
+  dot:(a,b)=>a.x*b.x+a.y*b.y+a.z*b.z,
+  cross:(a,b)=>({x:a.y*b.z-a.z*b.y,y:a.z*b.x-a.x*b.z,z:a.x*b.y-a.y*b.x}),
+  normalize:(a)=>{const L=Math.hypot(a.x,a.y,a.z)||1;return{x:a.x/L,y:a.y/L,z:a.z/L};},
+  rotateAxis:(p,axis,angle)=>{
+    const k=v.normalize(axis), cos=Math.cos(angle), sin=Math.sin(angle);
+    const kc=v.cross(k,p), kd=v.dot(k,p)*(1-cos);
+    return {x:p.x*cos+kc.x*sin+k.x*kd, y:p.y*cos+kc.y*sin+k.y*kd, z:p.z*cos+kc.z*sin+k.z*kd};
+  },
+};
+const seamRaw=(t)=>({x:2*Math.sin(t)+Math.sin(3*t), y:2*Math.cos(t)-Math.cos(3*t), z:2*Math.SQRT2*Math.cos(2*t)});
+const seamPoint=(t,r=1)=>v.scale(v.normalize(seamRaw(t)),r);
+function seamPolyline(seg,r=1){const p=[];for(let i=0;i<=seg;i++){p.push(seamPoint((i/seg)*Math.PI*2,r));}return p;}
+const TILT={axis:v.normalize({x:0.2,y:1,z:0.35}), angle:0.62};
+const orientedSeamPolyline=(seg,r=1)=>seamPolyline(seg,r).map(p=>v.rotateAxis(p,TILT.axis,TILT.angle));
+function projectSeam(cx,cy,r,seg=300){return orientedSeamPolyline(seg,1).map(p=>({x:cx+p.x*r, y:cy-p.y*r, z:p.z}));}
+const pathOf=(run)=>run.map((p,i)=>`${i===0?'M':'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ');
+function splitRuns(points){
+  const runs=[]; let cur=[], curFront=null;
+  for(const p of points){ const f=p.z>=0;
+    if(curFront===null){curFront=f;cur=[p];}
+    else if(f===curFront){cur.push(p);}
+    else{cur.push(p); runs.push({front:curFront,d:pathOf(cur)}); curFront=f; cur=[p];}
+  }
+  if(cur.length>1) runs.push({front:curFront??true,d:pathOf(cur)});
+  return runs;
+}
+function buildStitches(points,every=6,len=8){
+  const out=[];
+  for(let i=0;i<points.length-1;i+=every){
+    const a=points[i], b=points[i+1];
+    const dx=b.x-a.x, dy=b.y-a.y, L=Math.hypot(dx,dy)||1;
+    const nx=-dy/L, ny=dx/L;
+    out.push({x1:a.x-nx*len/2,y1:a.y-ny*len/2,x2:a.x+nx*len/2,y2:a.y+ny*len/2,front:a.z>=0});
+  }
+  return out;
+}
+
+/* ============================================================================
+   The seven specimens — real values lifted from src/data/pitches/*.ts.
+   ============================================================================ */
+const CONF = {
+  'official-data':      {label:'Official data',      color:'var(--ok)'},
+  'reputable-analysis': {label:'Reputable analysis', color:'var(--amber)'},
+  'secondhand-attributed':{label:'Secondhand, attributed', color:'var(--sand)'},
+  'pitcher-own-words':  {label:"Pitcher's own words", color:'var(--powder)'},
+  'coach-observed':     {label:'Coach-observed',      color:'var(--teal-bright)'},
+};
+const FAMILY = {
+  fastball: {hue:205, accent:'var(--powder-deep)', label:'Fastball'},
+  breaking: {hue:351, accent:'var(--seam)',        label:'Breaking'},
+  offspeed: {hue:178, accent:'var(--teal-bright)', label:'Offspeed'},
+};
+
+const PITCHES = [
+  { specimenNo:'00', slug:'four-seam', name:'Four-seam fastball', short:'Four-seam', family:'fastball',
+    heroSub:'Measured, not described.',
+    tag:'The pitch you trust for a strike. It travels the straightest and arrives the fastest.',
+    spinAxis:{x:1,y:0.12,z:0}, forceLabel:'Magnus', gyro:false,
+    ivb:16, horiz:0, dir:'none', spinShort:'≈2,300 rpm',
+    breakLabel:'Induced vertical break',
+    breakClaim:'League average about +16 in. Good near +18, elite +20 and up.',
+    conf:'official-data', approx:false, ref:true },
+
+  { specimenNo:'01', slug:'two-seam', name:'Two-seam fastball', short:'Sinker', family:'fastball',
+    heroSub:'The four-seam, tilted.',
+    tag:'Almost as hard as the four-seam, but it tails toward your arm and sinks. A ground-ball pitch.',
+    spinAxis:{x:0.7,y:0.38,z:0.61}, forceLabel:'Magnus, tilted', gyro:false,
+    ivb:7, horiz:15, dir:'arm-side', spinShort:'≈1,900–2,250',
+    breakLabel:'Arm-side run',
+    breakClaim:'Strong arm-side run is the signature. Framber Valdez runs about 15.5 to 16 inches toward his arm side, well beyond a typical sinker.',
+    conf:'official-data', approx:true, ref:false },
+
+  { specimenNo:'02', slug:'circle-change', name:'Circle changeup', short:'Circle change', family:'offspeed',
+    heroSub:'Fastball arm, ten miles slower.',
+    tag:'It looks exactly like the fastball and arrives a beat slower. It wrecks a hitter’s timing.',
+    spinAxis:{x:0.62,y:0.52,z:0.59}, forceLabel:'Magnus, arm-side', gyro:false,
+    ivb:4, horiz:14, dir:'arm-side', spinShort:'≈1,750 rpm',
+    breakLabel:'Arm-side fade',
+    breakClaim:'Several inches toward the throwing hand. Webb ran 9.8 inches of arm-side break in 2024; the extreme end, Williams, reached 19.4 inches, wider than home plate.',
+    conf:'official-data', approx:false, ref:false },
+
+  { specimenNo:'03', slug:'twelve-six', name:'12-6 curveball', short:'12-6 curve', family:'breaking',
+    heroSub:'The fastball, mirrored.',
+    tag:'It falls straight off a table, twelve o’clock to six. Same arm speed, late and hard.',
+    spinAxis:{x:-0.85,y:-0.05,z:0.52}, forceLabel:'Magnus, down', gyro:false,
+    ivb:-15.3, horiz:6.6, dir:'glove-side', spinShort:'≈2,500–3,000',
+    breakLabel:'Induced vertical break',
+    breakClaim:'Large induced drop. MLB curveballs averaged about −10 inches in 2024, the most induced drop of any pitch; the biggest 12-6 curves reach −15 and beyond. Kershaw’s is −15.3.',
+    conf:'official-data', approx:false, ref:false },
+
+  { specimenNo:'04', slug:'slider', name:'Slider', short:'Slider', family:'breaking',
+    heroSub:'Spun like a football.',
+    tag:'It looks like the fastball, then breaks late and short to the glove side. The hitter sees a red dot.',
+    spinAxis:{x:0.26,y:-0.1,z:0.96}, forceLabel:'Gyro: minimal Magnus', gyro:true,
+    ivb:1.9, horiz:2.2, dir:'glove-side', spinShort:'≈2,720–2,780',
+    breakLabel:'Glove-side break',
+    breakClaim:'Late and short. A tight gyro slider (Cease, 2024) bends only about 2 inches glove-side; the average slider breaks about 6 inches, where a sweeper reaches about 15.',
+    conf:'official-data', approx:true, ref:false },
+
+  { specimenNo:'05', slug:'splitter', name:'Splitter', short:'Splitter', family:'offspeed',
+    heroSub:'A fastball look, a trap-door drop.',
+    tag:'It looks like the fastball the whole way, then the floor drops out at the plate.',
+    spinAxis:{x:0.92,y:0.18,z:0.16}, forceLabel:'Magnus, weak', gyro:false,
+    ivb:3, horiz:4, dir:'arm-side', spinShort:'low spin',
+    breakLabel:'Late tumbling drop',
+    breakClaim:'Gausman’s splitter drops roughly 50 to 75 cm before the plate, against about 25 to 30 cm for his fastball, the extra fall arriving late.',
+    conf:'reputable-analysis', approx:true, ref:false },
+
+  { specimenNo:'06', slug:'splinker', name:'Splinker', short:'Splinker', family:'fastball',
+    heroSub:'A fastball that sinks like a splitter.',
+    tag:'It leaves the hand like a 98 mph fastball, then sinks and runs like a splitter.',
+    spinAxis:{x:0.74,y:-0.36,z:0.57}, forceLabel:'Magnus, arm-side + sink', gyro:false,
+    ivb:6, horiz:14, dir:'arm-side', spinShort:'≈1,750 rpm',
+    breakLabel:'Arm-side dive',
+    breakClaim:'In his MLB debut, Statcast logged 31.4 inches of vertical movement and 13.8 inches of horizontal movement, a profile nearly identical to Zack Wheeler’s elite splitter (31.8 / 13.4) but roughly nine mph harder.',
+    conf:'official-data', approx:false, ref:false },
+];
+
+/* ============================================================================
+   Seam-specimen SVG — leather ball, real seam (front/back), stitches, spin
+   axis, gyro red-dot, registration marks. Technical-drawing language.
+   ============================================================================ */
+function seamSVG(p){
+  const W=300, H=270, cx=150, cy=132, r=96;
+  const pts = projectSeam(cx,cy,r,300);
+  const runs = splitRuns(pts);
+  const stitches = buildStitches(pts,6,9);
+
+  const back  = runs.filter(x=>!x.front).map(x=>`<path d="${x.d}" fill="none" stroke="#8d6b4e" stroke-width="1" stroke-dasharray="2 3" opacity=".5"/>`).join('');
+  const front = runs.filter(x=> x.front).map(x=>`<path d="${x.d}" fill="none" stroke="#5b3b24" stroke-width="1.4" opacity=".8"/>`).join('');
+  const stB = stitches.filter(s=>!s.front).map(s=>`<line x1="${s.x1.toFixed(1)}" y1="${s.y1.toFixed(1)}" x2="${s.x2.toFixed(1)}" y2="${s.y2.toFixed(1)}" stroke="#C8102E" stroke-width="1.6" stroke-linecap="round" opacity=".34"/>`).join('');
+  const stF = stitches.filter(s=> s.front).map(s=>`<line x1="${s.x1.toFixed(1)}" y1="${s.y1.toFixed(1)}" x2="${s.x2.toFixed(1)}" y2="${s.y2.toFixed(1)}" stroke="#C8102E" stroke-width="2" stroke-linecap="round"/>`).join('');
+
+  // spin axis in the SAME projected frame as the seam (shared TILT) — they agree by construction
+  const sa = v.rotateAxis(v.normalize(p.spinAxis), TILT.axis, TILT.angle);
+  const k = r*0.96;
+  const ex=cx+sa.x*k, ey=cy-sa.y*k, sx=cx-sa.x*k, sy=cy+sa.y*k;
+  const ang=Math.atan2(ey-cy, ex-cx);
+  const ah=(tx,ty,a)=>{const L=8,w=0.42;
+    return `<path d="M ${tx} ${ty} L ${(tx-L*Math.cos(a-w)).toFixed(1)} ${(ty-L*Math.sin(a-w)).toFixed(1)} M ${tx} ${ty} L ${(tx-L*Math.cos(a+w)).toFixed(1)} ${(ty-L*Math.sin(a+w)).toFixed(1)}" stroke="#4B92DB" stroke-width="1.6" fill="none" stroke-linecap="round"/>`;};
+  const axis = `
+    <line x1="${sx.toFixed(1)}" y1="${sy.toFixed(1)}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}" stroke="#4B92DB" stroke-width="1.4" stroke-dasharray="5 4" opacity=".9"/>
+    ${ah(ex.toFixed(1),ey.toFixed(1),ang)}
+    ${ah(sx.toFixed(1),sy.toFixed(1),ang+Math.PI)}`;
+
+  // gyro red-dot: the near pole the hitter sees, drawn where the axis points at the viewer
+  const dot = p.gyro
+    ? `<circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="7" fill="#C8102E"/>
+       <circle cx="${ex.toFixed(1)}" cy="${ey.toFixed(1)}" r="7" fill="none" stroke="#F2ECDD" stroke-width="1" opacity=".8"/>
+       <text x="${(ex+11).toFixed(1)}" y="${(ey-8).toFixed(1)}" fill="#F2ECDD" font-family="var(--font-mono)" font-size="7.5" letter-spacing="1">RED DOT</text>` : '';
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Seam specimen and spin axis for the ${p.name}">
+    <defs>
+      <radialGradient id="lea-${p.slug}" cx="42%" cy="32%" r="75%">
+        <stop offset="0%" stop-color="#FBF6EA"/><stop offset="55%" stop-color="#F2ECDD"/>
+        <stop offset="86%" stop-color="#E2D6BE"/><stop offset="100%" stop-color="#CBBA98"/>
+      </radialGradient>
+    </defs>
+    <!-- caliper rings + technical frame -->
+    <circle cx="${cx}" cy="${cy}" r="${r+14}" fill="none" stroke="#15406E" stroke-width="1" opacity=".5"/>
+    <circle cx="${cx}" cy="${cy}" r="${r+14}" fill="none" stroke="#15406E" stroke-width="1" stroke-dasharray="1 7" opacity=".7"/>
+    <!-- leather ball -->
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#lea-${p.slug})"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#9c8a6a" stroke-width="1" opacity=".6"/>
+    <!-- terminator shading -->
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#0B0B0D" opacity=".10" style="mix-blend-mode:multiply"/>
+    ${back}${stB}${front}${stF}
+    ${axis}${dot}
+    <!-- registration crosshairs at window corners -->
+    <g stroke="#C7BEA8" stroke-width="1" opacity=".55">
+      <path d="M 12 12 h 12 M 12 12 v 12"/><path d="M ${W-12} 12 h -12 M ${W-12} 12 v 12"/>
+      <path d="M 12 ${H-12} h 12 M 12 ${H-12} v -12"/><path d="M ${W-12} ${H-12} h -12 M ${W-12} ${H-12} v -12"/>
+    </g>
+    <text x="14" y="${H-16}" fill="#5C6473" font-family="var(--font-mono)" font-size="7.5" letter-spacing="1.5">FIG-8 SEAM · Ø NORMALISED</text>
+  </svg>`;
+}
+
+/* small catcher's-eye movement glyph (or carry gauge) */
+function movementSVG(p){
+  const S=78, c=S/2, R=30;
+  const scale = (R-3)/16;
+  const hx = (p.dir==='arm-side'?1:p.dir==='glove-side'?-1:0)*Math.min(Math.abs(p.horiz),16)*scale;
+  const vy = -Math.max(Math.min(p.ivb,16),-16)*scale;
+  const carry = (p.dir==='none');
+  return `<svg viewBox="0 0 ${S} ${S}" role="img" aria-label="Break readout for the ${p.name}">
+    <rect x="1" y="1" width="${S-2}" height="${S-2}" rx="3" fill="rgba(8,10,16,.6)" stroke="#15406E" stroke-width="1" opacity=".9"/>
+    <line x1="${c}" y1="6" x2="${c}" y2="${S-6}" stroke="#3F4654" stroke-width="1" opacity=".55"/>
+    <line x1="6" y1="${c}" x2="${S-6}" y2="${c}" stroke="#3F4654" stroke-width="1" opacity=".55"/>
+    <circle cx="${c}" cy="${c}" r="${R}" fill="none" stroke="#3F4654" stroke-width="1" stroke-dasharray="1 4" opacity=".7"/>
+    <line x1="${c}" y1="${c}" x2="${(c+hx).toFixed(1)}" y2="${(c+vy).toFixed(1)}" stroke="#C8102E" stroke-width="1.6"/>
+    <circle cx="${(c+hx).toFixed(1)}" cy="${(c+vy).toFixed(1)}" r="3.4" fill="#C8102E"/>
+    <text x="${c}" y="11" text-anchor="middle" fill="#5C6473" font-family="var(--font-mono)" font-size="6">${carry?'CARRY':'CATCHER’S EYE'}</text>
+  </svg>`;
+}
+
+function statCell(k,vv){ return `<div class="cell"><span class="k">${k}</span><span class="vv">${vv}</span></div>`; }
+
+function card(p){
+  const fam = FAMILY[p.family];
+  const conf = CONF[p.conf];
+  const ivbTxt = `${p.ivb>0?'+':''}${p.ivb}<small>″ ${p.ivb<0?'drop':'ride'}</small>`;
+  const horizTxt = p.dir==='none' ? `0<small>″</small>` : `${p.horiz}<small>″ ${p.dir==='arm-side'?'arm':'glove'}</small>`;
+  const approxTag = p.approx ? `<span class="approx">≈ approx</span>` : '';
+  return `
+  <div class="tilt">
+    <article class="card${p.ref?' featured':''}" style="--hue:${fam.hue}; --accent:${fam.accent}">
+      <div class="field">
+        <div class="holo"></div>
+        <div class="glare"></div>
+        <div class="ghostno">${p.specimenNo}</div>
+        <div class="inner">
+          <div class="row">
+            <span class="plate accentframe">Specimen №&nbsp;${p.specimenNo}</span>
+            <span class="plate">${fam.label}${p.ref?' · Reference':''}</span>
+          </div>
+          <div class="rule"></div>
+          <h2 class="name">${p.name}</h2>
+          <p class="sub">${p.heroSub}</p>
+          <p class="tag">${p.tag}</p>
+
+          <div class="window">${seamSVG(p)}</div>
+
+          <div class="strip">
+            ${statCell('Induced vert', ivbTxt)}
+            ${statCell('Horizontal', horizTxt)}
+            ${statCell('Spin', p.spinShort)}
+          </div>
+
+          <div class="reading">
+            <div class="mvt">${movementSVG(p)}</div>
+            <div class="txt">
+              <p class="rk">${p.breakLabel}</p>
+              <p class="rtext">${p.breakClaim}</p>
+              <span class="badge"><i class="d" style="background:${conf.color};color:${conf.color}"></i>${conf.label}${approxTag}</span>
+            </div>
+          </div>
+
+          <div class="foot">
+            <div class="meta">
+              <b>Seam-informed schematic</b> · 108 double stitches<br>
+              BSI · Pitch Atlas · ${p.specimenNo} / 06 · <b>${p.slug}</b>
+            </div>
+            <div class="seal"><span>BSI<br>◆</span></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>`;
+}
+
+document.getElementById('set').innerHTML = PITCHES.map(card).join('');
+
+/* ============================================================================
+   Pointer-driven 3D tilt + holo/glare tracking. Reduced-motion safe.
+   ============================================================================ */
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(!reduce){
+  let raf=0;
+  document.querySelectorAll('.card').forEach(card=>{
+    const tilt = card.parentElement;
+    tilt.addEventListener('pointermove', e=>{
+      const b=card.getBoundingClientRect();
+      const px=(e.clientX-b.left)/b.width, py=(e.clientY-b.top)/b.height;
+      cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(()=>{
+        const max=7;
+        card.style.setProperty('--rx', `${(px-0.5)*max*2}deg`);
+        card.style.setProperty('--ry', `${(0.5-py)*max*2}deg`);
+        card.style.setProperty('--px', `${px*100}%`);
+        card.style.setProperty('--py', `${py*100}%`);
+        const holo=card.querySelector('.holo');
+        holo.style.setProperty('--gx', `${20+px*60}%`);
+        holo.style.setProperty('--gy', `${10+py*70}%`);
+      });
+    });
+    tilt.addEventListener('pointerleave', ()=>{
+      card.style.setProperty('--rx','0deg'); card.style.setProperty('--ry','0deg');
+    });
+  });
+}
+</script>
+</body>
+</html>
