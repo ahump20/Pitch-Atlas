@@ -2,7 +2,7 @@ import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
-import { GripLibrary } from '../components/sections/GripLibrary'
+import { GripLibrary, AttackPlan } from '../components/sections/GripLibrary'
 import { GripCompare } from '../components/sections/GripCompare'
 
 /*
@@ -40,6 +40,12 @@ export function GripsPage() {
       <section className="bg-paper">
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <GripLibrary />
+        </div>
+      </section>
+
+      <section className="border-t border-bone/10 bg-paper">
+        <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
+          <AttackPlan />
         </div>
       </section>
 

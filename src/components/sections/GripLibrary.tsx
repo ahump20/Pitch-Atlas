@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
-import { AUSTIN_GRIPS, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL } from '../../data/grips'
+import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL } from '../../data/grips'
 
 /*
   The visual grip library, refractor-native. Every card is a real photograph of
@@ -92,6 +92,56 @@ export function SpecimenGrips({ photos, accentColor }: { photos: VisualReference
         .
       </p>
     </section>
+  )
+}
+
+/** How he attacked hitters — the arsenal put to work, as a sequenced at-bat. */
+export function AttackPlan() {
+  return (
+    <div>
+      <p className="rfx-skick text-cyan">How he attacked hitters</p>
+      <h2 className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">The grips, put to work</h2>
+      <p className="mt-4 max-w-[74ch] text-[15.5px] leading-relaxed text-bone-2">{ATTACK_PLAN.intro}</p>
+
+      <div className="mt-9 rounded-[16px] border border-bone/12 bg-press/60 p-[clamp(20px,3vw,30px)]">
+        <p className="rfx-athletic rfx-skew text-2xl text-bone">{ATTACK_PLAN.sequenceTitle}</p>
+        <p className="mt-2 max-w-[68ch] text-[14px] leading-relaxed text-bone-2">{ATTACK_PLAN.sequenceNote}</p>
+
+        <ol className="mt-6 flex flex-col gap-3">
+          {ATTACK_PLAN.sequence.map((step, i) => {
+            const last = i === ATTACK_PLAN.sequence.length - 1
+            return (
+              <li
+                key={step.label}
+                className="grid grid-cols-[auto_1fr] items-start gap-4 rounded-[12px] border px-4 py-3.5"
+                style={{
+                  background: last ? 'color-mix(in srgb, var(--color-cyan) 12%, var(--color-press))' : 'var(--color-press)',
+                  borderColor: last ? 'color-mix(in srgb, var(--color-cyan) 45%, transparent)' : 'rgba(246,241,230,0.10)',
+                }}
+              >
+                <span
+                  className="rfx-athletic rfx-skew text-2xl leading-none"
+                  style={{ color: last ? 'var(--color-cyan)' : 'var(--color-amber)' }}
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span>
+                  <span className="block text-[15px] font-semibold text-bone">
+                    {step.label}
+                    {last ? <span className="ml-2 font-mono text-[9px] uppercase tracking-[0.12em] text-cyan">Putaway</span> : null}
+                  </span>
+                  <span className="mt-1 block text-[13.5px] leading-relaxed text-bone-2">{step.detail}</span>
+                </span>
+              </li>
+            )
+          })}
+        </ol>
+      </div>
+
+      <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
+        Austin Humphrey · a pitcher&rsquo;s own account, not tracked data
+      </p>
+    </div>
   )
 }
 

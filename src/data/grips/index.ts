@@ -234,6 +234,31 @@ export const GRIP_LIBRARY_INTRO =
 export const GRIP_LIBRARY_ARSENAL =
   'In games I worked a four-pitch mix: the four-seam and two-seam fastballs, the three-finger changeup, and the 12-6 curve. The splitter and the football change were situational — pitches I carried and threw here and there, not ones I leaned on. What follows is a pitcher’s own account of his own pitches, not tracked data.'
 
+/** How Austin attacked hitters — his own game plan, in his words. A pitcher's account. */
+export interface AttackStep {
+  label: string
+  detail: string
+}
+export const ATTACK_PLAN: {
+  intro: string
+  sequenceTitle: string
+  sequenceNote: string
+  sequence: AttackStep[]
+} = {
+  intro:
+    'I always established the four-seam high and inside — the first pitch of the game, and pretty much everything after it, until a hitter could catch up to something hard and on the hands. From there I liked to dot the four-seam low and away on the corner, and high and in on the corner, often as the strikeout pitch later in the count.',
+  sequenceTitle: 'The lefty putaway',
+  sequenceNote:
+    'My go-to against a left-handed hitter: set him up early, move his eyes and his clock around, then freeze him with the fastball in a spot I had cleared. Most effective when I was already up in the count.',
+  sequence: [
+    { label: 'High and inside', detail: 'Heat up and on the hands to start — establish the fastball where he has to respect it.' },
+    { label: 'High and outside', detail: 'Same eye level, the other side of the plate — widen the look without lowering his eyes.' },
+    { label: 'Below the zone', detail: 'Something slowed down in the dirt or barely under the zone — change his clock and pull his eyes down.' },
+    { label: 'High and tight', detail: 'Back up and in with heat — eyes back up, hands honest again.' },
+    { label: 'Dotted low and in', detail: 'The putaway: a four-seam dotted low and in to freeze him — a spot and level I had not buried there yet. Deadliest when I am already ahead.' },
+  ],
+}
+
 /** Photos for a grip, looked up by library id, specimen slug, or repertoire id. */
 export function gripPhotosFor(key: string): VisualReference[] {
   const entry = AUSTIN_GRIPS.find(
