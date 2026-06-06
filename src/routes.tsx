@@ -8,8 +8,11 @@ import { CraftsmenHall } from './pages/CraftsmenHall'
 import { CraftsmanChapter } from './pages/CraftsmanChapter'
 import { LostPitchesHall } from './pages/LostPitchesHall'
 import { LostPitchChapter } from './pages/LostPitchChapter'
+import { KnowledgeHub } from './pages/KnowledgeHub'
+import { KnowledgeChapter } from './pages/KnowledgeChapter'
 import { SourcesPage } from './pages/SourcesPage'
 import { SandboxPage } from './pages/SandboxPage'
+import { MovementMapPage } from './pages/MovementMapPage'
 import { NotFound } from './pages/NotFound'
 
 /*
@@ -32,8 +35,11 @@ export const routes: RouteObject[] = [
       { path: 'craftsmen/:slug', Component: CraftsmanChapter },
       { path: 'lost-pitches', Component: LostPitchesHall },
       { path: 'lost-pitches/:slug', Component: LostPitchChapter },
+      { path: 'learn', Component: KnowledgeHub },
+      { path: 'learn/:slug', Component: KnowledgeChapter },
       { path: 'sources', Component: SourcesPage },
       { path: 'sandbox', Component: SandboxPage },
+      { path: 'movement-map', Component: MovementMapPage },
       { path: '*', Component: NotFound },
     ],
   },

@@ -51,3 +51,5 @@ Brand Image Assets/
 Pitcher Analysis Assets/
 # stray nested repo (unrelated agent-skills clone, carries its own .git) — never commit
 agent-skills/
+# packaged skill/plugin artifacts (built elsewhere, not product source) — never commit
+claude-plugin/

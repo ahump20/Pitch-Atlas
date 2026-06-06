@@ -314,8 +314,8 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
       />
 
       <p className="border-t border-navy/12 pt-3 text-xs leading-relaxed text-ink-3">
-        Grip and technique talk only. No medical, injury, workload, or youth-training prescriptions. Reports
-        from a few accounts auto-hide a post or a clip for review.
+        Shared as experience and technique, not personal medical advice — nothing here replaces a coach or
+        physician. Reports from a few accounts auto-hide a post or a clip for review.
       </p>
 
       {d.posts.length === 0 ? (

@@ -4,6 +4,7 @@ import { CONFIDENCE_META } from '../data/types'
 import { SITE } from '../config/site'
 import { PITCHES } from '../data/pitches'
 import { allSources, latestRetrievedAt } from '../data/sources'
+import { knowledgeSources } from '../data/knowledge'
 import { asOfDate } from '../lib/format'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
@@ -28,7 +29,11 @@ const LEGEND_ORDER: ClaimConfidence[] = [
 ]
 
 export function SourcesPage() {
-  const sources = allSources()
+  // The full credential list is the specimen registry plus the wider literature the
+  // teaching wings cite, deduped by URL so /sources stays a complete colophon.
+  const registry = allSources()
+  const seen = new Set(registry.map((s) => s.url))
+  const sources = [...registry, ...knowledgeSources().filter((s) => !seen.has(s.url))]
   const asOf = asOfDate(latestRetrievedAt(sources))
   const seam = PITCHES[0].seam
 
@@ -58,6 +63,12 @@ export function SourcesPage() {
         <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <h2 className="mono-label mb-6">How to read a claim</h2>
+            <p className="mb-6 max-w-[46ch] text-sm leading-relaxed text-ink-2/85">
+              Every figure on the site wears one of seven badges, strongest to weakest. The badge is the
+              point: a measured Statcast number and a coaching cue from a blog both belong here, but they do
+              not look the same. Each figure was checked against the source it cites before it shipped; what
+              a source could not support is shown as unverified, not hidden.
+            </p>
             <ul className="flex flex-col gap-4">
               {LEGEND_ORDER.map((c) => (
                 <li key={c} className="flex flex-col gap-1">
@@ -88,9 +99,11 @@ export function SourcesPage() {
         </div>
 
         <p className="mt-14 max-w-[72ch] border-t border-navy/15 pt-8 text-sm leading-relaxed text-ink-2">
-          No MLB, team, or player photos, logos, footage, or likenesses. Original geometry, diagrams,
-          and words. Instructional text is paraphrased and cited, never copied. No runtime API calls:
-          every figure here is static and sourced in the repository.
+          Original geometry, diagrams, and words. Real grip photos ship only from clean sources — our own
+          photography, community own-grip uploads, and verified Creative Commons or public-domain images
+          with attribution; never an unlicensed agency photo, a team or league mark, or broadcast footage.
+          Instructional text is paraphrased and cited, never copied. No runtime API calls: every figure
+          here is static and sourced in the repository.
         </p>
       </div>
     </section>

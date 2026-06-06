@@ -30,5 +30,5 @@ export const UPLOAD_TERMS = [
   'I own this image or video, or it is mine to share.',
   'No copyrighted broadcast or footage I do not own (no MLB or network clips).',
   'Nothing depicting a minor in distress, and nothing abusive or unsafe.',
-  'I accept the community standards: this is grip and technique talk, not medical or training prescription.',
+  'I accept the community standards: posts are shared experience and technique, not personal medical advice, and nothing here replaces a coach or physician.',
 ] as const

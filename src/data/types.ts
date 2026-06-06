@@ -160,6 +160,41 @@ export interface PhysicsReference {
   teaching: Claim<string>
 }
 
+/*
+  A visual grip reference: a real photo, or our own render, that shows a grip in
+  the hand. Rights-first by construction. Only clean-sourced images ever populate
+  this — see docs/NORTHSTAR.md (Rights & visual policy). The grip is the lesson;
+  the source is labeled. Optional and additive: a pitch with no images still
+  renders, and the zero-WebGL floor applies (every image carries alt text).
+*/
+export type VisualReferenceKind =
+  | 'bsi-original' // our own photography or render, owned outright
+  | 'community' // a contributor's own-grip upload, through the own-the-rights gate
+  | 'creative-commons' // CC-licensed; attribution required
+  | 'public-domain' // no rights encumbrance
+  | 'licensed' // paid license or an official embed whose terms allow it
+
+export interface VisualReference {
+  /** What the image shows, in our own words. */
+  caption: string
+  /** Resolved asset path or URL. Empty string until the asset is wired in. */
+  src: string
+  /** Required alt text. The image layer honors the zero-WebGL accessibility floor. */
+  alt: string
+  /** Which sourcing channel the image came through. */
+  kind: VisualReferenceKind
+  /** What we are allowed to do with it (reuses the model's rights vocabulary). */
+  rights: RightsStatus
+  /** Required for creative-commons and licensed: who to credit and the license. */
+  attribution?: string
+  /** The rights / origin link. Required for community, creative-commons, licensed. */
+  source?: Source
+  /** ISO date the photo was taken or captured, when known. */
+  capturedAt?: string
+  /** The grip view this image shows, so it lines up with the grip model. */
+  view?: GripView
+}
+
 export type PitchFamily = 'fastball' | 'breaking' | 'offspeed'
 
 export interface CanonicalPitchRecord {
@@ -177,6 +212,12 @@ export interface CanonicalPitchRecord {
   /** A representative sourced quote, when one genuinely exists. */
   voice?: Claim<string>
   rights: RightsStatus
+  /**
+   * Clean-sourced visual grip references (photos or our own renders). Optional
+   * and additive: existing records omit it and still render. Populated only from
+   * the channels in docs/NORTHSTAR.md; never a scraped agency player photo.
+   */
+  gripImages?: VisualReference[]
 }
 
 export interface VariantNumber {

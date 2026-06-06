@@ -13,6 +13,7 @@ import { SITE } from '../../config/site'
 
 const NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
+  { label: 'Learn', to: '/learn' },
   { label: 'Build the Break', to: '/sandbox' },
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Sources', to: '/sources' },
@@ -20,6 +21,7 @@ const NAV: { label: string; to: string }[] = [
 
 const MOBILE_NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
+  { label: 'Learn', to: '/learn' },
   { label: 'Build the Break', to: '/sandbox' },
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },

@@ -13,6 +13,13 @@ are already wired to it in the committed code (`README.md`, `src/data/types.ts`,
 `src/data/sources.ts`, `src/data/pitches/four-seam.ts`). Keep them in lockstep:
 a change to one of these without the others is a regression.
 
+`docs/NORTHSTAR.md` is the project's constitution: it splits the **Core** (the
+commitments that are Pitch Atlas, this principle among them) from the **Surface**
+(stack, scope, surfaces, rights policy — built to change). Read it before a
+direction change. Core changes get a Decision Log entry there; Surface changes
+just get built. When this file and the charter disagree on a Core principle, the
+charter wins and this file gets updated to match.
+
 ## What this repo is
 
 Pitch Atlas is a grip-first atlas with a searchable **Pitch Index** front door.
@@ -53,7 +60,11 @@ Still excluded on purpose (these have NOT changed):
 - fabricated numbers, geometry, or physics for a not-yet-measured pitch (roadmap
   and basic cards stay honest; the basic page renders a schematic ball, not a fake
   movement plot)
-- copied instructional prose; MLB/team/player photos, logos, footage, likenesses
+- copied instructional prose
+- unlicensed agency or photographer photos of identifiable players, team/league
+  logos and marks, broadcast footage, and any image used to imply a player or
+  league endorses the product (real grip photos from clean sources are welcome —
+  see Rights and safety)
 
 The data model names the full shape (canonical record, master variants, community,
 reproduction logs). It populates seven canonical records + their sourced master
@@ -103,10 +114,23 @@ never ship.
 
 ## Rights and safety
 
-Do not use MLB, team, or player photos, logos, footage, or likenesses. Use
-original geometry, original diagrams, outbound source links, and paraphrased
-prose only. A master-variant visual is our own re-posed schematic tuned to a
-sourced figure, never a player image.
+Real grip photos may ship, from clean sources only. The full policy is in
+`docs/NORTHSTAR.md` (Rights & visual policy). In short:
+
+- **Ships:** original BSI photography and geometry (`rights: original`); community
+  own-grip uploads through the own-the-rights gate (`rights: original`,
+  `confidence: community-firsthand`); verified Creative Commons / public-domain
+  photos with attribution (`rights: public-domain` or `licensed`); paid or
+  officially embeddable licensed photos (`rights: licensed`).
+- **Never ships:** scraped agency or photographer images of identifiable players
+  with no license (the Getty/AP copyright + right-of-publicity lawsuit lane),
+  team/league logos and marks, or broadcast footage. These may live only as
+  private, gitignored research that informs an original render.
+
+The doctrine: the grip is the lesson, the celebrity is decoration. A correct grip
+teaches the pitch whether the hand is famous or not. Prefer original geometry and
+diagrams for master-variant visuals; a player image is never required and never
+scraped.
 
 Do not copy instructional prose from Driveline, Plate Crate, eFastball,
 Wikipedia, or any source. Paraphrase and cite.

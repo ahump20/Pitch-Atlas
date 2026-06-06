@@ -33,7 +33,7 @@ The front door is the **Pitch Index**: a searchable directory of every accepted 
 
 ## Provenance and rights policy
 
-- **No MLB, team, or player photos, logos, footage, or likenesses.** The atlas uses original 3D geometry, original diagrams, and outbound source links only. A master-variant visual is our own seam schematic, never a player image.
+- **Real grip photos ship only from clean sources.** Original BSI photography and geometry, community own-grip uploads (through the own-the-rights gate), verified Creative Commons and public-domain photos with attribution, and properly licensed images. What never ships: unlicensed agency or photographer photos of identifiable players, team or league logos and marks, and broadcast footage. The grip is the lesson, not the celebrity; the full policy lives in [`docs/NORTHSTAR.md`](docs/NORTHSTAR.md).
 - **No copied instructional prose.** Grip and mechanics text is paraphrased in our own words and cited with a link.
 - **Every real-player number carries a `Source`** (`id`, `label`, `url`, `retrievedAt`, optional `season`) and a `confidence` label. Anything that cannot be verified renders as `approximate` or `unverified`. Nothing ships bare.
 - **No runtime API dependencies.** All data is static and sourced in the repo. There are no runtime calls to Statcast, Baseball Savant, Rapsodo, TrackMan, MLB, or any external source.
@@ -42,9 +42,11 @@ The front door is the **Pitch Index**: a searchable directory of every accepted 
 
 The seam geometry, equation, constants, coordinate system, and stitch-count assumption are documented in [`docs/seam-calibration.md`](docs/seam-calibration.md), including what is exact and what is schematic. The public copy states the honest level of precision. If a permitted reference cannot pin the geometry, the copy says "seam-informed schematic" rather than claiming measured precision.
 
-## Youth and safety
+## Health, youth, and safety
 
-The discussion layer is live, with the safeguards it always promised: a standing safety note (grip and technique only — no medical, injury, workload, or youth-training prescription), source labels, anonymous sign-in, and report-driven auto-hide. Native uploads ride a safety floor — a one-time terms acceptance (own-the-rights, no copyrighted footage, no minors), magic-byte type validation, per-kind size caps, and report-driven takedown that stops serving a hidden item the instant its row flips. The full runbook and the honest list of deferred limitations (no automated content scanning, no bot protection yet) live in [`docs/community-media-moderation.md`](docs/community-media-moderation.md). Pitch Atlas itself makes no medical, injury-prevention, or age-appropriate-prescription claims.
+Pitch Atlas covers arm health, workload, and youth development as sourced, educational reference — every claim cited and confidence-tagged, drawn from published authorities (ASMI, MLB's Pitch Smart, peer-reviewed work). It is education, not medical care: nothing here is a diagnosis or a prescription, and anyone changing a throwing program should run it past a qualified coach or physician first.
+
+The discussion layer keeps its safety floor: a standing note that posts are shared experience and technique, not personal medical advice; source labels; anonymous sign-in; and report-driven auto-hide. Native uploads ride a one-time terms acceptance (own-the-rights, no copyrighted footage, no minors), magic-byte type validation, per-kind size caps, and report-driven takedown that stops serving a hidden item the instant its row flips. The full runbook and the honest list of deferred limitations (no automated content scanning, no bot protection yet) live in [`docs/community-media-moderation.md`](docs/community-media-moderation.md).
 
 ## Stack
 
@@ -69,7 +71,7 @@ npm run preview    # serve the production build
 
 ## Honesty contract
 
-No fake community posts. No fake adoption counts. No fake verified-pro badges. No hardcoded freshness strings. No MLB, team, or player photos, logos, footage, or likenesses. No copied instructional prose. No unsourced grip claims. No runtime API dependency for pitch data. No fabricated geometry or physics for a pitch the atlas has not measured. Community content is real, contributor-supplied, source-labeled, and moderated — never seeded with fakes. Unsourced becomes `unverified` or `approximate`.
+No fake community posts. No fake adoption counts. No fake verified-pro badges. No hardcoded freshness strings. No unlicensed agency photos of identifiable players, team/league logos, or broadcast footage (real grip photos from clean sources are welcome). No copied instructional prose. No unsourced grip claims. No runtime API dependency for pitch data. No fabricated geometry or physics for a pitch the atlas has not measured. Community content is real, contributor-supplied, source-labeled, and moderated — never seeded with fakes. Unsourced becomes `unverified` or `approximate`.
 
 ## License
 
