@@ -1,6 +1,7 @@
 import type { RouteObject } from 'react-router-dom'
 import { RootLayout } from './components/layout/RootLayout'
 import { AtlasHome } from './pages/AtlasHome'
+import { PitchIndexPage } from './pages/PitchIndexPage'
 import { PitchChapter } from './pages/PitchChapter'
 import { RepertoirePage } from './pages/RepertoirePage'
 import { RepertoireChapter } from './pages/RepertoireChapter'
@@ -21,8 +22,8 @@ import { NotFound } from './pages/NotFound'
 
 /*
   The route map. One layout (masthead + footer + grain) wraps every page. The
-  pitch and craftsman pages are dynamic; the build-time prerender config lists the
-  concrete slugs so each gets its own static HTML file. Components are imported
+  pitch and craftsman pages are dynamic; the index now has its own route, because
+  the card grid is no longer just a home-section teaser. Components are imported
   eagerly so the prerender renders them server-side without resolving lazy
   chunks; the heavy 3D still code-splits behind BallStage's own lazy import.
 */
@@ -32,6 +33,7 @@ export const routes: RouteObject[] = [
     Component: RootLayout,
     children: [
       { index: true, Component: AtlasHome },
+      { path: 'pitch-index', Component: PitchIndexPage },
       { path: 'pitch/:slug', Component: PitchChapter },
       { path: 'repertoire', Component: RepertoirePage },
       { path: 'repertoire/:id', Component: RepertoireChapter },
