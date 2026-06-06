@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PITCHES } from './pitches'
+import { PITCHES, pitchBySlug } from './pitches'
 import type { GripView } from './types'
 
 const VIEWS: GripView[] = ['top', 'side', 'thumb']
@@ -32,5 +32,13 @@ describe('grip model', () => {
         expect(contact.cue).toBeTruthy()
       }
     }
+  })
+
+  it('keeps live-photo grip tells distinct on filed specimen pages', () => {
+    expect(pitchBySlug('four-seam')?.canonical.gripModel.visualCaveat).toContain('crossing a seam path')
+    expect(pitchBySlug('two-seam')?.canonical.gripModel.visualCaveat).toContain('train tracks')
+    expect(pitchBySlug('twelve-six')?.canonical.gripModel.visualCaveat).toContain('thumb as the main opposing pressure')
+    expect(pitchBySlug('circle-change')?.canonical.gripModel.visualCaveat).toContain('thumb-index circle is visible')
+    expect(pitchBySlug('splitter')?.canonical.gripModel.visualCaveat).toContain('outside the seam tracks')
   })
 })

@@ -30,7 +30,7 @@ const gripModel: GripModel = {
   thumbRole: 'Thumb supports underneath and can sit slightly off-center.',
   palmGapCue: 'Held like a fastball: out in the fingers, not choked into the palm.',
   releaseCue: 'Throw fastball effort and let the along-seam contact tilt the axis.',
-  visualCaveat: 'Grip geometry is schematic and shows the standard along-seam family, not every one-seam or sinker variant.',
+  visualCaveat: 'Grip geometry is schematic and shows the standard along-seam family, not every one-seam or sinker variant. In a live photo, the tell is two fingers riding paired seams like train tracks.',
   contacts: [
     {
       finger: 'index',

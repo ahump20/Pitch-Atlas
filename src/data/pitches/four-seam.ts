@@ -29,7 +29,7 @@ const gripModel: GripModel = {
   thumbRole: 'Thumb supports underneath, centered below the top two fingers.',
   palmGapCue: 'A little daylight stays between ball and palm so the ball leaves clean.',
   releaseCue: 'Let the index and middle pads roll backspin off the top of the ball.',
-  visualCaveat: 'Grip geometry is schematic, tuned from sourced grip descriptions and private visual reference, not measured from an athlete scan.',
+  visualCaveat: 'Grip geometry is schematic, tuned from sourced grip descriptions and private visual reference, not measured from an athlete scan. In a live photo, the tell is two fingertips crossing a seam path, not riding parallel seam tracks.',
   contacts: [
     {
       finger: 'index',
