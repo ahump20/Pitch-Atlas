@@ -98,9 +98,9 @@ export const armHealthWing: KnowledgeWing = {
   ],
   confidenceNote: "All surviving claims tied to verifiable working sources: peer-reviewed studies indexed on PubMed Central/NIH, ASMI official position statements, and reputable sports health publications. Workload thresholds (100 innings, 8-month limits) confirmed via prospective cohort data. Biomechanical values (torque, velocity) sourced from primary PMC research. Acute-to-chronic workload discussion revised to acknowledge model limitations per the cited source. X/Twitter statistic on MLB prevalence removed due to link failure; youth surgery demographic shift confirmed through reputable secondary analysis. No figures invented; all claims tied to working URLs or explicitly marked unverified when sources were unreachable.",
   related: [
-    { label: "Pitch Design & Mechanics", to: "/pitch-design" },
-    { label: "Youth Baseball Guidelines", to: "/youth" },
-    { label: "Workload & Recovery", to: "/metrics" },
-    { label: "Pitching Trends", to: "/trends" },
+    { label: "Pitch Design & Mechanics", to: "/learn/pitch-design" },
+    { label: "Youth Baseball Guidelines", to: "/learn/youth" },
+    { label: "Workload & Recovery", to: "/learn/metrics" },
+    { label: "Pitching Trends", to: "/learn/trends" },
   ],
 }

@@ -76,9 +76,9 @@ export const handednessWing: KnowledgeWing = {
   ],
   confidenceNote: "All claims verified against primary sources: FanGraphs sabermetrics library (official Statcast-derived platoon data), FanGraphs analytical articles (pitcher stabilization research, cutter analysis, Tommy Kahnle changeup metrics), and Sports Analytics Group at Berkeley (peer-reviewed handedness analysis). Specific wOBA figures, whiff rates, and stabilization thresholds directly confirmed from published articles. Pitch movement descriptions align with Statcast classification standards.",
   related: [
-    { label: "Pitch Design", to: "/pitch-design" },
-    { label: "Metrics & Statcast", to: "/metrics" },
-    { label: "Sequencing", to: "/sequencing" },
+    { label: "Pitch Design", to: "/learn/pitch-design" },
+    { label: "Metrics & Statcast", to: "/learn/metrics" },
+    { label: "Sequencing", to: "/learn/sequencing" },
     { label: "Repertoire", to: "/repertoire" },
   ],
 }

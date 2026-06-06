@@ -13,6 +13,8 @@ import { KnowledgeChapter } from './pages/KnowledgeChapter'
 import { SourcesPage } from './pages/SourcesPage'
 import { SandboxPage } from './pages/SandboxPage'
 import { MovementMapPage } from './pages/MovementMapPage'
+import { ComparePage } from './pages/ComparePage'
+import { KineticChainPage } from './pages/KineticChainPage'
 import { NotFound } from './pages/NotFound'
 
 /*
@@ -40,6 +42,8 @@ export const routes: RouteObject[] = [
       { path: 'sources', Component: SourcesPage },
       { path: 'sandbox', Component: SandboxPage },
       { path: 'movement-map', Component: MovementMapPage },
+      { path: 'compare', Component: ComparePage },
+      { path: 'kinetic-chain', Component: KineticChainPage },
       { path: '*', Component: NotFound },
     ],
   },

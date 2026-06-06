@@ -77,9 +77,9 @@ export const spinWing: KnowledgeWing = {
   ],
   confidenceNote: "Sourced from Driveline Baseball research on spin axis mechanics and seam-shifted wake (2019–2021), The Hardball Times analysis of spin efficiency, MLB.com Statcast glossary (active spin definition), and Pitcher List analysis of Bauer Units (2018 MLB sample). All clock-face spin axis terminology (Tilt, 12:00/6:00/3:00/9:00 positions) verified against multiple tracking technology sources. SSW figures based on 2020 MLB sample research; individual pitcher results vary. The 0.16 runs per 100 pitches figure for Bauer Units is cited across multiple reputable sources. One claim about SSW contributing up to 9 inches in extreme cases was removed due to insufficient verification in primary sources.\">",
   related: [
-    { label: "Pitch Design", to: "/pitch-design" },
-    { label: "Mechanics", to: "/mechanics" },
-    { label: "Metrics", to: "/metrics" },
-    { label: "Arm Health", to: "/arm-health" },
+    { label: "Pitch Design", to: "/learn/pitch-design" },
+    { label: "Mechanics", to: "/learn/mechanics" },
+    { label: "Metrics", to: "/learn/metrics" },
+    { label: "Arm Health", to: "/learn/arm-health" },
   ],
 }

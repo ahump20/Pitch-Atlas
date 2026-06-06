@@ -98,9 +98,9 @@ export const youthWing: KnowledgeWing = {
   ],
   confidenceNote: "All claims verified against primary sources: Pitch Smart pitch counts and rest requirements from official MLB.com guidelines; ASMI recommendations from the published Position Statement for Adolescent Baseball Pitchers (asmi.org); specialization research from peer-reviewed studies indexed in PMC (National Center for Biotechnology Information). Change-up instruction sourced from reputable coaching websites. All quantitative claims carry official-data or reputable-analysis confidence backed by working URLs.",
   related: [
-    { label: "Mechanics", to: "/mechanics" },
-    { label: "Arm Health", to: "/arm-health" },
+    { label: "Mechanics", to: "/learn/mechanics" },
+    { label: "Arm Health", to: "/learn/arm-health" },
     { label: "Circle Change", to: "/pitch/circle-change" },
-    { label: "Pitch Design", to: "/pitch-design" },
+    { label: "Pitch Design", to: "/learn/pitch-design" },
   ],
 }

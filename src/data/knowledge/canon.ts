@@ -83,9 +83,9 @@ export const canonWing: KnowledgeWing = {
   ],
   confidenceNote: "Foundational texts verified via publisher catalogs and library archives (Hearst Books, Anchor/Penguin Random House, Simon & Schuster). ASMI position statement and MLB Pitch Smart sourced from official websites. Biomechanics research from Driveline and analytical frameworks from FanGraphs and Baseball Prospectus sourced from published research and methodology documentation. All URLs tested. One date correction made: Gibson/Jackson 'Sixty Feet, Six Inches' published 2009, not 2010. FanGraphs mechanics grading claim removed for lacking direct source documentation. Driveline award attribution clarified: the 2025 Dr. Mike Marshall award went to individual researchers (Pelletier and Lambert) at the organization, not Driveline Baseball as a unit.",
   related: [
-    { label: "Pitch mechanics fundamentals", to: "/mechanics" },
-    { label: "Pitch design and sequencing", to: "/pitch-design" },
-    { label: "Arm health and injury prevention", to: "/arm-health" },
-    { label: "Modern metrics and evaluation", to: "/metrics" },
+    { label: "Pitch mechanics fundamentals", to: "/learn/mechanics" },
+    { label: "Pitch design and sequencing", to: "/learn/pitch-design" },
+    { label: "Arm health and injury prevention", to: "/learn/arm-health" },
+    { label: "Modern metrics and evaluation", to: "/learn/metrics" },
   ],
 }

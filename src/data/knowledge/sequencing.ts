@@ -88,9 +88,10 @@ export const sequencingWing: KnowledgeWing = {
   ],
   confidenceNote: "Core concepts (tunnel point at 23.8 feet, release-point consistency) verified against Baseball Prospectus's foundational 2017 research. Swing-and-miss effectiveness on tunneled pitches confirmed by The Hardball Times. Pitch sequencing, sinker-slider pairings, and consecutive identical pitches verified across FanGraphs/Hardball Times research. Spin rate ranges confirmed by Baseball Scouter. Removed unverified 110-millisecond reaction-time claim and unsupported perceived-velocity sequencing claim; replaced with grounded sources on velocity context and fastball effectiveness. Elite sequencer claims (Hamels, Cueto) verified. Count-leverage strategy for fringe fastballs confirmed.",
   related: [
-    { label: "Pitch Design", to: "/pitch-design" },
-    { label: "Mechanics", to: "/mechanics" },
-    { label: "Spin & Movement", to: "/spin" },
+    { label: "Compare two pitches", to: "/compare" },
+    { label: "Pitch Design", to: "/learn/pitch-design" },
+    { label: "Mechanics", to: "/learn/mechanics" },
+    { label: "Spin & Movement", to: "/learn/spin" },
     { label: "Fastball", to: "/pitch/four-seam" },
   ],
 }

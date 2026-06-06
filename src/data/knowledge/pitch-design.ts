@@ -93,9 +93,9 @@ export const pitchDesignWing: KnowledgeWing = {
   ],
   confidenceNote: "Sourced from Driveline Baseball methodology, Baseball Prospectus arsenal research, and official MLB Statcast documentation. Seam-shifted wake claims from Driveline peer-reviewed analysis and equipment manufacturers (Rapsodo). Facility information from direct operator documentation. Not all pitch design methods have controlled outcome studies; most rely on coaching observation and proprietary analytics models. TrackMan accuracy specifications and RPE/intent claims from original draft could not be verified against cited sources and have been removed.",
   related: [
-    { label: "Spin & Movement", to: "/spin" },
-    { label: "Mechanics", to: "/mechanics" },
-    { label: "Metrics", to: "/metrics" },
+    { label: "Spin & Movement", to: "/learn/spin" },
+    { label: "Mechanics", to: "/learn/mechanics" },
+    { label: "Metrics", to: "/learn/metrics" },
     { label: "Arsenal", to: "/repertoire" },
   ],
 }

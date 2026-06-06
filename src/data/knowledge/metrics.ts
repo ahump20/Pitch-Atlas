@@ -103,9 +103,9 @@ export const metricsWing: KnowledgeWing = {
   ],
   confidenceNote: "Core definitions (Stuff+/Location+/Pitching+ mechanics, IVB physics, Bauer Units) sourced from FanGraphs Library and Pitcher List. Sweeper classification and pitch-movement data verified from MLB.com and Jugs Sports. Pitch-type classification ambiguity documented by academic research and applied machine-learning analysis. Run-environment dependency grounded in FanGraphs methodology. Some 2024 league-average figures (IVB, four-seam fastball benchmarks) could not be independently verified through public leaderboards and are marked unverified.",
   related: [
-    { label: "Pitch Design", to: "/pitch-design" },
-    { label: "Spin Axis and Life", to: "/spin" },
-    { label: "Mechanics", to: "/mechanics" },
-    { label: "Sequencing", to: "/sequencing" },
+    { label: "Pitch Design", to: "/learn/pitch-design" },
+    { label: "Spin Axis and Life", to: "/learn/spin" },
+    { label: "Mechanics", to: "/learn/mechanics" },
+    { label: "Sequencing", to: "/learn/sequencing" },
   ],
 }

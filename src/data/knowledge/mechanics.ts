@@ -98,9 +98,10 @@ export const mechanicsWing: KnowledgeWing = {
   ],
   confidenceNote: "All biomechanical data sourced from peer-reviewed literature: ASMI/Fleisig et al. (Clinician's Guide, PMC9950989), and high-school/collegiate kinetic chain studies published in Sports Health and IJSPT. Joint angles, velocity figures (7,500°/s internal rotation, 2,700°/s elbow extension), stride length, and hip/shoulder separation metrics are from 3D motion analysis of 1,000+ pitchers. The 55% UCL valgus load and 81% body weight distraction forces are from biomechanics literature and verified across multiple peer-reviewed sources. Driveline Baseball and Rockland Peak Performance represent how professional training interprets peer-reviewed kinetic chain principles in practice. All claims have working sources; no figures invented.",
   related: [
-    { label: "Arm Health", to: "/arm-health" },
-    { label: "Pitch Design", to: "/pitch-design" },
-    { label: "Youth", to: "/youth" },
-    { label: "Spin & Metrics", to: "/metrics" },
+    { label: "The delivery, phase by phase", to: "/kinetic-chain" },
+    { label: "Arm Health", to: "/learn/arm-health" },
+    { label: "Pitch Design", to: "/learn/pitch-design" },
+    { label: "Youth", to: "/learn/youth" },
+    { label: "Spin & Metrics", to: "/learn/metrics" },
   ],
 }
