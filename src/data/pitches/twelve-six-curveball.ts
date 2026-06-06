@@ -27,7 +27,7 @@ const gripModel: GripModel = {
   thumbRole: 'Thumb anchors the back seam under the middle finger.',
   palmGapCue: 'The ball can sit deeper than a fastball to load the pull-down feel.',
   releaseCue: 'Middle finger pulls down through the front of the ball to create topspin.',
-  visualCaveat: 'Grip geometry is schematic and shows the straight-curve family; spike and knuckle variants change the index shape.',
+  visualCaveat: 'Grip geometry is schematic and shows the straight-curve family; spike and knuckle variants change the index shape. In a live photo, look for two fingers lined or cornered against the seam with the thumb as the main opposing pressure.',
   contacts: [
     {
       finger: 'middle',

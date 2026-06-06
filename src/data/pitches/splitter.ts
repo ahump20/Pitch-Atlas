@@ -25,7 +25,7 @@ const gripModel: GripModel = {
   thumbRole: 'Thumb supports underneath, centered between the two split fingers.',
   palmGapCue: 'The ball sits up between the split fingers, farther forward than a forkball.',
   releaseCue: 'Throw it like the fastball and let the wide split take the spin off.',
-  visualCaveat: 'Grip geometry is schematic and shows the wide split-finger family; the depth and spread vary with hand size, and large hands make it easier.',
+  visualCaveat: 'Grip geometry is schematic and shows the wide split-finger family; the depth and spread vary with hand size, and large hands make it easier. On shorter fingers the split can look close to a two-seam; read whether the fingers sit outside the seam tracks instead of directly on them.',
   contacts: [
     {
       finger: 'index',
@@ -232,7 +232,7 @@ export const splitter: PitchAtlasEntry = {
     tagline: 'It looks like the fastball the whole way, then the floor drops out at the plate.',
     feel: 'Throw it as hard as the fastball. The wide split does the work, not a softer arm.',
     steps: [
-      'Wedge your index and middle fingers wide, to opposite sides of the ball, off the seams.',
+      'Wedge your index and middle fingers wide, to opposite sides of the ball, outside the seam tracks rather than directly on them.',
       'Let the ball sit up between them, farther forward than a deep forkball.',
       'Rest your thumb underneath, centered between the split fingers.',
       'Throw it with fastball arm speed and a firm wrist; the split kills the spin for you.',
