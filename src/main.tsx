@@ -25,6 +25,7 @@ import 'react-tweet/theme.css'
 
 import './index.css'
 import { routes } from './routes'
+import { ReloadPrompt } from './components/pwa/ReloadPrompt'
 
 /*
   The client entry. The manual is a multi-page site now: a data router holds the
@@ -45,6 +46,7 @@ createRoot(rootEl).render(
   <StrictMode>
     <UnheadProvider head={head}>
       <RouterProvider router={router} />
+      <ReloadPrompt />
     </UnheadProvider>
   </StrictMode>,
 )
