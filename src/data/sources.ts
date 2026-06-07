@@ -1643,6 +1643,68 @@ export const SOURCES = {
     url: 'https://cms.usssa.net/wp-content/uploads/sites/2/2025/01/usssa-slowpitch-2025-rulebook-final.pdf',
     retrievedAt: RETRIEVED_6,
   },
+
+  // --- Softball craftsmen: the legends + the new wave ---
+  'sb-abbott-wikipedia': {
+    id: 'sb-abbott-wikipedia',
+    label: 'Wikipedia — Monica Abbott (Tennessee NCAA records, 77 mph Guinness pitch, Olympic silver 2008 & 2020)',
+    url: 'https://en.wikipedia.org/wiki/Monica_Abbott',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-abbott-mlb-million': {
+    id: 'sb-abbott-mlb-million',
+    label: 'MLB.com Cut4 — Monica Abbott becomes first million-dollar NPF player',
+    url: 'https://www.mlb.com/cut4/monica-abbott-becomes-first-million-dollar-npf-player-c176409692',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-finch-wikipedia': {
+    id: 'sb-finch-wikipedia',
+    label: 'Wikipedia — Jennie Finch (Arizona 119-16, NCAA-record 60 straight wins, 2004 gold / 2008 silver)',
+    url: 'https://en.wikipedia.org/wiki/Jennie_Finch',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-fernandez-wikipedia': {
+    id: 'sb-fernandez-wikipedia',
+    label: 'Wikipedia — Lisa Fernandez (three straight Olympic golds, UCLA two-way star, Olympic strikeout record)',
+    url: 'https://en.wikipedia.org/wiki/Lisa_Fernandez',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-fernandez-olympics': {
+    id: 'sb-fernandez-olympics',
+    label: 'Olympics.com — The Olympic story of three-time softball champion Lisa Fernandez',
+    url: 'https://www.olympics.com/en/news/success-rivalry-and-provocation-by-postcard-the-olympic-story-of-three-time-soft',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-canady-wikipedia': {
+    id: 'sb-canady-wikipedia',
+    label: 'Wikipedia — NiJaree Canady (2025: 34-7, 0.97 ERA, 317 K; $1M+ NIL; Texas Tech first WCWS; NFCA POY 2024 & 2025)',
+    url: 'https://en.wikipedia.org/wiki/NiJaree_Canady',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-canady-espn': {
+    id: 'sb-canady-espn',
+    label: "ESPN — How NiJaree Canady became college softball's first million-dollar player ('a folk hero in our sport')",
+    url: 'https://www.espn.com/college-sports/softball/story/_/id/45166461/2025-wcws-college-softball-texas-tech-stanford-nijaree-canady-pitcher',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-canady-ncaa-top10': {
+    id: 'sb-canady-ncaa-top10',
+    label: 'NCAA.com — Top 10 college softball pitchers (Canady’s 72-mph riseball, slider, long release point)',
+    url: 'https://www.ncaa.com/news/softball/article/2025-04-17/top-10-college-softball-pitchers-season',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-rothrock-wikipedia': {
+    id: 'sb-rothrock-wikipedia',
+    label: 'Wikipedia — Keagan Rothrock (Florida; 2024 freshman 33-8, 2.48 ERA, 194 K; SEC Freshman of the Year)',
+    url: 'https://en.wikipedia.org/wiki/Keagan_Rothrock',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-rothrock-d1softball': {
+    id: 'sb-rothrock-d1softball',
+    label: 'D1Softball — Keagan Rothrock player page',
+    url: 'https://d1softball.com/player/1696026/',
+    retrievedAt: RETRIEVED_6,
+  },
 } satisfies Record<string, Source>
 
 export type SourceId = keyof typeof SOURCES
