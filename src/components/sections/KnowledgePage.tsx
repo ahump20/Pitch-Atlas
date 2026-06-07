@@ -1,8 +1,9 @@
+import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { KnowledgeWing } from '../../data/knowledge/types'
 import { SectionHero } from '../layout/SectionHero'
 import { Breadcrumb } from '../layout/Breadcrumb'
-import { TierMarker } from '../layout/TierMarker'
+import { StageTierMarker } from '../layout/StageTierMarker'
 import { ClaimProse } from '../provenance/ClaimProse'
 import { SourcedValue } from '../provenance/SourcedValue'
 import { EducationalDisclaimer } from './EducationalDisclaimer'
@@ -47,14 +48,10 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
       ) : null}
 
       {wing.sections.map((section, i) => {
-        const onCream = i % 2 === 0
         return (
-          <section
-            key={section.heading}
-            className={onCream ? 'bg-paper' : 'bg-paper-2/50'}
-          >
+          <section key={section.heading}>
             <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
-              <TierMarker index={pad(i + 1)} label={section.heading} />
+              <StageTierMarker index={pad(i + 1)} label={section.heading} />
 
               <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
                 <div className="md:col-span-7">
@@ -68,7 +65,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                   ))}
 
                   {section.pullStat ? (
-                    <div className="mt-8 max-w-[40ch] rounded-sm border-l-2 border-l-seam bg-paper-2/60 px-6 py-5">
+                    <div className="rfx-panel mt-8 max-w-[40ch] rounded-sm border-l-2 border-l-seam px-6 py-5">
                       <p className="mono-label mb-2 text-ink-3">{section.pullStat.label}</p>
                       <SourcedValue claim={section.pullStat.claim} valueClassName="text-3xl" accent />
                     </div>
@@ -80,7 +77,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                     <p className="mono-label mb-5 text-ink-3">The sources behind it</p>
                     <ul className="flex flex-col gap-6">
                       {section.claims.map((claim, k) => (
-                        <li key={k} className="border-l border-navy/15 pl-4">
+                        <li key={k} className="border-l border-[rgba(255,255,255,0.12)] pl-4">
                           <ClaimProse
                             claim={claim}
                             proseClassName="text-[0.95rem] leading-relaxed text-ink/90"
@@ -98,25 +95,26 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
 
       {/* How this wing was sourced — honest footer, in the page's own voice. */}
       <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
-        <p className="max-w-[72ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+        <p className="max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
           <span className="mono-label mr-2 text-ink-3">How this was sourced</span>
           {wing.confidenceNote}
         </p>
       </section>
 
       {wing.related && wing.related.length > 0 ? (
-        <section className="bg-paper-2/50">
+        <section>
           <div className="mx-auto max-w-6xl px-5 py-12 md:px-8">
-            <p className="mono-label mb-5 text-navy">Keep reading</p>
+            <p className="mono-label mb-5 text-bone-2">Keep reading</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {wing.related.map((r) => (
                 <Link
                   key={r.to}
                   to={r.to}
-                  className="group flex items-center justify-between gap-3 rounded-sm border border-navy/15 bg-paper px-5 py-4 transition-colors hover:border-seam"
+                  className="rfx-plate group flex items-center justify-between gap-3 rounded-sm px-5 py-4"
+                  style={{ '--gc': '#37D6FF' } as CSSProperties}
                 >
-                  <span className="display text-lg text-navy">{r.label}</span>
-                  <span className="mono-label text-seam transition-colors group-hover:text-navy">→</span>
+                  <span className="font-athletic text-lg uppercase text-bone">{r.label}</span>
+                  <span className="mono-label text-cyan transition-colors group-hover:text-bone">→</span>
                 </Link>
               ))}
             </div>

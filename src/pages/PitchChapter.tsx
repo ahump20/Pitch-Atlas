@@ -767,7 +767,7 @@ export function PitchChapter() {
       <MovementSection entry={entry} accentColor={accentColor} />
       <MasterFilesSection entry={entry} accentColor={accentColor} />
       <ColophonSection entry={entry} accentColor={accentColor} />
-      <div className="rfx-community border-t border-bone/8 pt-8">
+      <div className="border-t border-bone/8 pt-8">
         <FieldNotes entry={entry} />
         <DiscussionPanel topicKey={entry.display.slug} topicName={entry.canonical.name} />
       </div>

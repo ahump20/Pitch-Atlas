@@ -100,7 +100,7 @@ function Slider({
         step={step}
         value={value}
         onChange={(e) => onChange(e.target.valueAsNumber)}
-        className="mt-2 w-full accent-[var(--color-seam)]"
+        className="mt-2 w-full accent-[var(--color-cyan)]"
         aria-label={label}
       />
       {hint ? <span className="mt-1 block text-xs leading-snug text-ink-2">{hint}</span> : null}
@@ -110,9 +110,9 @@ function Slider({
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
-    <div className="bg-paper px-4 py-3">
+    <div className="rfx-panel px-4 py-3">
       <p className="mono-label">{label}</p>
-      <p className="display mt-1 text-2xl text-ink tabular-nums">{value}</p>
+      <p className="font-athletic uppercase mt-1 text-2xl text-bone tabular-nums">{value}</p>
       {sub ? <p className="mt-0.5 text-xs text-ink-2">{sub}</p> : null}
     </div>
   )
@@ -176,22 +176,30 @@ export function SandboxPage() {
         }
       />
 
-      <section className="bg-paper">
+      <section>
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-2 md:px-8 md:py-20">
           {/* Controls */}
           <div>
-            <p className="mono-label">Starting points</p>
+            <p className="rfx-skick">Starting points</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {PRESETS.map((p) => (
-                <button
-                  key={p.label}
-                  type="button"
-                  onClick={() => applyPreset(p.inputs)}
-                  className="rounded-sm border border-navy/20 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.08em] text-ink-2 transition-colors hover:border-seam hover:text-seam"
-                >
-                  {p.label}
-                </button>
-              ))}
+              {PRESETS.map((p) => {
+                const active =
+                  p.inputs.tiltDeg === tiltDeg &&
+                  p.inputs.rpm === rpm &&
+                  p.inputs.effPct === effPct &&
+                  p.inputs.veloMph === veloMph
+                return (
+                  <button
+                    key={p.label}
+                    type="button"
+                    onClick={() => applyPreset(p.inputs)}
+                    aria-pressed={active}
+                    className="rfx-chip"
+                  >
+                    {p.label}
+                  </button>
+                )
+              })}
             </div>
             <p className="mt-2 text-xs text-ink-2">Illustrative starting points, not claims about a specific pitcher.</p>
 
@@ -260,13 +268,13 @@ export function SandboxPage() {
                 />
                 <figcaption className="mono-label-stage mt-2">From the side</figcaption>
               </figure>
-              <figure className="flex flex-col items-center justify-center rounded-sm border border-navy/15 bg-paper-2 p-3">
+              <figure className="rfx-panel flex flex-col items-center justify-center p-3">
                 <MovementPlot className="w-full" motion={motion} pitchName="custom pitch" />
                 <figcaption className="mono-label mt-1">Catcher&rsquo;s eye</figcaption>
               </figure>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-px overflow-hidden rounded-sm border border-navy/15 bg-navy/10">
+            <div className="mt-4 grid grid-cols-2 gap-2">
               <Stat label="Active spin" value={`${result.activeRpm.toLocaleString()}`} sub="rpm doing work" />
               <Stat label="Gyro spin" value={`${result.gyroRpm.toLocaleString()}`} sub="rpm, bullet" />
               <Stat
@@ -277,14 +285,14 @@ export function SandboxPage() {
               <Stat label="Horizontal" value={`${result.horizontalInches} in`} sub={horizWord} />
             </div>
 
-            <p className="mt-4 text-base leading-relaxed text-ink">{describeShape(result)}</p>
+            <p className="mt-4 text-base leading-relaxed text-bone">{describeShape(result)}</p>
           </div>
         </div>
 
         {/* The honest line: what is physics, what is a teaching scale. */}
         <div className="mx-auto max-w-6xl px-5 pb-20 md:px-8">
-          <div className="rounded-sm border-l-2 border-navy bg-paper-2 px-5 py-4">
-            <p className="mono-label text-navy">Teaching model</p>
+          <div className="rfx-panel border-l-2 border-l-[rgba(255,255,255,0.12)] px-5 py-4">
+            <p className="mono-label text-bone-2">Teaching model</p>
             <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-ink-2">{ANCHOR_NOTE}</p>
             <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-ink-2">
               The plot&rsquo;s arm and glove sides are named from the ball&rsquo;s point of view; which physical

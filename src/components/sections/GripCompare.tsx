@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
 import { BallStage } from '../ball/BallStage'
+import { accentForSlug } from '../refractor/accents'
 import type { GripView, Handedness } from '../../data/types'
 
 /*
@@ -85,26 +86,26 @@ export function GripCompare() {
               </select>
             </label>
 
-            <figure className="mt-3 aspect-square overflow-hidden rounded-sm border border-navy/15 bg-paper-2">
+            <figure className="rfx-panel mt-3 aspect-square overflow-hidden rounded-sm">
               <BallStage entry={entry} grip faceGrip view={view} handedness={hand} className="h-full w-full" />
             </figure>
 
-            <p className="mt-3 text-sm leading-relaxed text-ink">
-              <span className="mono-label mr-2 text-seam">{entry.canonical.family}</span>
+            <p className="mt-3 text-sm leading-relaxed text-bone">
+              <span className="mono-label mr-2" style={{ color: accentForSlug(entry.display.slug).c3 }}>{entry.canonical.family}</span>
               {entry.canonical.gripModel.releaseCue}
             </p>
-            <Link to={`/pitch/${entry.display.slug}`} className="mono-label mt-2 inline-block text-ink-3 transition-colors hover:text-seam">
+            <Link to={`/pitch/${entry.display.slug}`} className="mono-label mt-2 inline-block text-cyan transition-colors hover:text-bone">
               {entry.display.shortName} specimen →
             </Link>
           </div>
         ))}
       </div>
 
-      <p className="rounded-sm border-l-2 border-navy bg-paper-2 px-5 py-4 text-sm leading-relaxed text-ink-2">
+      <p className="rfx-panel rounded-sm border-l-2 border-l-[rgba(255,255,255,0.12)] px-5 py-4 text-sm leading-relaxed text-ink-2">
         Same arm slot, same release — switch the view and both balls turn together, because the delivery is
         the part the hitter <em>can</em> read. The grip is the part they can&rsquo;t. Once these two leave the
         hand looking identical, the only question left is what each one does on the way to the plate — see the{' '}
-        <Link to="/compare" className="text-columbia underline-offset-2 hover:underline">
+        <Link to="/compare" className="text-cyan underline-offset-2 hover:underline">
           movement tunnel
         </Link>
         .

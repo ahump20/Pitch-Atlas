@@ -35,15 +35,15 @@ export function MovementMapPage() {
         }
       />
 
-      <section className="bg-paper">
+      <section>
         <div className="mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-16">
           <MovementMap />
-          <p className="mt-10 max-w-[72ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+          <p className="mt-10 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
             A schematic scaled from each pitch's sourced break figures, not a measured trajectory. The
             break numbers live on each specimen page with their sources; this view only arranges them. To
             read the axes — what ride, drop, run, and sweep mean and why a tilt of the spin axis produces
             them — see{' '}
-            <a href="/learn/spin" className="text-columbia underline-offset-2 hover:underline">
+            <a href="/learn/spin" className="text-cyan underline-offset-2 hover:underline">
               Spin &amp; Movement
             </a>
             .

@@ -37,19 +37,19 @@ export function GripsPage() {
         }
       />
 
-      <section className="bg-paper">
+      <section>
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <GripLibrary />
         </div>
       </section>
 
-      <section className="border-t border-bone/10 bg-paper">
+      <section className="border-t border-[rgba(255,255,255,0.12)]">
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <AttackPlan />
         </div>
       </section>
 
-      <section className="border-t border-bone/10 bg-press">
+      <section className="border-t border-[rgba(255,255,255,0.12)] bg-press">
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <p className="rfx-skick text-cyan">Same release, different grip</p>
           <h2 className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">Two grips, one arm slot</h2>

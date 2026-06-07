@@ -35,15 +35,15 @@ export function ClassifyPage() {
         }
       />
 
-      <section className="bg-paper">
+      <section>
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <PitchClassifier />
-          <p className="mt-10 max-w-[72ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+          <p className="mt-10 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
             How it works: the tool scores your line against the typical velocity and movement of each pitch
             family and returns the nearest match. Movement places the family reliably, but it is a reasoned
             read, not a verified pitch ID — grip and high-speed video are what confirm the exact pitch. The
             classifier logic is shared with the pitching-coach field tool; the families it knows map to the{' '}
-            <a href="/repertoire" className="text-columbia underline-offset-2 hover:underline">
+            <a href="/repertoire" className="text-cyan underline-offset-2 hover:underline">
               full Pitch Index
             </a>
             .

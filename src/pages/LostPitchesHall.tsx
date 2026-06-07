@@ -2,7 +2,7 @@ import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { LOST_PITCHES, LOST_PITCH_TIERS, lostPitchesByTier } from '../data/lost-pitches'
 import { LostPitchCard } from '../components/lost-pitches/LostPitchCard'
-import { TierMarker } from '../components/layout/TierMarker'
+import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { WhyPitchesDie } from '../components/sections/WhyPitchesDie'
@@ -57,7 +57,7 @@ export function LostPitchesHall() {
             if (entries.length === 0) return null
             return (
               <div key={t.tier} className={idx > 0 ? 'mt-16' : ''}>
-                <TierMarker index={t.index} label={t.label} />
+                <StageTierMarker index={t.index} label={t.label} />
                 <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-ink-2">{t.note}</p>
                 <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                   {entries.map((p) => (

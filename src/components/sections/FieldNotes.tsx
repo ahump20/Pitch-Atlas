@@ -1,4 +1,4 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
+import { useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
 import type { PitchAtlasEntry } from '../../data/types'
 import {
   RANK_SIGNALS,
@@ -53,16 +53,16 @@ function labelFor<T extends string>(opts: { value: T; label: string }[], v: T | 
   return (v && opts.find((o) => o.value === v)?.label) || ''
 }
 
-const inputClass =
-  'w-full rounded-sm border border-navy/20 bg-paper px-3 py-2 font-prose text-sm text-ink placeholder:text-ink-3 focus:border-navy focus:outline-none'
-const labelClass = 'mono-label mb-1.5 block text-ink-2'
+const inputClass = 'rfx-input w-full text-sm'
+const selectClass = 'rfx-select w-full text-sm'
+const labelClass = 'mono-label mb-1.5 block text-bone-2'
 
 function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
     <label className="block">
       <span className={labelClass}>{label}</span>
       {children}
-      {hint ? <span className="mt-1 block text-xs leading-snug text-ink-2">{hint}</span> : null}
+      {hint ? <span className="mt-1 block text-xs leading-snug text-bone-2">{hint}</span> : null}
     </label>
   )
 }
@@ -98,25 +98,25 @@ function IdentityStrip({
   }
 
   return (
-    <div className="rounded-sm border border-navy/15 bg-paper-2/60 p-5">
+    <div className="rfx-panel p-5">
       <div className="flex items-baseline justify-between gap-3">
-        <p className="mono-label text-cyan">Your bullpen card</p>
-        <span className="font-mono text-xs tabular-nums text-ink-2">{score} pts</span>
+        <p className="rfx-skick text-cyan">Your bullpen card</p>
+        <span className="font-mono text-xs tabular-nums text-bone-2">{score} pts</span>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-ink-2">
-        Posting as <span className="text-ink">{name ? name : 'an unclaimed contributor'}</span>
+      <p className="mt-2 text-sm leading-relaxed text-bone-2">
+        Posting as <span className="text-bone">{name ? name : 'an unclaimed contributor'}</span>
         {claimed ? ' · claimed ✓' : ' · anonymous'}.
       </p>
 
       {claimed ? (
-        <p className="mt-3 text-xs leading-relaxed text-ink-2">
+        <p className="mt-3 text-xs leading-relaxed text-bone-2">
           Your account is claimed. Your notes and credit follow you on any device you sign in on.
         </p>
       ) : state === 'sent' ? (
-        <p className="mt-3 rounded-sm border border-navy/15 bg-paper px-3 py-2 text-xs leading-relaxed text-ink-2">{msg}</p>
+        <p className="rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">{msg}</p>
       ) : (
         <form onSubmit={claim} className="mt-3">
-          <p className="mb-2 text-xs leading-relaxed text-ink-2">
+          <p className="mb-2 text-xs leading-relaxed text-bone-2">
             You can take part with no account. Add an email to keep your {score > 0 ? `${score} ` : ''}points and
             notes if you switch devices, never required.
           </p>
@@ -132,7 +132,7 @@ function IdentityStrip({
             <button
               type="submit"
               disabled={state === 'sending' || !email.includes('@')}
-              className="shrink-0 rounded-sm border border-navy bg-navy px-4 py-2 font-mono text-xs tracking-wide text-bone transition-colors hover:bg-navy-2 disabled:opacity-50"
+              className="shrink-0 rounded-sm bg-cyan px-4 py-2 font-mono text-xs tracking-wide font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] disabled:opacity-50"
             >
               {state === 'sending' ? 'Sending…' : 'Claim'}
             </button>
@@ -183,7 +183,7 @@ function NoteCard({
     .join(' · ')
 
   return (
-    <article className="rounded-sm border border-navy/15 border-l-2 border-l-navy bg-paper p-5 md:p-6">
+    <article className="rfx-plate p-5 md:p-6" style={{ '--gc': 'var(--color-cyan)' } as CSSProperties}>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span className="rfx-athletic rfx-skew text-base text-cyan md:text-lg">{note.displayName}</span>
@@ -195,17 +195,17 @@ function NoteCard({
         </div>
       </div>
 
-      <p className="text-[15px] leading-relaxed text-ink">{note.tweak}</p>
+      <p className="text-[15px] leading-relaxed text-bone">{note.tweak}</p>
 
-      <p className="mt-3 text-sm leading-relaxed text-ink-2">
+      <p className="mt-3 text-sm leading-relaxed text-bone-2">
         <span className="text-ink-3">Going for</span> {labelFor(INTENT_OPTIONS, note.intent)}
         <span className="text-ink-3"> · result</span> {labelFor(RESULT_OPTIONS, note.claimedResultKind)}
         {note.sampleSize ? <span className="text-ink-3"> · {note.sampleSize} reps</span> : null}
       </p>
 
-      {note.claimedResultNote ? <p className="mt-2 text-sm leading-relaxed text-ink-2">{note.claimedResultNote}</p> : null}
+      {note.claimedResultNote ? <p className="mt-2 text-sm leading-relaxed text-bone-2">{note.claimedResultNote}</p> : null}
 
-      {note.note ? <p className="mt-2 border-l border-seam/40 pl-3 text-sm leading-relaxed text-ink-2">{note.note}</p> : null}
+      {note.note ? <p className="mt-2 border-l border-seam/40 pl-3 text-sm leading-relaxed text-bone-2">{note.note}</p> : null}
 
       {note.evidenceUrl ? (
         <a
@@ -218,7 +218,7 @@ function NoteCard({
         </a>
       ) : null}
 
-      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-navy/10 pt-4">
+      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-[rgba(255,255,255,0.12)] pt-4">
         {note.viewerIsAuthor ? (
           <span className="mono-label text-ink-3">Your note</span>
         ) : (
@@ -228,7 +228,7 @@ function NoteCard({
               onClick={() => onTried(note.id)}
               aria-pressed={note.viewerTried}
               className={`rounded-sm border px-3 py-1.5 font-mono text-xs tracking-wide transition-colors ${
-                note.viewerTried ? 'border-seam bg-seam/10 text-seam' : 'border-navy/25 text-ink-2 hover:border-navy'
+                note.viewerTried ? 'border-seam bg-seam/10 text-seam' : 'border-[rgba(255,255,255,0.12)] text-bone-2 hover:border-[rgba(255,255,255,0.28)]'
               }`}
             >
               {note.viewerTried ? '✓ Tried this' : 'Tried this'} · {note.adoptionCount}
@@ -238,7 +238,7 @@ function NoteCard({
               onClick={() => onHelpful(note.id)}
               aria-pressed={note.viewerHelpful}
               className={`rounded-sm border px-3 py-1.5 font-mono text-xs tracking-wide transition-colors ${
-                note.viewerHelpful ? 'border-seam bg-seam/10 text-seam' : 'border-navy/25 text-ink-2 hover:border-navy'
+                note.viewerHelpful ? 'border-seam bg-seam/10 text-seam' : 'border-[rgba(255,255,255,0.12)] text-bone-2 hover:border-[rgba(255,255,255,0.28)]'
               }`}
             >
               {note.viewerHelpful ? '✓ Helpful' : 'Helpful'} · {note.helpfulCount}
@@ -261,7 +261,7 @@ function NoteCard({
           <button
             type="button"
             onClick={() => setReportState('choosing')}
-            className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-seam hover:text-ink"
+            className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-seam hover:text-bone"
           >
             Couldn't send. Tap to retry.
           </button>
@@ -273,7 +273,7 @@ function NoteCard({
                 key={r.value}
                 type="button"
                 onClick={() => flag(r.value)}
-                className="rounded-sm border border-navy/25 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-2 hover:border-seam hover:text-seam"
+                className="rounded-sm border border-[rgba(255,255,255,0.12)] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:border-seam hover:text-seam"
               >
                 {r.label}
               </button>
@@ -281,7 +281,7 @@ function NoteCard({
             <button
               type="button"
               onClick={() => setReportState('idle')}
-              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-ink"
+              className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-bone"
             >
               Cancel
             </button>
@@ -387,14 +387,14 @@ function SubmitForm({
 
   if (!open) {
     return (
-      <div className="rounded-sm border border-navy/15 bg-paper p-5">
-        <h3 className="rfx-athletic rfx-skew text-xl text-ink">Log a field note</h3>
-        <p className="mt-2 text-sm leading-relaxed text-ink-2">
+      <div className="rfx-panel p-5">
+        <h3 className="rfx-athletic rfx-skew text-xl text-bone">Log a field note</h3>
+        <p className="mt-2 text-sm leading-relaxed text-bone-2">
           Throw the {pitchName.toLowerCase()} with a wrinkle of your own? Add it. Label where it comes from:
           your own report, a coach, or a hunch. Sourced, not corrected.
         </p>
         {done ? (
-          <p className="mt-3 rounded-sm border border-navy/15 bg-paper-2/60 px-3 py-2 text-xs leading-relaxed text-ink-2">
+          <p className="rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">
             Posted. It is live below. Thank you for shaping the bar.
           </p>
         ) : null}
@@ -404,7 +404,7 @@ function SubmitForm({
             setOpen(true)
             setDone(false)
           }}
-          className="mt-4 inline-flex items-center gap-2 rounded-sm border border-navy bg-navy px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:bg-navy-2 active:translate-y-px"
+          className="mt-4 inline-flex items-center gap-2 rounded-sm bg-cyan px-5 py-3 font-mono text-sm tracking-wide font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] active:translate-y-px"
         >
           Write a note <span aria-hidden="true">→</span>
         </button>
@@ -413,8 +413,8 @@ function SubmitForm({
   }
 
   return (
-    <form onSubmit={submit} className="rounded-sm border-2 border-navy bg-paper p-1.5 shadow-[0_2px_0_0_var(--color-navy-line)]">
-      <div className="rounded-[2px] border border-seam/30 p-5">
+    <form onSubmit={submit} className="rfx-panel p-1.5">
+      <div className="rounded-[2px] border border-[rgba(255,255,255,0.12)] p-5">
         <div className="mb-4 flex items-center justify-between">
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">New field note · {pitchName}</span>
           <button type="button" onClick={() => setOpen(false)} className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam">
@@ -433,17 +433,17 @@ function SubmitForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Field label="Level">
-              <select className={inputClass} value={form.playerLevel} onChange={(e) => set('playerLevel', e.target.value as PlayerLevel)}>
+              <select className={selectClass} value={form.playerLevel} onChange={(e) => set('playerLevel', e.target.value as PlayerLevel)}>
                 {PLAYER_LEVELS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </Field>
             <Field label="Arm slot">
-              <select className={inputClass} value={form.armSlot} onChange={(e) => set('armSlot', e.target.value as ArmSlot)}>
+              <select className={selectClass} value={form.armSlot} onChange={(e) => set('armSlot', e.target.value as ArmSlot)}>
                 {ARM_SLOTS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </Field>
             <Field label="Velocity">
-              <select className={inputClass} value={form.velocityBand} onChange={(e) => set('velocityBand', e.target.value as '' | VelocityBand)}>
+              <select className={selectClass} value={form.velocityBand} onChange={(e) => set('velocityBand', e.target.value as '' | VelocityBand)}>
                 <option value="">-</option>
                 {VELOCITY_BANDS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
@@ -452,19 +452,19 @@ function SubmitForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <Field label="Going for">
-              <select className={inputClass} value={form.intent} onChange={(e) => set('intent', e.target.value as PitchIntent)}>
+              <select className={selectClass} value={form.intent} onChange={(e) => set('intent', e.target.value as PitchIntent)}>
                 {INTENT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </Field>
             <Field label="What happened">
-              <select className={inputClass} value={form.claimedResultKind} onChange={(e) => set('claimedResultKind', e.target.value as ClaimedResultKind)}>
+              <select className={selectClass} value={form.claimedResultKind} onChange={(e) => set('claimedResultKind', e.target.value as ClaimedResultKind)}>
                 {RESULT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
             </Field>
           </div>
 
           <Field label="Source" hint={noteRequired ? 'A relayed or untested claim must say where it comes from.' : 'Where this comes from. Sets how the note ranks.'}>
-            <select className={inputClass} value={form.sourceTier} onChange={(e) => set('sourceTier', e.target.value as CommunitySourceTier)}>
+            <select className={selectClass} value={form.sourceTier} onChange={(e) => set('sourceTier', e.target.value as CommunitySourceTier)}>
               {SOURCE_TIER_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
             </select>
           </Field>
@@ -476,7 +476,7 @@ function SubmitForm({
           ) : null}
 
           <details className="text-sm">
-            <summary className="mono-label cursor-pointer text-ink-2">Optional · reps + evidence link</summary>
+            <summary className="mono-label cursor-pointer text-bone-2">Optional · reps + evidence link</summary>
             <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <Field label="Reps">
                 <input className={inputClass} type="number" min={0} value={form.sampleSize} onChange={(e) => set('sampleSize', e.target.value)} placeholder="e.g. 40" />
@@ -496,11 +496,11 @@ function SubmitForm({
             <button
               type="submit"
               disabled={!valid || busy}
-              className="inline-flex items-center gap-2 rounded-sm border border-navy bg-navy px-5 py-3 font-mono text-sm tracking-wide text-bone transition-colors hover:bg-navy-2 active:translate-y-px disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-sm bg-cyan px-5 py-3 font-mono text-sm tracking-wide font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] active:translate-y-px disabled:opacity-50"
             >
               {busy ? 'Posting…' : 'Post field note'} <span aria-hidden="true">→</span>
             </button>
-            <span className="text-xs leading-snug text-ink-2">Posts under your handle. You can take part anonymously.</span>
+            <span className="text-xs leading-snug text-bone-2">Posts under your handle. You can take part anonymously.</span>
           </div>
         </div>
       </div>
@@ -527,7 +527,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         <img src="/brand/workbench.webp" alt="" aria-hidden="true" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover opacity-70" />
         <div aria-hidden="true" className="absolute inset-0" style={{ background: 'linear-gradient(90deg, rgba(11,11,13,0.92) 0%, rgba(11,11,13,0.62) 52%, rgba(11,11,13,0.30) 100%)' }} />
         <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
-          <p className="mono-label-stage">Tier 03 / Field Notes</p>
+          <p className="rfx-skick text-cyan">Tier 03 / Field Notes</p>
           <h2 className="rfx-athletic rfx-skew mt-4 max-w-[16ch] text-[2.4rem] leading-[1.02] text-bone md:text-5xl">Field notes from the bullpen.</h2>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed text-bone-2">
             Every pitcher fiddles. A thumb creeps lower, a seam catches more leather, a cue from a coach
@@ -542,9 +542,9 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           {/* left: how notes rank + vocabulary (kept — the brand's quality promise) */}
           <div className="flex flex-col gap-8 md:col-span-6">
             <div>
-              <p className="mono-label text-cyan">How notes rank</p>
-              <h3 className="rfx-athletic rfx-skew mt-3 text-2xl leading-snug text-ink md:text-3xl">Evidence and context, never who shouts loudest.</h3>
-              <p className="mt-4 max-w-[58ch] leading-relaxed text-ink-2">
+              <p className="rfx-skick text-cyan">How notes rank</p>
+              <h3 className="rfx-athletic rfx-skew mt-3 text-2xl leading-snug text-bone md:text-3xl">Evidence and context, never who shouts loudest.</h3>
+              <p className="mt-4 max-w-[58ch] leading-relaxed text-bone-2">
                 There is no single correct way to throw a pitch, but there are better and worse claims. A funny
                 line should never outrank a tested grip. So notes do not rise on raw votes. They rise on weighted
                 signals - provenance and adoption first.
@@ -555,16 +555,16 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
               {RANK_SIGNALS.map((signal) => {
                 const pct = Math.round(RANK_WEIGHTS[signal.key] * 100)
                 return (
-                  <li key={signal.key} className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1 border-t border-navy/12 py-4">
+                  <li key={signal.key} className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1 border-t border-[rgba(255,255,255,0.12)] py-4">
                     <div className="flex w-28 flex-col gap-1.5 sm:w-32">
                       <span className="font-mono text-sm tabular-nums text-cyan">{pct}%</span>
-                      <span aria-hidden="true" className="h-1 rounded-full bg-navy/10">
-                        <span className="block h-1 rounded-full bg-navy" style={{ width: `${pct}%` }} />
+                      <span aria-hidden="true" className="h-1 rounded-full bg-cyan/15">
+                        <span className="block h-1 rounded-full bg-cyan" style={{ width: `${pct}%` }} />
                       </span>
                     </div>
                     <div>
-                      <span className="font-mono text-xs uppercase tracking-[0.12em] text-ink">{signal.label}</span>
-                      <p className="mt-1 max-w-[52ch] text-sm leading-relaxed text-ink-2">{signal.blurb}</p>
+                      <span className="font-mono text-xs uppercase tracking-[0.12em] text-bone">{signal.label}</span>
+                      <p className="mt-1 max-w-[52ch] text-sm leading-relaxed text-bone-2">{signal.blurb}</p>
                     </div>
                   </li>
                 )
@@ -572,12 +572,12 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             </ul>
 
             <div>
-              <p className="mono-label text-cyan">The vocabulary</p>
+              <p className="rfx-skick text-cyan">The vocabulary</p>
               <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
                 {FIELD_NOTE_PRIMITIVES.map((p) => (
-                  <div key={p.term} className="flex flex-col gap-0.5 border-t border-navy/10 pt-2.5">
-                    <dt className="font-mono text-xs uppercase tracking-[0.1em] text-ink">{p.term}</dt>
-                    <dd className="text-sm leading-snug text-ink-2">{p.gloss}</dd>
+                  <div key={p.term} className="flex flex-col gap-0.5 border-t border-[rgba(255,255,255,0.12)] pt-2.5">
+                    <dt className="font-mono text-xs uppercase tracking-[0.1em] text-bone">{p.term}</dt>
+                    <dd className="text-sm leading-snug text-bone-2">{p.gloss}</dd>
                   </div>
                 ))}
               </dl>
@@ -592,10 +592,10 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                 <SubmitForm pitchSlug={slug} pitchName={canonical.name} defaultName={identity?.displayName ?? null} onSubmit={submit} />
               </>
             ) : (
-              <div className="rounded-sm border border-navy/15 bg-paper-2/60 p-6">
-                <p className="mono-label text-cyan">The living layer</p>
-                <h3 className="rfx-athletic rfx-skew mt-3 text-xl text-ink md:text-2xl">Field notes open soon.</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-2">
+              <div className="rfx-panel p-6">
+                <p className="rfx-skick text-cyan">The living layer</p>
+                <h3 className="rfx-athletic rfx-skew mt-3 text-xl text-bone md:text-2xl">Field notes open soon.</h3>
+                <p className="mt-3 text-sm leading-relaxed text-bone-2">
                   Soon you will log your own grip tweak, mark the ones you have tried, and flag anything off,
                   anonymously or under a handle you keep. {community.safetyNote}
                 </p>
@@ -607,30 +607,30 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         {/* the ranked notes for this pitch, four states, only when the layer is open */}
         {live ? (
           <div className="mt-16">
-            <div className="mb-6 flex items-end justify-between gap-4 border-b border-navy/12 pb-4">
-              <h3 className="rfx-athletic rfx-skew text-2xl text-ink md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
+            <div className="mb-6 flex items-end justify-between gap-4 border-b border-[rgba(255,255,255,0.12)] pb-4">
+              <h3 className="rfx-athletic rfx-skew text-2xl text-bone md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
               <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} live` : ''}</span>
             </div>
 
             {status === 'loading' ? (
               <div className="flex flex-col gap-4" aria-busy="true">
                 {[0, 1, 2].map((i) => (
-                  <div key={i} className="h-28 animate-pulse rounded-sm border border-navy/10 bg-paper-2/50" />
+                  <div key={i} className="rfx-panel h-28 animate-pulse" />
                 ))}
               </div>
             ) : status === 'error' ? (
               <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-seam/40 px-6 py-14 text-center">
-                <p className="max-w-[48ch] leading-relaxed text-ink-2">
+                <p className="max-w-[48ch] leading-relaxed text-bone-2">
                   Couldn't load the field notes just now: {error}. This is usually a passing hiccup.
                 </p>
-                <button type="button" onClick={refresh} className="rounded-sm border border-navy px-4 py-2 font-mono text-xs tracking-wide text-ink hover:bg-paper-2">
+                <button type="button" onClick={refresh} className="rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-2 font-mono text-xs tracking-wide text-bone hover:border-[rgba(255,255,255,0.28)]">
                   Try again
                 </button>
               </div>
             ) : notes.length === 0 ? (
-              <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-navy/25 px-6 py-16 text-center">
+              <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-[rgba(255,255,255,0.12)] px-6 py-16 text-center">
                 <img src="/brand/seal-128.webp" alt="" width={56} height={56} loading="lazy" decoding="async" className="opacity-80" aria-hidden="true" />
-                <p className="max-w-[46ch] leading-relaxed text-ink-2">
+                <p className="max-w-[46ch] leading-relaxed text-bone-2">
                   No field notes yet for this pitch. The first one shapes the bar. Add how you throw it above.
                 </p>
               </div>
@@ -643,12 +643,12 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             )}
 
             {/* community guidelines + the flagging mechanism, the UGC floor in plain sight */}
-            <div className="mt-6 max-w-[78ch] rounded-sm border border-navy/15 bg-paper-2/50 p-5">
-              <p className="mono-label text-cyan">Keeping the bullpen honest</p>
-              <p className="mt-2 text-sm leading-relaxed text-ink-2">
+            <div className="rfx-panel mt-6 max-w-[78ch] p-5">
+              <p className="rfx-skick text-cyan">Keeping the bullpen honest</p>
+              <p className="mt-2 text-sm leading-relaxed text-bone-2">
                 Keep notes about pitching. No abuse, no personal attacks, no off-topic spam, nothing aimed at minors.
                 Field notes are community-submitted: they are not vetted before they post, and any note can be hidden
-                after review. See a problem with a note? Use <span className="text-ink">Report</span> on it; a note
+                after review. See a problem with a note? Use <span className="text-bone">Report</span> on it; a note
                 flagged by enough people is hidden automatically until it is checked.
               </p>
             </div>
@@ -656,7 +656,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         ) : null}
 
         {/* how the layer sources its notes — present tense once open, the preview copy until then */}
-        <p className="mt-12 max-w-[78ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+        <p className="mt-12 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-bone-2">
           {live
             ? 'Every community variant carries the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.'
             : community.provenanceNote}

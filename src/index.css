@@ -651,22 +651,6 @@
     line-height: .98; color: var(--color-bone);
   }
 
-  /* Drop a cream-token section onto the void without rewriting its utilities. The
-     Tailwind color classes resolve these vars, so remapping them here recolors
-     backgrounds, text, and borders in one scope. Used to host the community
-     sections (Field Notes, Discussion) on a pitch chapter until they get a full
-     refactor pass. text-navy is swapped to the cyan accent at the call site. */
-  .rfx-community {
-    --color-paper: #0e0b15;
-    --color-paper-2: #100c18;
-    --color-paper-3: #161120;
-    --color-ink: #F6F1E6;
-    --color-ink-2: #C2C7D6;
-    --color-navy: #2b3a57;
-    --color-navy-2: #36486b;
-    --color-navy-line: rgba(194, 199, 214, 0.14);
-  }
-
   /* dark refractor <select>: appearance reset, cyan chevron + focus ring. The
      tool pages (Compare, Grips) use native selects; this reseats them on the void
      instead of leaving the browser's light system control. */

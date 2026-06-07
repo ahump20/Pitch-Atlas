@@ -30,9 +30,9 @@ const CLAMP = 178
 const TUNNEL_Y = CY - 150
 
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
-  fastball: { label: 'Fastball', color: 'var(--color-navy)' },
-  breaking: { label: 'Breaking', color: 'var(--color-seam)' },
-  offspeed: { label: 'Offspeed', color: 'var(--color-powder)' },
+  fastball: { label: 'Fastball', color: '#37D6FF' },
+  breaking: { label: 'Breaking', color: '#8A6BFF' },
+  offspeed: { label: 'Offspeed', color: '#7CFF52' },
 }
 
 function clamp(n: number): number {
@@ -147,7 +147,7 @@ export function TunnelPlot() {
       </div>
 
       {same ? (
-        <p className="rounded-sm border-l-2 border-seam bg-paper-2 px-4 py-3 text-sm text-ink-2">
+        <p className="rfx-panel rounded-sm border-l-2 border-l-seam px-4 py-3 text-sm text-ink-2">
           Pick two different pitches to see the tunnel and the late separation between them.
         </p>
       ) : null}
@@ -207,8 +207,8 @@ export function TunnelPlot() {
               return (
                 <g key={s.entry.display.slug}>
                   <circle cx={s.x} cy={s.y} r="8" fill={c} fillOpacity="0.92" />
-                  <circle cx={s.x} cy={s.y} r="8" fill="none" stroke="var(--color-paper)" strokeWidth="1.2" />
-                  <text x={s.x} y={s.y + (s.y > CY ? 22 : -14)} fill="var(--color-ink)" fontFamily="var(--font-mono)" fontSize="10" textAnchor="middle">
+                  <circle cx={s.x} cy={s.y} r="8" fill="none" stroke="var(--color-void)" strokeWidth="1.2" />
+                  <text x={s.x} y={s.y + (s.y > CY ? 22 : -14)} fill="var(--color-bone)" fontFamily="var(--font-mono)" fontSize="10" textAnchor="middle">
                     {s.entry.display.shortName}
                   </text>
                 </g>
@@ -220,19 +220,19 @@ export function TunnelPlot() {
 
       {/* readout */}
       {!same ? (
-        <div className="grid gap-px overflow-hidden rounded-sm border border-navy/15 bg-navy/10 sm:grid-cols-3">
-          <div className="bg-paper px-4 py-3">
+        <div className="grid gap-px overflow-hidden rounded-sm border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.12)] sm:grid-cols-3">
+          <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
             <p className="mono-label" style={{ color: colorA }}>{a.display.shortName}</p>
             <p className="mt-1 text-sm text-ink-2">
               {a.motion.ivbInches >= 0 ? '+' : ''}{a.motion.ivbInches}&Prime; vert · {a.motion.horizontalInches}&Prime;{' '}
               {a.motion.horizontalDir === 'none' ? '' : a.motion.horizontalDir}
             </p>
           </div>
-          <div className="bg-paper px-4 py-3">
+          <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
             <p className="mono-label text-seam">Separation at the plate</p>
-            <p className="display mt-1 text-2xl text-ink tabular-nums">{sepIn.toFixed(0)} in</p>
+            <p className="font-athletic mt-1 text-2xl uppercase text-bone tabular-nums">{sepIn.toFixed(0)} in</p>
           </div>
-          <div className="bg-paper px-4 py-3">
+          <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
             <p className="mono-label" style={{ color: colorB }}>{b.display.shortName}</p>
             <p className="mt-1 text-sm text-ink-2">
               {b.motion.ivbInches >= 0 ? '+' : ''}{b.motion.ivbInches}&Prime; vert · {b.motion.horizontalInches}&Prime;{' '}
@@ -243,13 +243,13 @@ export function TunnelPlot() {
       ) : null}
 
       <div className="flex flex-wrap gap-x-4 gap-y-2">
-        <Link to={`/pitch/${a.display.slug}`} className="mono-label text-ink-3 transition-colors hover:text-seam">
+        <Link to={`/pitch/${a.display.slug}`} className="mono-label text-cyan transition-colors hover:text-bone">
           {a.display.shortName} specimen →
         </Link>
-        <Link to={`/pitch/${b.display.slug}`} className="mono-label text-ink-3 transition-colors hover:text-seam">
+        <Link to={`/pitch/${b.display.slug}`} className="mono-label text-cyan transition-colors hover:text-bone">
           {b.display.shortName} specimen →
         </Link>
-        <Link to="/learn/sequencing" className="mono-label text-ink-3 transition-colors hover:text-seam">
+        <Link to="/learn/sequencing" className="mono-label text-cyan transition-colors hover:text-bone">
           Why tunneling works →
         </Link>
       </div>

@@ -1,8 +1,10 @@
+import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { Claim, RepertoireEntry, RepertoireStatus } from '../../data/types'
 import { ConfidenceLabel } from '../provenance/ConfidenceLabel'
 import { SourceBadge } from '../provenance/SourceBadge'
 import { pitchBySlug } from '../../data/pitches'
+import { accentForSlug } from '../refractor/accents'
 
 /*
   One pitch in the catalog, filed as a compact plate. The status sits top-right and
@@ -55,18 +57,19 @@ export function RepertoireEntryCard({ entry }: { entry: RepertoireEntry }) {
   return (
     <article
       id={entry.id}
-      className={`relative flex h-full scroll-mt-28 flex-col gap-4 rounded-sm border-l-2 bg-paper p-6 ${
-        flagged ? 'border-l-seam border border-dashed border-seam/30' : 'border-l-navy border border-navy/12'
+      className={`rfx-plate relative flex h-full scroll-mt-28 flex-col gap-4 p-6 ${
+        flagged ? 'is-edge is-dashed' : ''
       }`}
+      style={{ '--gc': accentForSlug(entry.filedSlug ?? entry.id).c3 } as CSSProperties}
     >
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="display text-2xl leading-tight text-navy">{entry.name}</h3>
+          <h3 className="font-athletic uppercase text-2xl leading-tight text-bone">{entry.name}</h3>
           {entry.aka && entry.aka.length > 0 ? (
             <p className="mono-label mt-1 text-ink-3">aka {entry.aka.join(' · ')}</p>
           ) : null}
         </div>
-        <span className={`mono-label shrink-0 ${flagged ? 'text-seam' : 'text-navy'}`}>
+        <span className={`mono-label shrink-0 ${flagged ? 'text-seam' : 'text-bone-2'}`}>
           {STATUS_LABEL[entry.status]}
         </span>
       </div>
@@ -76,7 +79,7 @@ export function RepertoireEntryCard({ entry }: { entry: RepertoireEntry }) {
 
       {entry.relationship ? <ClaimLine label="Really" claim={entry.relationship} /> : null}
 
-      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-navy/12 pt-3">
+      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-[rgba(255,255,255,0.12)] pt-3">
         {entry.velocity ? (
           <span className="mono-label text-ink-2">{entry.velocity}</span>
         ) : null}
@@ -86,7 +89,7 @@ export function RepertoireEntryCard({ entry }: { entry: RepertoireEntry }) {
         {filed ? (
           <Link
             to={`/pitch/${filed.display.slug}`}
-            className="ml-auto mono-label text-seam transition-colors hover:text-navy"
+            className="ml-auto mono-label text-cyan transition-colors hover:text-bone"
           >
             Study the {filed.canonical.name.toLowerCase()} →
           </Link>

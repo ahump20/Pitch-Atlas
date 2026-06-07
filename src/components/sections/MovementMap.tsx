@@ -25,9 +25,9 @@ const PX_PER_IN = 8.2
 const CLAMP = 188
 
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
-  fastball: { label: 'Fastball', color: 'var(--color-navy)' },
-  breaking: { label: 'Breaking', color: 'var(--color-seam)' },
-  offspeed: { label: 'Offspeed', color: 'var(--color-powder)' },
+  fastball: { label: 'Fastball', color: '#37D6FF' },
+  breaking: { label: 'Breaking', color: '#8A6BFF' },
+  offspeed: { label: 'Offspeed', color: '#7CFF52' },
 }
 
 function clamp(n: number): number {
@@ -105,11 +105,11 @@ export function MovementMap() {
             <g key={entry.display.slug}>
               <line x1={CX} y1={CY} x2={x} y2={y} stroke={c} strokeWidth="0.8" strokeDasharray="2 3" opacity="0.32" />
               <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
-              <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-paper)" strokeWidth="1" />
+              <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />
               <text
                 x={x}
                 y={y - 12}
-                fill="var(--color-ink)"
+                fill="var(--color-bone)"
                 fontFamily="var(--font-mono)"
                 fontSize="10"
                 textAnchor="middle"
@@ -135,7 +135,7 @@ export function MovementMap() {
           <Link
             key={p.display.slug}
             to={`/pitch/${p.display.slug}`}
-            className="mono-label text-ink-3 transition-colors hover:text-seam"
+            className="mono-label text-cyan transition-colors hover:text-bone"
           >
             {p.display.shortName} →
           </Link>

@@ -25,7 +25,7 @@ function timeAgo(iso: string): string {
 function MediaItem({ m }: { m: DiscussionMedia }) {
   if (!m.url) {
     return (
-      <div className="flex aspect-video items-center justify-center rounded-sm border border-dashed border-navy/25 bg-paper-2/60 text-center">
+      <div className="rfx-panel flex aspect-video items-center justify-center border-dashed text-center">
         <span className="mono-label text-ink-3">Media under review</span>
       </div>
     )
@@ -39,12 +39,12 @@ function MediaItem({ m }: { m: DiscussionMedia }) {
         width={m.width ?? undefined}
         height={m.height ?? undefined}
         alt="Contributor upload"
-        className="w-full rounded-sm border border-navy/12 object-contain"
+        className="w-full rounded-sm border border-[rgba(255,255,255,0.12)] object-contain"
       />
     )
   }
   return (
-    <video src={m.url} controls preload="metadata" className="w-full rounded-sm border border-navy/12" />
+    <video src={m.url} controls preload="metadata" className="w-full rounded-sm border border-[rgba(255,255,255,0.12)]" />
   )
 }
 
@@ -62,13 +62,13 @@ function PostBody({
   onDelete: (postId: string) => void
 }) {
   return (
-    <article className={depth > 0 ? 'border-l-2 border-navy/15 pl-4' : ''}>
+    <article className={depth > 0 ? 'border-l-2 border-[rgba(255,255,255,0.12)] pl-4' : ''}>
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span className="rfx-athletic rfx-skew text-base text-cyan">{post.displayName}</span>
         <span className="mono-label text-ink-3">{timeAgo(post.createdAt)}</span>
         {post.viewerIsAuthor ? <span className="mono-label text-seam">you</span> : null}
       </div>
-      <p className="mt-1.5 whitespace-pre-wrap text-[0.95rem] leading-relaxed text-ink/90">{post.body}</p>
+      <p className="mt-1.5 whitespace-pre-wrap text-[0.95rem] leading-relaxed text-bone">{post.body}</p>
 
       {post.media.length > 0 ? (
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -194,7 +194,7 @@ function Composer({
         onChange={(e) => setName(e.target.value)}
         maxLength={DISCUSSION_LIMITS.displayNameMax}
         placeholder="Your name"
-        className="rounded-sm border border-navy/20 bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-3 focus:border-seam focus:outline-none"
+        className="rfx-input text-sm"
       />
       <textarea
         value={body}
@@ -202,13 +202,13 @@ function Composer({
         maxLength={DISCUSSION_LIMITS.bodyMax}
         rows={compact ? 2 : 3}
         placeholder={placeholder}
-        className="rounded-sm border border-navy/20 bg-paper px-3 py-2 text-sm leading-relaxed text-ink placeholder:text-ink-3 focus:border-seam focus:outline-none"
+        className="rfx-input text-sm leading-relaxed"
       />
 
       {/* Media: gated behind a one-time terms acceptance. */}
       {acceptedTerms ? (
         <div className="flex flex-col gap-2">
-          <label htmlFor={fileId} className="mono-label cursor-pointer text-seam transition-colors hover:text-cyan">
+          <label htmlFor={fileId} className="mono-label cursor-pointer text-cyan transition-colors hover:text-bone">
             + Add photos or video
           </label>
           <input
@@ -223,7 +223,7 @@ function Composer({
           {files.length > 0 ? (
             <ul className="flex flex-wrap gap-2">
               {files.map((f) => (
-                <li key={f.name} className="mono-label rounded-sm border border-navy/15 bg-paper-2/60 px-2 py-1 text-ink-2">
+                <li key={f.name} className="mono-label rfx-panel px-2 py-1 text-bone-2">
                   {f.name}
                 </li>
               ))}
@@ -231,9 +231,9 @@ function Composer({
           ) : null}
         </div>
       ) : (
-        <details className="rounded-sm border border-dashed border-navy/20 bg-paper-2/40 px-3 py-2">
-          <summary className="mono-label cursor-pointer text-ink-2">Want to attach photos or video?</summary>
-          <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-xs leading-snug text-ink-2">
+        <details className="rfx-panel border-dashed px-3 py-2">
+          <summary className="mono-label cursor-pointer text-bone-2">Want to attach photos or video?</summary>
+          <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-xs leading-snug text-bone-2">
             {UPLOAD_TERMS.map((t) => (
               <li key={t}>{t}</li>
             ))}
@@ -241,7 +241,7 @@ function Composer({
           <button
             type="button"
             onClick={() => void onAcceptTerms()}
-            className="mono-label mt-3 rounded-sm border border-seam px-3 py-1.5 text-seam transition-colors hover:bg-seam/8"
+            className="mono-label mt-3 rounded-sm bg-cyan px-3 py-1.5 font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)]"
           >
             I agree — enable uploads
           </button>
@@ -254,7 +254,7 @@ function Composer({
         <button
           type="submit"
           disabled={busy}
-          className="rounded-sm border border-seam bg-seam px-4 py-2 font-mono text-xs uppercase tracking-[0.1em] text-bone transition-colors hover:bg-seam-deep disabled:opacity-60"
+          className="rounded-sm bg-cyan px-4 py-2 font-mono text-xs uppercase tracking-[0.1em] font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] disabled:opacity-60"
         >
           {busy ? 'Posting…' : 'Post'}
         </button>
@@ -285,9 +285,9 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
   if (d.status === 'loading' || d.status === 'idle') {
     return (
       <div className="flex flex-col gap-3" aria-busy="true">
-        <div className="h-4 w-1/3 animate-pulse rounded bg-navy/10" />
-        <div className="h-16 w-full animate-pulse rounded bg-navy/10" />
-        <div className="h-16 w-full animate-pulse rounded bg-navy/10" />
+        <div className="h-4 w-1/3 animate-pulse rounded bg-[rgba(255,255,255,0.08)]" />
+        <div className="h-16 w-full animate-pulse rounded bg-[rgba(255,255,255,0.08)]" />
+        <div className="h-16 w-full animate-pulse rounded bg-[rgba(255,255,255,0.08)]" />
       </div>
     )
   }
@@ -295,8 +295,8 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
   if (d.status === 'error') {
     return (
       <div className="flex flex-col items-start gap-3">
-        <p className="text-sm text-ink-2">Could not load the discussion. {d.error}</p>
-        <button onClick={d.refresh} className="mono-label rounded-sm border border-navy/20 px-3 py-1.5 text-ink-2 hover:border-seam hover:text-seam">
+        <p className="text-sm text-bone-2">Could not load the discussion. {d.error}</p>
+        <button onClick={d.refresh} className="mono-label rounded-sm border border-[rgba(255,255,255,0.12)] px-3 py-1.5 text-bone-2 hover:border-seam hover:text-seam">
           Try again
         </button>
       </div>
@@ -313,13 +313,13 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
         placeholder="Share a breakdown, a grip tweak, a clip — keep it about the pitch."
       />
 
-      <p className="border-t border-navy/12 pt-3 text-xs leading-relaxed text-ink-3">
+      <p className="border-t border-[rgba(255,255,255,0.12)] pt-3 text-xs leading-relaxed text-ink-3">
         Shared as experience and technique, not personal medical advice — nothing here replaces a coach or
         physician. Reports from a few accounts auto-hide a post or a clip for review.
       </p>
 
       {d.posts.length === 0 ? (
-        <p className="text-sm text-ink-2">No comments yet. Start the thread.</p>
+        <p className="text-sm text-bone-2">No comments yet. Start the thread.</p>
       ) : (
         <ul className="flex flex-col gap-7">
           {d.posts.map((post) => (
@@ -347,7 +347,7 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
                 </ul>
               ) : null}
               {replyTo === post.id ? (
-                <div className="ml-2 border-l-2 border-seam/30 pl-4">
+                <div className="ml-2 border-l-2 border-cyan/40 pl-4">
                   <Composer
                     compact
                     defaultName={d.displayName}
@@ -368,9 +368,9 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
       )}
 
       {reporting ? (
-        <div className="rounded-sm border border-seam/40 bg-paper-2/60 p-4">
+        <div className="rfx-panel border-seam/40 p-4">
           <p className="mono-label mb-2 text-seam">Report this?</p>
-          <p className="mb-3 text-sm text-ink-2">
+          <p className="mb-3 text-sm text-bone-2">
             Tell us briefly what is wrong (optional). A few reports hide it for review.
           </p>
           <ReportForm onConfirm={confirmReport} onCancel={() => setReporting(null)} />
@@ -390,13 +390,13 @@ function ReportForm({ onConfirm, onCancel }: { onConfirm: (reason: string) => vo
         onChange={(e) => setReason(e.target.value)}
         maxLength={300}
         placeholder="What is wrong?"
-        className="rounded-sm border border-navy/20 bg-paper px-3 py-2 text-sm text-ink placeholder:text-ink-3 focus:border-seam focus:outline-none"
+        className="rfx-input text-sm"
       />
       <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => onConfirm(reason.trim())}
-          className="rounded-sm border border-seam bg-seam px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] text-bone hover:bg-seam-deep"
+          className="rounded-sm bg-cyan px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] font-semibold text-[#06121b] hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)]"
         >
           Submit report
         </button>
@@ -422,7 +422,7 @@ export function DiscussionPanel({
 
   return (
     <section aria-label="Discussion" id="discussion" className="mx-auto max-w-6xl px-5 py-12 md:px-8">
-      <div className="rounded-sm border border-navy/15 bg-paper-2/40">
+      <div className="rfx-panel">
         <button
           type="button"
           aria-expanded={open}
@@ -431,8 +431,8 @@ export function DiscussionPanel({
           className="flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left"
         >
           <span className="flex items-center gap-3">
-            <span className="mono-label text-cyan">Discussion</span>
-            <span className="text-sm text-ink-2">
+            <span className="rfx-skick text-cyan">Discussion</span>
+            <span className="text-sm text-bone-2">
               {variant === 'compact' ? topicName : `Talk through the ${topicName.toLowerCase()}`}
             </span>
           </span>
@@ -441,7 +441,7 @@ export function DiscussionPanel({
           </span>
         </button>
         {open ? (
-          <div id={regionId} className="border-t border-navy/12 px-5 py-6">
+          <div id={regionId} className="border-t border-[rgba(255,255,255,0.12)] px-5 py-6">
             <Forum topicKey={topicKey} open={open} />
           </div>
         ) : null}

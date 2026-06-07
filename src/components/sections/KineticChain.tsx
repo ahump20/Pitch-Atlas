@@ -159,16 +159,16 @@ function Figure({ pose }: { pose: Pose }) {
       {/* back leg */}
       <polyline points={`${pelvis.x},${pelvis.y} ${backFoot.x},${backFoot.y}`} fill="none" stroke="var(--color-ink-2)" strokeWidth="3" strokeLinecap="round" />
       {/* lead leg */}
-      <polyline points={`${pelvis.x},${pelvis.y} ${leadKnee.x},${leadKnee.y} ${leadFoot.x},${leadFoot.y}`} fill="none" stroke="var(--color-navy)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+      <polyline points={`${pelvis.x},${pelvis.y} ${leadKnee.x},${leadKnee.y} ${leadFoot.x},${leadFoot.y}`} fill="none" stroke="var(--color-bone)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
       {/* spine */}
-      <polyline points={`${pelvis.x},${pelvis.y} ${shoulder.x},${shoulder.y}`} fill="none" stroke="var(--color-navy)" strokeWidth="4" strokeLinecap="round" />
+      <polyline points={`${pelvis.x},${pelvis.y} ${shoulder.x},${shoulder.y}`} fill="none" stroke="var(--color-bone)" strokeWidth="4" strokeLinecap="round" />
       {/* head */}
-      <circle cx={head.x} cy={head.y} r="9" fill="none" stroke="var(--color-navy)" strokeWidth="3" />
+      <circle cx={head.x} cy={head.y} r="9" fill="none" stroke="var(--color-bone)" strokeWidth="3" />
       {/* throwing arm */}
       <polyline points={`${shoulder.x},${shoulder.y} ${elbow.x},${elbow.y} ${hand.x},${hand.y}`} fill="none" stroke="var(--color-seam)" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
       {/* joints */}
       {[pelvis, shoulder, elbow, leadKnee].map((j, i) => (
-        <circle key={i} cx={j.x} cy={j.y} r="3" fill="var(--color-navy)" />
+        <circle key={i} cx={j.x} cy={j.y} r="3" fill="var(--color-bone)" />
       ))}
       {/* the ball */}
       {ball ? <circle cx={hand.x} cy={hand.y} r="4.5" fill="var(--color-seam)" /> : null}
@@ -192,11 +192,7 @@ export function KineticChain() {
               onClick={() => setI(idx)}
               aria-pressed={i === idx}
               aria-current={i === idx ? 'step' : undefined}
-              className={`rounded-sm border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.06em] transition-colors ${
-                i === idx
-                  ? 'border-seam bg-seam/10 text-seam'
-                  : 'border-navy/20 text-ink-2 hover:border-seam hover:text-seam'
-              }`}
+              className="rfx-chip"
             >
               {idx + 1}. {p.name}
             </button>
@@ -211,7 +207,7 @@ export function KineticChain() {
             step={1}
             value={i}
             onChange={(e) => setI(e.target.valueAsNumber)}
-            className="w-full accent-[var(--color-seam)]"
+            className="w-full accent-[var(--color-cyan)]"
             aria-label={`Delivery phase ${i + 1} of ${PHASES.length}: ${phase.name}`}
           />
         </label>
@@ -219,7 +215,7 @@ export function KineticChain() {
 
       <div className="grid gap-8 md:grid-cols-2">
         {/* figure */}
-        <figure className="flex flex-col rounded-sm border border-navy/15 bg-paper-2 p-4">
+        <figure className="rfx-panel flex flex-col rounded-sm p-4">
           <Figure pose={phase.pose} />
           <figcaption className="mono-label mt-1 text-ink-3">
             Phase {i + 1} / {PHASES.length} · schematic, ground → glove
@@ -228,19 +224,19 @@ export function KineticChain() {
 
         {/* readouts */}
         <div className="flex flex-col">
-          <p className="mono-label text-seam">{phase.name}</p>
-          <p className="mt-2 text-base leading-relaxed text-ink">{phase.whats}</p>
+          <p className="rfx-skick">{phase.name}</p>
+          <p className="mt-2 text-base leading-relaxed text-bone">{phase.whats}</p>
 
-          <div className="mt-5 grid gap-px overflow-hidden rounded-sm border border-navy/15 bg-navy/10">
+          <div className="mt-5 grid gap-px overflow-hidden rounded-sm border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.12)]">
             {phase.readouts.map((r) => (
-              <div key={r.label} className="flex items-baseline justify-between gap-4 bg-paper px-4 py-2.5">
+              <div key={r.label} className="flex items-baseline justify-between gap-4 bg-[rgba(5,7,12,0.84)] px-4 py-2.5">
                 <span className="mono-label">{r.label}</span>
                 <a
                   href={r.source.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   title={r.source.label}
-                  className="font-mono text-sm tabular-nums text-ink underline-offset-2 hover:text-seam hover:underline"
+                  className="font-mono text-sm tabular-nums text-bone underline-offset-2 hover:text-cyan hover:underline"
                 >
                   {r.value}
                 </a>
@@ -249,7 +245,7 @@ export function KineticChain() {
           </div>
 
           {phase.load ? (
-            <p className="mt-4 rounded-sm border-l-2 border-navy bg-paper-2 px-4 py-3 text-sm leading-relaxed text-ink-2">
+            <p className="rfx-panel mt-4 rounded-sm border-l-2 border-l-[rgba(255,255,255,0.12)] px-4 py-3 text-sm leading-relaxed text-ink-2">
               {phase.load}
             </p>
           ) : null}

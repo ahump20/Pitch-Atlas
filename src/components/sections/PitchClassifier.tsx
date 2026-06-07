@@ -24,8 +24,8 @@ const PRESETS: { label: string; velo: number; ivb: number; hb: number; eff: numb
 ]
 
 const CONF_META: Record<Confidence, { label: string; cls: string }> = {
-  high: { label: 'High confidence', cls: 'border-navy/40 text-navy' },
-  medium: { label: 'Medium confidence', cls: 'border-columbia/50 text-columbia' },
+  high: { label: 'High confidence', cls: 'border-[rgba(255,255,255,0.12)] text-bone-2' },
+  medium: { label: 'Medium confidence', cls: 'border-cyan/50 text-cyan' },
   low: { label: 'Low confidence', cls: 'border-seam/50 text-seam' },
 }
 
@@ -53,7 +53,7 @@ function NumberSlider({
     <label className="block" htmlFor={id}>
       <span className="flex items-baseline justify-between gap-3">
         <span className="mono-label">{label}</span>
-        <span className="font-mono text-sm tabular-nums text-ink">{display}</span>
+        <span className="font-mono text-sm tabular-nums text-bone">{display}</span>
       </span>
       <input
         id={id}
@@ -63,7 +63,7 @@ function NumberSlider({
         step={step}
         value={value}
         onChange={(e) => onChange(e.target.valueAsNumber)}
-        className="mt-2 w-full accent-[var(--color-seam)]"
+        className="mt-2 w-full accent-[var(--color-cyan)]"
         aria-label={label}
       />
       {hint ? <span className="mt-1 block text-xs leading-snug text-ink-2">{hint}</span> : null}
@@ -138,7 +138,7 @@ export function PitchClassifier() {
               key={p.label}
               type="button"
               onClick={() => applyPreset(p)}
-              className="rounded-sm border border-navy/20 px-3 py-1.5 font-mono text-xs uppercase tracking-[0.08em] text-ink-2 transition-colors hover:border-seam hover:text-seam"
+              className="rfx-chip"
             >
               {p.label}
             </button>
@@ -180,7 +180,7 @@ export function PitchClassifier() {
 
           <div>
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={useEff} onChange={(e) => setUseEff(e.target.checked)} className="accent-[var(--color-seam)]" />
+              <input type="checkbox" checked={useEff} onChange={(e) => setUseEff(e.target.checked)} className="accent-[var(--color-cyan)]" />
               <span className="mono-label">Add spin efficiency (finds gyro sliders)</span>
             </label>
             {useEff ? (
@@ -201,7 +201,7 @@ export function PitchClassifier() {
 
           <div>
             <label className="flex items-center gap-2">
-              <input type="checkbox" checked={useSpin} onChange={(e) => setUseSpin(e.target.checked)} className="accent-[var(--color-seam)]" />
+              <input type="checkbox" checked={useSpin} onChange={(e) => setUseSpin(e.target.checked)} className="accent-[var(--color-cyan)]" />
               <span className="mono-label">Add total spin (finds knuckleballs)</span>
             </label>
             {useSpin ? (
@@ -241,9 +241,9 @@ export function PitchClassifier() {
 
       {/* Result */}
       <div>
-        <div className="rounded-sm border border-navy/15 bg-paper-2 p-5">
+        <div className="rfx-panel rounded-sm p-5">
           <p className="mono-label text-ink-3">Most likely</p>
-          <p className="display mt-1 text-4xl capitalize leading-tight text-navy">{result.best}</p>
+          <p className="font-athletic mt-1 text-4xl uppercase leading-tight text-bone">{result.best}</p>
           <span className={`mt-3 inline-block rounded-sm border px-2.5 py-1 font-mono text-xs uppercase tracking-[0.1em] ${conf.cls}`}>
             {conf.label}
           </span>
@@ -251,10 +251,10 @@ export function PitchClassifier() {
           {filed && slug ? (
             <Link
               to={`/pitch/${slug}`}
-              className="mt-4 flex items-center justify-between gap-3 rounded-sm border border-navy/15 bg-paper px-4 py-3 transition-colors hover:border-seam"
+              className="rfx-panel group mt-4 flex items-center justify-between gap-3 rounded-sm px-4 py-3 transition-colors hover:border-cyan/60"
             >
-              <span className="text-sm text-ink">See the {filed.display.shortName} specimen</span>
-              <span className="mono-label text-seam">→</span>
+              <span className="text-sm text-bone">See the {filed.display.shortName} specimen</span>
+              <span className="mono-label text-cyan transition-colors group-hover:text-bone">→</span>
             </Link>
           ) : (
             <p className="mt-4 text-sm text-ink-2">This family isn&rsquo;t filed as a full specimen yet — find it in the Pitch Index.</p>
@@ -275,14 +275,14 @@ export function PitchClassifier() {
           ) : null}
         </div>
 
-        <figure className="mt-5 flex flex-col items-center rounded-sm border border-navy/15 bg-paper-2 p-3">
+        <figure className="rfx-panel mt-5 flex flex-col items-center rounded-sm p-3">
           <MovementPlot className="w-full" motion={motion} pitchName={result.best} />
           <figcaption className="mono-label mt-1">Your entered shape, catcher&rsquo;s eye</figcaption>
         </figure>
 
         <ul className="mt-5 space-y-2">
           {result.notes.map((n, i) => (
-            <li key={i} className="border-l-2 border-navy/30 pl-3 text-sm leading-relaxed text-ink-2">
+            <li key={i} className="border-l-2 border-[rgba(255,255,255,0.12)] pl-3 text-sm leading-relaxed text-ink-2">
               {n}
             </li>
           ))}

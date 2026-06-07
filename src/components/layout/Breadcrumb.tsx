@@ -22,8 +22,8 @@ export function Breadcrumb({
     tone === 'stage'
       ? 'text-bone-2/80'
       : 'text-ink-2'
-  const linkHover =
-    tone === 'stage' ? 'hover:text-bone' : 'hover:text-seam'
+  // One link hover state across the chrome: the cyan interactive accent.
+  const linkHover = 'hover:text-cyan'
   const current = tone === 'stage' ? 'text-bone-2' : 'text-ink'
 
   return (

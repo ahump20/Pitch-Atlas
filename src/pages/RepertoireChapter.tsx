@@ -8,7 +8,7 @@ import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SpecimenGrips } from '../components/sections/GripLibrary'
 import { isEdgeStatus, STATUS_LABEL } from '../components/index/StatusBadge'
-import { TierMarker } from '../components/layout/TierMarker'
+import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
@@ -54,34 +54,34 @@ function HeroBadge({ entry }: { entry: RepertoireEntry }) {
 
 function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireEntry }) {
   return (
-    <nav aria-label="Pitch index chapters" className="border-t border-navy/15 bg-paper-2/50">
+    <nav aria-label="Pitch index chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
         <div className="md:justify-self-start">
           {prev ? (
             <Link
               to={`/repertoire/${prev.id}`}
-              className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-navy/40 px-4 py-3 transition-colors hover:border-l-seam hover:bg-paper-2"
+              className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-cyan/40 px-4 py-3 transition-colors hover:border-l-cyan"
             >
               <span className="mono-label text-ink-3">← Previous</span>
-              <span className="display text-lg text-ink">{prev.name}</span>
+              <span className="font-athletic text-lg uppercase text-bone">{prev.name}</span>
             </Link>
           ) : null}
         </div>
         <Link
           to="/repertoire"
-          className="flex flex-col items-center justify-center gap-1 rounded-sm border border-navy/20 px-4 py-3 text-center transition-colors hover:border-seam md:justify-self-center"
+          className="flex flex-col items-center justify-center gap-1 rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center"
         >
-          <span className="mono-label text-navy">The Pitch Index</span>
+          <span className="mono-label text-cyan">The Pitch Index</span>
           <span className="text-sm leading-snug text-ink-2">Back to every pitch →</span>
         </Link>
         <div className="md:justify-self-end">
           {next ? (
             <Link
               to={`/repertoire/${next.id}`}
-              className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-navy/40 px-4 py-3 text-right transition-colors hover:border-r-seam hover:bg-paper-2"
+              className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-cyan/40 px-4 py-3 text-right transition-colors hover:border-r-cyan"
             >
               <span className="mono-label text-ink-3">Next →</span>
-              <span className="display text-lg text-ink">{next.name}</span>
+              <span className="font-athletic text-lg uppercase text-bone">{next.name}</span>
             </Link>
           ) : null}
         </div>
@@ -179,22 +179,22 @@ export function RepertoireChapter() {
         </div>
       ) : null}
 
-      <section className="bg-paper-2/50">
+      <section>
         <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
-          <TierMarker index="01" label="The grip" />
+          <StageTierMarker index="01" label="The grip" />
           <ClaimProse claim={entry.grip} proseClassName="max-w-[64ch] text-xl leading-relaxed text-ink" />
         </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
-        <TierMarker index="02" label="What it does" />
+        <StageTierMarker index="02" label="What it does" />
         <ClaimProse claim={entry.movement} proseClassName="max-w-[64ch] text-xl leading-relaxed text-ink" />
       </section>
 
       {entry.relationship ? (
-        <section className="bg-paper-2/50">
+        <section>
           <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
-            <TierMarker index="03" label="What it really is" />
+            <StageTierMarker index="03" label="What it really is" />
             <ClaimProse
               claim={entry.relationship}
               proseClassName="max-w-[64ch] text-xl leading-relaxed text-ink"
@@ -205,7 +205,7 @@ export function RepertoireChapter() {
 
       {entry.notableThrowers ? (
         <section className="mx-auto max-w-6xl px-5 pb-4 md:px-8">
-          <p className="max-w-[64ch] border-t border-navy/12 pt-5 text-base leading-relaxed text-ink-2">
+          <p className="max-w-[64ch] border-t border-[rgba(255,255,255,0.12)] pt-5 text-base leading-relaxed text-ink-2">
             <span className="mono-label mr-2 text-ink-3">Who throws it</span>
             {entry.notableThrowers}
           </p>
@@ -214,7 +214,7 @@ export function RepertoireChapter() {
 
       {/* The honest marker: this is a basic file, not a measured specimen. */}
       <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
-        <div className="rounded-sm border border-dashed border-seam/35 bg-paper px-6 py-5">
+        <div className="rfx-panel rounded-sm border border-dashed border-seam/35 px-6 py-5">
           <p className="mono-label mb-2 text-seam">Basic file</p>
           <p className="max-w-[72ch] text-sm leading-relaxed text-ink-2">
             This pitch has a sourced one-line grip and movement and an honest explanation — not yet a filed

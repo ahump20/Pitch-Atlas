@@ -42,19 +42,19 @@ export function KineticChainPage() {
         }
       />
 
-      <section className="bg-paper">
+      <section>
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <KineticChain />
-          <p className="mt-10 max-w-[72ch] border-t border-navy/12 pt-6 text-sm leading-relaxed text-ink-2">
+          <p className="mt-10 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
             The figure is a teaching schematic — a posed stick frame, not a measured motion capture or any
             player's likeness. The numbers are not: each joint angle and velocity is drawn from the
             peer-reviewed biomechanics literature (ASMI / Fleisig, the Clinician's Guide, and supporting
             studies of 1,000+ pitchers). For the full reading, see{' '}
-            <a href="/learn/mechanics" className="text-columbia underline-offset-2 hover:underline">
+            <a href="/learn/mechanics" className="text-cyan underline-offset-2 hover:underline">
               The Kinetic Chain
             </a>
             . This is educational reference, not medical or training advice — see{' '}
-            <a href="/learn/arm-health" className="text-columbia underline-offset-2 hover:underline">
+            <a href="/learn/arm-health" className="text-cyan underline-offset-2 hover:underline">
               Arm Health
             </a>
             .

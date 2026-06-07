@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { TierMarker } from './TierMarker'
+import { StageTierMarker } from './StageTierMarker'
 
 /*
   A tier marker, an optional blurb, and a responsive card grid — the triple that
@@ -25,9 +25,9 @@ export function GridSection({
 }) {
   return (
     <section id={id} className={className}>
-      <TierMarker index={index} label={label} />
+      <StageTierMarker index={index} label={label} />
       {blurb ? (
-        <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-ink-2">{blurb}</p>
+        <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-bone-2">{blurb}</p>
       ) : null}
       <div className={`grid grid-cols-1 gap-5 ${cols}`}>{children}</div>
     </section>

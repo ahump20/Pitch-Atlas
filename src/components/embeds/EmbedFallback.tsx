@@ -22,12 +22,12 @@ export function EmbedFallback({
       style={{ aspectRatio: aspect }}
     >
       <span className="mono-label text-bone-2">{credit}</span>
-      <p className="display max-w-[28ch] text-lg leading-snug text-bone">{title}</p>
+      <p className="font-athletic uppercase max-w-[28ch] text-lg leading-snug text-bone">{title}</p>
       <a
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-1 inline-flex items-center gap-2 rounded-sm border border-powder/60 px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] text-powder transition-colors hover:border-powder hover:bg-powder/10"
+        className="mt-1 inline-flex items-center gap-2 rounded-sm border border-cyan/60 px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] text-cyan transition-colors hover:border-cyan hover:bg-cyan/10"
       >
         {ctaLabel}
         <span aria-hidden="true">↗</span>
