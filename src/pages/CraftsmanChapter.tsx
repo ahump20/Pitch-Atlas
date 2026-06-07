@@ -191,7 +191,7 @@ export function CraftsmanChapter() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <TierMarker index={isLegend ? '04' : '03'} label="The record" />
-        <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
+        <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
           {craftsman.numbers.map((n, i) => (
             <div key={n.label} className="border-t border-navy/12 pt-3">
               <div className="mono-label mb-2.5 text-navy">{n.label}</div>
