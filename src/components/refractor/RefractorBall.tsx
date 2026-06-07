@@ -1,13 +1,17 @@
 import { v, seamPoint, SEAM_VIEW_TILT, type Vec3 } from '../../lib/seam'
+import type { SeamAnchoredPoint } from '../../data/types'
 
 /*
   The hero artifact: a dramatic leather sphere with the real figure-eight seam,
-  a spin-axis vector, a spin-burst halo, and a rim light in the card's accent.
+  a spin-axis vector, a rim light in the card's accent, and — when grip points are
+  given — the seam-anchored grip markers that show where the pitch is actually held.
   Ported from the prototype's ballSVG but driven by the shared seam math in
-  lib/seam.ts, so the diagram and the 3D model can never disagree. Deterministic
-  (no random / no Date) so it prerenders cleanly. The spin-burst animation is
-  killed by the global reduced-motion rule. No player, ever — the ball is the
-  subject. This is a seam-informed schematic, never a measured cover geometry.
+  lib/seam.ts, so the diagram, the grip pins, and the 3D model can never disagree.
+  Deterministic (no random / no Date) so it prerenders cleanly. The dramatic
+  spin-burst halo is opt-in (showHalo) — the grid cards drop it for the grip read,
+  the detail hero keeps it; when on, the global reduced-motion rule freezes it.
+  No player, ever — the ball is the subject. A seam-informed schematic, never a
+  measured cover geometry.
 */
 
 type P = { x: number; y: number; z: number }
@@ -64,11 +68,17 @@ export function RefractorBall({
   gyro = false,
   accent,
   id,
+  gripPoints,
+  showHalo = false,
 }: {
   spinAxis: Vec3
   gyro?: boolean
   accent: { c1: string; c2: string; c3: string }
   id: string
+  /** Seam-anchored grip markers (the pitch's finger placement). Renders the grip read. */
+  gripPoints?: SeamAnchoredPoint[]
+  /** The dramatic spin-burst halo + rays. Off for grid cards, on for the detail hero. */
+  showHalo?: boolean
 }) {
   const W = 300
   const H = 300
@@ -102,6 +112,14 @@ export function RefractorBall({
       o: i % 4 === 0 ? 0.6 : 0.22,
     })
   }
+
+  // Seam-anchored grip markers: where the pitch is actually held. Same seam math as
+  // the curve, so a pin always sits on its real seam point; z sorts front vs back.
+  const pins = (gripPoints ?? []).map((g, i) => {
+    const p = v.rotateAxis(seamPoint(g.seamT * Math.PI * 2, 1), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+    const lift = 1 + g.lift
+    return { i, x: cx + p.x * r * lift, y: cy - p.y * r * lift, z: p.z, thumb: g.finger === 'thumb' }
+  })
 
   const arrow = (tx: number, ty: number, a: number) => {
     const L = 10
@@ -144,12 +162,16 @@ export function RefractorBall({
       </defs>
 
       <ellipse cx={cx} cy={cy + r + 8} rx={r * 0.8} ry={12} fill="#000" opacity="0.45" filter={`url(#glow-${id})`} />
-      <circle cx={cx} cy={cy} r={r + 46} fill={`url(#halo-${id})`} />
-      <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'rfx-spin 26s linear infinite' }}>
-        {rays.map((ry, i) => (
-          <line key={i} x1={ry.x1.toFixed(1)} y1={ry.y1.toFixed(1)} x2={ry.x2.toFixed(1)} y2={ry.y2.toFixed(1)} stroke={accent.c3} strokeWidth={ry.w} strokeLinecap="round" opacity={ry.o} />
-        ))}
-      </g>
+      {showHalo ? (
+        <>
+          <circle cx={cx} cy={cy} r={r + 46} fill={`url(#halo-${id})`} />
+          <g style={{ transformOrigin: `${cx}px ${cy}px`, animation: 'rfx-spin 26s linear infinite' }}>
+            {rays.map((ry, i) => (
+              <line key={i} x1={ry.x1.toFixed(1)} y1={ry.y1.toFixed(1)} x2={ry.x2.toFixed(1)} y2={ry.y2.toFixed(1)} stroke={accent.c3} strokeWidth={ry.w} strokeLinecap="round" opacity={ry.o} />
+            ))}
+          </g>
+        </>
+      ) : null}
       <circle cx={cx} cy={cy} r={r} fill={`url(#lea-${id})`} />
       <circle cx={cx} cy={cy} r={r} fill={`url(#rim-${id})`} />
       <circle cx={cx} cy={cy} r={r} fill="#000" opacity="0.12" style={{ mixBlendMode: 'multiply' }} />
@@ -167,6 +189,27 @@ export function RefractorBall({
       ))}
       {st.filter((s) => s.front).map((s, i) => (
         <line key={`sf${i}`} x1={s.x1.toFixed(1)} y1={s.y1.toFixed(1)} x2={s.x2.toFixed(1)} y2={s.y2.toFixed(1)} stroke="#FF2433" strokeWidth="2.3" strokeLinecap="round" filter={`url(#glow-${id})`} />
+      ))}
+
+      {pins.map((pin) => (
+        <g key={`pin-${pin.i}`} opacity={pin.z >= 0 ? 1 : 0.32}>
+          <circle
+            cx={pin.x.toFixed(1)}
+            cy={pin.y.toFixed(1)}
+            r={pin.thumb ? 5.5 : 7}
+            fill={pin.thumb ? 'none' : accent.c3}
+            stroke="#05070c"
+            strokeWidth="2"
+          />
+          <circle
+            cx={pin.x.toFixed(1)}
+            cy={pin.y.toFixed(1)}
+            r={pin.thumb ? 5.5 : 7}
+            fill="none"
+            stroke={pin.thumb ? accent.c3 : 'rgba(255,255,255,0.85)'}
+            strokeWidth={pin.thumb ? 1.8 : 1}
+          />
+        </g>
       ))}
 
       <line x1={sx.toFixed(1)} y1={sy.toFixed(1)} x2={ex.toFixed(1)} y2={ey.toFixed(1)} stroke="#37D6FF" strokeWidth="1.8" strokeDasharray="6 4" opacity="0.95" filter={`url(#glow-${id})`} />

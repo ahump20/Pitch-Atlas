@@ -300,6 +300,9 @@ export interface PitchMotion {
   horizontalDir: 'arm-side' | 'glove-side' | 'none'
   /** Which break diagram the Foundation renders: the four-seam's carry side-view, or the catcher's-eye movement plot. */
   breakView: 'carry' | 'movement'
+  /** Set when the pitch has no fixed break magnitude or direction (the knuckleball). The
+      specimen card then leads with the shape label, not a spurious headline number. */
+  indeterminateBreak?: boolean
 }
 
 /** The pitch-specific display copy the sections render. */

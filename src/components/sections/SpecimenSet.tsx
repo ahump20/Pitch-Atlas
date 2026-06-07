@@ -1,14 +1,21 @@
 import { PITCHES } from '../../data/pitches'
 import type { PitchAtlasEntry, ClaimConfidence } from '../../data/types'
-import { RefractorCard, type ScoutRow, type RefractorAccent } from '../refractor/RefractorCard'
+import { RefractorCard, type RefractorAccent } from '../refractor/RefractorCard'
 import { RefractorBall } from '../refractor/RefractorBall'
+import { GripFace } from '../refractor/GripFace'
+import { familyCrumb } from '../refractor/familyCrumb'
+import { gripEntryFor } from '../../data/grips'
 
 /*
-  The Pitch Index as a refractor specimen set — the signature surface. Every card
-  is driven by the real pitch record: the leather ball from the shared seam math,
-  the scouting rows and big stat from the sourced motion numbers, and a confidence
-  dot from the primary-break claim's own tier. Foil is decoration; the readings
-  are sourced. The four-seam (specimen 00) pulls the gold 1/1.
+  The Pitch Index as a refractor specimen set — the signature surface. Every card is
+  a front-of-card summary driven by the real pitch record: the metric and shape from
+  the sourced motion numbers, the confidence dot from the primary-break claim's own
+  tier, and the family crumb from its family. The window shows the grip itself — for
+  the pitches Austin actually throws (a photographed grip in the library) it is his
+  own grip photo and the card says "Austin's grip"; for the rest it is the seam ball
+  with the pitch's real finger-placement pins, marked "Reference grip". Circle change
+  has no photo (he can't throw it), so it correctly falls to the schematic. Foil is
+  decoration; the readings are sourced. The four-seam (specimen 00) pulls the gold 1/1.
 */
 
 export const ACCENT: Record<string, RefractorAccent> = {
@@ -33,12 +40,6 @@ export function accentForSlug(slug: string): RefractorAccent {
   return ACCENT[slug] ?? FALLBACK_ACCENT
 }
 
-const FAMILY_LABEL: Record<PitchAtlasEntry['canonical']['family'], string> = {
-  fastball: 'Fastball',
-  breaking: 'Breaking',
-  offspeed: 'Offspeed',
-}
-
 const CONF: Record<ClaimConfidence, { label: string; color: string }> = {
   'official-data': { label: 'Official data', color: 'var(--color-ok-bright)' },
   'reputable-analysis': { label: 'Reputable analysis', color: 'var(--color-amber-bright)' },
@@ -51,6 +52,9 @@ const CONF: Record<ClaimConfidence, { label: string; color: string }> = {
 
 function bigStatFor(entry: PitchAtlasEntry) {
   const m = entry.motion
+  // A pitch with no fixed break (the knuckleball) shows no headline number — the card
+  // leads with its shape ("Erratic flutter") rather than a spurious precise magnitude.
+  if (m.indeterminateBreak) return undefined
   const useVert = Math.abs(m.ivbInches) >= Math.abs(m.horizontalInches)
   if (useVert) {
     const sign = m.ivbInches > 0 ? '+' : ''
@@ -63,17 +67,10 @@ function bigStatFor(entry: PitchAtlasEntry) {
   }
 }
 
-function movementLine(entry: PitchAtlasEntry) {
-  const m = entry.motion
-  if (m.horizontalDir === 'none') return `${m.ivbInches > 0 ? '+' : ''}${m.ivbInches}″ ride`
-  const side = m.horizontalDir === 'arm-side' ? 'arm' : 'glove'
-  return `${m.ivbInches > 0 ? '+' : ''}${m.ivbInches}″ vert · ${m.horizontalInches}″ ${side}`
-}
-
 export function SpecimenSet() {
   return (
     <div className="mx-auto max-w-[1320px] px-4 pt-10 md:px-8">
-      <div className="grid justify-items-center gap-[clamp(20px,2.4vw,30px)] [grid-template-columns:repeat(auto-fill,minmax(280px,1fr))]">
+      <div className="grid justify-items-center gap-[clamp(20px,2.4vw,30px)] [grid-template-columns:repeat(auto-fill,minmax(min(340px,100%),1fr))]">
         {PITCHES.map((entry, i) => {
           const { canonical, motion, display } = entry
           const physics = canonical.physics
@@ -81,11 +78,28 @@ export function SpecimenSet() {
           const gold = display.specimenNo === '00'
           const pb = physics.primaryBreak.claim
           const conf = CONF[pb.confidence]
-          const scout: ScoutRow[] = [
-            { label: 'Movement', value: movementLine(entry), num: true },
-            { label: 'Spin', value: physics.spinRateRpm.value, num: true },
-            { label: 'Shape', value: physics.primaryBreak.label },
-          ]
+
+          // The grip read: Austin's own photo where he throws the pitch, else the
+          // seam ball with its real finger-placement pins. Circle change has no photo.
+          const grip = gripEntryFor(display.slug)
+          const photo = grip && grip.photos.length > 0 ? grip.photos[0] : undefined
+          const cue = photo && grip ? grip.shortCue : display.heroSub
+          const gripSource = photo
+            ? { label: "Austin's grip", color: 'var(--color-powder)' }
+            : { label: 'Reference grip', color: 'var(--color-ink-3)' }
+
+          const face = photo ? (
+            <GripFace photo={photo} />
+          ) : (
+            <RefractorBall
+              spinAxis={motion.spinAxis}
+              gyro={motion.gyro}
+              accent={accent}
+              id={display.slug}
+              gripPoints={canonical.fingerPlacement}
+            />
+          )
+
           return (
             <RefractorCard
               key={display.slug}
@@ -95,13 +109,13 @@ export function SpecimenSet() {
               accent={accent}
               vnum={display.specimenNo}
               name={display.shortName}
-              tagline={display.heroSub}
-              bigStat={bigStatFor(entry)}
-              face={<RefractorBall spinAxis={motion.spinAxis} gyro={motion.gyro} accent={accent} id={display.slug} />}
-              scout={scout}
-              note={pb.value}
+              face={face}
+              metric={bigStatFor(entry)}
+              shape={physics.primaryBreak.label}
+              cue={cue}
               confidence={{ label: conf.label, color: conf.color, approx: pb.approximate }}
-              pills={[FAMILY_LABEL[canonical.family]]}
+              crumb={familyCrumb(canonical.family)}
+              gripSource={gripSource}
             />
           )
         })}

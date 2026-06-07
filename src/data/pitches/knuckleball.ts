@@ -163,6 +163,9 @@ export const knuckleball: PitchAtlasEntry = {
     horizontalInches: 0,
     horizontalDir: 'none',
     breakView: 'movement',
+    // No fixed break magnitude or direction — its primaryBreak claim says exactly that.
+    // Don't headline a precise "-1" on the one pitch defined by indeterminacy.
+    indeterminateBreak: true,
   },
 
   display: {

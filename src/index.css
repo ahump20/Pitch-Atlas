@@ -428,7 +428,7 @@
   .rfx-card.is-gold .rfx-field { background: linear-gradient(170deg,#1a1305,#0d0a04 60%,#070500); }
   /* argyle + cracked-ice foil in the negative space */
   .rfx-field::before {
-    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .58; mix-blend-mode: screen;
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .14; mix-blend-mode: screen;
     background:
       repeating-linear-gradient(45deg, color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent) 0 1.5px, transparent 1.5px 13px),
       repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent) 0 1.5px, transparent 1.5px 13px),
@@ -445,9 +445,9 @@
       var(--foil);
     background-size: auto, auto, auto, 260% 260%;
     background-position: 0 0, 0 0, 0 0, var(--mx) var(--my);
-    mix-blend-mode: color-dodge; opacity: .19; transition: opacity .4s;
+    mix-blend-mode: color-dodge; opacity: .10; transition: opacity .4s;
   }
-  .rfx-card:hover .rfx-field::after { opacity: .34; }
+  .rfx-card:hover .rfx-field::after { opacity: .18; }
   .rfx-card.is-gold .rfx-field::after { opacity: .1; }
   .rfx-inner { position: relative; z-index: 8; display: flex; flex-direction: column; height: 100%; }
 
@@ -467,7 +467,7 @@
     box-shadow: 0 0 0 2px rgba(0,0,0,.4) inset, 0 0 0 3px color-mix(in srgb, var(--c3,#37D6FF) 40%, transparent) inset;
   }
   .rfx-halftone {
-    position: absolute; inset: 0; z-index: 0; opacity: .5;
+    position: absolute; inset: 0; z-index: 0; opacity: .16;
     background-image: radial-gradient(color-mix(in srgb, var(--c3,#37D6FF) 70%, transparent) 22%, transparent 24%);
     background-size: 9px 9px; mask-image: radial-gradient(80% 70% at 50% 30%, #000, transparent 78%);
   }
@@ -476,45 +476,69 @@
     color: var(--color-bone); -webkit-text-stroke: 2px #000;
     text-shadow: 2px 3px 0 color-mix(in srgb, var(--c3,#37D6FF) 80%, #000); transform: skewX(-6deg);
   }
-  .rfx-bigstat {
-    position: absolute; left: 9px; bottom: 7px; z-index: 3; font-family: var(--font-athletic);
-    font-size: clamp(30px,8vw,44px); line-height: .78; color: var(--color-bone);
-    -webkit-text-stroke: 2px #000; text-shadow: 3px 3px 0 color-mix(in srgb, var(--c3,#37D6FF) 85%, #000); transform: skewX(-6deg);
+  /* family crumb (top-right of the window): what KIND of pitch this is. Its own dark
+     pill so it never sits on the patterned foil. A different job from the source dot. */
+  .rfx-crumb {
+    position: absolute; top: 8px; right: 9px; z-index: 4;
+    display: inline-flex; align-items: center; gap: 5px; padding: 3px 7px 3px 6px; border-radius: 999px;
+    background: rgba(5,7,12,.74); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 30%, rgba(255,255,255,.12));
+    font-family: var(--font-mono); font-size: 8px; line-height: 1; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--color-bone);
   }
-  .rfx-bigstat small { -webkit-text-stroke: 1px #000; font-size: .4em; }
-  .rfx-bigstat .rfx-lab { display: block; -webkit-text-stroke: 0; font-family: var(--font-mono); font-size: 8px;
-    letter-spacing: .14em; color: var(--color-bone-2); text-shadow: none; transform: skewX(6deg); margin-top: 2px; }
+  .rfx-crumb svg { width: 11px; height: 11px; display: block; color: color-mix(in srgb, var(--c3,#37D6FF) 82%, var(--color-bone)); }
+  /* grip-source chip (bottom-left): WHOSE grip the face shows — Austin's, or a reference. */
+  .rfx-gripchip {
+    position: absolute; left: 9px; bottom: 8px; z-index: 4;
+    display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px;
+    background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,.12);
+    font-family: var(--font-mono); font-size: 7.5px; line-height: 1; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--color-bone-2);
+  }
+  /* the Austin grip photo, filling the arched window (the seam ball is used otherwise) */
+  .rfx-grip { position: absolute; inset: 0; z-index: 1; margin: 0; }
+  .rfx-grip-img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; transition: opacity .3s; }
 
   /* banner nameplate */
   .rfx-banner {
     position: relative; z-index: 9; margin: -14px auto 0; width: 86%; text-align: center; padding: 7px 10px; border-radius: 999px;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--c3,#37D6FF) 92%, #000), color-mix(in srgb, var(--c2,#114A8C) 80%, #000));
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c3,#37D6FF) 55%, #000), color-mix(in srgb, var(--c2,#114A8C) 45%, #000));
     border: 2px solid rgba(0,0,0,.55); box-shadow: 0 4px 10px -4px #000, 0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent);
     font-family: var(--font-athletic); font-size: clamp(22px,5.4vw,30px); letter-spacing: .01em; text-transform: uppercase; color: #fff;
     -webkit-text-stroke: .6px rgba(0,0,0,.6); text-shadow: 1.5px 1.5px 0 rgba(0,0,0,.5); transform: skewX(-5deg);
   }
-  .rfx-card.is-gold .rfx-banner { background: var(--gold); color: #2a1d05; }
+  .rfx-card.is-gold .rfx-banner { background: linear-gradient(180deg,#f4d98a,#caa14a); color: #2a1d05; }
 
-  .rfx-tagline {
-    z-index: 9; text-align: center; font-family: var(--font-athletic); font-style: normal; font-size: 12px;
-    letter-spacing: .02em; text-transform: uppercase; color: var(--color-bone); margin: 8px 6px 0; line-height: 1.05;
-    transform: skewX(-4deg); -webkit-text-stroke: .5px rgba(0,0,0,.5);
-    text-shadow: 1px 1px 0 color-mix(in srgb, var(--c3,#37D6FF) 70%, #000);
+  /* the dark matte content plate — the read lives here, never on the patterned foil.
+     Denser type but fewer lines than the old tagline + scout table + note paragraph,
+     so the window keeps more height and the grip/ball stops clipping. */
+  .rfx-content {
+    position: relative; z-index: 9; margin-top: 9px; border-radius: 12px; padding: 9px 11px 10px;
+    display: flex; flex-direction: column; gap: 7px;
+    background: rgba(5,7,12,.84); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(255,255,255,.10);
   }
-
-  /* scouting table */
-  .rfx-scout { z-index: 9; margin-top: 9px; border-radius: 9px; overflow: hidden; border: 2px solid rgba(0,0,0,.5);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 40%, transparent); }
-  .rfx-scout-hd { font-family: var(--font-athletic); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--color-bone);
-    padding: 3px 11px; background: linear-gradient(180deg, color-mix(in srgb, var(--c3,#37D6FF) 60%, #000), #0a0810);
-    width: max-content; border-radius: 0 12px 0 0; transform: skewX(-6deg); margin-left: -2px; }
-  .rfx-row { display: grid; grid-template-columns: 40% 60%; }
-  .rfx-row + .rfx-row { border-top: 1px solid rgba(255,255,255,.06); }
-  .rfx-row .rfx-lab { font-family: var(--font-prose); font-weight: 700; font-size: 8.5px; letter-spacing: .06em; text-transform: uppercase;
-    color: var(--color-bone); padding: 6px 9px; background: color-mix(in srgb, var(--c2,#114A8C) 42%, #08060d); display: flex; align-items: center; }
-  .rfx-row .rfx-val { font-family: var(--font-prose); font-weight: 600; font-size: 10.5px; color: var(--color-bone); padding: 6px 9px;
-    background: rgba(8,6,13,.82); display: flex; align-items: center; }
-  .rfx-row .rfx-val.is-num { font-family: var(--font-mono); }
+  /* stat rail: the one headline number, big, with its label beneath. */
+  .rfx-statrail { display: flex; flex-direction: column; gap: 1px; }
+  .rfx-statval { font-family: var(--font-athletic); font-size: clamp(2rem,7vw,3rem); line-height: .82; color: var(--color-bone);
+    -webkit-text-stroke: 1.5px #000; text-shadow: 2px 2px 0 color-mix(in srgb, var(--c3,#37D6FF) 70%, #000); }
+  .rfx-statval small { -webkit-text-stroke: 1px #000; font-size: .42em; }
+  .rfx-statlab { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; line-height: 1.15;
+    text-transform: uppercase; color: var(--color-bone-2); }
+  /* shape + cue: mono only on the label key; prose on the read. */
+  .rfx-summary { display: flex; flex-direction: column; gap: 4px; }
+  .rfx-shape { display: flex; align-items: baseline; gap: 7px; }
+  .rfx-shape .rfx-k { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .12em; line-height: 1.2;
+    text-transform: uppercase; color: var(--color-ink-3); flex: 0 0 auto; }
+  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: .82rem; line-height: 1.3; color: var(--color-bone); }
+  .rfx-cue { font-family: var(--font-prose); font-size: .82rem; line-height: 1.35; color: var(--color-bone-2); margin: 0;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  /* source badge: mono — a tag, not prose. How much to trust the number. */
+  .rfx-srcbadge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: .66rem;
+    letter-spacing: .06em; line-height: 1; text-transform: uppercase; color: var(--color-bone-2); }
+  .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid var(--color-sand-bright); color: var(--color-sand-bright);
+    padding: 1px 6px; font-size: .58rem; letter-spacing: .04em; }
 
   /* confidence dot (sourced, not corrected) */
   .rfx-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
@@ -522,8 +546,6 @@
   /* bottom strip */
   .rfx-strip { z-index: 9; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
     font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-ink-3); }
-  .rfx-pill { padding: 3px 7px; border-radius: 999px; background: color-mix(in srgb, var(--c2,#114A8C) 50%, #000); color: var(--color-bone-2);
-    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, transparent); font-size: 7px; letter-spacing: .1em; }
 
   /* a foil-edged surface for non-card sections (tools, wings, content chrome) */
   .rfx-panel { position: relative; border-radius: 12px; background: var(--color-press); border: 1px solid rgba(246,241,230,.10); }
