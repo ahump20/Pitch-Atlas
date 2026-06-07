@@ -1,4 +1,4 @@
-import type { GripView, PitchFamily, VisualReference } from '../types'
+import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualReference } from '../types'
 
 /*
   The visual grip library — the clean-channel photo layer.
@@ -19,6 +19,9 @@ import type { GripView, PitchFamily, VisualReference } from '../types'
 */
 
 const CAPTURED = '2026-06-06'
+export const GRIP_PHOTO_PROOF_LIMIT =
+  'Grip photo only; does not prove velocity, spin, movement, command, injury risk, or outcome.'
+const CLAIM_TIER: Extract<ClaimConfidence, 'pitcher-own-words'> = 'pitcher-own-words'
 
 function shot(file: string, view: GripView, caption: string, alt: string): VisualReference {
   return {
@@ -46,6 +49,16 @@ export interface GripLibraryEntry {
   note: string
   /** His own account of how the pitch moved and how he used it. A pitcher's report, not tracked data. */
   movement?: string
+  /** Small index-row cue. */
+  shortCue: string
+  /** What the photo or note can support visually. */
+  visibleCue: string
+  /** The confidence lane for Austin's own account. */
+  claimTier: Extract<ClaimConfidence, 'pitcher-own-words'>
+  /** Boundary on what still photos can prove. */
+  proofLimit: string
+  /** Circle change is intentionally note-only for Austin. */
+  photoStatus?: 'photographed' | 'note-only'
   photos: VisualReference[]
 }
 
@@ -55,6 +68,11 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     label: 'Four-seam fastball',
     family: 'fastball',
     specimenSlug: 'four-seam',
+    shortCue: 'Fingertips cross the seam path',
+    visibleCue:
+      'Two-finger fastball family grip with the fingertips crossing the seam path instead of riding inside two parallel seams.',
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
       'Two fingers on the ball, and the four-seam should be a dead giveaway. The fingertips cross the seam slightly — the very ends of the pads catching across it, not riding parallel to it. There is barely any pressure on it at all, and that is why it goes the fastest and the truest. It is the bread and butter of everything: the easiest pitch to place in the zone and the most consistent pitch in the game.',
     movement:
@@ -85,6 +103,11 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     label: 'Two-seam fastball',
     family: 'fastball',
     specimenSlug: 'two-seam',
+    shortCue: 'Fingers ride the lace tracks',
+    visibleCue:
+      'Two fingers are lined with the seams like train tracks, which is the visible tell Austin uses to separate it from the four-seam.',
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
       'Two fingers on the ball again, but here they line up with the seams like the ball is running down a train track — both fingers riding along the narrow seams instead of crossing them. That is the tell that separates it from the four-seam.',
     movement:
@@ -115,6 +138,11 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     label: '12-6 curveball',
     family: 'breaking',
     specimenSlug: 'twelve-six',
+    shortCue: 'Two fingers set against the seam',
+    visibleCue:
+      'Two fingers are set against the seam with the thumb acting as the main opposing support cue.',
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
       'Two fingers lined up and cornered against the seam, with no other pressure on the ball but the thumb. The grip is so distinct you do not even need to see the release slot to know it is a 12-6 — the fingers tucked tight to one seam give it away.',
     movement:
@@ -145,6 +173,11 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     label: 'Split-finger fastball',
     family: 'offspeed',
     specimenSlug: 'splitter',
+    shortCue: 'Fingers outside the lace tracks',
+    visibleCue:
+      "The tell is subtle: it can look close to a two-seam in Austin's hand, but the cue is the fingers spreading outside the lace tracks instead of sitting on them.",
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
       'Gripped almost exactly like the two-seam, except the fingers spread out wider — just outside the laces instead of right on them. With short, stubby fingers like mine you can barely see the difference. Those same short fingers are the reason I have never been able to throw a circle change.',
     movement:
@@ -175,6 +208,11 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     label: 'Football change (palmball)',
     family: 'offspeed',
     repertoireId: 'palmball',
+    shortCue: 'Four fingers and more hand surface',
+    visibleCue:
+      'The fingers sit close together with more hand surface on the ball, matching the football-change or palmball family cue.',
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
       'My football change. The giveaway is the hand together, all four fingers touching the ball. The more fingers you put on it, the more it slows down coming out — instead of getting slingshotted off the fingertips and snapped with the wrist, the whole hand drags the speed off it while the arm still looks like a fastball.',
     movement:
@@ -199,6 +237,11 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     label: 'Three-finger changeup',
     family: 'offspeed',
     repertoireId: 'straight-three-finger-changeup',
+    shortCue: 'Three close fingers on the ball',
+    visibleCue:
+      'Three close fingers sit on the ball, adding contact area and pressure compared with a two-finger fastball grip.',
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
       'Three fingers set very close together across the ball. Same idea as the football change, just a touch less hand on it — more fingers than a fastball means more surface and more drag, so it leaves softer than the arm speed says it should.',
     movement:
@@ -223,6 +266,21 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
         'The underside of a three-finger changeup grip.',
       ),
     ],
+  },
+  {
+    id: 'circle-change',
+    label: 'Circle change',
+    family: 'offspeed',
+    specimenSlug: 'circle-change',
+    photoStatus: 'note-only',
+    shortCue: 'No Austin grip photo attached',
+    visibleCue:
+      'No Austin grip photo is attached here. The app should not imply that these photos show Austin throwing a circle change.',
+    claimTier: CLAIM_TIER,
+    proofLimit: GRIP_PHOTO_PROOF_LIMIT,
+    note:
+      'Austin says he could not throw a circle change comfortably because his hands were too small to form the grip.',
+    photos: [],
   },
 ]
 
@@ -274,4 +332,8 @@ export function gripPhotosFor(key: string): VisualReference[] {
 /** The library entry for a grip, by any of its keys. */
 export function gripEntryFor(key: string): GripLibraryEntry | undefined {
   return AUSTIN_GRIPS.find((g) => g.id === key || g.specimenSlug === key || g.repertoireId === key)
+}
+
+export function gripEntryForRepertoire(entry: RepertoireEntry): GripLibraryEntry | undefined {
+  return gripEntryFor(entry.filedSlug ?? entry.id)
 }

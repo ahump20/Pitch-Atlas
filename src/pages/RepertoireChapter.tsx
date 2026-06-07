@@ -2,9 +2,11 @@ import { useParams, Navigate, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type { RepertoireEntry, RepertoireFamily } from '../data/types'
 import { repertoireById, BASIC_REPERTOIRE } from '../data/repertoire'
+import { gripEntryFor } from '../data/grips'
 import { SITE } from '../config/site'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
+import { SpecimenGrips } from '../components/sections/GripLibrary'
 import { isEdgeStatus, STATUS_LABEL } from '../components/index/StatusBadge'
 import { TierMarker } from '../components/layout/TierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
@@ -27,6 +29,14 @@ const FAMILY_EYEBROW: Record<RepertoireFamily, string> = {
   offspeed: 'Offspeed',
   specialty: 'Specialty',
   banned: 'Banned & doctored',
+}
+
+const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
+  fastball: '#37D6FF',
+  offspeed: '#7CFF52',
+  breaking: '#8A6BFF',
+  specialty: '#FFC23C',
+  banned: '#FF2D44',
 }
 
 function HeroBadge({ entry }: { entry: RepertoireEntry }) {
@@ -105,6 +115,8 @@ export function RepertoireChapter() {
   if (redirectSlug) return <Navigate to={`/pitch/${redirectSlug}`} replace />
   if (!entry) return <NotFound />
 
+  const accentColor = isEdgeStatus(entry.status) ? '#FF2D44' : FAMILY_ACCENT[entry.family]
+  const gripEntry = gripEntryFor(entry.id)
   const subParts = [
     entry.aka && entry.aka.length > 0 ? `aka ${entry.aka.join(' · ')}` : null,
     entry.velocity ?? null,
@@ -160,6 +172,12 @@ export function RepertoireChapter() {
           </figure>
         </div>
       </section>
+
+      {gripEntry ? (
+        <div className="mx-auto max-w-6xl px-5 md:px-8">
+          <SpecimenGrips entry={gripEntry} accentColor={accentColor} className="border-t-0 pt-0" />
+        </div>
+      ) : null}
 
       <section className="bg-paper-2/50">
         <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">

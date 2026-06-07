@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import type { CSSProperties, PointerEventHandler, ReactNode, Ref } from 'react'
 import { Link } from 'react-router-dom'
 import { useRefractorTilt } from '../../hooks/useRefractorTilt'
 
@@ -56,14 +56,15 @@ export function RefractorCard({
   wmTab = 'SPECIMEN',
   className,
 }: RefractorCardProps) {
-  const tilt = useRefractorTilt<HTMLElement>()
+  const { ref: tiltRef, onPointerMove, onPointerLeave } = useRefractorTilt<HTMLElement>()
+  const linkPointerMove = onPointerMove as unknown as PointerEventHandler<HTMLAnchorElement>
 
   const cardStyle = {
     '--c1': accent.c1,
     '--c2': accent.c2,
     '--c3': accent.c3,
     '--i': index,
-  } as React.CSSProperties
+  } as CSSProperties
 
   const inner = (
     <div className="rfx-field">
@@ -157,9 +158,9 @@ export function RefractorCard({
       {to ? (
         <Link
           to={to}
-          ref={tilt.ref as React.Ref<HTMLAnchorElement>}
-          onPointerMove={tilt.onPointerMove as unknown as React.PointerEventHandler<HTMLAnchorElement>}
-          onPointerLeave={tilt.onPointerLeave}
+          ref={tiltRef as Ref<HTMLAnchorElement>}
+          onPointerMove={linkPointerMove}
+          onPointerLeave={onPointerLeave}
           className={`block ${cardClass}`}
           aria-label={`${name} specimen`}
           style={cardStyle}
@@ -168,9 +169,9 @@ export function RefractorCard({
         </Link>
       ) : (
         <article
-          ref={tilt.ref as React.Ref<HTMLElement>}
-          onPointerMove={tilt.onPointerMove}
-          onPointerLeave={tilt.onPointerLeave}
+          ref={tiltRef as Ref<HTMLElement>}
+          onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
           className={cardClass}
           style={cardStyle}
         >

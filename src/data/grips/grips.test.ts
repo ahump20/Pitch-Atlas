@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { AUSTIN_GRIPS, gripPhotosFor } from './index'
+import { AUSTIN_GRIPS, GRIP_PHOTO_PROOF_LIMIT, gripEntryFor, gripPhotosFor } from './index'
 import { PITCHES } from '../pitches'
 import type { VisualReference } from '../types'
 
@@ -19,13 +19,37 @@ const VALID_KINDS = ['first-party', 'community', 'creative-commons', 'public-dom
 const VALID_VIEWS = ['top', 'side', 'thumb']
 
 describe('grip library data', () => {
-  it('has grips, each with a note and at least one photo', () => {
+  it('has grips, each with a note and either photos or a note-only state', () => {
     expect(AUSTIN_GRIPS.length).toBeGreaterThan(0)
     for (const g of AUSTIN_GRIPS) {
-      expect(g.photos.length, `${g.label} has no photos`).toBeGreaterThan(0)
+      if (g.photoStatus === 'note-only') {
+        expect(g.photos.length, `${g.label} should stay note-only`).toBe(0)
+      } else {
+        expect(g.photos.length, `${g.label} has no photos`).toBeGreaterThan(0)
+      }
       expect(g.note.trim().length, `${g.label} has no note`).toBeGreaterThan(0)
+      expect(g.shortCue.trim().length, `${g.label} has no short cue`).toBeGreaterThan(0)
+      expect(g.visibleCue.trim().length, `${g.label} has no visible cue`).toBeGreaterThan(0)
+      expect(g.claimTier, `${g.label} has the wrong claim lane`).toBe('pitcher-own-words')
+      expect(g.proofLimit, `${g.label} has the wrong proof boundary`).toBe(GRIP_PHOTO_PROOF_LIMIT)
       expect(g.label.trim().length).toBeGreaterThan(0)
     }
+  })
+
+  it('keeps circle change as Austin note-only evidence', () => {
+    const circle = gripEntryFor('circle-change')
+    expect(circle?.photoStatus).toBe('note-only')
+    expect(circle?.photos).toHaveLength(0)
+    expect(circle?.note).toContain('hands were too small')
+  })
+
+  it('keeps grip-photo proof limits away from measured claims', () => {
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('does not prove velocity')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('spin')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('movement')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('command')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('injury risk')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('outcome')
   })
 
   it('links every grip to a real home (specimen or repertoire id)', () => {

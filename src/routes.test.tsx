@@ -49,6 +49,8 @@ describe('Pitch chapters', () => {
   it('leads the four-seam chapter with the pitch name and shows a sourced master figure', async () => {
     renderRoute('/pitch/four-seam')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Four-seam fastball')
+    expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
+    expect(screen.getByAltText(/four-seam style/i)).toBeInTheDocument()
     expect(screen.getByText('2,530 rpm')).toBeInTheDocument()
     expect(screen.getByText('Master Files')).toBeInTheDocument()
   })
@@ -70,6 +72,11 @@ describe('Pitch chapters', () => {
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('12-6 curveball')
     expect(screen.getAllByText('Adam Wainwright').length).toBeGreaterThan(0)
     expect(screen.getByText('26 wRC+')).toBeInTheDocument()
+  })
+
+  it('redirects the full 12-6 slug alias to the filed specimen', async () => {
+    renderRoute('/pitch/twelve-six-curveball')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('12-6 curveball')
   })
 
   it('shows the 404 for an unknown specimen', async () => {
@@ -123,6 +130,7 @@ describe('The Pitch Index', () => {
     expect(screen.getAllByText('Kick Change').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Grip tell').length).toBeGreaterThan(0)
   })
 
   it('files the knuckle-slurve honestly as not a pitch', async () => {
@@ -145,6 +153,13 @@ describe('Basic pitch files', () => {
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Slurve')
     expect(screen.getByText('Basic file')).toBeInTheDocument()
     expect(screen.getAllByText('Discussion').length).toBeGreaterThan(0)
+  })
+
+  it('opens the football-change grip evidence on the palmball file', async () => {
+    renderRoute('/repertoire/palmball')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Palmball')
+    expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
+    expect(screen.getByAltText(/football change or palmball grip/i)).toBeInTheDocument()
   })
 
   it('redirects a filed pitch id straight to its full specimen', async () => {

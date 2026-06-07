@@ -2,6 +2,7 @@ import { type CSSProperties, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
+import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 
 /*
@@ -64,6 +65,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
   const filed = !!entry.filedSlug
   const status = STATUS[entry.status]
   const aka = entry.aka?.join(', ')
+  const gripEntry = gripEntryForRepertoire(entry)
   return (
     <Link
       to={filed ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`}
@@ -82,6 +84,19 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
         {aka ? <span className="mt-1 block text-[11.5px] leading-snug text-ink-3">{aka}</span> : null}
         {entry.velocity ? (
           <span className="mt-1.5 block font-mono text-[9.5px] leading-snug text-bone-2">{entry.velocity}</span>
+        ) : null}
+        {gripEntry ? (
+          <span
+            className="mt-2 inline-flex max-w-full items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em]"
+            style={{
+              borderColor: `color-mix(in srgb, ${accent} 30%, transparent)`,
+              background: `color-mix(in srgb, ${accent} 8%, transparent)`,
+              color: 'var(--color-bone-2)',
+            }}
+          >
+            <span style={{ color: accent }}>Grip tell</span>
+            <span className="min-w-0 truncate">{gripEntry.shortCue}</span>
+          </span>
         ) : null}
         <span
           className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"

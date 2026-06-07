@@ -1,5 +1,5 @@
 import { type ReactNode, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, Navigate } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type {
   GripView,
@@ -15,6 +15,7 @@ import { scrollToId } from '../lib/scroll'
 import { BallStage } from '../components/ball/BallStage'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { accentForSlug } from '../components/sections/SpecimenSet'
+import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { ConfidenceDot, RefractorClaim, RefractorSource } from '../components/provenance/RefractorClaim'
 import { CONFIDENCE_COLOR } from '../components/provenance/RefractorClaim'
@@ -60,6 +61,12 @@ const HAND_OPTIONS: { id: Handedness; label: string }[] = [
   { id: 'right', label: 'Right' },
   { id: 'left', label: 'Left' },
 ]
+
+const PITCH_SLUG_ALIASES: Record<string, string> = {
+  'twelve-six-curveball': 'twelve-six',
+  '12-6-curveball': 'twelve-six',
+  'split-finger-fastball': 'splitter',
+}
 
 /** The one hero number: the defining break, pulled from the sourced motion record. */
 function heroStat(entry: PitchAtlasEntry) {
@@ -715,7 +722,8 @@ function Pager({ prev, next }: { prev?: PitchAtlasEntry; next?: PitchAtlasEntry 
 
 export function PitchChapter() {
   const { slug } = useParams<{ slug: string }>()
-  const entry = slug ? pitchBySlug(slug) : undefined
+  const canonicalSlug = slug ? PITCH_SLUG_ALIASES[slug] ?? slug : undefined
+  const entry = canonicalSlug ? pitchBySlug(canonicalSlug) : undefined
 
   const idx = entry ? PITCHES.findIndex((p) => p.display.slug === entry.display.slug) : -1
   const prev = idx > 0 ? PITCHES[idx - 1] : undefined
@@ -735,9 +743,11 @@ export function PitchChapter() {
   )
 
   if (!entry) return <NotFound />
+  if (slug && canonicalSlug && slug !== canonicalSlug) return <Navigate to={`/pitch/${canonicalSlug}`} replace />
 
   const isGold = entry.display.specimenNo === '00'
   const accentColor = isGold ? '#caa14a' : accentForSlug(entry.display.slug).c3
+  const gripEntry = gripEntryFor(entry.display.slug)
 
   return (
     <div className="mx-auto max-w-[1140px] px-5 md:px-8">
@@ -752,7 +762,7 @@ export function PitchChapter() {
       </div>
       <ChapterHero entry={entry} />
       <GripLabSection entry={entry} accentColor={accentColor} />
-      <SpecimenGrips photos={entry.canonical.gripImages ?? []} accentColor={accentColor} />
+      <SpecimenGrips entry={gripEntry} accentColor={accentColor} />
       <ReleaseSection entry={entry} accentColor={accentColor} />
       <MovementSection entry={entry} accentColor={accentColor} />
       <MasterFilesSection entry={entry} accentColor={accentColor} />

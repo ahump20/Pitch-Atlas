@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { type ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
 import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
+import type { GripLibraryEntry } from '../../data/grips'
+import { ConfidenceDot } from '../provenance/RefractorClaim'
 
 /*
   The visual grip library, refractor-native. Every card is a real photograph of
@@ -24,8 +26,11 @@ const KIND_LABEL: Record<VisualReference['kind'], string> = {
   licensed: 'Licensed',
 }
 
+type GripImageState = 'loading' | 'loaded' | 'error'
+
 export function GripPhoto({ photo, className = '' }: { photo: VisualReference; className?: string }) {
-  const [failed, setFailed] = useState(false)
+  const [state, setState] = useState<GripImageState>('loading')
+  const failed = state === 'error'
   const credit = [KIND_LABEL[photo.kind], photo.attribution, photo.capturedAt?.slice(0, 4)]
     .filter(Boolean)
     .join(' · ')
@@ -33,14 +38,27 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
   return (
     <figure className={`overflow-hidden rounded-[14px] border border-bone/12 bg-[#0a0810] ${className}`}>
       <div className="relative aspect-[4/3] w-full">
+        {state === 'loading' ? (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 animate-pulse"
+            style={{
+              background:
+                'linear-gradient(120deg, rgba(255,255,255,0.04), rgba(55,214,255,0.14), rgba(255,255,255,0.035))',
+            }}
+          />
+        ) : null}
         {photo.src && !failed ? (
           <img
             src={photo.src}
             alt={photo.alt}
             loading="lazy"
             decoding="async"
-            onError={() => setFailed(true)}
-            className="h-full w-full object-cover"
+            onLoad={() => setState('loaded')}
+            onError={() => setState('error')}
+            className={`h-full w-full object-cover transition-opacity duration-300 ${
+              state === 'loaded' ? 'opacity-100' : 'opacity-0'
+            }`}
           />
         ) : (
           <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center">
@@ -66,24 +84,118 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
   )
 }
 
-/** A compact strip of the real grip photos for a specimen page. */
-export function SpecimenGrips({ photos, accentColor }: { photos: VisualReference[]; accentColor: string }) {
-  if (!photos.length) return null
+function EvidenceLane({
+  label,
+  accentColor,
+  children,
+  confidence,
+}: {
+  label: string
+  accentColor: string
+  children: ReactNode
+  confidence?: GripLibraryEntry['claimTier']
+}) {
   return (
-    <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
-      <p className="rfx-skick" style={{ color: accentColor }}>
-        From the hand
+    <article
+      className="rounded-[14px] border p-4"
+      style={{
+        borderColor: `color-mix(in srgb, ${accentColor} 24%, transparent)`,
+        background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 8%, transparent), rgba(255,255,255,0.025))`,
+      }}
+    >
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+        {label}
       </p>
-      <h2 className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">The real grip, photographed</h2>
-      <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-        The schematic above is tuned from sourced descriptions. These are the genuine article — one real grip
-        in one real hand, our own photography, owned outright. Sourced, not corrected.
-      </p>
-      <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {photos.map((p) => (
-          <GripPhoto key={p.src} photo={p} />
-        ))}
+      <div className="mt-2 flex flex-col gap-2 text-[13.5px] leading-relaxed text-bone-2">{children}</div>
+      {confidence ? <ConfidenceDot confidence={confidence} className="mt-3" /> : null}
+    </article>
+  )
+}
+
+/** A specimen-page evidence section for Austin's real grip references. */
+export function SpecimenGrips({
+  entry,
+  accentColor,
+  className = '',
+}: {
+  entry?: GripLibraryEntry
+  accentColor: string
+  className?: string
+}) {
+  if (!entry) return null
+  const photos = entry.photos
+
+  return (
+    <section
+      id="grip-evidence"
+      className={`scroll-mt-20 border-t border-bone/8 py-[clamp(34px,5vw,64px)] ${className}`}
+      aria-labelledby={`${entry.id}-grip-evidence-title`}
+    >
+      <div className="grid grid-cols-1 gap-x-12 gap-y-7 md:grid-cols-12">
+        <div className="md:col-span-5">
+          <p className="rfx-skick" style={{ color: accentColor }}>
+            Grip Evidence
+          </p>
+          <h2 id={`${entry.id}-grip-evidence-title`} className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">
+            The photo can say this much
+          </h2>
+          <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
+            This is the visual grip-reference layer for {entry.label}. It names visible placement and
+            Austin's own feel notes, then stops before making measured claims.
+          </p>
+        </div>
+
+        <div className="md:col-span-7">
+          {photos.length ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {photos.map((p) => (
+                <GripPhoto key={p.src} photo={p} />
+              ))}
+            </div>
+          ) : (
+            <div
+              className="rounded-[16px] border border-dashed px-5 py-8"
+              style={{
+                borderColor: `color-mix(in srgb, ${accentColor} 32%, transparent)`,
+                background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 8%, transparent), rgba(255,255,255,0.025))`,
+              }}
+            >
+              <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+                Empty gallery
+              </p>
+              <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-bone-2">
+                No Austin grip photo is attached to this pitch. The note below is intentionally text-only.
+              </p>
+            </div>
+          )}
+        </div>
       </div>
+
+      <div className="mt-7 grid grid-cols-1 gap-3.5 md:grid-cols-3">
+        <EvidenceLane label="Photo-supported grip cue" accentColor={accentColor}>
+          <p>{entry.visibleCue}</p>
+        </EvidenceLane>
+        <EvidenceLane label="Pitcher's own words" accentColor={accentColor} confidence={entry.claimTier}>
+          <p>{entry.note}</p>
+          {entry.movement ? <p>{entry.movement}</p> : null}
+        </EvidenceLane>
+        <EvidenceLane label="Sourced public record" accentColor={accentColor}>
+          <p>
+            The existing official and cited claims stay in the page below with their original confidence labels.
+            This photo does not upgrade or replace those sources.
+          </p>
+        </EvidenceLane>
+      </div>
+
+      <p
+        className="mt-4 rounded-full border px-3 py-2 font-mono text-[9px] uppercase tracking-[0.09em] text-ink-3"
+        style={{
+          borderColor: `color-mix(in srgb, ${accentColor} 24%, transparent)`,
+          background: 'rgba(0,0,0,0.16)',
+        }}
+      >
+        {entry.proofLimit}
+      </p>
       <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
         See every grip in the{' '}
         <Link to="/grips" className="text-cyan underline-offset-2 hover:underline">
