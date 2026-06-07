@@ -231,6 +231,40 @@ const niJareeCanady: Craftsman = {
   rights: 'original',
 }
 
+const teaganKavan: Craftsman = {
+  slug: 'teagan-kavan',
+  name: 'Teagan Kavan',
+  kind: 'craftsman',
+  era: '2024-present',
+  signaturePitch: 'Riseball',
+  signaturePitchSlug: 'riseball',
+  specimenNo: 'SC-06',
+  tagline:
+    'Texas’s big-game ace — back-to-back national titles and the first two-time Most Outstanding Player in Women’s College World Series history.',
+  intro:
+    'Some pitchers are defined by a season; Teagan Kavan is defined by Junes. The Texas ace threw the Longhorns to their first national championship in 2025 and right back to a second in 2026, and in both Junes she was the best pitcher on the field — the first player ever named Women’s College World Series Most Outstanding Player twice. The bigger the game, the smaller the strike zone got for everyone facing her.',
+  signature: claim(
+    'A five-pitch arsenal built on a commandable rise ball she throws to all four quadrants, tunneled off a drop that leaves her hand on the same plane — so the rise and the drop look identical until they split. A deceptive changeup mixes the speeds. "She can throw every pitch in every plane," which is why hitters cannot square her.',
+    'sb-kavan-bvm-arsenal',
+    'reputable-analysis',
+    { note: 'The five-pitch arsenal and the rise/drop same-plane tunnel are from her own account (BVM Sports) and The Daily Texan’s profile.' },
+  ),
+  mentalEdge: claim(
+    'An October arm in a June sport. In the 2025 Women’s College World Series she threw 31 2/3 consecutive scoreless innings — a WCWS record, breaking a mark that had stood since 1994 — and in 2026 she closed it out again to become the first two-time WCWS Most Outstanding Player. Back-to-back rings on the strength of pitching her best with everything on the line.',
+    'sb-kavan-wbsc-2026',
+    'reputable-analysis',
+  ),
+  numbers: [
+    { label: 'National championships', claim: claim('Back-to-back (2025, 2026)', 'sb-kavan-ncaa-2026', 'reputable-analysis', { note: 'Texas’s first-ever title in 2025, then a repeat over Texas Tech in 2026 — the same in-state final two years running.' }) },
+    { label: 'WCWS Most Outstanding Player', claim: claim('2× (2025 & 2026) — first ever', 'sb-kavan-wbsc-2026', 'reputable-analysis', { note: 'The first two-time Most Outstanding Player in Women’s College World Series history.' }) },
+    { label: '2025 WCWS scoreless streak', claim: claim('31.2 innings (record)', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'A WCWS record, breaking the previous mark of 27.2 set in 1994.' }) },
+    { label: '2025 season', claim: claim('28-5, 2.16 ERA, 230 K', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'Over 207 innings, with 18 complete games and 5 shutouts.' }) },
+    { label: '2026 WCWS', claim: claim('4-1, 1.47 ERA, 30 K (33.1 IP)', 'sb-kavan-ncaa-2026', 'reputable-analysis', { note: 'A complete game in the opener, then a relief close to clinch the repeat.' }) },
+    { label: 'Freshman season (2024)', claim: claim('20 wins, Big 12 Freshman of the Year', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'The most wins by a Texas freshman since 2010.' }) },
+  ],
+  rights: 'original',
+}
+
 const keaganRothrock: Craftsman = {
   slug: 'keagan-rothrock',
   name: 'Keagan Rothrock',
@@ -239,7 +273,7 @@ const keaganRothrock: Craftsman = {
   hand: 'right',
   signaturePitch: 'Fastball',
   signaturePitchSlug: 'fastball',
-  specimenNo: 'SC-06',
+  specimenNo: 'SC-07',
   tagline:
     'Florida’s young ace — a freshman who carried a national contender’s innings and won SEC Freshman of the Year.',
   intro:
@@ -265,8 +299,8 @@ const keaganRothrock: Craftsman = {
 
 /*
   The hall, in reading order: Cat Osterman opens the wing, then the legends oldest
-  to newest (Fernandez, Finch, Abbott), then the current wave (Canady, Rothrock).
-  Adding an arm is one const and one array entry.
+  to newest (Fernandez, Finch, Abbott), then the current wave (Canady, Kavan,
+  Rothrock). Adding an arm is one const and one array entry.
 */
 export const SOFTBALL_CRAFTSMEN: Craftsman[] = [
   catOsterman,
@@ -274,6 +308,7 @@ export const SOFTBALL_CRAFTSMEN: Craftsman[] = [
   jennieFinch,
   monicaAbbott,
   niJareeCanady,
+  teaganKavan,
   keaganRothrock,
 ]
 

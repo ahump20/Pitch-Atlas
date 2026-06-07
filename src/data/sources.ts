@@ -1705,6 +1705,42 @@ export const SOURCES = {
     url: 'https://d1softball.com/player/1696026/',
     retrievedAt: RETRIEVED_6,
   },
+  'sb-kavan-wikipedia': {
+    id: 'sb-kavan-wikipedia',
+    label: 'Wikipedia — Teagan Kavan (Texas; 2025 28-5/2.16 ERA/230 K; WCWS-record 31.2 scoreless innings; back-to-back MOP)',
+    url: 'https://en.wikipedia.org/wiki/Teagan_Kavan',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-kavan-texas': {
+    id: 'sb-kavan-texas',
+    label: 'University of Texas Athletics — Teagan Kavan profile',
+    url: 'https://texaslonghorns.com/sports/softball/roster/teagan-kavan/15145',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-kavan-wbsc-2026': {
+    id: 'sb-kavan-wbsc-2026',
+    label: 'WBSC — Teagan Kavan leads Texas to second straight NCAA title, first two-time WCWS MOP (2026)',
+    url: 'https://www.wbsc.org/en/news/teagan-kavan-leads-texas-to-second-consecutive-ncaa-softball-title-makes-wcws-history-with-second-straight-mop-award',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-kavan-ncaa-2026': {
+    id: 'sb-kavan-ncaa-2026',
+    label: 'NCAA.com — Texas wins the 2026 NCAA DI softball championship (repeat over Texas Tech)',
+    url: 'https://www.ncaa.com/news/softball/article/2026-06-04/texas-wins-2026-ncaa-di-softball-championship',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-kavan-daily-texan': {
+    id: 'sb-kavan-daily-texan',
+    label: 'The Daily Texan — The Evolution of Teagan Kavan (riseball/drop tunnel, mixing speeds)',
+    url: 'https://thedailytexan.com/2025/04/07/the-evolution-of-teagan-kavan/',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-kavan-bvm-arsenal': {
+    id: 'sb-kavan-bvm-arsenal',
+    label: 'BVM Sports — Teagan Kavan on her five-pitch arsenal (rise ball primary, change, drop)',
+    url: 'https://bvmsports.com/2026/05/21/texas-softball-pitcher-teagan-kavan-on-her-5-pitch-arsenal-nike-getting-called-out-by-her-coach/',
+    retrievedAt: RETRIEVED_6,
+  },
 } satisfies Record<string, Source>
 
 export type SourceId = keyof typeof SOURCES
