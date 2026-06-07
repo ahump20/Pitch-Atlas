@@ -149,8 +149,8 @@ export function SoftballPitchChapter() {
           ) : null}
         </div>
         <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-          Filed light for the launch — a sourced grip, spin, and movement, with the full grip geometry and a
-          12&Prime; seam to come. Every line above is one click from its source.
+          Every line above is one click from its source. Still to come for the circle: the full grip geometry
+          and a 12&Prime; seam, the way the baseball wing files a pitch.
         </p>
       </section>
 

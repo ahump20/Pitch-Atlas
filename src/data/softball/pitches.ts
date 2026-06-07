@@ -2,11 +2,16 @@ import type { SoftballPitch } from './types'
 import { claim } from '../sources'
 
 /*
-  The fastpitch arsenal, filed light for the soft launch. The riseball is the
-  flagship — it carries the honest "does it actually rise?" physics, which is the
-  whole atlas thesis in one pitch. The drop is Cat Osterman's signature. The rest
-  are sourced one-liners now and deepen later. Every grip, spin, and movement line
-  is a Claim; nothing is asserted past what a reachable source supports.
+  The fastpitch arsenal. The riseball is the flagship — it carries the honest
+  "does it actually rise?" physics, the whole atlas thesis in one pitch. The drop
+  is Cat Osterman's signature and the rise's honest mirror (topspin, where Magnus
+  and gravity finally pull the same way). Each pitch now carries its own physics
+  note, and together they draw one honest throughline: the rise is the lone
+  illusion — perception plus reduced drop — while the drop, the curve, and the
+  screw are real movement the spin genuinely delivers. The fastball's note is the
+  43-foot reaction-time weapon; the change's is its measured low arm load. Every
+  grip, spin, and movement line is a Claim; nothing is asserted past what a
+  reachable source supports. Depth still to come: full grip geometry and a 12" seam.
 */
 
 const riseball: SoftballPitch = {
@@ -52,20 +57,27 @@ const drop: SoftballPitch = {
   family: 'drop',
   specimenNo: 'S-02',
   status: 'standard',
-  tagline: 'The ground-ball pitch — and Cat Osterman’s out pitch when she located it.',
+  tagline: 'The ground-ball pitch — and the riseball’s honest mirror, where the physics finally cooperates.',
   intro:
-    'The drop ball falls off the table at the plate and produces ground balls and swings over the top. It comes in two honest flavors: the peel drop, thrown with backspin so it carries before it dives, and the turnover (rollover) drop, thrown with topspin that drives it straight down. In Cat Osterman’s hand, the movement mattered less than where she put it.',
+    'The drop ball falls off the table at the plate and produces ground balls and swings over the top. It comes in two honest flavors that reach the same end a different way: the peel drop, where the fingers peel down the back of the ball to spin it forward, and the turnover (rollover) drop, where the wrist and forearm pronate over the top. The distinction people argue about is the recipe, not the result — both put topspin on the ball. In Cat Osterman’s hand, the movement mattered less than where she put it.',
   grip: claim(
-    'A peel drop is thrown off the fingers with backspin and a downward pull; a turnover drop adds wrist rotation over the top for topspin. Both finish out front and low.',
-    'sb-wiki-fastpitch',
+    'Peel drop: the wrist stays firm and the fingers peel down the backside of the ball at release, snapping it forward. Turnover drop: the wrist and forearm pronate over the top. Both finish out front and low.',
+    'sb-sportstrace-peeldrop',
     'reputable-analysis',
   ),
   spin: claim(
-    'Backspin (peel) or topspin (turnover) — the two recipes that both end in a late dive.',
-    'sb-wiki-fastpitch',
+    'Topspin (roughly 12-to-6) on both — the peel makes it with the fingers, the turnover with wrist pronation; the spin direction is the same, only the way it is generated differs.',
+    'sb-sportstrace-peeldrop',
     'reputable-analysis',
+    { note: 'Some coaches still teach a “backspin peel drop”; the physics-grounded sources describe the effective drop as topspin, the same forward rotation as a baseball 12-6 curve.' },
   ),
-  movement: claim('Drops sharply as it reaches the plate; hitters beat it into the ground or swing over it.', 'sb-wiki-fastpitch', 'reputable-analysis'),
+  movement: claim('Drops sharply — faster than gravity alone — as it reaches the plate; hitters beat it into the ground or swing over it.', 'sb-studlife-magnus', 'reputable-analysis'),
+  physicsNote: claim(
+    'The drop is the riseball’s honest mirror. The rise puts backspin on the ball so its Magnus lift points up — and that lift has to fight gravity, which it loses, so the rise only drops less than expected. The drop puts topspin on the ball so its Magnus force points down, the same direction as gravity. The two pull together instead of against each other, and the ball falls faster and sharper than a no-spin pitch would. There is no “does it really drop?” debate the way there is for the rise: this is the break the physics actually delivers. Tunneled off the rise — same low release, opposite spin — it is why the pair is so hard to read.',
+    'sb-studlife-magnus',
+    'reputable-analysis',
+    { note: 'The same Student Life physics breakdown that deflates the rise (“the Magnus effect doesn’t have a big enough impact to actually make the ball defy gravity”) confirms the drop’s topspin sends the ball down — Magnus and gravity working in the same direction.' },
+  ),
   role: 'A primary strike-and-ground-ball pitch, lethal when commanded down and tunneled off the rise.',
   velocity: 'near fastball speed (peel) to a touch slower (turnover)',
   notableThrowers: 'Cat Osterman — the spin and command made it her signature.',
@@ -87,6 +99,12 @@ const fastball: SoftballPitch = {
   ),
   spin: claim('Backspin from the underhand release, axis tilted by grip toward four- or two-seam.', 'sb-wiki-fastpitch', 'reputable-analysis'),
   movement: claim('Mostly straight and fast (four-seam) or with slight arm-side run (two-seam).', 'sb-wiki-fastpitch', 'reputable-analysis'),
+  physicsNote: claim(
+    'The fastpitch fastball’s real weapon is the 43-foot rubber, not the radar gun. The hitter’s reaction window is set by distance as much as speed, and the distance ratio runs about 1.4×: a high-60s to low-70s pitch from 43 feet gives a batter roughly the reaction time of a mid-90s major-league fastball thrown from 60 feet 6 inches. It is why elite arms play even faster than the gun reads — and why the change-up off this look lands so hard.',
+    'sb-gorout-speed',
+    'reputable-analysis',
+    { note: 'A reaction-time equivalence from the distance ratio (≈ 60.5 / 43). It runs even shorter in practice because the windmill stride releases the ball closer than the 43-foot rubber.' },
+  ),
   role: 'The base of the arsenal and the timing the whole sequence plays off.',
   velocity: 'mid 50s to mid 70s mph (level-dependent; elite arms touch the low 70s)',
   notableThrowers: 'Monica Abbott — among the hardest documented fastpitch fastballs.',
@@ -127,8 +145,13 @@ const curve: SoftballPitch = {
   intro:
     'The fastpitch curve breaks side to side across the plate rather than diving like a baseball 12-6. Thrown with sidespin out of the windmill, it sweeps away from or in to a hitter depending on the spin, and it pairs with the screwball as the two halves of the horizontal game.',
   grip: claim('A grip set for sidespin, the wrist turning across the ball at release to start it spinning toward the break.', 'sb-wiki-fastpitch', 'reputable-analysis'),
-  spin: claim('Sidespin (often with a gyro component), the axis set to sweep the ball laterally.', 'sb-wiki-fastpitch', 'reputable-analysis'),
+  spin: claim('Sidespin — the axis tilted so the Magnus force pushes the ball laterally across the plate.', 'sb-snexplores-curve', 'reputable-analysis'),
   movement: claim('Breaks horizontally across the zone, late, away from or in to the hitter.', 'sb-wiki-fastpitch', 'reputable-analysis'),
+  physicsNote: claim(
+    'Unlike the rise, the curve’s break is not in dispute. Sidespin sets the Magnus force sideways and the ball genuinely moves the way it spins — a right-hander spinning it toward third base pushes it that way across the plate. What is not real is the “gyro”: a standalone, Magnus-free pitch that breaks on its own is essentially a myth — extremely hard to produce and unsupported by tracking. The fastpitch curve is honest lateral movement off the windmill, not an optical trick.',
+    'sb-snexplores-curve',
+    'reputable-analysis',
+  ),
   role: 'A strike-stealer and a chase pitch off the corner; the mirror of the screwball.',
   velocity: 'near fastball speed',
 }
@@ -143,8 +166,13 @@ const screwball: SoftballPitch = {
   intro:
     'The screwball is the curve run in reverse: it breaks arm-side, in toward a same-handed hitter, off spin turned the opposite direction. Together the curve and the screw let a windmill pitcher move the ball both ways across the plate off one delivery.',
   grip: claim('A grip and wrist turn that spin the ball the opposite way from the curve, driving an arm-side break.', 'sb-wiki-fastpitch', 'reputable-analysis'),
-  spin: claim('Reverse sidespin from the curve — the axis flipped to break arm-side.', 'sb-wiki-fastpitch', 'reputable-analysis'),
+  spin: claim('Reverse sidespin from the curve — the axis flipped to break arm-side.', 'sb-snexplores-curve', 'reputable-analysis'),
   movement: claim('Breaks in on a same-handed hitter, the opposite direction from the curve.', 'sb-wiki-fastpitch', 'reputable-analysis'),
+  physicsNote: claim(
+    'The screwball is the curve’s physics run in reverse: the same real sidespin Magnus break, the axis flipped so the ball moves arm-side — in toward a same-handed hitter — instead of glove-side. Like the curve, and unlike the rise, the movement is honest. It is the spin doing exactly what the spin should.',
+    'sb-snexplores-curve',
+    'reputable-analysis',
+  ),
   role: 'Jams same-handed hitters and completes the two-way horizontal attack.',
   velocity: 'near fastball speed',
 }

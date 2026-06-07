@@ -1624,6 +1624,26 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_6,
   },
 
+  // --- Softball: the drop, the breakers, and reaction time ---
+  'sb-sportstrace-peeldrop': {
+    id: 'sb-sportstrace-peeldrop',
+    label: 'SportsTrace — The Peel Drop in Softball (peel vs. turnover drop, both topspin; fingers vs. wrist pronation)',
+    url: 'https://www.sportstrace.com/the-peel-drop-in-softball-history-uses-and-how-to-throw-it/',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-snexplores-curve': {
+    id: 'sb-snexplores-curve',
+    label: 'Science News Explores — How to make a pitched ball curve to your will (sidespin Magnus break is real; the standalone gyro is essentially a myth)',
+    url: 'https://www.snexplores.org/article/pitch-physics-curve-baseball-softball-cricket',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-gorout-speed': {
+    id: 'sb-gorout-speed',
+    label: 'GoRout — Softball Pitch vs Baseball Pitch (43-ft distance makes a high-60s/low-70s fastball play like a mid-90s MLB pitch by reaction time)',
+    url: 'https://gorout.com/softball-pitch-vs-baseball-pitch/',
+    retrievedAt: RETRIEVED_6,
+  },
+
   // --- Softball: rules, distance, governing bodies ---
   'sb-ncaa-leaping-2023': {
     id: 'sb-ncaa-leaping-2023',
