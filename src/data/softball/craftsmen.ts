@@ -265,42 +265,11 @@ const teaganKavan: Craftsman = {
   rights: 'original',
 }
 
-const keaganRothrock: Craftsman = {
-  slug: 'keagan-rothrock',
-  name: 'Keagan Rothrock',
-  kind: 'craftsman',
-  era: '2024-present',
-  hand: 'right',
-  signaturePitch: 'Fastball',
-  signaturePitchSlug: 'fastball',
-  specimenNo: 'SC-07',
-  tagline:
-    'Florida’s young ace — a freshman who carried a national contender’s innings and won SEC Freshman of the Year.',
-  intro:
-    'Keagan Rothrock arrived at Florida and immediately pitched like a veteran No. 1. As a freshman she handled the bulk of a national contender’s innings — more than half the regular season, nearly three-quarters of the postseason — and did it with poise that belied her age. She is the next-generation arm to watch, filed here early.',
-  signature: claim(
-    'A fastball that reaches into the 70s, paired with movement and command beyond her years — and the durability to be the staff ace from day one. She led the nation in wins and games started as a freshman and threw her first career no-hitter that February with 13 strikeouts.',
-    'sb-rothrock-wikipedia',
-    'reputable-analysis',
-  ),
-  mentalEdge: claim(
-    'Poise under load: as a true freshman she pitched roughly 58% of Florida’s regular-season innings and nearly 74% of its postseason innings, carrying a College World Series team without the workload showing. SEC Freshman of the Year out of the gate.',
-    'sb-rothrock-wikipedia',
-    'reputable-analysis',
-  ),
-  numbers: [
-    { label: '2024 freshman record', claim: claim('33-8', 'sb-rothrock-wikipedia', 'reputable-analysis', { note: 'Led the nation in wins and games started.' }) },
-    { label: '2024 ERA', claim: claim('2.48', 'sb-rothrock-wikipedia', 'reputable-analysis', { note: '194 strikeouts over 248 innings.' }) },
-    { label: 'Honor', claim: claim('SEC Freshman of the Year (2024)', 'sb-rothrock-wikipedia', 'reputable-analysis') },
-    { label: 'Postseason workload', claim: claim('~74% of Florida’s innings', 'sb-rothrock-d1softball', 'reputable-analysis', { approximate: true, note: 'As a freshman entering the 2024 Women’s College World Series.' }) },
-  ],
-  rights: 'original',
-}
-
 /*
   The hall, in reading order: Cat Osterman opens the wing, then the legends oldest
-  to newest (Fernandez, Finch, Abbott), then the current wave (Canady, Kavan,
-  Rothrock). Adding an arm is one const and one array entry.
+  to newest (Fernandez, Finch, Abbott), then the current wave (Canady, Kavan).
+  Each arm earns a distinct lane — the thesis, the legends, the NIL-era star, the
+  back-to-back champion. Adding an arm is one const and one array entry.
 */
 export const SOFTBALL_CRAFTSMEN: Craftsman[] = [
   catOsterman,
@@ -309,7 +278,6 @@ export const SOFTBALL_CRAFTSMEN: Craftsman[] = [
   monicaAbbott,
   niJareeCanady,
   teaganKavan,
-  keaganRothrock,
 ]
 
 const BY_SLUG: Record<string, Craftsman> = Object.fromEntries(

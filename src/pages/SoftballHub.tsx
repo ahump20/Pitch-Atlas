@@ -178,7 +178,7 @@ export function SoftballHub() {
         <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-bone-2">
           The arms that defined fastpitch from inside the circle. Cat Osterman opens the wing — the
           softball case that command and spin beat velocity — with the legends behind her (Fernandez,
-          Finch, Abbott) and the new wave already here (Canady, Kavan, Rothrock).
+          Finch, Abbott) and the new wave already here (Canady, Kavan).
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SOFTBALL_CRAFTSMEN.map((c) => (

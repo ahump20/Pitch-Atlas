@@ -1713,18 +1713,6 @@ export const SOURCES = {
     url: 'https://www.ncaa.com/news/softball/article/2025-04-17/top-10-college-softball-pitchers-season',
     retrievedAt: RETRIEVED_6,
   },
-  'sb-rothrock-wikipedia': {
-    id: 'sb-rothrock-wikipedia',
-    label: 'Wikipedia — Keagan Rothrock (Florida; 2024 freshman 33-8, 2.48 ERA, 194 K; SEC Freshman of the Year)',
-    url: 'https://en.wikipedia.org/wiki/Keagan_Rothrock',
-    retrievedAt: RETRIEVED_6,
-  },
-  'sb-rothrock-d1softball': {
-    id: 'sb-rothrock-d1softball',
-    label: 'D1Softball — Keagan Rothrock player page',
-    url: 'https://d1softball.com/player/1696026/',
-    retrievedAt: RETRIEVED_6,
-  },
   'sb-kavan-wikipedia': {
     id: 'sb-kavan-wikipedia',
     label: 'Wikipedia — Teagan Kavan (Texas; 2025 28-5/2.16 ERA/230 K; WCWS-record 31.2 scoreless innings; back-to-back MOP)',
