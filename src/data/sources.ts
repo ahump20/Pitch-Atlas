@@ -24,6 +24,11 @@ const RETRIEVED_4 = '2026-06-06'
 // re-verified and authored 2026-06-06; its own constant keeps the colophon honest.
 const RETRIEVED_5 = '2026-06-06'
 
+// The Softball wing (Cat Osterman + the fastpitch/slowpitch fundamentals) was
+// sourced in a 2026-06-07 research pass; its own constant keeps the colophon "as
+// of" line honest about the newest check without backdating the baseball wings.
+const RETRIEVED_6 = '2026-06-07'
+
 export const SOURCES = {
   'mlb-active-spin': {
     id: 'mlb-active-spin',
@@ -1533,6 +1538,110 @@ export const SOURCES = {
     label: "Baltimore Sun — How César Valdez's 'Dead Fish' changeup became a weapon at the back end of the Orioles' bullpen",
     url: 'https://www.baltimoresun.com/2020/09/19/how-csar-valdezs-dead-fish-changeup-became-a-weapon-at-the-backend-of-the-orioles-bullpen/',
     retrievedAt: RETRIEVED_5,
+  },
+
+  // --- Softball: Cat Osterman (the anchor craftsman) ---
+  'cat-wikipedia': {
+    id: 'cat-wikipedia',
+    label: 'Wikipedia — Cat Osterman (Texas records, Olympic medals, NPF, Athletes Unlimited)',
+    url: 'https://en.wikipedia.org/wiki/Cat_Osterman',
+    retrievedAt: RETRIEVED_6,
+  },
+  'cat-official-bio': {
+    id: 'cat-official-bio',
+    label: 'CatOsterman.com — official biography',
+    url: 'https://www.catosterman.com/cat',
+    retrievedAt: RETRIEVED_6,
+  },
+  'cat-si-2021': {
+    id: 'cat-si-2021',
+    label: "Sports Illustrated — Cat Osterman brings more than leadership and a drop ball to Team USA (Gwen Svekis quotes)",
+    url: 'https://www.si.com/olympics/2021/07/20/cat-osterman-still-elite-pitcher-team-usa-softball',
+    retrievedAt: RETRIEVED_6,
+  },
+  'cat-d1softball-spinmaster': {
+    id: 'cat-d1softball-spinmaster',
+    label: 'D1Softball — Pitching Analysis: Cat Osterman, The Spin Master',
+    url: 'https://d1softball.com/pitching-analysis-cat-osterman-the-spin-master/',
+    retrievedAt: RETRIEVED_6,
+  },
+
+  // --- Softball: fastpitch windmill mechanics + arm-health ---
+  'sb-friesen-2025-biomech': {
+    id: 'sb-friesen-2025-biomech',
+    label: 'Friesen et al., Biomechanics of Fastpitch Softball Pitching: A Practitioner’s Guide, Sports Health (2025) — PMC',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11969493/',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-barrentine-1998-jospt': {
+    id: 'sb-barrentine-1998-jospt',
+    label: 'Barrentine et al., Biomechanics of Windmill Softball Pitching With Implications About Injury Mechanisms at the Shoulder and Elbow, JOSPT (1998)',
+    url: 'https://www.jospt.org/doi/10.2519/jospt.1998.28.6.405',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-injury-epi-2024': {
+    id: 'sb-injury-epi-2024',
+    label: 'Fastpitch Softball Injuries: Epidemiology, Biomechanics, and Injury Prevention (2024) — PMC',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10917712/',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-shoulder-stress-pmc': {
+    id: 'sb-shoulder-stress-pmc',
+    label: 'Biomechanics Related to Increased Softball Pitcher Shoulder Stress: Implications for Injury Prevention — PMC',
+    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8739590/',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-ler-lowerbody': {
+    id: 'sb-ler-lowerbody',
+    label: 'Lower Extremity Review — Powering the Windmill: Lower-body mechanics of softball pitching',
+    url: 'https://lermagazine.com/cover_story/powering-the-windmill-lower-body-mechanics-of-softball-pitching',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-wiki-fastpitch': {
+    id: 'sb-wiki-fastpitch',
+    label: 'Wikipedia — Fastpitch softball (windmill delivery, pitch arsenal, distances)',
+    url: 'https://en.wikipedia.org/wiki/Fastpitch_softball',
+    retrievedAt: RETRIEVED_6,
+  },
+
+  // --- Softball: the riseball physics question ---
+  'sb-riseball-wiki': {
+    id: 'sb-riseball-wiki',
+    label: 'Wikipedia — Riseball (backspin, Magnus, the debated net rise)',
+    url: 'https://en.wikipedia.org/wiki/Riseball',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-armstrong-riseball': {
+    id: 'sb-armstrong-riseball',
+    label: 'Armstrong Atlantic State University, Applied Physics (Mullenax) — Rise Ball Physics (regulation vs. Lite-Flite trajectory)',
+    url: 'http://www.chemistry.armstrong.edu/baird/physics/htdocs/faculty/mullenax/research/riseball.html',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-studlife-magnus': {
+    id: 'sb-studlife-magnus',
+    label: 'Student Life — Thanks Magnus: physics defines softball’s signature pitch',
+    url: 'https://www.studlife.com/sports/softball-sports/2016/04/07/thanks-magnus-physics-defines-softballs-signature-pitch',
+    retrievedAt: RETRIEVED_6,
+  },
+
+  // --- Softball: rules, distance, governing bodies ---
+  'sb-ncaa-leaping-2023': {
+    id: 'sb-ncaa-leaping-2023',
+    label: 'NCAA.com — Softball pitchers can disengage from the playing surface while delivering a pitch (leaping legal 2023-24; crow hop still illegal)',
+    url: 'https://www.ncaa.com/news/softball/article/2023-08-11/softball-pitchers-can-disengage-playing-surface-while-delivering-pitch-next-season',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-usssa-slowpitch-rules': {
+    id: 'sb-usssa-slowpitch-rules',
+    label: 'USSSA — Slowpitch Rules & Legal Info (arc: min 3 ft after release, max 10 ft above ground)',
+    url: 'https://www.usssa.com/slowpitch/slowpitch-rules-and-legal-info',
+    retrievedAt: RETRIEVED_6,
+  },
+  'sb-usssa-slowpitch-rulebook-2025': {
+    id: 'sb-usssa-slowpitch-rulebook-2025',
+    label: 'USSSA — 2025 Slow Pitch Rule Book & By-Laws (PDF)',
+    url: 'https://cms.usssa.net/wp-content/uploads/sites/2/2025/01/usssa-slowpitch-2025-rulebook-final.pdf',
+    retrievedAt: RETRIEVED_6,
   },
 } satisfies Record<string, Source>
 

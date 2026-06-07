@@ -17,6 +17,11 @@ import { ComparePage } from './pages/ComparePage'
 import { KineticChainPage } from './pages/KineticChainPage'
 import { ClassifyPage } from './pages/ClassifyPage'
 import { GripsPage } from './pages/GripsPage'
+import { SoftballHub } from './pages/SoftballHub'
+import { SoftballFastpitchPage } from './pages/SoftballFastpitchPage'
+import { SoftballSlowpitchPage } from './pages/SoftballSlowpitchPage'
+import { SoftballPitchChapter } from './pages/SoftballPitchChapter'
+import { SoftballCraftsmanChapter } from './pages/SoftballCraftsmanChapter'
 import { NotFound } from './pages/NotFound'
 
 /*
@@ -48,6 +53,11 @@ export const routes: RouteObject[] = [
       { path: 'kinetic-chain', Component: KineticChainPage },
       { path: 'classify', Component: ClassifyPage },
       { path: 'grips', Component: GripsPage },
+      { path: 'softball', Component: SoftballHub },
+      { path: 'softball/fastpitch', Component: SoftballFastpitchPage },
+      { path: 'softball/slowpitch', Component: SoftballSlowpitchPage },
+      { path: 'softball/pitch/:slug', Component: SoftballPitchChapter },
+      { path: 'softball/craftsmen/:slug', Component: SoftballCraftsmanChapter },
       { path: '*', Component: NotFound },
     ],
   },

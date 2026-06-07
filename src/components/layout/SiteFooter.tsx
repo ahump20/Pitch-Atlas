@@ -10,6 +10,7 @@ import { BrandMark } from '../brand/BrandMark'
 
 const LINKS: { label: string; to: string }[] = [
   { label: 'The Pitch Index', to: '/repertoire' },
+  { label: 'Softball', to: '/softball' },
   { label: 'The Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },

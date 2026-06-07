@@ -21,6 +21,16 @@ export const ACCENT: Record<string, RefractorAccent> = {
   knuckleball: { c1: '#1A1326', c2: '#4A3A6E', c3: '#A99AD0' },
   forkball: { c1: '#0E1230', c2: '#2E2E8C', c3: '#6B6BE0' },
   eephus: { c1: '#2A1E06', c2: '#9C7A1E', c3: '#FFD24D' },
+
+  // The softball wing. Distinct from the baseball slugs (no collisions): the rise
+  // wears a climbing sky, the drop a grounded amber, the breakers the violet/magenta
+  // two-way pair. So a softball pitch wears one color across hub, chapter, and plate.
+  riseball: { c1: '#08203A', c2: '#1A6FB8', c3: '#6FD3FF' },
+  drop: { c1: '#2A1606', c2: '#9C5A12', c3: '#FFB23C' },
+  fastball: { c1: '#0A1B2E', c2: '#2C6A9C', c3: '#5CB4E4' },
+  changeup: { c1: '#08220F', c2: '#2C9E5E', c3: '#5CF0A6' },
+  curve: { c1: '#160B33', c2: '#5A35B5', c3: '#9A7BFF' },
+  screwball: { c1: '#2A0E2E', c2: '#9C2C7A', c3: '#FF6FB3' },
 }
 
 export const FALLBACK_ACCENT: RefractorAccent = { c1: '#10131C', c2: '#2C3650', c3: '#8A93AB' }

@@ -12,6 +12,7 @@ import { BrandMark } from '../brand/BrandMark'
 
 const NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
+  { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
   { label: 'Classify', to: '/classify' },
   { label: 'Build the Break', to: '/sandbox' },
@@ -21,6 +22,7 @@ const NAV: { label: string; to: string }[] = [
 
 const MOBILE_NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
+  { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
   { label: 'What pitch is this?', to: '/classify' },
   { label: 'Build the Break', to: '/sandbox' },

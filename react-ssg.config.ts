@@ -5,6 +5,7 @@ import { CRAFTSMEN } from './src/data/craftsmen'
 import { LOST_PITCHES } from './src/data/lost-pitches'
 import { BASIC_REPERTOIRE } from './src/data/repertoire'
 import { WINGS } from './src/data/knowledge'
+import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from './src/data/softball'
 
 /*
   Build-time prerender targets. The plugin discovers the static routes (/, /repertoire,
@@ -25,5 +26,7 @@ export default defineReactSsgConfig({
     ...CRAFTSMEN.map((c) => `/craftsmen/${c.slug}`),
     ...LOST_PITCHES.map((p) => `/lost-pitches/${p.slug}`),
     ...WINGS.map((w) => `/learn/${w.slug}`),
+    ...SOFTBALL_PITCHES.map((p) => `/softball/pitch/${p.slug}`),
+    ...SOFTBALL_CRAFTSMEN.map((c) => `/softball/craftsmen/${c.slug}`),
   ],
 })
