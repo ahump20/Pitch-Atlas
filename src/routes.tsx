@@ -1,7 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
 import { RootLayout } from './components/layout/RootLayout'
 import { AtlasHome } from './pages/AtlasHome'
-import { PitchIndexPage } from './pages/PitchIndexPage'
 import { PitchChapter } from './pages/PitchChapter'
 import { RepertoirePage } from './pages/RepertoirePage'
 import { RepertoireChapter } from './pages/RepertoireChapter'
@@ -33,7 +32,6 @@ export const routes: RouteObject[] = [
     Component: RootLayout,
     children: [
       { index: true, Component: AtlasHome },
-      { path: 'pitch-index', Component: PitchIndexPage },
       { path: 'pitch/:slug', Component: PitchChapter },
       { path: 'repertoire', Component: RepertoirePage },
       { path: 'repertoire/:id', Component: RepertoireChapter },

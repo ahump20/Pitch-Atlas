@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
@@ -19,22 +20,19 @@ function WingCard({ wing }: { wing: KnowledgeWing }) {
   return (
     <Link
       to={`/learn/${wing.slug}`}
-      className={`group relative flex h-full flex-col gap-3 rounded-sm border-l-2 bg-paper p-5 transition-colors ${
-        wing.educational
-          ? 'border-l-seam border border-dashed border-seam/35 hover:bg-paper-2/50'
-          : 'border-l-navy border-navy/15 hover:border-l-seam hover:bg-paper-2/40'
-      }`}
+      className={`rfx-plate group ${wing.educational ? 'is-edge is-dashed' : ''}`}
+      style={{ '--gc': wing.educational ? 'var(--color-seam-bright)' : 'var(--color-cyan)' } as CSSProperties}
     >
-      <span aria-hidden="true" className="absolute left-2.5 top-2.5 h-3 w-3 border-l border-t border-navy/30" />
-      <span aria-hidden="true" className="absolute right-2.5 top-2.5 h-3 w-3 border-r border-t border-navy/30" />
+      <span aria-hidden="true" className="absolute left-2.5 top-2.5 h-3 w-3 border-l border-t border-white/15" />
+      <span aria-hidden="true" className="absolute right-2.5 top-2.5 h-3 w-3 border-r border-t border-white/15" />
       <p className={`mono-label ${wing.educational ? 'text-seam' : 'text-ink-3'}`}>{wing.eyebrow}</p>
-      <h3 className="display text-2xl leading-tight text-navy">{wing.navLabel || wing.title}</h3>
-      <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-ink/90">{wing.summary}</p>
-      <div className="mt-auto flex items-center gap-x-3 border-t border-navy/12 pt-3">
+      <h3 className="rfx-platetitle text-2xl">{wing.navLabel || wing.title}</h3>
+      <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-bone-2">{wing.summary}</p>
+      <div className="mt-auto flex items-center gap-x-3 border-t border-white/10 pt-3">
         <span className={`mono-label ${wing.educational ? 'text-seam' : 'text-ink-3'}`}>
           {wing.educational ? 'Educational reference' : 'The craft'}
         </span>
-        <span className="ml-auto mono-label text-seam transition-colors group-hover:text-navy">Open →</span>
+        <span className="ml-auto mono-label text-cyan transition-colors group-hover:text-bone">Open →</span>
       </div>
     </Link>
   )
@@ -44,7 +42,7 @@ function Shelf({ label, wings }: { label: string; wings: KnowledgeWing[] }) {
   if (wings.length === 0) return null
   return (
     <div className="mb-14 last:mb-0">
-      <h2 className="mono-label mb-6 text-navy">{label}</h2>
+      <h2 className="rfx-skick mb-6">{label}</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {wings.map((w) => (
           <WingCard key={w.slug} wing={w} />
@@ -87,10 +85,10 @@ export function KnowledgeHub() {
         }
       />
 
-      <section className="bg-paper">
+      <section>
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
           {WINGS.length === 0 ? (
-            <p className="max-w-[56ch] text-lg leading-relaxed text-ink-2">
+            <p className="max-w-[56ch] text-lg leading-relaxed text-bone-2">
               The teaching wings are being filed. Check back shortly.
             </p>
           ) : (

@@ -2,31 +2,17 @@ import { Link } from 'react-router-dom'
 import type { PitchAtlasEntry } from '../../data/types'
 import { SITE } from '../../config/site'
 import { scrollToId } from '../../lib/scroll'
-import { BallStage } from '../ball/BallStage'
+import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
 
 /*
-  The home hero on the void: the holographic wordmark states the product, the live
-  seam-true ball is the one 3D actor (it degrades to the SVG schematic with no
-  WebGL), and the two calls open the set and the Craftsmen hall. Foil is
-  decoration; the readings are sourced.
+  The home hero on the void. The holographic wordmark states the product; the front
+  door IS the signature artifact — the featured pitch (the four-seam, specimen 00, the
+  gold 1/1) struck as a large, alive holographic card, its real grip clip looping in the
+  window. The two calls open the set and the Craftsmen hall. The 3D seam-true ball still
+  lives on every /pitch/<slug> chapter; the home leads with the card theme. Foil is
+  decoration; the readings on the card are sourced.
 */
-/* A floating annotation pinned around the hero ball: a glowing dot + a sourced
-   one-liner, so the ball reads as an instrument, not a decoration. */
-function HeroBadge({ className, color, label }: { className: string; color: string; label: string }) {
-  return (
-    <span
-      className={`absolute inline-flex items-center gap-2 rounded-full border border-white/12 bg-[#08080e]/75 px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.12em] text-bone backdrop-blur ${className}`}
-    >
-      <i className="rfx-dot" style={{ background: color, color }} aria-hidden="true" />
-      {label}
-    </span>
-  )
-}
-
 export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
-  const { canonical, display, seam, motion } = featured
-  const ride = `${motion.ivbInches > 0 ? '+' : ''}${motion.ivbInches}″ induced ride`
-
   return (
     <section id="top" className="relative overflow-hidden">
       <div className="relative mx-auto grid min-h-[calc(100dvh-7rem)] max-w-[1320px] grid-cols-1 items-center gap-10 px-5 pb-16 pt-12 md:grid-cols-12 md:gap-8 md:px-8 md:pb-20 md:pt-16">
@@ -66,39 +52,16 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
         </div>
 
         <div className="order-1 md:order-2 md:col-span-6">
-          <div className="relative mx-auto aspect-square w-full max-w-[min(86vw,540px)]">
+          <div className="relative mx-auto w-full max-w-[460px]">
             <div
               aria-hidden="true"
-              className="absolute inset-[6%] rounded-full"
-              style={{ background: 'radial-gradient(circle at 50% 44%, rgba(238,240,246,0.14), transparent 62%)' }}
-            />
-            <div
-              aria-hidden="true"
-              className="absolute inset-0 rounded-full opacity-30"
+              className="absolute inset-[-10%] rounded-[44px]"
               style={{
                 background:
-                  'conic-gradient(from 0deg, transparent, color-mix(in srgb, var(--color-cyan) 40%, transparent), transparent 40%)',
-                mask: 'radial-gradient(closest-side, transparent 78%, #000 79%)',
-                WebkitMask: 'radial-gradient(closest-side, transparent 78%, #000 79%)',
-                animation: 'rfx-spin 18s linear infinite',
+                  'radial-gradient(58% 48% at 50% 28%, color-mix(in srgb, var(--color-cyan) 18%, transparent), transparent 70%)',
               }}
             />
-            <BallStage
-              entry={featured}
-              grip
-              faceGrip
-              autoSpin={false}
-              surface="stage"
-              view={canonical.gripModel.defaultView}
-              className="h-full w-full"
-            />
-            <HeroBadge className="left-[-2%] top-[7%]" color="var(--color-cyan)" label="Spin axis, authored" />
-            <HeroBadge className="bottom-[14%] right-[-3%]" color="var(--color-seam-bright)" label="Seam, real geometry" />
-            <HeroBadge className="bottom-[-2%] left-[16%]" color="var(--color-ok-bright)" label={`${ride} · official data`} />
-          </div>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 md:justify-end">
-            <p className="mono-label-stage">Specimen {display.specimenNo}</p>
-            <p className="mono-label-stage">{seam.accuracyLevel}</p>
+            <PitchSpecimenCard entry={featured} maxWidth={460} />
           </div>
         </div>
       </div>

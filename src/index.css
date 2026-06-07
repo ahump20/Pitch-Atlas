@@ -612,6 +612,45 @@
     color: #2a1d05; background: var(--gold); border-radius: 4px; padding: 2px 6px; flex: 0 0 auto;
   }
 
+  /* Tier-B plate: the directory / archive card in the refractor family — the
+     card-shaped sibling of .rfx-entry. Mid-density: a matte field with a left accent
+     edge keyed to --gc (the pitch/family accent), an Anton title, mono meta, a cyan
+     affordance. Not a 5:7 trading card, but unmistakably the same DNA. The Pitch
+     Index plates, the craftsmen plates, the lost-pitch plates, and the Learn wings
+     all share this one source. Variants: is-filed (gold — a filed specimen), is-edge
+     (seam — a banned/alias/illusion/lost item), is-dashed (a may-not-exist / showman
+     frame). The card sets --gc inline from accentForSlug(). */
+  .rfx-plate {
+    position: relative; display: flex; flex-direction: column; gap: 14px; height: 100%;
+    border-radius: 13px; padding: 20px;
+    background: linear-gradient(120deg, color-mix(in srgb, var(--gc, #37D6FF) 7%, var(--color-press)), var(--color-press));
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-left: 2px solid color-mix(in srgb, var(--gc, #37D6FF) 75%, transparent);
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+  }
+  .rfx-plate:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--gc, #37D6FF) 42%, rgba(255, 255, 255, .08));
+    border-left-color: var(--gc, #37D6FF);
+    background: linear-gradient(120deg, color-mix(in srgb, var(--gc, #37D6FF) 12%, var(--color-press)), var(--color-press));
+  }
+  .rfx-plate.is-filed {
+    border-left-color: color-mix(in srgb, #caa14a 82%, transparent);
+    background: linear-gradient(120deg, rgba(202, 161, 74, .10), var(--color-press));
+  }
+  .rfx-plate.is-filed:hover { border-color: color-mix(in srgb, #caa14a 55%, transparent); border-left-color: #caa14a; }
+  .rfx-plate.is-edge { border-left-color: color-mix(in srgb, var(--color-seam-bright) 82%, transparent); }
+  .rfx-plate.is-edge:hover { border-color: color-mix(in srgb, var(--color-seam-bright) 50%, transparent); border-left-color: var(--color-seam-bright); }
+  .rfx-plate.is-dashed { border-style: dashed; border-left-style: solid; }
+
+  /* the Anton title that sits on a plate (and on the index rows). Bone, condensed,
+     uppercase — the card-banner identity at list scale. Replaces the old serif
+     `.display text-navy` heading on every card. */
+  .rfx-platetitle {
+    font-family: var(--font-athletic); text-transform: uppercase; letter-spacing: .01em;
+    line-height: .98; color: var(--color-bone);
+  }
+
   /* Drop a cream-token section onto the void without rewriting its utilities. The
      Tailwind color classes resolve these vars, so remapping them here recolors
      backgrounds, text, and borders in one scope. Used to host the community

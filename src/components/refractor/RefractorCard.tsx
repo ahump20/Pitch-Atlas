@@ -47,6 +47,8 @@ export interface RefractorCardProps {
   gripSource?: { label: string; color: string }
   /** Top-right micro-tab. Defaults to "SPECIMEN". */
   wmTab?: string
+  /** Override the outer max width (px). Defaults to 360; the hero uses a larger card. */
+  maxWidth?: number
   className?: string
 }
 
@@ -65,6 +67,7 @@ export function RefractorCard({
   crumb,
   gripSource,
   wmTab = 'SPECIMEN',
+  maxWidth = 360,
   className,
 }: RefractorCardProps) {
   const { ref: tiltRef, onPointerMove, onPointerLeave } = useRefractorTilt<HTMLElement>()
@@ -165,7 +168,7 @@ export function RefractorCard({
   const cardClass = `rfx-card${gold ? ' is-gold' : ''} ${className ?? ''}`
 
   return (
-    <div style={{ perspective: '1500px', width: '100%', maxWidth: 360 }}>
+    <div style={{ perspective: '1500px', width: '100%', maxWidth }}>
       {to ? (
         <Link
           to={to}

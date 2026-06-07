@@ -4,6 +4,9 @@ import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
+import { IndexCard } from '../index/IndexCard'
+
+type IndexView = 'rows' | 'cards'
 
 /*
   The Pitch Index directory, in the refractor language. Every accepted pitch by
@@ -112,6 +115,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
 export function PitchIndex({ id }: { id?: string }) {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<FamilyFilter>('all')
+  const [view, setView] = useState<IndexView>('rows')
   const q = query.trim().toLowerCase()
 
   const groups = useMemo(() => {
@@ -150,7 +154,7 @@ export function PitchIndex({ id }: { id?: string }) {
             />
           </span>
         </label>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-2">
           {FILTERS.map((f) => (
             <button
               key={f.key}
@@ -162,6 +166,28 @@ export function PitchIndex({ id }: { id?: string }) {
               {f.label}
             </button>
           ))}
+          <div
+            className="ml-auto inline-flex rounded-full border border-white/14 p-0.5"
+            role="group"
+            aria-label="Index view"
+          >
+            <button
+              type="button"
+              aria-pressed={view === 'rows'}
+              onClick={() => setView('rows')}
+              className="rfx-seg rounded-full"
+            >
+              Rows
+            </button>
+            <button
+              type="button"
+              aria-pressed={view === 'cards'}
+              onClick={() => setView('cards')}
+              className="rfx-seg rounded-full"
+            >
+              Cards
+            </button>
+          </div>
         </div>
         <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">{countLabel}</p>
       </div>
@@ -192,11 +218,19 @@ export function PitchIndex({ id }: { id?: string }) {
                 {entries.length} in family
               </span>
             </div>
-            <div className="grid gap-[11px] [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
-              {entries.map((e) => (
-                <EntryRow key={e.id} entry={e} accent={accent} />
-              ))}
-            </div>
+            {view === 'rows' ? (
+              <div className="grid gap-[11px] [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
+                {entries.map((e) => (
+                  <EntryRow key={e.id} entry={e} accent={accent} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))]">
+                {entries.map((e) => (
+                  <IndexCard key={e.id} variant="repertoire" entry={e} />
+                ))}
+              </div>
+            )}
           </section>
         )
       })}

@@ -26,7 +26,7 @@ export function isEdgeStatus(status: RepertoireStatus): boolean {
 export function StatusBadge({ status }: { status: RepertoireStatus }) {
   const flagged = isEdgeStatus(status)
   return (
-    <span className={`mono-label shrink-0 ${flagged ? 'text-seam' : 'text-navy'}`}>
+    <span className={`mono-label shrink-0 ${flagged ? 'text-seam' : 'text-bone-2'}`}>
       {STATUS_LABEL[status]}
     </span>
   )
