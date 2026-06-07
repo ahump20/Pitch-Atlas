@@ -1,8 +1,37 @@
 import { useId, useRef, useState } from 'react'
+import { FlagIcon, ImagePlusIcon, MessageCircleIcon, RefreshCwIcon, Trash2Icon } from 'lucide-react'
+import { toast } from 'sonner'
 import { useDiscussion } from '../../hooks/useDiscussion'
 import type { DiscussionMedia, DiscussionPost } from '../../lib/discussion'
 import { sniffMediaKind } from '../../lib/discussion'
 import { DISCUSSION_LIMITS, MEDIA_ACCEPT, UPLOAD_TERMS } from '../../data/discussion'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+} from '../ui/alert-dialog'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '../ui/dialog'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '../ui/field'
+import { InputGroup, InputGroupInput, InputGroupTextarea } from '../ui/input-group'
+import { Separator } from '../ui/separator'
+import { Skeleton } from '../ui/skeleton'
 
 /*
   Per-topic discussion: one component, many homes (a pitch page, a basic repertoire
@@ -25,9 +54,14 @@ function timeAgo(iso: string): string {
 function MediaItem({ m }: { m: DiscussionMedia }) {
   if (!m.url) {
     return (
-      <div className="rfx-panel flex aspect-video items-center justify-center border-dashed text-center">
-        <span className="mono-label text-ink-3">Media under review</span>
-      </div>
+      <Empty className="aspect-video border border-dashed border-white/12 bg-card/70">
+        <EmptyHeader>
+          <EmptyMedia variant="icon" className="bg-muted text-muted-foreground">
+            <ImagePlusIcon aria-hidden="true" />
+          </EmptyMedia>
+          <EmptyTitle className="mono-label text-ink-3">Media under review</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
     )
   }
   if (m.kind === 'image') {
@@ -66,7 +100,11 @@ function PostBody({
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span className="rfx-athletic rfx-skew text-base text-cyan">{post.displayName}</span>
         <span className="mono-label text-ink-3">{timeAgo(post.createdAt)}</span>
-        {post.viewerIsAuthor ? <span className="mono-label text-seam">you</span> : null}
+        {post.viewerIsAuthor ? (
+          <Badge variant="destructive" className="h-auto px-1.5 py-0 font-mono text-[9px] uppercase tracking-[0.12em]">
+            you
+          </Badge>
+        ) : null}
       </div>
       <p className="mt-1.5 whitespace-pre-wrap text-[0.95rem] leading-relaxed text-bone">{post.body}</p>
 
@@ -89,29 +127,37 @@ function PostBody({
 
       <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
         {depth === 0 ? (
-          <button
+          <Button
             type="button"
             onClick={() => onReply(post.id)}
-            className="mono-label text-ink-3 transition-colors hover:text-seam"
+            variant="ghost"
+            size="sm"
+            className="h-auto px-0 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-3 hover:text-seam"
           >
             Reply
-          </button>
+          </Button>
         ) : null}
-        <button
+        <Button
           type="button"
           onClick={() => onReport({ postId: post.id })}
-          className="mono-label text-ink-3 transition-colors hover:text-seam"
+          variant="ghost"
+          size="sm"
+          className="h-auto px-0 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-3 hover:text-seam"
         >
+          <FlagIcon data-icon="inline-start" />
           Report
-        </button>
+        </Button>
         {post.viewerIsAuthor ? (
-          <button
+          <Button
             type="button"
             onClick={() => onDelete(post.id)}
-            className="mono-label text-ink-3 transition-colors hover:text-seam"
+            variant="ghost"
+            size="sm"
+            className="h-auto px-0 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-ink-3 hover:text-seam"
           >
+            <Trash2Icon data-icon="inline-start" />
             Delete
-          </button>
+          </Button>
         ) : null}
       </div>
     </article>
@@ -187,30 +233,45 @@ function Composer({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-      <input
-        type="text"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        maxLength={DISCUSSION_LIMITS.displayNameMax}
-        placeholder="Your name"
-        className="rfx-input text-sm"
-      />
-      <textarea
-        value={body}
-        onChange={(e) => setBody(e.target.value)}
-        maxLength={DISCUSSION_LIMITS.bodyMax}
-        rows={compact ? 2 : 3}
-        placeholder={placeholder}
-        className="rfx-input text-sm leading-relaxed"
-      />
+    <form onSubmit={handleSubmit}>
+      <FieldGroup>
+        <Field data-invalid={err?.includes('name') ? true : undefined}>
+          <FieldLabel htmlFor={`${fileId}-name`}>Your name</FieldLabel>
+          <InputGroup className="h-10 bg-card">
+            <InputGroupInput
+              id={`${fileId}-name`}
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={DISCUSSION_LIMITS.displayNameMax}
+              placeholder="Your name"
+              aria-invalid={err?.includes('name') ? true : undefined}
+            />
+          </InputGroup>
+          <FieldDescription>A handle is enough. No real name required.</FieldDescription>
+        </Field>
+
+        <Field data-invalid={err === 'Write something first.' ? true : undefined}>
+          <FieldLabel htmlFor={`${fileId}-body`}>Comment</FieldLabel>
+          <InputGroup className="h-auto bg-card">
+            <InputGroupTextarea
+              id={`${fileId}-body`}
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
+              maxLength={DISCUSSION_LIMITS.bodyMax}
+              rows={compact ? 2 : 3}
+              placeholder={placeholder}
+              aria-invalid={err === 'Write something first.' ? true : undefined}
+              className="leading-relaxed"
+            />
+          </InputGroup>
+          <FieldDescription>{body.length}/{DISCUSSION_LIMITS.bodyMax}</FieldDescription>
+        </Field>
 
       {/* Media: gated behind a one-time terms acceptance. */}
       {acceptedTerms ? (
-        <div className="flex flex-col gap-2">
-          <label htmlFor={fileId} className="mono-label cursor-pointer text-cyan transition-colors hover:text-bone">
-            + Add photos or video
-          </label>
+        <Field>
+          <FieldLabel htmlFor={fileId}>Photos or video</FieldLabel>
           <input
             id={fileId}
             ref={fileRef}
@@ -220,50 +281,63 @@ function Composer({
             onChange={(e) => void pickFiles(e.target.files)}
             className="sr-only"
           />
+          <Button type="button" variant="outline" size="sm" asChild className="w-fit">
+            <label htmlFor={fileId} className="cursor-pointer">
+              <ImagePlusIcon data-icon="inline-start" />
+              Add media
+            </label>
+          </Button>
           {files.length > 0 ? (
             <ul className="flex flex-wrap gap-2">
               {files.map((f) => (
-                <li key={f.name} className="mono-label rfx-panel px-2 py-1 text-bone-2">
-                  {f.name}
+                <li key={f.name}>
+                  <Badge variant="outline" className="max-w-[18rem] truncate font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2">
+                    {f.name}
+                  </Badge>
                 </li>
               ))}
             </ul>
           ) : null}
-        </div>
+        </Field>
       ) : (
-        <details className="rfx-panel border-dashed px-3 py-2">
-          <summary className="mono-label cursor-pointer text-bone-2">Want to attach photos or video?</summary>
+        <Alert className="border-dashed border-white/15 bg-card">
+          <ImagePlusIcon aria-hidden="true" />
+          <AlertTitle className="mono-label text-bone-2">Want to attach photos or video?</AlertTitle>
+          <AlertDescription>
           <ul className="mt-2 flex list-disc flex-col gap-1 pl-5 text-xs leading-snug text-bone-2">
             {UPLOAD_TERMS.map((t) => (
               <li key={t}>{t}</li>
             ))}
           </ul>
-          <button
+          <Button
             type="button"
             onClick={() => void onAcceptTerms()}
-            className="mono-label mt-3 rounded-sm bg-cyan px-3 py-1.5 font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)]"
+            size="sm"
+            className="mt-3"
           >
-            I agree — enable uploads
-          </button>
-        </details>
+            I agree, enable uploads
+          </Button>
+          </AlertDescription>
+        </Alert>
       )}
 
-      {err ? <p className="text-sm text-seam">{err}</p> : null}
+      {err ? <FieldError>{err}</FieldError> : null}
 
       <div className="flex items-center gap-3">
-        <button
+        <Button
           type="submit"
           disabled={busy}
-          className="rounded-sm bg-cyan px-4 py-2 font-mono text-xs uppercase tracking-[0.1em] font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] disabled:opacity-60"
+          className="font-mono text-xs uppercase tracking-[0.1em]"
         >
           {busy ? 'Posting…' : 'Post'}
-        </button>
+        </Button>
         {onCancel ? (
-          <button type="button" onClick={onCancel} className="mono-label text-ink-3 transition-colors hover:text-seam">
+          <Button type="button" onClick={onCancel} variant="ghost" size="sm" className="font-mono text-xs uppercase tracking-[0.12em] text-ink-3 hover:text-seam">
             Cancel
-          </button>
+          </Button>
         ) : null}
       </div>
+      </FieldGroup>
     </form>
   )
 }
@@ -272,11 +346,13 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
   const d = useDiscussion(topicKey, open)
   const [replyTo, setReplyTo] = useState<string | null>(null)
   const [reporting, setReporting] = useState<{ postId: string } | { mediaId: string } | null>(null)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   async function confirmReport(reason: string) {
     if (!reporting) return
     try {
       await d.reportTarget(reporting, reason)
+      toast.success('Report sent')
     } finally {
       setReporting(null)
     }
@@ -285,21 +361,23 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
   if (d.status === 'loading' || d.status === 'idle') {
     return (
       <div className="flex flex-col gap-3" aria-busy="true">
-        <div className="h-4 w-1/3 animate-pulse rounded bg-[rgba(255,255,255,0.08)]" />
-        <div className="h-16 w-full animate-pulse rounded bg-[rgba(255,255,255,0.08)]" />
-        <div className="h-16 w-full animate-pulse rounded bg-[rgba(255,255,255,0.08)]" />
+        <Skeleton className="h-4 w-1/3" />
+        <Skeleton className="h-16 w-full" />
+        <Skeleton className="h-16 w-full" />
       </div>
     )
   }
 
   if (d.status === 'error') {
     return (
-      <div className="flex flex-col items-start gap-3">
-        <p className="text-sm text-bone-2">Could not load the discussion. {d.error}</p>
-        <button onClick={d.refresh} className="mono-label rounded-sm border border-[rgba(255,255,255,0.12)] px-3 py-1.5 text-bone-2 hover:border-seam hover:text-seam">
+      <Alert variant="destructive" className="bg-card">
+        <AlertTitle>Could not load the discussion.</AlertTitle>
+        <AlertDescription>{d.error}</AlertDescription>
+        <Button onClick={d.refresh} variant="outline" size="sm" className="mt-3 w-fit">
+          <RefreshCwIcon data-icon="inline-start" />
           Try again
-        </button>
-      </div>
+        </Button>
+      </Alert>
     )
   }
 
@@ -313,13 +391,22 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
         placeholder="Share a breakdown, a grip tweak, a clip — keep it about the pitch."
       />
 
-      <p className="border-t border-[rgba(255,255,255,0.12)] pt-3 text-xs leading-relaxed text-ink-3">
+      <Separator />
+      <p className="text-xs leading-relaxed text-ink-3">
         Shared as experience and technique, not personal medical advice — nothing here replaces a coach or
         physician. Reports from a few accounts auto-hide a post or a clip for review.
       </p>
 
       {d.posts.length === 0 ? (
-        <p className="text-sm text-bone-2">No comments yet. Start the thread.</p>
+        <Empty className="border border-dashed border-white/12 bg-card/70 py-12">
+          <EmptyHeader>
+            <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
+              <MessageCircleIcon aria-hidden="true" />
+            </EmptyMedia>
+            <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">No comments yet</EmptyTitle>
+            <EmptyDescription>Start the thread with a grip cue, a clip, or a breakdown.</EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : (
         <ul className="flex flex-col gap-7">
           {d.posts.map((post) => (
@@ -329,7 +416,7 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
                 depth={0}
                 onReply={setReplyTo}
                 onReport={setReporting}
-                onDelete={d.remove}
+                onDelete={setDeleting}
               />
               {post.replies.length > 0 ? (
                 <ul className="ml-2 flex flex-col gap-4">
@@ -340,7 +427,7 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
                         depth={1}
                         onReply={setReplyTo}
                         onReport={setReporting}
-                        onDelete={d.remove}
+                        onDelete={setDeleting}
                       />
                     </li>
                   ))}
@@ -367,15 +454,44 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
         </ul>
       )}
 
-      {reporting ? (
-        <div className="rfx-panel border-seam/40 p-4">
-          <p className="mono-label mb-2 text-seam">Report this?</p>
-          <p className="mb-3 text-sm text-bone-2">
-            Tell us briefly what is wrong (optional). A few reports hide it for review.
-          </p>
+      <Dialog open={Boolean(reporting)} onOpenChange={(next) => !next && setReporting(null)}>
+        <DialogContent className="bg-popover">
+          <DialogHeader>
+            <DialogTitle>Report this?</DialogTitle>
+            <DialogDescription>
+              Tell us briefly what is wrong. A few reports hide it for review.
+            </DialogDescription>
+          </DialogHeader>
           <ReportForm onConfirm={confirmReport} onCancel={() => setReporting(null)} />
-        </div>
-      ) : null}
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={Boolean(deleting)} onOpenChange={(next) => !next && setDeleting(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogMedia className="text-destructive">
+              <Trash2Icon aria-hidden="true" />
+            </AlertDialogMedia>
+            <AlertDialogTitle>Delete this post?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This removes your post from the thread. Media attached to it stops showing with the post.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={() => {
+                if (!deleting) return
+                void d.remove(deleting)
+                setDeleting(null)
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   )
 }
@@ -383,28 +499,34 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
 function ReportForm({ onConfirm, onCancel }: { onConfirm: (reason: string) => void; onCancel: () => void }) {
   const [reason, setReason] = useState('')
   return (
-    <div className="flex flex-col gap-3">
-      <input
-        type="text"
-        value={reason}
-        onChange={(e) => setReason(e.target.value)}
-        maxLength={300}
-        placeholder="What is wrong?"
-        className="rfx-input text-sm"
-      />
-      <div className="flex items-center gap-3">
-        <button
+    <FieldGroup>
+      <Field>
+        <FieldLabel htmlFor="discussion-report-reason">Reason</FieldLabel>
+        <InputGroup className="h-10 bg-card">
+          <InputGroupInput
+            id="discussion-report-reason"
+            type="text"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            maxLength={300}
+            placeholder="What is wrong?"
+          />
+        </InputGroup>
+        <FieldDescription>Optional. Keep it short.</FieldDescription>
+      </Field>
+      <DialogFooter className="mt-1">
+        <Button
           type="button"
           onClick={() => onConfirm(reason.trim())}
-          className="rounded-sm bg-cyan px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] font-semibold text-[#06121b] hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)]"
+          className="font-mono text-xs uppercase tracking-[0.1em]"
         >
           Submit report
-        </button>
-        <button type="button" onClick={onCancel} className="mono-label text-ink-3 hover:text-seam">
+        </Button>
+        <Button type="button" onClick={onCancel} variant="outline" className="font-mono text-xs uppercase tracking-[0.1em]">
           Cancel
-        </button>
-      </div>
-    </div>
+        </Button>
+      </DialogFooter>
+    </FieldGroup>
   )
 }
 

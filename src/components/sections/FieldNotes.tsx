@@ -1,4 +1,5 @@
-import { useState, type CSSProperties, type FormEvent, type ReactNode } from 'react'
+import { useId, useState, type CSSProperties, type FormEvent } from 'react'
+import { FlagIcon, RefreshCwIcon, TrophyIcon } from 'lucide-react'
 import type { PitchAtlasEntry } from '../../data/types'
 import {
   RANK_SIGNALS,
@@ -25,6 +26,22 @@ import {
 } from '../../lib/community'
 import { useFieldNotes } from '../../hooks/useFieldNotes'
 import { ConfidenceLabel } from '../provenance/ConfidenceLabel'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { Field as UiField, FieldDescription, FieldError, FieldGroup, FieldLabel } from '../ui/field'
+import { InputGroup, InputGroupInput, InputGroupTextarea } from '../ui/input-group'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select'
+import { Separator } from '../ui/separator'
+import { Skeleton } from '../ui/skeleton'
 
 /*
   Tier 03, the living layer. The explainer on the left (how notes rank, the
@@ -51,20 +68,6 @@ function timeAgo(iso: string): string {
 
 function labelFor<T extends string>(opts: { value: T; label: string }[], v: T | null): string {
   return (v && opts.find((o) => o.value === v)?.label) || ''
-}
-
-const inputClass = 'rfx-input w-full text-sm'
-const selectClass = 'rfx-select w-full text-sm'
-const labelClass = 'mono-label mb-1.5 block text-bone-2'
-
-function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <label className="block">
-      <span className={labelClass}>{label}</span>
-      {children}
-      {hint ? <span className="mt-1 block text-xs leading-snug text-bone-2">{hint}</span> : null}
-    </label>
-  )
 }
 
 // ---- the contributor identity + claim-your-handle strip ----
@@ -121,23 +124,24 @@ function IdentityStrip({
             notes if you switch devices, never required.
           </p>
           <div className="flex gap-2">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@email.com"
-              aria-label="Email to claim your contributor account"
-              className={inputClass}
-            />
-            <button
+            <InputGroup className="h-10 bg-card">
+              <InputGroupInput
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@email.com"
+                aria-label="Email to claim your contributor account"
+              />
+            </InputGroup>
+            <Button
               type="submit"
               disabled={state === 'sending' || !email.includes('@')}
-              className="shrink-0 rounded-sm bg-cyan px-4 py-2 font-mono text-xs tracking-wide font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] disabled:opacity-50"
+              className="shrink-0 font-mono text-xs tracking-wide"
             >
               {state === 'sending' ? 'Sending…' : 'Claim'}
-            </button>
+            </Button>
           </div>
-          {state === 'error' ? <p className="mt-2 text-xs text-seam">{msg}</p> : null}
+          {state === 'error' ? <FieldError className="mt-2">{msg}</FieldError> : null}
         </form>
       )}
     </div>
@@ -220,71 +224,80 @@ function NoteCard({
 
       <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-[rgba(255,255,255,0.12)] pt-4">
         {note.viewerIsAuthor ? (
-          <span className="mono-label text-ink-3">Your note</span>
+          <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Your note</Badge>
         ) : (
           <>
-            <button
+            <Button
               type="button"
               onClick={() => onTried(note.id)}
               aria-pressed={note.viewerTried}
-              className={`rounded-sm border px-3 py-1.5 font-mono text-xs tracking-wide transition-colors ${
-                note.viewerTried ? 'border-seam bg-seam/10 text-seam' : 'border-[rgba(255,255,255,0.12)] text-bone-2 hover:border-[rgba(255,255,255,0.28)]'
-              }`}
+              variant={note.viewerTried ? 'destructive' : 'outline'}
+              size="sm"
+              className="font-mono text-xs tracking-wide"
             >
               {note.viewerTried ? '✓ Tried this' : 'Tried this'} · {note.adoptionCount}
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
               onClick={() => onHelpful(note.id)}
               aria-pressed={note.viewerHelpful}
-              className={`rounded-sm border px-3 py-1.5 font-mono text-xs tracking-wide transition-colors ${
-                note.viewerHelpful ? 'border-seam bg-seam/10 text-seam' : 'border-[rgba(255,255,255,0.12)] text-bone-2 hover:border-[rgba(255,255,255,0.28)]'
-              }`}
+              variant={note.viewerHelpful ? 'destructive' : 'outline'}
+              size="sm"
+              className="font-mono text-xs tracking-wide"
             >
               {note.viewerHelpful ? '✓ Helpful' : 'Helpful'} · {note.helpfulCount}
-            </button>
+            </Button>
           </>
         )}
         {reportState === 'idle' ? (
-          <button
+          <Button
             type="button"
             onClick={() => setReportState('choosing')}
+            variant="ghost"
+            size="sm"
             className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam"
           >
+            <FlagIcon data-icon="inline-start" />
             Report
-          </button>
+          </Button>
         ) : reportState === 'sending' ? (
           <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagging…</span>
         ) : reportState === 'done' ? (
           <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagged for review. Thank you.</span>
         ) : reportState === 'failed' ? (
-          <button
+          <Button
             type="button"
             onClick={() => setReportState('choosing')}
+            variant="ghost"
+            size="sm"
             className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-seam hover:text-bone"
           >
             Couldn't send. Tap to retry.
-          </button>
+          </Button>
         ) : (
           <span className="ml-auto flex flex-wrap items-center gap-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flag as</span>
             {REPORT_REASONS.map((r) => (
-              <button
+              <Button
                 key={r.value}
                 type="button"
                 onClick={() => flag(r.value)}
-                className="rounded-sm border border-[rgba(255,255,255,0.12)] px-2 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:border-seam hover:text-seam"
+                variant="outline"
+                size="sm"
+                className="h-7 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:text-seam"
               >
                 {r.label}
-              </button>
+              </Button>
             ))}
-            <button
+            <Button
               type="button"
               onClick={() => setReportState('idle')}
+              variant="ghost"
+              size="sm"
               className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-bone"
             >
               Cancel
-            </button>
+            </Button>
           </span>
         )}
       </div>
@@ -323,6 +336,50 @@ const EMPTY_FORM: FormState = {
   note: '',
   evidenceUrl: '',
   evidenceLabel: '',
+}
+
+function SelectField<T extends string>({
+  label,
+  hint,
+  value,
+  options,
+  noneLabel,
+  onChange,
+}: {
+  label: string
+  hint?: string
+  value: T | ''
+  options: { value: T; label: string }[]
+  noneLabel?: string
+  onChange: (value: T | '') => void
+}) {
+  const id = useId()
+  const noneValue = '__none'
+
+  return (
+    <UiField>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <Select
+        value={value || noneValue}
+        onValueChange={(next) => onChange(next === noneValue ? '' : (next as T))}
+      >
+        <SelectTrigger id={id} aria-label={label} className="h-10 w-full bg-card">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {noneLabel ? <SelectItem value={noneValue}>{noneLabel}</SelectItem> : null}
+            {options.map((o) => (
+              <SelectItem key={o.value} value={o.value}>
+                {o.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      {hint ? <FieldDescription>{hint}</FieldDescription> : null}
+    </UiField>
+  )
 }
 
 function SubmitForm({
@@ -398,16 +455,16 @@ function SubmitForm({
             Posted. It is live below. Thank you for shaping the bar.
           </p>
         ) : null}
-        <button
+        <Button
           type="button"
           onClick={() => {
             setOpen(true)
             setDone(false)
           }}
-          className="mt-4 inline-flex items-center gap-2 rounded-sm bg-cyan px-5 py-3 font-mono text-sm tracking-wide font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] active:translate-y-px"
+          className="mt-4 font-mono text-sm tracking-wide"
         >
           Write a note <span aria-hidden="true">→</span>
-        </button>
+        </Button>
       </div>
     )
   }
@@ -415,94 +472,120 @@ function SubmitForm({
   return (
     <form onSubmit={submit} className="rfx-panel p-1.5">
       <div className="rounded-[2px] border border-[rgba(255,255,255,0.12)] p-5">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex items-center justify-between gap-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">New field note · {pitchName}</span>
-          <button type="button" onClick={() => setOpen(false)} className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam">
+          <Button type="button" onClick={() => setOpen(false)} variant="ghost" size="sm" className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam">
             Cancel
-          </button>
+          </Button>
         </div>
 
-        <div className="flex flex-col gap-4">
-          <Field label="Submitted by" hint="A handle, 2-40 characters. No real name needed.">
-            <input className={inputClass} value={form.displayName} maxLength={FIELD_NOTE_CONSTRAINTS.displayName.max} onChange={(e) => set('displayName', e.target.value)} placeholder="e.g. RHP_threequarter" />
-          </Field>
+        <FieldGroup>
+          <UiField data-invalid={!form.displayName.trim() && Boolean(error)}>
+            <FieldLabel htmlFor="field-note-display-name">Submitted by</FieldLabel>
+            <InputGroup className="h-10 bg-card">
+              <InputGroupInput
+                id="field-note-display-name"
+                value={form.displayName}
+                maxLength={FIELD_NOTE_CONSTRAINTS.displayName.max}
+                onChange={(e) => set('displayName', e.target.value)}
+                placeholder="e.g. RHP_threequarter"
+                aria-invalid={!form.displayName.trim() && Boolean(error)}
+              />
+            </InputGroup>
+            <FieldDescription>A handle, 2-40 characters. No real name needed.</FieldDescription>
+          </UiField>
 
-          <Field label="The tweak" hint={`The change from the standard grip. ${form.tweak.length}/${FIELD_NOTE_CONSTRAINTS.tweakDescription.max}`}>
-            <textarea className={`${inputClass} min-h-[72px] resize-y`} value={form.tweak} maxLength={FIELD_NOTE_CONSTRAINTS.tweakDescription.max} onChange={(e) => set('tweak', e.target.value)} placeholder="Thumb tucked deeper under the leather, ring finger off the seam…" />
-          </Field>
+          <UiField data-invalid={!form.tweak.trim() && Boolean(error)}>
+            <FieldLabel htmlFor="field-note-tweak">The tweak</FieldLabel>
+            <InputGroup className="h-auto bg-card">
+              <InputGroupTextarea
+                id="field-note-tweak"
+                value={form.tweak}
+                maxLength={FIELD_NOTE_CONSTRAINTS.tweakDescription.max}
+                onChange={(e) => set('tweak', e.target.value)}
+                placeholder="Thumb tucked deeper under the leather, ring finger off the seam…"
+                aria-invalid={!form.tweak.trim() && Boolean(error)}
+                className="min-h-[72px] resize-y"
+              />
+            </InputGroup>
+            <FieldDescription>
+              The change from the standard grip. {form.tweak.length}/{FIELD_NOTE_CONSTRAINTS.tweakDescription.max}
+            </FieldDescription>
+          </UiField>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <Field label="Level">
-              <select className={selectClass} value={form.playerLevel} onChange={(e) => set('playerLevel', e.target.value as PlayerLevel)}>
-                {PLAYER_LEVELS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </Field>
-            <Field label="Arm slot">
-              <select className={selectClass} value={form.armSlot} onChange={(e) => set('armSlot', e.target.value as ArmSlot)}>
-                {ARM_SLOTS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </Field>
-            <Field label="Velocity">
-              <select className={selectClass} value={form.velocityBand} onChange={(e) => set('velocityBand', e.target.value as '' | VelocityBand)}>
-                <option value="">-</option>
-                {VELOCITY_BANDS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </Field>
+            <SelectField label="Level" value={form.playerLevel} options={PLAYER_LEVELS} onChange={(v) => set('playerLevel', v as PlayerLevel)} />
+            <SelectField label="Arm slot" value={form.armSlot} options={ARM_SLOTS} onChange={(v) => set('armSlot', v as ArmSlot)} />
+            <SelectField label="Velocity" value={form.velocityBand} options={VELOCITY_BANDS} noneLabel="-" onChange={(v) => set('velocityBand', v as '' | VelocityBand)} />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <Field label="Going for">
-              <select className={selectClass} value={form.intent} onChange={(e) => set('intent', e.target.value as PitchIntent)}>
-                {INTENT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </Field>
-            <Field label="What happened">
-              <select className={selectClass} value={form.claimedResultKind} onChange={(e) => set('claimedResultKind', e.target.value as ClaimedResultKind)}>
-                {RESULT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-              </select>
-            </Field>
+            <SelectField label="Going for" value={form.intent} options={INTENT_OPTIONS} onChange={(v) => set('intent', v as PitchIntent)} />
+            <SelectField label="What happened" value={form.claimedResultKind} options={RESULT_OPTIONS} onChange={(v) => set('claimedResultKind', v as ClaimedResultKind)} />
           </div>
 
-          <Field label="Source" hint={noteRequired ? 'A relayed or untested claim must say where it comes from.' : 'Where this comes from. Sets how the note ranks.'}>
-            <select className={selectClass} value={form.sourceTier} onChange={(e) => set('sourceTier', e.target.value as CommunitySourceTier)}>
-              {SOURCE_TIER_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-            </select>
-          </Field>
+          <SelectField
+            label="Source"
+            hint={noteRequired ? 'A relayed or untested claim must say where it comes from.' : 'Where this comes from. Sets how the note ranks.'}
+            value={form.sourceTier}
+            options={SOURCE_TIER_OPTIONS}
+            onChange={(v) => set('sourceTier', v as CommunitySourceTier)}
+          />
 
           {noteRequired || form.note ? (
-            <Field label={noteRequired ? 'Context (required)' : 'Context'} hint={`Why it is worth logging. ${form.note.length}/${FIELD_NOTE_CONSTRAINTS.cueNote.max}`}>
-              <input className={inputClass} value={form.note} maxLength={FIELD_NOTE_CONSTRAINTS.cueNote.max} onChange={(e) => set('note', e.target.value)} placeholder="Where you heard it, or what you saw…" />
-            </Field>
+            <UiField data-invalid={noteRequired && !form.note.trim() && Boolean(error)}>
+              <FieldLabel htmlFor="field-note-context">{noteRequired ? 'Context (required)' : 'Context'}</FieldLabel>
+              <InputGroup className="h-10 bg-card">
+                <InputGroupInput
+                  id="field-note-context"
+                  value={form.note}
+                  maxLength={FIELD_NOTE_CONSTRAINTS.cueNote.max}
+                  onChange={(e) => set('note', e.target.value)}
+                  placeholder="Where you heard it, or what you saw…"
+                  aria-invalid={noteRequired && !form.note.trim() && Boolean(error)}
+                />
+              </InputGroup>
+              <FieldDescription>Why it is worth logging. {form.note.length}/{FIELD_NOTE_CONSTRAINTS.cueNote.max}</FieldDescription>
+            </UiField>
           ) : null}
 
           <details className="text-sm">
             <summary className="mono-label cursor-pointer text-bone-2">Optional · reps + evidence link</summary>
             <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <Field label="Reps">
-                <input className={inputClass} type="number" min={0} value={form.sampleSize} onChange={(e) => set('sampleSize', e.target.value)} placeholder="e.g. 40" />
-              </Field>
-              <Field label="Evidence label">
-                <input className={inputClass} value={form.evidenceLabel} maxLength={FIELD_NOTE_CONSTRAINTS.evidenceLabel.max} onChange={(e) => set('evidenceLabel', e.target.value)} placeholder="Bullpen clip" />
-              </Field>
-              <Field label="Evidence URL">
-                <input className={inputClass} type="url" value={form.evidenceUrl} maxLength={FIELD_NOTE_CONSTRAINTS.evidenceUrl.max} onChange={(e) => set('evidenceUrl', e.target.value)} placeholder="https://…" />
-              </Field>
+              <UiField>
+                <FieldLabel htmlFor="field-note-reps">Reps</FieldLabel>
+                <InputGroup className="h-10 bg-card">
+                  <InputGroupInput id="field-note-reps" type="number" min={0} value={form.sampleSize} onChange={(e) => set('sampleSize', e.target.value)} placeholder="e.g. 40" />
+                </InputGroup>
+              </UiField>
+              <UiField>
+                <FieldLabel htmlFor="field-note-evidence-label">Evidence label</FieldLabel>
+                <InputGroup className="h-10 bg-card">
+                  <InputGroupInput id="field-note-evidence-label" value={form.evidenceLabel} maxLength={FIELD_NOTE_CONSTRAINTS.evidenceLabel.max} onChange={(e) => set('evidenceLabel', e.target.value)} placeholder="Bullpen clip" />
+                </InputGroup>
+              </UiField>
+              <UiField>
+                <FieldLabel htmlFor="field-note-evidence-url">Evidence URL</FieldLabel>
+                <InputGroup className="h-10 bg-card">
+                  <InputGroupInput id="field-note-evidence-url" type="url" value={form.evidenceUrl} maxLength={FIELD_NOTE_CONSTRAINTS.evidenceUrl.max} onChange={(e) => set('evidenceUrl', e.target.value)} placeholder="https://…" />
+                </InputGroup>
+              </UiField>
             </div>
           </details>
 
-          {error ? <p className="text-sm text-seam">{error}</p> : null}
+          {error ? <FieldError>{error}</FieldError> : null}
 
           <div className="flex items-center gap-3">
-            <button
+            <Button
               type="submit"
               disabled={!valid || busy}
-              className="inline-flex items-center gap-2 rounded-sm bg-cyan px-5 py-3 font-mono text-sm tracking-wide font-semibold text-[#06121b] transition-colors hover:bg-[color-mix(in_srgb,var(--color-cyan)_88%,#000)] active:translate-y-px disabled:opacity-50"
+              className="font-mono text-sm tracking-wide"
             >
               {busy ? 'Posting…' : 'Post field note'} <span aria-hidden="true">→</span>
-            </button>
+            </Button>
             <span className="text-xs leading-snug text-bone-2">Posts under your handle. You can take part anonymously.</span>
           </div>
-        </div>
+        </FieldGroup>
       </div>
     </form>
   )
@@ -615,25 +698,32 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             {status === 'loading' ? (
               <div className="flex flex-col gap-4" aria-busy="true">
                 {[0, 1, 2].map((i) => (
-                  <div key={i} className="rfx-panel h-28 animate-pulse" />
+                  <Skeleton key={i} className="h-28 rounded-sm bg-muted" />
                 ))}
               </div>
             ) : status === 'error' ? (
-              <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-seam/40 px-6 py-14 text-center">
-                <p className="max-w-[48ch] leading-relaxed text-bone-2">
+              <Alert variant="destructive" className="bg-card">
+                <AlertTitle>Couldn't load the field notes.</AlertTitle>
+                <AlertDescription>
                   Couldn't load the field notes just now: {error}. This is usually a passing hiccup.
-                </p>
-                <button type="button" onClick={refresh} className="rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-2 font-mono text-xs tracking-wide text-bone hover:border-[rgba(255,255,255,0.28)]">
+                </AlertDescription>
+                <Button type="button" onClick={refresh} variant="outline" size="sm" className="mt-3 w-fit font-mono text-xs tracking-wide">
+                  <RefreshCwIcon data-icon="inline-start" />
                   Try again
-                </button>
-              </div>
+                </Button>
+              </Alert>
             ) : notes.length === 0 ? (
-              <div className="flex flex-col items-center gap-4 rounded-sm border border-dashed border-[rgba(255,255,255,0.12)] px-6 py-16 text-center">
-                <img src="/brand/seal-128.webp" alt="" width={56} height={56} loading="lazy" decoding="async" className="opacity-80" aria-hidden="true" />
-                <p className="max-w-[46ch] leading-relaxed text-bone-2">
-                  No field notes yet for this pitch. The first one shapes the bar. Add how you throw it above.
-                </p>
-              </div>
+              <Empty className="border border-dashed border-white/12 bg-card/70 px-6 py-16">
+                <EmptyHeader>
+                  <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
+                    <TrophyIcon aria-hidden="true" />
+                  </EmptyMedia>
+                  <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">No field notes yet</EmptyTitle>
+                  <EmptyDescription>
+                    No field notes yet for this pitch. The first one shapes the bar. Add how you throw it above.
+                  </EmptyDescription>
+                </EmptyHeader>
+              </Empty>
             ) : (
               <div className="flex flex-col gap-4">
                 {notes.map((note) => (
@@ -645,6 +735,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             {/* community guidelines + the flagging mechanism, the UGC floor in plain sight */}
             <div className="rfx-panel mt-6 max-w-[78ch] p-5">
               <p className="rfx-skick text-cyan">Keeping the bullpen honest</p>
+              <Separator className="my-3" />
               <p className="mt-2 text-sm leading-relaxed text-bone-2">
                 Keep notes about pitching. No abuse, no personal attacks, no off-topic spam, nothing aimed at minors.
                 Field notes are community-submitted: they are not vetted before they post, and any note can be hidden

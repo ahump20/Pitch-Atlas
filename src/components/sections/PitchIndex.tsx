@@ -1,10 +1,15 @@
 import { type CSSProperties, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { LayoutGridIcon, ListIcon, SearchIcon } from 'lucide-react'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { IndexCard } from '../index/IndexCard'
+import { Badge } from '../ui/badge'
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 
 type IndexView = 'rows' | 'cards'
 
@@ -75,31 +80,39 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
       className={`rfx-entry ${filed ? 'is-filed' : ''}`}
       style={{ '--gc': accent } as CSSProperties}
     >
-      <span className="rfx-statpill absolute right-3.5 top-3.5" style={{ color: status.color }}>
+      <Badge
+        variant="outline"
+        className="absolute right-3.5 top-3.5 border-current bg-transparent font-mono text-[8px] uppercase tracking-[0.08em]"
+        style={{ color: status.color }}
+      >
         {status.label}
-      </span>
+      </Badge>
       <SeamGlyph color={accent} />
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2 pr-20">
           <span className="font-prose text-[15px] font-bold text-bone">{entry.name}</span>
-          {filed ? <span className="rfx-filedtag">Filed</span> : null}
+          {filed ? (
+            <Badge className="h-auto rounded-[4px] bg-[var(--gold)] px-1.5 py-0.5 font-mono text-[7.5px] uppercase tracking-[0.1em] text-[#2a1d05]">
+              Filed
+            </Badge>
+          ) : null}
         </span>
         {aka ? <span className="mt-1 block text-[11.5px] leading-snug text-ink-3">{aka}</span> : null}
         {entry.velocity ? (
           <span className="mt-1.5 block font-mono text-[9.5px] leading-snug text-bone-2">{entry.velocity}</span>
         ) : null}
         {gripEntry ? (
-          <span
-            className="mt-2 inline-flex max-w-full items-center gap-2 rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em]"
+          <Badge
+            variant="outline"
+            className="mt-2 h-auto max-w-full justify-start gap-2 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em] text-bone-2"
             style={{
               borderColor: `color-mix(in srgb, ${accent} 30%, transparent)`,
               background: `color-mix(in srgb, ${accent} 8%, transparent)`,
-              color: 'var(--color-bone-2)',
             }}
           >
             <span style={{ color: accent }}>Grip tell</span>
             <span className="min-w-0 truncate">{gripEntry.shortCue}</span>
-          </span>
+          </Badge>
         ) : null}
         <span
           className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
@@ -140,66 +153,78 @@ export function PitchIndex({ id }: { id?: string }) {
   return (
     <div id={id}>
       {/* Sticky controls */}
-      <div className="sticky top-16 z-20 -mx-5 mt-6 bg-[#070509]/92 px-5 py-4 backdrop-blur-md md:-mx-8 md:px-8">
+      <div className="sticky top-16 z-20 -mx-5 mt-6 bg-background/92 px-5 py-4 backdrop-blur-md md:-mx-8 md:px-8">
         <label className="block">
           <span className="sr-only">Search the Pitch Index</span>
-          <span className="relative flex items-center">
-            <span aria-hidden="true" className="pointer-events-none absolute left-4 text-lg text-cyan">⌕</span>
-            <input
+          <InputGroup className="h-11 rounded-xl border-cyan/40 bg-[#08060e] text-bone">
+            <InputGroupAddon>
+              <SearchIcon aria-hidden="true" />
+            </InputGroupAddon>
+            <InputGroupInput
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search a pitch, an alias, a family…"
-              className="rfx-input pl-10"
+              className="h-full text-[15px] placeholder:text-ink-3"
             />
-          </span>
+          </InputGroup>
         </label>
         <div className="mt-3 flex flex-wrap items-center gap-2">
-          {FILTERS.map((f) => (
-            <button
-              key={f.key}
-              type="button"
-              aria-pressed={filter === f.key}
-              onClick={() => setFilter(f.key)}
-              className="rfx-chip"
-            >
-              {f.label}
-            </button>
-          ))}
-          <div
-            className="ml-auto inline-flex rounded-full border border-white/14 p-0.5"
-            role="group"
+          <ToggleGroup
+            type="single"
+            value={filter}
+            onValueChange={(next) => {
+              if (next) setFilter(next as FamilyFilter)
+            }}
+            className="flex flex-wrap"
+            aria-label="Filter pitch family"
+          >
+            {FILTERS.map((f) => (
+              <ToggleGroupItem
+                key={f.key}
+                value={f.key}
+                aria-label={f.label}
+                className="rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                {f.label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+          <ToggleGroup
+            type="single"
+            value={view}
+            onValueChange={(next) => {
+              if (next) setView(next as IndexView)
+            }}
+            className="ml-auto rounded-full border border-white/14 p-0.5"
             aria-label="Index view"
           >
-            <button
-              type="button"
-              aria-pressed={view === 'rows'}
-              onClick={() => setView('rows')}
-              className="rfx-seg rounded-full"
-            >
+            <ToggleGroupItem value="rows" aria-label="Rows view" className="rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+              <ListIcon data-icon="inline-start" />
               Rows
-            </button>
-            <button
-              type="button"
-              aria-pressed={view === 'cards'}
-              onClick={() => setView('cards')}
-              className="rfx-seg rounded-full"
-            >
+            </ToggleGroupItem>
+            <ToggleGroupItem value="cards" aria-label="Cards view" className="rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+              <LayoutGridIcon data-icon="inline-start" />
               Cards
-            </button>
-          </div>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
         <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">{countLabel}</p>
       </div>
 
       {/* Empty state */}
       {total === 0 ? (
-        <div className="py-16 text-center">
-          <p className="rfx-athletic rfx-skew text-3xl text-bone-2">No pitch by that name</p>
-          <p className="mt-2.5 text-[13px] text-ink-3">
+        <Empty className="my-12 border border-dashed border-white/12 bg-card/70 py-16">
+          <EmptyHeader>
+            <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
+              <SearchIcon aria-hidden="true" />
+            </EmptyMedia>
+            <EmptyTitle className="rfx-athletic rfx-skew text-3xl text-bone-2">No pitch by that name</EmptyTitle>
+            <EmptyDescription className="text-[13px] text-ink-3">
             Try a family, an alias, or clear the search. The index only shows what the atlas has actually filed.
-          </p>
-        </div>
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
       ) : null}
 
       {/* Family groups */}

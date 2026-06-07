@@ -3,6 +3,8 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Masthead } from './Masthead'
 import { SiteFooter } from './SiteFooter'
 import { scrollToId } from '../../lib/scroll'
+import { Toaster } from '../ui/sonner'
+import { TooltipProvider } from '../ui/tooltip'
 
 /*
   The shell every route renders inside. The whole site sits on the dark void with
@@ -30,20 +32,23 @@ export function RootLayout() {
   return (
     <div className="rfx-void min-h-screen">
       <div className="rfx-dotgrid" aria-hidden="true" />
-      <div className="relative z-10">
-        <a
-          href="#main"
-          className="sr-only rounded-sm border border-bone/40 bg-[#0a0810] px-4 py-2 font-mono text-sm text-bone focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
-        >
-          Skip to content
-        </a>
-        <ScrollManager />
-        <Masthead />
-        <main id="main" tabIndex={-1} className="outline-none">
-          <Outlet />
-        </main>
-        <SiteFooter />
-      </div>
+      <TooltipProvider delayDuration={150}>
+        <div className="relative z-10">
+          <a
+            href="#main"
+            className="sr-only rounded-sm border border-bone/40 bg-[#0a0810] px-4 py-2 font-mono text-sm text-bone focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+          >
+            Skip to content
+          </a>
+          <ScrollManager />
+          <Masthead />
+          <main id="main" tabIndex={-1} className="outline-none">
+            <Outlet />
+          </main>
+          <SiteFooter />
+          <Toaster position="bottom-center" />
+        </div>
+      </TooltipProvider>
     </div>
   )
 }

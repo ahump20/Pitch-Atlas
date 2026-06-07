@@ -1,4 +1,7 @@
 import { useRegisterSW } from 'virtual:pwa-register/react'
+import { RefreshCwIcon, XIcon } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { Button } from '../ui/button'
 
 /*
   The PWA update prompt. Mounted client-only from main.tsx, so the service-worker
@@ -27,35 +30,40 @@ export function ReloadPrompt() {
       aria-live="polite"
       className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
     >
-      <div className="flex w-full max-w-sm items-center gap-3 rounded-xl border border-cyan/30 bg-[#0a0810] px-4 py-3 text-bone shadow-2xl shadow-black/60">
+      <Alert className="flex w-full max-w-sm items-center gap-3 border-cyan/30 bg-popover px-4 py-3 text-popover-foreground shadow-2xl shadow-black/60">
         <div className="min-w-0 flex-1">
-          <p className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-cyan">
+          <AlertTitle className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-cyan">
             {needRefresh ? 'Update ready' : 'Saved offline'}
-          </p>
-          <p className="mt-0.5 text-sm text-bone-2">
+          </AlertTitle>
+          <AlertDescription className="mt-0.5 text-sm text-bone-2">
             {needRefresh
               ? 'A new version of Pitch Atlas is ready.'
               : 'Pitch Atlas is saved for offline reading.'}
-          </p>
+          </AlertDescription>
         </div>
         {needRefresh && (
-          <button
+          <Button
             type="button"
             onClick={() => updateServiceWorker(true)}
-            className="shrink-0 rounded-lg bg-cyan px-3 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-[#06121b] font-semibold"
+            size="sm"
+            className="shrink-0 font-mono text-[0.7rem] uppercase tracking-[0.12em]"
           >
+            <RefreshCwIcon data-icon="inline-start" />
             Reload
-          </button>
+          </Button>
         )}
-        <button
+        <Button
           type="button"
           onClick={dismiss}
-          aria-label="Dismiss notification"
-          className="shrink-0 rounded-sm px-2 py-1.5 font-mono text-[0.7rem] uppercase tracking-[0.12em] text-bone-2 transition-colors hover:text-bone"
+          aria-label={needRefresh ? 'Dismiss update prompt' : 'Dismiss offline notification'}
+          variant="ghost"
+          size={needRefresh ? 'sm' : 'icon-sm'}
+          className="shrink-0 text-bone-2 hover:text-bone"
         >
-          {needRefresh ? 'Later' : 'OK'}
-        </button>
-      </div>
+          {needRefresh ? <span className="font-mono text-[0.7rem] uppercase tracking-[0.12em]">Later</span> : <XIcon data-icon="icon" aria-hidden="true" />}
+          <span className="sr-only">{needRefresh ? 'Dismiss update prompt' : 'Dismiss offline notification'}</span>
+        </Button>
+      </Alert>
     </div>
   )
 }
