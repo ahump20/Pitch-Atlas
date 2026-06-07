@@ -69,7 +69,7 @@ const gripModel: GripModel = {
 export const twoSeam: PitchAtlasEntry = {
   canonical: {
     id: 'two-seam-fastball',
-    name: 'Two-seam fastball (sinker)',
+    name: 'Two-seam fastball',
     family: 'fastball',
     grip: claim(
       'Index and middle fingers run along the pair of narrow seams that sit close together, rather than across the horseshoe. That orientation tilts the spin off pure backspin and trades ride for arm-side run and sink.',
@@ -168,14 +168,14 @@ export const twoSeam: PitchAtlasEntry = {
 
   display: {
     slug: 'two-seam',
-    shortName: 'Sinker',
+    shortName: 'Two-Seam',
     specimenNo: '01',
     heroSub: 'The four-seam, tilted.',
     heroIntro:
-      'Same arm, the axis rolled toward the hand. Ride becomes run, and the ball finishes at the knees. This is how the pitch sinks.',
+      'Same arm, the axis rolled toward the hand. Ride becomes run, and the ball finishes at the knees. Taken to its extreme — the most movement, the least ride — this is the pitch the pros call a sinker.',
     foundationCaption: 'It rides far less than a four-seam and runs toward the arm. Thrown low, it produces ground balls.',
     mastersIntro:
-      'Three documented sinkers, three ways down. The visual is our own seam schematic. Every figure is season-stamped and links to its source.',
+      'Three documented sinkers — the two-seam taken to its extreme, three ways down. The visual is our own seam schematic. Every figure is season-stamped and links to its source.',
   },
 
   masterVariants: [

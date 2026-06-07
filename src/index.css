@@ -499,6 +499,9 @@
   /* the Austin grip photo, filling the arched window (the seam ball is used otherwise) */
   .rfx-grip { position: absolute; inset: 0; z-index: 1; margin: 0; }
   .rfx-grip-img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; transition: opacity .3s; }
+  /* the grip clips are shot portrait with the ball low in frame — crop lower so the
+     hand and ball fill the window instead of the torso above them. */
+  video.rfx-grip-img { object-position: center 60%; }
 
   /* banner nameplate */
   .rfx-banner {

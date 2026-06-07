@@ -309,7 +309,7 @@ export interface PitchMotion {
 export interface PitchDisplay {
   /** URL hash slug for deep-linking this specimen (#/<slug>). Short and stable. */
   slug: string
-  /** Short name for the specimen index switcher ("Four-seam", "Sinker", "Slider"). */
+  /** Short name for the specimen index switcher ("Four-seam", "Two-Seam", "Slider"). */
   shortName: string
   /** Two-digit specimen number for the masthead index and hero figure label. */
   specimenNo: string

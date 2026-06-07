@@ -36,6 +36,24 @@ function shot(file: string, view: GripView, caption: string, alt: string): Visua
   }
 }
 
+/** A short, muted, looping grip video — the moving card face for a game-day pitch. */
+export interface GripClip {
+  mp4: string
+  webm: string
+  poster: string
+  alt: string
+}
+
+/** Build a grip clip from a base name, e.g. `four-seam-grip` → mp4/webm + webp poster. */
+function clip(name: string, alt: string): GripClip {
+  return {
+    mp4: `/grips/${name}.mp4`,
+    webm: `/grips/${name}.webm`,
+    poster: `/grips/${name}-poster.webp`,
+    alt,
+  }
+}
+
 export interface GripLibraryEntry {
   /** Library slug (also the gripImages lookup key). */
   id: string
@@ -59,6 +77,8 @@ export interface GripLibraryEntry {
   proofLimit: string
   /** Circle change is intentionally note-only for Austin. */
   photoStatus?: 'photographed' | 'note-only'
+  /** A looping grip video — only the four game-day pitches Austin actually threw carry one. */
+  clip?: GripClip
   photos: VisualReference[]
 }
 
@@ -77,6 +97,10 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       'Two fingers on the ball, and the four-seam should be a dead giveaway. The fingertips cross the seam slightly — the very ends of the pads catching across it, not riding parallel to it. There is barely any pressure on it at all, and that is why it goes the fastest and the truest. It is the bread and butter of everything: the easiest pitch to place in the zone and the most consistent pitch in the game.',
     movement:
       'My best pitch, and the one I had pinpoint command of — it went straight and I could put it anywhere in the zone. The life came late: it tended to explode into the glove at the very last second. That last-second hop is the carry the four-seam is known for — the eye reads it as rising when it is really just falling less than expected.',
+    clip: clip(
+      'four-seam-grip',
+      "A looping close-up of Austin's four-seam grip: two fingertips laid across the seam, the ball held out toward the camera.",
+    ),
     photos: [
       shot(
         'four-seam-7163.webp',
@@ -112,6 +136,10 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       'Two fingers on the ball again, but here they line up with the seams like the ball is running down a train track — both fingers riding along the narrow seams instead of crossing them. That is the tell that separates it from the four-seam.',
     movement:
       'The second pitch I mastered. I lived with it in on the hands to right-handed hitters, because it had explosive late tail — it ran arm-side at the very last second, right in on a righty.',
+    clip: clip(
+      'two-seam-grip',
+      "A looping close-up of Austin's two-seam grip: two fingers running along the narrow seams like train tracks.",
+    ),
     photos: [
       shot(
         'two-seam-7166.webp',
@@ -147,6 +175,10 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       'Two fingers lined up and cornered against the seam, with no other pressure on the ball but the thumb. The grip is so distinct you do not even need to see the release slot to know it is a 12-6 — the fingers tucked tight to one seam give it away.',
     movement:
       'A genuine 12-6 when it was working: it came in with real loop and then fell off the table at the last second. The down-mover in my mix — more loop than the changeup, and a sharper drop.',
+    clip: clip(
+      'twelve-six-grip',
+      "A looping close-up of Austin's 12-6 curveball grip: two fingers tucked together and cornered against one seam.",
+    ),
     photos: [
       shot(
         'twelve-six-7170.webp',
@@ -246,6 +278,10 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       'Three fingers set very close together across the ball. Same idea as the football change, just a touch less hand on it — more fingers than a fastball means more surface and more drag, so it leaves softer than the arm speed says it should.',
     movement:
       'My fourth pitch, and one I threw a lot in games. It came in looking like a fastball and dropped with less break than the curve — not as sharp or as consistent, but it sold the fastball look right up until it died.',
+    clip: clip(
+      'three-finger-change-grip',
+      "A looping close-up of Austin's three-finger changeup grip: three fingers set close together across the top of the ball.",
+    ),
     photos: [
       shot(
         'three-finger-change-7174.webp',

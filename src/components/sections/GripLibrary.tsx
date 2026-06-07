@@ -2,8 +2,9 @@ import { type ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
 import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
-import type { GripLibraryEntry } from '../../data/grips'
+import type { GripLibraryEntry, GripClip } from '../../data/grips'
 import { ConfidenceDot } from '../provenance/RefractorClaim'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
 
 /*
   The visual grip library, refractor-native. Every card is a real photograph of
@@ -84,6 +85,52 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
   )
 }
 
+/** A looping grip video, framed like a GripPhoto — the moving evidence for a
+    game-day pitch. Honors reduced motion by holding on the poster frame. */
+export function GripMotion({ clip, className = '' }: { clip: GripClip; className?: string }) {
+  const reduced = useReducedMotion()
+  return (
+    <figure className={`overflow-hidden rounded-[14px] border border-cyan/25 bg-[#0a0810] ${className}`}>
+      <div className="relative aspect-[4/3] w-full">
+        {reduced ? (
+          <img
+            src={clip.poster}
+            alt={clip.alt}
+            loading="lazy"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
+        ) : (
+          <video
+            className="h-full w-full object-cover"
+            poster={clip.poster}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-label={clip.alt}
+          >
+            <source src={clip.webm} type="video/webm" />
+            <source src={clip.mp4} type="video/mp4" />
+          </video>
+        )}
+        <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone backdrop-blur-sm">
+          <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
+          Motion
+        </span>
+      </div>
+      <figcaption className="flex flex-col gap-2 px-3.5 py-3.5">
+        <p className="text-[13px] leading-relaxed text-bone-2">{clip.alt}</p>
+        <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.08em] text-ink-3">
+          <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
+          Original · Austin Humphrey
+        </span>
+      </figcaption>
+    </figure>
+  )
+}
+
 function EvidenceLane({
   label,
   accentColor,
@@ -146,8 +193,9 @@ export function SpecimenGrips({
         </div>
 
         <div className="md:col-span-7">
-          {photos.length ? (
+          {entry.clip || photos.length ? (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {entry.clip ? <GripMotion clip={entry.clip} /> : null}
               {photos.map((p) => (
                 <GripPhoto key={p.src} photo={p} />
               ))}
@@ -308,6 +356,7 @@ export function GripLibrary() {
             ) : null}
 
             <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {grip.clip ? <GripMotion clip={grip.clip} /> : null}
               {grip.photos.map((p) => (
                 <GripPhoto key={p.src} photo={p} />
               ))}

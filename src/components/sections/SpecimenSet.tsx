@@ -3,6 +3,7 @@ import type { PitchAtlasEntry, ClaimConfidence } from '../../data/types'
 import { RefractorCard, type RefractorAccent } from '../refractor/RefractorCard'
 import { RefractorBall } from '../refractor/RefractorBall'
 import { GripFace } from '../refractor/GripFace'
+import { GripClip } from '../refractor/GripClip'
 import { familyCrumb } from '../refractor/familyCrumb'
 import { gripEntryFor } from '../../data/grips'
 
@@ -79,16 +80,22 @@ export function SpecimenSet() {
           const pb = physics.primaryBreak.claim
           const conf = CONF[pb.confidence]
 
-          // The grip read: Austin's own photo where he throws the pitch, else the
-          // seam ball with its real finger-placement pins. Circle change has no photo.
+          // The grip read: Austin's own grip where he throws the pitch — a looping clip
+          // for the four game-day pitches, his still photo for the situational ones —
+          // else the seam ball with its real finger-placement pins. Circle change has
+          // neither, so it stays a schematic and never implies he throws it.
           const grip = gripEntryFor(display.slug)
+          const clip = grip?.clip
           const photo = grip && grip.photos.length > 0 ? grip.photos[0] : undefined
-          const cue = photo && grip ? grip.shortCue : display.heroSub
-          const gripSource = photo
+          const austinGrip = Boolean(clip || photo)
+          const cue = austinGrip && grip ? grip.shortCue : display.heroSub
+          const gripSource = austinGrip
             ? { label: "Austin's grip", color: 'var(--color-powder)' }
             : { label: 'Reference grip', color: 'var(--color-ink-3)' }
 
-          const face = photo ? (
+          const face = clip ? (
+            <GripClip clip={clip} />
+          ) : photo ? (
             <GripFace photo={photo} />
           ) : (
             <RefractorBall
