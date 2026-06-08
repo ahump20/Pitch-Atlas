@@ -433,31 +433,51 @@ export function AtlasHome() {
         </div>
       </section>
 
-      {/* The field manual: the Learn wings, kept as a chip rail — its own form. */}
+      {/* The field manual: the Learn wings as a numbered chapter index — a contents page, its own form. */}
       <section className="border-t border-bone/10">
-        <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
-          <p className="mono-label-stage">The field manual</p>
-          <h2 className="rfx-athletic rfx-skew mt-3 text-bone" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>
-            Not just what each pitch is — how the craft works underneath.
-          </h2>
-          <p className="mt-4 max-w-[64ch] text-base leading-relaxed text-bone-2">
-            Ten sourced chapters: how velocity is made, how a pitch gets built, how pitches work together,
-            how to read the numbers, and the arm-health and youth reality beneath all of it.
-          </p>
-          <div className="mt-8 flex flex-wrap gap-2.5">
-            {WINGS.map((w) => (
-              <Link
-                key={w.slug}
-                to={`/learn/${w.slug}`}
-                className="rounded-sm border border-bone/20 px-3.5 py-2 font-mono text-xs uppercase tracking-[0.06em] text-bone-2 transition-colors hover:border-bone hover:text-bone"
-              >
-                {w.navLabel || w.title}
-              </Link>
-            ))}
+        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
+          <div className="md:col-span-5 lg:col-span-4">
+            <p className="mono-label-stage">The field manual</p>
+            <h2 className="rfx-athletic rfx-skew mt-3 text-bone" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>
+              Not just what each pitch is — how the craft works underneath.
+            </h2>
+            <p className="mt-4 max-w-[46ch] text-base leading-relaxed text-bone-2">
+              Ten sourced chapters: how velocity is made, how a pitch gets built, how pitches work together,
+              how to read the numbers, and the arm-health and youth reality beneath all of it.
+            </p>
+            <Link
+              to="/learn"
+              className="mt-7 inline-flex items-center gap-2 rounded-md border border-bone/25 px-5 py-3 font-mono text-sm uppercase tracking-wide text-bone transition-colors hover:border-bone"
+            >
+              Open the field manual <span aria-hidden="true">→</span>
+            </Link>
           </div>
-          <Link to="/learn" className="mono-label-stage mt-6 inline-block transition-colors hover:text-bone">
-            Open the field manual →
-          </Link>
+
+          <ol className="border-t border-bone/10 md:col-span-7 lg:col-span-8">
+            {WINGS.map((w, i) => (
+              <li key={w.slug}>
+                <Link
+                  to={`/learn/${w.slug}`}
+                  className="group grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 border-b border-bone/10 py-4 transition-colors hover:bg-bone/[0.03] md:gap-x-6"
+                >
+                  <span className="font-mono text-sm tabular-nums text-ink-3 transition-colors group-hover:text-cyan">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="min-w-0">
+                    <span
+                      className="rfx-athletic rfx-skew block text-bone transition-colors group-hover:text-cyan"
+                      style={{ fontSize: '20px' }}
+                    >
+                      {w.navLabel || w.title}
+                    </span>
+                    <span className="mt-1 block max-w-[64ch] text-[13.5px] leading-relaxed text-bone-2 md:line-clamp-2">
+                      {w.summary}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
