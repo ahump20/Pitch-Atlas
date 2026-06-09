@@ -19,7 +19,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "standard",
     aka: ["four-seamer", "heater", "four-seam heater"],
-    velocity: "~90-100+ mph; MLB average around 93-94 mph",
     grip: claim(
       "The ball is held with the horseshoe of the seams turned sideways and two fingers laid across the open gap so the finger edges just catch the seam at four points, which is also how fielders are taught to throw for the straightest path.",
       "mlb-glossary-four-seam",
@@ -44,14 +43,13 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "standard",
     aka: ["two-seamer", "moving fastball", "running fastball"],
-    velocity: "Typically 1-3 mph slower than the same pitcher's four-seam",
     grip: claim(
       "The most common grip places both fingers on top of the ball where the two seams run closest together, riding along the narrow seams rather than across the wide gap.",
       "mlb-glossary-two-seam",
       "reputable-analysis",
     ),
     movement: claim(
-      "It gives up a touch of velocity versus the four-seam but runs arm-side — toward the pitcher's throwing-arm side — with some sink, and finger pressure plays a large role in how much it moves.",
+      "It trades a little four-seam carry for arm-side run — toward the pitcher's throwing-arm side — with some sink, and finger pressure plays a large role in how much it moves.",
       "mlb-glossary-two-seam",
       "reputable-analysis",
     ),
@@ -60,7 +58,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "mlb-glossary-sinker",
       "official-data",
     ),
-    notableThrowers: "A staple of contact-and-ground-ball pitchers who lack the raw velocity to overpower hitters.",
+    notableThrowers: "A staple of contact-and-ground-ball pitchers who win with run, sink, and location.",
     filedSlug: "two-seam",
   },
   {
@@ -69,14 +67,13 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "standard",
     aka: ["two-seam fastball", "sinking fastball", "SI"],
-    velocity: "A few ticks slower than the four-seam, similar to the two-seamer",
     grip: claim(
       "Built from the same two-seam grip family — fingers along the narrow seams — but worked for more downward action, often with lower spin and aimed at the bottom of the zone to keep the ball down.",
       "mlb-glossary-sinker",
       "reputable-analysis",
     ),
     movement: claim(
-      "It drops more than a four-seamer and runs arm-side, producing the tail and ground-ball contact that gives the pitch its name, where a four-seamer tends to generate whiffs instead.",
+      "It drops more than a four-seamer and runs arm-side, producing the tail and ground-ball contact that gives the pitch its name, where a four-seamer tends to stay truer through the top of the zone.",
       "mlb-glossary-sinker",
       "reputable-analysis",
     ),
@@ -95,7 +92,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "niche",
     aka: ["one-seamer"],
-    velocity: "Sinker velocity band — a few ticks under the four-seam",
     grip: claim(
       "A frontier pitch-design variant where one (or both) fingers ride a single seam instead of sitting between or on top of the two seam tracks, deliberately orienting the ball to weaponize a seam-shifted wake.",
       "driveline-ssw-sinkers",
@@ -122,14 +118,13 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "standard",
     aka: ["cut fastball", "FC"],
-    velocity: "Slightly below the four-seam; elite versions reach the upper 90s to 100+ mph",
     grip: claim(
       "Thrown like a fastball but with both fingers shifted together off-center toward one side of the ball, putting slight pressure that imparts a late cut.",
       "mlb-glossary-cutter",
       "reputable-analysis",
     ),
     movement: claim(
-      "It breaks late and short toward the pitcher's glove side — only a couple to a handful of inches — jamming opposite-handed hitters and breaking bats; for some pitchers it plays almost like a hard slider rather than a true fastball.",
+      "A short, late dart to the pitcher's glove side — a sudden glove-side jump at the end of an otherwise fastball look, jamming opposite-handed hitters and breaking bats; for some pitchers it plays almost like a hard slider rather than a true fastball.",
       "mlb-glossary-cutter",
       "reputable-analysis",
     ),
@@ -137,9 +132,8 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "A four-seam grip nudged off-center; it sits on the spectrum between the four-seamer and the slider, which is why some pitchers' cutters read as hard breaking balls.",
       "mlb-clase-cutter",
       "official-data",
-      { note: "Clase's 99.5 mph average and 103.0 mph max are cited from Statcast figures reported by MLB.com." },
     ),
-    notableThrowers: "Mariano Rivera, whose cutter is the canonical example; Emmanuel Clase throws the hardest cutter on record — he averaged 99.5 mph in 2024, topped out at 103.0 mph, and used it 78% of the time.",
+    notableThrowers: "Mariano Rivera, whose cutter is the canonical example; Emmanuel Clase is a modern power-cutter reference and leans on it as his primary pitch.",
     plain: "A fastball with a small, late dart at the end. You hold it almost like a heater but slide the fingers slightly off-center, and it veers just enough to clip the bat handle and snap it. For some arms it's basically a hard slider.",
   },
   {
@@ -148,14 +142,13 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "alias",
     aka: ["moving fastball", "two-seamer", "sinker"],
-    velocity: "Two-seam/sinker velocity band",
     grip: claim(
       "Not a separate grip — it is the run-dominant end of the two-seam and sinker family, named for the arm-side horizontal action rather than the sink.",
       "mlb-glossary-two-seam",
       "reputable-analysis",
     ),
     movement: claim(
-      "Heavy arm-side run with less emphasis on drop; MLB lists 'running fastball' and 'moving fastball' directly among the names a two-seamer goes by.",
+      "Heavy arm-side run with less drop focus; MLB lists 'running fastball' and 'moving fastball' directly among the names a two-seamer goes by.",
       "mlb-glossary-two-seam",
       "reputable-analysis",
     ),
@@ -173,14 +166,13 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "fastball",
     status: "illusion",
     aka: ["riser", "high-spin four-seamer", "apparent rise"],
-    velocity: "Four-seam velocity band; the effect leans on backspin more than speed",
     grip: claim(
       "There is no separate grip — it is simply a four-seam fastball thrown with high backspin; MLB's glossary describes the 'rising fastball' as a high-spin four-seamer that resists gravity slightly longer.",
       "mlb-glossary-four-seam",
       "reputable-analysis",
     ),
     movement: claim(
-      "The ball does not actually rise. Backspin makes it drop less than the hitter's eye expects, reading as a climb; for the Magnus lift to truly exceed the ball's weight a pitcher would need spin well beyond ~3,100 rpm at top velocity, which sits past human limits — so a true rise has essentially never been thrown.",
+      "The ball does not actually rise. Backspin makes it drop less than the hitter's eye expects, reading as a gentle climb; for the Magnus lift to truly exceed the ball's weight a pitcher would need far more backspin than a human arm can produce — so a true rise has essentially never been thrown.",
       "tht-rising-fastball-physics",
       "reputable-analysis",
     ),
@@ -188,7 +180,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "It is the four-seam fastball — a perceptual label for a high-backspin four-seamer whose reduced drop fools the batter; physicist Alan Nathan frames the apparent rise as the ball falling less than expected, not moving upward.",
       "fangraphs-nathan-pitching-physics",
       "reputable-analysis",
-      { note: "Treated as an optical illusion: no true rising fastball (Magnus force exceeding gravity) has realistically been thrown at MLB-attainable spin rates, per Alan Nathan and the Hardball Times physics analysis." },
+      { note: "Treated as an optical illusion: no true rising fastball has realistically been thrown in MLB conditions, per Alan Nathan and the Hardball Times physics analysis." },
     ),
     notableThrowers: "Invoked for high-carry four-seamers (e.g., Shota Imanaga's deceptive 'rising' heater); the rise itself is perceptual, not physical.",
     plain: "The rise is an illusion. The ball never actually climbs. It's a high-backspin four-seamer that drops less than your eyes expect, so your brain reads the gap as the ball jumping up. No human has thrown one that truly rises.",
@@ -199,17 +191,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "standard",
     aka: ["straight change", "three-finger change", "three finger changeup"],
-    velocity: "Roughly 8-15 mph slower than the pitcher's fastball",
     grip: claim(
       "Set three fingers across the top of the ball instead of the usual two and seat the ball deeper toward the palm, which bleeds off the speed the wrist and fingers would otherwise generate.",
       "wiki-changeup",
       "reputable-analysis",
     ),
     movement: claim(
-      "Thrown with the same arm action as a fastball but slower, typically 8-15 mph off the fastball; hitters cannot read the reduced speed until the ball is roughly 30 feet from the plate, so they commit early. It is usually the first off-speed pitch a young pitcher is taught.",
+      "Thrown with the same arm action as a fastball but markedly slower; hitters cannot read the reduced speed until the ball is nearly on top of them, so they commit early. It is usually the first off-speed pitch a young pitcher is taught.",
       "wiki-changeup",
       "reputable-analysis",
-      { note: "The 8-15 mph figure is a published typical range, not a measured constant; actual separation varies by pitcher.", approximate: true },
     ),
     relationship: claim(
       "The foundational changeup from which the circle change, palmball, and split-change variants branch; the three-finger grip is one of the named changeup grips taught alongside the circle change.",
@@ -225,7 +215,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "standard",
     aka: ["circle change", "OK-grip changeup"],
-    velocity: "Roughly 8-15 mph slower than the fastball",
     grip: claim(
       "Form a circle (an 'OK' sign) with the thumb and index finger on the side of the ball, laying the middle and ring fingers across the top. Pedro Martinez was taught his version by coach Guy Conti in the Dodgers organization in 1990.",
       "wiki-circle-changeup",
@@ -251,17 +240,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "niche",
     aka: ["palm ball", "football change", "football changeup"],
-    velocity: "Roughly 10-15 mph slower than the fastball",
     grip: claim(
-      "Cradle the ball deep in the palm, wrapping the fingers around it in a C-shape (much like palming a football) with the closed end of the horseshoe seam against the palm. Squeezing the ball with the whole hand is what kills the velocity; the deeper and tighter the grip, the slower the pitch.",
+      "Cradle the ball deep in the palm, wrapping the fingers around it in a C-shape (much like palming a football) with the closed end of the horseshoe seam against the palm. Squeezing the ball with the whole hand is what kills the speed; the deeper and tighter the grip, the slower the pitch.",
       "efastball-palmball",
       "reputable-analysis",
     ),
     movement: claim(
-      "Thrown with identical fastball arm action so it mimics a fastball out of the hand, but the deep palm pressure strips speed through hand pressure rather than spin, landing roughly 10-15 mph slower with a late sink. The deception comes from the matching arm action, not movement.",
+      "Thrown with identical fastball arm action so it mimics a fastball out of the hand, but the deep palm pressure strips speed through hand pressure rather than spin, arriving noticeably soft with a late, gentle sink. The deception comes from the matching arm action, not the movement.",
       "efastball-palmball",
       "reputable-analysis",
-      { note: "The 10-15 mph separation is a coaching reference range, not a measured per-pitcher figure.", approximate: true },
     ),
     relationship: unverified(
       "Old-timers' name for what some coaches and players today call a 'football change' or 'football changeup,' because the deep C-shaped grip resembles palming a football. The 'football change' label is informal coaching/community vocabulary rather than an officially tracked pitch name.",
@@ -277,7 +264,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "niche",
     aka: ["vulcan change", "split-change", "Spock change"],
-    velocity: "Off-speed, thrown slower than the fastball with fastball arm action",
     grip: claim(
       "Wedge the ball deep between the middle and ring fingers so it forms a 'V' (the Star Trek Vulcan salute), rather than between the index and middle fingers as a forkball does. The pitch traces to reliever Joe Nelson.",
       "wiki-vulcan-changeup",
@@ -289,7 +275,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     relationship: claim(
-      "A split-change cousin of the changeup family that behaves like a split-finger; named for the V-shaped Vulcan-salute grip, with the ball seated between the middle and ring fingers instead of the splitter's index-and-middle placement.",
+      "A split-change relative to the changeup family that behaves like a split-finger; named for the V-shaped Vulcan-salute grip, with the ball seated between the middle and ring fingers instead of the splitter's index-and-middle placement.",
       "wiki-vulcan-changeup",
       "reputable-analysis",
     ),
@@ -302,7 +288,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "niche",
     aka: ["fosh ball", "foshball", "fosh change"],
-    velocity: "Soft, off-speed",
     grip: claim(
       "A fastball-style grip with the index and middle fingers spread slightly across the ball while the ring and little fingers wrap the side, producing a soft, low-spin split-change feel.",
       "wiki-fosh",
@@ -320,7 +305,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       { note: "Often loosely linked to the Maddux name in popular discussion, but the documented origin is Mike Boddicker, not Mike Maddux; corrected to match the source." },
     ),
     notableThrowers: "Mike Boddicker, Trevor Hoffman, Johan Santana, Jason Frasor.",
-    plain: "A soft, low-spin pitch that sits halfway between a split-finger and a plain changeup. Thrown right, it behaves like a breaking changeup or a gentle splitter, and it's an early cousin of today's kick change.",
+    plain: "A soft, low-spin pitch that sits halfway between a split-finger and a plain changeup. Thrown right, it behaves like a breaking changeup or a gentle splitter, and it is an early relative of today's kick change.",
   },
   {
     id: "kick-change",
@@ -328,25 +313,23 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "niche",
     aka: ["kick changeup", "spiked changeup (kick variant)"],
-    velocity: "Around 88-90 mph for Birdsong — higher than a typical changeup",
     grip: claim(
       "A normal changeup grip but with the middle-finger knuckle raised/spiked onto a seam. As the pitch is released the spiked middle finger pushes the ball's axis — 'kicking the axis' — to manufacture saucer-style spin that a supinator otherwise could not get.",
       "fangraphs-kick-change",
       "reputable-analysis",
     ),
     movement: claim(
-      "Kicking the spin axis gives splitter-like depth at higher-than-normal changeup velocity. Birdsong's vertical drop went from around 15 inches on his old changeup to close to zero (near-zero induced vertical break), producing more depth and less arm-side run than a comparable changeup and big separation off his fastball.",
+      "Kicking the spin axis gives the pitch sudden, splitter-like depth while it still arrives firm for a changeup. Compared with a stock changeup it falls off harder and runs less to the arm side, opening a wide gap off the fastball.",
       "fangraphs-kick-change",
       "reputable-analysis",
-      { note: "Drop figures are early-season descriptive numbers from the cited analysis, not a published full-season Statcast aggregate.", approximate: true },
     ),
     relationship: claim(
-      "A 2024-era changeup that spread fast across MLB; a close cousin of the split-change, reviving an older pitch idea with a spiked-middle-finger twist. Hayden Birdsong introduced it in the majors with the Giants, and Tread Athletics is credited with popularizing the grip (Birdsong has said he picked it up from watching a Tread video).",
+      "A 2024-era changeup that spread fast across MLB; a close relative to the split-change, reviving an older pitch idea with a spiked-middle-finger twist. Hayden Birdsong introduced it in the majors with the Giants, and Tread Athletics is credited with popularizing the grip (Birdsong has said he picked it up from watching a Tread video).",
       "fangraphs-kick-change",
       "reputable-analysis",
     ),
     notableThrowers: "Hayden Birdsong (Giants); popularized through Tread Athletics; quickly adopted by other MLB pitchers.",
-    plain: "A recent twist on the changeup that spread fast around the league. You spike a knuckle onto a seam and 'kick' the ball's spin at release, which buys splitter-like drop at higher-than-usual changeup speed. It's the trendy modern version of an old idea.",
+    plain: "A recent twist on the changeup that spread fast around the league. You spike a knuckle onto a seam and 'kick' the ball's spin at release, which buys splitter-like drop from a firmer changeup look. It's the trendy modern version of an old idea.",
   },
   {
     id: "splitter",
@@ -354,7 +337,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "standard",
     aka: ["split-finger fastball", "split-finger", "splitfinger"],
-    velocity: "Averages roughly 85 mph for right-handers (between four-seam ~92 and changeup ~83)",
     grip: claim(
       "Split the index and middle fingers onto different sides of the ball, wider than a normal fastball grip but not jammed as deep or wide as a forkball. Visually, it can look close to a two-seam on smaller hands; the tell is that the fingers sit outside the seam tracks instead of riding them.",
       "wiki-splitter",
@@ -364,7 +346,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "Thrown with fastball arm speed; the finger spread strips backspin so the ball reads as a fastball, then drops suddenly ('off the table') as it nears the plate, drawing swings over the top or weak grounders.",
       "wiki-splitter",
       "reputable-analysis",
-      { note: "The ~85 mph right-handed average is a tracking-data figure cited for context and varies by pitcher and season.", approximate: true },
     ),
     relationship: claim(
       "A less extreme descendant of the forkball — the forkball is held farther back and wider between the fingers. Despite being gripped like a fastball and thrown with fastball arm action, MLB files the splitter as an offspeed pitch.",
@@ -382,14 +363,13 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "offspeed",
     status: "near-extinct",
     aka: ["ghost fork (Senga variant)"],
-    velocity: "Slower than the splitter; Senga's ghost fork around 80-85 mph, Sasaki's NPB-era forkball mid-80s",
     grip: claim(
       "The splitter's ancestor: the ball is jammed deeper and forked wider between the index and middle fingers, and the pitch is thrown hard while snapping the wrist. Kodai Senga's 'ghost fork' is not jammed as deep as a true forkball because of the injury risk that has kept most pitchers away from the deep grip.",
       "wiki-forkball",
       "reputable-analysis",
     ),
     movement: claim(
-      "Thrown slower than a splitter with a pronounced tumbling action akin to a 12-6 curve, dropping sharply before the plate. Roki Sasaki's forkball spins so little — around 492 rpm in 2025 — that it behaves almost like a knuckleball and can move to either side; it was developed in Japan (NPB).",
+      "Thrown slower than a splitter with a pronounced tumbling action, a heavy straight-down tumble that drops sharply before the plate. Roki Sasaki's forkball spins so little it behaves almost like a knuckleball and can dart to either side; it was developed in Japan (NPB).",
       "wiki-forkball",
       "reputable-analysis",
     ),
@@ -397,7 +377,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "The deep-grip, wrist-snapped ancestor of the splitter, now nearly extinct because of its injury reputation. It survives mainly through Japanese-developed pitchers — Kodai Senga's 'ghost fork' and Roki Sasaki's extremely low-spin forkball.",
       "fangraphs-sasaki",
       "reputable-analysis",
-      { note: "Wikipedia confirms the forkball, Senga's ghost fork, and the deep-grip lineage; the FanGraphs analysis supplies Sasaki's specific low-spin (~492 rpm) NPB-developed forkball, which Wikipedia does not detail." },
+      { note: "Wikipedia confirms the forkball, Senga's ghost fork, and the deep-grip lineage; the FanGraphs analysis supplies the detail on Sasaki's unusually low-spin NPB-developed forkball, which Wikipedia does not detail." },
     ),
     notableThrowers: "Kodai Senga ('ghost fork'), Roki Sasaki; historically Roy Face, Hideo Nomo.",
     plain: "The splitter's older, more extreme ancestor. The ball is jammed deeper and wider between the fingers and thrown with a wrist snap, so it tumbles and dives hard at the plate. It's gone rare, surviving mostly through Japanese-trained pitchers.",
@@ -408,17 +388,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "standard",
     aka: ["yakker (informal, shared with curve)"],
-    velocity: "~80-90 mph",
     grip: claim(
       "Held off-center, with the index and middle fingers set toward the outer third of the ball; the pitcher keeps a firm wrist and throws past the side of the ball rather than snapping straight over the top, which is what gives the slider its tight tilt.",
       "mlb-glossary-slider",
       "reputable-analysis",
     ),
     movement: claim(
-      "Breaks later, tighter, and more laterally than a curveball and is thrown harder; an average MLB slider runs roughly six inches of horizontal break, far less than the big-sweeping variants.",
+      "Breaks later, tighter, and more glove-side than a curveball and is thrown harder; a sharp, compact sideways tilt — far less sweep than the big-sweeping variants.",
       "savant-slider-movement",
-      "official-data",
-      { approximate: true },
+      "reputable-analysis",
     ),
     notableThrowers: "Steve Carlton, Randy Johnson, Sliders are among the most common breaking balls across MLB",
     filedSlug: "slider",
@@ -429,7 +407,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "standard",
     aka: ["bullet slider", "no-dot slider"],
-    velocity: "~hard slider velocity, often mid-to-upper 80s",
     grip: claim(
       "The hand stays on the side of the ball so it leaves the fingers spinning end-over-end like a thrown football, producing bullet spin rather than the sideways tilt of a typical slider.",
       "tht-gyro-physics",
@@ -450,17 +427,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "standard",
     aka: ["ST (Statcast code)", "sweeping slider"],
-    velocity: "~78-84 mph (slower than a typical slider)",
     grip: claim(
       "A slider-family grip oriented to maximize side-spin rather than gyro spin, so the ball is released to spin almost on a vertical axis and sweep across the zone instead of diving.",
       "mlb-sweeper-explained",
       "reputable-analysis",
     ),
     movement: claim(
-      "Produces big horizontal sweep — commonly cited around 15 inches and the best ones near 20 — with a flatter vertical profile than a slider or curve; Statcast made it its own pitch classification in 2023, and it has become the dominant breaking-ball trend of the decade, with Ohtani's regarded as among the best in the game.",
+      "Produces a big, sweeping glove-side slide — wide, lateral, and flat, with far less drop than a slider or curve; Statcast made it its own pitch classification in 2023, and it has become the dominant breaking-ball trend of the decade, with Ohtani's regarded as among the best in the game.",
       "mlb-ohtani-sweeper",
-      "official-data",
-      { approximate: true },
+      "reputable-analysis",
     ),
     notableThrowers: "Shohei Ohtani, Yu Darvish",
     plain: "A slider built to sweep sideways instead of dive. It's spun almost like a top so it slides a long way across the zone with little drop. It earned its own tracking label a few years ago and became the breaking ball everyone wanted.",
@@ -471,7 +446,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "niche",
     aka: ["SV (Statcast code)"],
-    velocity: "~low 80s mph",
     grip: claim(
       "Thrown as a slider/curve hybrid — gripped and released somewhere between the two so it carries traits of both rather than committing fully to slider tilt or curveball topspin.",
       "mlb-glossary-slurve",
@@ -491,7 +465,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "niche",
     aka: ["cut-slider", "cutter-slider hybrid"],
-    velocity: "harder than a slider, close to fastball velocity",
     grip: claim(
       "A blend of a cutter grip and a slider grip — released to fall between a true cutter and a true slider rather than as either one cleanly.",
       "baseballscouter-cutter-slider",
@@ -512,17 +485,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "standard",
     aka: ["curve", "hook", "yakker (informal)", "Uncle Charlie (informal)"],
-    velocity: "~72-83 mph",
     grip: claim(
-      "Gripped to be thrown with topspin — the pitcher rolls the wrist and fingers over the top of the ball at release so the rotation runs forward-over-the-top rather than the backspin of a fastball.",
+      "Gripped to be thrown with topspin — the pitcher rolls the wrist and fingers over the top of the ball at release so the rotation runs forward-over-the-top rather than fastball backspin.",
       "mlb-glossary-curveball",
       "reputable-analysis",
     ),
     movement: claim(
-      "The classic downward-breaking pitch: topspin plus gravity produce a pronounced drop, thrown slower and with more overall break than a slider, generally in the low-to-mid 70s up to the low 80s, to keep hitters off balance.",
+      "The classic downward-breaking pitch: topspin plus gravity produce a pronounced, looping drop, thrown slower and with more overall break than a slider to keep hitters off balance.",
       "mlb-glossary-curveball",
-      "official-data",
-      { approximate: true },
+      "reputable-analysis",
     ),
     notableThrowers: "Clayton Kershaw, Sandy Koufax",
     plain: "The classic dropping pitch. You roll your wrist and fingers over the top so the ball spins forward, and that topspin plus gravity bends it down. It comes in slower than a slider with a bigger, looping break to throw off a hitter's timing.",
@@ -533,7 +504,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "standard",
     aka: ["twelve-to-six curve", "over-the-top curve"],
-    velocity: "~72-80 mph (typically 10-15 mph under the fastball)",
     grip: claim(
       "A curveball thrown from a high, over-the-top arm slot so the topspin axis is oriented for pure vertical break; the name comes from the ball appearing to drop straight from the 12 to the 6 position on a clock face.",
       "wiki-twelve-six-curveball",
@@ -553,7 +523,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "standard",
     aka: ["spike curve", "KC (Statcast code)"],
-    velocity: "~78-85 mph (firmer than a standard curve)",
     grip: claim(
       "Gripped and thrown like a curveball, but the index finger is spiked — the fingernail or knuckle dug into a seam and raised off the surface — giving a firmer anchor on the ball; the middle finger rests along a seam as usual.",
       "mlb-glossary-knuckle-curve",
@@ -573,17 +542,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "niche",
     aka: ["slow hook", "ephus curve (at the slow extreme)"],
-    velocity: "~60-70 mph, sometimes lower",
     grip: claim(
       "Essentially the same curveball shape, just dialed way down in effort and speed to function as a big looping change-of-pace.",
       "mlb-greinke-eephus-curve",
       "reputable-analysis",
     ),
     movement: claim(
-      "A high, slow, looping arc meant to disrupt timing; at the extreme slow end it blurs into the eephus — Zack Greinke has floated curves barely over (and at times under) 60 mph, the modern descendant of the classic lob pitch.",
+      "A high, slow, looping arc meant to disrupt timing; at the extreme slow end it blurs into the eephus — Zack Greinke has floated curves slow enough to brush that line, the modern descendant of the classic lob pitch.",
       "mlb-greinke-eephus-curve",
-      "official-data",
-      { approximate: true },
+      "reputable-analysis",
     ),
     notableThrowers: "Zack Greinke",
     plain: "A curveball thrown way down in speed, a big slow looping change of pace meant to wreck a hitter's timing. Dialed down far enough, it starts to blur into the lobbing eephus.",
@@ -594,7 +561,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "near-extinct",
     aka: ["scroogie", "fadeaway (historical, Christy Mathewson's term)"],
-    velocity: "varies; typically below fastball velocity",
     grip: claim(
       "Thrown with the forearm and wrist pronating the 'wrong' way at release — a right-hander turns the hand clockwise and a left-hander counter-clockwise — the reverse of the supination used on a curve.",
       "wiki-screwball",
@@ -643,7 +609,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "specialty",
     status: "near-extinct",
     aka: ["knuckler", "knuckle ball", "the dancer"],
-    velocity: "Roughly 60-70 mph",
     grip: claim(
       "Held with the fingertips dug into the leather and the fingernails pressed against the ball rather than the seams, so the ball is pushed off the nails instead of rolling off the finger pads.",
       "knuckleball-grokipedia",
@@ -670,17 +635,15 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "specialty",
     status: "rare",
     aka: ["blooper", "blooper ball", "rainbow", "rainbow ball", "folly floater", "LaLob"],
-    velocity: "About 55 mph or slower, sometimes as low as the 30s-40s",
     grip: claim(
       "Sewell held the ball with three fingers and threw it with a shot-put-like overhand push rather than a normal snap, the delivery he adopted because the buckshot in his foot kept him from driving off the leg.",
       "retrosimba-sewell",
       "reputable-analysis",
     ),
     movement: claim(
-      "A towering, slow-motion lob that climbs as high as 25 feet before dropping down through the strike zone. The trick is entirely in the timing — a hitter geared for a fastball roughly twice the speed tends to swing too early and too hard.",
+      "A towering, slow-motion rainbow that climbs high overhead before dropping down through the strike zone. The trick is entirely in the timing — a hitter geared for a hard fastball tends to swing far too early and too hard.",
       "wiki-eephus",
       "reputable-analysis",
-      { approximate: true },
     ),
     relationship: claim(
       "Pittsburgh's Rip Sewell developed the pitch after a December 1941 hunting accident in which a companion's buckshot struck both his legs and feet; carrying the shot made it hard to pivot, forcing the straight overhand delivery that produced the lob. Ted Williams homered off it at the 1946 All-Star Game — the only home run ever hit off Sewell's blooper.",
@@ -697,7 +660,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "specialty",
     status: "niche",
     aka: ["shoot", "shuto", "inshoot"],
-    velocity: "Often around low-90s mph for the fastball-type version",
     grip: claim(
       "Typically a two-seam grip released with a pronated wrist to put arm-side run on the ball — the same family of action a Western pitcher would call a two-seamer or sinker.",
       "tht-shuuto",
@@ -722,9 +684,8 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "specialty",
     status: "rare",
     aka: ["gyro", "gyro ball", "bullet spin pitch"],
-    velocity: "Varies; the real bullet-spin slider expression sits in the upper-80s to ~90 mph",
     grip: claim(
-      "Thrown so the ball leaves the hand in a tight spiral, spinning around its own axis of travel like a thrown football or a fired bullet rather than with the backspin of a fastball.",
+      "Thrown so the ball leaves the hand in a tight spiral, spinning around its own axis of travel like a thrown football or a fired bullet rather than using fastball backspin.",
       "gyroball-grokipedia",
       "reputable-analysis",
     ),
@@ -748,7 +709,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "banned",
     status: "banned",
     aka: ["spitter", "wet one", "spit ball"],
-    velocity: "Roughly fastball speed; the doctoring, not the velocity, was the point",
     grip: claim(
       "Saliva or another slick substance is applied to one part of the ball so the fingers slip off it at release, killing the friction and backspin that normally hold a pitch up.",
       "wiki-spitball",
@@ -774,7 +734,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "banned",
     status: "banned",
     aka: ["scuffball", "scuff ball", "emery board ball"],
-    velocity: "Roughly fastball speed",
     grip: claim(
       "One side of the ball is roughened — scraped with emery paper, an emery board, sandpaper or a hidden sharp edge — to create a deliberately rough patch on an otherwise smooth ball.",
       "wiki-spitball",
@@ -799,7 +758,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "banned",
     status: "banned",
     aka: ["shineball"],
-    velocity: "Roughly fastball speed",
     grip: claim(
       "One side of the ball is polished smooth — Eddie Cicotte rubbed it against a trouser pocket loaded with talcum powder (and, by one account, paraffin) — leaving the two sides of the ball with sharply different surfaces.",
       "sabr-cicotte",
@@ -825,7 +783,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "banned",
     status: "banned",
     aka: ["grease ball", "greaseball", "petroleum ball"],
-    velocity: "Roughly fastball speed",
     grip: claim(
       "Petroleum jelly (Vaseline) or a similar grease is substituted for saliva and worked onto the ball or the fingers, making the pitch slip at release the same way a spitball does but with a substance that is easier to stash and hide.",
       "wiki-spitball",
@@ -851,7 +808,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "banned",
     status: "banned",
     aka: ["mud ball"],
-    velocity: "Roughly fastball speed",
     grip: claim(
       "Mud is worked into one hemisphere of the ball, loading and roughening that side while leaving the other clean.",
       "sabr-deadball-spitball",
@@ -884,9 +840,8 @@ export const REPERTOIRE: RepertoireEntry[] = [
     movement: claim(
       "It runs hard down-and-in on a right-handed hitter with a sharp, late arm-side cut — the break that reads as slicing through the air rather than tumbling, which is what set Hiramatsu's version apart.",
       'exp-br-bullpen-hiramatsu',
-      'reputable-analysis', { note: "Direction and the \"cuts the air\" sharpness are paraphrased from Wikipedia's shuuto entry. Hiramatsu pitched decades before radar/Statcast, so any specific inches-of-break figure is unverifiable; the proposed \"8–10 inches of horizontal break\" was dropped as a fabricated number.", approximate: true },
+      'reputable-analysis', { note: "Direction and the \"cuts the air\" sharpness are paraphrased from Wikipedia's shuuto entry. Hiramatsu pitched decades before radar/Statcast, so the shape is described in words only, never as a measured number." },
     ),
-    velocity: "Not reliably documented — Hiramatsu pitched in the pre-radar era (1967–1984), so no measured velocity exists; described qualitatively as a fast, sharp shuuto.",
     relationship: claim(
       "A named, sharper-breaking variant of the shuuto already in the atlas — same down-and-in arm-side family, distinguished by its harder, more knife-like late break; it is not a separate pitch type from the shuuto.",
       'exp-wikipedia-shuuto',
@@ -907,11 +862,10 @@ export const REPERTOIRE: RepertoireEntry[] = [
       'secondhand-attributed', { note: "No primary grip diagram survives. Contemporary accounts describe it only as Richards's branded slider; the seam-pressure detail is reputable inference, not a documented teaching cue, so it is tagged secondhand and approximate.", approximate: true },
     ),
     movement: claim(
-      "A reduced-velocity slider with lateral, glove-side break that read like a breaking ball arriving slow, which is how Richards used it to revive veteran arms — but no tracked break or spin figure exists for it.",
+      "A softer slider with lateral, glove-side break that read like a breaking ball arriving late, which is how Richards used it to revive veteran arms — but no tracked break or spin figure exists for it.",
       'exp-sabr-paul-richards-bio',
       'secondhand-attributed', { note: "The pitch was thrown in the 1950s, decades before radar or Statcast, so any spin-axis or break number would be fabricated. The Baltimore Sun retrospective characterizes it only as a slider Richards renamed; movement description here is paraphrase of that characterization.", approximate: true },
     ),
-    velocity: "Below fastball velocity, in slider/changeup range — no measured figure exists; this predates radar tracking.",
     relationship: claim(
       "The slip pitch is not a distinct pitch type but Paul Richards's mid-century coaching name for a slider — the Baltimore Sun describes it directly as \"a slider he called a 'slip pitch.'\" It resolves to the existing slider entry; this entry exists to file the historical alias honestly rather than erase it.",
       'exp-baltimore-sun-reckless-richards',
@@ -932,11 +886,10 @@ export const REPERTOIRE: RepertoireEntry[] = [
       'reputable-analysis', { note: "FanGraphs and the MLB.com explainer describe the grip as Vulcan-like with heavy pronation; the precise finger-pressure mechanics are Williams' own and not publicly specified, so this is analyst characterization rather than an official grip spec.", approximate: true },
     ),
     movement: claim(
-      "It carries the highest spin of any tracked changeup — about 2,750 RPM, roughly 900 above the average changeup — and sweeps so far glove-side (near 19 inches in 2024, wider than home plate) that it dives off the zone after reading as a fastball.",
+      "It carries far more spin than any other tracked changeup, and that spin sends it sweeping so hard to the glove side — wider than the plate itself — that it dives off the zone after reading as a fastball out of the hand.",
       'exp-fangraphs-unicorn-changeup',
-      'official-data', { note: "Spin rate (~2,752 RPM) and horizontal break (~19.4 in. in 2024) are Statcast-measured and corroborated by FanGraphs and the MLB.com explainer." },
+      'reputable-analysis', { note: "The extreme spin and the wide glove-side sweep are Statcast-measured and corroborated by FanGraphs and the MLB.com explainer; described here as shape only, never as a measured number." },
     ),
-    velocity: "low-to-mid 80s, roughly 11-12 mph under the fastball",
     relationship: claim(
       "Not a new pitch class — it is a changeup, specifically a Vulcan/split-finger-grip changeup pushed to an extreme spin profile through pronation and seam contact; \"Airbender\" is the nickname for Williams' individual version, not a separate pitch.",
       'exp-mlb-airbender-explainer',
@@ -959,9 +912,8 @@ export const REPERTOIRE: RepertoireEntry[] = [
     movement: claim(
       "It carries almost no horizontal break and drops nearly straight down, so off a tall over-the-top slot it reads to the hitter like a screwball or splitter diving arm-side.",
       'exp-azsnakepit-deathball',
-      'reputable-analysis', { note: "The cited piece pins the window at roughly minus-2 to plus-2 inches horizontal with 4-plus inches of vertical movement (Statcast-era 2024 data); the analyst relays a Tread Athletics meta-finding that pitches inside that window were swung on and missed nearly 50% of the time, and reports opponents hit just .130 with a near-40% whiff against Yilber Diaz's version in 2024.", approximate: true },
+      'reputable-analysis', { note: "The cited piece describes a flat vertical shape with little side movement and relays a Tread Athletics teaching read that pitches shaped this way can miss bats; the shape is described in words only, never as a measured gauge." },
     ),
-    velocity: "Mid-80s when thrown hard (Diaz/Nelson); a slower curve-graded version sits a touch under that (Montgomery)",
     relationship: claim(
       "The same source calls it \"the gyro slider\" — it is a vertical, near-zero-horizontal gyro slider tuned to a specific movement window and given a pitch-lab coinage; it resolves to the atlas's existing gyro-slider/bullet slider, distinguished by the high over-the-top slot that creates a screwball-like arm-side illusion.",
       'exp-azsnakepit-deathball',
@@ -984,11 +936,10 @@ export const REPERTOIRE: RepertoireEntry[] = [
     movement: claim(
       "It falls off the table — the low-spin, palm-deep delivery lets gravity dominate for a vertical plunge well past a normal changeup, and because the arm slot moves the same pitch can break either arm-side or glove-side.",
       'exp-baltsun-dead-fish-valdez',
-      'official-data', { note: "Velocity band and the ~40-50+ inch drop come from MLB.com's 2020 Statcast-era analysis of Valdez's pitch; figures are rounded/approximate and the directional break depends on the arm slot used.", approximate: true },
+      'reputable-analysis', { note: "The dramatic drop is drawn from MLB.com's 2020 Statcast-era analysis of Valdez's pitch; described here as shape only, never as a measured figure, and the directional break depends on the arm slot used." },
     ),
-    velocity: "~76-80 mph; roughly 12-15 mph off the same arm's fastball",
     relationship: claim(
-      "A low-spin, variable-arm-angle variant of the changeup family: it shares the changeup's velocity-kill intent but is set apart from a circle change by its deliberately low spin efficiency, extreme axis rotation, and multi-slot delivery — distinct enough to be filed on its own, not a pure alias.",
+      "A deadened, variable-arm-angle variant of the changeup family: it shares the changeup's late-arrival intent but is set apart from a circle change by its deliberately killed spin feel, extreme axis rotation, and multi-slot delivery — distinct enough to be filed on its own, not a pure alias.",
       'exp-mlb-dead-fish-valdez',
       'reputable-analysis',
     ),

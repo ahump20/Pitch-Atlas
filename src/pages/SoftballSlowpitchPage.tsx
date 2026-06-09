@@ -7,7 +7,7 @@ import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { SourcedValue } from '../components/provenance/SourcedValue'
 
 /*
-  Slowpitch, filed honestly and lighter. No windmill, no velocity, no rise — but a
+  Slowpitch, filed honestly and lighter. No windmill, no riseball shape — but a
   real craft of arc, deadening spin, and placement. The one figure people argue
   over, the legal arc, genuinely differs by sanctioning body, so the page names the
   discrepancy instead of pretending to a single number.
@@ -15,11 +15,11 @@ import { SourcedValue } from '../components/provenance/SourcedValue'
 
 export function SoftballSlowpitchPage() {
   useSeoMeta({
-    title: `Slowpitch: the craft of inches | ${SITE.siteName}`,
+    title: `Slowpitch: arc and touch | ${SITE.siteName}`,
     description:
       'Slowpitch softball pitching, filed honestly — the legal arc (and why the number differs by sanctioning body), the real craft of arc, deadening spin, and placement, and how men’s and coed differ. Sourced, not corrected.',
     ogTitle: `Slowpitch | ${SITE.siteName}`,
-    ogDescription: 'The craft of inches — arc, spin, and placement. Sourced, not corrected.',
+    ogDescription: 'Arc, spin, and placement. Sourced, not corrected.',
     ogUrl: `${SITE.canonicalDomain}/softball/slowpitch`,
   })
 
@@ -32,11 +32,11 @@ export function SoftballSlowpitchPage() {
             trail={[{ label: 'The Atlas', to: '/' }, { label: 'Softball', to: '/softball' }, { label: 'Slowpitch' }]}
           />
         }
-        eyebrow="Slowpitch · the craft of inches"
+        eyebrow="Slowpitch · arc and touch"
         title="Arc, spin, and placement."
         sub={
           <>
-            Slowpitch strips the pitch down: no windmill, no velocity, no rise. What is left is a real, narrow
+            Slowpitch strips the pitch down: no windmill and no riseball shape. What is left is a real, narrow
             craft — arc height, the backspin that deadens a ball on the plate, and placement to the corners of
             the mat. It is the opposite end of the craft from the riseball, filed here for exactly that
             contrast. Early innings — lighter than the fastpitch wing on purpose.

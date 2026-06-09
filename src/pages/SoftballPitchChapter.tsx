@@ -96,12 +96,6 @@ export function SoftballPitchChapter() {
             {pitch.name}
           </h1>
           <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-bone-2">{pitch.tagline}</p>
-          {pitch.velocity ? (
-            <p className="mt-7 inline-flex items-center gap-2 rounded-sm border border-bone/25 px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] text-bone">
-              Velocity
-              <span className="text-powder">{pitch.velocity}</span>
-            </p>
-          ) : null}
         </div>
       </section>
 

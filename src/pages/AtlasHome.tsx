@@ -59,20 +59,18 @@ const NEVER = [
   'Runtime API for pitch data',
   'Geometry for an unmeasured pitch',
 ]
-const ALWAYS = ['Real grip photos, clean sources', 'A source on every number']
+const ALWAYS = ['Real grip photos, clean sources', 'A source on every claim']
 
 /* The interactive tools, surfaced together so every one is one click from home.
    Each carries a `kind` that selects its visual preview plane. */
 const TOOLS: { label: string; to: string; blurb: string; kind: ToolKind }[] = [
-  { label: 'What pitch is this?', to: '/classify', kind: 'classify', blurb: 'Enter a tracking line; get the likely pitch family, with honest confidence.' },
-  { label: 'Build the Break', to: '/sandbox', kind: 'dial', blurb: 'Set the spin axis, rate, and efficiency and watch the break redraw live.' },
-  { label: 'The Movement Map', to: '/movement-map', kind: 'quadrant', blurb: 'Every filed pitch on one catcher’s-eye quadrant, with an RHP/LHP mirror.' },
-  { label: 'Compare two pitches', to: '/compare', kind: 'tunnel', blurb: 'Overlay any two pitches to see the shared tunnel and the late separation.' },
+  { label: 'Shape Sandbox', to: '/sandbox', kind: 'dial', blurb: 'Turn the spin-axis clock and watch the shape language change: ride, drop, run, sweep.' },
+  { label: 'The Shape Map', to: '/movement-map', kind: 'quadrant', blurb: 'Every filed pitch on one catcher’s-eye field, grouped by direction and character.' },
+  { label: 'Compare two pitches', to: '/compare', kind: 'tunnel', blurb: 'Overlay any two pitches to read the shared window and late shape split.' },
   { label: 'Compare two grips', to: '/grips', kind: 'grips', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
-  { label: 'The Kinetic Chain', to: '/kinetic-chain', kind: 'chain', blurb: 'Step the delivery phase by phase with the sourced joint angles and velocities.' },
 ]
 
-type ToolKind = 'classify' | 'dial' | 'quadrant' | 'tunnel' | 'grips' | 'chain'
+type ToolKind = 'dial' | 'quadrant' | 'tunnel' | 'grips'
 
 /* The tool preview planes: small, on-brand line schematics that say what each tool
    does before the visitor clicks. Cyan strokes on the void; decoration, not data. */
@@ -86,19 +84,6 @@ function ToolGlyph({ kind }: { kind: ToolKind }) {
       aria-hidden="true"
     >
       <svg viewBox="0 0 160 64" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-        {kind === 'classify' && (
-          <>
-            <path d="M16 22 H92" {...common} strokeDasharray="3 5" opacity={0.7} />
-            <circle cx="40" cy="22" r="3.2" fill={stroke} stroke="none" />
-            <circle cx="66" cy="22" r="3.2" fill={stroke} stroke="none" opacity={0.5} />
-            <path d="M92 22 l10 0" {...common} />
-            <path d="M100 18 l6 4 -6 4" {...common} />
-            <rect x="112" y="12" width="34" height="20" rx="4" {...common} />
-            <path d="M124 22 h10" {...common} />
-            <path d="M16 44 H146" {...common} strokeWidth={1} opacity={0.28} />
-            <text x="119" y="50" fill="var(--color-bone-2)" style={{ font: '700 7px var(--font-mono)', letterSpacing: '0.12em' }}>FAMILY</text>
-          </>
-        )}
         {kind === 'dial' && (
           <>
             <circle cx="48" cy="32" r="22" {...common} opacity={0.55} />
@@ -145,27 +130,17 @@ function ToolGlyph({ kind }: { kind: ToolKind }) {
             <path d="M104 41 q6 5 0 10 M116 41 q-6 5 0 10" {...common} strokeWidth={1.2} stroke="var(--color-seam-bright)" opacity={0.8} />
           </>
         )}
-        {kind === 'chain' && (
-          <>
-            <path d="M12 46 H148" {...common} strokeWidth={1} opacity={0.3} />
-            {[0, 1, 2, 3, 4].map((i) => (
-              <rect key={i} x={16 + i * 28} y={40 - i * 7} width="16" height={6 + i * 7} rx="2" {...common} opacity={0.5 + i * 0.1} />
-            ))}
-            <path d="M24 16 q34 -8 68 6 t56 4" {...common} />
-            <circle cx="148" cy="26" r="3" fill={stroke} stroke="none" />
-          </>
-        )}
       </svg>
     </div>
   )
 }
 
 /* One filed specimen, struck as a browsing row (not a second hero card). The specimen
-   number ties the row to its card; the row carries the break shape and the source dot,
+   number ties the row to its card; the row carries the shape read and the source dot,
    and opens the full specimen. The `.rfx-entry` look matches the /repertoire directory. */
 function SpecimenRow({ entry, accent }: { entry: PitchAtlasEntry; accent: string }) {
-  const pb = entry.canonical.physics.primaryBreak
-  const conf = pb.claim.confidence
+  const shape = entry.canonical.physics.shape
+  const conf = shape.confidence
   const color = CONFIDENCE_COLOR[conf] ?? 'var(--color-ink-3)'
   return (
     <Link
@@ -187,7 +162,7 @@ function SpecimenRow({ entry, accent }: { entry: PitchAtlasEntry; accent: string
             Filed
           </span>
         </span>
-        <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2">{pb.label}</span>
+        <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2">{shape.value}</span>
         <span className="mt-1.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone-2">
           <i className="rfx-dot" style={{ background: color, color, width: 7, height: 7 }} />
           {CONFIDENCE_META[conf].label}
@@ -239,10 +214,8 @@ export function AtlasHome() {
   /* The mini-ledger example for the source scale: a real filed reading wearing its
      real badge, so the model shows itself in practice rather than asserting. */
   const ref = PITCHES[0]
-  const refIvb = ref.motion.ivbInches
-  const refStat = `${refIvb > 0 ? '+' : ''}${refIvb}″`
-  const refBreak = ref.canonical.physics.primaryBreak
-  const refConf = refBreak.claim.confidence
+  const refShape = ref.canonical.physics.shape
+  const refConf = refShape.confidence
 
   return (
     <>
@@ -258,8 +231,9 @@ export function AtlasHome() {
             </h2>
             <p className="mt-4 max-w-[44ch] text-[15px] leading-relaxed text-bone-2">
               A pitch can be thrown a dozen credible ways. The atlas does not pick a winner. It records
-              what is known, attributes it, and labels how confident the source is. A Statcast number and a
-              beat-writer quote are both welcome, and they never wear the same badge.
+              what is known, attributes it, and labels how confident the source is. Official tracking
+              context can support a prose claim; biography facts stay when real; pitch shape is never
+              padded with borrowed gauges.
             </p>
           </div>
 
@@ -305,11 +279,11 @@ export function AtlasHome() {
             {/* mini ledger: one real filed reading, wearing its real badge */}
             <div className="mt-6 flex items-center gap-4 rounded-xl border border-bone/12 bg-[#0e0c14] px-4 py-3">
               <span className="rfx-athletic rfx-skew flex-none text-bone" style={{ fontSize: 30, WebkitTextStroke: '1px rgba(0,0,0,0.4)' }}>
-                {refStat}
+                Shape
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2">
-                  {ref.display.shortName} · {refBreak.label}
+                  {ref.display.shortName} · {refShape.value}
                 </span>
                 <span className="mt-1 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone-2">
                   <i className="rfx-dot" style={{ background: CONFIDENCE_COLOR[refConf], color: CONFIDENCE_COLOR[refConf], width: 7, height: 7 }} />
@@ -317,7 +291,7 @@ export function AtlasHome() {
                 </span>
               </span>
               <span className="flex-none text-right font-mono text-[9px] uppercase leading-tight tracking-[0.1em] text-ink-3">
-                Every number
+                Every claim
                 <br />
                 wears its badge
               </span>
@@ -406,8 +380,8 @@ export function AtlasHome() {
                         Open one and the full card unfolds.
                       </h4>
                       <p className="mt-2.5 max-w-[48ch] text-[14px] leading-relaxed text-bone-2">
-                        Every filed row above opens a specimen like this: the real grip in the window, the
-                        headline movement number, the break shape, and the source badge on the reading.
+                        Every filed row above opens a specimen like this: the real grip in the window,
+                        the shape read, and the source badge on the prose claim.
                         The card is the chase; the rows are how you find it.
                       </p>
                       <Link
@@ -442,8 +416,8 @@ export function AtlasHome() {
               Not just what each pitch is — how the craft works underneath.
             </h2>
             <p className="mt-4 max-w-[46ch] text-base leading-relaxed text-bone-2">
-              Ten sourced chapters: how velocity is made, how a pitch gets built, how pitches work together,
-              how to read the numbers, and the arm-health and youth reality beneath all of it.
+              Ten sourced chapters: how the body creates timing, how a pitch gets built, how pitches work
+              together, and the arm-health and youth reality beneath all of it.
             </p>
             <Link
               to="/learn"
@@ -486,7 +460,7 @@ export function AtlasHome() {
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="mono-label-stage">The tools</p>
           <h2 className="rfx-athletic rfx-skew mt-3 text-bone" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>
-            The physics engine, made playable.
+            The craft map, made playable.
           </h2>
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {TOOLS.map((t) => (

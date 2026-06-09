@@ -28,23 +28,6 @@ const CONF: Record<ClaimConfidence, { label: string; color: string }> = {
   unverified: { label: 'Unverified', color: 'var(--color-ink-3)' },
 }
 
-function bigStatFor(entry: PitchAtlasEntry) {
-  const m = entry.motion
-  // A pitch with no fixed break (the knuckleball) shows no headline number — the card
-  // leads with its shape ("Erratic flutter") rather than a spurious precise magnitude.
-  if (m.indeterminateBreak) return undefined
-  const useVert = Math.abs(m.ivbInches) >= Math.abs(m.horizontalInches)
-  if (useVert) {
-    const sign = m.ivbInches > 0 ? '+' : ''
-    return { value: `${sign}${m.ivbInches}`, unit: '″', label: m.ivbInches >= 0 ? 'INDUCED RIDE' : 'INDUCED DROP' }
-  }
-  return {
-    value: `${m.horizontalInches}`,
-    unit: '″',
-    label: m.horizontalDir === 'arm-side' ? 'ARM-SIDE RUN' : 'GLOVE-SIDE BREAK',
-  }
-}
-
 export function PitchSpecimenCard({
   entry,
   index = 0,
@@ -59,8 +42,8 @@ export function PitchSpecimenCard({
   const physics = canonical.physics
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
-  const pb = physics.primaryBreak.claim
-  const conf = CONF[pb.confidence]
+  const shapeClaim = physics.shape
+  const conf = CONF[shapeClaim.confidence]
 
   const grip = gripEntryFor(display.slug)
   const clip = grip?.clip
@@ -95,10 +78,9 @@ export function PitchSpecimenCard({
       vnum={display.specimenNo}
       name={display.shortName}
       face={face}
-      metric={bigStatFor(entry)}
-      shape={physics.primaryBreak.label}
+      shape={shapeClaim.value}
       cue={cue}
-      confidence={{ label: conf.label, color: conf.color, approx: pb.approximate }}
+      confidence={{ label: conf.label, color: conf.color, approx: shapeClaim.approximate }}
       crumb={familyCrumb(canonical.family)}
       gripSource={gripSource}
     />

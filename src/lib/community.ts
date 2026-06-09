@@ -81,8 +81,8 @@ export interface CommunityIdentity {
 export const INTENT_OPTIONS: { value: PitchIntent; label: string }[] = [
   { value: 'more-movement', label: 'More movement' },
   { value: 'less-movement', label: 'Less movement' },
-  { value: 'added-velocity', label: 'Added velocity' },
-  { value: 'reduced-velocity', label: 'Reduced velocity' },
+  { value: 'firmer-feel', label: 'Firmer feel' },
+  { value: 'softer-feel', label: 'Softer feel' },
   { value: 'better-command', label: 'Better command' },
   { value: 'deception', label: 'More deception' },
   { value: 'reduce-stress', label: 'Less arm stress' },
@@ -92,7 +92,7 @@ export const INTENT_OPTIONS: { value: PitchIntent; label: string }[] = [
 export const RESULT_OPTIONS: { value: ClaimedResultKind; label: string }[] = [
   { value: 'more-movement', label: 'More movement' },
   { value: 'better-command', label: 'Better command' },
-  { value: 'velocity-gain', label: 'Velocity gain' },
+  { value: 'firmer-result', label: 'Firmer feel' },
   { value: 'reduced-discomfort', label: 'Less discomfort' },
   { value: 'worked-in-bullpen', label: 'Worked in the bullpen' },
   { value: 'worked-in-game', label: 'Worked in a game' },
@@ -120,9 +120,9 @@ interface FieldNoteRow {
   tweak: string
   player_level: PlayerLevel
   arm_slot: ArmSlot
-  velocity_band: VelocityBand | null
-  intent: PitchIntent
-  claimed_result_kind: ClaimedResultKind
+  velocity_band: string | null
+  intent: string
+  claimed_result_kind: string
   claimed_result_note: string | null
   sample_size: number | null
   evidence_url: string | null
@@ -137,6 +137,74 @@ interface FieldNoteRow {
 
 const NOTE_COLUMNS =
   'id, pitch_slug, author_id, display_name, tweak, player_level, arm_slot, velocity_band, intent, claimed_result_kind, claimed_result_note, sample_size, evidence_url, evidence_label, source_tier, note, adoption_count, helpful_count, base_rank, created_at'
+
+const paceFromDb: Record<string, VelocityBand> = {
+  'under-60': 'low-effort',
+  '60-69': 'developing-arm',
+  '70-79': 'prep-arm',
+  '80-89': 'college-arm',
+  '90-plus': 'power-arm',
+  'low-effort': 'low-effort',
+  'developing-arm': 'developing-arm',
+  'prep-arm': 'prep-arm',
+  'college-arm': 'college-arm',
+  'power-arm': 'power-arm',
+}
+
+const paceToDb: Record<VelocityBand, string> = {
+  'low-effort': 'under-60',
+  'developing-arm': '60-69',
+  'prep-arm': '70-79',
+  'college-arm': '80-89',
+  'power-arm': '90-plus',
+}
+
+const intentFromDb: Record<string, PitchIntent> = {
+  'added-velocity': 'firmer-feel',
+  'reduced-velocity': 'softer-feel',
+  'firmer-feel': 'firmer-feel',
+  'softer-feel': 'softer-feel',
+  'more-movement': 'more-movement',
+  'less-movement': 'less-movement',
+  'better-command': 'better-command',
+  deception: 'deception',
+  'reduce-stress': 'reduce-stress',
+  other: 'other',
+}
+
+const intentToDb: Record<PitchIntent, string> = {
+  'more-movement': 'more-movement',
+  'less-movement': 'less-movement',
+  'firmer-feel': 'added-velocity',
+  'softer-feel': 'reduced-velocity',
+  'better-command': 'better-command',
+  deception: 'deception',
+  'reduce-stress': 'reduce-stress',
+  other: 'other',
+}
+
+const resultFromDb: Record<string, ClaimedResultKind> = {
+  'velocity-gain': 'firmer-result',
+  'firmer-result': 'firmer-result',
+  'more-movement': 'more-movement',
+  'better-command': 'better-command',
+  'reduced-discomfort': 'reduced-discomfort',
+  inconsistent: 'inconsistent',
+  'worked-in-bullpen': 'worked-in-bullpen',
+  'worked-in-game': 'worked-in-game',
+  'no-noticeable-change': 'no-noticeable-change',
+}
+
+const resultToDb: Record<ClaimedResultKind, string> = {
+  'more-movement': 'more-movement',
+  'better-command': 'better-command',
+  'firmer-result': 'velocity-gain',
+  'reduced-discomfort': 'reduced-discomfort',
+  inconsistent: 'inconsistent',
+  'worked-in-bullpen': 'worked-in-bullpen',
+  'worked-in-game': 'worked-in-game',
+  'no-noticeable-change': 'no-noticeable-change',
+}
 
 /**
  * Turn a Postgres/PostgREST error into a sentence a contributor can act on. The
@@ -164,9 +232,9 @@ function mapRow(row: FieldNoteRow, viewerId: string, tried: Set<string>, helpful
     tweak: row.tweak,
     playerLevel: row.player_level,
     armSlot: row.arm_slot,
-    velocityBand: row.velocity_band,
-    intent: row.intent,
-    claimedResultKind: row.claimed_result_kind,
+    velocityBand: row.velocity_band ? paceFromDb[row.velocity_band] ?? null : null,
+    intent: intentFromDb[row.intent] ?? 'other',
+    claimedResultKind: resultFromDb[row.claimed_result_kind] ?? 'inconsistent',
     claimedResultNote: row.claimed_result_note,
     sampleSize: row.sample_size,
     evidenceUrl: row.evidence_url,
@@ -274,9 +342,9 @@ export async function submitNote(input: NewFieldNote): Promise<CommunityNote> {
       tweak: input.tweak,
       player_level: input.playerLevel,
       arm_slot: input.armSlot,
-      velocity_band: input.velocityBand,
-      intent: input.intent,
-      claimed_result_kind: input.claimedResultKind,
+      velocity_band: input.velocityBand ? paceToDb[input.velocityBand] : null,
+      intent: intentToDb[input.intent],
+      claimed_result_kind: resultToDb[input.claimedResultKind],
       claimed_result_note: input.claimedResultNote,
       sample_size: input.sampleSize,
       evidence_url: input.evidenceUrl,

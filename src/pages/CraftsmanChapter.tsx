@@ -192,7 +192,7 @@ export function CraftsmanChapter() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index={isLegend ? '04' : '03'} label="The record" />
         <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {craftsman.numbers.map((n, i) => (
+          {craftsman.biography.map((n, i) => (
             <div key={n.label} className="border-t border-[rgba(255,255,255,0.12)] pt-3">
               <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
               <SourcedValue claim={n.claim} valueClassName="text-lg md:text-xl" accent={i === 0} />
@@ -200,8 +200,8 @@ export function CraftsmanChapter() {
           ))}
         </div>
         <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-          Filed the way every record here is: each figure season-stamped where it applies, confidence-labeled,
-          and one click from its source. Where the reputation and the data disagree, the gap is shown, not
+          Filed the way every record here is: each biography fact is confidence-labeled
+          and one click from its source. Where reputation and record disagree, the gap is shown, not
           smoothed over.
         </p>
       </section>

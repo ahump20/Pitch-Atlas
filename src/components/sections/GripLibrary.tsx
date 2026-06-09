@@ -124,7 +124,7 @@ export function GripMotion({ clip, className = '' }: { clip: GripClip; className
         <p className="text-[13px] leading-relaxed text-bone-2">{clip.alt}</p>
         <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.08em] text-ink-3">
           <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
-          Original · Austin Humphrey
+          Original · Austin H.
         </span>
       </figcaption>
     </figure>
@@ -304,7 +304,7 @@ export function AttackPlan() {
       </div>
 
       <p className="mt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
-        Austin Humphrey · a pitcher&rsquo;s own account, not tracked data
+        Austin H. · a pitcher&rsquo;s own account, not tracked data
       </p>
     </div>
   )
@@ -345,7 +345,7 @@ export function GripLibrary() {
               {grip.note}
             </blockquote>
             <p className="mt-2 pl-4 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
-              Austin Humphrey · in his own words
+              Austin H. · in his own words
             </p>
 
             {grip.movement ? (

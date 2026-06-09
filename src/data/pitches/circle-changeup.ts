@@ -4,7 +4,7 @@ import { sharedSeam } from './_shared-seam'
 
 /*
   The circle changeup. Fastball arm speed, the ball deeper in the hand, the axis
-  tilted toward the arm. The velocity comes off without the arm slowing, and the
+  tilted toward the arm. The ball arrives late without the arm slowing, and the
   pitch fades and tumbles under a fastball-timed swing. Grip prose paraphrased
   from MLB.com and Driveline, never copied. No player image, no likeness.
 
@@ -69,7 +69,7 @@ export const circleChange: PitchAtlasEntry = {
     name: 'Circle changeup',
     family: 'offspeed',
     grip: claim(
-      'The thumb and index finger form an OK circle against the inner side of the ball while the other three fingers lay across the top. The ball rests deeper in the hand, which bleeds velocity, and the off-center grip tilts the axis toward the arm for fade.',
+      'The thumb and index finger form an OK circle against the inner side of the ball while the other three fingers lay across the top. The ball rests deeper in the hand, which deadens the exit, and the off-center grip tilts the axis toward the arm for fade.',
       'mlb-glossary-changeup',
       'official-data',
       { note: 'Paraphrased from MLB.com Glossary, not quoted.' },
@@ -82,13 +82,13 @@ export const circleChange: PitchAtlasEntry = {
         { note: 'Paraphrased from the official glossary.' },
       ),
       claim(
-        'Driveline cues the fade by rolling the hand over the ball or swiping its inside: the more side-spin, the more arm-side run. They place most right-handers between roughly 1:30 and 2:30 on the spin clock.',
+        'Driveline cues the fade by rolling the hand over the ball or swiping its inside: the more the hand turns over, the more arm-side run. The more the axis leans toward the arm, the more the ball runs that way.',
         'driveline-changeup',
         'reputable-analysis',
         { note: 'Mechanical cues paraphrased from Driveline.' },
       ),
       claim(
-        'The deception is the velocity gap on identical arm action, so the standard cue is to keep fastball arm speed and let the grip take the speed off, not the throw.',
+        'The deception is the late arrival on identical arm action, so the standard cue is to keep fastball arm speed and let the grip deaden the pitch, not the throw.',
         'mlb-glossary-changeup',
         'official-data',
         { note: 'The "start the swing before the pitch arrives" deception is the glossary definition; the maintain-arm-speed cue is standard and widely taught.' },
@@ -97,54 +97,29 @@ export const circleChange: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'The arm matches the fastball; the velocity comes off from the deeper grip and the loosened circle, not a softer throw. A slight pronation at release tilts the axis arm-side, so the ball fades toward the throwing hand and tumbles as it crosses.',
+      'The arm matches the fastball; the deeper grip and loosened circle deaden the exit, not a softer throw. A slight pronation at release tilts the axis arm-side, so the ball fades toward the throwing hand and tumbles as it crosses.',
       'driveline-changeup',
       'reputable-analysis',
       { note: 'Paraphrased. Maintaining fastball arm speed is a standard changeup cue echoed across MLB.com and instructional sources.' },
     ),
     physics: {
       spinAxis: claim(
-        'A fastball-like backspin rotated toward the arm. Driveline puts most right-handers between about 1:30 and 2:30 on the spin clock; on Savant the arm-side tilt reads near 3:00 for a right-hander. The more tilt, the more arm-side fade.',
+        'A fastball-like backspin rotated toward the arm. The axis leans arm-side rather than pointing straight up, and the harder it leans, the harder the ball fades toward the throwing hand.',
         'driveline-changeup',
         'reputable-analysis',
-        { approximate: true, note: 'Webb read near 3:00 on Savant in 2024; the exact clock is method-dependent (observed vs spin-based axes differ).' },
+        { note: 'Where the tilt sits depends on how the hand turns over; observed and spin-based reads of the axis differ by method.' },
       ),
-      spinRateRpm: claim(
-        'Lower than the four-seam. The league-average changeup runs about 1,750 rpm. The pitch is defined less by spin rate than by how that spin is aimed.',
-        'mlb-spin-vs-velo',
+      shape: claim(
+        'It runs toward the throwing hand and tumbles under the barrel, late and on the arm-side. The fade is real and the drop is real; how wide it runs depends on how hard the arm turns the axis over.',
+        'savant-webb',
         'official-data',
-        { approximate: true, note: 'About 1,746 rpm league average since 2015 per MLB.com. Individual versions vary widely; Williams is an extreme outlier.' },
+        { note: 'Described as shape, not a measured number. The arm-side run and the drop are both genuine; the amount varies arm to arm.' },
       ),
-      activeSpinPct: claim(
-        'High on elite versions, but re-aimed. Webb sat 82% and Williams 90% active spin in 2024; most of the spin is useful, it just points arm-side instead of up.',
-        'savant-williams',
-        'official-data',
-        { note: 'Active-spin percentages from Savant, 2024. The fade comes from the axis tilt, not from dead spin.' },
-      ),
-      primaryBreak: {
-        label: 'Arm-side fade',
-        accent: true,
-        claim: claim(
-          'Several inches toward the throwing hand. Webb ran 9.8 inches of arm-side break in 2024; the extreme end, Williams, reached 19.4 inches, wider than home plate.',
-          'savant-webb',
-          'official-data',
-          { note: '9.8 in is Webb 2024; 19.4 in is Williams 2024, an outlier, not typical.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Drop under the barrel',
-        claim: claim(
-          'It tumbles lower than the four-seam because it carries less ride, arriving 8 to 12 mph slower on the same arm action, so the barrel passes over the top of it.',
-          'mlb-glossary-changeup',
-          'official-data',
-          { note: 'The 8 to 12 mph separation is the typical fastball-to-changeup gap; elite circle changes sit near 10 mph.' },
-        ),
-      },
       teaching: claim(
-        'The velocity gap and the fade work because the arm action is identical to the fastball. The eyes read fastball, the swing starts on fastball timing, then the ball arrives ten miles slower while fading down and toward the arm, and the barrel passes over it. Take the arm speed off and the deception collapses.',
+        'The late arrival and the fade work because the arm action is identical to the fastball. The eyes read fastball, the swing starts on fastball timing, then the ball arrives a beat late while fading down and toward the arm, and the barrel passes over it. Take the arm speed off and the deception collapses.',
         'mlb-glossary-changeup',
         'official-data',
-        { note: 'Synthesizes the MLB.com deception definition with Driveline mechanics. Elite circle changes (Hamels, Williams) sit near a 10 mph gap.' },
+        { note: 'Synthesizes the MLB.com deception definition with Driveline mechanics. The whole pitch lives on the gap between the look and the clock.' },
       ),
     },
     voice: secondhand(
@@ -156,13 +131,13 @@ export const circleChange: PitchAtlasEntry = {
   },
 
   motion: {
-    // Fastball-like backspin rotated hard toward the arm: high active spin (~0.81
-    // strength) but a strongly leaned force arrow, the visible difference from the
-    // four-seam's straight-up Magnus.
+    // Fastball-like backspin rotated hard toward the arm: a strongly leaned force
+    // arrow, the visible difference from the four-seam's straight-up Magnus.
+    // verticalShape 'flat' = it neither carries like a fastball nor sharply drops; it
+    // tumbles under the barrel while running arm-side.
     spinAxis: { x: 0.62, y: 0.52, z: 0.59 },
     forceLabel: 'Magnus, arm-side',
-    ivbInches: 4,
-    horizontalInches: 14,
+    verticalShape: 'flat',
     horizontalDir: 'arm-side',
     breakView: 'movement',
   },
@@ -171,67 +146,61 @@ export const circleChange: PitchAtlasEntry = {
     slug: 'circle-change',
     shortName: 'Circle change',
     specimenNo: '02',
-    heroSub: 'Fastball arm, ten miles slower.',
+    heroSub: 'Fastball arm, a beat late.',
     heroIntro:
       'The same arm action, the ball deeper in the hand. It arrives late, fading toward the arm and tumbling under the barrel. This is how the pitch fools timing.',
     foundationCaption: 'It fades toward the arm and drops under a fastball-timed swing, all on identical arm speed.',
     mastersIntro:
-      'Three documented changeups, three answers. The visual is our own seam schematic. Every figure is season-stamped and links to its source.',
+      'Four documented changeups, four answers. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
     {
       tier: 'verified-attributed',
       pitcher: 'Cole Hamels',
-      context: 'The textbook circle change and, by run value, the best changeup of the past two decades, a whiff-first pitch built on a ten-mile gap and identical arm action.',
+      context: 'The textbook circle change and one of the defining changeups of his generation, a bat-missing pitch built on identical arm action and late arrival.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Whiff rate', claim: claim('46.0%', 'fangraphs-changeup-2011', 'reputable-analysis', { note: '2011. Led every pitch in baseball in whiff rate among pitches thrown as often.' }) },
-        { label: 'Swinging-strike rate', claim: claim('27.1%', 'fangraphs-changeup-2011', 'reputable-analysis', { note: '2011, first in MLB.' }) },
-        { label: 'Run value (wCH)', claim: claim('+28.8', 'fangraphs-changeup-2011', 'reputable-analysis', { note: '2011, first in baseball.' }) },
-        { label: 'Velocity', claim: claim('83.4 mph', 'fangraphs-changeup-2011', 'reputable-analysis', { note: '2011, with +8.4 horizontal and +6.0 vertical movement vs an average changeup.' }) },
-        { label: 'Velocity gap', claim: claim('~10 mph', 'fangraphs-hamels-2019', 'reputable-analysis', { approximate: true, note: 'Held about a 10 mph separation throughout his career.' }) },
-      ],
+      distinction: claim(
+        'The bat-missing standard. Hitters chased it because the arm action read fastball and the ball was simply gone by the time the barrel arrived — the textbook everyone since has measured against.',
+        'fangraphs-changeup-2011',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Devin Williams',
-      context: 'The extreme tail, the Airbender: the highest-spin changeup on record. We show it as the outer limit of the circle grip while flagging that its movement pushes toward screwball territory.',
+      context: 'The extreme tail, the Airbender. We show it as the outer limit of the circle grip while flagging that its movement pushes toward screwball territory.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('84.4 mph', 'savant-williams', 'official-data', { note: '2024, 176 changeups thrown.' }) },
-        { label: 'Velocity gap', claim: claim('~10.3 mph', 'savant-williams', 'official-data', { approximate: true, note: 'Off his four-seam in 2024; the precise four-seam figure varies by sample.' }) },
-        { label: 'Spin rate', claim: claim('2,752 rpm', 'mlb-williams-airbender', 'official-data', { note: 'Highest-spin changeup on record per MLB.com; other sources put it at 2,827 to 2,852 for other samples. All agree it leads.' }) },
-        { label: 'Arm-side break', claim: claim('19.4 in', 'mlb-williams-airbender', 'official-data', { note: '2024, wider than the 17-inch plate; the lone arm-side pitch among the season\'s six biggest movers.' }) },
-        { label: 'Whiff rate', claim: claim('48.8%', 'savant-williams', 'official-data', { note: '2024, .162 batting average against.' }) },
-      ],
+      distinction: claim(
+        'The outer limit of the grip. His Airbender fades so hard and so late that it reads less like a changeup than a screwball — the same family, taken past where the family usually ends.',
+        'mlb-williams-airbender',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Logan Webb',
-      context: 'The other archetype: a high-volume movement-and-location change built for weak contact and ground balls, not whiffs, the counterweight to the bat-missers.',
+      context: 'The other archetype: a high-volume shape-and-location change built for weak contact and ground balls, not empty swings, the counterweight to the bat-missers.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('87.4 mph', 'savant-webb', 'official-data', { approximate: true, note: '2024; ~945 to 990 thrown depending on the cut, one of the highest changeup usages in baseball.' }) },
-        { label: 'Velocity gap', claim: claim('5.2 mph', 'savant-webb', 'official-data', { approximate: true, note: 'Off his sinker, tighter than the norm; his change wins on movement and location, not velocity separation.' }) },
-        { label: 'Arm-side break', claim: claim('9.8 in', 'savant-webb', 'official-data', { note: '2024, with 82% active spin.' }) },
-        { label: 'Whiff vs RHH', claim: claim('18.5% (2024), 38.5% (2025)', 'mccovey-webb', 'reputable-analysis', { note: 'Deliberately shown: a circle change that does not live on whiffs is a legitimate, high-ground-ball profile.' }) },
-      ],
+      distinction: claim(
+        'The ground-ball answer. His change wins on shape and location instead of a huge timing gap, beating the ball into the dirt rather than past the bat — proof a great changeup need not be a chase pitch.',
+        'savant-webb',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Johan Santana',
-      context: 'The historical benchmark, and the honest one. Widely called the best changeup of its era, built on identical arm action rather than movement; the data shows the deception, not the velocity gap, did the work. He has his own chapter in the Craftsmen.',
+      context: 'The historical benchmark, and the honest one. Widely called the best changeup of its era, built on identical arm action rather than raw movement; the record shows the disguise did the work. He has his own chapter in the Craftsmen.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Fastball-to-change gap (2007)', claim: claim('~10 mph (93.0 / 83.1)', 'santana-fastballs', 'reputable-analysis', { approximate: true, note: 'PITCHf/x, 2007. The pitch was reputed to have a 15-20 mph gap; the measured separation is closer to a normal MLB changeup, so the deception is what made it elite.' }) },
-        { label: 'Career changeup value (since 2002)', claim: claim('133.4 runs (the leader)', 'santana-fangraphs-nohit', 'reputable-analysis') },
-        { label: 'No-hitter changeups (2012)', claim: claim('38 thrown, 9 of 27 outs', 'santana-fangraphs-nohit', 'reputable-analysis') },
-        { label: 'Cy Young Awards', claim: claim('2, both unanimous (2004, 2006)', 'santana-twinsalmanac', 'reputable-analysis') },
-      ],
+      distinction: claim(
+        'The deception case, fully honest. The legend was the speed drop; the more useful lesson is the disguise — same arm, same look, late arrival.',
+        'santana-fangraphs-nohit',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
   ],
@@ -251,7 +220,7 @@ export const circleChange: PitchAtlasEntry = {
     steps: [
       'Make an OK sign: curl your index down to meet your thumb on the side of the ball, forming a visible circle.',
       'Let the ball sit deeper in your hand, toward the palm, with more surface on the ball than a fastball.',
-      'Throw it with fastball arm speed and the same release; the deep grip eats the velocity for you.',
+      'Throw it with fastball arm speed and the same release; the deep grip deadens the pitch for you.',
       'Let the palm turn out toward your arm side at release. Never try to spin it by hand.',
     ],
     does: {

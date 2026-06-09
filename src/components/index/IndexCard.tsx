@@ -67,9 +67,6 @@ function RepertoireCard({ entry }: { entry: RepertoireEntry }) {
         <span className={`mono-label ${filed ? 'text-bone-2' : 'text-ink-3'}`}>
           {filed ? 'Filed · full specimen' : 'Basic file'}
         </span>
-        {entry.velocity ? (
-          <span className="mono-label text-ink-3">· {entry.velocity.replace(/^(~|roughly |about )/i, '')}</span>
-        ) : null}
         <span className="ml-auto mono-label text-cyan transition-colors group-hover:text-bone">Open →</span>
       </div>
     </CardChrome>

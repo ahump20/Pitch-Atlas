@@ -9,10 +9,10 @@ import { sharedSeam } from './_shared-seam'
   prose paraphrased from MLB.com and Wikipedia, never copied. No player image.
 
   Authored against an adversarial verification pass that fetched every cited page.
-  Corrections it forced: the thumb-for-balance detail is re-sourced to Wikipedia
-  (not the glossary, which does not state it); the spin-axis and active-spin claims
-  are framed as inference from the no-spin goal, not as glossary text; and the
-  record-low spin figure is the confirmed 64 rpm (SI), not a lower unverified one.
+  The movement of this pitch is described as shape and feel only: a wandering,
+  late, no-fixed-direction flutter. The owner has never been tracked, so no spin,
+  velocity, or break figure is stated — those would be invented. What survives is
+  what can be felt and seen: the ball barely turns, and the seams do the steering.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -89,19 +89,19 @@ export const knuckleball: PitchAtlasEntry = {
         { note: 'Paraphrased. The fingertip-vs-knuckle distinction and the thumb-for-balance point are Wikipedia\'s, not the MLB glossary\'s.' },
       ),
       claim(
-        'The textbook target is to have the ball complete only a quarter to a half rotation over the whole flight from hand to plate; the slowly changing seam position is what makes the path wander.',
+        'The textbook target is to barely let the ball turn at all over the whole flight from hand to plate; the slowly changing seam position is what makes the path wander.',
         'wiki-knuckleball',
         'reputable-analysis',
-        { note: 'Paraphrased. The quarter-to-half-rotation target is Wikipedia\'s.' },
+        { note: 'Paraphrased. The barely-any-rotation target is Wikipedia\'s.' },
       ),
     ],
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It is thrown slow — usually 60 to 78 mph — with an even, low-effort push instead of a hard arm whip, because arm speed adds the spin the pitch is trying to avoid. A harder knuckleball (R.A. Dickey threw his in the high 70s to low 80s) trades some flutter for less reaction time, and many throwers carry two speeds.',
+      'It is thrown soft, with an even, low-effort push instead of a hard arm whip, because arm speed adds the spin the pitch is trying to avoid. A firmer knuckleball trades some flutter for less reaction time, and many throwers carry two speeds.',
       'fangraphs-dickey-knuckle',
       'reputable-analysis',
-      { note: 'Paraphrased. The hard-knuckleball velocity band and the two-speed approach are from the FanGraphs Dickey analysis.' },
+      { note: 'Paraphrased. The firm-knuckleball approach and the two-speed idea are from the FanGraphs Dickey analysis.' },
     ),
     physics: {
       spinAxis: claim(
@@ -110,37 +110,12 @@ export const knuckleball: PitchAtlasEntry = {
         'reputable-analysis',
         { note: 'Inferred from the no-spin goal; the cited pages describe near-zero rotation, not a spin direction.' },
       ),
-      spinRateRpm: claim(
-        'Near zero, the lowest in the game. R.A. Dickey\'s made about 1.5 rotations hand-to-plate, roughly 150 rpm; Matt Waldron averaged 276 rpm in 2024 and once spun one at just 64 rpm for a called strike — the lowest-spin called strike of the Statcast era.',
-        'fangraphs-waldron-knuckle',
+      shape: claim(
+        'No fixed direction and no settled shape — a late, sudden flutter that darts one way then another, unpredictable to the hitter, the catcher, and the pitcher alike. With the spin killed, the seams catch the air differently from instant to instant. It is famously almost as hard to catch as it is to hit.',
+        'mlb-glossary-knuckleball',
         'reputable-analysis',
-        { approximate: true, note: 'Dickey ~150 rpm from Alan Nathan; Waldron 276 rpm avg from FanGraphs; the 64 rpm record from SI.' },
+        { note: 'Described as shape, not a measured number. There is no fixed break direction — that unpredictability is the pitch.' },
       ),
-      activeSpinPct: claim(
-        'Not meaningful. With almost no spin and no stable axis there is no active-spin figure to report; the knuckleball is excluded from the spin-efficiency picture entirely.',
-        'wiki-knuckleball',
-        'reputable-analysis',
-        { note: 'Inferred from the near-zero spin; no published active-spin value exists for a knuckleball.' },
-      ),
-      primaryBreak: {
-        label: 'Erratic flutter',
-        accent: true,
-        claim: claim(
-          'Unpredictable — to the hitter, the catcher, and the pitcher alike. With the spin killed, the seams catch the air differently from instant to instant, so the ball darts late in no fixed direction. It is famously almost as hard to catch as it is to hit.',
-          'mlb-glossary-knuckleball',
-          'reputable-analysis',
-          { note: 'Paraphrased. There is no fixed break magnitude or direction — that unpredictability is the pitch.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Why it moves',
-        claim: claim(
-          'The slowly changing position of the raised seams alters the drag on the ball as it travels, bending its flight. The exact mechanism — vortex shedding, an asymmetric wake, boundary-layer effects — is still debated; what is agreed is that it is the seams, not spin, doing the steering.',
-          'wiki-knuckleball',
-          'reputable-analysis',
-          { note: 'Paraphrased. Wikipedia notes the seam-drag mechanism and that the precise cause is debated.' },
-        ),
-      },
       teaching: claim(
         'Every other pitch in the atlas moves because it spins. The knuckleball moves because it doesn\'t. Kill the rotation, and the raised seams — whose position when the ball leaves the hand is never quite the same twice — catch the air and wander the ball off line. No spin, no Magnus, no two pitches alike.',
         'wiki-knuckleball',
@@ -153,18 +128,17 @@ export const knuckleball: PitchAtlasEntry = {
 
   motion: {
     // A knuckleball has essentially NO induced break: with almost no spin it sits on
-    // the spinless reference. We show a barely-negative IVB and no horizontal so the
-    // ball plots right at center; its real, erratic flutter is a wake force this
-    // Magnus plot cannot draw. magnusStrength is tiny, as it should be.
+    // the spinless reference. verticalShape 'flat' = it rides neither up nor down off
+    // a spinless ball; its real, erratic flutter is a wake force this Magnus plot
+    // cannot draw.
     spinAxis: { x: -0.1, y: 0, z: 0.99 },
     forceLabel: 'Almost no Magnus',
     gyro: false,
-    ivbInches: -1,
-    horizontalInches: 0,
+    verticalShape: 'flat',
     horizontalDir: 'none',
     breakView: 'movement',
-    // No fixed break magnitude or direction — its primaryBreak claim says exactly that.
-    // Don't headline a precise "-1" on the one pitch defined by indeterminacy.
+    // No fixed break shape or direction — its shape claim says exactly that.
+    // Don't headline a precise read on the one pitch defined by indeterminacy.
     indeterminateBreak: true,
   },
 
@@ -177,7 +151,7 @@ export const knuckleball: PitchAtlasEntry = {
       'Dig the fingernails in, brace the thumb, and push the ball flat with no spin. Strip away the rotation and the raised seams catch the air on their own, fluttering the ball late in any direction — almost as hard to catch as it is to hit.',
     foundationCaption: 'With the spin killed, there is almost no Magnus force: the ball sits on the spinless reference and the seams do the steering, erratically.',
     mastersIntro:
-      'Two documented knuckleballs, a generation apart. The visual is our own seam schematic; every spin figure is season-stamped and sourced, and the movement is, by nature, not repeatable.',
+      'Two documented knuckleballs, a generation apart. The visual is our own seam schematic; what sets each apart is in the read, not a gauge, and the movement is, by nature, not repeatable.',
   },
 
   masterVariants: [
@@ -186,24 +160,25 @@ export const knuckleball: PitchAtlasEntry = {
       pitcher: 'R.A. Dickey',
       context: 'The only knuckleballer to win a Cy Young Award (2012), and the model of the hard, two-speed knuckleball that traded some flutter for less reaction time.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('78-83 mph', 'fangraphs-dickey-knuckle', 'reputable-analysis', { approximate: true, note: 'The hard knuckleball, with a slower version off it.' }) },
-        { label: 'Spin', claim: claim('~150 rpm', 'illinois-dickey-knuckle', 'reputable-analysis', { approximate: true, note: 'About 1.5 rotations hand-to-plate, from Alan Nathan\'s study of the June 13, 2012 one-hitter.' }) },
-        { label: 'Movement swing', claim: claim('over 8 in', 'illinois-dickey-knuckle', 'reputable-analysis', { note: 'The plate-location difference between the same pitch making 1.0 vs 1.5 rotations — a tiny change in spin, a big change in where it ends up.' }) },
-      ],
+      distinction: claim(
+        'The firm, two-speed knuckleball: thrown with more pace than the classic floater, he gave up a little flutter to cut the hitter\'s reaction time, and changed speeds off it to keep them guessing.',
+        'fangraphs-dickey-knuckle',
+        'reputable-analysis',
+        { note: 'The firmer knuckleball, with a slower version off it — the read that defined his arm.' },
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Matt Waldron',
-      context: 'The modern knuckleballer who kept the pitch alive in the Statcast era — and set its record low for spin, the clearest proof that less rotation is the goal.',
+      context: 'The modern knuckleballer who kept the pitch alive in the current game — and threw it more and more, the clearest proof that less rotation is the goal.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('76.7 mph', 'fangraphs-waldron-knuckle', 'reputable-analysis', { note: '2024 average.' }) },
-        { label: 'Spin', claim: claim('276 rpm', 'fangraphs-waldron-knuckle', 'reputable-analysis', { approximate: true, note: '2024 average, about 2.2 rotations to the plate.' }) },
-        { label: 'Usage', claim: claim('35.4%', 'fangraphs-waldron-knuckle', 'reputable-analysis', { note: '2024, up from 26.7% in 2023.' }) },
-        { label: 'Lowest-spin strike', claim: claim('64 rpm', 'si-waldron-knuckle', 'reputable-analysis', { note: '2024 — the lowest-spin called strike of the Statcast era; he threw a 28-rpm pitch (a ball) that same inning.' }) },
-      ],
+      distinction: claim(
+        'The knuckleball\'s survivor in the tracking era: he leaned on it harder season over season and pushed it to its quietest, slowest-turning extreme, where the ball barely rotates at all on its way to the plate.',
+        'fangraphs-waldron-knuckle',
+        'reputable-analysis',
+        { note: 'The read: he kept the pitch alive and chased the no-spin edge of it.' },
+      ),
       rights: 'original',
     },
   ],

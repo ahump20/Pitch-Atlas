@@ -64,9 +64,9 @@ export function SourcesPage() {
           <div className="md:col-span-5">
             <h2 className="rfx-skick mb-6">How to read a claim</h2>
             <p className="mb-6 max-w-[46ch] text-sm leading-relaxed text-ink-2/85">
-              Every figure on the site wears one of seven badges, strongest to weakest. The badge is the
-              point: a measured Statcast number and a coaching cue from a blog both belong here, but they do
-              not look the same. Each figure was checked against the source it cites before it shipped; what
+              Every claim on the site wears one of seven badges, strongest to weakest. The badge is the
+              point: official tracking context and a coaching cue from a blog can both belong here, but they
+              do not look the same. Each claim was checked against the source it cites before it shipped; what
               a source could not support is shown as unverified, not hidden.
             </p>
             <ul className="flex flex-col gap-4">

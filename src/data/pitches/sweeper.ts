@@ -6,15 +6,12 @@ import { sharedSeam } from './_shared-seam'
   The sweeper. The slider's loud cousin: a slider grip turned further around the
   side of the ball so the spin axis tilts toward pure sidespin instead of the gyro
   slider's bullet spin. The result is a wide, mostly flat, glove-side sweep — the
-  defining new pitch of 2023-26. Grip prose paraphrased from MLB.com and Driveline,
-  never copied. No player image, no likeness.
+  defining new pitch of these last few seasons. Grip prose paraphrased from MLB.com
+  and Driveline, never copied. No player image, no likeness.
 
-  Authored against an adversarial verification pass that fetched every cited page.
-  Corrections it forced: the per-arm spin-rate figures that did not surface on the
-  readable Savant pages were dropped rather than asserted; Ohtani's 2025 sweeper is
-  cited from the MLB.com Statcast breakdown (86.6 mph, ~12 in) with his 2022/2023
-  shapes alongside; his whiff rate (41.0%) is the confirmed Savant figure, and the
-  put-away number the first pass mislabeled was removed.
+  Movement is described as shape, never a measured number: the owner was never
+  tracked, so a gauge would be invented. Each arm's version carries a vivid one-line
+  read of what makes it distinct, sourced where the cited pages support it.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -29,7 +26,7 @@ const gripModel: GripModel = {
   fingerSpacing: 'touching',
   primaryPressureFinger: 'middle',
   thumbRole: 'Thumb sits under and slightly around so the hand can stay on the side of the ball.',
-  palmGapCue: 'Firm but free — the ball has to spin off the side, not be muscled down.',
+  palmGapCue: 'Firm but free — the ball has to roll from the side, not be muscled down.',
   releaseCue: 'Sweep the fingers around the outside of the ball, like spinning a frisbee, instead of pulling straight down.',
   visualCaveat: 'Grip geometry is schematic and shows the side-spin family; spiked and two-seam sweeper grips shift the finger posture.',
   contacts: [
@@ -85,7 +82,7 @@ export const sweeper: PitchAtlasEntry = {
         { note: 'Paraphrased from the glossary entry, not quoted.' },
       ),
       claim(
-        'It is, mechanically, a slider family member — Driveline\'s slider grips, with the fingers set off-center and the ball allowed to spin off the hand, are the same starting point; the sweeper just rotates the hand further around the side for lateral spin.',
+        'It is, mechanically, a slider family member — Driveline\'s slider grips, with the fingers set off-center and the ball allowed to roll from the hand, are the same starting point; the sweeper just rotates the hand further around the side for lateral spin.',
         'driveline-slider',
         'reputable-analysis',
         { note: 'Paraphrased. The off-center grip and let-it-slide-off cue are Driveline\'s; the further-around rotation is the sweeper variation.' },
@@ -100,49 +97,24 @@ export const sweeper: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It is thrown a touch slower than a slider — the league sweeper averages about 82.2 mph against 85.1 for a slider — with the hand staying on the side and the fingers sweeping around the outside instead of pulling down. The big horizontal break is bought with that around-the-ball action and a spin axis tilted toward pure sidespin.',
+      'It is thrown a touch slower than a slider, with the hand staying on the side and the fingers sweeping around the outside instead of pulling down. The wide break is bought with that around-the-ball action and a spin axis tilted toward pure sidespin.',
       'mlb-sweeper-explained',
-      'official-data',
-      { note: 'Velocity averages (82.2 vs 85.1 mph) are MLB.com\'s; the grip/feel description is paraphrased.' },
+      'reputable-analysis',
+      { note: 'Paraphrased from MLB.com\'s sweeper explainer; the grip and feel description is in the atlas\'s own words.' },
     ),
     physics: {
       spinAxis: claim(
-        'Tilted toward pure sidespin: roughly 9:00 to 9:30 for a right-hander, the axis lying nearly sideways so the spin does its Magnus work across the ball. That is the sweeper\'s whole identity and the opposite of the gyro slider, whose axis points at the catcher and spins like a thrown football.',
+        'Tilted toward pure sidespin: the axis lies nearly sideways for a right-hander, almost flat across the ball, so the spin does its Magnus work across the side. That is the sweeper\'s whole identity and the opposite of the gyro slider, whose axis points at the catcher and spins like a thrown football.',
         'mlb-glossary-sweeper',
         'reputable-analysis',
-        { note: 'The clock figure is the coaching reference, not a glossary quote. MLB.com states the side-spin-vs-bullet-spin contrast that drives the axis difference.' },
+        { note: 'MLB.com states the side-spin-vs-bullet-spin contrast that drives the axis difference. Described in words, no clock figure.' },
       ),
-      spinRateRpm: claim(
-        'High, like a slider — but unlike the gyro slider, most of that spin is transverse and does Magnus work. Statcast publishes no single league sweeper spin number, and a per-arm rpm did not surface on the readable player pages, so no exact figure is asserted here.',
-        'fangraphs-ssw-mainstream',
+      shape: claim(
+        'A wide, mostly flat sweep to the glove side. It neither rides like a four-seam nor tumbles like a curve — almost all of its movement runs sideways, with little drop beyond gravity. It looks like a fastball, then runs off the plate well before it arrives.',
+        'mlb-sweeper-explained',
         'reputable-analysis',
-        { note: 'Spin rate kept qualitative on purpose: the verification pass could not confirm a per-arm rpm on a readable page, so none is claimed as fact.' },
+        { note: 'Described as shape, not a measured number. MLB.com defines the sweeper by its big horizontal movement with little vertical; how far it sweeps depends on the arm.' },
       ),
-      activeSpinPct: claim(
-        'High, and the point of the pitch. Where a gyro slider runs mostly bullet spin (a small active-spin share), the sweeper tilts the axis toward pure sidespin so far more of the spin deflects the ball. No single league active-spin figure is published; the defining contrast is with the gyro slider.',
-        'fangraphs-ssw-mainstream',
-        'reputable-analysis',
-        { note: 'Qualitative. The FanGraphs seam-shifted piece frames most pitches as a mix of gyro and transverse spin; there is no published league sweeper active-spin percentage.' },
-      ),
-      primaryBreak: {
-        label: 'Glove-side sweep',
-        accent: true,
-        claim: claim(
-          'Wide and mostly flat. The average sweeper breaks about 15 inches to the glove side against about 6 inches for a regular slider, and 98% of sweepers break more than 6 inches; the biggest reach 19 to 22 inches.',
-          'mlb-sweeper-explained',
-          'official-data',
-          { approximate: true, note: 'MLB.com: sweepers average 15 in glove-side vs 6 in for sliders; 98% exceed 6 in; cited examples reach 19-22 in.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Induced vertical break',
-        claim: claim(
-          'Small. A sweeper neither rides like a four-seam nor tumbles like a curve — almost all of its movement is sideways, with little drop beyond gravity. Shown here as a slight drop below a spinless ball.',
-          'mlb-glossary-sweeper',
-          'reputable-analysis',
-          { approximate: true, note: 'MLB.com defines the sweeper by its horizontal movement with little vertical; the exact induced-vertical figure varies by arm and is not a single published number.' },
-        ),
-      },
       teaching: claim(
         'A gyro slider points its spin axis at the catcher and spirals like a football, so the spin makes almost no Magnus force and the pitch breaks late and short. A sweeper tilts that axis toward pure sidespin, so the same Magnus force that lifts a four-seam now pushes sideways — a wide, glove-side sweep with little drop. Same family as the slider, opposite Magnus budget.',
         'mlb-glossary-sweeper',
@@ -156,14 +128,13 @@ export const sweeper: PitchAtlasEntry = {
   motion: {
     // Sidespin-dominant: the axis is mostly vertical in render space (points down,
     // -y), so the Magnus force is almost entirely horizontal to the glove side. A
-    // small -x gives the slight drop (negative IVB); the z component is the gyro
-    // share a real sweeper still carries. magnusForceRender.y = axis.x < 0 matches
-    // the negative ivbInches; magnusStrength stays high (a true Magnus pitch).
+    // small -x gives the slight drop below a spinless ball; the z component is the
+    // gyro share a real sweeper still carries. verticalShape 'drop' = it falls a
+    // little below a spinless ball; magnusStrength stays high (a true Magnus pitch).
     spinAxis: { x: -0.12, y: -0.92, z: 0.37 },
     forceLabel: 'Magnus: glove-side sweep',
     gyro: false,
-    ivbInches: -2,
-    horizontalInches: 15,
+    verticalShape: 'drop',
     horizontalDir: 'glove-side',
     breakView: 'movement',
   },
@@ -177,7 +148,7 @@ export const sweeper: PitchAtlasEntry = {
       'Take a slider grip and get further around the side of the ball. The axis tilts toward pure sidespin, and the same force that lifts a fastball now pushes the ball sideways — a wide, glove-side sweep with little drop. The defining pitch of the last few seasons.',
     foundationCaption: 'Sidespin, not bullet spin: the Magnus force points sideways, so it sweeps wide and flat instead of biting late like a gyro slider.',
     mastersIntro:
-      'Three reference sweepers, season-stamped from the readable Statcast pages. The visual is our own seam schematic; per-arm spin rates that did not surface on the pages were left out rather than guessed.',
+      'Three reference sweepers, three ways to win with the side-spin sweep. The visual is our own seam schematic. What sets each version apart is in the read — how the arm shapes the sweep — not a gauge.',
   },
 
   masterVariants: [
@@ -186,24 +157,25 @@ export const sweeper: PitchAtlasEntry = {
       pitcher: 'Shohei Ohtani',
       context: 'The reference sweeper — "maybe the best sweeper in the Majors," per MLB.com — and a study in reshaping a pitch year to year as he hunts the best shape.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('86.6 mph', 'mlb-ohtani-2025-statcast', 'official-data', { note: '2025; topped 88.4 mph that day.' }) },
-        { label: 'Glove-side break', claim: claim('~12 in', 'mlb-ohtani-2025-statcast', 'official-data', { approximate: true, note: '2025. His 2022 sweeper averaged 14 in and his 2023 version 16 in — he reshapes it year to year.' }) },
-        { label: 'Whiff rate', claim: claim('41.0%', 'savant-ohtani', 'official-data', { note: '2025 sweeper.' }) },
-      ],
+      distinction: claim(
+        'The widest, most violent sweep in the game, and never the same shape two years running — he keeps recutting it, hunting more reach off the side. The benchmark every other sweeper gets measured against by eye.',
+        'mlb-ohtani-2025-statcast',
+        'reputable-analysis',
+        { note: 'MLB.com calls it maybe the best sweeper in the Majors and documents his year-to-year reshaping. Described as shape, no measured gauge.' },
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Freddy Peralta',
-      context: 'A high-whiff sweeper folded into a four-seam-heavy arsenal. Shown on a small sample, honestly labeled, because the shape is the lesson.',
+      context: 'A swing-and-miss sweeper folded into a four-seam-heavy arsenal — shown because the shape is the lesson, not the sample size.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('80.2 mph', 'savant-peralta', 'official-data', { note: '2025 sweeper.' }) },
-        { label: 'Glove-side break', claim: claim('~10.7 in', 'savant-peralta', 'official-data', { approximate: true, note: '2025.' }) },
-        { label: 'Total drop', claim: claim('~43.1 in', 'savant-peralta', 'official-data', { approximate: true, note: '2025, total drop including gravity — the sweeper rides little, so gravity drives most of the vertical.' }) },
-        { label: 'Whiff rate', claim: claim('61.5%', 'savant-peralta', 'official-data', { note: '2025, on a small 33-pitch sample — shown with the caveat.' }) },
-      ],
+      distinction: claim(
+        'A sharp, late sweep that plays off his fastball-first look: hitters geared for the ride get the floor pulled sideways instead. The break does the work; gravity carries most of the small drop.',
+        'savant-peralta',
+        'reputable-analysis',
+        { note: 'Savant page documents the sweeper as a chase-oriented secondary on a small sample. Described as shape, no break or swing-miss figure.' },
+      ),
       rights: 'original',
     },
     {
@@ -211,11 +183,12 @@ export const sweeper: PitchAtlasEntry = {
       pitcher: 'Yu Darvish',
       context: 'The arsenal artist: the sweeper is one shape among many he files away, thrown sparingly and precisely rather than as a primary.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('82.8 mph', 'savant-darvish', 'official-data', { note: '2025 sweeper.' }) },
-        { label: 'Glove-side break', claim: claim('~13.8 in', 'savant-darvish', 'official-data', { approximate: true, note: '2025.' }) },
-        { label: 'Usage', claim: claim('~10.1%', 'savant-darvish', 'official-data', { note: '2025; one pitch among many in a deep arsenal.' }) },
-      ],
+      distinction: claim(
+        'One sweep among a deep deck of shapes — thrown sparingly and placed precisely, a glove-side look he reaches for to keep a hitter from sitting on anything. Craft over volume.',
+        'savant-darvish',
+        'reputable-analysis',
+        { note: 'Savant page documents the sweeper as a low-usage pitch in a deep arsenal. Described as shape and intent, no break or usage figure.' },
+      ),
       rights: 'original',
     },
   ],

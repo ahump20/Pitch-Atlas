@@ -1,12 +1,11 @@
 import { useId, useMemo } from 'react'
 import { projectSeam, splitRuns } from '../../lib/seam2d'
-import { CARRY_GAP_AVG_IN } from '../../lib/physics'
 
 /*
   The gravity ghost, told in 2D. A spinless phantom falls on gravity alone while
-  the real four-seam holds flatter; the gap between them at the plate is the
-  induced vertical break, drawn as a dimension line. The 2D twin of the 3D ghost,
-  and the reduced-motion / no-WebGL climax. The real ball reuses the shared seam.
+  the real four-seam holds flatter; the gap between them at the plate is the carry.
+  Shown as shape, not a measured number — the ride is real; how far it rides depends
+  on the arm. The 2D twin of the 3D ghost, and the reduced-motion / no-WebGL climax.
 */
 
 const REAL = { x: 300, y: 96, r: 19 }
@@ -14,21 +13,14 @@ const GHOST = { x: 300, y: 150, r: 19 }
 
 export interface CarryDiagramProps {
   className?: string
-  ivbInches?: number
-  approximate?: boolean
 }
 
-export function CarryDiagram({
-  className = '',
-  ivbInches = CARRY_GAP_AVG_IN,
-  approximate = true,
-}: CarryDiagramProps) {
+export function CarryDiagram({ className = '' }: CarryDiagramProps) {
   const uid = useId()
   const gradId = `leather-carry-${uid}`
 
   const realSeam = useMemo(() => splitRuns(projectSeam(REAL.x, REAL.y, REAL.r, 200)), [])
-  const ivbLabel = `${approximate ? '≈ ' : ''}${ivbInches} in`
-  const title = `Carry. A spinless ball falls on gravity alone while the four-seam holds flatter. The gap at the plate is the induced vertical break, about ${ivbInches} inches${approximate ? ', approximate' : ''}.`
+  const title = `Carry. A spinless ball falls on gravity alone while the four-seam holds flatter. The gap at the plate is the carry — it rides; it never literally rises.`
 
   return (
     <svg
@@ -93,7 +85,7 @@ export function CarryDiagram({
         FOUR-SEAM
       </text>
 
-      {/* dimension line: the induced vertical break */}
+      {/* the carry: the gap between the two, marked as shape, not a number */}
       <g stroke="var(--color-seam)" strokeWidth="1">
         <line x1="338" y1={REAL.y} x2="338" y2={GHOST.y} />
         <line x1="333" y1={REAL.y} x2="343" y2={REAL.y} />
@@ -104,13 +96,13 @@ export function CarryDiagram({
         y={(REAL.y + GHOST.y) / 2}
         fill="var(--color-seam)"
         fontFamily="var(--font-mono)"
-        fontSize="10"
-        letterSpacing="0.5"
+        fontSize="9"
+        letterSpacing="1.5"
         dominantBaseline="middle"
         transform={`rotate(90 346 ${(REAL.y + GHOST.y) / 2})`}
         textAnchor="middle"
       >
-        {ivbLabel} IVB
+        CARRY
       </text>
     </svg>
   )

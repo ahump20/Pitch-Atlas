@@ -22,7 +22,7 @@ export const LOST_PITCHES: LostPitch[] = [
     tier: "documented",
     specimenNo: "N-01",
     tagline: "The pause the rulebook outlawed",
-    intro: "Not a grip but a piece of timing: a two-stage delivery with a deliberate hitch at the very top of the windup, the front foot already planted, everything frozen for a beat before the arm finally came through. The pause did the work the velocity used to. It broke the hitter's internal clock so completely that men swung before the ball was even gone. It is the rare lost pitch that died not from forgotten technique but from a presidential ruling.",
+    intro: "Not a grip but a piece of timing: a two-stage delivery with a deliberate hitch at the very top of the windup, the front foot already planted, everything frozen for a beat before the arm finally came through. The pause broke the hitter's internal clock so completely that men swung before the ball was even gone. It is the rare lost pitch that died not from forgotten technique but from a presidential ruling.",
     what: claim(
       "A windup with a built-in stall at its peak, the lead foot down and the body held motionless for up to a beat before release, designed to desynchronize the hitter's timing so badly that some committed to a swing before the ball left Paige's hand.",
       "wiki-satchel-paige",
@@ -192,21 +192,21 @@ export const LOST_PITCHES: LostPitch[] = [
     rights: 'original',
   },
   {
-    slug: "smokey-joe-williams-velocity",
+    slug: "smokey-joe-williams-fastball",
     name: "Smokey Joe Williams's Fastball",
     kind: "pitcher",
     era: "Negro Leagues / 1910s-1930s",
     tier: "documented",
     specimenNo: "N-05",
     tagline: "27 strikeouts at 44, in a duel where the gentlemen's agreement broke",
-    intro: "Williams threw as hard as anyone of his generation, and the proof is a single recovered box score. On August 2, 1930, at age 44, he and the Monarchs' Chet Brewer met in a night game and a side agreement was struck that neither would throw the emery ball. Brewer broke it first when runners reached base; Williams was handed sandpaper, and the duel was on. Williams struck out 27 over twelve innings and won 1-0 on a one-hitter.",
+    intro: "Williams's fastball legend survives through testimony and a single recovered box score. On August 2, 1930, at age 44, he and the Monarchs' Chet Brewer met in a night game and a side agreement was struck that neither would throw the emery ball. Brewer broke it first when runners reached base; Williams was handed sandpaper, and the duel was on. Williams struck out 27 over twelve innings and won 1-0 on a one-hitter.",
     what: claim(
-      "Extreme velocity — a fastball ranked among the hardest of his era — that, even at age 44, produced one of the most overpowering strikeout performances in the recovered Negro Leagues record.",
+      "A feared fastball from the testimony era — an overpowering pitch that, even at age 44, produced one of the most dominant strikeout performances in the recovered Negro Leagues record.",
       "sabr-smokey-bandit",
       "reputable-analysis",
     ),
     whyLost: claim(
-      "Williams pitched almost entirely before reliable record-keeping and before integration, so his velocity survives mostly through testimony and a handful of reconstructed box scores rather than measurement; there is no radar reading, only the 27-strikeout night to point to.",
+      "Williams pitched almost entirely before reliable record-keeping and before integration, so his fastball legend survives mostly through testimony and a handful of reconstructed box scores rather than measurement; there is no radar reading, only the 27-strikeout night to point to.",
       "sabr-smokey-bandit",
       "reputable-analysis",
     ),
@@ -369,7 +369,7 @@ export const LOST_PITCHES: LostPitch[] = [
     tagline: "Three fastballs and superb control",
     intro: "An early power ace of Black baseball, Redding earned his nickname the only way it could be earned — by throwing the ball past everyone. The reputation is enormous and well-attested; the granular pitch detail is not. What survives is the shape of his game, not the grip of his hand on the ball.",
     what: claim(
-      "An overpowering fastball thrown from a no-windup delivery, so dominant early in his career that he leaned almost entirely on velocity.",
+      "An overpowering fastball thrown from a no-windup delivery, so dominant early in his career that he leaned almost entirely on raw power.",
       "nl-redding-sabr",
       "reputable-analysis",
     ),
@@ -420,11 +420,11 @@ export const LOST_PITCHES: LostPitch[] = [
     ),
     numbers: [
       {
-        label: "Fastball velocity (contemporary estimate)",
+        label: "How the fastball read",
         claim: secondhand(
-          "A teammate placed his fastball at roughly 90–95 mph alongside a strong curveball.",
+          "A teammate remembered the fastball as genuinely overpowering, set off by a strong curveball.",
           "nl-day-sabr",
-          "Attributed to Larry Doby in the SABR biography; a contemporary eyeball estimate from an era without radar, so treat the number as impressionistic.",
+          "Attributed to Larry Doby in the SABR biography; a contemporary teammate's impression of the heat from an era without radar, kept as a read of the pitch rather than a measured figure.",
         ),
       },
       {
@@ -493,7 +493,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "reputable-analysis",
     ),
     whyLost: claim(
-      "The SABR biography emphasizes his command and intelligence but gives no grip-level pitch detail; the technique is described by its effect, not its mechanics.",
+      "The SABR biography stresses his command and intelligence but gives no grip-level pitch detail; the technique is described by its effect, not its mechanics.",
       "nl-bell-sabr",
       "reputable-analysis",
     ),
@@ -528,7 +528,7 @@ export const LOST_PITCHES: LostPitch[] = [
     tagline: "It be where I want it to be",
     intro: "The Bee Ball was Paige's high, hard fastball, and its famous name was as much a control boast as a movement description — he said it would 'be' right where he wanted it. It sits in the documented part of Paige's named-pitch catalog, which is why it lands as partial rather than legend. The name survives precisely; the mechanics are theater on top of a fastball.",
     what: claim(
-      "A high-velocity fastball Paige named the Bee Ball, with the name doubling as a control boast — that it would be exactly where he wanted it.",
+      "A hard fastball Paige named the Bee Ball, with the name doubling as a control boast — that it would be exactly where he wanted it.",
       "nl-paige-sabr-journal",
       "reputable-analysis",
     ),
@@ -646,7 +646,7 @@ export const LOST_PITCHES: LostPitch[] = [
       {
         label: "What the documented record actually shows",
         claim: claim(
-          "Paige's SABR biography, the most authoritative life account, names none of these showman pitches at all — its only line on his stuff says he relied on velocity with no curve, slider, or change-of-pace finesse for most of his prime.",
+          "Paige's SABR biography, the most authoritative life account, names none of these showman pitches at all — its only line on his stuff says he relied on raw power with no curve, slider, or change-of-pace finesse for most of his prime.",
           "sabr-paige-bioproj",
           "reputable-analysis",
         ),

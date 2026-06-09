@@ -41,7 +41,7 @@ export function RepertoirePage() {
           unfiled one opens a basic file with its sourced one-liners. Nothing fabricates geometry for a
           pitch the atlas has not measured.
           <span className="mt-3 block font-mono text-xs uppercase tracking-[0.12em] text-bone-2/70">
-            {count} pitches filed
+            {count} entries indexed
           </span>
         </p>
       </header>

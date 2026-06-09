@@ -51,7 +51,7 @@ describe('Pitch chapters', () => {
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Four-seam fastball')
     expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
     expect(screen.getByAltText(/four-seam style/i)).toBeInTheDocument()
-    expect(screen.getByText('2,530 rpm')).toBeInTheDocument()
+    expect(screen.getByText(/Shape read/i)).toBeInTheDocument()
     expect(screen.getByText('Master Files')).toBeInTheDocument()
   })
 
@@ -71,7 +71,7 @@ describe('Pitch chapters', () => {
     renderRoute('/pitch/twelve-six')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('12-6 curveball')
     expect(screen.getAllByText('Adam Wainwright').length).toBeGreaterThan(0)
-    expect(screen.getByText('26 wRC+')).toBeInTheDocument()
+    expect(screen.getByText(/The curve as a career/)).toBeInTheDocument()
   })
 
   it('redirects the full 12-6 slug alias to the filed specimen', async () => {

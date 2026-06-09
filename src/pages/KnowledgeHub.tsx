@@ -9,8 +9,8 @@ import { Breadcrumb } from '../components/layout/Breadcrumb'
 
 /*
   The Learn hub: the front door to the teaching layer. The specimen pages answer
-  "what is this pitch"; these wings answer the craft underneath — how velocity is
-  made, how a pitch is built, how pitches work together, how to read the numbers,
+  "what is this pitch"; these wings answer the craft underneath — how the body
+  creates timing, how a pitch is built, how pitches work together,
   and how to keep an arm healthy. Two shelves: the craft, and health & development
   (the wings that carry the educational-use note). Cards match the index plates so
   the whole atlas reads as one system.
@@ -59,7 +59,7 @@ export function KnowledgeHub() {
   useSeoMeta({
     title: `Learn: the craft underneath the pitch | ${SITE.siteName}`,
     description:
-      'The teaching layer of Pitch Atlas — the kinetic chain, pitch design, sequencing and tunneling, spin literacy, reading the metrics, arm health, and youth development. Every claim sourced and labeled by confidence.',
+      'The teaching layer of Pitch Atlas — mechanics, pitch design, sequencing and tunneling, spin literacy, arm health, and youth development. Every claim sourced and labeled by confidence.',
     ogTitle: `Learn | ${SITE.siteName}`,
     ogDescription: 'The craft underneath the pitch. Sourced, not corrected.',
     ogUrl: `${SITE.canonicalDomain}/learn`,
@@ -73,9 +73,9 @@ export function KnowledgeHub() {
         title="The craft underneath the pitch."
         sub={
           <>
-            The specimens say what each pitch is. These wings say how the craft works — how velocity is
-            made, how a pitch gets built, how pitches work together, how to read the numbers, and how to
-            keep an arm healthy. Every claim sourced and labeled by confidence.
+            The specimens say what each pitch is. These wings say how the craft works — how the body
+            creates timing, how a pitch gets built, how pitches work together, and how to keep an arm
+            healthy. Every claim sourced and labeled by confidence.
             {WINGS.length > 0 ? (
               <span className="mt-4 block font-mono text-xs uppercase tracking-[0.12em] text-bone-2/70">
                 {WINGS.length} wings

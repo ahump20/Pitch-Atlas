@@ -15,7 +15,7 @@ import { canonWing } from './canon'
 /*
   The teaching layer. Each wing is a sourced essay rendered by one template
   (components/sections/KnowledgePage). The same Claim model the specimen pages use
-  backs every number here, so a teaching page can never make an unsourced numeric
+  backs every teaching claim here, so a teaching page can never make an unsourced
   claim the rest of the atlas would refuse. The claim helper and the educational
   disclaimer live in ./claim to keep this registry free of a circular import.
 */

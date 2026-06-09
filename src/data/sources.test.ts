@@ -8,8 +8,8 @@ import { magnusForceRender, magnusStrength } from '../lib/physics'
 
 /*
   The honesty contract, enforced in data, across every pitch in the atlas. If a
-  new specimen ships an unsourced number, a fabricated quote, a seam-accurate
-  claim, or a break it cannot physically draw, one of these fails.
+  new specimen ships an unsourced claim, a fabricated quote, a seam-accurate
+  claim, or a shape it cannot physically draw, one of these fails.
 */
 
 function collectClaims(entry: PitchAtlasEntry): Claim<unknown>[] {
@@ -20,17 +20,15 @@ function collectClaims(entry: PitchAtlasEntry): Claim<unknown>[] {
     ...c.gripDetails,
     c.mechanics,
     p.spinAxis,
-    p.spinRateRpm,
-    p.primaryBreak.claim,
+    p.shape,
     p.teaching,
     entry.seam.stitchCount,
     entry.seam.accuracyNote,
   ]
-  if (p.activeSpinPct) claims.push(p.activeSpinPct)
-  if (p.secondaryBreak) claims.push(p.secondaryBreak.claim)
   if (c.voice) claims.push(c.voice)
   for (const mv of entry.masterVariants) {
-    for (const n of mv.numbers) claims.push(n.claim)
+    claims.push(mv.distinction)
+    for (const n of mv.accolades ?? []) claims.push(n.claim)
     if (mv.quote) claims.push(mv.quote)
   }
   return claims
@@ -83,15 +81,15 @@ describe('provenance integrity, every pitch', () => {
         expect('adoption' in entry.community).toBe(false)
       })
 
-      it('draws a force consistent with its sourced break', () => {
+      it('draws a force consistent with its shape language', () => {
         const m = entry.motion
         if (m.gyro) {
           // gyro pitch: most spin does no Magnus work, so the force is weak
           expect(magnusStrength(m.spinAxis)).toBeLessThan(0.45)
         } else {
-          // a riding pitch points the force up (+ivb), a dropping pitch down (-ivb)
           const fy = magnusForceRender(m.spinAxis).y
-          expect(Math.sign(fy)).toBe(Math.sign(m.ivbInches))
+          if (m.verticalShape === 'ride') expect(fy).toBeGreaterThan(0)
+          if (m.verticalShape === 'drop') expect(fy).toBeLessThan(0)
         }
       })
 

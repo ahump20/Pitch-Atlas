@@ -6,7 +6,7 @@ import { claim, secondhand } from '../sources'
   Same discipline as the baseball hall: the intro and tagline are our own framing,
   but every number and quote is a Claim carrying its real source and an honest
   confidence tier. Cat Osterman opens the wing the way Maddux anchors the baseball
-  hall — proof that command, spin, and deception beat velocity, told from the
+  hall — proof that command, spin, and deception beat raw power, told from the
   underhand side of the game.
 
   These live in their own array and lookup so the baseball `CRAFTSMEN` registry is
@@ -24,11 +24,11 @@ const catOsterman: Craftsman = {
   signaturePitchSlug: 'drop',
   specimenNo: 'SC-01',
   tagline:
-    'The fastpitch answer to the thinking pitcher: a low-60s left arm who owned the circle on spin, command, and deception — not speed.',
+    'The fastpitch answer to the thinking pitcher: a soft-tossing left arm who owned the circle on spin, command, and deception — not speed.',
   intro:
-    'Cat Osterman never overpowered anyone, and that is the point. Her fastball lived in the low-to-mid 60s while the hardest throwers in the world pushed past 70, and she was, by reputation and by record, the most untouchable pitcher of her era anyway. She won the way Greg Maddux won — by knowing exactly where the ball was going and making four different pitches leave her hand looking the same. The drop ball was the out pitch, but the command of it was the weapon: she could climb the ladder, start one at the hips and finish one at the ankles, and make a hitter chase all three. She is the softball case for the whole atlas thesis — that the craft, not the radar gun, is what beats people.',
+    'Cat Osterman never overpowered anyone, and that is the point. Her fastball was modest while power arms brought real heat, and she was, by reputation and by record, the most untouchable pitcher of her era anyway. She won the way Greg Maddux won — by knowing exactly where the ball was going and making four different pitches leave her hand looking the same. The drop ball was the out pitch, but the command of it was the weapon: she could climb the ladder, start one at the hips and finish one at the ankles, and make a hitter chase all three. She is the softball case for the whole atlas thesis — that the craft, not the radar gun, is what beats people.',
   signature: claim(
-    'A drop ball whose effectiveness was command, not just movement: she located it in and out and walked it down the ladder, then set it up off a rise the hitter was not expecting, so the two pitches tunneled and the eyes betrayed the bat. The rest of the arsenal — a sharp backdoor curve and a changeup — all left her hand on the same look. Analysts called her "the spin master" precisely because none of it ran on velocity.',
+    'A drop ball whose effectiveness was command, not just movement: she located it in and out and walked it down the ladder, then set it up off a rise the hitter was not expecting, so the two pitches tunneled and the eyes betrayed the bat. The rest of the arsenal — a sharp backdoor curve and a changeup — all left her hand on the same look. Analysts called her "the spin master" precisely because none of it ran on raw power.',
     'cat-d1softball-spinmaster',
     'reputable-analysis',
     {
@@ -36,7 +36,7 @@ const catOsterman: Craftsman = {
     },
   ),
   mentalEdge: claim(
-    'Command over velocity, carried by total belief. Where a power pitcher reaches back for more, Osterman reached for a spot — and she did it for two decades, coming out of retirement to pitch in the 2020 Olympics at 38 and dominating the inaugural Athletes Unlimited season. Her catcher put the edge plainly: there is not a single hitter who steps in that Osterman thinks can beat her.',
+    'Command over raw power, carried by total belief. Where a power pitcher reaches back for more, Osterman reached for a spot — and she did it for two decades, coming out of retirement to pitch in the 2020 Olympics at 38 and dominating the inaugural Athletes Unlimited season. Her catcher put the edge plainly: there is not a single hitter who steps in that Osterman thinks can beat her.',
     'cat-si-2021',
     'reputable-analysis',
   ),
@@ -45,7 +45,7 @@ const catOsterman: Craftsman = {
     'cat-si-2021',
     'Her catcher, Gwen Svekis, to Sports Illustrated (2021), on the belief behind Osterman’s command. A teammate’s characterization, kept as such rather than put in Osterman’s own mouth.',
   ),
-  numbers: [
+  biography: [
     {
       label: 'Career ERA (Texas, 2002-06)',
       claim: claim('0.51', 'cat-wikipedia', 'reputable-analysis', {
@@ -81,10 +81,9 @@ const catOsterman: Craftsman = {
       }),
     },
     {
-      label: 'Fastball velocity',
-      claim: claim('low-to-mid 60s mph', 'cat-d1softball-spinmaster', 'reputable-analysis', {
-        approximate: true,
-        note: 'Well below the era’s hardest throwers. She used location and movement, not speed, as the out pitch.',
+      label: 'How she won',
+      claim: claim('Location and movement, not speed', 'cat-d1softball-spinmaster', 'reputable-analysis', {
+        note: 'She did not win by raw power; the out pitch was where she put it, not how hard she threw it.',
       }),
     },
   ],
@@ -115,7 +114,7 @@ const lisaFernandez: Craftsman = {
     'sb-fernandez-wikipedia',
     'reputable-analysis',
   ),
-  numbers: [
+  biography: [
     { label: 'Olympic gold medals', claim: claim('3 (1996, 2000, 2004)', 'sb-fernandez-wikipedia', 'reputable-analysis', { note: 'Gold at the first three Olympic softball tournaments.' }) },
     { label: 'Olympic single-game strikeouts', claim: claim('25 (record)', 'sb-fernandez-olympics', 'reputable-analysis') },
     { label: 'Olympic batting average', claim: claim('.545 (record)', 'sb-fernandez-olympics', 'reputable-analysis', { note: 'A two-way star: the highest batting average in Olympic softball play.' }) },
@@ -148,7 +147,7 @@ const jennieFinch: Craftsman = {
     'sb-finch-wikipedia',
     'reputable-analysis',
   ),
-  numbers: [
+  biography: [
     { label: 'Consecutive wins (NCAA record)', claim: claim('60', 'sb-finch-wikipedia', 'reputable-analysis') },
     { label: 'Arizona career record', claim: claim('119-16', 'sb-finch-wikipedia', 'reputable-analysis', { note: 'Plus a .301 average and 50 home runs — a two-way contributor.' }) },
     { label: 'Olympic medals', claim: claim('Gold 2004, Silver 2008', 'sb-finch-wikipedia', 'reputable-analysis') },
@@ -168,22 +167,21 @@ const monicaAbbott: Craftsman = {
   signaturePitchSlug: 'fastball',
   specimenNo: 'SC-04',
   tagline:
-    'The velocity counterpoint to Cat Osterman — the hardest documented arm in the sport, and its first million-dollar pro.',
+    'The power counterpoint to Cat Osterman — a left-handed force and the sport’s first million-dollar pro.',
   intro:
-    'If Cat Osterman is the softball case for spin and command, Monica Abbott is the case for sheer speed. The two were the left-handed twin towers of Team USA, and they could not have been more different on the mound: Osterman picked hitters apart, Abbott blew the ball past them. Abbott holds the Guinness record for the fastest pitch ever thrown in the sport and rewrote the NCAA and pro record books on the way.',
+    'If Cat Osterman is the softball case for spin and command, Monica Abbott is the case for power from the left side. The two were the left-handed twin towers of Team USA, and they could not have been more different on the mound: Osterman picked hitters apart, Abbott overpowered them. Abbott rewrote the NCAA and pro record books on the way.',
   signature: claim(
-    'Overpowering velocity from a tall left-handed delivery: she holds the Guinness World Record for the fastest softball pitch ever, 77 mph, set in a 2012 pro game. At Tennessee she set NCAA Division I career records for wins, strikeouts, shutouts, and innings, and struck out 724 in a single senior season.',
+    'Overpowering force from a tall left-handed delivery. At Tennessee she set NCAA Division I career records for wins, strikeouts, shutouts, and innings, and struck out 724 in a single senior season.',
     'sb-abbott-wikipedia',
     'reputable-analysis',
-    { note: 'The 77 mph Guinness mark was set June 16, 2012, in an NPF game; the NCAA career records (189 wins, 2,440 K, 112 shutouts, 1,448 IP) are from her Tennessee career.' },
+    { note: 'The NCAA career records (189 wins, 2,440 K, 112 shutouts, 1,448 IP) are from her Tennessee career.' },
   ),
   mentalEdge: claim(
     'Workhorse durability turned into a career: she became the first million-dollar player in professional fastpitch, the most decorated pitcher in NPF history, and a two-time Olympic silver medalist across a span that bridged softball’s removal from and return to the Games.',
     'sb-abbott-mlb-million',
     'reputable-analysis',
   ),
-  numbers: [
-    { label: 'Fastest pitch ever (Guinness)', claim: claim('77 mph', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'Set June 16, 2012, in an NPF game — the recognized world record.' }) },
+  biography: [
     { label: 'NCAA career strikeouts', claim: claim('2,440 (record)', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'With a single-season record of 724, plus 23 no-hitters and 6 perfect games as a senior.' }) },
     { label: 'NCAA career wins', claim: claim('189 (record)', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'Also NCAA records for shutouts (112) and innings pitched (1,448).' }) },
     { label: 'Professional milestone', claim: claim('First million-dollar NPF player', 'sb-abbott-mlb-million', 'reputable-analysis') },
@@ -202,14 +200,14 @@ const niJareeCanady: Craftsman = {
   signaturePitchSlug: 'riseball',
   specimenNo: 'SC-05',
   tagline:
-    'The current face of the college game — a 72-mph riseball, a sub-1.00 ERA, and the first million-dollar college player.',
+    'The current face of the college game — a power riseball, a sub-1.00 ERA, and the first million-dollar college player.',
   intro:
     'NiJaree Canady is what the sport looks like right now. She left Stanford for Texas Tech, signed the richest NIL deal in college softball history, and then justified every dollar by carrying a program to its first Women’s College World Series. She does it with a riseball that sits where the very best of the past lived — and with a release point so far out front the ball is on the hitter before it should be.',
   signature: claim(
-    'A ferocious 72-mph riseball paired with a late-breaking slider, delivered from a long release point closer to the plate than most — which is part of why hitters cannot square it. In 2025 she led the nation with a 0.97 ERA, the standard-setting pitcher of her era.',
+    'A ferocious power riseball paired with a late-breaking slider, delivered from a long release point closer to the plate than most — which is part of why hitters cannot square it. In 2025 she led the nation with a 0.97 ERA, the standard-setting pitcher of her era.',
     'sb-canady-ncaa-top10',
     'reputable-analysis',
-    { note: 'The 72-mph riseball, the slider, and the long, close release point are from NCAA.com’s scouting of the top college pitchers.' },
+    { note: 'The riseball, the slider, and the long, close release point are from NCAA.com’s scouting of the top college pitchers.' },
   ),
   mentalEdge: claim(
     'Workhorse dominance under the brightest lights: in the 2025 postseason she threw 686 consecutive pitches dating to the start of Super Regionals before Texas Tech was eliminated in the WCWS finals. Back-to-back NFCA National Pitcher of the Year, and the athlete a million-dollar program was built around.',
@@ -221,12 +219,12 @@ const niJareeCanady: Craftsman = {
     'sb-canady-espn',
     'How a figure in the sport described Canady to ESPN, on her becoming college softball’s first million-dollar player. A characterization, kept as such.',
   ),
-  numbers: [
+  biography: [
     { label: '2025 ERA (led nation)', claim: claim('0.97', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'On a 34-7 record with 317 strikeouts (second nationally).' }) },
     { label: 'NIL deal', claim: claim('$1M, then $1.2M', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'The richest in college softball history — college softball’s first million-dollar player.' }) },
     { label: 'NFCA National Pitcher of the Year', claim: claim('2024 & 2025', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'Back-to-back; also 2025 Big 12 Pitcher of the Year and Big 12 Athlete of the Year.' }) },
     { label: 'Texas Tech postseason run', claim: claim('686 consecutive pitches', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'From the start of Super Regionals to the WCWS finals, where Texas Tech — in its first-ever WCWS — fell to Texas.' }) },
-    { label: '2025 signature pitch', claim: claim('72 mph riseball', 'sb-canady-ncaa-top10', 'reputable-analysis') },
+    { label: '2025 signature pitch', claim: claim('A power riseball', 'sb-canady-ncaa-top10', 'reputable-analysis', { note: 'NCAA.com’s scouting ranked it among the best riseballs in the college game.' }) },
   ],
   rights: 'original',
 }
@@ -254,7 +252,7 @@ const teaganKavan: Craftsman = {
     'sb-kavan-wbsc-2026',
     'reputable-analysis',
   ),
-  numbers: [
+  biography: [
     { label: 'National championships', claim: claim('Back-to-back (2025, 2026)', 'sb-kavan-ncaa-2026', 'reputable-analysis', { note: 'Texas’s first-ever title in 2025, then a repeat over Texas Tech in 2026 — the same in-state final two years running.' }) },
     { label: 'WCWS Most Outstanding Player', claim: claim('2× (2025 & 2026) — first ever', 'sb-kavan-wbsc-2026', 'reputable-analysis', { note: 'The first two-time Most Outstanding Player in Women’s College World Series history.' }) },
     { label: '2025 WCWS scoreless streak', claim: claim('31.2 innings (record)', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'A WCWS record, breaking the previous mark of 27.2 set in 1994.' }) },

@@ -376,6 +376,17 @@
   :root {
     --foil: linear-gradient(115deg,#ff2d6e,#ff8a3c,#ffe14d,#46ff9c,#33e0ff,#6b7bff,#c44bff,#ff2d6e);
     --gold: linear-gradient(150deg,#5a3d12,#caa14a 22%,#fff0c2 38%,#b8893a 54%,#f4d98a 70%,#7a571f 90%);
+
+    /* Chrome-vintage finish. Brushed steel with a warm patina underneath — the card
+       frame catches the light as the pointer moves, the way an old chrome trading-card
+       case does. Foil is demoted to a restrained accent (the diamond, the holo word,
+       the gold 1/1); the metal carries the surface. */
+    --chrome: linear-gradient(152deg,#26282d 0%,#5b616b 14%,#cfd4db 30%,#878d97 44%,#eef1f5 56%,#7d828c 70%,#43474e 86%,#1d1f23 100%);
+    --chrome-soft: linear-gradient(160deg,#34373d,#9aa0aa 38%,#5d626b 62%,#2a2c31);
+    --chrome-edge: linear-gradient(160deg,#5a5f68,#c7ccd4 36%,#71767f 60%,#2e3137);
+    --patina: linear-gradient(150deg,#19130c,#3c3122 38%,#6a5638 56%,#241a10);
+    --bevel-hi: rgba(255,255,255,.62);
+    --bevel-lo: rgba(0,0,0,.7);
   }
 }
 
@@ -417,18 +428,33 @@
   /* ── refractor card (component sets --c1/--c2/--c3 + --i index) ── */
   .rfx-card {
     --mx: 50%; --my: 32%;
-    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 4px;
+    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 5px;
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     transition: transform .4s cubic-bezier(.2,.8,.2,1); will-change: transform;
-    background: var(--foil); background-size: 320% 320%; background-position: var(--mx) var(--my);
-    box-shadow: 0 30px 60px -24px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5),
-                0 0 50px -14px color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent);
+    /* brushed-steel frame that catches the light at the pointer; warm patina beneath */
+    background: var(--patina); background-size: 200% 200%; background-position: var(--mx) var(--my);
+    box-shadow:
+      0 34px 64px -24px rgba(0,0,0,.92),
+      0 0 0 1px rgba(0,0,0,.6),
+      inset 0 1px 0 var(--bevel-hi), inset 0 -2px 5px var(--bevel-lo),
+      0 0 46px -18px color-mix(in srgb, var(--c3,#37D6FF) 38%, transparent);
     opacity: 0; animation: rfx-reveal .8s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(var(--i,0) * .08s);
+  }
+  /* the brushed-metal frame itself, sweeping with the pointer over the patina base */
+  .rfx-card::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 20px; pointer-events: none;
+    background: var(--chrome); background-size: 230% 230%; background-position: var(--mx) var(--my);
+    opacity: .92; mix-blend-mode: screen;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor; mask-composite: exclude; padding: 5px;
   }
   .rfx-card.is-gold {
     background: var(--gold); background-size: 240% 240%;
-    box-shadow: 0 30px 60px -24px rgba(0,0,0,.9), 0 0 0 1px rgba(0,0,0,.5), 0 0 54px -12px rgba(212,170,90,.7);
+    box-shadow: 0 34px 64px -24px rgba(0,0,0,.92), 0 0 0 1px rgba(0,0,0,.6),
+      inset 0 1px 0 rgba(255,240,194,.7), inset 0 -2px 5px rgba(0,0,0,.6), 0 0 54px -12px rgba(212,170,90,.6);
   }
+  .rfx-card.is-gold::before { display: none; }
   .rfx-field {
     position: relative; height: 100%; border-radius: 16px; overflow: hidden; padding: 11px 11px 9px;
     display: flex; flex-direction: column;
@@ -444,20 +470,20 @@
       repeating-linear-gradient(45deg, rgba(255,255,255,.12) 0 1px, transparent 1px 7px),
       repeating-linear-gradient(-45deg, rgba(255,255,255,.08) 0 1px, transparent 1px 9px);
   }
-  /* rainbow refractor glaze that sweeps with the pointer */
+  /* brushed-metal specular sweep that catches the light at the pointer. A faint refractor
+     hint remains as a restrained accent, not the dominant note. */
   .rfx-field::after {
     content: ""; position: absolute; inset: 0; z-index: 7; pointer-events: none;
     background:
-      repeating-linear-gradient(108deg, transparent 0 6px, rgba(255,255,255,.08) 6px 8px),
-      repeating-linear-gradient(-64deg, transparent 0 9px, rgba(255,255,255,.05) 9px 11px),
-      radial-gradient(440px circle at var(--mx) var(--my), rgba(255,255,255,.32), transparent 44%),
-      var(--foil);
-    background-size: auto, auto, auto, 260% 260%;
-    background-position: 0 0, 0 0, 0 0, var(--mx) var(--my);
-    mix-blend-mode: color-dodge; opacity: .10; transition: opacity .4s;
+      repeating-linear-gradient(100deg, transparent 0 2px, rgba(255,255,255,.05) 2px 3px),
+      radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,.4), transparent 46%),
+      var(--chrome-soft);
+    background-size: auto, auto, 240% 240%;
+    background-position: 0 0, 0 0, var(--mx) var(--my);
+    mix-blend-mode: soft-light; opacity: .26; transition: opacity .4s;
   }
-  .rfx-card:hover .rfx-field::after { opacity: .18; }
-  .rfx-card.is-gold .rfx-field::after { opacity: .1; }
+  .rfx-card:hover .rfx-field::after { opacity: .4; }
+  .rfx-card.is-gold .rfx-field::after { opacity: .14; }
   .rfx-inner { position: relative; z-index: 8; display: flex; flex-direction: column; height: 100%; }
 
   /* card top wordmark bar */
@@ -471,9 +497,14 @@
   /* arched portrait window over a halftone field */
   .rfx-window {
     position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden;
-    border-radius: 80px 80px 14px 14px / 96px 96px 14px 14px;
-    background: radial-gradient(120% 90% at 50% 24%, color-mix(in srgb, var(--c2,#114A8C) 60%, #000) 0%, #050309 78%);
-    box-shadow: 0 0 0 2px rgba(0,0,0,.4) inset, 0 0 0 3px color-mix(in srgb, var(--c3,#37D6FF) 40%, transparent) inset;
+    border-radius: 78px 78px 14px 14px / 92px 92px 14px 14px;
+    background: radial-gradient(120% 90% at 50% 24%, color-mix(in srgb, var(--c2,#114A8C) 48%, #000) 0%, #050309 78%);
+    /* a thin brushed-chrome bezel around the portrait, then a soft inner shadow for depth */
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.6) inset,
+      0 0 0 3px color-mix(in srgb, var(--c3,#37D6FF) 22%, rgba(190,196,205,.5)) inset,
+      0 0 0 4px rgba(0,0,0,.5) inset,
+      0 8px 18px -8px rgba(0,0,0,.8) inset;
   }
   .rfx-halftone {
     position: absolute; inset: 0; z-index: 0; opacity: .16;
@@ -512,39 +543,45 @@
      hand and ball fill the window instead of the torso above them. */
   video.rfx-grip-img { object-position: center 60%; }
 
-  /* banner nameplate */
+  /* embossed metal nameplate: a brushed-steel plate with an accent-tinted underglow,
+     bevelled top highlight + bottom shadow so it reads stamped into the card. */
   .rfx-banner {
-    position: relative; z-index: 9; margin: -14px auto 0; width: 86%; text-align: center; padding: 7px 10px; border-radius: 999px;
-    background: linear-gradient(180deg, color-mix(in srgb, var(--c3,#37D6FF) 55%, #000), color-mix(in srgb, var(--c2,#114A8C) 45%, #000));
-    border: 2px solid rgba(0,0,0,.55); box-shadow: 0 4px 10px -4px #000, 0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent);
-    font-family: var(--font-athletic); font-size: clamp(22px,5.4vw,30px); letter-spacing: .01em; text-transform: uppercase; color: #fff;
-    -webkit-text-stroke: .6px rgba(0,0,0,.6); text-shadow: 1.5px 1.5px 0 rgba(0,0,0,.5); transform: skewX(-5deg);
+    position: relative; z-index: 9; margin: -14px auto 0; width: min(88%, 292px); text-align: center; padding: 7px 12px; border-radius: 999px;
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.14), transparent 42%),
+      color-mix(in srgb, var(--c2,#114A8C) 26%, #16181d);
+    border: 1px solid rgba(0,0,0,.6);
+    box-shadow: 0 5px 12px -5px #000, inset 0 1px 0 var(--bevel-hi), inset 0 -2px 4px rgba(0,0,0,.55),
+      0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 30%, transparent);
+    font-family: var(--font-athletic); font-size: clamp(20px,5.1vw,29px); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: var(--color-bone);
+    -webkit-text-stroke: .5px rgba(0,0,0,.55); text-shadow: 0 1px 0 rgba(255,255,255,.18), 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-5deg);
   }
-  .rfx-card.is-gold .rfx-banner { background: linear-gradient(180deg,#f4d98a,#caa14a); color: #2a1d05; }
+  .rfx-card.is-gold .rfx-banner {
+    background: linear-gradient(180deg,#fff0c2,#caa14a 60%,#9c7a2f); color: #2a1d05;
+    box-shadow: 0 5px 12px -5px #000, inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 4px rgba(120,86,20,.6);
+  }
 
   /* the dark matte content plate — the read lives here, never on the patterned foil.
      Denser type but fewer lines than the old tagline + scout table + note paragraph,
      so the window keeps more height and the grip/ball stops clipping. */
+  /* the engraved charcoal plate — the read lives here. A thin chrome top edge + an inset
+     shadow so it reads recessed into the metal card. The shape read is now the lead. */
   .rfx-content {
-    position: relative; z-index: 9; margin-top: 9px; border-radius: 12px; padding: 9px 11px 10px;
-    display: flex; flex-direction: column; gap: 7px;
-    background: rgba(5,7,12,.84); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(255,255,255,.10);
+    position: relative; z-index: 9; margin-top: 9px; border-radius: 11px; padding: 11px 12px 12px;
+    display: flex; flex-direction: column; gap: 9px;
+    background: linear-gradient(180deg, #14161b 0%, #0a0c10 100%);
+    border: 1px solid rgba(0,0,0,.7);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 4px rgba(0,0,0,.55);
   }
-  /* stat rail: the one headline number, big, with its label beneath. */
-  .rfx-statrail { display: flex; flex-direction: column; gap: 1px; }
-  .rfx-statval { font-family: var(--font-athletic); font-size: clamp(2rem,7vw,3rem); line-height: .82; color: var(--color-bone);
-    -webkit-text-stroke: 1.5px #000; text-shadow: 2px 2px 0 color-mix(in srgb, var(--c3,#37D6FF) 70%, #000); }
-  .rfx-statval small { -webkit-text-stroke: 1px #000; font-size: .42em; }
-  .rfx-statlab { font-family: var(--font-mono); font-size: .68rem; letter-spacing: .1em; line-height: 1.15;
-    text-transform: uppercase; color: var(--color-bone-2); }
-  /* shape + cue: mono only on the label key; prose on the read. */
-  .rfx-summary { display: flex; flex-direction: column; gap: 4px; }
-  .rfx-shape { display: flex; align-items: baseline; gap: 7px; }
-  .rfx-shape .rfx-k { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .12em; line-height: 1.2;
-    text-transform: uppercase; color: var(--color-ink-3); flex: 0 0 auto; }
-  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: .82rem; line-height: 1.3; color: var(--color-bone); }
-  .rfx-cue { font-family: var(--font-prose); font-size: .82rem; line-height: 1.35; color: var(--color-bone-2); margin: 0;
+  /* shape (the lead read) + cue. The shape key is a stamped mono label; the read is prose. */
+  .rfx-summary { display: flex; flex-direction: column; gap: 7px; }
+  .rfx-shape { display: flex; flex-direction: column; gap: 3px; }
+  .rfx-shape .rfx-k { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .16em; line-height: 1.1;
+    text-transform: uppercase; color: color-mix(in srgb, var(--c3,#37D6FF) 60%, var(--color-ink-3)); }
+  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: .96rem; line-height: 1.34; color: var(--color-bone);
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .rfx-cue { font-family: var(--font-prose); font-style: italic; font-size: .8rem; line-height: 1.4; color: var(--color-bone-2); margin: 0;
+    padding-top: 7px; border-top: 1px solid rgba(255,255,255,.08);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   /* source badge: mono — a tag, not prose. How much to trust the number. */
   .rfx-srcbadge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: .66rem;
@@ -632,16 +669,18 @@
   .rfx-plate {
     position: relative; display: flex; flex-direction: column; gap: 14px; height: 100%;
     border-radius: 13px; padding: 20px;
-    background: linear-gradient(120deg, color-mix(in srgb, var(--gc, #37D6FF) 7%, var(--color-press)), var(--color-press));
-    border: 1px solid rgba(255, 255, 255, .08);
-    border-left: 2px solid color-mix(in srgb, var(--gc, #37D6FF) 75%, transparent);
-    transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #37D6FF) 8%, #15171c), #0d0f13);
+    border: 1px solid rgba(0, 0, 0, .55);
+    border-left: 3px solid color-mix(in srgb, var(--gc, #37D6FF) 78%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -2px 6px rgba(0,0,0,.45), 0 16px 30px -22px rgba(0,0,0,.8);
+    transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
   }
   .rfx-plate:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--gc, #37D6FF) 42%, rgba(255, 255, 255, .08));
+    border-color: color-mix(in srgb, var(--gc, #37D6FF) 38%, rgba(0, 0, 0, .55));
     border-left-color: var(--gc, #37D6FF);
-    background: linear-gradient(120deg, color-mix(in srgb, var(--gc, #37D6FF) 12%, var(--color-press)), var(--color-press));
+    background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #37D6FF) 14%, #16181e), #0d0f13);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 6px rgba(0,0,0,.45), 0 20px 34px -22px rgba(0,0,0,.85);
   }
   .rfx-plate.is-filed {
     border-left-color: color-mix(in srgb, #caa14a 82%, transparent);

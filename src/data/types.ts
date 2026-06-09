@@ -2,9 +2,10 @@
   The provenance model. Sourced, not corrected.
 
   Nothing here is marked right or wrong. Every claim is labeled by where it came
-  from and how confident the source is. A measured Statcast number and a coaching
-  cue paraphrased from a blog are both welcome, but they do not wear the same
-  badge. The reader judges. The atlas only sources.
+  from and how confident the source is. Official tracking context and a coaching
+  cue paraphrased from a blog can both support a claim, but they do not wear the
+  same badge. Pitch behavior is shape prose unless this atlas has measured it.
+  The reader judges. The atlas only sources.
 */
 
 import type { Vec3 } from '../lib/seam'
@@ -25,7 +26,7 @@ export const CONFIDENCE_META: Record<
 > = {
   'official-data': {
     label: 'Official data',
-    meaning: 'Measured and published by the source of record (Statcast / MLB).',
+    meaning: 'Published by the source of record; used for biography facts, source context, and sourced prose.',
   },
   'pitcher-own-words': {
     label: "Pitcher's own words",
@@ -139,24 +140,20 @@ export interface GripModel {
   contacts: GripContactModel[]
 }
 
-/** A named, sourced break figure (IVB for a fastball, drop for a curve, run for a sinker, sweep for a slider). */
-export interface BreakReading {
-  label: string
-  claim: Claim<string>
-  /** Paint this gauge as the one hero number. Use once per pitch. */
-  accent?: boolean
-}
-
+/*
+  The pitch's movement, in words. This product is about the craft of the grip, not
+  analytics. Movement is described as SHAPE — a direction and a character — never as a
+  measured number. There are no spin-rate, velocity, or break-in-inches fields here by
+  design: a fabricated movement number was the filler that broke the product, and the
+  type system now forbids it. The owner has never been tracked, so any number describing
+  how a pitch moves would be invented. Shape is honest; a gauge is not.
+*/
 export interface PhysicsReference {
+  /** The spin in plain words (e.g. "near-horizontal backspin"). No rpm, no percentages. */
   spinAxis: Claim<string>
-  spinRateRpm: Claim<string>
-  /** Optional: not every pitch has a clean active-spin story (changeups, sliders). */
-  activeSpinPct?: Claim<string>
-  /** The defining break this pitch is known for. */
-  primaryBreak: BreakReading
-  /** A second movement axis when the pitch has one (a sinker's sink under its run). */
-  secondaryBreak?: BreakReading
-  /** The one teaching sentence: what makes this pitch move the way it does. */
+  /** The shape read: direction + character, in words. The card and the page lead with this. */
+  shape: Claim<string>
+  /** The one teaching sentence: why it moves this way. Prose only, no measured figures. */
   teaching: Claim<string>
 }
 
@@ -220,7 +217,13 @@ export interface CanonicalPitchRecord {
   gripImages?: VisualReference[]
 }
 
-export interface VariantNumber {
+/**
+ * A career or biographical fact for a named pitcher — titles, no-hitters, strikeout
+ * totals, eras. KEPT on purpose: this is real sourced biography, not invented pitch
+ * behavior. It must never carry a velocity, spin-rate, or break-in-inches figure; those
+ * are the fabricated-movement numbers this product removed.
+ */
+export interface BiographyFact {
   label: string
   claim: Claim<string>
 }
@@ -231,7 +234,10 @@ export interface MasterVariantRecord {
   /** Our own framing of why this arm is worth showing. Never a player likeness. */
   context: string
   verifiedPro: boolean
-  numbers: VariantNumber[]
+  /** What makes this arm's version of the pitch distinct, in words. The lead content. */
+  distinction: Claim<string>
+  /** Optional sourced biography (titles, no-hitters). Never movement/spin/velocity. */
+  accolades?: BiographyFact[]
   quote?: Claim<string>
   rights: RightsStatus
   safety?: SafetyFlag
@@ -242,7 +248,7 @@ export interface PitchVariantRecord {
   id: string
   source: 'master' | 'community'
   pitcher?: string
-  numbers: VariantNumber[]
+  distinction: Claim<string>
   rights: RightsStatus
   safety?: SafetyFlag
 }
@@ -286,22 +292,21 @@ export interface SeamGeometryReference {
  * and the schematic; the Magnus force is derived from it, not stored.
  */
 export interface PitchMotion {
-  /** Unit spin axis in render space. */
+  /** Unit spin axis in render space. Drives the 3D ball and the schematic, never shown as a number. */
   spinAxis: Vec3
   /** Label on the drawn force arrow ("Magnus", "Magnus, down", "Gyro spin"). */
   forceLabel: string
   /** Gyro-dominant pitch (slider): shows the red dot toward the viewer, short force arrow. */
   gyro?: boolean
-  /** Signed induced vertical break, inches. + rides above a spinless ball, - drops below it. Sourced. */
-  ivbInches: number
-  /** Horizontal break magnitude, inches (absolute). Sourced. */
-  horizontalInches: number
-  /** Catcher's-eye direction of the horizontal break. */
+  /** Catcher's-eye vertical shape: it rides above a spinless ball, drops below it, or stays flat.
+      A direction, never a measured magnitude. */
+  verticalShape: 'ride' | 'drop' | 'flat'
+  /** Catcher's-eye direction of the horizontal shape. */
   horizontalDir: 'arm-side' | 'glove-side' | 'none'
-  /** Which break diagram the Foundation renders: the four-seam's carry side-view, or the catcher's-eye movement plot. */
+  /** Which shape diagram the Foundation renders: the four-seam's carry side-view, or the catcher's-eye shape plot. */
   breakView: 'carry' | 'movement'
-  /** Set when the pitch has no fixed break magnitude or direction (the knuckleball). The
-      specimen card then leads with the shape label, not a spurious headline number. */
+  /** Set when the pitch has no fixed shape or direction (the knuckleball). The specimen
+      card then leads with its shape words, never a spurious headline. */
   indeterminateBreak?: boolean
 }
 
@@ -317,7 +322,7 @@ export interface PitchDisplay {
   heroSub: string
   /** The hero intro paragraph. */
   heroIntro: string
-  /** The gauge-rail caption in Foundation. */
+  /** The foundation caption in the shape/read section. */
   foundationCaption: string
   /** The intro paragraph above the master-variant ledger. */
   mastersIntro: string
@@ -326,8 +331,8 @@ export interface PitchDisplay {
 /**
  * The plain-language coaching layer the Grip Lab and What-it-does sections read.
  * Original paraphrase in a coach's voice, never copied from any guide. It carries
- * no measured figures: every number stays in `canonical.physics` behind its Claim
- * and Source, so the prose here can be read freely without smuggling unsourced data.
+ * no measured movement figures, so the prose can be read freely without smuggling
+ * fabricated precision.
  * Optional and backwards-compatible — a pitch without a guide still renders.
  */
 export interface GripGuide {
@@ -370,11 +375,6 @@ export type CraftsmanKind =
   | 'craftsman' // a real pitcher
   | 'legend' // the gyroball: a pitch-as-myth, shipped flagged, never as verified fact
 
-export interface CraftsmanNumber {
-  label: string
-  claim: Claim<string>
-}
-
 export interface Craftsman {
   /** URL slug for /craftsmen/<slug>. Stable, kebab-case. */
   slug: string
@@ -398,8 +398,8 @@ export interface Craftsman {
   signature: Claim<string>
   /** The competitive / psychological edge: how they thought about pitching. Sourced. Omitted for a legend. */
   mentalEdge?: Claim<string>
-  /** Sourced career or pitch numbers. */
-  numbers: CraftsmanNumber[]
+  /** Sourced career biography. Never movement/spin/velocity metrics. */
+  biography: BiographyFact[]
   /** A real, verbatim, sourced quote. Present only when one was actually found. */
   quote?: Claim<string>
   /** Legend only (the gyroball): the myth-versus-physics note. Flagged, never fact. */
@@ -444,10 +444,8 @@ export interface RepertoireEntry {
   aka?: string[]
   /** One-line sourced grip. */
   grip: Claim<string>
-  /** One-line sourced movement, or what the pitch does. */
+  /** One-line sourced movement shape, or what the pitch does. Words, never a number. */
   movement: Claim<string>
-  /** Velocity band as plain text, e.g. "88-95 mph". Optional; some have none. */
-  velocity?: string
   /** For an alias / illusion / not-a-pitch, the real pitch it resolves to. Sourced. */
   relationship?: Claim<string>
   /** Representative arms, plain text. Never a likeness. */
@@ -524,8 +522,8 @@ export interface LostPitch {
   what: Claim<string>
   /** Why the technique is lost or unrecoverable. Sourced or reputable-analysis. */
   whyLost: Claim<string>
-  /** Sourced facts and figures. Reuses the craftsman number shape. */
-  numbers: CraftsmanNumber[]
+  /** Sourced facts and figures. Kept for record/history, never movement gauges. */
+  numbers: BiographyFact[]
   /** A real, verbatim, sourced quote. Present only when one was actually found. */
   quote?: Claim<string>
   rights: RightsStatus

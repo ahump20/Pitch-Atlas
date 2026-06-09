@@ -29,7 +29,7 @@ const gripModel: GripModel = {
   primaryPressureFinger: 'middle',
   thumbRole: 'Thumb supports underneath, centered below the top two fingers.',
   palmGapCue: 'A little daylight stays between ball and palm so the ball leaves clean.',
-  releaseCue: 'Let the index and middle pads roll backspin off the top of the ball.',
+  releaseCue: 'Let the index and middle pads roll the ball off the top with backspin.',
   visualCaveat: 'Grip geometry is schematic, tuned from sourced grip descriptions and private visual reference, not measured from an athlete scan. In a live photo, the tell is two fingertips crossing a seam path, not riding parallel seam tracks.',
   contacts: [
     {
@@ -110,7 +110,7 @@ export const fourSeam: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'Thrown over the top with the fingers behind the ball. The release rolls backspin off the fingertips so all four seams cross the oncoming air each revolution. That is the name: four seams biting the airflow per turn.',
+      'Thrown over the top with the fingers behind the ball. The release rolls the ball from the fingertips with backspin so all four seams cross the oncoming air each revolution. That is the name: four seams biting the airflow per turn.',
       'wiki-four-seam',
       'reputable-analysis',
       { note: 'Paraphrased from the cited reference.' },
@@ -122,26 +122,18 @@ export const fourSeam: PitchAtlasEntry = {
     ),
     physics: {
       spinAxis: claim('Near-horizontal backspin, the axis lying close to flat across the ball.', 'wiki-fastball', 'reputable-analysis'),
-      spinRateRpm: claim('2,100 to 2,500 rpm, league average near 2,300.', 'mlb-spin-rate', 'reputable-analysis', {
-        approximate: true,
-        note: '2,300 is the 2019 baseline; recent seasons have crept toward 2,400. The bulk of four-seamers sit in the 2,100 to 2,500 band.',
-      }),
-      activeSpinPct: claim('Near 100% for elite arms. Verlander led four-seamers at 98.5% in 2019.', 'mlb-active-spin', 'official-data', {
-        note: 'Active spin is the transverse share of total spin that drives movement. The league mean sits well below elite.',
-      }),
-      primaryBreak: {
-        label: 'Induced vertical break',
-        accent: true,
-        claim: claim('League average about +16 in. Good near +18, elite +20 and up.', 'mlb-ivb', 'official-data', {
-          note: 'The +16 in average is the official 2024 league mean. The good and elite tiers are analyst conventions, not MLB-defined.',
-        }),
-      },
+      shape: claim(
+        'Rides through the top of the zone. Backspin fights the fall the whole way, so it drops less than a spinless ball and looks like it holds its line. It carries; it never literally rises.',
+        'mlb-ivb',
+        'reputable-analysis',
+        { note: 'Described as shape, not a measured number. The carry is real; how far it carries depends on the arm.' },
+      ),
       teaching: claim(
         'Backspin throws a Magnus force upward, but it stays smaller than the ball weight, so the pitch drops less than a spinless one. It rides. It does not rise.',
         'tht-kagan',
         'reputable-analysis',
         {
-          note: 'Kagan, citing Nathan: about 0.28 lb of Magnus force against about 0.32 lb of ball weight. The official MLB.com IVB definition frames the same effect as induced rise, not literal rising.',
+          note: "Kagan, citing Nathan: the Magnus force runs a touch under the ball's weight, so the pitch falls less than a spinless one. The official MLB.com definition frames the same effect as induced rise, not literal rising.",
         },
       ),
     },
@@ -150,13 +142,12 @@ export const fourSeam: PitchAtlasEntry = {
   },
 
   motion: {
-    // The four-seam's verified render axis: near-horizontal backspin with a slight
-    // tilt so the ball does not read as lifeless. magnusForceRender of this axis
-    // reproduces the straight-up Magnus arrow. breakView 'carry' keeps the gravity ghost.
+    // The four-seam's render axis: near-horizontal backspin with a slight tilt so the
+    // ball does not read as lifeless. The Magnus arrow points straight up off this axis.
+    // breakView 'carry' keeps the gravity ghost. verticalShape 'ride' = it carries.
     spinAxis: { x: 1, y: 0.12, z: 0 },
     forceLabel: 'Magnus',
-    ivbInches: 16,
-    horizontalInches: 0,
+    verticalShape: 'ride',
     horizontalDir: 'none',
     breakView: 'carry',
   },
@@ -165,56 +156,39 @@ export const fourSeam: PitchAtlasEntry = {
     slug: 'four-seam',
     shortName: 'Four-seam',
     specimenNo: '00',
-    heroSub: 'Measured, not described.',
+    heroSub: 'Read by feel, not by a gun.',
     heroIntro:
       'Pure backspin across the horseshoe. A Magnus force against the fall. This is how the pitch rides.',
     foundationCaption: 'It rides less than a spinless ball. It never literally rises.',
     mastersIntro:
-      'Three ways the same pitch wins. The visual is our own schematic of the four-seam reference. Every figure is season-stamped and links to its source.',
+      'Three arms, one pitch, three ways to win with it. The visual is our own schematic of the four-seam reference. What sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
     {
       tier: 'verified-attributed',
       pitcher: 'Gerrit Cole',
-      context: 'The spin ceiling. Among the highest-spin elite four-seams Statcast has measured, and nearly all of that spin does work.',
+      context: 'The carry-ceiling case: a clean backspin read and a top-zone finish hitters keep swinging under.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Spin rate', claim: claim('2,530 rpm', 'mlb-cole', 'official-data') },
-        { label: 'Active spin', claim: claim('97.1%', 'mlb-cole', 'official-data') },
-        { label: 'Velocity', claim: claim('97.1 mph', 'mlb-cole', 'official-data') },
-        {
-          label: 'Rise vs avg',
-          claim: claim('+2.8 in', 'mlb-cole', 'official-data', { note: 'Statcast rise above the average four-seam at his velocity.' }),
-        },
-      ],
-      // No quote: the plan expected a Cole quote relayed by Bleacher Report, but the
-      // research found BR never carried these figures and no Cole spin quote exists in
-      // the verified sources. We do not fabricate one. The numbers stand on Statcast.
+      distinction: claim(
+        'A clean carry read taken to its ceiling. His four-seam plays at the top of the zone because hitters keep swinging under the ride.',
+        'mlb-cole',
+        'official-data',
+      ),
+      // No quote: the research found no Cole spin quote in the verified sources, and we
+      // do not fabricate one. The read stands on what the pitch does, in words.
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Spencer Strider',
-      context: 'The carry case. Elite induced ride from a flat approach, the pitch hitters swing under.',
+      context: 'The carry case. Elite ride from a flat approach, the pitch hitters swing under.',
       verifiedPro: true,
-      numbers: [
-        {
-          label: 'Induced vertical break',
-          claim: claim('18.4 in', 'savant-strider', 'official-data', { note: '2023, his best season. AJC confirms 18.4 in verbatim.' }),
-        },
-        {
-          label: 'Rise vs MLB avg',
-          claim: claim('+2.6 in (about 21%)', 'thescore-strider', 'reputable-analysis', {
-            approximate: true,
-            note: "theScore's relative-rise framing. A simple break-minus-league subtraction against a ~16 in average yields a smaller gap; the two methods differ.",
-          }),
-        },
-        {
-          label: 'Velocity',
-          claim: claim('97.2 mph', 'savant-strider', 'official-data', { note: '2023 season average. theScore cites ~98 mph over a longer running window.' }),
-        },
-      ],
+      distinction: claim(
+        'Big ride from a low, flat slot. The ball stays on a flatter plane than the eye expects, so it finishes above where the swing is aimed — carry as a weapon at the top.',
+        'savant-strider',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
@@ -222,22 +196,11 @@ export const fourSeam: PitchAtlasEntry = {
       pitcher: 'Hunter Greene',
       context: 'The axis-cleanup case. He raised his slot, cut the arm-side run, and converted that lost run into ride.',
       verifiedPro: true,
-      numbers: [
-        {
-          label: 'Spin rate',
-          claim: claim('2,378 rpm', 'mlb-greene', 'official-data', {
-            note: '2024. Read via the search index when MLB.com blocked a direct fetch; Baseball Savant confirms the companion figures.',
-          }),
-        },
-        {
-          label: 'Induced vertical break',
-          claim: claim('16.6 in', 'savant-greene', 'official-data', { note: '2024, up from 15.4 in in 2023.' }),
-        },
-        {
-          label: 'Arm-side run',
-          claim: claim('8.9 in', 'savant-greene', 'official-data', { note: '2024, cut from 11.6 in in 2023. The trade that bought the ride.' }),
-        },
-      ],
+      distinction: claim(
+        'He raised his arm slot, traded away arm-side run, and converted it into pure ride — the same pitch, recut for carry.',
+        'savant-greene',
+        'official-data',
+      ),
       rights: 'original',
     },
   ],
@@ -252,7 +215,7 @@ export const fourSeam: PitchAtlasEntry = {
 
   guide: {
     family: 'The straight one',
-    tagline: 'The pitch you trust for a strike. It travels the straightest and arrives the fastest.',
+    tagline: 'The pitch you trust for a strike. It takes the truest line and gives the hand the cleanest exit.',
     feel: 'Least resistance. Loose in the fingertips, shallow in the hand. Let it sling cleanly off the pads.',
     steps: [
       'Lay your index and middle fingers flat across the wide part of the horseshoe seam, the part that faces away from you.',

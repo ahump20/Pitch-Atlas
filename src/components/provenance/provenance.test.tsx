@@ -34,16 +34,16 @@ describe('ConfidenceLabel', () => {
 describe('SourcedValue', () => {
   it('prefixes and tags an approximate value', () => {
     const claim: Claim<string> = {
-      value: '2,300 rpm',
+      value: 'roughly the standard grip window',
       source,
       confidence: 'reputable-analysis',
       approximate: true,
-      note: 'era-dependent baseline',
+      note: 'varies by hand size and source description',
     }
     render(<SourcedValue claim={claim} />)
-    expect(screen.getByText(/2,300 rpm/)).toBeInTheDocument()
+    expect(screen.getByText(/roughly the standard grip window/)).toBeInTheDocument()
     expect(screen.getByText('approx')).toBeInTheDocument()
-    expect(screen.getByText(/era-dependent baseline/)).toBeInTheDocument()
+    expect(screen.getByText(/varies by hand size/)).toBeInTheDocument()
   })
 
   it('renders a secondhand-attributed claim with its note', () => {

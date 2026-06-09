@@ -25,7 +25,7 @@ const gripModel: GripModel = {
   primaryPressureFinger: 'index',
   thumbRole: 'Thumb supports underneath, centered between the two split fingers.',
   palmGapCue: 'The ball sits up between the split fingers, farther forward than a forkball.',
-  releaseCue: 'Throw it like the fastball and let the wide split take the spin off.',
+  releaseCue: 'Throw it like the fastball and let the wide split deaden the spin.',
   visualCaveat: 'Grip geometry is schematic and shows the wide split-finger family; the depth and spread vary with hand size, and large hands make it easier. On shorter fingers the split can look close to a two-seam; read whether the fingers sit outside the seam tracks instead of directly on them.',
   contacts: [
     {
@@ -77,13 +77,13 @@ export const splitter: PitchAtlasEntry = {
         'A descendant of the forkball, the splitter is held farther forward in the hand with a wider split between the fingers, which is why it can be thrown harder than the deep-jammed forkball.',
         'wiki-splitter',
         'reputable-analysis',
-        { note: 'Wikipedia describes the splitter as a faster, shallower cousin of the forkball.' },
+        { note: 'Wikipedia describes the splitter as a faster, shallower relative of the forkball.' },
       ),
       claim(
-        'Driveline files the splitter under the same family and notes its defining trait: it spins significantly less than a fastball. The reduced backspin, not any added force, is what makes it drop.',
+        'Driveline files the splitter under the same family and notes its defining trait: it spins far less than a fastball. The lost backspin, not any added force, is what makes it drop.',
         'driveline-splitters',
         'reputable-analysis',
-        { note: 'Paraphrased from Driveline. Specific RPM figures vary and are not asserted here.' },
+        { note: 'Paraphrased from Driveline. Described as a loss of spin, in words, not a measured figure.' },
       ),
       claim(
         "Bruce Sutter's unusually large hands let him spread the split far enough to execute it; he learned it from instructor Fred Martin after his fastball faded post-surgery and never changed the grip after the first day.",
@@ -108,40 +108,21 @@ export const splitter: PitchAtlasEntry = {
     ),
     physics: {
       spinAxis: claim(
-        'A fastball-like backspin axis out of the hand, so the two look identical at release; the deception lives in matching the fastball\'s spin axis until the pitch separates in flight.',
+        'A fastball-like backspin axis out of the hand, so the two look identical at release; the deception lives in matching the fastball\'s tilt until the pitch separates in flight.',
         'wiki-splitter',
         'reputable-analysis',
       ),
-      spinRateRpm: claim(
-        'Much lower than the four-seam. The pitch spins significantly less than a fastball, which is the entire point: less backspin, less lift, more drop.',
-        'driveline-splitters',
-        'reputable-analysis',
-        { note: 'Driveline states the splitter spins significantly less than fastballs; specific RPM figures are not asserted.' },
-      ),
-      primaryBreak: {
-        label: 'Late tumbling drop',
-        accent: true,
-        claim: claim(
-          "Gausman's splitter drops roughly 50 to 75 cm before the plate, against about 25 to 30 cm for his fastball, the extra fall arriving late.",
-          'gausman-conversation',
-          'reputable-analysis',
-          { approximate: true, note: 'Illustrative figures from The Conversation\'s physics analysis of Gausman\'s splitter.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Velocity off the fastball',
-        claim: claim(
-          'A few mph below the fastball it imitates: league-average splitters sat near 85 mph against about 92 mph four-seamers in 2010.',
-          'wiki-splitter',
-          'reputable-analysis',
-          { approximate: true, note: '2010 PITCHf/x league averages for right-handers, per Wikipedia; a roughly 7 mph gap.' },
-        ),
-      },
-      teaching: claim(
-        'Because it leaves the hand looking like the fastball, the hitter starts a fastball swing; then the low backspin lets gravity pull it under the barrel at the last instant. Take the split away or add backspin and it just becomes a slow fastball.',
+      shape: claim(
+        'Rides the fastball\'s line out of the hand, then falls off the table late and hard, a trap-door drop that arrives just under the barrel. With the backspin stripped away it tumbles instead of carrying, and the floor seems to vanish at the last instant.',
         'gausman-conversation',
         'reputable-analysis',
-        { note: 'Synthesized from The Conversation and Wikipedia: the reduced-Magnus drop off a fastball look is the whole pitch.' },
+        { note: 'Described as shape, not a measured number. The fall is real; how much depends on the arm and the hand.' },
+      ),
+      teaching: claim(
+        'Because it leaves the hand looking like the fastball, the hitter starts a fastball swing; then the lost backspin lets gravity pull it under the barrel at the last instant. Take the split away or put the backspin back and it just becomes a slow fastball.',
+        'gausman-conversation',
+        'reputable-analysis',
+        { note: 'Synthesized from The Conversation and Wikipedia: the weakened-Magnus drop off a fastball look is the whole pitch.' },
       ),
     },
     rights: 'original',
@@ -150,12 +131,11 @@ export const splitter: PitchAtlasEntry = {
 
   motion: {
     // Weak backspin: a fastball-like axis but a short force arrow, so the ball
-    // barely rides and falls close to the spinless phantom. breakView 'carry'
-    // shows exactly that gap closing.
+    // barely rides and falls close to the spinless phantom. verticalShape 'flat'
+    // = almost no carry; breakView 'carry' shows that gap closing.
     spinAxis: { x: 0.92, y: 0.18, z: 0.16 },
     forceLabel: 'Magnus, weak',
-    ivbInches: 3,
-    horizontalInches: 4,
+    verticalShape: 'flat',
     horizontalDir: 'arm-side',
     breakView: 'carry',
   },
@@ -169,7 +149,7 @@ export const splitter: PitchAtlasEntry = {
       'Wedge the fingers wide, throw it like the fastball, and let the lost backspin drop it off the table at the plate. The same arm, the same path, then the floor falls out.',
     foundationCaption: 'It barely rides, so it falls almost like a spinless ball, late and under the barrel.',
     mastersIntro:
-      'From the pitch\'s pioneer to its modern swing-and-miss kings. The visual is our own seam schematic. Every figure is season-stamped and links to its source.',
+      'From the pitch\'s pioneer to its modern swing-and-miss kings. The visual is our own seam schematic. What sets each arm\'s splitter apart is in the read and the hand, not a gauge.',
   },
 
   masterVariants: [
@@ -178,22 +158,23 @@ export const splitter: PitchAtlasEntry = {
       pitcher: 'Bruce Sutter',
       context: 'The pioneer. Taught the split-finger by instructor Fred Martin after arm surgery, he rode it to the Hall of Fame as one of the first dominant closers.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Career saves', claim: claim('300', 'sutter-wiki', 'reputable-analysis') },
-        { label: 'Cy Young', claim: claim('1979 NL', 'sutter-wiki', 'reputable-analysis') },
-        { label: 'Career ERA', claim: claim('2.83', 'sutter-wiki', 'reputable-analysis', { note: 'Inducted into the Hall of Fame in 2006.' }) },
-      ],
+      distinction: claim(
+        'The first to ride this pitch to the Hall of Fame, and the proof of concept for the whole grip — a closer who turned one trap-door drop into a career after his fastball left him.',
+        'sutter-wiki',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Roger Clemens',
-      context: 'Added the splitter in the 1990s, nicknamed it "Mr. Splitty," and made it his out pitch, one of the most devastating in the pitch\'s history. He has his own chapter in the Craftsmen.',
+      context: 'Added the splitter in the nineties, nicknamed it "Mr. Splitty," and made it his out pitch, one of the most devastating in the pitch\'s history. He has his own chapter in the Craftsmen.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Career strikeouts', claim: claim('4,672', 'clemens-wiki', 'official-data', { note: 'Built late around the split-finger.' }) },
-        { label: 'Nickname', claim: claim('Mr. Splitty', 'clemens-wiki', 'reputable-analysis') },
-      ],
+      distinction: claim(
+        'Late-career reinvention in one pitch: he bolted "Mr. Splitty" onto a power arsenal and kept missing barrels long after the pure heat would have faded, which is why he stayed an ace into his forties.',
+        'clemens-wiki',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
@@ -201,22 +182,23 @@ export const splitter: PitchAtlasEntry = {
       pitcher: 'Kevin Gausman',
       context: 'The modern volume king. His splitter has produced more swinging strikes than any other pitcher\'s since the Statcast era began, by a wide margin.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Swinging strikes since 2015', claim: claim('1,712 (most in MLB)', 'gausman-jays', 'reputable-analysis', { note: 'Far ahead of the next-most (Hector Neris, 1,013).' }) },
-        { label: 'Velocity', claim: claim('83.6 mph', 'gausman-rpp', 'reputable-analysis', { note: '2021.' }) },
-        { label: 'Drop vs. fastball', claim: claim('~50-75 cm vs ~25-30 cm', 'gausman-conversation', 'reputable-analysis', { approximate: true }) },
-      ],
+      distinction: claim(
+        'The most prolific swing-and-miss splitter of the tracked era, and not close — he throws it like a fastball over and over and hitters keep waving under the late drop because the look never tips.',
+        'gausman-jays',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Shohei Ohtani',
-      context: 'The unhittable one. In 2021 his trap-door splitter posted the highest swing-and-miss rate of any pitch in MLB.',
+      context: 'The unhittable one. His trap-door splitter became, in a single season, about as unhittable as a pitch gets.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('89.9 mph', 'ohtani-mlb-splitter', 'reputable-analysis', { note: '2021, up from 87.3 mph as a 2018 rookie.' }) },
-        { label: 'PA ending on the splitter', claim: claim('0-for-19, 18 K', 'ohtani-mlb-splitter', 'reputable-analysis', { note: '2021; the highest swing-and-miss rate of any MLB pitch that year.' }) },
-      ],
+      distinction: claim(
+        'A splitter thrown hard enough to look like premium heat until the floor drops — for one season hitters who put a swing on it almost never made contact, which is as close to unhittable as the pitch comes.',
+        'ohtani-mlb-splitter',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
   ],

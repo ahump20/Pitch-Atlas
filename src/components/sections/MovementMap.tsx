@@ -4,34 +4,29 @@ import { PITCHES } from '../../data/pitches'
 import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
 
 /*
-  The global movement map: every filed specimen on one catcher's-eye quadrant,
-  induced vertical break up the y-axis, horizontal break across the x-axis, against
-  a spinless ball at the origin. The classic movement plot — but aggregated, so the
-  families separate visually: fastballs ride, breaking balls drop and sweep, offspeed
-  fades arm-side and down.
+  The global shape map: every filed specimen on one catcher's-eye quadrant, placed by
+  the DIRECTION it breaks — ride up top, drop below, arm-side and glove-side across —
+  against a spinless ball at the origin. Aggregated so the families separate visually:
+  fastballs ride, breaking balls drop and sweep, offspeed fades arm-side and down.
 
-  Handedness is a mirror, not new data. Every pitch's break is stored relative to the
-  arm side; the toggle just flips which physical side "arm-side" lands on and relabels
-  the poles, so a right-hander's slider and a left-hander's slider read as the mirror
-  images they are. A schematic scaled from each pitch's sourced break figures —
-  approximate, never a measured trajectory.
+  This is a map of direction, never a measured magnitude. Pitches that break the same
+  way fan out within their zone so each stays readable. Handedness is a mirror, not new
+  data: the toggle flips which physical side "arm-side" lands on and relabels the poles,
+  so a right-hander's slider and a left-hander's slider read as mirror images.
 */
 
-const W = 520
-const H = 460
+const W = 640
+const H = 500
 const CX = W / 2
 const CY = H / 2
-const PX_PER_IN = 8.2
-const CLAMP = 188
+const COL = 180 // horizontal zone offset (arm-side / glove-side)
+const ROW = 132 // vertical zone offset (ride / drop)
+const CLAMP = 220 // axis-guide half-extent
 
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
   fastball: { label: 'Fastball', color: '#37D6FF' },
   breaking: { label: 'Breaking', color: '#8A6BFF' },
   offspeed: { label: 'Offspeed', color: '#7CFF52' },
-}
-
-function clamp(n: number): number {
-  return Math.max(-CLAMP, Math.min(CLAMP, n))
 }
 
 interface Plotted {
@@ -41,16 +36,34 @@ interface Plotted {
   family: PitchFamily
 }
 
+const LABELS: Record<string, { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' }> = {
+  'two-seam': { dx: 0, dy: -24, anchor: 'middle' },
+  'circle-change': { dx: 16, dy: 2, anchor: 'start' },
+  splitter: { dx: 16, dy: 18, anchor: 'start' },
+  splinker: { dx: -16, dy: 22, anchor: 'end' },
+  forkball: { dx: -16, dy: -16, anchor: 'end' },
+  eephus: { dx: 14, dy: 6, anchor: 'start' },
+}
+
 export function MovementMap() {
   const [hand, setHand] = useState<'RHP' | 'LHP'>('RHP')
   const handFactor = hand === 'RHP' ? 1 : -1
 
   const plotted = useMemo<Plotted[]>(() => {
+    const cellCounts: Record<string, number> = {}
     return PITCHES.map((entry) => {
       const m = entry.motion
       const hSign = m.horizontalDir === 'arm-side' ? 1 : m.horizontalDir === 'glove-side' ? -1 : 0
-      const x = CX + clamp(m.horizontalInches * PX_PER_IN * hSign * handFactor)
-      const y = CY + clamp(-m.ivbInches * PX_PER_IN) // screen y grows down; +ivb rides up
+      const baseX = CX + hSign * handFactor * COL
+      const baseY = CY + (m.verticalShape === 'ride' ? -ROW : m.verticalShape === 'drop' ? ROW : 0)
+      const key = `${m.verticalShape}|${m.horizontalDir}`
+      const i = cellCounts[key] ?? 0
+      cellCounts[key] = i + 1
+      // fan pitches that share a direction so labels stay legible
+      const ang = (i % 6) * (Math.PI / 3)
+      const rad = i === 0 ? 0 : 38 + Math.floor((i - 1) / 6) * 24
+      const x = baseX + Math.cos(ang) * rad
+      const y = baseY + Math.sin(ang) * rad
       return { entry, x, y, family: entry.canonical.family }
     })
   }, [handFactor])
@@ -82,7 +95,7 @@ export function MovementMap() {
         viewBox={`0 0 ${W} ${H}`}
         className="w-full"
         role="img"
-        aria-label={`Movement map of ${plotted.length} filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch is placed by its induced vertical break and horizontal break against a spinless ball at center. A schematic scaled from sourced break figures, approximate.`}
+        aria-label={`Shape map of the filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch sits in the direction it breaks — ride up top, drop below, arm-side and glove-side across — against a spinless ball at center. A map of direction, not a measured magnitude.`}
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* axis guides */}
@@ -101,18 +114,23 @@ export function MovementMap() {
         {/* the pitches */}
         {plotted.map(({ entry, x, y, family }) => {
           const c = FAMILY_META[family].color
+          const label = LABELS[entry.display.slug] ?? { dx: 0, dy: -14, anchor: 'middle' as const }
           return (
             <g key={entry.display.slug}>
               <line x1={CX} y1={CY} x2={x} y2={y} stroke={c} strokeWidth="0.8" strokeDasharray="2 3" opacity="0.32" />
               <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
               <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />
               <text
-                x={x}
-                y={y - 12}
+                x={x + label.dx}
+                y={y + label.dy}
                 fill="var(--color-bone)"
                 fontFamily="var(--font-mono)"
                 fontSize="10"
-                textAnchor="middle"
+                textAnchor={label.anchor}
+                dominantBaseline="middle"
+                paintOrder="stroke"
+                stroke="var(--color-void)"
+                strokeWidth="3"
               >
                 {entry.display.shortName}
               </text>

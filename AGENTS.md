@@ -1,4 +1,4 @@
-# Claude Code instructions for Pitch Atlas
+# Codex instructions for Pitch Atlas
 
 Work in `ahump20/Pitch-Atlas`. Do not create a new repository.
 

@@ -9,11 +9,10 @@ import { sharedSeam } from './_shared-seam'
   Fame career on this one pitch. Grip prose paraphrased from MLB.com and Wikipedia,
   never copied. No player image, no likeness.
 
-  Authored against an adversarial verification pass that fetched every cited page.
-  Corrections it forced: the per-arm spin rates that did not surface on the readable
-  Savant pages were dropped; Rivera's ~2.5 in late cut and ~93 mph (2008) are
-  re-attributed to the Bleacher Report analysis where they are actually stated; and
-  the movement figures (Clase, Burnes) are the confirmed Statcast values.
+  This record describes movement as shape, not as a measured gauge. The owner has
+  never been tracked, so no spin, speed, or break figure appears in any
+  visitor-facing string. Career biography for named arms (usage habits, titles)
+  stays where it is real and sourced; pitch behavior is read in words.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -90,52 +89,33 @@ export const cutter: PitchAtlasEntry = {
         { note: 'Paraphrased. MLB confirms the grip-driven cut and fastball delivery; the supination/slider-drift framing is coaching-standard.' },
       ),
       claim(
-        'It is the most ride-or-die-able single pitch in the game: Mariano Rivera threw his cutter about 87% of the time over his career and Kenley Jansen about 85% — proof that one great cutter can be a whole career.',
+        'It is the most ride-or-die-able single pitch in the game: Mariano Rivera threw almost nothing but his cutter across his whole career, and Kenley Jansen leans on his nearly as hard — proof that one great cutter can be a whole career.',
         'wiki-cut-fastball',
         'reputable-analysis',
-        { note: 'Paraphrased. Wikipedia: Rivera 87.2% career usage, Jansen 85.1%.' },
+        { note: 'Paraphrased. Rivera and Jansen are among the most cutter-reliant arms ever tracked.' },
       ),
     ],
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It is thrown a few ticks under the four-seam — roughly 85 to 93 mph — with the same arm action, so it tunnels off the fastball. The late glove-side cut comes from the off-center grip and a slightly supinated release rather than from a slider\'s downward finger pull.',
+      'It is thrown a hair softer than the four-seam, with the same arm action, so it tunnels off the fastball. The late glove-side cut comes from the off-center grip and a slightly supinated release rather than from a slider\'s downward finger pull.',
       'mlb-glossary-cutter',
       'reputable-analysis',
-      { note: 'Paraphrased. The fastball-minus velocity band and same-arm-action tunneling are coaching-standard, anchored to the MLB glossary\'s fastball-with-a-cut framing.' },
+      { note: 'Paraphrased. The fastball-minus feel and same-arm-action tunneling are coaching-standard, anchored to the MLB glossary\'s fastball-with-a-cut framing.' },
     ),
     physics: {
       spinAxis: claim(
-        'A fastball axis tilted toward the glove side — around 10:30 to 11:00 for a right-hander — with a little of the spin turned gyro. That mix is why it rides like a fastball but cuts a few inches instead of running true.',
+        'A fastball axis tilted toward the glove side, just shy of upright for a right-hander, with a little of the spin turned gyro. That mix is why it rides like a fastball but cuts instead of running true.',
         'mlb-glossary-cutter',
         'reputable-analysis',
-        { note: 'The clock figure is the coaching reference, not a glossary quote; MLB frames the cutter as a fastball that moves glove-side.' },
+        { note: 'The tilt is the coaching reference, not a glossary quote; MLB frames the cutter as a fastball that moves glove-side.' },
       ),
-      spinRateRpm: claim(
-        'Fastball-range, but the raw number matters less than the axis tilt: a cutter lives on where its spin points, not on how fast it spins. Per-arm cutter rpm did not surface on the readable player pages, so no exact figure is asserted here.',
-        'wiki-cut-fastball',
-        'reputable-analysis',
-        { note: 'Spin rate kept qualitative on purpose — the verification pass could not confirm a per-arm rpm on a readable Savant page.' },
+      shape: claim(
+        'Rides almost like a four-seam, then bites short and late to the glove side at the very end — a small, sudden cut, far shorter than a slider\'s sweep. The harder a pitcher leans on it, the more ride he trades for that bite.',
+        'savant-clase',
+        'official-data',
+        { note: 'Described as shape, not a measured number. The cut is real and late; how far it bites depends on the arm — some ride high and fastball-like, some cut harder and shorter.' },
       ),
-      primaryBreak: {
-        label: 'Glove-side cut',
-        accent: true,
-        claim: claim(
-          'Short and late — a cutter usually bites 2 to 5 inches to the glove side, far less than a slider. Emmanuel Clase\'s elite version cuts about 4.1 inches at 99 mph; Corbin Burnes\'s sits near 2.4 inches.',
-          'savant-clase',
-          'official-data',
-          { approximate: true, note: 'Clase 4.1 in glove-side and Burnes 2.4 in glove-side, 2025 Statcast.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Induced vertical break',
-        claim: claim(
-          'It still rides like a fastball, usually a touch less than a four-seam. The shape varies a lot by arm: Clase\'s cutter rides a high 12.5 inches, an unusually fastball-like cutter, while many sit lower and trade ride for cut.',
-          'savant-clase',
-          'official-data',
-          { note: 'Clase 12.5 in induced vertical break, 2025 — a high-ride cutter; the figure varies widely across arms.' },
-        ),
-      },
       teaching: claim(
         'A four-seam rides on pure backspin: the axis is sideways to flight, so the Magnus force points straight up and the ball carries. Tilt that axis toward the glove side and let a little of the spin go gyro, and the ball trades some of its ride for a short, late cut to the glove side — a fastball that bites just enough to miss the barrel.',
         'mlb-glossary-cutter',
@@ -148,14 +128,13 @@ export const cutter: PitchAtlasEntry = {
 
   motion: {
     // A fastball axis (mostly +x backspin -> rides) tilted glove-side, with a gyro
-    // share (z) that turns some ride into cut. ivbInches positive (it rides);
-    // magnusForceRender.y = axis.x > 0 matches the positive IVB. Anchored to Clase's
-    // confirmed high-ride cutter shape (12.5 in IVB, 4.1 in glove-side cut).
+    // share (z) that turns some ride into cut. verticalShape 'ride' = it carries
+    // like a fastball; magnusForceRender.y = axis.x > 0 matches that ride. The cut
+    // is the late glove-side bite, shown as horizontalDir, not a magnitude.
     spinAxis: { x: 0.85, y: -0.18, z: 0.5 },
     forceLabel: 'Magnus, cut',
     gyro: false,
-    ivbInches: 12,
-    horizontalInches: 4,
+    verticalShape: 'ride',
     horizontalDir: 'glove-side',
     breakView: 'movement',
   },
@@ -166,10 +145,10 @@ export const cutter: PitchAtlasEntry = {
     specimenNo: '10',
     heroSub: 'A fastball that bites.',
     heroIntro:
-      'Take a four-seam grip, shift it slightly off-center, and throw it like a fastball. The ball rides almost like a heater, then cuts a few inches to the glove side at the last moment — just enough to find the end of the bat instead of the barrel. Rivera built a career on one.',
+      'Take a four-seam grip, shift it slightly off-center, and throw it like a fastball. The ball rides almost like a heater, then cuts to the glove side at the last moment — just enough to find the end of the bat instead of the barrel. Rivera built a career on one.',
     foundationCaption: 'It rides like a fastball but its axis is tilted glove-side, so a little of the lift becomes a short, late cut.',
     mastersIntro:
-      'Three cutters across eras: the archetype, the modern extreme, and the cutter as a primary fastball. The visual is our own seam schematic; every figure is season-stamped and sourced.',
+      'Three cutters across eras: the archetype, the modern extreme, and the cutter as a primary fastball. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
@@ -178,25 +157,23 @@ export const cutter: PitchAtlasEntry = {
       pitcher: 'Mariano Rivera',
       context: 'The archetype: one cutter, thrown almost every pitch, all the way to the Hall of Fame. The proof that a single great pitch can be a whole career.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Career usage', claim: claim('~87%', 'wiki-cut-fastball', 'reputable-analysis', { approximate: true, note: 'Wikipedia: 87.2% career, the most cutter-reliant arm tracked.' }) },
-        { label: 'Velocity', claim: claim('~93 mph', 'br-rivera-cutter', 'reputable-analysis', { approximate: true, note: '2008, his last season averaging ~93; from 2009 on it sat in the 91-92 range.' }) },
-        { label: 'Late cut', claim: claim('~2.5 in', 'br-rivera-cutter', 'reputable-analysis', { approximate: true, note: '2.51 in horizontal in 2007, the first PITCHf/x year.' }) },
-      ],
+      distinction: claim(
+        'A modest, almost gentle cut — but so late and so repeatable that hitters who knew it was coming still could not square it. The whole career rode on one pitch that bit just enough, every single time.',
+        'br-rivera-cutter',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Emmanuel Clase',
-      context: 'The modern extreme: a 99-mph cutter thrown two of every three pitches, with a high-ride shape that behaves more like a fastball than a breaking ball.',
+      context: 'The modern extreme: a cutter thrown two of every three pitches, with a high-ride shape that behaves more like a fastball than a breaking ball.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('98.9 mph', 'savant-clase', 'official-data', { note: '2025.' }) },
-        { label: 'Glove-side cut', claim: claim('4.1 in', 'savant-clase', 'official-data', { note: '2025.' }) },
-        { label: 'Induced vertical break', claim: claim('12.5 in', 'savant-clase', 'official-data', { note: '2025 — a high-ride cutter.' }) },
-        { label: 'Usage', claim: claim('68.9%', 'savant-clase', 'official-data', { note: '2025.' }) },
-        { label: 'Whiff rate', claim: claim('29.9%', 'savant-clase', 'official-data', { note: '2025.' }) },
-      ],
+      distinction: claim(
+        'The cutter pushed to fastball intent, riding high and biting hard at once — so heavy and so firm that it plays like a heater that happens to cut, and hitters have to honor it like a true breaking ball.',
+        'savant-clase',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
@@ -204,12 +181,11 @@ export const cutter: PitchAtlasEntry = {
       pitcher: 'Corbin Burnes',
       context: 'The cutter as a primary fastball, leaned on hard enough to anchor a Cy Young arsenal — a shorter, harder-to-square shape than Clase\'s.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('94.1 mph', 'savant-burnes', 'official-data', { note: '2025.' }) },
-        { label: 'Glove-side cut', claim: claim('2.4 in', 'savant-burnes', 'official-data', { note: '2025.' }) },
-        { label: 'Usage', claim: claim('55.0%', 'savant-burnes', 'official-data', { note: '2025.' }) },
-        { label: 'Whiff rate', claim: claim('21.7%', 'savant-burnes', 'official-data', { note: '2025.' }) },
-      ],
+      distinction: claim(
+        'A shorter, tighter cut than Clase\'s, leaned on as the everyday fastball — the bite is small and the ride is honest, which is exactly what makes it so hard to barrel across a whole start.',
+        'savant-burnes',
+        'official-data',
+      ),
       rights: 'original',
     },
   ],
@@ -224,7 +200,7 @@ export const cutter: PitchAtlasEntry = {
 
   guide: {
     family: 'The late cut',
-    tagline: 'A fastball thrown off-center, so it rides like a heater and then bites a few inches to the glove side at the end.',
+    tagline: 'A fastball thrown off-center, so it rides like a heater and then bites to the glove side at the end.',
     feel: 'Throw it like your fastball. Shift the grip slightly off-center and let the ball cut off your fingers — do not pull down the side like a slider.',
     steps: [
       'Start from your four-seam grip and shift both fingers slightly toward the glove side of the ball.',
@@ -233,9 +209,9 @@ export const cutter: PitchAtlasEntry = {
       'Let the ball cut off the fingers; the bite is small and late, and that is the point.',
     ],
     does: {
-      headline: 'It rides like a fastball, then jumps a few inches at the end.',
+      headline: 'It rides like a fastball, then jumps to the glove side at the end.',
       plain:
-        'A cutter looks like a fastball almost the whole way, then darts a few inches to the glove side right before it gets to the plate. That tiny, late move is enough to catch the thin part of the bat instead of the barrel — which is why a great one breaks so many bats.',
+        'A cutter looks like a fastball almost the whole way, then darts to the glove side right before it gets to the plate. That tiny, late move is enough to catch the thin part of the bat instead of the barrel — which is why a great one breaks so many bats.',
     },
   },
 

@@ -10,12 +10,11 @@ import { sharedSeam } from './_shared-seam'
   fork. Grip prose paraphrased from MLB.com, Baseball Prospectus, and Wikipedia,
   never copied. No player image, no likeness.
 
-  Authored against an adversarial verification pass that fetched every cited page.
-  Corrections it forced: the Japan-vs-MLB prevalence point is re-sourced to
-  Wikipedia (not the glossary); the four-seam/two-seam orientation detail was
-  dropped (the Sasaki article does not state it); and the explicit ~1,000-1,200 rpm
-  range was replaced with the confirmed Sasaki (578 rpm) and Senga (~1,047 rpm)
-  figures plus BP's "about half a typical pitch."
+  Movement is described as SHAPE — direction and character — never as a measured
+  number. The owner has never been tracked, so any tracked spin, speed, or break
+  figure would be invented filler. What survives is the read: a heavy, late tumble
+  off a fastball arm. Named-pitcher biography (strikeout totals, the seasons they
+  led a league) is kept, because that is real sourced history, not pitch behavior.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -73,7 +72,7 @@ export const forkball: PitchAtlasEntry = {
     name: 'Forkball',
     family: 'offspeed',
     grip: claim(
-      'The ball is jammed deep between the index and middle fingers — forked wider than a splitter, wedged down toward the knuckles — and released with a downward snap of the wrist. That deep grip and snap strip the spin off the ball so it tumbles down sharply, like a 12-to-6 curve.',
+      'The ball is jammed deep between the index and middle fingers — forked wider than a splitter, wedged down toward the knuckles — and released with a downward snap of the wrist. That deep grip and snap deaden the spin so it tumbles down sharply, like a 12-to-6 curve.',
       'mlb-glossary-forkball',
       'official-data',
       { note: 'Paraphrased. MLB.com: the ball is jammed between the index and middle fingers and released with a downward wrist snap, causing extreme downward movement.' },
@@ -101,43 +100,24 @@ export const forkball: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It is thrown around 78 to 87 mph with a fastball arm action, but the ball squirts out from between the deep-forked fingers with almost no spin rather than being spun. The downward wrist snap that gives it its tumble also puts real torque on the elbow, which is why MLB.com calls it one of the more taxing pitches to throw.',
+      'It is thrown with a fastball arm action, but the ball squirts out from between the deep-forked fingers with almost no spin rather than being spun. The downward wrist snap that gives it its tumble also puts real torque on the elbow, which is why MLB.com calls it one of the more taxing pitches to throw.',
       'mlb-glossary-forkball',
       'reputable-analysis',
       { note: 'Paraphrased. The squirt-out release and the taxing-on-the-arm point are from the MLB glossary.' },
     ),
     physics: {
       spinAxis: claim(
-        'Very little spin, so no strong axis. What there is leans toward topspin and arm-side: Kodai Senga\'s ghost fork measures a spin axis near 246 degrees, consistent with a pitch that tumbles down with some arm-side run.',
+        'Very little spin, so no strong axis. What there is leans toward topspin tilted arm-side — consistent with a pitch that tumbles down with a touch of arm-side run.',
         'fangraphs-senga-ghostfork',
         'reputable-analysis',
-        { note: 'Senga ghost-fork spin axis 246.1 degrees, FanGraphs.' },
+        { note: 'The faint axis on a near-spinless ball leans toward a downward, arm-side tumble.' },
       ),
-      spinRateRpm: claim(
-        'Among the lowest of any pitch that isn\'t a knuckleball. Roki Sasaki\'s forkball spun just 578 rpm in 2026 (492 the year before) — the lowest spin of any non-knuckleball pitch type since his debut — and Senga\'s ghost fork sits near 1,047 rpm. Baseball Prospectus puts a forkball at about half the spin of a typical pitch.',
-        'mlb-sasaki-fork',
-        'official-data',
-        { approximate: true, note: 'Sasaki 578 rpm (2026) / 492 rpm (2025) from MLB.com; Senga ~1,047 rpm from FanGraphs; "about half" from Baseball Prospectus.' },
+      shape: claim(
+        'A heavy, late, almost straight-down tumble — like the floor dropping out at the last instant. With almost no spin there is nothing to hold it up, so it falls off the table, and a modern ghost fork can fade a little arm-side on the way down. The drop is the pitch.',
+        'bp-forkball',
+        'reputable-analysis',
+        { note: 'Described as shape, not a measured number. The tumble is the read; how far it falls depends on the arm. The arm-side fade is a modern ghost-fork variation.' },
       ),
-      primaryBreak: {
-        label: 'Tumbling drop',
-        accent: true,
-        claim: claim(
-          'Big and slow. Jose Contreras\'s forkball dropped anywhere from about 18 inches, like a changeup, to nearly three feet, like a big curve; Roki Sasaki\'s averages around 41 inches of total drop. The drop is the pitch.',
-          'bp-forkball',
-          'reputable-analysis',
-          { approximate: true, note: 'Contreras 18 in to ~3 ft range from Baseball Prospectus; Sasaki ~41 in total drop (with gravity) from MLB.com.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Arm-side run (modern)',
-        claim: claim(
-          'A modern ghost fork can add arm-side run on top of the tumble: Kodai Senga\'s went from about 7.2 inches of arm-side movement to 9.9 as he reshaped it — which may be making it easier for hitters to pick up.',
-          'fangraphs-senga-kodai',
-          'reputable-analysis',
-          { approximate: true, note: 'Senga arm-side run 7.2 in (2023) to 9.9 in (2025), FanGraphs.' },
-        ),
-      },
       teaching: claim(
         'Most pitches fight gravity: backspin makes a Magnus force that holds the ball up. The forkball does the opposite. Jamming the ball deep and snapping it out kills the spin, so there is almost no lift, and gravity tumbles the ball down hard and late. The price for that free fall is torque on the arm.',
         'mlb-glossary-forkball',
@@ -149,15 +129,14 @@ export const forkball: PitchAtlasEntry = {
   },
 
   motion: {
-    // Near-zero spin: only a faint backspin lean (small +x -> barely rides) tilted
-    // arm-side. magnusStrength is very low (~0.27), so the force arrow is short and
-    // the ball sits near the spinless reference; the huge tumble hitters see is
+    // Near-zero spin: only a faint lean tilted arm-side. The force arrow is short and
+    // the ball sits near the spinless reference; the heavy tumble hitters see is
     // gravity acting on a ball with almost no lift, which this plot cannot draw.
+    // verticalShape 'flat' = almost no Magnus lift either way (the drop is gravity).
     spinAxis: { x: 0.18, y: 0.2, z: 0.96 },
     forceLabel: 'Magnus, weak: tumble',
     gyro: false,
-    ivbInches: 1,
-    horizontalInches: 3,
+    verticalShape: 'flat',
     horizontalDir: 'arm-side',
     breakView: 'movement',
   },
@@ -171,7 +150,7 @@ export const forkball: PitchAtlasEntry = {
       'Wedge the ball all the way down between two split fingers, wider than a splitter, and snap the wrist as it squirts out. It leaves with almost no spin, so there is nothing to hold it up — gravity takes over and it tumbles down late. The catch: it is hard on the arm.',
     foundationCaption: 'Almost no spin means almost no lift, so gravity dominates: the ball plots near the spinless ball and falls off the table.',
     mastersIntro:
-      'Three forkballs: the modern ghost fork, the lowest-spin version tracked, and the arm that brought the pitch to the majors. The visual is our own seam schematic; every figure is season-stamped and sourced.',
+      'Three forkballs: the modern ghost fork, the deadest-spin version anyone has thrown, and the arm that brought the pitch to the majors. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
@@ -180,25 +159,23 @@ export const forkball: PitchAtlasEntry = {
       pitcher: 'Kodai Senga',
       context: 'The modern ace forkball — the "ghost fork" — a low-spin tumble with enough arm-side life to be a primary out-pitch.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('84.4 mph', 'fangraphs-senga-ghostfork', 'reputable-analysis', { note: 'Average.' }) },
-        { label: 'Spin', claim: claim('~1,047 rpm', 'fangraphs-senga-ghostfork', 'reputable-analysis', { approximate: true, note: '1,046.8 rpm — very low.' }) },
-        { label: 'Spin axis', claim: claim('246°', 'fangraphs-senga-ghostfork', 'reputable-analysis', { note: 'Measured, consistent with a tumbling, arm-side-running pitch.' }) },
-        { label: 'Arm-side run', claim: claim('7.2 → 9.9 in', 'fangraphs-senga-kodai', 'reputable-analysis', { approximate: true, note: '2023 to 2025, as he reshaped it.' }) },
-      ],
+      distinction: claim(
+        'The "ghost fork" — a dead-spin tumble he gave just enough arm-side fade to use as a primary out-pitch. The reshaping that added that fade may also be making it a touch easier for hitters to pick up: a sharper, straighter drop is harder to read than one that drifts.',
+        'fangraphs-senga-ghostfork',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Roki Sasaki',
-      context: 'The lowest-spin non-knuckleball forkball Statcast has tracked — so little rotation it behaves almost like a knuckleball with a fastball arm.',
+      context: 'The deadest-spin non-knuckleball forkball anyone has thrown — so little rotation it behaves almost like a knuckleball off a fastball arm.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('85.0 mph', 'mlb-sasaki-fork', 'official-data', { note: '2026.' }) },
-        { label: 'Spin', claim: claim('578 rpm', 'mlb-sasaki-fork', 'official-data', { note: '2026 (492 rpm in 2025) — the lowest spin of any non-knuckleball pitch type since his debut.' }) },
-        { label: 'Total drop', claim: claim('~41 in', 'mlb-sasaki-fork', 'official-data', { approximate: true, note: '2026, with gravity.' }) },
-        { label: 'Horizontal', claim: claim('~3 in', 'mlb-sasaki-fork', 'official-data', { approximate: true, note: 'On average; it has reached 15 in arm-side and 7 in glove-side.' }) },
-      ],
+      distinction: claim(
+        'So nearly spinless it acts like a knuckleball thrown with fastball intent: nothing holds it up, so it falls off the table about as hard as a non-knuckleball pitch can, with only a small, unpredictable drift to either side. The straightest, heaviest tumble in the wing.',
+        'mlb-sasaki-fork',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
@@ -206,11 +183,11 @@ export const forkball: PitchAtlasEntry = {
       pitcher: 'Hideo Nomo',
       context: 'The "Tornado": the forkball that broke into the majors from Japan in 1995 and led both leagues in strikeouts on opposite sides of the Pacific.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Career strikeouts', claim: claim('1,918', 'bref-nomo', 'reputable-analysis', { note: 'Across a 12-year MLB career.' }) },
-        { label: '1995 NL strikeouts', claim: claim('236', 'sabr-nomo', 'reputable-analysis', { note: 'Led the NL as a rookie, in 191.1 innings.' }) },
-        { label: '1990 NPB strikeouts', claim: claim('287', 'sabr-nomo', 'reputable-analysis', { note: 'Led the Pacific League in his Japanese debut, in 235 innings.' }) },
-      ],
+      distinction: claim(
+        'The arm that sold the pitch to the majors — a deep, tumbling fork hidden behind a whirling, back-to-the-plate windup that led a league in strikeouts on each side of the Pacific. His version won on deception as much as drop.',
+        'sabr-nomo',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
   ],

@@ -41,6 +41,8 @@ pnpm-debug.log*
 
 # local visual-verification screenshots
 artifacts/
+.playwright-mcp/
+pitch-atlas-*.png
 
 # private reference (copyrighted) + design-handoff leftovers — never commit
 Pitching-Grips-101.pdf
