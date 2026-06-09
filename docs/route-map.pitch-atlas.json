@@ -1,5 +1,314 @@
 {
-  "status": "pending cartographer output",
-  "generated": "2026-06-09",
-  "routes": []
+ "generated": "2026-06-09",
+ "source": "fable5 discovery workflow wf_b255b267-9bf",
+ "routes": [
+  {
+   "route": "/",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": true,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "public",
+   "owner_file": "src/pages/AtlasHome.tsx",
+   "notes": "Static routes are auto-discovered by vite-plugin-react-ssg from the route tree, so in_ssg_paths=false is expected for all static rows. Live title: 'Pitch Atlas: The Living Field Manual for Pitching Grips'."
+  },
+  {
+   "route": "/repertoire",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/RepertoirePage.tsx",
+   "notes": "The canonical Pitch Index front door \u2014 /pitch-index and /classify both 301 here \u2014 yet absent from sitemap.xml. 308 to trailing slash then 200."
+  },
+  {
+   "route": "/craftsmen",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": true,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "public",
+   "owner_file": "src/pages/CraftsmenHall.tsx",
+   "notes": "308 -> /craftsmen/ -> 200."
+  },
+  {
+   "route": "/lost-pitches",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/LostPitchesHall.tsx",
+   "notes": "Nav-linked, prerendered, live; whole wing (hall + 15 details) missing from sitemap."
+  },
+  {
+   "route": "/learn",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/KnowledgeHub.tsx",
+   "notes": "Hub + all 10 wings missing from sitemap."
+  },
+  {
+   "route": "/sources",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": true,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "public",
+   "owner_file": "src/pages/SourcesPage.tsx",
+   "notes": ""
+  },
+  {
+   "route": "/sandbox",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/SandboxPage.tsx",
+   "notes": "Public \u2014 nav-linked as 'Shape Lab' in Masthead.tsx."
+  },
+  {
+   "route": "/movement-map",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/MovementMapPage.tsx",
+   "notes": "The only static route ALSO listed explicitly in react-ssg.config.ts paths[] (redundant belt-and-suspenders entry). Nav-linked as 'Shape map'."
+  },
+  {
+   "route": "/compare",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/ComparePage.tsx",
+   "notes": "Nav-linked, prerendered, live."
+  },
+  {
+   "route": "/grips",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/GripsPage.tsx",
+   "notes": "Austin's grip-photo library; nav-linked, live."
+  },
+  {
+   "route": "/softball",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/SoftballHub.tsx",
+   "notes": "Entire softball wing (launched 2026-06-07) is invisible to the sitemap."
+  },
+  {
+   "route": "/softball/fastpitch",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/SoftballFastpitchPage.tsx",
+   "notes": ""
+  },
+  {
+   "route": "/softball/slowpitch",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/SoftballSlowpitchPage.tsx",
+   "notes": ""
+  },
+  {
+   "route": "/about",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "missing-from-sitemap",
+   "owner_file": "src/pages/AboutPage.tsx",
+   "notes": "Newest page (HEAD ccea952, 2026-06-09); confirmed deployed \u2014 live title 'About Pitch Atlas: Why the Grip Comes First'."
+  },
+  {
+   "route": "/pitch/:slug",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": true,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/PitchChapter.tsx + src/data/pitches/",
+   "notes": "12 members from PITCHES. All 12 bulk-verified 200 live with real prerendered titles (e.g. /pitch/sweeper/ 'Sweeper: grip, release...'). Sitemap covers only 7 of 12 \u2014 cutter, eephus, forkball, knuckleball, sweeper missing. Garbage slug /pitch/not-a-real-pitch -> 200 soft-404 (SPA fallback)."
+  },
+  {
+   "route": "/repertoire/:id",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/RepertoireChapter.tsx + src/data/repertoire/",
+   "notes": "27 members from BASIC_REPERTOIRE (entries without a filed specimen). All bulk-verified 200. Zero in sitemap. DiscussionPanel (community layer) renders inside these pages \u2014 no separate forum route exists. Garbage id -> 200 soft-404."
+  },
+  {
+   "route": "/craftsmen/:slug",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": true,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/CraftsmanChapter.tsx + src/data/craftsmen/",
+   "notes": "12 members from CRAFTSMEN. All verified 200. Sitemap covers 8 of 12 \u2014 carl-hubbell, cole-hamels, mariano-rivera, phil-niekro missing. Garbage slug -> 200 soft-404."
+  },
+  {
+   "route": "/lost-pitches/:slug",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/LostPitchChapter.tsx + src/data/lost-pitches/",
+   "notes": "15 members from LOST_PITCHES. All verified 200. Zero in sitemap. Renamed slug smokey-joe-williams-velocity 301s to -fastball via _redirects."
+  },
+  {
+   "route": "/learn/:slug",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/KnowledgeChapter.tsx + src/data/knowledge/",
+   "notes": "10 wings: arm-health, canon, handedness, mechanics, metrics, pitch-design, sequencing, spin, trends, youth. All verified 200 (/learn/mechanics/ carries the kinetic-chain content; /kinetic-chain 301s to it). Zero in sitemap."
+  },
+  {
+   "route": "/softball/pitch/:slug",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/SoftballPitchChapter.tsx + src/data/softball/",
+   "notes": "6 members: changeup, curve, drop, fastball, riseball, screwball. All verified 200 with prerendered titles. Zero in sitemap."
+  },
+  {
+   "route": "/softball/craftsmen/:slug",
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": false,
+   "in_static_output": true,
+   "live_status": 200,
+   "classification": "dynamic-family",
+   "owner_file": "src/pages/SoftballCraftsmanChapter.tsx + src/data/softball/",
+   "notes": "6 members: cat-osterman, jennie-finch, lisa-fernandez, monica-abbott, nijaree-canady, teagan-kavan. All verified 200. Zero in sitemap."
+  },
+  {
+   "route": "/pitch-index",
+   "in_router": false,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 301,
+   "classification": "hidden-intentional",
+   "owner_file": "public/_redirects",
+   "notes": "Retired duplicate of the Pitch Index; 301 -> /repertoire, verified live (also /pitch-index/)."
+  },
+  {
+   "route": "/classify",
+   "in_router": false,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 301,
+   "classification": "hidden-intentional",
+   "owner_file": "public/_redirects",
+   "notes": "Retired; 301 -> /repertoire, verified live."
+  },
+  {
+   "route": "/kinetic-chain",
+   "in_router": false,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 301,
+   "classification": "hidden-intentional",
+   "owner_file": "public/_redirects",
+   "notes": "Retired; 301 -> /learn/mechanics, verified live."
+  },
+  {
+   "route": "/lost-pitches/smokey-joe-williams-velocity",
+   "in_router": false,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 301,
+   "classification": "hidden-intentional",
+   "owner_file": "public/_redirects",
+   "notes": "Slug rename; 301 -> /lost-pitches/smokey-joe-williams-fastball, verified live."
+  },
+  {
+   "route": "/support",
+   "in_router": false,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 200,
+   "classification": "live-but-absent-from-source",
+   "owner_file": "(none \u2014 expected by Pitch-Atlas-iOS AccountView.swift:112)",
+   "notes": "Returns 200 ONLY via the SPA catch-all; client renders the 404 page. iOS Account screen links here. See finding RC-1."
+  },
+  {
+   "route": "/privacy",
+   "in_router": false,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 200,
+   "classification": "live-but-absent-from-source",
+   "owner_file": "(none \u2014 expected by Pitch-Atlas-iOS AccountView.swift:117)",
+   "notes": "Same soft-404 behavior. Privacy-policy URL is an App Store requirement. See finding RC-1."
+  },
+  {
+   "route": "/* (wildcard NotFound)",
+   "in_router": true,
+   "in_ssg_paths": false,
+   "in_sitemap": false,
+   "in_static_output": false,
+   "live_status": 200,
+   "classification": "public",
+   "owner_file": "src/pages/NotFound.tsx + public/_redirects",
+   "notes": "Catch-all: any unknown path (probe /this-route-does-not-exist) returns HTTP 200 with the homepage prerender, then client renders NotFound. No dist/404.html exists. Soft-404 \u2014 see finding RC-3. Old /prototype/*.html URLs verified clean: they now serve the current app shell, not the stale BSI-era prototype files."
+  }
+ ]
 }

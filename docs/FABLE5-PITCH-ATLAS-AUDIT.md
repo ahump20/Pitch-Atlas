@@ -28,17 +28,38 @@ Verified this run:
 - Soft-404: ALL unknown paths (incl. `/community`, `/auth`, `/login`, `/account`) return 200 with the home document. No standalone community/auth routes exist; Discussion + Field Notes are embedded `#discussion` / `#field-notes` sections on specimen/repertoire pages.
 - Full router × ssg-paths × sitemap × live matrix: `docs/route-map.pitch-atlas.json` (pending workflow output).
 
-## 4. Supabase (project cloeoulvrrfcbitrjpso) — pending auditor + PR #16 review (verified so far)
+## 4. Supabase (project cloeoulvrrfcbitrjpso) — remediation list
 
-- Repo main carries 5 community migrations (safety floor, discussion forum, access fix, anon grants, is_admin execute grant) with banned-terms/rate-limit references.
-- **PR #16** (Codex) = account-safety backend already applied live: blocked_users + RLS, private-schema helpers, block-edge trigger, narrowed grants, JWT-verified delete-account Edge Function. Review verdict + merge conditions in decision D4. Known defects: stray gitlink of pitch-atlas-softball; field_notes UPDATE policy without matching grant; delete-account FK-cascade assumption unproven.
-- Advisor before/after table: pending auditor.
+Live access verified via the project-scoped MCP (the bare `supabase` MCP server is locked to the BSI project and was not used). Community schema fundamentals confirmed healthy: RLS on every public table, owner-scoped policies with admin/block-aware reads, private discussion-media bucket with mime allowlist, both clients on the publishable key against the right ref, delete-account JWT-verified and caller-only with FK cascades covering posts/notes/profile (auditor verified the cascades — resolving D4 condition 4).
 
-## 5. Stripe reality — pending auditor
+| # | Item | Before | Action this run | After / status |
+|---|---|---|---|---|
+| 1 | Migration drift (HIGH, verified) | live 12 vs repo 5, zero matching versions; both Supabase git branches MIGRATIONS_FAILED | 5 repo files renamed to live versions; 5 live-only migrations captured byte-faithfully from `supabase_migrations.schema_migrations` into repo | repo == live for 10/12; PR #16 carries the final 2; Supabase branch CI re-check after merge |
+| 2 | Default-ACL hole (HIGH, verified — BSI-incident root cause) | postgres + supabase_admin default ACLs grant full DML to anon/authenticated on every new table | prepared `docs/fable5/pending-migrations/01` | **blocked on Austin's approval** (auto-mode gate denied live DDL); supabase_admin default is residual, may need Supabase support like at BSI |
+| 3 | DM cluster residue (threads/messages/thread_participants) | anon+authenticated hold full DML; no SELECT for authenticated → feature unreachable; 0 rows | prepared `pending-migrations/02` (revoke all; product decision to enable or remove stays open) | **blocked on approval** |
+| 4 | 3 unindexed FKs | perf advisor INFO | prepared in `pending-migrations/02` | **blocked on approval** |
+| 5 | pitches table missing 7 specimen slugs (live bug: note submit FK-fails on 7 of 12 specimens) | 5 rows vs 12 web specimens | prepared `pending-migrations/03` (idempotent insert + two-seam name fix) | **blocked on approval** |
+| 6 | Anonymous-user minting on read path | 66/67 auth users anonymous; signInAnonymously() fires on listNotes | web client fix in this run's fix bundle (read without session; session only on write intent) | in work branch; live after deploy |
+| 7 | banned_terms RLS-without-policy advisor | WARN | explained: deliberate default-deny (migration 20260605110439, now captured in repo) | documented intentional |
+| 8 | pg_graphql anon/authenticated exposure WARNs | WARN on community/profile tables | public community reads are the product design | documented intentional |
+| 9 | cron.job anonymous-policy WARNs | WARN | pg_cron defaults, not project policies | documented no-action |
+| 10 | Leaked-password protection disabled | WARN | dashboard-only toggle | **blocked: Austin** (belt-and-braces; password auth appears unused) |
+| 11 | auth_rls_initplan ×30 (bare auth.uid() in 06-09 policies) | perf WARN | fold `(select auth.uid())` rewrite into the next policy-touching migration | documented advisory |
+| 12 | profiles anon SELECT exposes is_admin; dead admin-read policies on report tables | low | left open (column-scoping risks client select-*) | documented open |
+| 13 | delete-account storage list capped at 1000 objects | low | patch in repo once PR #16 lands the function source | follow-up |
+| 14 | Orphaned Stripe engine (schema ~25 tables, 3 edge functions, every-minute pg_cron) | running, zero consumers, signature-verified webhook, not API-exposed | none (destructive teardown) | **Austin's decision** |
 
-## 6. iOS sync — pending auditor
+## 5. Stripe reality — CLASSIFIED
 
-- iOS PR #1 (Supabase community wiring) MERGED to main 2026-06-09. Polish branch adds Blaze-companion motion + Apple sign-in entitlement on top, tests green.
+Repos (web + iOS): Stripe is **absent** — no code, residue, scaffolding, or boilerplate; the only "stripe" tokens are the Blaze dog mascot's helmet stripe (lexical coincidence). Live Supabase: **orphaned Stripe sync engine** (see §4 item 14). No commerce UI exists on any live route. iOS has zero StoreKit/IAP. Billing is out of scope for Pitch Atlas today; if it ever lands, iOS must use StoreKit, never Stripe checkout in-app.
+
+## 6. iOS sync — authority decided (verified)
+
+- **Authoritative tree: `~/Pitch-Atlas-iOS`** (codex/blaze-companion-polish-ios). Adversarially verified.
+- **The dirty `~/code` tree is NOT discardable**: 19 of 28 dirty files are the never-committed iOS no-fake-numbers content pass. The committed app still bundles 12 spinRateRpm + ivbInches claims and REQUIRES those numeric fields, out of contract with the web's words-only physics schema. Salvage agent is porting B's pass onto a branch off A with the build/test gate.
+- Topology: linear chain; iOS PR #1 (community + Apple sign-in) MERGED to remote main; companion commit d980d17 is the only unmerged work (no PR yet); both local clones had stale origin/main.
+- App Store safety inventory passes on A: SIWA entitlement+UI, delete-account UI→deployed function, report/block writes, privacy manifest declaring community data without tracking. Block-edge content filtering is enforced server-side by the live RLS (PR #16's captured migration) — the iOS auditor's open question is answered by the Supabase auditor's live policy dump.
+- Stale-doc hazards: B's untracked App Store Connect pack says "no account, no network" (now false — rewrite in salvage); A's CLAUDE.md documents a phantom WKWebView architecture (fix from B's hunks).
 
 ## 7. PWA/offline (verified, one residual)
 
@@ -51,7 +72,7 @@ Design is honest (see §1). Residual: in-browser offline toggle proof — blocke
 | 1 | med | routes | Soft-404: unknown paths return 200 + home doc; no 404.html / not-found view proof | open |
 | 2 | med | supabase | PR #16 gitlink defect blocks merge | open (fix at merge) |
 | 3 | low | supabase | field_notes UPDATE policy dead (no grant) | open (decide) |
-| 4 | med | supabase | delete-account cascade assumption (posts/notes/profiles) unverified | open |
+| 4 | med | supabase | delete-account cascade assumption (posts/notes/profiles) | RESOLVED — cascades verified live |
 | 5 | low | design | Hero specimen card: clipped chip artifact top-left | open |
 | 6 | low | design | Softball "S START HERE" stray drop-cap | open |
 | 7 | low | repo | Stale untracked dist/ in repo root | note only |
