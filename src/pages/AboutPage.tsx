@@ -178,6 +178,41 @@ export function AboutPage() {
       </section>
 
       <section className="border-t border-bone/10">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
+          <div className="md:col-span-5">
+            <p className="rfx-skick">Where it came from</p>
+            <h2 className="rfx-stitle mt-3 max-w-[14ch] text-[clamp(28px,5vw,52px)]">
+              It started as one hand on one ball.
+            </h2>
+          </div>
+          <div className="md:col-span-7">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+              The first grips filed here are photographs of the builder&apos;s own hand. Austin H.
+              worked a four-pitch mix in games: four-seam, two-seam, a three-finger changeup, and a
+              12-6 curve, with a splitter that rode along for certain spots. There is no circle
+              change in the set. His hands were too small to form one, so the file says that
+              instead of faking a textbook page.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+              That account seeded the whole source model. It is filed as a pitcher&apos;s own words,
+              not tracked data, because that is what it is. And it surfaced the gap the atlas now
+              works: where the pads sat, which seam the fingers rode, why one pitch stayed in the
+              pocket and another never fit. That knowledge lived in exactly one place, the hand
+              that learned it, and nobody was writing it down.
+            </p>
+            <p className="mt-6">
+              <Link
+                to="/grips"
+                className="font-mono text-sm uppercase tracking-wide text-cyan transition-colors hover:text-bone"
+              >
+                See the grip library <span aria-hidden="true">→</span>
+              </Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-bone/10">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">The nearby field</p>
           <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(28px,5vw,52px)]">
@@ -230,6 +265,49 @@ export function AboutPage() {
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
               That is good only when it protects trust. The useful roughness is source honesty,
               hand texture, and visible limits. Fake patina would be worse than a plain page.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="border-t border-bone/10">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
+          <div className="md:col-span-5">
+            <p className="rfx-skick">Why it exists</p>
+            <h2 className="rfx-stitle mt-3 max-w-[13ch] text-[clamp(28px,5vw,52px)]">
+              A grip dies with the arm.
+            </h2>
+          </div>
+          <div className="md:col-span-7">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+              A grip is oral tradition. A coach reshapes a kid&apos;s fingers in a bullpen. A
+              teammate shows a seam trick between starts. A pitcher feels his way to a hold nobody
+              taught him. Almost none of it gets written down with a name attached, and the
+              measurement era did not fix that. Cameras and radar now record what the ball does
+              after release down to the inch. The hand before release stayed where it always was:
+              in dugouts, in scattered clips, in memory.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+              The lost-pitches wing shows the price. Holds that won real games survive as
+              fragments because nobody filed them while the arm was still around to ask. Pitch
+              Atlas exists to file the hold while it can still be asked about. Sourced, because
+              memory earns trust through provenance. Uncorrected, because the variant a textbook
+              would flag is sometimes the one that fit a real hand.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+              Nobody built this before because nobody had to own it. Coaching sells the next
+              adjustment. Media sells what the ball just did. Trackers sell the measurement. An
+              archive of sourced grips pays off years later, when someone wants to know how a
+              pitch was actually held. Preservation is the job nobody claims until the thing is
+              already gone.
+            </p>
+            <p className="mt-6">
+              <Link
+                to="/lost-pitches"
+                className="font-mono text-sm uppercase tracking-wide text-cyan transition-colors hover:text-bone"
+              >
+                Walk the lost-pitches wing <span aria-hidden="true">→</span>
+              </Link>
             </p>
           </div>
         </div>
