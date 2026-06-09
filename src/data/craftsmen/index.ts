@@ -38,7 +38,9 @@ const gibson: Craftsman = {
   quote: claim(
     'The part of pitching that separates the stars from everyone else is about 90 percent mental. That is why I considered it so important to mess with a batter’s head without letting him inside mine.',
     'gibson-wiki',
-    'pitcher-own-words',
+    // Gibson's words, but relayed through Wikipedia rather than a primary record
+    // of him saying it — so the label is the source's tier, not the speaker's.
+    'secondhand-attributed',
   ),
   biography: [
     { label: 'ERA (1968)', claim: claim('1.12', 'gibson-hof-1968', 'official-data', { note: 'The lowest live-ball-era ERA for a qualifier; it helped trigger the mound being lowered for 1969.' }) },
