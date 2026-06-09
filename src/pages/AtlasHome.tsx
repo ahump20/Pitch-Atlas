@@ -61,6 +61,24 @@ const NEVER = [
 ]
 const ALWAYS = ['Real grip photos, clean sources', 'A source on every claim']
 
+const THESIS_ROWS = [
+  {
+    stamp: 'Survives',
+    label: 'What modern baseball keeps well',
+    text: 'Velocity, spin, movement, outcomes, and the public clips that catch a pitch after it has already left the hand.',
+  },
+  {
+    stamp: 'Vanishes',
+    label: 'What disappears first',
+    text: 'Thumb pressure, hand size, seam feel, and the little variants that work for one arm and never fit another.',
+  },
+  {
+    stamp: 'Filed',
+    label: 'What Pitch Atlas preserves',
+    text: 'The holdable grip first, then the shape language, then the source badge that says how solid the claim is.',
+  },
+]
+
 /* The interactive tools, surfaced together so every one is one click from home.
    Each carries a `kind` that selects its visual preview plane. */
 const TOOLS: { label: string; to: string; blurb: string; kind: ToolKind }[] = [
@@ -220,6 +238,69 @@ export function AtlasHome() {
   return (
     <>
       <HomeHero featured={PITCHES[0]} />
+
+      <section className="border-t border-bone/10">
+        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
+          <div className="md:col-span-5">
+            <p className="rfx-skick">Why it exists</p>
+            <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,56px)]">
+              A grip disappears faster than a <span className="rfx-holo">box score</span>.
+            </h2>
+            <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-bone-2">
+              A dashboard can tell you what the ball did. A coach can show a drill. A clip can catch
+              one grip for ten seconds. Pitch Atlas is for the part that usually vanishes: where the
+              fingers sat, what the pitcher felt, and what the source actually proves.
+            </p>
+            <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-bone-2">
+              It is not a correction engine. It is a place where credible variants can stand next to
+              each other without pretending one hand owns the truth.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
+                style={{ background: 'var(--color-cyan)', boxShadow: '0 6px 24px -8px var(--color-cyan)' }}
+              >
+                Read why it exists <span aria-hidden="true">→</span>
+              </Link>
+              <Link
+                to="/sources"
+                className="inline-flex items-center gap-2 rounded-md border border-bone/30 px-5 py-3 font-mono text-sm uppercase tracking-wide text-bone transition-colors hover:border-bone"
+              >
+                Read the source model <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </div>
+
+          <div className="md:col-span-7">
+            <div className="border-t border-bone/10">
+              {THESIS_ROWS.map((row, i) => (
+                <div
+                  key={row.label}
+                  className="grid gap-4 border-b border-bone/10 py-5 sm:grid-cols-[7.25rem_1fr]"
+                >
+                  <span
+                    className="h-fit w-fit rounded border px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em]"
+                    style={{
+                      borderColor: i === 1 ? 'color-mix(in srgb, var(--color-seam-bright) 55%, transparent)' : 'color-mix(in srgb, var(--color-cyan) 50%, transparent)',
+                      color: i === 1 ? 'var(--color-seam-bright)' : 'var(--color-cyan)',
+                      transform: `rotate(${i === 1 ? -2 : 2}deg)`,
+                    }}
+                  >
+                    {row.stamp}
+                  </span>
+                  <div>
+                    <h3 className="rfx-athletic rfx-skew text-bone" style={{ fontSize: 'clamp(20px,3vw,30px)' }}>
+                      {row.label}
+                    </h3>
+                    <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-bone-2">{row.text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ACT 02 — the model, as a descending source-confidence scale (not five equal boxes). */}
       <section className="border-t border-bone/10">

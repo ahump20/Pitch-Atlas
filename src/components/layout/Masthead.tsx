@@ -30,6 +30,7 @@ const MOBILE_NAV: { label: string; to: string }[] = [
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
+  { label: 'About', to: '/about' },
 ]
 
 export function Masthead() {

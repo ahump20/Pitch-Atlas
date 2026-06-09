@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import '../../styles/blaze.css'
@@ -23,32 +23,30 @@ function isNappable(mood: BlazeMood): boolean {
 
 export function BlazeCompanion() {
   const location = useLocation()
+  const routePath = location.pathname
   const ref = useRef<HTMLDivElement>(null)
   const eventTimerRef = useRef<number | null>(null)
   const reactionTimerRef = useRef<number | null>(null)
   const reducedMotion = useReducedMotion()
   const { enabled } = useBlazePreference()
-  const baseMood = useMemo(() => moodForPath(location.pathname), [location.pathname])
-  const persona = useMemo(() => personaForPath(location.pathname), [location.pathname])
-  const [eventMood, setEventMood] = useState<BlazeMood | null>(null)
-  const [reaction, setReaction] = useState<BlazeReaction>('none')
-  const [sleepy, setSleepy] = useState(false)
+  const baseMood = useMemo(() => moodForPath(routePath), [routePath])
+  const persona = useMemo(() => personaForPath(routePath), [routePath])
+  const [eventMood, setEventMood] = useState<{ path: string; mood: BlazeMood } | null>(null)
+  const [reactionState, setReactionState] = useState<{ path: string; reaction: BlazeReaction }>({ path: routePath, reaction: 'none' })
+  const [sleepyState, setSleepyState] = useState<{ path: string; sleepy: boolean }>({ path: routePath, sleepy: false })
 
-  const queueReaction = (next: Exclude<BlazeReaction, 'none'>, ttlMs = 1250) => {
+  const queueReaction = useCallback((next: Exclude<BlazeReaction, 'none'>, ttlMs = 1250) => {
     if (reactionTimerRef.current !== null) {
       window.clearTimeout(reactionTimerRef.current)
     }
-    setReaction(next)
+    setReactionState({ path: routePath, reaction: next })
     reactionTimerRef.current = window.setTimeout(() => {
-      setReaction('none')
+      setReactionState((current) => (current.path === routePath ? { path: routePath, reaction: 'none' } : current))
       reactionTimerRef.current = null
     }, ttlMs)
-  }
+  }, [routePath])
 
   useEffect(() => {
-    setEventMood(null)
-    setReaction('none')
-    setSleepy(false)
     if (eventTimerRef.current !== null) {
       window.clearTimeout(eventTimerRef.current)
       eventTimerRef.current = null
@@ -57,7 +55,7 @@ export function BlazeCompanion() {
       window.clearTimeout(reactionTimerRef.current)
       reactionTimerRef.current = null
     }
-  }, [location.pathname])
+  }, [routePath])
 
   useEffect(() => {
     if (typeof window === 'undefined') return
@@ -65,11 +63,11 @@ export function BlazeCompanion() {
       if (eventTimerRef.current !== null) {
         window.clearTimeout(eventTimerRef.current)
       }
-      setEventMood(event.detail.mood)
+      setEventMood({ path: routePath, mood: event.detail.mood })
       const eventReaction = event.detail.reaction ?? reactionForMood(event.detail.mood)
       if (eventReaction !== 'none') queueReaction(eventReaction, event.detail.ttlMs ?? 1700)
       eventTimerRef.current = window.setTimeout(() => {
-        setEventMood(null)
+        setEventMood((current) => (current?.path === routePath ? null : current))
         eventTimerRef.current = null
       }, event.detail.ttlMs ?? 1700)
     }
@@ -85,16 +83,16 @@ export function BlazeCompanion() {
       }
       window.removeEventListener(BLAZE_EVENT_NAME, onBlazeEvent)
     }
-  }, [])
+  }, [queueReaction, routePath])
 
   useEffect(() => {
     if (typeof window === 'undefined' || !enabled || reducedMotion || !isNappable(baseMood)) return
 
-    let timer = window.setTimeout(() => setSleepy(true), 8500)
+    let timer = window.setTimeout(() => setSleepyState({ path: routePath, sleepy: true }), 8500)
     const reset = () => {
-      setSleepy(false)
+      setSleepyState({ path: routePath, sleepy: false })
       window.clearTimeout(timer)
-      timer = window.setTimeout(() => setSleepy(true), 8500)
+      timer = window.setTimeout(() => setSleepyState({ path: routePath, sleepy: true }), 8500)
     }
 
     window.addEventListener('scroll', reset, { passive: true })
@@ -106,9 +104,12 @@ export function BlazeCompanion() {
       window.removeEventListener('pointerdown', reset)
       window.removeEventListener('keydown', reset)
     }
-  }, [baseMood, enabled, reducedMotion])
+  }, [baseMood, enabled, reducedMotion, routePath])
 
-  const rawMood = eventMood ?? (sleepy ? 'napping' : baseMood)
+  const routeEventMood = eventMood?.path === routePath ? eventMood.mood : null
+  const sleepy = sleepyState.path === routePath ? sleepyState.sleepy : false
+  const reaction = reactionState.path === routePath ? reactionState.reaction : 'none'
+  const rawMood = routeEventMood ?? (sleepy ? 'napping' : baseMood)
   const mood = enabled ? reduceMoodForMotion(rawMood, reducedMotion) : 'hidden'
   useBlazeMotion(ref, { enabled, reducedMotion, mood })
 

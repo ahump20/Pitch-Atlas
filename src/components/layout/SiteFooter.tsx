@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
-import { BlazePreferenceToggle } from '../companions/BlazePreferenceToggle'
 
 /*
   The slim site footer on the void. Not the colophon — the full provenance legend
@@ -15,6 +14,7 @@ const LINKS: { label: string; to: string }[] = [
   { label: 'The Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
+  { label: 'About', to: '/about' },
 ]
 
 export function SiteFooter() {
@@ -42,7 +42,6 @@ export function SiteFooter() {
           <a href={SITE.canonicalDomain} className="mono-label-stage transition-colors hover:text-bone">
             pitch-atlas.com
           </a>
-          <BlazePreferenceToggle />
           <span className="mono-label-stage text-ink-3">{SITE.sourcePrinciple}</span>
         </div>
       </div>
