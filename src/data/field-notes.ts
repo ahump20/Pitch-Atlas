@@ -9,12 +9,12 @@
 
 export type PlayerLevel = 'youth' | 'high-school' | 'college-plus'
 export type ArmSlot = 'over-the-top' | 'three-quarter' | 'sidearm' | 'submarine'
-export type VelocityBand = 'under-60' | '60-69' | '70-79' | '80-89' | '90-plus'
+export type VelocityBand = 'low-effort' | 'developing-arm' | 'prep-arm' | 'college-arm' | 'power-arm'
 export type PitchIntent =
   | 'more-movement'
   | 'less-movement'
-  | 'added-velocity'
-  | 'reduced-velocity'
+  | 'firmer-feel'
+  | 'softer-feel'
   | 'better-command'
   | 'deception'
   | 'reduce-stress'
@@ -22,7 +22,7 @@ export type PitchIntent =
 export type ClaimedResultKind =
   | 'more-movement'
   | 'better-command'
-  | 'velocity-gain'
+  | 'firmer-result'
   | 'reduced-discomfort'
   | 'inconsistent'
   | 'worked-in-bullpen'
@@ -45,11 +45,11 @@ export const ARM_SLOTS: { value: ArmSlot; label: string }[] = [
 ]
 
 export const VELOCITY_BANDS: { value: VelocityBand; label: string }[] = [
-  { value: 'under-60', label: 'Under 60 mph' },
-  { value: '60-69', label: '60-69 mph' },
-  { value: '70-79', label: '70-79 mph' },
-  { value: '80-89', label: '80-89 mph' },
-  { value: '90-plus', label: '90 mph and up' },
+  { value: 'low-effort', label: 'Low-effort context' },
+  { value: 'developing-arm', label: 'Developing-arm context' },
+  { value: 'prep-arm', label: 'High-school pace context' },
+  { value: 'college-arm', label: 'College pace context' },
+  { value: 'power-arm', label: 'Power-arm context' },
 ]
 
 /** Hard limits, enforced on both the client form and the future Worker. */
@@ -94,7 +94,7 @@ export const RANK_SIGNALS: { key: keyof typeof RANK_WEIGHTS; label: string; blur
   {
     key: 'contextMatch',
     label: 'Context match',
-    blurb: 'How close a note is to your level, slot, and velocity. Computed in your session, never stored.',
+    blurb: 'How close a note is to your level, slot, and pace context. Computed in your session, never stored.',
   },
   {
     key: 'communityConfidence',

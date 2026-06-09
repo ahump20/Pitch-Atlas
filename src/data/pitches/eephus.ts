@@ -4,16 +4,16 @@ import { sharedSeam } from './_shared-seam'
 
 /*
   The eephus. The one pitch in the atlas whose weapon is not movement at all, but
-  time: a high, slow rainbow lobbed in at half a fastball's speed, dropping into
-  the zone on a steep arc to scramble a hitter geared up for 95. Rip Sewell's
+  time: a high, slow rainbow lobbed in at a fraction of a fastball's pace, dropping
+  into the zone on a steep arc to scramble a hitter geared up for heat. Rip Sewell's
   "folly floater," alive today in Zack Greinke's hands. Prose paraphrased from
   MLB.com and The Hardball Times, never copied. No player image, no likeness.
 
   Authored against an adversarial verification pass that fetched every cited page.
-  Corrections it forced: the spin axis is presented as inference from the reported
-  backspin, not as a figure the LeDoux study publishes (it publishes the spin RATE,
-  ~2,301 rpm, which is what is cited to it); the 25 ft arc, low-40s velocity, and
-  Williams home run are the confirmed Hardball Times figures.
+  Movement, spin, and speed figures are deliberately absent: the owner has never
+  been tracked, and this pitch is described by the shape of its arc and the feel of
+  its delivery, never by a gauge. The Sewell origin and the lone home run ever hit
+  off it are sourced biography, kept as such.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -30,7 +30,7 @@ const gripModel: GripModel = {
   thumbRole: 'Thumb underneath for control; the grip is ordinary because the arc, not the spin, is the pitch.',
   palmGapCue: 'Held loosely like a fastball or curve — almost any grip works.',
   releaseCue: 'Throw it on a high, exaggerated overhand arc with drastically reduced arm speed, aiming to peak well above the batter and drop in.',
-  visualCaveat: 'Grip geometry is schematic and barely matters here; the eephus is defined by trajectory and velocity, not grip.',
+  visualCaveat: 'Grip geometry is schematic and barely matters here; the eephus is defined by arc and timing, not grip.',
   contacts: [
     {
       finger: 'index',
@@ -78,16 +78,16 @@ export const eephus: PitchAtlasEntry = {
     ),
     gripDetails: [
       claim(
-        'MLB.com calls it, by design, the easiest pitch in baseball to hit — no unexpected movement, no velocity. Its only weapon is the disruption: a hitter timed for a fastball has to wait on a pitch that floats in at half the speed.',
+        'MLB.com calls it, by design, the easiest pitch in baseball to hit — no unexpected movement, nothing on it. Its only weapon is the disruption: a hitter timed for heat has to wait on a pitch that floats in at a crawl.',
         'mlb-glossary-eephus',
         'reputable-analysis',
         { note: 'Paraphrased. MLB.com: "it is the easiest pitch to hit in baseball" — the timing scramble is the point.' },
       ),
       claim(
-        'Oddly, it is not a no-spin pitch. A Statcast study of tagged eephus pitches found they average about 2,301 rpm of backspin — roughly 100 rpm above an average fastball. The spin just barely matters at 50 mph next to gravity.',
+        'Oddly, it is not a no-spin pitch — it carries ordinary backspin, a touch more than a typical fastball. But thrown this slow, that spin barely matters. Gravity, not the spin, owns the flight.',
         'ledoux-eephus',
         'reputable-analysis',
-        { note: 'Paraphrased. The ~2,301 rpm average is from James LeDoux\'s Statcast study of 2,090 tagged eephus pitches.' },
+        { note: 'Paraphrased from James LeDoux\'s Statcast study of tagged eephus pitches. Described as shape and feel, not a measured figure.' },
       ),
       claim(
         'Rip Sewell invented it during World War II — the story ties it to a 1941 hunting accident — and the name comes from a teammate\'s line that "eephus ain\'t nothing, and that\'s a nothing pitch."',
@@ -99,45 +99,26 @@ export const eephus: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It is thrown anywhere from the mid-30s to the mid-60s mph — often the low 40s at its slowest — on a rainbow that can climb as high as 25 feet before dropping into the zone on a steep angle. It is a once-a-game weapon: it works on timing, not stuff, and a hitter who is ready for it can crush it.',
+      'It is lobbed in at a small fraction of fastball pace on a towering rainbow that climbs well above head height before dropping into the zone on a steep angle. It is a once-a-game weapon: it works on timing, not stuff, and a hitter who is ready for it can crush it.',
       'tht-sewell-eephus',
       'reputable-analysis',
-      { note: 'Paraphrased. The ~25 ft arc apex and the low-40s slowest velocity are from The Hardball Times.' },
+      { note: 'Paraphrased. The towering arc and crawling pace are described as shape and feel, per The Hardball Times.' },
     ),
     physics: {
       spinAxis: claim(
-        'A near-12:00 backspin orientation with little side tilt, so there is essentially no horizontal break and no platoon side. This is inferred from the reported backspin, not a published axis figure — at this speed the orientation hardly changes the flight anyway.',
+        'A near-12:00 backspin orientation with little side tilt, so there is essentially no horizontal run and no platoon side. Inferred from the backspin it carries — and at this crawl the orientation hardly changes the flight anyway.',
         'mlb-glossary-eephus',
         'reputable-analysis',
         { note: 'Inferred from the backspin profile; no source publishes a spin-axis figure for the eephus.' },
       ),
-      spinRateRpm: claim(
-        'Surprisingly normal: a Statcast study put the average eephus at about 2,301 rpm of backspin, roughly 100 rpm above a typical fastball. The twist is that at eephus speeds the spin does almost nothing — gravity, not Magnus, shapes the pitch.',
-        'ledoux-eephus',
+      shape: claim(
+        'The shape is up, then down — a towering rainbow, not a sideways dart. The ball climbs high above head height between mound and plate, hangs there, then falls into the strike zone on a steep descending angle. The arc and the hang time are the whole pitch; nothing about it is late or sudden.',
+        'tht-sewell-eephus',
         'reputable-analysis',
-        { approximate: true, note: 'James LeDoux\'s Statcast study, across 2,090 tagged eephus pitches.' },
+        { note: 'Described as shape, not a measured arc height. The towering climb and the steep drop are the read.' },
       ),
-      primaryBreak: {
-        label: 'The arc',
-        accent: true,
-        claim: claim(
-          'The "break" is not sideways or late — it is up, then down. The ball can climb to roughly 25 feet at its peak between the mound and the plate, then fall into the strike zone on a steep descending angle. The arc and the hang time are the whole pitch.',
-          'tht-sewell-eephus',
-          'reputable-analysis',
-          { approximate: true, note: '~25 ft apex per The New Dickson Baseball Dictionary, cited in The Hardball Times.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Velocity, not movement',
-        claim: claim(
-          'No unexpected movement — the effect is entirely the speed gap. Modern eephus pitches have dipped to the low 50s for called strikes: Zack Greinke landed one at 53.5 mph in 2020, and Henderson Alvarez threw a 52.5 mph eephus for a called strike in 2017.',
-          'mlb-greinke-54',
-          'reputable-analysis',
-          { note: 'Greinke 53.5 mph (2020) and Alvarez 52.5 mph called strike (2017), MLB.com.' },
-        ),
-      },
       teaching: claim(
-        'Every other pitch in the atlas uses spin to move or to resist gravity. The eephus does neither — it surrenders to gravity. Thrown at half a fastball\'s speed on a high arc, it hangs in the air far longer than anything a hitter has timed, and the hardest thing in hitting is recalibrating to a pitch that takes twice as long to arrive.',
+        'Every other pitch in the atlas uses spin to move or to resist gravity. The eephus does neither — it surrenders to gravity. Lobbed in at a fraction of fastball pace on a high arc, it hangs in the air far longer than anything a hitter has timed, and the hardest thing in hitting is recalibrating to a pitch that floats in slow and late.',
         'mlb-glossary-eephus',
         'reputable-analysis',
         { note: 'Synthesis of the MLB glossary\'s timing-disruption framing and the gravity-driven trajectory.' },
@@ -148,15 +129,13 @@ export const eephus: PitchAtlasEntry = {
 
   motion: {
     // The eephus carries ordinary backspin (small +x -> slight ride), but it is
-    // thrown so slow that gravity, not Magnus, shapes its huge arc. We show a small
-    // positive IVB from the backspin and no horizontal; the rainbow arc itself is
-    // outside what an induced-break plot can draw. magnusForceRender.y = axis.x > 0
-    // matches the positive IVB.
+    // thrown so slow that gravity, not Magnus, shapes its huge arc. verticalShape
+    // 'ride' reflects that faint backspin lift; the rainbow arc itself is outside
+    // what an induced-shape plot can draw. magnusForceRender.y = axis.x > 0.
     spinAxis: { x: 0.3, y: 0, z: 0.95 },
     forceLabel: 'Backspin, but gravity wins',
     gyro: false,
-    ivbInches: 2,
-    horizontalInches: 0,
+    verticalShape: 'ride',
     horizontalDir: 'none',
     breakView: 'movement',
   },
@@ -167,40 +146,42 @@ export const eephus: PitchAtlasEntry = {
     specimenNo: '12',
     heroSub: 'The rainbow.',
     heroIntro:
-      'Lob it. The eephus floats in on a high arc at half a fastball\'s speed, peaking well above the batter before dropping into the zone — a pitch whose only weapon is time. The easiest pitch in baseball to hit, and one of the hardest to time.',
+      'Lob it. The eephus floats in on a high arc at a fraction of fastball pace, peaking well above the batter before dropping into the zone — a pitch whose only weapon is time. The easiest pitch in baseball to hit, and one of the hardest to time.',
     foundationCaption: 'It carries normal backspin, but thrown this slow, gravity — not spin — shapes the giant arc the plot cannot draw.',
     mastersIntro:
-      'Two eephus throwers, eighty years apart: the man who invented it and the modern artist who still dares it. The visual is our own seam schematic; the pre-tracking figures are descriptive estimates, labeled as such.',
+      'Two eephus throwers, eighty years apart: the man who invented it and the modern artist who still dares it. The visual is our own seam schematic; what sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
     {
       tier: 'verified-attributed',
       pitcher: 'Rip Sewell',
-      context: 'The originator. His "folly floater" was a wartime novelty that became a genuine weapon — until the one man who solved it did so on the biggest stage.',
+      context: 'The originator. His "folly floater," born in wartime, became a genuine weapon — until the one man who solved it did so on the biggest stage.',
       verifiedPro: false,
-      numbers: [
-        { label: 'Arc apex', claim: claim('~25 ft', 'tht-sewell-eephus', 'reputable-analysis', { approximate: true, note: 'The peak between mound and plate, per The New Dickson Baseball Dictionary.' }) },
-        { label: 'Velocity', claim: claim('low 40s mph', 'tht-sewell-eephus', 'reputable-analysis', { approximate: true, note: 'At its slowest; a pre-tracking estimate.' }) },
-        { label: 'First documented use', claim: claim('June 1, 1943', 'wiki-eephus', 'reputable-analysis', { note: 'Against the Boston Braves at Forbes Field.' }) },
-        { label: 'Williams 1946 HR', claim: claim('380 ft', 'tht-sewell-eephus', 'reputable-analysis', { note: 'Ted Williams stepped forward and homered off it in the 1946 All-Star Game — the only home run ever hit off the pitch.' }) },
-      ],
+      distinction: claim(
+        'The towering wartime original — a sky-high rainbow that hitters of the era simply could not handle, until Ted Williams stepped forward and homered off it in the 1946 All-Star Game, the only home run ever hit off the pitch.',
+        'tht-sewell-eephus',
+        'reputable-analysis',
+        { note: 'The Sewell origin and the lone Williams home run are documented in The Hardball Times — sourced biography, not pitch behavior.' },
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Zack Greinke',
-      context: 'The modern keeper of the flame: a cerebral pitcher who will drop a 50-something-mph eephus into the zone when the moment calls for it — even when he did not quite plan to.',
+      context: 'The modern keeper of the flame: a cerebral pitcher who will drop an eephus into the zone when the moment calls for it — even when he did not quite plan to.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Slowest strike', claim: claim('53.5 mph', 'mlb-greinke-54', 'reputable-analysis', { note: '2020, landed in the zone to Trent Grisham.' }) },
-        { label: 'Era context', claim: claim('52.5 mph', 'mlb-greinke-54', 'reputable-analysis', { note: 'Henderson Alvarez\'s 2017 called strike, the slowest-by-a-pitcher mark Greinke approached.' }) },
-      ],
+      distinction: claim(
+        'The thinking man\'s version — a crawling lob dropped in for a called strike, slower than anything the modern game expects, deployed with a chess player\'s timing rather than as a novelty.',
+        'mlb-greinke-54',
+        'reputable-analysis',
+        { note: 'Greinke\'s called-strike eephus, paraphrased from MLB.com as feel and timing rather than a speed figure.' },
+      ),
       quote: claim(
         "It definitely wasn't planned. It worked out, but, hopefully, I don't do that again anymore.",
         'mlb-greinke-54',
         'pitcher-own-words',
-        { note: 'Greinke on his 53.5 mph eephus, 2020.' },
+        { note: 'Greinke on his eephus called strike.' },
       ),
       rights: 'original',
     },
@@ -216,7 +197,7 @@ export const eephus: PitchAtlasEntry = {
 
   guide: {
     family: 'The lob',
-    tagline: 'A high, slow rainbow at half a fastball\'s speed — its only weapon is throwing off a hitter\'s timing.',
+    tagline: 'A high, slow rainbow at a crawl — its only weapon is throwing off a hitter\'s timing.',
     feel: 'Lob it on a high arc with way less arm speed than a fastball. Aim to peak above the batter and drop it into the top of the zone.',
     steps: [
       'Take any ordinary grip — a fastball or curve hold is fine.',
@@ -227,7 +208,7 @@ export const eephus: PitchAtlasEntry = {
     does: {
       headline: 'It floats in so slowly that timing falls apart.',
       plain:
-        'An eephus is a giant, slow rainbow — lobbed in at maybe half the speed of a fastball. It does not dart or dive; it just hangs in the air much longer than a hitter expects, then drops into the zone. A batter geared up for 95 has to wait, and waiting is the hardest thing to do at the plate.',
+        'An eephus is a giant, slow rainbow — lobbed in at a fraction of fastball pace. It does not dart or dive; it just hangs in the air much longer than a hitter expects, then drops into the zone. A batter geared up for heat has to wait, and waiting is the hardest thing to do at the plate.',
     },
   },
 

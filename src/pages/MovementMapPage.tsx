@@ -10,11 +10,11 @@ import { MovementMap } from '../components/sections/MovementMap'
 */
 export function MovementMapPage() {
   useSeoMeta({
-    title: `The movement map: every pitch on one quadrant | ${SITE.siteName}`,
+    title: `The shape map: every pitch by direction | ${SITE.siteName}`,
     description:
-      "Every filed pitch on one catcher's-eye quadrant — induced vertical break against horizontal break — with a right-handed / left-handed mirror. The classic movement chart, aggregated and sourced.",
-    ogTitle: `The movement map | ${SITE.siteName}`,
-    ogDescription: 'Every filed pitch on one quadrant. Sourced, not corrected.',
+      "Every filed pitch on one catcher's-eye field by shape language: ride, drop, arm-side run, and glove-side sweep.",
+    ogTitle: `The shape map | ${SITE.siteName}`,
+    ogDescription: 'Every filed pitch by direction and character. Sourced, not corrected.',
     ogUrl: `${SITE.canonicalDomain}/movement-map`,
   })
 
@@ -22,13 +22,13 @@ export function MovementMapPage() {
     <>
       <SectionHero
         breadcrumb={
-          <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Movement map' }]} />
+          <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Shape map' }]} />
         }
-        eyebrow="The quadrant"
-        title="Every pitch, on one quadrant."
+        eyebrow="The shape map"
+        title="Every pitch, by direction."
         sub={
           <>
-            One catcher's-eye chart: how much each filed pitch rides or drops, and how much it runs or
+            One catcher's-eye field: whether each filed pitch rides or drops, and whether it runs or
             sweeps, against a spinless ball at center. Flip the handedness to see the mirror — a slider runs
             the other way for the other arm.
           </>
@@ -39,9 +39,8 @@ export function MovementMapPage() {
         <div className="mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-16">
           <MovementMap />
           <p className="mt-10 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-            A schematic scaled from each pitch's sourced break figures, not a measured trajectory. The
-            break numbers live on each specimen page with their sources; this view only arranges them. To
-            read the axes — what ride, drop, run, and sweep mean and why a tilt of the spin axis produces
+            A schematic arranged by each pitch's sourced shape language, not a measured trajectory. To
+            read the poles — what ride, drop, run, and sweep mean and why a tilt of the spin axis produces
             them — see{' '}
             <a href="/learn/spin" className="text-cyan underline-offset-2 hover:underline">
               Spin &amp; Movement

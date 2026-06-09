@@ -45,38 +45,38 @@ export const canonWing: KnowledgeWing = {
       heading: "Biomechanics, Injury Prevention, and the Modern Scientific Foundation",
       paragraphs: [
         "The American Sports Medicine Institute (ASMI), founded in 1987 by orthopedic surgeon Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, provides the evidence-based foundation for injury prevention in pitching. ASMI's research uses video analysis and computer modeling to quantify the forces acting on the shoulder, elbow, and trunk during the throwing motion. Their findings identify overuse and poor mechanics as the twin engines of injury in young pitchers.",
-        "ASMI's Position Statement for Adolescent Baseball Pitchers establishes clear thresholds: no overhead throwing for 2–3 months per year (4 months preferred), no more than 100 innings per calendar year, and a strict emphasis on learning fastball mechanics before introducing breaking pitches. This framework has been incorporated into MLB's Pitch Smart program, which sets age-specific pitch counts and mandatory rest periods for ages 7–22.",
+        "ASMI's Position Statement for Adolescent Baseball Pitchers establishes clear thresholds: no overhead throwing for 2–3 months per year (4 months preferred), no more than 100 innings per calendar year, and a strict focus on learning fastball mechanics before introducing breaking pitches. This framework has been incorporated into MLB's Pitch Smart program, which sets age-specific pitch counts and mandatory rest periods for ages 7–22.",
         "Driveline Baseball and Tread Athletics represent the modern analytical and biomechanical coaching frontier. Both organizations employ motion capture technology and detailed mechanical analysis to quantify individual pitcher mechanics and validate coaching cues. Driveline has demonstrated that pitching development can be measured, systematized, and optimized through high-level biomechanical analysis.",
       ],
       claims: [
         kc("ASMI was founded in 1987 by Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, employing video and computer analysis to study throwing mechanics and injury risk factors.", "official-data", { label: "American Sports Medicine Institute research", url: "https://en.wikipedia.org/wiki/American_Sports_Medicine_Institute" }),
-        kc("ASMI's Position Statement for Adolescent Baseball Pitchers recommends 2–3 months minimum (4 months preferred) without overhead throwing annually and maximum 100 innings per calendar year, with emphasis on learning fastball mechanics before breaking pitches.", "official-data", { label: "ASMI Position Statement for Adolescent Baseball Pitchers", url: "https://asmi.org/position-statement-for-adolescent-baseball-pitchers/" }),
+        kc("ASMI's Position Statement for Adolescent Baseball Pitchers recommends 2–3 months minimum (4 months preferred) without overhead throwing annually and maximum 100 innings per calendar year, with a focus on learning fastball mechanics before breaking pitches.", "official-data", { label: "ASMI Position Statement for Adolescent Baseball Pitchers", url: "https://asmi.org/position-statement-for-adolescent-baseball-pitchers/" }),
         kc("MLB's Pitch Smart program sets age-appropriate pitch count limits and mandatory rest periods for pitchers ages 7–22 based on ASMI research and recommendations.", "official-data", { label: "MLB.com Pitch Smart", url: "https://www.mlb.com/pitch-smart/pitching-guidelines" }),
         kc("Driveline Baseball employs markered and markerless motion capture, Rapsodo, and Trackman for biomechanical analysis and has conducted research on the interaction of command and mechanics in pitching.", "reputable-analysis", { label: "Driveline Baseball Research", url: "https://www.drivelinebaseball.com/pitching-research-biomechanics/" }),
       ],
     },
     {
-      heading: "Data-Driven Pitch Analysis: From Statcast to Stuff+, Location+, and Beyond",
+      heading: "Data-Driven Pitch Analysis: From Statcast to Model Language",
       paragraphs: [
-        "Baseball Savant (MLB.com's Statcast platform) provides the official data layer for modern pitching analysis. Statcast tracks pitch velocity, spin rate, spin axis, release point, movement (induced vertical break and horizontal break), and extension for every pitch thrown in Major League Baseball. This data feeds into proprietary models developed by FanGraphs, Baseball Prospectus, and internal MLB analytics teams.",
-        "FanGraphs measures pitch quality using metrics derived from Statcast data including velocity, movement shape, and location consistency—these form the foundation of their Stuff+, Location+, and Pitching+ frameworks. Pitchers with high ratings on these scales tend to generate strikeout-to-walk ratios higher than expected, suggesting that consistency and repeatability are themselves competitive advantages.",
+        "Baseball Savant, MLB.com's Statcast platform, provides the official public data layer for modern pitching analysis. It gives analysts a shared language for release, shape, location, and pitch identity. Pitch Atlas treats that language as source context, not as permission to publish fabricated measurements for untracked grips.",
+        "FanGraphs, Baseball Prospectus, and team analysts build model language on top of that tracked data. Those models can sharpen scouting questions, but they do not replace the grip story: how the ball is held, how it leaves the hand, and what shape the pitcher is trying to create.",
         "Baseball Prospectus developed StuffPro and PitchPro metrics using machine learning to grade pitch characteristics and contextual effectiveness, quantifying pitch value from the batter's perspective across release, decision point, and plate location. This represents a shift from pure biomechanics to situational, hitter-focused pitch design.",
       ],
       claims: [
-        kc("Baseball Savant (baseballsavant.mlb.com) is MLB.com's official Statcast platform tracking pitch velocity, spin rate, spin axis, release point, and movement (IVB and HB) for all MLB pitches.", "official-data", { label: "MLB.com Statcast Glossary", url: "https://www.mlb.com/glossary/statcast" }),
-        kc("FanGraphs measures pitch quality using Stuff+, Location+, and Pitching+ metrics derived from Statcast data; pitchers with elite grades show higher-than-expected strikeout-to-walk ratios.", "reputable-analysis", { label: "FanGraphs Library - Pitcher Evaluation Tools", url: "https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" }),
+        kc("Baseball Savant is MLB.com's official Statcast platform and public reference layer for modern pitch data.", "official-data", { label: "MLB.com Statcast Glossary", url: "https://www.mlb.com/glossary/statcast" }),
+        kc("FanGraphs publishes Stuff+, Location+, and Pitching+ as model language derived from public pitch data and context.", "reputable-analysis", { label: "FanGraphs Library - Pitcher Evaluation Tools", url: "https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" }),
         kc("Baseball Prospectus developed StuffPro and PitchPro metrics using machine learning to grade individual pitch characteristics and contextual effectiveness, quantifying pitch value from the batter's perspective.", "reputable-analysis", { label: "Baseball Prospectus - StuffPro, PitchPro introduction", url: "https://www.baseballprospectus.com/news/article/89245/stuffpro-pitchpro-introduction-new-pitch-metrics-bp/" }),
       ],
     },
     {
       heading: "Scouting, Evaluation, and the Integration of Data and Judgment",
       paragraphs: [
-        "Baseball America uses the 20–80 scouting scale to grade pitcher tools, where fastball grades depend on velocity, command, and life (movement)—not velocity alone. A 100 mph fastball with pedestrian movement may grade lower than a 97 mph fastball with elite shape. This framework acknowledges that what matters is not the raw attribute but its application under game conditions.",
+        "Baseball America uses the traditional scouting scale to grade pitcher tools, where fastball grades depend on power, command, and life, not raw force alone. A harder fastball with ordinary shape may grade lower than a livelier pitch that plays better in games. This framework acknowledges that what matters is not the raw attribute but its application under game conditions.",
         "Modern scouting integrates Statcast data, video review, and personal observation. Scout credentialing—the ability to identify talent before validation at high levels—remains grounded in pattern recognition, biomechanical literacy, and competitive judgment. Baseball America's scouting reports synthesize input from hundreds of scouts and front-office personnel.",
         "The tension between scouting and analytics has resolved into synthesis: data validates what good scouts observe (mechanics consistency, pitch extension, sequencing intelligence), and scouts contextualize what data cannot explain (competitive fire, adjustability). Modern pitching coaches operate fluidly across philosophy, psychology, biomechanics, and analytics—this is the canon in practice.",
       ],
       claims: [
-        kc("Baseball America uses the 20–80 scouting scale to grade pitcher tools; fastball grades depend on velocity, command, and life (movement), not velocity alone.", "reputable-analysis", { label: "Baseball America - Explaining the 20-80 Scouting Scale", url: "https://www.baseballamerica.com/stories/explaining-the-20-80-baseball-scouting-scale/" }),
+        kc("Baseball America uses the traditional scouting scale to grade pitcher tools, with fastball reads depending on power, command, and life rather than raw power alone.", "reputable-analysis", { label: "Baseball America - Explaining the Scouting Scale", url: "https://www.baseballamerica.com/stories/explaining-the-20-80-baseball-scouting-scale/" }),
         kc("Baseball America's scouting reports integrate input from hundreds of MLB scouts, coaches, and front-office personnel to aggregate industry evaluation of pitching prospects.", "reputable-analysis", { label: "Baseball America - 2026 Top 100 Prospects methodology", url: "https://www.baseballamerica.com/rankings/2026-top-100-prospects/" }),
       ],
     },
@@ -86,6 +86,6 @@ export const canonWing: KnowledgeWing = {
     { label: "Pitch mechanics fundamentals", to: "/learn/mechanics" },
     { label: "Pitch design and sequencing", to: "/learn/pitch-design" },
     { label: "Arm health and injury prevention", to: "/learn/arm-health" },
-    { label: "Modern metrics and evaluation", to: "/learn/metrics" },
+    { label: "Reading models", to: "/learn/metrics" },
   ],
 }

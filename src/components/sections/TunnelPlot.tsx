@@ -12,18 +12,18 @@ import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
   the gap between those endpoints (the late separation the hitter must cover after
   committing) measured in inches.
 
-  Honesty line: the two endpoints are each pitch's sourced induced-vertical and
-  horizontal break — real figures from the specimen records. The tunnel window and
-  the connecting flight paths are an explicit schematic of the shared-release idea,
-  not a measured trajectory. Handedness is a mirror, not new data: the toggle flips
-  which physical side "arm-side" lands on and relabels the poles.
+  Honesty line: each endpoint sits in the DIRECTION that pitch breaks — no measured
+  magnitude. The tunnel window and the connecting flight paths are an explicit schematic
+  of the shared-release idea. Handedness is a mirror, not new data: the toggle flips which
+  physical side "arm-side" lands on and relabels the poles.
 */
 
 const W = 520
 const H = 470
 const CX = W / 2
 const CY = H / 2 + 18
-const PX_PER_IN = 8.0
+const COL = 130 // horizontal direction offset
+const ROW = 118 // vertical direction offset
 const CLAMP = 178
 // the shared tunnel window sits a touch above the spinless center: where two
 // well-tunneled pitches still look like one pitch out of the hand.
@@ -35,31 +35,26 @@ const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
   offspeed: { label: 'Offspeed', color: '#7CFF52' },
 }
 
-function clamp(n: number): number {
-  return Math.max(-CLAMP, Math.min(CLAMP, n))
-}
-
 interface Spot {
   entry: PitchAtlasEntry
   x: number
   y: number
-  /** unclamped break in inches, for the separation math */
-  hIn: number
-  vIn: number
 }
 
-function plot(entry: PitchAtlasEntry, handFactor: number): Spot {
+function shapeWords(entry: PitchAtlasEntry): string {
+  const m = entry.motion
+  const v = m.verticalShape === 'ride' ? 'rides' : m.verticalShape === 'drop' ? 'drops' : 'holds flat'
+  const h =
+    m.horizontalDir === 'arm-side' ? 'runs arm-side' : m.horizontalDir === 'glove-side' ? 'sweeps glove-side' : 'stays true'
+  return `${v}, ${h}`
+}
+
+function plot(entry: PitchAtlasEntry, handFactor: number, nudge: number): Spot {
   const m = entry.motion
   const hSign = m.horizontalDir === 'arm-side' ? 1 : m.horizontalDir === 'glove-side' ? -1 : 0
-  const hIn = m.horizontalInches * hSign * handFactor
-  const vIn = m.ivbInches
-  return {
-    entry,
-    x: CX + clamp(hIn * PX_PER_IN),
-    y: CY + clamp(-vIn * PX_PER_IN),
-    hIn,
-    vIn,
-  }
+  const x = CX + hSign * handFactor * COL + nudge
+  const y = CY + (m.verticalShape === 'ride' ? -ROW : m.verticalShape === 'drop' ? ROW : 0)
+  return { entry, x: Math.max(CX - CLAMP, Math.min(CX + CLAMP, x)), y }
 }
 
 export function TunnelPlot() {
@@ -72,15 +67,11 @@ export function TunnelPlot() {
   const b = useMemo(() => PITCHES.find((p) => p.display.slug === bSlug) ?? PITCHES[1], [bSlug])
   const same = a.display.slug === b.display.slug
 
-  const sa = useMemo(() => plot(a, handFactor), [a, handFactor])
-  const sb = useMemo(() => plot(b, handFactor), [b, handFactor])
-
-  // Late separation at the plate: euclidean distance between the two sourced
-  // break vectors. This is real — both vectors come from the specimen records.
-  const sepIn = useMemo(
-    () => Math.hypot(sa.hIn - sb.hIn, sa.vIn - sb.vIn),
-    [sa, sb],
-  )
+  // nudge A and B apart slightly when they break the same direction, so both read.
+  const sameCell =
+    a.motion.verticalShape === b.motion.verticalShape && a.motion.horizontalDir === b.motion.horizontalDir
+  const sa = useMemo(() => plot(a, handFactor, sameCell ? -34 : 0), [a, handFactor, sameCell])
+  const sb = useMemo(() => plot(b, handFactor, sameCell ? 34 : 0), [b, handFactor, sameCell])
 
   const rightPole = hand === 'RHP' ? 'ARM' : 'GLOVE'
   const leftPole = hand === 'RHP' ? 'GLOVE' : 'ARM'
@@ -158,9 +149,7 @@ export function TunnelPlot() {
         role="img"
         aria-label={`Tunnel plot comparing a ${a.display.shortName} and a ${b.display.shortName} from a ${
           hand === 'RHP' ? 'right' : 'left'
-        }-handed pitcher. Both share a tunnel window near center and separate to their own break locations, about ${sepIn.toFixed(
-          0,
-        )} inches apart at the plate. A schematic: the endpoints are sourced break figures, the shared paths illustrate the tunnel.`}
+        }-handed pitcher. Both share a tunnel window near center, then split toward how each one breaks: the ${a.display.shortName} ${shapeWords(a)}, the ${b.display.shortName} ${shapeWords(b)}. A schematic of direction, not a measured magnitude.`}
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* axis guides */}
@@ -188,17 +177,18 @@ export function TunnelPlot() {
             <path d={pathA} fill="none" stroke={colorA} strokeWidth="2" opacity="0.7" />
             <path d={pathB} fill="none" stroke={colorB} strokeWidth="2" opacity="0.7" />
 
-            {/* the late-separation gap */}
+            {/* the late split: the gap the hitter must cover after committing */}
             <line x1={sa.x} y1={sa.y} x2={sb.x} y2={sb.y} stroke="var(--color-seam)" strokeWidth="1.3" strokeDasharray="4 3" />
             <text
               x={(sa.x + sb.x) / 2 + 8}
               y={(sa.y + sb.y) / 2 - 6}
               fill="var(--color-seam)"
               fontFamily="var(--font-mono)"
-              fontSize="11"
+              fontSize="9"
+              letterSpacing="1.5"
               fontWeight="600"
             >
-              {sepIn.toFixed(0)} in
+              LATE SPLIT
             </text>
 
             {/* endpoints */}
@@ -223,21 +213,15 @@ export function TunnelPlot() {
         <div className="grid gap-px overflow-hidden rounded-sm border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.12)] sm:grid-cols-3">
           <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
             <p className="mono-label" style={{ color: colorA }}>{a.display.shortName}</p>
-            <p className="mt-1 text-sm text-ink-2">
-              {a.motion.ivbInches >= 0 ? '+' : ''}{a.motion.ivbInches}&Prime; vert · {a.motion.horizontalInches}&Prime;{' '}
-              {a.motion.horizontalDir === 'none' ? '' : a.motion.horizontalDir}
-            </p>
+            <p className="mt-1 text-sm capitalize text-bone-2">{shapeWords(a)}</p>
           </div>
           <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
-            <p className="mono-label text-seam">Separation at the plate</p>
-            <p className="font-athletic mt-1 text-2xl uppercase text-bone tabular-nums">{sepIn.toFixed(0)} in</p>
+            <p className="mono-label text-seam">The late split</p>
+            <p className="mt-1 text-sm text-bone-2">Same window out of the hand, then each breaks its own way.</p>
           </div>
           <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
             <p className="mono-label" style={{ color: colorB }}>{b.display.shortName}</p>
-            <p className="mt-1 text-sm text-ink-2">
-              {b.motion.ivbInches >= 0 ? '+' : ''}{b.motion.ivbInches}&Prime; vert · {b.motion.horizontalInches}&Prime;{' '}
-              {b.motion.horizontalDir === 'none' ? '' : b.motion.horizontalDir}
-            </p>
+            <p className="mt-1 text-sm capitalize text-bone-2">{shapeWords(b)}</p>
           </div>
         </div>
       ) : null}

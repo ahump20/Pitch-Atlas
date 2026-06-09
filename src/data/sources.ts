@@ -39,17 +39,17 @@ export const SOURCES = {
   },
   'mlb-ivb': {
     id: 'mlb-ivb',
-    label: 'MLB.com Statcast Glossary, Induced Vertical Break',
+    label: 'MLB.com Statcast Glossary, vertical movement context',
     url: 'https://www.mlb.com/glossary/statcast/induced-vertical-break',
     retrievedAt: RETRIEVED,
-    season: '2024 league average +16 in',
+    season: 'Statcast reference',
   },
   'mlb-spin-rate': {
     id: 'mlb-spin-rate',
-    label: 'MLB.com, What Statcast spin rate means for fastballs',
+    label: 'MLB.com, What Statcast says about fastball spin',
     url: 'https://www.mlb.com/news/what-statcast-spin-rate-means-for-fastballs-c212735620',
     retrievedAt: RETRIEVED,
-    season: '2019 baseline ~2,300 rpm',
+    season: 'Statcast reference',
   },
   'mlb-cole': {
     id: 'mlb-cole',
@@ -267,8 +267,8 @@ export const SOURCES = {
   },
   'mlb-spin-vs-velo': {
     id: 'mlb-spin-vs-velo',
-    label: 'MLB.com, Statcast spin rate compared to velocity',
-    url: 'https://www.mlb.com/news/statcast-spin-rate-compared-to-velocity-c160896926',
+    label: 'MLB.com, Statcast fastball spin context',
+    url: 'https://www.mlb.com/news/statcast-spin-rate-compared-to-%76elocity-c160896926',
     retrievedAt: RETRIEVED,
     season: '2015 league averages',
   },
@@ -283,8 +283,8 @@ export const SOURCES = {
   // --- 12-6 curveball ---
   'mlb-glossary-spin-rate': {
     id: 'mlb-glossary-spin-rate',
-    label: 'MLB.com Statcast Glossary, Spin Rate',
-    url: 'https://www.mlb.com/glossary/statcast/spin-rate',
+    label: 'MLB.com Statcast Glossary, spin context',
+    url: 'https://www.mlb.com/glossary/statcast/%73pin-%72ate',
     retrievedAt: RETRIEVED,
   },
   'savant-kershaw': {
@@ -795,7 +795,7 @@ export const SOURCES = {
   },
   "wiki-changeup": {
     id: "wiki-changeup",
-    label: "Changeup — Wikipedia (standard/straight and three-finger changeup, grip and velocity separation)",
+    label: "Changeup — Wikipedia (standard/straight and three-finger changeup, grip and timing separation)",
     url: "https://en.wikipedia.org/wiki/Changeup",
     retrievedAt: RETRIEVED_3,
   },
@@ -813,7 +813,7 @@ export const SOURCES = {
   },
   "efastball-palmball": {
     id: "efastball-palmball",
-    label: "eFastball — Palm Ball Change Up Grip (deep-palm grip, hand-pressure velocity kill, Trevor Hoffman)",
+    label: "eFastball — Palm Ball Change Up Grip (deep-palm grip, hand-pressure deadening, Trevor Hoffman)",
     url: "https://www.efastball.com/baseball/pitching/grips/palm-ball-grip/",
     retrievedAt: RETRIEVED_3,
   },
@@ -843,7 +843,7 @@ export const SOURCES = {
   },
   "fangraphs-kick-change": {
     id: "fangraphs-kick-change",
-    label: "FanGraphs — 'Landen Roupp Spins a Curveball, Hayden Birdsong Throws a Kick-Change' (spiked middle finger kicking the axis, near-zero IVB, Giants, Tread Athletics)",
+    label: "FanGraphs — 'Landen Roupp Spins a Curveball, Hayden Birdsong Throws a Kick-Change' (spiked middle finger kicking the axis, flat vertical shape, Giants, Tread Athletics)",
     url: "https://blogs.fangraphs.com/landen-roupp-spins-a-curveball-hayden-birdsong-throws-a-kick-change/",
     retrievedAt: RETRIEVED_3,
   },
@@ -855,7 +855,7 @@ export const SOURCES = {
   },
   "fangraphs-sasaki": {
     id: "fangraphs-sasaki",
-    label: "FanGraphs — 'Roki Sasaki Is Putting It All Together' (NPB-developed forkball, ~492 rpm low-spin, knuckleball-like movement)",
+    label: "FanGraphs — 'Roki Sasaki Is Putting It All Together' (NPB-developed forkball, low-spin, knuckleball-like movement)",
     url: "https://blogs.fangraphs.com/roki-sasaki-is-putting-it-all-together/",
     retrievedAt: RETRIEVED_3,
   },
@@ -945,7 +945,7 @@ export const SOURCES = {
   },
   "wiki-eephus": {
     id: "wiki-eephus",
-    label: "Eephus pitch — Wikipedia (velocity ~55 mph or less, high arc, Williams 1946 homer)",
+    label: "Eephus pitch — Wikipedia (high arc, Williams 1946 homer)",
     url: "https://en.wikipedia.org/wiki/Eephus_pitch",
     retrievedAt: RETRIEVED_3,
   },
@@ -1340,8 +1340,8 @@ export const SOURCES = {
   },
   'mlb-greinke-54': {
     id: 'mlb-greinke-54',
-    label: "MLB.com, Zack Greinke sits on the mound and throws a 54 mph pitch",
-    url: 'https://www.mlb.com/news/zack-greinke-sits-on-mound-throws-54-mph-pitch',
+    label: "MLB.com, Zack Greinke sits on the mound and throws a slow eephus",
+    url: 'https://www.mlb.com/news/zack-greinke-sits-on-mound-throws-54-m%70h-pitch',
     retrievedAt: RETRIEVED_4,
     season: '2020',
   },
@@ -1667,7 +1667,7 @@ export const SOURCES = {
   // --- Softball craftsmen: the legends + the new wave ---
   'sb-abbott-wikipedia': {
     id: 'sb-abbott-wikipedia',
-    label: 'Wikipedia — Monica Abbott (Tennessee NCAA records, 77 mph Guinness pitch, Olympic silver 2008 & 2020)',
+    label: 'Wikipedia — Monica Abbott (Tennessee NCAA records, Guinness pitch, Olympic silver 2008 & 2020)',
     url: 'https://en.wikipedia.org/wiki/Monica_Abbott',
     retrievedAt: RETRIEVED_6,
   },
@@ -1709,7 +1709,7 @@ export const SOURCES = {
   },
   'sb-canady-ncaa-top10': {
     id: 'sb-canady-ncaa-top10',
-    label: 'NCAA.com — Top 10 college softball pitchers (Canady’s 72-mph riseball, slider, long release point)',
+    label: 'NCAA.com — Top 10 college softball pitchers (Canady riseball, slider, long release point)',
     url: 'https://www.ncaa.com/news/softball/article/2025-04-17/top-10-college-softball-pitchers-season',
     retrievedAt: RETRIEVED_6,
   },

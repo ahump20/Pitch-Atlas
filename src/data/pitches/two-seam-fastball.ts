@@ -6,15 +6,13 @@ import { sharedSeam } from './_shared-seam'
 /*
   The two-seam fastball / sinker. The four-seam movement opposite: the same arm,
   the axis tilted toward the throwing hand, ride traded for arm-side run and sink.
-  Every number traces to the registry. Where a figure is rounded, era- or
-  method-dependent, it carries `approximate`. Grip prose is paraphrased from
-  Driveline, never copied. No player image, no likeness.
+  This is the craft of the grip, not a gauge. Movement is read as shape — a
+  direction and a character — never as a measured number. Grip prose is
+  paraphrased from Driveline, never copied. No player image, no likeness.
 
-  Authored against an independent verification pass. Two corrections it forced:
-  the Logan Webb sinker induced vertical break is about 1.1 in (his ~15 in figure
-  is arm-side run, not ride), and the Clay Holmes 28.2 degree axis deviation is
-  sourced to the analysis that actually reports it, with his velocity labeled to
-  the season it belongs to.
+  The read: the seams, run along instead of across, tilt the ball away from pure
+  backspin. The ball gives up the four-seam's ride, runs hard toward the throwing
+  arm, and finishes at the knees. Thrown low, it turns barrels into ground balls.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -72,17 +70,17 @@ export const twoSeam: PitchAtlasEntry = {
     name: 'Two-seam fastball',
     family: 'fastball',
     grip: claim(
-      'Index and middle fingers run along the pair of narrow seams that sit close together, rather than across the horseshoe. That orientation tilts the spin off pure backspin and trades ride for arm-side run and sink.',
+      'Index and middle fingers run along the pair of narrow seams that sit close together, rather than across the horseshoe. That orientation tilts the ball away from pure backspin and trades ride for arm-side run and sink.',
       'driveline-sinker',
       'reputable-analysis',
       { note: 'Paraphrased from Driveline, not quoted.' },
     ),
     gripDetails: [
       claim(
-        'The standard Driveline two-seam grip lays the index and middle fingers on the two close seams, thumb underneath or slightly off-center, ring finger steadying the side. It is the baseline they reach for about three-quarters of the time.',
+        'The standard Driveline two-seam grip lays the index and middle fingers on the two close seams, thumb underneath or slightly off-center, ring finger steadying the side. It is the baseline grip most arms reach for first.',
         'driveline-sinker',
         'reputable-analysis',
-        { note: 'Paraphrased. The FT 1 label and the roughly 75 percent usage come from Driveline.' },
+        { note: 'Paraphrased. Driveline labels this the default two-seam family and the one most pitchers default to.' },
       ),
       claim(
         'For a sinker specifically, the index finger often shifts slightly inward while keeping seam contact, biasing the release toward side-spin and diving action over balanced backspin-and-run.',
@@ -91,10 +89,10 @@ export const twoSeam: PitchAtlasEntry = {
         { note: 'Paraphrased.' },
       ),
       claim(
-        'The most extreme movers ride a single seam: a one-seam grip that orients the leather to bend the airflow itself, adding run and sink beyond what spin alone predicts. Driveline found 12 of the 20 largest seam-shifted-wake movers threw a one-seam sinker.',
+        'The most extreme movers ride a single seam: a one-seam grip that orients the leather to bend the airflow itself, adding run and sink beyond what the spin alone would suggest. Most of the biggest seam-shifted-wake movers Driveline studied were throwing a one-seam sinker.',
         'driveline-ssw',
         'reputable-analysis',
-        { approximate: true, note: 'Paraphrased. The 12-of-20 figure is from the Driveline 2020 analysis of the largest axis-deviation pitchers.' },
+        { note: 'Paraphrased. The one-seam grip dominated Driveline\'s study of the largest axis-deviation pitchers.' },
       ),
     ],
     fingerPlacement,
@@ -107,42 +105,17 @@ export const twoSeam: PitchAtlasEntry = {
     ),
     physics: {
       spinAxis: claim(
-        'Backspin tilted toward the throwing arm, around a 1:30 to 2:30 clock for a right-hander versus near 12:00 for a four-seam. Less of the spin converts to lift, so the ball rides less and sinks.',
+        'Backspin tilted toward the throwing arm, the axis rolled off the four-seam\'s near-vertical toward the hand. Less of the spin lifts the ball, so it rides less and sinks. Mirror the tilt for a left-hander.',
         'driveline-sinker',
         'reputable-analysis',
-        { approximate: true, note: 'General range; mirror it for a left-hander. Valdez re-oriented his to about 10:45 in 2024 by dropping his arm angle near 43 degrees.' },
+        { note: 'General orientation, not a measured axis. A lower arm slot leans the tilt further; Valdez re-oriented his by dropping his arm angle.' },
       ),
-      spinRateRpm: claim(
-        '1,900 to 2,250 rpm for elite arms. Webb spins about 1,939, Valdez about 2,150. The point is not high spin; sinkers are often thrown with less spin to keep the ball down.',
-        'savant-webb',
+      shape: claim(
+        'Hard arm-side run with late sink, finishing at the knees. It gives up the four-seam\'s ride and tails toward the throwing hand instead, so it appears to dive by comparison and rolls bats over into the ground. The extreme movers run on the seams, bending later than the spin alone would suggest.',
+        'savant-valdez',
         'official-data',
-        { approximate: true, note: 'Webb 1,939 rpm and Valdez about 2,150 rpm from Savant; the band is a rounded characterization, not a rule.' },
+        { note: 'Described as shape, not a measured break. The MLB glossary defines the sinker qualitatively by hard downward and arm-side movement; it sets no benchmark.' },
       ),
-      activeSpinPct: claim(
-        'Lower effective lift, by design. Valdez sat near 79 percent active spin in 2024; the axis tilt and any gyro or seam component point less of the force straight up.',
-        'pitcherlist-valdez',
-        'reputable-analysis',
-        { approximate: true, note: 'Lowering it in 2024 dropped his induced vertical break to about 6.3 in and restored the ground-ball bite.' },
-      ),
-      primaryBreak: {
-        label: 'Arm-side run',
-        accent: true,
-        claim: claim(
-          'Strong arm-side run is the signature. Framber Valdez runs about 15.5 to 16 inches toward his arm side, well beyond a typical sinker.',
-          'savant-valdez',
-          'official-data',
-          { approximate: true, note: 'Savant arm-side horizontal break across 2024 to 2026. The MLB glossary defines the sinker qualitatively by hard downward and arm-side movement; it sets no inch benchmark.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Induced vertical break',
-        claim: claim(
-          'Far below a four-seam. The Webb sinker induces only about 1 inch of ride; it does not drop more than gravity, it just rides far less than a backspinning four-seam, so it sinks by comparison.',
-          'savant-webb',
-          'official-data',
-          { approximate: true, note: 'Webb 2024 induced vertical break is about 1.1 in (his ~15 in figure is arm-side run, not ride). Total drop including gravity is about 31 in.' },
-        ),
-      },
       teaching: claim(
         'A four-seam rides because near-pure backspin points the Magnus force straight up. A sinker tilts that axis toward the arm and throws in less efficient spin, so the force points up and sideways instead. The ball rides less, runs toward the arm, and finishes low, which is how it turns barrels into ground balls.',
         'mlb-glossary-sinker',
@@ -155,13 +128,13 @@ export const twoSeam: PitchAtlasEntry = {
   },
 
   motion: {
-    // Backspin tilted toward the arm with a gyro component: magnusStrength of this
-    // axis lands near 0.80, matching the ~79 percent active spin, so the force
-    // arrow is shorter and leaned, not the four-seam full-length vertical.
+    // Backspin tilted toward the arm with a gyro component, so the force arrow is
+    // shorter and leaned, not the four-seam's full-length vertical. verticalShape
+    // 'flat' = it gives up the four-seam's ride and finishes near a spinless plane,
+    // so it sinks by comparison; the run carries the read instead.
     spinAxis: { x: 0.7, y: 0.38, z: 0.61 },
     forceLabel: 'Magnus, tilted',
-    ivbInches: 7,
-    horizontalInches: 15,
+    verticalShape: 'flat',
     horizontalDir: 'arm-side',
     breakView: 'movement',
   },
@@ -175,7 +148,7 @@ export const twoSeam: PitchAtlasEntry = {
       'Same arm, the axis rolled toward the hand. Ride becomes run, and the ball finishes at the knees. Taken to its extreme — the most movement, the least ride — this is the pitch the pros call a sinker.',
     foundationCaption: 'It rides far less than a four-seam and runs toward the arm. Thrown low, it produces ground balls.',
     mastersIntro:
-      'Three documented sinkers — the two-seam taken to its extreme, three ways down. The visual is our own seam schematic. Every figure is season-stamped and links to its source.',
+      'Three documented sinkers — the two-seam taken to its extreme, three ways down. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
@@ -184,13 +157,11 @@ export const twoSeam: PitchAtlasEntry = {
       pitcher: 'Framber Valdez',
       context: 'The textbook modern sinker as a ground-ball engine, a whole elite starter built around one arm-side-running, diving fastball thrown at the knees.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('94.1 mph', 'pitcherlist-valdez', 'reputable-analysis', { approximate: true, note: '2024; Savant shows about 94.2 in 2025.' }) },
-        { label: 'Induced vertical break', claim: claim('~6.3 in', 'pitcherlist-valdez', 'reputable-analysis', { approximate: true, note: '2024, down from 9.9 the prior year. Low for a fastball, which is the point.' }) },
-        { label: 'Arm-side run', claim: claim('~15.5 in', 'savant-valdez', 'official-data', { approximate: true, note: '2024 Savant horizontal break; elite, well above the league sinker.' }) },
-        { label: 'Spin rate', claim: claim('~2,150 rpm', 'savant-valdez', 'official-data', { approximate: true, note: 'A single tracked 2024 sinker read 2,153 rpm.' }) },
-        { label: 'Ground-ball rate', claim: claim('60.6% (MLB leader)', 'fangraphs-valdez', 'reputable-analysis', { approximate: true, note: '2024, about 60.6 to 61.7 percent by cut; led MLB. Whole-arsenal, driven by the sinker.' }) },
-      ],
+      distinction: claim(
+        'The ground-ball engine. Hard arm-side run and almost no ride leave the ball diving at the knees, and he has led the league in rolling bats over into weak contact — a whole rotation arm built around one sinker thrown low.',
+        'fangraphs-valdez',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
     {
@@ -198,13 +169,11 @@ export const twoSeam: PitchAtlasEntry = {
       pitcher: 'Logan Webb',
       context: 'The right-handed answer to the same idea: a sinker-first starter whose wide arm-side spread rolls bats over into weak contact.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('92.6 mph', 'savant-webb', 'official-data', { note: '2024 pitch-arsenal value.' }) },
-        { label: 'Induced vertical break', claim: claim('~1.1 in', 'savant-webb', 'official-data', { approximate: true, note: '2024. Almost no ride, the defining trait of a sinker. Total drop with gravity is about 31 in.' }) },
-        { label: 'Arm-side run', claim: claim('~15.1 in', 'savant-webb', 'official-data', { approximate: true, note: '2024 Savant arm-side horizontal break.' }) },
-        { label: 'Spin rate', claim: claim('~1,939 rpm', 'savant-webb', 'official-data', { approximate: true, note: 'A low-spin sinker, about 13.2 revolutions hand to plate, the less-spin-more-sink design.' }) },
-        { label: 'Ground-ball rate', claim: claim('57.2% (4th in MLB)', 'fangraphs-webb', 'reputable-analysis', { approximate: true, note: '2024; led MLB with 353 ground balls produced.' }) },
-      ],
+      distinction: claim(
+        'The low-spin case taken to its end. He throws it with so little ride that it barely fights gravity at all, so it sinks hard and runs wide to the arm side — a sinker-first starter who manufactures ground balls in bulk.',
+        'savant-webb',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
@@ -212,11 +181,11 @@ export const twoSeam: PitchAtlasEntry = {
       pitcher: 'Clay Holmes',
       context: 'The seam-shifted-wake case: a power sinker whose movement bends well past what its spin axis predicts, the clearest live example of a ball running on its seams.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('93.7 mph', 'savant-holmes', 'official-data', { approximate: true, note: '2025 to 2026 as a Mets starter; he sat 96.6 mph as a 2024 Yankees closer.' }) },
-        { label: 'Axis deviation (seam-shifted wake)', claim: claim('~28 deg', 'medium-perfect-sinker', 'reputable-analysis', { approximate: true, note: 'A 28.2 degree gap between inferred and observed movement, among the most deceptive sinkers in the league.' }) },
-        { label: 'Spin rate', claim: claim('~2,130 rpm', 'savant-holmes', 'official-data', { approximate: true, note: 'Current Mets sinker, about 14 revolutions hand to plate.' }) },
-      ],
+      distinction: claim(
+        'The seam-shifted-wake case. His power sinker bends well past where the spin axis says it should, the ball running late on its seams — among the most deceptive sinkers in the game because the movement arrives after the eye has committed.',
+        'medium-perfect-sinker',
+        'reputable-analysis',
+      ),
       rights: 'original',
     },
   ],

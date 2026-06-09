@@ -6,7 +6,7 @@ import { ClaimNote } from './SourcedValue'
 /*
   A prose claim: the paraphrased sentence in Hanken, with its provenance line
   (confidence + source) beneath, and the caveat note when one exists. The text
-  surface equivalent of SourcedValue, which handles numeric data.
+  surface equivalent of SourcedValue, which handles compact sourced facts.
 */
 export function ClaimProse({
   claim,

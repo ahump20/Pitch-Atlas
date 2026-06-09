@@ -44,9 +44,9 @@ describe('grip library data', () => {
   })
 
   it('keeps grip-photo proof limits away from measured claims', () => {
-    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('does not prove velocity')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('does not prove tracked speed')
     expect(GRIP_PHOTO_PROOF_LIMIT).toContain('spin')
-    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('movement')
+    expect(GRIP_PHOTO_PROOF_LIMIT).toContain('shape')
     expect(GRIP_PHOTO_PROOF_LIMIT).toContain('command')
     expect(GRIP_PHOTO_PROOF_LIMIT).toContain('injury risk')
     expect(GRIP_PHOTO_PROOF_LIMIT).toContain('outcome')

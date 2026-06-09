@@ -41,8 +41,6 @@ export interface SoftballPitch {
   movement: Claim<string>
   /** Plain-language role in an arsenal. */
   role: string
-  /** Velocity band as plain text, when one is worth stating. */
-  velocity?: string
   /** The honest physics note — used most on the riseball ("does it actually rise?"). */
   physicsNote?: Claim<string>
   /** Representative arms, plain text. Never a likeness. */

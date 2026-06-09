@@ -133,7 +133,7 @@ export function SoftballCraftsmanChapter() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="03" label="The record" />
         <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {craftsman.numbers.map((n, i) => (
+          {craftsman.biography.map((n, i) => (
             <div key={n.label} className="border-t border-[rgba(255,255,255,0.12)] pt-3">
               <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
               <SourcedValue claim={n.claim} valueClassName="text-lg md:text-xl" accent={i === 0} />
@@ -141,7 +141,7 @@ export function SoftballCraftsmanChapter() {
           ))}
         </div>
         <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-          Filed the way every record here is: each figure confidence-labeled and one click from its source.
+          Filed the way every record here is: each biography fact confidence-labeled and one click from its source.
           Where a line is a teammate’s words rather than Osterman’s own, it is labeled as such, not put in her
           mouth.
         </p>

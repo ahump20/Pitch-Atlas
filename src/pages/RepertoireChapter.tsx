@@ -119,7 +119,6 @@ export function RepertoireChapter() {
   const gripEntry = gripEntryFor(entry.id)
   const subParts = [
     entry.aka && entry.aka.length > 0 ? `aka ${entry.aka.join(' · ')}` : null,
-    entry.velocity ?? null,
   ].filter(Boolean)
 
   return (
@@ -166,7 +165,7 @@ export function RepertoireChapter() {
               />
             </div>
             <figcaption className="mt-3 max-w-[34ch] text-center text-xs leading-snug text-ink-3 md:text-left">
-              Schematic baseball cover. This pitch has no filed seam geometry yet — the grip and movement
+              Schematic baseball cover. This pitch has no filed seam geometry yet — the grip and shape
               below are sourced in words, not measured here.
             </figcaption>
           </figure>
@@ -218,7 +217,7 @@ export function RepertoireChapter() {
           <p className="mono-label mb-2 text-seam">Basic file</p>
           <p className="max-w-[72ch] text-sm leading-relaxed text-ink-2">
             This pitch has a sourced one-line grip and movement and an honest explanation — not yet a filed
-            specimen with measured geometry and physics. A fuller breakdown is coming. Sourced, not
+            specimen with authored grip geometry and a full craft chapter. A fuller breakdown is coming. Sourced, not
             corrected.
           </p>
         </div>

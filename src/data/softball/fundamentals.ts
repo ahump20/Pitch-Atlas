@@ -58,7 +58,7 @@ export const FUNDAMENTAL_BLOCKS: FundamentalBlock[] = [
       'The windmill looks like an arm pitch. It is not. The speed is built from the ground and handed up a chain — the same proximal-to-distal logic as a baseball delivery, run underhand. Coach the lower half, not the arm circle.',
     claims: [
       claim(
-        'The force the drive leg puts into the ground during the stride relates directly to pitch velocity — the harder the push off the rubber, the faster the ball.',
+        'The force the drive leg puts into the ground during the stride feeds the whole delivery — the push off the rubber sets up the arm circle instead of leaving the arm to create everything alone.',
         'sb-friesen-2025-biomech',
         'reputable-analysis',
       ),

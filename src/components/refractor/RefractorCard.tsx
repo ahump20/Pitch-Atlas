@@ -12,9 +12,10 @@ import type { FamilyCrumb } from './familyCrumb'
   (--i) from props, so every consumer drives the look from data. Gold is the 1/1 chase.
 
   Two provenance signals, kept apart on purpose: the crumb (top-right of the window)
-  says WHAT KIND of pitch this is; the confidence dot (in the plate) says how much to
-  trust the movement number. The grip-source chip (bottom of the window) says whose
-  grip the face shows.
+  says WHAT KIND of pitch this is; the confidence dot (in the plate) says how well sourced
+  the shape read is. The grip-source chip (bottom of the window) says whose grip the face
+  shows. There is no stat rail and no movement number by design: the card leads with the
+  grip and the shape, in words, never a fabricated figure.
 
   Accessibility: the whole card is one link when `to` is set; the face is decorative
   (the plate carries the content), and reduced motion freezes the reveal and tilt via
@@ -33,13 +34,11 @@ export interface RefractorCardProps {
   name: string
   /** The arched-window visual: a seam ball (with grip pins) or an Austin grip photo. */
   face: ReactNode
-  /** The headline movement number, shown in the stat rail. */
-  metric?: { value: string; unit?: string; label: string }
-  /** The break shape — a short, sourced label. */
+  /** The shape read — how the pitch moves, in words. The card's lead read. */
   shape?: string
   /** One short read: the pitcher's grip cue (his words) or the pitch's tagline. */
   cue?: string
-  /** The provenance dot for the movement claim: how much to trust the number. */
+  /** The provenance dot for the shape read: how well sourced it is. */
   confidence?: { label: string; color: string; approx?: boolean }
   /** What kind of pitch — family icon + word. A different job from confidence. */
   crumb?: FamilyCrumb
@@ -60,7 +59,6 @@ export function RefractorCard({
   vnum,
   name,
   face,
-  metric,
   shape,
   cue,
   confidence,
@@ -123,16 +121,6 @@ export function RefractorCard({
         <div className="rfx-banner">{name}</div>
 
         <div className="rfx-content">
-          {metric ? (
-            <div className="rfx-statrail">
-              <span className="rfx-statval">
-                {metric.value}
-                {metric.unit ? <small>{metric.unit}</small> : null}
-              </span>
-              <span className="rfx-statlab">{metric.label}</span>
-            </div>
-          ) : null}
-
           {shape || cue ? (
             <div className="rfx-summary">
               {shape ? (

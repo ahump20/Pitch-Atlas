@@ -41,14 +41,13 @@ const riseball: SoftballPitch = {
     'reputable-analysis',
   ),
   physicsNote: claim(
-    'Does it truly rise? Backspin makes upward Magnus lift, but for the ball to climb above its release line that force has to beat the ball’s own weight. An Armstrong Atlantic State applied-physics study found a light training ball (about a third of regulation mass) appeared to follow an upward path, while a regulation softball at the same 70 mph still followed a decreasing — falling — trajectory. So a regulation riseball almost certainly does not travel a net-upward path. What it does is drop far less than the eye predicts, and off the low underhand release it arrives higher than the brain expects — reduced drop plus perception, not anti-gravity. It is the real-physics cousin of baseball’s "rising fastball," which this atlas files as an illusion.',
+    'Does it truly rise? Backspin makes upward Magnus lift, but for the ball to climb above its release line that force has to beat the ball’s own weight. An Armstrong Atlantic State applied-physics study found a light training ball, a fraction of regulation weight, appeared to follow an upward path, while a regulation softball thrown at the same speed still followed a decreasing — falling — trajectory. So a regulation riseball almost certainly does not travel a net-upward path. What it does is drop far less than the eye predicts, and off the low underhand release it arrives higher than the brain expects — reduced drop plus perception, not anti-gravity. It is the real-physics relative to baseball’s "rising fastball," which this atlas files as an illusion.',
     'sb-armstrong-riseball',
     'reputable-analysis',
-    { note: 'The Armstrong study compared a JUGS Lite-Flite (~59.5 g) against a regulation ball (~181.7 g); the lighter ball is far easier to lift. Sources agree the mechanism (backspin Magnus) is real; they disagree on whether a regulation ball nets an actual rise.' },
+    { note: 'The Armstrong study compared a light training ball against a regulation ball; the lighter ball is far easier to lift. Sources agree the mechanism (backspin Magnus) is real; they disagree on whether a regulation ball nets an actual rise.' },
   ),
   role: 'A chase pitch up and out of the zone, tunneled against the drop — the two move in opposite directions off a similar look.',
-  velocity: 'high 50s to high 60s mph (level-dependent)',
-  notableThrowers: 'Cat Osterman set up her drop with it; Monica Abbott pairs it with elite velocity.',
+  notableThrowers: 'Cat Osterman set up her drop with it; Monica Abbott pairs it with elite power.',
 }
 
 const drop: SoftballPitch = {
@@ -79,7 +78,6 @@ const drop: SoftballPitch = {
     { note: 'The same Student Life physics breakdown that deflates the rise (“the Magnus effect doesn’t have a big enough impact to actually make the ball defy gravity”) confirms the drop’s topspin sends the ball down — Magnus and gravity working in the same direction.' },
   ),
   role: 'A primary strike-and-ground-ball pitch, lethal when commanded down and tunneled off the rise.',
-  velocity: 'near fastball speed (peel) to a touch slower (turnover)',
   notableThrowers: 'Cat Osterman — the spin and command made it her signature.',
 }
 
@@ -100,13 +98,12 @@ const fastball: SoftballPitch = {
   spin: claim('Backspin from the underhand release, axis tilted by grip toward four- or two-seam.', 'sb-wiki-fastpitch', 'reputable-analysis'),
   movement: claim('Mostly straight and fast (four-seam) or with slight arm-side run (two-seam).', 'sb-wiki-fastpitch', 'reputable-analysis'),
   physicsNote: claim(
-    'The fastpitch fastball’s real weapon is the 43-foot rubber, not the radar gun. The hitter’s reaction window is set by distance as much as speed, and the distance ratio runs about 1.4×: a high-60s to low-70s pitch from 43 feet gives a batter roughly the reaction time of a mid-90s major-league fastball thrown from 60 feet 6 inches. It is why elite arms play even faster than the gun reads — and why the change-up off this look lands so hard.',
+    'The fastpitch fastball’s real weapon is the short pitching distance, not the radar gun. The hitter’s reaction window is set by distance as much as speed: a hard fastpitch fastball from the fastpitch rubber gives a batter roughly the reaction time of an elite major-league fastball thrown from the much longer baseball distance. It is why elite arms play even faster than the gun reads — and why the change-up off this look lands so hard.',
     'sb-gorout-speed',
     'reputable-analysis',
-    { note: 'A reaction-time equivalence from the distance ratio (≈ 60.5 / 43). It runs even shorter in practice because the windmill stride releases the ball closer than the 43-foot rubber.' },
+    { note: 'A reaction-time equivalence that follows from the much shorter fastpitch distance. It runs even shorter in practice because the windmill stride releases the ball closer than the rubber.' },
   ),
   role: 'The base of the arsenal and the timing the whole sequence plays off.',
-  velocity: 'mid 50s to mid 70s mph (level-dependent; elite arms touch the low 70s)',
   notableThrowers: 'Monica Abbott — among the hardest documented fastpitch fastballs.',
 }
 
@@ -132,7 +129,6 @@ const changeup: SoftballPitch = {
     'reputable-analysis',
   ),
   role: 'The timing-wrecker — and a lower-load pitch worth leaning on.',
-  velocity: 'roughly 8-15 mph under the fastball',
 }
 
 const curve: SoftballPitch = {
@@ -153,7 +149,6 @@ const curve: SoftballPitch = {
     'reputable-analysis',
   ),
   role: 'A strike-stealer and a chase pitch off the corner; the mirror of the screwball.',
-  velocity: 'near fastball speed',
 }
 
 const screwball: SoftballPitch = {
@@ -174,7 +169,6 @@ const screwball: SoftballPitch = {
     'reputable-analysis',
   ),
   role: 'Jams same-handed hitters and completes the two-way horizontal attack.',
-  velocity: 'near fastball speed',
 }
 
 /*

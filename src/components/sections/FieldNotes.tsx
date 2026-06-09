@@ -516,7 +516,7 @@ function SubmitForm({
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <SelectField label="Level" value={form.playerLevel} options={PLAYER_LEVELS} onChange={(v) => set('playerLevel', v as PlayerLevel)} />
             <SelectField label="Arm slot" value={form.armSlot} options={ARM_SLOTS} onChange={(v) => set('armSlot', v as ArmSlot)} />
-            <SelectField label="Velocity" value={form.velocityBand} options={VELOCITY_BANDS} noneLabel="-" onChange={(v) => set('velocityBand', v as '' | VelocityBand)} />
+            <SelectField label="Pace context" value={form.velocityBand} options={VELOCITY_BANDS} noneLabel="-" onChange={(v) => set('velocityBand', v as '' | VelocityBand)} />
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

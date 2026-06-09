@@ -17,9 +17,9 @@ describe('SeamSchematic (the no-WebGL visual)', () => {
 })
 
 describe('CarryDiagram (the gravity ghost in 2D)', () => {
-  it('draws the induced vertical break value with an approximate marker', () => {
-    const { getByText } = render(<CarryDiagram ivbInches={16} approximate />)
-    expect(getByText(/16 in IVB/)).toBeInTheDocument()
+  it('draws carry as shape, not a measured value', () => {
+    const { getByText } = render(<CarryDiagram />)
+    expect(getByText(/CARRY/)).toBeInTheDocument()
   })
 })
 
@@ -28,13 +28,15 @@ describe('MovementPlot (the catcher-eye break plot)', () => {
     const { container } = render(<MovementPlot motion={twelveSix.motion} pitchName="curveball" />)
     const svg = container.querySelector('svg[role="img"]')
     expect(svg).toBeTruthy()
-    expect(svg?.getAttribute('aria-label')).toMatch(/15.3 inches of drop/)
+    expect(svg?.getAttribute('aria-label')).toMatch(/drops/)
+    expect(svg?.getAttribute('aria-label')).not.toMatch(/inches/)
   })
 
-  it('describes the gyro slider as a slight ride', () => {
+  it('describes the gyro slider by direction, not magnitude', () => {
     const { container } = render(<MovementPlot motion={slider.motion} pitchName="slider" />)
     const svg = container.querySelector('svg[role="img"]')
     expect(svg).toBeTruthy()
-    expect(svg?.getAttribute('aria-label')).toMatch(/1.9 inches of ride/)
+    expect(svg?.getAttribute('aria-label')).toMatch(/sweeps glove-side/)
+    expect(svg?.getAttribute('aria-label')).not.toMatch(/inches/)
   })
 })

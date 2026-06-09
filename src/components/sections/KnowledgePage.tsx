@@ -5,17 +5,15 @@ import { SectionHero } from '../layout/SectionHero'
 import { Breadcrumb } from '../layout/Breadcrumb'
 import { StageTierMarker } from '../layout/StageTierMarker'
 import { ClaimProse } from '../provenance/ClaimProse'
-import { SourcedValue } from '../provenance/SourcedValue'
 import { EducationalDisclaimer } from './EducationalDisclaimer'
 import { DiscussionPanel } from './DiscussionPanel'
 
 /*
   One template for every knowledge wing. Hero (dark stage) -> educational note when
   the wing carries one -> a numbered section per teaching block: original prose,
-  then the sourced claims that back it, each wearing its confidence + source badge,
-  then a pulled stat when the section has one. The same provenance primitives the
-  specimen pages use, so a teaching page is held to the same honesty contract. The
-  related rail and the discussion layer close it, like the pitch chapters.
+  then the sourced claims that back it, each wearing its confidence + source badge.
+  Legacy pull-outs are folded back into that sourced claim list so teaching pages do
+  not visually recreate the old stat-rail pattern.
 */
 
 function pad(n: number): string {
@@ -48,6 +46,8 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
       ) : null}
 
       {wing.sections.map((section, i) => {
+        const claims = section.pullStat ? [...(section.claims ?? []), section.pullStat.claim] : (section.claims ?? [])
+
         return (
           <section key={section.heading}>
             <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
@@ -63,20 +63,13 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                       {p}
                     </p>
                   ))}
-
-                  {section.pullStat ? (
-                    <div className="rfx-panel mt-8 max-w-[40ch] rounded-sm border-l-2 border-l-seam px-6 py-5">
-                      <p className="mono-label mb-2 text-ink-3">{section.pullStat.label}</p>
-                      <SourcedValue claim={section.pullStat.claim} valueClassName="text-3xl" accent />
-                    </div>
-                  ) : null}
                 </div>
 
-                {section.claims && section.claims.length > 0 ? (
+                {claims.length > 0 ? (
                   <div className="md:col-span-5">
                     <p className="mono-label mb-5 text-ink-3">The sources behind it</p>
                     <ul className="flex flex-col gap-6">
-                      {section.claims.map((claim, k) => (
+                      {claims.map((claim, k) => (
                         <li key={k} className="border-l border-[rgba(255,255,255,0.12)] pl-4">
                           <ClaimProse
                             claim={claim}

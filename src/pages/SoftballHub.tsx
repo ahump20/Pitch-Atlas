@@ -53,7 +53,7 @@ function PitchPlate({ pitch }: { pitch: SoftballPitch }) {
       <h3 className="rfx-platetitle text-2xl">{pitch.name}</h3>
       <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-bone-2">{pitch.tagline}</p>
       <div className="mt-auto flex items-center gap-x-3 border-t border-white/10 pt-3">
-        <span className="mono-label text-ink-3">{pitch.velocity ?? 'Sourced'}</span>
+        <span className="mono-label text-ink-3">Sourced shape</span>
         <span className="ml-auto mono-label text-cyan transition-colors group-hover:text-bone">Open →</span>
       </div>
     </Link>
@@ -152,9 +152,9 @@ export function SoftballHub() {
           />
           <StartPlate
             to="/softball/slowpitch"
-            eyebrow="Slowpitch · the craft of inches"
+            eyebrow="Slowpitch · arc and touch"
             title="Arc, spin, and placement"
-            blurb="No windmill, no velocity, no rise — but a real craft of arc height, deadening spin, and placement to the mat. Filed honestly and lighter."
+            blurb="No windmill and no riseball shape — but a real craft of arc height, deadening spin, and placement to the mat. Filed honestly and lighter."
             gc="var(--color-seam-bright)"
           />
         </div>
@@ -177,7 +177,7 @@ export function SoftballHub() {
         <StageTierMarker index="02" label="The craftsmen of the circle" />
         <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-bone-2">
           The arms that defined fastpitch from inside the circle. Cat Osterman opens the wing — the
-          softball case that command and spin beat velocity — with the legends behind her (Fernandez,
+          softball case that command and spin beat raw power — with the legends behind her (Fernandez,
           Finch, Abbott) and the new wave already here (Canady, Kavan).
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

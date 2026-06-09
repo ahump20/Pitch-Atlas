@@ -68,12 +68,14 @@ const PITCH_SLUG_ALIASES: Record<string, string> = {
   'split-finger-fastball': 'splitter',
 }
 
-/** The one hero number: the defining break, pulled from the sourced motion record. */
-function heroStat(entry: PitchAtlasEntry) {
+/** A short shape label — the direction the pitch breaks, in words, never a number. */
+function shapeLabel(entry: PitchAtlasEntry) {
   const m = entry.motion
-  const useVert = Math.abs(m.ivbInches) >= Math.abs(m.horizontalInches)
-  const value = useVert ? `${m.ivbInches > 0 ? '+' : ''}${m.ivbInches}` : `${m.horizontalInches}`
-  return { value, unit: '″', label: entry.canonical.physics.primaryBreak.label }
+  if (m.indeterminateBreak) return 'Erratic flutter'
+  const v = m.verticalShape === 'ride' ? 'Rides' : m.verticalShape === 'drop' ? 'Drops' : 'Holds flat'
+  const h =
+    m.horizontalDir === 'arm-side' ? 'arm-side run' : m.horizontalDir === 'glove-side' ? 'glove-side sweep' : null
+  return h ? `${v} · ${h}` : v
 }
 
 /** Collect every distinct cited source on the page for the colophon, in render order. */
@@ -93,13 +95,11 @@ function collectSources(entry: PitchAtlasEntry): Source[] {
   add(c.voice?.source)
   const p = c.physics
   add(p.spinAxis.source)
-  add(p.spinRateRpm.source)
-  add(p.activeSpinPct?.source)
-  add(p.primaryBreak.claim.source)
-  add(p.secondaryBreak?.claim.source)
+  add(p.shape.source)
   add(p.teaching.source)
   entry.masterVariants.forEach((v) => {
-    v.numbers.forEach((n) => add(n.claim.source))
+    add(v.distinction.source)
+    v.accolades?.forEach((n) => add(n.claim.source))
     add(v.quote?.source)
   })
   add(entry.seam.stitchCount.source)
@@ -113,7 +113,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
   const accent = accentForSlug(display.slug)
   const isGold = display.specimenNo === '00'
   const accentColor = isGold ? '#caa14a' : accent.c3
-  const stat = heroStat(entry)
+  const shape = canonical.physics.shape
   const pills = [FAMILY_LABEL[canonical.family], guide?.family, motion.forceLabel].filter(
     (p, i, a): p is string => Boolean(p) && a.indexOf(p) === i,
   )
@@ -175,24 +175,24 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           {guide?.tagline ?? display.heroSub}
         </p>
 
-        <div className="mt-[18px] flex items-baseline gap-3.5">
-          <span
-            className="font-mono text-[clamp(44px,7vw,72px)] font-bold leading-[0.85]"
-            style={{
-              color: 'transparent',
-              background: `linear-gradient(180deg,#fff,${accentColor})`,
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-              textShadow: `0 0 28px color-mix(in srgb, ${accentColor} 40%, transparent)`,
-            }}
-          >
-            {stat.value}
-            <small className="text-[0.4em]" style={{ WebkitTextFillColor: 'var(--color-bone-2)' }}>
-              {stat.unit}
-            </small>
+        <div
+          className="mt-[18px] rounded-2xl p-4"
+          style={{
+            background: `linear-gradient(145deg, color-mix(in srgb, ${accentColor} 18%, #0a0810), #070510)`,
+            border: `1px solid color-mix(in srgb, ${accentColor} 26%, transparent)`,
+            boxShadow: `inset 0 1px 0 color-mix(in srgb, ${accentColor} 22%, transparent)`,
+          }}
+        >
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+            Shape read
           </span>
-          <span className="font-mono text-[10px] uppercase leading-snug tracking-[0.14em]" style={{ color: accentColor }}>
-            {stat.label}
+          <p className="rfx-athletic rfx-skew mt-2 max-w-[34ch] text-[clamp(22px,3vw,34px)] leading-[1.05] text-bone">
+            {shapeLabel(entry)}
+          </p>
+          <p className="mt-3 max-w-[48ch] text-[13px] leading-relaxed text-bone-2">{shape.value}</p>
+          <span className="mt-3 inline-flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.08em] text-bone-2">
+            Shape
+            <ConfidenceDot confidence={shape.confidence} />
           </span>
         </div>
 
@@ -452,7 +452,7 @@ function ReleaseSection({ entry, accentColor }: { entry: PitchAtlasEntry; accent
       <SectionHead kicker="Release Room" title="Translate the hold into a release" accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           Grip shape only matters if the release makes sense. Read pressure, thumb support, and ball depth
-          before the movement numbers show up.
+          before you read the pitch shape.
         </p>
       </SectionHead>
 
@@ -475,28 +475,21 @@ function ReleaseSection({ entry, accentColor }: { entry: PitchAtlasEntry; accent
   )
 }
 
-/* ── Movement: the gauges + the one teaching sentence. ───────────────────── */
+/* ── Movement: shape + the one teaching sentence. ────────────────────────── */
 function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
   const { canonical, display } = entry
   const p = canonical.physics
-  const stat = heroStat(entry)
-  const secondary = [
-    { label: 'Spin rate', claim: p.spinRateRpm },
-    p.activeSpinPct ? { label: 'Active spin', claim: p.activeSpinPct } : null,
-    p.secondaryBreak ? { label: p.secondaryBreak.label, claim: p.secondaryBreak.claim } : null,
-  ].filter(Boolean) as { label: string; claim: typeof p.spinRateRpm }[]
 
   return (
     <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
       <SectionHead kicker="Movement" title={display.foundationCaption} accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-          A pitch is defined by its spin axis, so the axis is authored and the Magnus force is computed from
-          it, not hand-placed. Every figure below is sourced and labeled by confidence.
+          The read is shape, not a gauge. The spin words explain why it moves that way, and every prose
+          claim still carries its source.
         </p>
       </SectionHead>
 
       <div className="mt-7 grid grid-cols-1 gap-3.5 md:grid-cols-12">
-        {/* the one defining break, as the hero gauge */}
         <div
           className="rounded-[16px] p-6 md:col-span-5"
           style={{
@@ -504,50 +497,40 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
             border: `1px solid color-mix(in srgb, ${accentColor} 28%, transparent)`,
           }}
         >
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">{p.primaryBreak.label}</p>
-          <p
-            className="mt-1.5 font-mono text-[clamp(40px,8vw,64px)] font-bold leading-none"
-            style={{
-              color: 'transparent',
-              background: `linear-gradient(180deg,#fff,${accentColor})`,
-              WebkitBackgroundClip: 'text',
-              backgroundClip: 'text',
-            }}
-          >
-            {stat.value}
-            <small className="text-[0.4em]" style={{ WebkitTextFillColor: 'var(--color-bone-2)' }}>
-              {stat.unit}
-            </small>
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Shape</p>
+          <p className="rfx-athletic rfx-skew mt-2 text-[clamp(24px,4vw,42px)] leading-[1.02] text-bone">
+            {shapeLabel(entry)}
           </p>
-          <p className="mt-3 text-[13px] leading-relaxed text-bone-2">{p.primaryBreak.claim.value}</p>
+          <p className="mt-3 text-[13px] leading-relaxed text-bone-2">{p.shape.value}</p>
           <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-            <ConfidenceDot confidence={p.primaryBreak.claim.confidence} />
-            {p.primaryBreak.claim.source ? (
+            <ConfidenceDot confidence={p.shape.confidence} />
+            {p.shape.source ? (
               <>
                 <span aria-hidden="true" className="text-ink-3">/</span>
-                <RefractorSource source={p.primaryBreak.claim.source} />
+                <RefractorSource source={p.shape.source} />
               </>
             ) : null}
           </div>
         </div>
 
-        {/* the sourced supporting readings */}
-        <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 md:col-span-7">
-          {secondary.map((g) => (
-            <div key={g.label} className="rfx-panel rounded-[14px] p-5">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">{g.label}</p>
-              <p className="mt-2 text-[13px] leading-relaxed text-bone">{g.claim.value}</p>
-              <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                <ConfidenceDot confidence={g.claim.confidence} />
-                {g.claim.source ? (
-                  <>
-                    <span aria-hidden="true" className="text-ink-3">/</span>
-                    <RefractorSource source={g.claim.source} />
-                  </>
-                ) : null}
-              </div>
+        <div className="grid grid-cols-1 gap-3.5 md:col-span-7">
+          <div className="rfx-panel rounded-[14px] p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Spin words</p>
+            <p className="mt-2 text-[13px] leading-relaxed text-bone">{p.spinAxis.value}</p>
+            <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+              <ConfidenceDot confidence={p.spinAxis.confidence} />
+              {p.spinAxis.source ? (
+                <>
+                  <span aria-hidden="true" className="text-ink-3">/</span>
+                  <RefractorSource source={p.spinAxis.source} />
+                </>
+              ) : null}
             </div>
-          ))}
+          </div>
+          <div className="rfx-panel rounded-[14px] p-5">
+            <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Craft read</p>
+            <p className="mt-2 text-[13px] leading-relaxed text-bone">{entry.guide?.does.plain ?? p.shape.value}</p>
+          </div>
         </div>
       </div>
 
@@ -591,17 +574,26 @@ function MasterCard({ variant, accentColor }: { variant: MasterVariantRecord; ac
     >
       <h3 className="rfx-athletic rfx-skew text-2xl text-bone">{variant.pitcher}</h3>
       <p className="mt-2 text-[12.5px] leading-relaxed text-bone-2">{variant.context}</p>
-      <div className="mt-4">
-        {variant.numbers.map((n) => (
+      <div className="mt-4 border-t border-white/8 pt-4">
+        <p className="text-[13px] leading-relaxed text-bone">{variant.distinction.value}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <ConfidenceDot confidence={variant.distinction.confidence} />
+          {variant.distinction.source ? (
+            <>
+              <span aria-hidden="true" className="text-ink-3">/</span>
+              <RefractorSource source={variant.distinction.source} />
+            </>
+          ) : null}
+        </div>
+      </div>
+      {variant.accolades && variant.accolades.length > 0 ? (
+        <div className="mt-4">
+          {variant.accolades.map((n) => (
           <div key={n.label} className="flex items-baseline justify-between gap-3 border-t border-white/8 py-2">
             <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-ink-3">{n.label}</span>
             <span className="font-mono text-[13px] font-semibold text-bone">{n.claim.value}</span>
           </div>
-        ))}
-      </div>
-      {variant.numbers[0]?.claim.confidence ? (
-        <div className="mt-3">
-          <ConfidenceDot confidence={variant.numbers[0].claim.confidence} />
+          ))}
         </div>
       ) : null}
       {variant.quote?.source ? (
@@ -653,7 +645,7 @@ function ColophonSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
   const tiers = ['official-data', 'pitcher-own-words', 'coach-observed', 'reputable-analysis', 'secondhand-attributed'] as const
   return (
     <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
-      <SectionHead kicker="The colophon" title="Every number, sourced" accentColor={accentColor}>
+      <SectionHead kicker="The colophon" title="Every claim, sourced" accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           Nothing here is marked right or wrong. It is marked by where it came from and how confident the
           source is. A broken citation throws at build, so a dead source never reaches you.

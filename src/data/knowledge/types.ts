@@ -3,18 +3,18 @@ import type { Claim } from '../types'
 /*
   The knowledge wings: the field manual's teaching layer. Each wing is a sourced
   essay rendered by one template (components/sections/KnowledgePage). A section is
-  prose plus the confidence-tagged claims that back its numbers — the same Claim
-  model the specimen pages use, so a teaching page can never make an unsourced
-  numeric claim that the rest of the atlas would refuse.
+  prose plus the confidence-tagged claims that back its teaching points — the same
+  Claim model the specimen pages use, so a teaching page can never make an
+  unsourced claim that the rest of the atlas would refuse.
 */
 
 export interface KnowledgeSection {
   heading: string
   /** Original prose. Each paragraph is plain teaching text. */
   paragraphs: string[]
-  /** The sourced claims that back the numbers/facts in this section. */
+  /** The sourced claims that back the teaching points in this section. */
   claims?: Claim<string>[]
-  /** One striking sourced number, pulled out as a stat. */
+  /** Legacy source note folded into the normal claim list by the renderer. */
   pullStat?: { label: string; claim: Claim<string> }
 }
 

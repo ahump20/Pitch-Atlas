@@ -3,13 +3,11 @@ import { projectSeam, splitRuns } from '../../lib/seam2d'
 import type { PitchMotion } from '../../data/types'
 
 /*
-  The movement plot, told from the catcher's eye. A spinless reference ball sits
-  at the center; the real pitch crosses offset by its induced vertical break (up
-  if it rides, down if it drops) and its horizontal break (toward the arm side or
-  the glove side). The seam ball is our own geometry, oriented to the pitch's
-  spin axis. The poles are labeled words, not a left/right handedness claim, so
-  the diagram teaches the break without asserting a sign it cannot prove. A
-  schematic, scaled from sourced break magnitudes, never a measured trajectory.
+  The shape plot, told from the catcher's eye. A spinless reference ball sits at the
+  center; the real pitch crosses offset toward how it moves — up if it rides, down if it
+  drops, toward the arm side or the glove side. The seam ball is our own geometry,
+  oriented to the pitch's spin axis. The poles are labeled words. This is a schematic of
+  DIRECTION — which way the pitch breaks — never a measured magnitude. No numbers.
 */
 
 const VB_W = 360
@@ -17,8 +15,8 @@ const VB_H = 240
 const CX = 178
 const CY = 116
 const BALL_R = 17
-const PX_PER_IN = 4.6
-const CLAMP = 92
+const OFFSET = 60 // fixed schematic offset by direction, not a measured magnitude
+const CLAMP = 92 // plot half-extent for the axis guides and pole labels
 
 export interface MovementPlotProps {
   className?: string
@@ -26,17 +24,13 @@ export interface MovementPlotProps {
   pitchName?: string
 }
 
-function clamp(n: number): number {
-  return Math.max(-CLAMP, Math.min(CLAMP, n))
-}
-
 export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: MovementPlotProps) {
   const uid = useId()
   const gradId = `leather-move-${uid}`
 
-  const dy = clamp(-motion.ivbInches * PX_PER_IN) // screen y grows downward; + ivb rides up
+  const dy = motion.verticalShape === 'ride' ? -OFFSET : motion.verticalShape === 'drop' ? OFFSET : 0
   const hSign = motion.horizontalDir === 'arm-side' ? 1 : motion.horizontalDir === 'glove-side' ? -1 : 0
-  const dx = clamp(motion.horizontalInches * PX_PER_IN * hSign)
+  const dx = hSign * OFFSET
   const ballX = CX + dx
   const ballY = CY + dy
 
@@ -45,14 +39,11 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
     [ballX, ballY],
   )
 
-  const ivbLabel = `${motion.ivbInches >= 0 ? '+' : ''}${motion.ivbInches} in`
-  const ivbWord = motion.ivbInches >= 0 ? 'ride' : 'drop'
+  const ivbWord = motion.verticalShape === 'ride' ? 'rides' : motion.verticalShape === 'drop' ? 'drops' : 'holds flat'
   const horizWord =
-    motion.horizontalDir === 'arm-side' ? 'arm-side run' : motion.horizontalDir === 'glove-side' ? 'glove-side sweep' : 'no horizontal break'
+    motion.horizontalDir === 'arm-side' ? 'runs arm-side' : motion.horizontalDir === 'glove-side' ? 'sweeps glove-side' : 'stays true'
 
-  const title = `Catcher's-eye movement of a ${pitchName}. Against a spinless ball at center, it crosses about ${Math.abs(motion.ivbInches)} inches of ${ivbWord} and ${motion.horizontalInches} inches of ${horizWord}. A schematic scaled from sourced break figures, approximate.`
-
-  const showH = motion.horizontalDir !== 'none' && Math.abs(dx) > 4
+  const title = `Catcher's-eye shape of a ${pitchName}. Against a spinless ball at center, it ${ivbWord} and ${horizWord}. A schematic of direction, not a measured magnitude.`
 
   return (
     <svg
@@ -85,41 +76,8 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
       <circle cx={CX} cy={CY} r={BALL_R} fill="#101116" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.65" />
       <text x={CX} y={CY + 3} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="7" letterSpacing="0.5" textAnchor="middle" opacity="0.8">NO SPIN</text>
 
-      {/* displacement connector */}
-      <line x1={CX} y1={CY} x2={ballX} y2={ballY} stroke="var(--color-seam)" strokeWidth="1" strokeDasharray="2 3" opacity="0.55" />
-
-      {/* dimension: induced vertical break */}
-      <g stroke="var(--color-seam)" strokeWidth="1" opacity="0.9">
-        <line x1={CX - CLAMP - 4} y1={CY} x2={CX - CLAMP - 4} y2={ballY} />
-        <line x1={CX - CLAMP - 9} y1={CY} x2={CX - CLAMP + 1} y2={CY} />
-        <line x1={CX - CLAMP - 9} y1={ballY} x2={CX - CLAMP + 1} y2={ballY} />
-      </g>
-      <text
-        x={CX - CLAMP - 12}
-        y={(CY + ballY) / 2}
-        fill="var(--color-seam)"
-        fontFamily="var(--font-mono)"
-        fontSize="9.5"
-        dominantBaseline="middle"
-        textAnchor="middle"
-        transform={`rotate(-90 ${CX - CLAMP - 12} ${(CY + ballY) / 2})`}
-      >
-        {ivbLabel} IVB
-      </text>
-
-      {/* dimension: horizontal break */}
-      {showH ? (
-        <>
-          <g stroke="var(--color-seam)" strokeWidth="1" opacity="0.9">
-            <line x1={CX} y1={CY + CLAMP + 4} x2={ballX} y2={CY + CLAMP + 4} />
-            <line x1={CX} y1={CY + CLAMP - 1} x2={CX} y2={CY + CLAMP + 9} />
-            <line x1={ballX} y1={CY + CLAMP - 1} x2={ballX} y2={CY + CLAMP + 9} />
-          </g>
-          <text x={(CX + ballX) / 2} y={CY + CLAMP + 18} fill="var(--color-seam)" fontFamily="var(--font-mono)" fontSize="9.5" textAnchor="middle">
-            {motion.horizontalInches} in
-          </text>
-        </>
-      ) : null}
+      {/* displacement connector: which way the pitch breaks from the spinless reference */}
+      <line x1={CX} y1={CY} x2={ballX} y2={ballY} stroke="var(--color-seam)" strokeWidth="1.25" strokeDasharray="2 3" opacity="0.6" />
 
       {/* the real pitch with its seam */}
       <circle cx={ballX} cy={ballY} r={BALL_R} fill={`url(#${gradId})`} />

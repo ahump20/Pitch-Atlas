@@ -3,6 +3,12 @@
 # link or crawl lands on the live page instead of the SPA 404.
 /pitch-index   /repertoire  301
 /pitch-index/  /repertoire  301
+/classify      /repertoire  301
+/classify/     /repertoire  301
+/kinetic-chain /learn/mechanics 301
+/kinetic-chain/ /learn/mechanics 301
+/lost-pitches/smokey-joe-williams-velocity /lost-pitches/smokey-joe-williams-fastball 301
+/lost-pitches/smokey-joe-williams-velocity/ /lost-pitches/smokey-joe-williams-fastball 301
 
 # SPA fallback. Every real route is prerendered to its own HTML file, so those
 # are served directly. Any other path falls through to the app shell and the

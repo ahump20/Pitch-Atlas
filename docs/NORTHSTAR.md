@@ -68,9 +68,11 @@ masters set the floor. Community field notes create the reason to return.
 **1. Sourced, not corrected.**
 Many grips work. The atlas does not pick a winner. It records what's known,
 attributes it, and labels how confident the source is, then lets the reader judge.
-A Statcast number and a beat writer's quote are both welcome on the page and they
-must never wear the same badge. This principle governs the README, the UI copy, and
-the data model in equal measure. It is the whole personality of the product.
+Official tracking context and a beat writer's quote can both support a claim, but
+they must never wear the same badge. Sourced biography facts stay when they are
+real; pitch behavior is described as shape unless this atlas has measured it. This
+principle governs the README, the UI copy, and the data model in equal measure. It
+is the whole personality of the product.
 
 **2. Grip-first.**
 The thing a human can physically hold leads. Finger placement, seam orientation, the

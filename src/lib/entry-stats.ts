@@ -19,14 +19,12 @@ export function countSources(entry: PitchAtlasEntry): number {
   c.gripDetails.forEach((d) => collect(d, set))
   collect(c.mechanics, set)
   collect(c.physics.spinAxis, set)
-  collect(c.physics.spinRateRpm, set)
-  collect(c.physics.activeSpinPct, set)
-  collect(c.physics.primaryBreak.claim, set)
-  collect(c.physics.secondaryBreak?.claim, set)
+  collect(c.physics.shape, set)
   collect(c.physics.teaching, set)
   collect(c.voice, set)
   entry.masterVariants.forEach((m) => {
-    m.numbers.forEach((n) => collect(n.claim, set))
+    collect(m.distinction, set)
+    m.accolades?.forEach((a) => collect(a.claim, set))
     collect(m.quote, set)
   })
   return set.size

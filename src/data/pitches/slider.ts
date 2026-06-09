@@ -8,10 +8,9 @@ import { sharedSeam } from './_shared-seam'
   shows the hitter a red dot. Grip prose paraphrased from Driveline, never copied.
   No player image, no likeness.
 
-  Authored against an independent verification pass. Corrections it forced: the
-  league-average slider breaks about 6 inches glove-side per MLB.com (not 3.8);
-  Sale's horizontal break is view-dependent and labeled so; and the per-pitch spin
-  rates, which render in a Savant widget that would not re-fetch, are approximate.
+  Movement is described as shape, not measured: a direction and a character, never
+  a number. The atlas owner has never been tracked, so any gauge for how this pitch
+  moves would be invented. The shape read is honest; the gauge is not.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -97,49 +96,24 @@ export const slider: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It lives in the gap between the fastball and the curve, about 6 to 10 mph off the four-seam, thrown with a firmer wrist and a side-of-the-ball finger pull rather than a curve\'s over-the-top snap. The arm mimics the fastball; the late, short glove-side bite comes from gyro-dominant spin and from gravity acting on a ball with little Magnus lift.',
+      'It lives in the gap between the fastball and the curve, a touch softer than the four-seam, thrown with a firmer wrist and a side-of-the-ball finger pull rather than a curve\'s over-the-top snap. The arm mimics the fastball; the late, short glove-side bite comes from gyro-dominant spin and from gravity acting on a ball with little Magnus lift.',
       'driveline-slider',
       'reputable-analysis',
-      { note: 'Paraphrased. The 6 to 10 mph gap is corroborated by MLB.com\'s slider framing.' },
+      { note: 'Paraphrased. The fastball-adjacent timing read is corroborated by MLB.com\'s slider framing.' },
     ),
     physics: {
       spinAxis: claim(
-        'The axis points largely toward the plate, bullet spin, so much of the spin is gyroscopic and does no Magnus work. Statcast measures that as low active spin: Cease ran about 25% in 2024, Glasnow about 19%. The measured clock sits near 9:00 to 9:45 for a right-hander.',
+        'The axis points largely toward the plate, bullet spin, so much of the spin is gyroscopic and does no Magnus work. Tracking reads that as low active spin: most of the turn is wasted as a spiral. For a right-hander the tilt sits late in the clock, biased to the glove side.',
         'tht-gyro-physics',
         'reputable-analysis',
-        { note: 'Active-spin figures from Savant, 2024. Axis-toward-plate physics from the Hardball Times gyro analysis.' },
+        { note: 'Axis-toward-plate physics from the Hardball Times gyro analysis. Described as orientation, not a measured figure.' },
       ),
-      spinRateRpm: claim(
-        'High rpm, little of it useful: the gyro signature. Cease averaged about 2,780 rpm and Glasnow about 2,720 in 2024, hard spin that mostly points at the plate.',
-        'savant-cease',
-        'official-data',
-        { approximate: true, note: 'Per-pitch rpm renders in a Savant widget that would not re-fetch; treated as approximate, season-specific.' },
+      shape: claim(
+        'Stays on the fastball line, then bends late and short to the glove side, a sudden glove-side cut rather than a long sweep. It barely rides and barely tumbles; gravity, not lift, drives most of its fall. The hitter reads a red dot and commits a beat too soon.',
+        'savant-slider-movement',
+        'reputable-analysis',
+        { note: 'Described as shape, not a measured number. How far it bends depends on the arm and the grip; a tight gyro slider is short and sharp, a sweeper-leaning one is broad.' },
       ),
-      activeSpinPct: claim(
-        'Low, which defines the pitch. Cease about 25% active spin in 2024, Glasnow about 19%, roughly three-quarters to four-fifths gyro. A sweeper-shaped slider (Sale, ~62%) is doing sidespin work instead.',
-        'savant-cease',
-        'official-data',
-        { note: 'Active spin is the share of spin that deflects the ball; the rest is bullet spin pointed at the plate.' },
-      ),
-      primaryBreak: {
-        label: 'Glove-side break',
-        accent: true,
-        claim: claim(
-          'Late and short. A tight gyro slider (Cease, 2024) bends only about 2 inches glove-side; the average slider breaks about 6 inches, where a sweeper reaches about 15.',
-          'savant-slider-movement',
-          'official-data',
-          { approximate: true, note: 'Cease ~2.2 in glove-side (leaderboard view). MLB.com gives the average slider ~6 in and the average sweeper ~15 in glove-side.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Induced vertical break',
-        claim: claim(
-          'Near zero or slightly positive: it neither rides like a four-seam nor tumbles like a curve. Cease sits about +2 inches, so gravity drives most of the drop while the gyro spin adds almost no lift.',
-          'savant-cease',
-          'official-data',
-          { note: 'Cease +1.9 in induced vertical break, 2024. Small movement in both planes is why a flat gyro slider becomes a cement mixer.' },
-        ),
-      },
       teaching: claim(
         'A four-seam spins backspin, its axis sideways to flight, so the Magnus force pushes up and it rides. A gyro slider spins like a thrown football, its axis pointed at the catcher, so the spin makes almost no Magnus force. With little lift to fight gravity it drops more than the fastball, and the small tilt left in the axis bends it glove-side, late and short. Same arm, opposite Magnus budget.',
         'tht-gyro-physics',
@@ -151,13 +125,13 @@ export const slider: PitchAtlasEntry = {
   },
 
   motion: {
-    // Gyro: the axis points mostly toward the camera (+z), so magnusStrength is
-    // low (~0.28) and the force arrow is short. The red dot shows on the near pole.
+    // Gyro: the axis points mostly toward the camera (+z), so the Magnus force is
+    // small and the force arrow is short. The red dot shows on the near pole.
+    // verticalShape 'flat' = it neither rides like a four-seam nor tumbles like a curve.
     spinAxis: { x: 0.26, y: -0.1, z: 0.96 },
     forceLabel: 'Gyro: minimal Magnus',
     gyro: true,
-    ivbInches: 1.9,
-    horizontalInches: 2.2,
+    verticalShape: 'flat',
     horizontalDir: 'glove-side',
     breakView: 'movement',
   },
@@ -166,12 +140,12 @@ export const slider: PitchAtlasEntry = {
     slug: 'slider',
     shortName: 'Slider',
     specimenNo: '04',
-    heroSub: 'Spun like a football.',
+    heroSub: 'Spun like a football. Read by the late bite, not by a gun.',
     heroIntro:
-      'The axis points at the plate, so the spin does almost no work. It stays straight, then breaks late and short to the glove side. The hitter sees a red dot.',
+      'The axis points at the plate, so the spin does almost no work. It stays on the fastball line, then breaks late and short to the glove side. The hitter sees a red dot.',
     foundationCaption: 'Bullet spin means almost no Magnus lift, so it drops more than the fastball and bends late, glove-side.',
     mastersIntro:
-      'Two reference gyro sliders and the sweeper boundary beside them. The visual is our own seam schematic; every figure is season-stamped and sourced.',
+      'Two reference gyro sliders, then the sweeper boundary beside them. The visual is our own seam schematic. What sets each version apart is in the shape and the read, not a gauge.',
   },
 
   masterVariants: [
@@ -180,42 +154,38 @@ export const slider: PitchAtlasEntry = {
       pitcher: 'Dylan Cease',
       context: 'The reference-grade modern gyro slider: thrown at high volume, bullet-spin dominant, the textbook tight-dot shape and a top swing-and-miss weapon.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('87.7 mph', 'savant-cease', 'official-data', { note: '2024.' }) },
-        { label: 'Active spin', claim: claim('~25%', 'savant-cease', 'official-data', { approximate: true, note: '2024, about three-quarters gyro (Savant 24.9%).' }) },
-        { label: 'Induced vertical break', claim: claim('+1.9 in', 'savant-cease', 'official-data', { note: '2024, barely above a spinless ball.' }) },
-        { label: 'Glove-side break', claim: claim('~2.2 in', 'savant-slider-movement', 'official-data', { approximate: true, note: '2024 leaderboard view; the signed player-page value reads near zero.' }) },
-        { label: 'Whiff rate', claim: claim('44.7%', 'savant-cease', 'official-data', { note: '2024, .208 wOBA against; thrown 43% of the time, the most valuable pitch in MLB by run value.' }) },
-        { label: 'Spin rate', claim: claim('~2,780 rpm', 'savant-cease', 'official-data', { approximate: true, note: 'High spin, little of it useful.' }) },
-      ],
+      distinction: claim(
+        'The textbook tight dot. Almost pure gyro, so it barely deflects in either plane and simply vanishes late, glove-side; hitters keep swinging through the spot where it used to be. The cleanest version of what the pitch is.',
+        'savant-cease',
+        'reputable-analysis',
+        { note: 'Described as shape and read, not a gauge. A near-pure gyro slider shows the tightest red dot and the shortest, latest bite.' },
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Tyler Glasnow',
-      context: 'The purest gyro of the set: the lowest active spin, thrown harder than most sliders. It shows what almost-all-gyro looks like, near-zero induced break, yet still a plus whiff pitch.',
+      context: 'The purest gyro of the set, thrown firm and tight. It shows what almost-all-gyro looks like: barely any early deflection, then late chase bite.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('90.0 mph', 'savant-glasnow', 'official-data', { note: '2024.' }) },
-        { label: 'Active spin', claim: claim('~19%', 'savant-glasnow', 'official-data', { approximate: true, note: '2024, over four-fifths gyro (Savant 18.7%), the lowest of the set.' }) },
-        { label: 'Induced vertical break', claim: claim('~+0.5 in', 'savant-glasnow', 'official-data', { approximate: true, note: '2024, near zero, consistent with its near-pure gyro spin.' }) },
-        { label: 'Glove-side break', claim: claim('~2.5 in', 'savant-glasnow', 'official-data', { approximate: true, note: '2024, minimal, the low-movement gyro profile.' }) },
-        { label: 'Whiff rate', claim: claim('40.4%', 'savant-glasnow', 'official-data', { note: '2024.' }) },
-      ],
+      distinction: claim(
+        'The hardest, flattest gyro of the three. Almost none of the spin does Magnus work, so it neither rides nor sweeps, it just holds the fastball line and bites a hair at the end. Velocity and deception carry it where movement does not.',
+        'savant-glasnow',
+        'reputable-analysis',
+        { note: 'Described as shape and read, not a gauge. The near-pure gyro profile means minimal deflection in either plane.' },
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Chris Sale',
-      context: 'The boundary case, included honestly, not as a gyro exemplar. Statcast called it a slider in 2024, but at about 62% active spin and double-digit glove-side break, its shape is sweeper-like. It marks where the gyro slider ends and the sweeper begins.',
+      context: 'The boundary case, included honestly, not as a gyro exemplar. The tracking taxonomy called it a slider, but its shape is sweeper-like. It marks where the gyro slider ends and the sweeper begins.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('78.6 mph', 'savant-sale', 'official-data', { note: '2024.' }) },
-        { label: 'Active spin', claim: claim('~62%', 'savant-sale', 'official-data', { note: '2024, far higher than Cease or Glasnow, the sidespin end of the family.' }) },
-        { label: 'Induced vertical break', claim: claim('-4.7 in', 'savant-sale', 'official-data', { note: '2024, it drops below a spinless ball, unlike the gyro sliders.' }) },
-        { label: 'Glove-side break', claim: claim('~11 to 13 in', 'savant-sale', 'official-data', { approximate: true, note: '2024, view-dependent: ~6 in signed on the player page, ~12 to 13.6 in on total-movement views.' }) },
-        { label: 'Whiff rate', claim: claim('42.7%', 'savant-sale', 'official-data', { note: '2024.' }) },
-      ],
+      distinction: claim(
+        'Not really a gyro at all, and that is the point. From his low slot it does real sidespin work and sweeps broad and tumbling across the zone, where the gyro sliders cut short and flat. It marks the edge of the family.',
+        'savant-sale',
+        'reputable-analysis',
+        { note: 'Described as shape and read, not a gauge. Its sidespin-heavy, sweeping shape sits at the boundary between the gyro slider and the sweeper.' },
+      ),
       rights: 'original',
     },
   ],

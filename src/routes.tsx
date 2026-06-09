@@ -14,8 +14,6 @@ import { SourcesPage } from './pages/SourcesPage'
 import { SandboxPage } from './pages/SandboxPage'
 import { MovementMapPage } from './pages/MovementMapPage'
 import { ComparePage } from './pages/ComparePage'
-import { KineticChainPage } from './pages/KineticChainPage'
-import { ClassifyPage } from './pages/ClassifyPage'
 import { GripsPage } from './pages/GripsPage'
 import { SoftballHub } from './pages/SoftballHub'
 import { SoftballFastpitchPage } from './pages/SoftballFastpitchPage'
@@ -50,8 +48,6 @@ export const routes: RouteObject[] = [
       { path: 'sandbox', Component: SandboxPage },
       { path: 'movement-map', Component: MovementMapPage },
       { path: 'compare', Component: ComparePage },
-      { path: 'kinetic-chain', Component: KineticChainPage },
-      { path: 'classify', Component: ClassifyPage },
       { path: 'grips', Component: GripsPage },
       { path: 'softball', Component: SoftballHub },
       { path: 'softball/fastpitch', Component: SoftballFastpitchPage },

@@ -98,9 +98,6 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
           ) : null}
         </span>
         {aka ? <span className="mt-1 block text-[11.5px] leading-snug text-ink-3">{aka}</span> : null}
-        {entry.velocity ? (
-          <span className="mt-1.5 block font-mono text-[9.5px] leading-snug text-bone-2">{entry.velocity}</span>
-        ) : null}
         {gripEntry ? (
           <Badge
             variant="outline"

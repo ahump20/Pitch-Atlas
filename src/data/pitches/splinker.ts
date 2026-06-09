@@ -5,10 +5,11 @@ import { sharedSeam } from './_shared-seam'
 /*
   The splinker. A sinker-splitter hybrid, the portmanteau coined for the pitch
   Jhoan Duran popularized and Paul Skenes made famous: a light two-seam split
-  fired near fastball velocity, so it carries a 94-to-98 mph look with the late,
-  arm-side, downward dive of a splitter. Statcast has no "splinker" label, so it
-  is logged as a splitter or a sinker depending on the arm. Grip prose is reporter
-  paraphrase, marked as such, not the pitchers' own words. No player likeness.
+  thrown with fastball arm speed, so it leaves the hand looking like the heater,
+  then carries the late, arm-side, downward dive of a splitter. Statcast has no
+  "splinker" label, so it is logged as a splitter or a sinker depending on the
+  arm. Grip prose is reporter paraphrase, marked as such, not the pitchers' own
+  words. No player likeness.
 */
 
 const fingerPlacement: SeamAnchoredPoint[] = [
@@ -24,7 +25,7 @@ const gripModel: GripModel = {
   primaryPressureFinger: 'index',
   thumbRole: 'Thumb supports underneath, centered between the lightly split fingers.',
   palmGapCue: 'A light two-seam split, the ball held shallow, not wedged deep between the fingers.',
-  releaseCue: 'Fastball arm and velocity; the light split and index pressure add the sink and tail.',
+  releaseCue: 'Fastball arm and full intent; the light split and index pressure add the sink and tail.',
   visualCaveat: 'Grip geometry is schematic. Skenes shows a clearly split grip on a two-seam orientation; the index-finger-pressure detail is reporter paraphrase, not a verbatim quote.',
   contacts: [
     {
@@ -88,7 +89,7 @@ export const splinker: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'Thrown with fastball arm speed and near-fastball velocity. The low spin produces extra drop and arm-side run, and because it leaves the hand on nearly the same path as the four-seam, hitters cannot separate the rising fastball from the diving hybrid until it falls.',
+      'Thrown with fastball arm speed and full intent. The light, low-spin split lets the ball drop and run to the arm side, and because it leaves the hand on nearly the same path as the four-seam, hitters cannot separate the riding fastball from the diving hybrid until it falls.',
       'skenes-mlb-debut',
       'reputable-analysis',
       { note: 'Paraphrased from MLB.com\'s coverage of Skenes\' debut splinker.' },
@@ -101,36 +102,18 @@ export const splinker: PitchAtlasEntry = {
     ),
     physics: {
       spinAxis: claim(
-        'A low-spin, sinker-like axis with arm-side tilt, but the spin-based flight path stays similar to the four-seam fastball, so the two look alike out of the hand before the splinker dives.',
+        'A low-spin, sinker-like axis with arm-side tilt, but the flight path stays close to the four-seam\'s out of the hand, so the two look alike before the splinker dives.',
         'skenes-mlb-confidence',
         'reputable-analysis',
       ),
-      spinRateRpm: claim(
-        'About 1,750 rpm, far below the average MLB sinker at roughly 2,150 rpm. The low spin is exactly why it behaves like neither a true sinker nor a true splitter.',
-        'skenes-mlb-arsenal',
+      shape: claim(
+        'It holds the four-seam line for most of the way, then drops late and runs to the throwing-arm side — a sudden, heavy dive off a fastball look. Down and arm-side, arriving where the four-seam never does.',
+        'skenes-mlb-debut',
         'official-data',
-        { approximate: true, note: 'Per MLB.com\'s arsenal breakdown; not independently re-pulled from Savant.' },
+        { note: 'Described as shape, not a measured number. The dive is real; how sharp depends on the arm.' },
       ),
-      primaryBreak: {
-        label: 'Arm-side dive',
-        accent: true,
-        claim: claim(
-          'In his MLB debut, Statcast logged 31.4 inches of vertical movement and 13.8 inches of horizontal movement, a profile nearly identical to Zack Wheeler\'s elite splitter (31.8 / 13.4) but roughly nine mph harder.',
-          'skenes-mlb-debut',
-          'official-data',
-          { note: 'Total movement figures from MLB.com\'s debut coverage.' },
-        ),
-      },
-      secondaryBreak: {
-        label: 'Velocity off the fastball',
-        claim: claim(
-          'About 94 mph, roughly four mph under his four-seam (about 98 mph) and nearly eight mph above the average MLB splitter at 86.5 mph.',
-          'skenes-mlb-arsenal',
-          'official-data',
-        ),
-      },
       teaching: claim(
-        'It is a second fastball shape: near-fastball velocity off the same arm slot and release as the four-seam, then a late dive and arm-side run the four-seam never makes. The hitter has to choose between the rising pitch and the diving one out of the same hand.',
+        'It is a second fastball shape: fastball arm speed off the same slot and release as the four-seam, then a late dive and arm-side run the four-seam never makes. The hitter has to choose between the riding pitch and the diving one out of the same hand.',
         'skenes-mlb-confidence',
         'reputable-analysis',
         { note: 'Synthesized from MLB.com; the pitch tunnels off the four-seam, then separates.' },
@@ -141,11 +124,12 @@ export const splinker: PitchAtlasEntry = {
 
   motion: {
     // Low-spin sinker axis tilted arm-side and down: a short, leaned force arrow,
-    // so the catcher's-eye plot shows arm-side run plus sink.
+    // so the catcher's-eye plot shows arm-side run plus sink. verticalShape 'flat'
+    // = it neither carries like a four-seam nor drops like a true splitter; it
+    // holds the line, then dives late, sitting close to flat off a spinless ball.
     spinAxis: { x: 0.74, y: -0.36, z: 0.57 },
     forceLabel: 'Magnus, arm-side + sink',
-    ivbInches: 6,
-    horizontalInches: 14,
+    verticalShape: 'flat',
     horizontalDir: 'arm-side',
     breakView: 'movement',
   },
@@ -156,10 +140,10 @@ export const splinker: PitchAtlasEntry = {
     specimenNo: '06',
     heroSub: 'A fastball that sinks like a splitter.',
     heroIntro:
-      'A light two-seam split, fired near fastball velocity. It looks like the 98 mph four-seam out of the hand, then dives arm-side and down. A pitch only a handful of arms throw.',
-    foundationCaption: 'Near-fastball velocity off the four-seam look, then a late dive and arm-side run.',
+      'A light two-seam split, thrown with fastball arm speed. It looks like the four-seam out of the hand, then dives arm-side and down. A pitch only a handful of arms throw.',
+    foundationCaption: 'A fastball look off the same arm, then a late dive and arm-side run.',
     mastersIntro:
-      'The few arms throwing it: the one who popularized it, the one who made it famous, and the closers chasing it. The visual is our own seam schematic. Every figure links to its source.',
+      'The few arms throwing it: the one who popularized it, the one who made it famous, and the closers chasing it. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
   },
 
   masterVariants: [
@@ -168,12 +152,11 @@ export const splinker: PitchAtlasEntry = {
       pitcher: 'Paul Skenes',
       context: 'Made the pitch famous. Discovered it by accident playing catch after the 2023 College World Series, then turned it into one of the most valuable pitches in baseball.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('~94 mph', 'skenes-mlb-arsenal', 'official-data') },
-        { label: 'Spin rate', claim: claim('~1,750 rpm', 'skenes-mlb-arsenal', 'official-data') },
-        { label: 'Run value since debut', claim: claim('+18 (top-five pitch in MLB)', 'skenes-mlb-arsenal', 'official-data') },
-        { label: 'Opponent average (first 6 starts)', claim: claim('.073 (3-for-41)', 'skenes-mlb-confidence', 'official-data') },
-      ],
+      distinction: claim(
+        'The definitive modern splinker: a fastball look that holds the four-seam line, then dives arm-side and down so late hitters keep waving over it. It plays like a second fastball with a trapdoor.',
+        'skenes-mlb-arsenal',
+        'official-data',
+      ),
       rights: 'original',
     },
     {
@@ -181,21 +164,25 @@ export const splinker: PitchAtlasEntry = {
       pitcher: 'Jhoan Duran',
       context: 'The arm who first popularized the splinker, discovering it in a 2018 bullpen after widening a sinker grip. The hardest version in the game.',
       verifiedPro: true,
-      numbers: [
-        { label: 'Velocity', claim: claim('97.7 mph (tops 100)', 'duran-fangraphs', 'reputable-analysis', { note: '2025; Statcast classifies it as a splitter.' }) },
-        { label: 'Induced horizontal break', claim: claim('13.9 in (top-10 among splitters)', 'duran-fangraphs', 'reputable-analysis' ) },
-      ],
+      distinction: claim(
+        'The firmest version in the game — splitter-grade arm-side dive carried with fastball intent, so the dive lands without the usual soft-pitch tell.',
+        'duran-fangraphs',
+        'reputable-analysis',
+        { note: '2025; Statcast classifies it as a splitter.' },
+      ),
       rights: 'original',
     },
     {
       tier: 'verified-attributed',
       pitcher: 'Mason Miller',
-      context: 'Added the splinker to a 100-plus mph fastball and a wipeout slider, unveiling it in a May 2024 game with extra horizontal ride.',
+      context: 'Added the splinker to a triple-digit fastball and a wipeout slider, unveiling it in a May 2024 game with extra horizontal ride.',
       verifiedPro: true,
-      numbers: [
-        { label: 'First in-game velocity', claim: claim('97.1 and 98.1 mph', 'miller-mlb', 'official-data', { note: 'May 28, 2024.' }) },
-        { label: 'Horizontal movement', claim: claim('15-18 in', 'miller-mlb', 'official-data') },
-      ],
+      distinction: claim(
+        'Bolted onto an elite power arsenal — his version leans hard to extra arm-side run, a third look off the same upper-tier heat and the wipeout slider.',
+        'miller-mlb',
+        'official-data',
+        { note: 'Unveiled May 28, 2024.' },
+      ),
       rights: 'original',
     },
   ],
@@ -210,18 +197,18 @@ export const splinker: PitchAtlasEntry = {
 
   guide: {
     family: 'The hybrid',
-    tagline: 'It leaves the hand like a 98 mph fastball, then sinks and runs like a splitter.',
+    tagline: 'It leaves the hand like the fastball, then sinks and runs like a splitter.',
     feel: 'Throw it like the fastball. The light split and a little index pressure add the dive.',
     steps: [
       'Split your index and middle fingers wide across a two-seam orientation.',
       'Hold the ball shallow between them, not wedged deep like a splitter.',
       'Add a little extra pressure with your index finger to pull the arm-side tail.',
-      'Throw it with fastball arm speed; the low spin gives you the late dive.',
+      'Throw it with fastball arm speed; the light, low-spin split gives you the late dive.',
     ],
     does: {
       headline: 'A second fastball that falls off the table.',
       plain:
-        'It tunnels off the four-seam, leaving the hand on nearly the same path at nearly the same speed. Then the low spin lets it dive down and toward the throwing arm, so the hitter has to guess which fastball is coming.',
+        'It tunnels off the four-seam, leaving the hand on nearly the same path at fastball speed. Then the light split lets it dive down and toward the throwing arm, so the hitter has to guess which fastball is coming.',
     },
   },
 

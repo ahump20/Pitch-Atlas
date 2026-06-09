@@ -3,7 +3,7 @@ import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualRef
 /*
   The visual grip library — the clean-channel photo layer.
 
-  Every image here is a real photograph of one grip in one hand: Austin Humphrey's,
+  Every image here is a real photograph of one grip in one hand: Austin H.'s,
   on his own ball, shot 2026-06-06. That makes the whole set `first-party` /
   `rights: original` by construction — owned outright, no agency photo, no
   identifiable third party, nothing scraped. The captions and the per-grip notes
@@ -20,7 +20,7 @@ import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualRef
 
 const CAPTURED = '2026-06-06'
 export const GRIP_PHOTO_PROOF_LIMIT =
-  'Grip photo only; does not prove velocity, spin, movement, command, injury risk, or outcome.'
+  'Grip photo only; does not prove tracked speed, spin, shape, command, injury risk, or outcome.'
 const CLAIM_TIER: Extract<ClaimConfidence, 'pitcher-own-words'> = 'pitcher-own-words'
 
 function shot(file: string, view: GripView, caption: string, alt: string): VisualReference {
@@ -31,7 +31,7 @@ function shot(file: string, view: GripView, caption: string, alt: string): Visua
     alt,
     kind: 'first-party',
     rights: 'original',
-    attribution: 'Austin Humphrey',
+    attribution: 'Austin H.',
     capturedAt: CAPTURED,
   }
 }
@@ -213,7 +213,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     note:
       'Gripped almost exactly like the two-seam, except the fingers spread out wider — just outside the laces instead of right on them. With short, stubby fingers like mine you can barely see the difference. Those same short fingers are the reason I have never been able to throw a circle change.',
     movement:
-      'I threw this some as a harder version of the changeup — it let me stay at full arm velocity and feel more like a fastball than a traditional change at release, then drop. The fastball-tilt change, not a soft one.',
+      'I threw this some as a harder version of the changeup — it let me stay at full arm speed and feel more like a fastball than a traditional change at release, then drop. The fastball-tilt change, not a soft one.',
     photos: [
       shot(
         'splitter-7175.webp',
@@ -330,7 +330,7 @@ export const GRIP_LIBRARY_ARSENAL =
 
 /** His own note on command and the arm slot — why the variation cost him nothing. */
 export const GRIP_LIBRARY_COMMAND_NOTE =
-  'I never noticed a big difference in movement or control from switching pitches — or from switching it up — because I never really had issues with velocity, command, or movement. Those were fundamentals, drilled into me. And I would seamlessly, sometimes intentionally, drop down to three-quarters. It felt the same to me, but it gives a different look to a hitter who is already guessing anyway.'
+  'I never noticed a big difference in shape or control from switching pitches — or from switching it up — because I never really had issues with pace, command, or movement. Those were fundamentals, drilled into me. And I would seamlessly, sometimes intentionally, drop down to three-quarters. It felt the same to me, but it gives a different look to a hitter who is already guessing anyway.'
 
 /** How Austin attacked hitters — his own game plan, in his words. A pitcher's account. */
 export interface AttackStep {

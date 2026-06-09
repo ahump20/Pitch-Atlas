@@ -9,19 +9,17 @@ import { buildBreak, tiltClock, describeShape, ANCHOR_NOTE, type BreakInputs } f
 import type { PitchMotion } from '../data/types'
 
 /*
-  Build the break. The spin-axis sandbox: set the spin tilt, rate, efficiency, and
-  velocity, and watch the same seam ball and catcher's-eye plot the filed pitches
-  use redraw live. It exposes the atlas's own physics (lib/physics.ts) so spin axis
-  stops being a phrase and becomes something you can feel. The inch magnitudes are
-  a labeled teaching scale, never presented as a measured prediction.
+  Shape Lab. Set the spin tilt and watch the same seam ball and catcher's-eye plot
+  translate it into shape language. No rpm, no speed, no inch output.
 */
 
 const PRESETS: { label: string; inputs: BreakInputs }[] = [
-  { label: 'Four-seam', inputs: { tiltDeg: 0, rpm: 2300, effPct: 92, veloMph: 94 } },
-  { label: '12-6 curve', inputs: { tiltDeg: 180, rpm: 2500, effPct: 80, veloMph: 80 } },
-  { label: 'Sweeper', inputs: { tiltDeg: 95, rpm: 2600, effPct: 65, veloMph: 84 } },
-  { label: 'Gyro slider', inputs: { tiltDeg: 60, rpm: 2500, effPct: 22, veloMph: 87 } },
-  { label: 'Sinker', inputs: { tiltDeg: 40, rpm: 2150, effPct: 88, veloMph: 93 } },
+  { label: '12:00 ride', inputs: { tiltDeg: 0 } },
+  { label: '3:00 run', inputs: { tiltDeg: 90 } },
+  { label: '6:00 drop', inputs: { tiltDeg: 180 } },
+  { label: '9:00 sweep', inputs: { tiltDeg: 270 } },
+  { label: 'Ride + run', inputs: { tiltDeg: 45 } },
+  { label: 'Drop + sweep', inputs: { tiltDeg: 225 } },
 ]
 
 /** A small compass that turns the spin tilt into a direction you can see. Decorative. */
@@ -120,58 +118,42 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
 
 export function SandboxPage() {
   const [tiltDeg, setTilt] = useState(PRESETS[0].inputs.tiltDeg)
-  const [rpm, setRpm] = useState(PRESETS[0].inputs.rpm)
-  const [effPct, setEff] = useState(PRESETS[0].inputs.effPct)
-  const [veloMph, setVelo] = useState(PRESETS[0].inputs.veloMph)
 
-  const result = useMemo(() => buildBreak({ tiltDeg, rpm, effPct, veloMph }), [tiltDeg, rpm, effPct, veloMph])
+  const result = useMemo(() => buildBreak({ tiltDeg }), [tiltDeg])
 
   const motion: PitchMotion = {
     spinAxis: result.spinAxis,
     forceLabel: 'Magnus',
     gyro: result.gyro,
-    ivbInches: result.ivbInches,
-    horizontalInches: result.horizontalInches,
+    verticalShape: result.verticalShape,
     horizontalDir: result.horizontalDir,
     breakView: 'movement',
   }
 
   function applyPreset(inputs: BreakInputs) {
     setTilt(inputs.tiltDeg)
-    setRpm(inputs.rpm)
-    setEff(inputs.effPct)
-    setVelo(inputs.veloMph)
   }
 
   useSeoMeta({
-    title: `Build the Break: the spin-axis sandbox | ${SITE.siteName}`,
+    title: `Shape Lab: the spin-axis sandbox | ${SITE.siteName}`,
     description:
-      'Set a pitch’s spin tilt, rate, efficiency, and velocity and watch the ball and its catcher’s-eye movement redraw live. The atlas’s own physics, made playable — a teaching model that turns spin axis into something you can feel.',
-    ogTitle: `Build the Break | ${SITE.siteName}`,
-    ogDescription: 'The spin-axis sandbox. Tilt, rate, efficiency, velocity — watch the break redraw.',
+      'Set a pitch’s spin tilt and watch the ball and catcher’s-eye shape redraw live. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
+    ogTitle: `Shape Lab | ${SITE.siteName}`,
+    ogDescription: 'The spin-axis sandbox. Turn the clock and read the shape.',
     ogUrl: `${SITE.canonicalDomain}/sandbox`,
   })
-
-  const ivbWord = result.ivbInches > 0 ? 'of ride' : result.ivbInches < 0 ? 'of drop' : 'level'
-  const horizWord =
-    result.horizontalDir === 'arm-side'
-      ? 'to the arm side'
-      : result.horizontalDir === 'glove-side'
-        ? 'to the glove side'
-        : 'no run'
 
   return (
     <>
       <SectionHero
-        breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Build the Break' }]} />}
+        breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Shape Lab' }]} />}
         eyebrow="The lab"
         accent="powder"
-        title="Build the break."
+        title="Turn spin into shape."
         sub={
           <>
-            Spin is what bends the ball. Set its tilt, its rate, how much of that spin actually does work, and
-            how hard it is thrown — then watch the same seam ball and catcher&rsquo;s-eye plot the filed pitches
-            use redraw in real time. This is the atlas&rsquo;s own physics, made playable.
+            Spin is what gives the pitch its direction. Turn the clock and watch the seam ball and
+            catcher&rsquo;s-eye plot redraw as ride, drop, arm-side run, or glove-side sweep.
           </>
         }
       />
@@ -184,10 +166,7 @@ export function SandboxPage() {
             <div className="mt-3 flex flex-wrap gap-2">
               {PRESETS.map((p) => {
                 const active =
-                  p.inputs.tiltDeg === tiltDeg &&
-                  p.inputs.rpm === rpm &&
-                  p.inputs.effPct === effPct &&
-                  p.inputs.veloMph === veloMph
+                  p.inputs.tiltDeg === tiltDeg
                 return (
                   <button
                     key={p.label}
@@ -201,7 +180,7 @@ export function SandboxPage() {
                 )
               })}
             </div>
-            <p className="mt-2 text-xs text-ink-2">Illustrative starting points, not claims about a specific pitcher.</p>
+            <p className="mt-2 text-xs text-ink-2">Illustrative clock positions, not claims about a specific pitcher.</p>
 
             <div className="mt-8 space-y-7">
               <div className="flex items-end gap-4">
@@ -209,7 +188,7 @@ export function SandboxPage() {
                   <Slider
                     label="Spin tilt"
                     value={tiltDeg}
-                    display={`${tiltClock(tiltDeg)} · ${tiltDeg}°`}
+                    display={tiltClock(tiltDeg)}
                     min={0}
                     max={345}
                     step={15}
@@ -219,39 +198,6 @@ export function SandboxPage() {
                 </div>
                 <TiltDial tiltDeg={tiltDeg} />
               </div>
-
-              <Slider
-                label="Spin rate"
-                value={rpm}
-                display={`${rpm.toLocaleString()} rpm`}
-                min={800}
-                max={3200}
-                step={50}
-                onChange={setRpm}
-                hint="Total revolutions per minute. League four-seams sit near 2,300."
-              />
-
-              <Slider
-                label="Spin efficiency"
-                value={effPct}
-                display={`${effPct}% active`}
-                min={0}
-                max={100}
-                step={1}
-                onChange={setEff}
-                hint="The share of spin that does Magnus work. The rest is gyro (bullet) spin that points the axis at the catcher and moves nothing."
-              />
-
-              <Slider
-                label="Velocity"
-                value={veloMph}
-                display={`${veloMph} mph`}
-                min={68}
-                max={104}
-                step={1}
-                onChange={setVelo}
-                hint="A slower pitch hangs longer, so the Magnus force has more time to bend it."
-              />
             </div>
           </div>
 
@@ -264,7 +210,7 @@ export function SandboxPage() {
                   spinAxis={result.spinAxis}
                   gyro={result.gyro}
                   surface="stage"
-                  title={`The ball, oriented to a ${tiltClock(tiltDeg)} spin tilt at ${effPct}% efficiency. ${result.gyro ? 'The axis points at the catcher: gyro spin.' : 'The dashed line is the spin axis.'}`}
+                  title={`The ball, oriented to a ${tiltClock(tiltDeg)} spin tilt. The dashed line is the spin axis.`}
                 />
                 <figcaption className="mono-label-stage mt-2">From the side</figcaption>
               </figure>
@@ -274,15 +220,9 @@ export function SandboxPage() {
               </figure>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
-              <Stat label="Active spin" value={`${result.activeRpm.toLocaleString()}`} sub="rpm doing work" />
-              <Stat label="Gyro spin" value={`${result.gyroRpm.toLocaleString()}`} sub="rpm, bullet" />
-              <Stat
-                label="Induced vertical"
-                value={`${result.ivbInches >= 0 ? '+' : ''}${result.ivbInches} in`}
-                sub={ivbWord}
-              />
-              <Stat label="Horizontal" value={`${result.horizontalInches} in`} sub={horizWord} />
+            <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <Stat label="Vertical shape" value={result.verticalShape} sub="ride, drop, or flat" />
+              <Stat label="Side shape" value={result.horizontalDir} sub="arm-side, glove-side, or true" />
             </div>
 
             <p className="mt-4 text-base leading-relaxed text-bone">{describeShape(result)}</p>
