@@ -44,36 +44,43 @@ export function clampScrollProgress(value: number): number {
   return Math.min(1, Math.max(0, value))
 }
 
+export function normalizeBlazePath(pathname: string): string {
+  if (pathname === '/') return '/'
+  return pathname.replace(/\/+$/, '')
+}
+
 export function moodForPath(pathname: string): BlazeMood {
-  const seriousFlow = /\/(account|block|delete|delete-account|privacy|report)(\/|$)/.test(pathname)
-  if (seriousFlow || pathname === '/sources') return 'hidden'
+  const path = normalizeBlazePath(pathname)
+  const seriousFlow = /\/(account|block|delete|delete-account|privacy|report)(\/|$)/.test(path)
+  if (seriousFlow || path === '/sources') return 'hidden'
   if (
-    pathname === '/sandbox' ||
-    pathname === '/movement-map' ||
-    pathname === '/compare' ||
-    pathname === '/kinetic-chain' ||
-    pathname === '/classify'
+    path === '/sandbox' ||
+    path === '/movement-map' ||
+    path === '/compare' ||
+    path === '/kinetic-chain' ||
+    path === '/classify'
   ) {
     return 'still'
   }
-  if (pathname.startsWith('/pitch/') || /^\/repertoire\/[^/]+/.test(pathname)) return 'chasing'
-  if (pathname === '/repertoire' || pathname === '/grips') return 'hidden'
-  if (pathname === '/') return 'sniffing'
-  if (pathname.includes('delete') || pathname.includes('report') || pathname.includes('privacy')) return 'hidden'
+  if (path.startsWith('/pitch/') || /^\/repertoire\/[^/]+/.test(path)) return 'chasing'
+  if (path === '/repertoire' || path === '/grips') return 'hidden'
+  if (path === '/') return 'sniffing'
+  if (path.includes('delete') || path.includes('report') || path.includes('privacy')) return 'hidden'
   return 'idle'
 }
 
 export function personaForPath(pathname: string): BlazeRoutePersona {
-  if (pathname === '/') return 'home-plate'
-  if (pathname.startsWith('/pitch/')) return 'pitch-mound'
-  if (/^\/repertoire\/[^/]+/.test(pathname)) return 'scorecard'
-  if (pathname.startsWith('/craftsmen')) return 'rosin-bag'
+  const path = normalizeBlazePath(pathname)
+  if (path === '/') return 'home-plate'
+  if (path.startsWith('/pitch/')) return 'pitch-mound'
+  if (/^\/repertoire\/[^/]+/.test(path)) return 'scorecard'
+  if (path.startsWith('/craftsmen')) return 'rosin-bag'
   if (
-    pathname === '/sandbox' ||
-    pathname === '/movement-map' ||
-    pathname === '/compare' ||
-    pathname === '/kinetic-chain' ||
-    pathname === '/classify'
+    path === '/sandbox' ||
+    path === '/movement-map' ||
+    path === '/compare' ||
+    path === '/kinetic-chain' ||
+    path === '/classify'
   ) {
     return 'chalk-talk'
   }

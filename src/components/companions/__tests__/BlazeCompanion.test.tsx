@@ -86,7 +86,7 @@ describe('BlazeCompanion', () => {
     expect(screen.getByTestId('blaze-companion')).toHaveAttribute('data-mood', 'chasing')
   })
 
-  it.each(['/sources', '/privacy', '/account/delete-account', '/report/grip', '/block/user', '/repertoire', '/grips'])(
+  it.each(['/sources', '/sources/', '/privacy', '/account/delete-account', '/report/grip', '/block/user', '/repertoire', '/grips'])(
     'hides on serious, source-label, or dense index route %s',
     (path) => {
       renderCompanion(path)
@@ -153,6 +153,7 @@ describe('BlazeCompanion', () => {
     expect(clampScrollProgress(2)).toBe(1)
     expect(moodForPath('/repertoire/knuckle-slurve')).toBe('chasing')
     expect(moodForPath('/sources')).toBe('hidden')
+    expect(moodForPath('/sources/')).toBe('hidden')
   })
 
   it('cleans up scroll listeners on unmount', () => {
