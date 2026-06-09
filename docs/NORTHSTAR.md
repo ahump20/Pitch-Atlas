@@ -29,8 +29,8 @@ A note on the other docs so this one stays in its lane:
 
 - This file holds the *why* and the *what must not drift*.
 - `README.md` is the public-facing statement of the same thing, for visitors.
-- The root `CLAUDE.md` is the operating contract for anyone (human or agent)
-  changing the repo.
+- The root `CLAUDE.md` and `AGENTS.md` files are the operating contract for anyone
+  (human or agent) changing the repo.
 - `docs/field-manual-elevation-plan.md` is a dated execution snapshot, not a
   constitution. Plans expire. This doesn't.
 - The runbooks (`seam-calibration.md`, `community-media-moderation.md`,
@@ -94,12 +94,14 @@ injury triage, no rehab prescription, no "this grip is safe." No youth workload 
 questions go to a qualified professional. This is non-negotiable in product copy,
 in community guardrails, and in everything the plugin generates.
 
-**5. Provenance on every number.**
-Every real figure carries a `Source` (id, label, url, retrievedAt, optional season)
-and a `confidence` from the model's vocabulary. Anything that can't be verified
-renders as `unverified` or `approximate`, with a note. Nothing ships bare. A broken
-citation throws at build, so a dead source can't reach a visitor. Freshness comes
-from real `retrievedAt` metadata, never a typed-in string.
+**5. Provenance on every claim and real figure.**
+Every real figure that survives carries a `Source` (id, label, url, retrievedAt,
+optional season) and a `confidence` from the model's vocabulary. Biography facts,
+dates, title counts, and cited historical records can ship. Pitch behavior is
+shape language unless this atlas measures it itself. Anything that can't be
+verified renders as `unverified` or `approximate`, with a note. Nothing ships bare.
+A broken citation throws at build, so a dead source can't reach a visitor.
+Freshness comes from real `retrievedAt` metadata, never a typed-in string.
 
 **6. Usable with zero WebGL.**
 The signature 3D ball is the hook, not the gate. The page works fully without it:
@@ -125,10 +127,11 @@ load-bearing ones in the Decision Log, and keep the Core intact while you do.
 - **Tech stack.** Vite + React 19 + TypeScript + Tailwind v4 + Three.js today,
   pinned to Node 24. None of that is sacred. The sourced-not-corrected data model is;
   the renderer under it isn't. Swap tools when a swap pays for itself.
-- **Scope.** Seven filed specimens, the Craftsmen wing, the Lost Pitches wing, the
-  Pitch Index front door, the live discussion layer. Which pitches get the deep
-  treatment, which wings exist, how deep each goes: all movable. The honesty about
-  the edges (an alias, an illusion, a not-a-pitch, a legend) stays.
+- **Scope.** Filed specimens from `src/data/pitches`, the Craftsmen wing, the Lost
+  Pitches wing, the Pitch Index front door, the live discussion layer, and the
+  shape-focused tool routes. Which pitches get the deep treatment, which wings
+  exist, how deep each goes: all movable. The honesty about the edges (an alias,
+  an illusion, a not-a-pitch, a legend) stays.
 - **The rights & visual policy.** See the next section. This one changed on day one
   and will keep getting sharper as the licensing picture changes.
 - **Community.** The discussion layer is live with its safety floor. What it can do
@@ -193,22 +196,25 @@ serves (sourced, real, never faked) does not move.
 
 ---
 
-## The product shape today (snapshot, 2026-06-06)
+## The product shape today (snapshot, 2026-06-09)
 
 So a future reader knows the starting line:
 
 - **Front door:** the Pitch Index (`/repertoire`), a searchable directory of every
   accepted pitch by family plus the Lost Pitches wing. A filed pitch opens its full
   specimen; an unfiled pitch opens an honest basic file.
-- **Seven filed specimens** with the deep treatment: four-seam, two-seam, circle
-  change, 12-6 curve, slider, splitter, splinker. Each leads with the holdable grip,
-  then the interactive 3D ball, then the physics behind a disclosure.
+- **Filed specimens** with the deep treatment live at `/pitch/<slug>` and are
+  generated from `src/data/pitches`. Each leads with the holdable grip, then the
+  interactive 3D ball, then the physics behind a disclosure.
 - **Craftsmen wing:** a curated hall of arms who defined a pitch (Wainwright's curve
   is filed), plus the gyroball as a flagged legend. No likenesses; the visual is the
   seam specimen of their signature pitch.
 - **Lost Pitches wing:** the Negro Leagues and dead-ball deep dive, every entry
   wearing a documentation tier instead of faking a precision the record can't
   support.
+- **Tool routes:** Shape Map, Shape Lab, and Compare teach direction, grip, and
+  deception in words. The old classification and kinetic-chain analytics routes
+  redirect to craft-first pages.
 - **Discussion layer:** live, Supabase-backed, anonymous sign-in, one-level replies,
   native photo/video uploads behind the safety floor.
 - **The plugin:** `pitch-atlas` with the `pitching-coach` skill, six commands
@@ -258,6 +264,18 @@ This is the mechanism that lets the product change without losing itself.
 
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
+
+### 2026-06-09: Craft-over-numbers doctrine replaces pitch-behavior gauges
+
+**Decision.** Pitch behavior is rendered as shape language, not as velocity,
+spin-rate, or break-in-inches figures. Sourced biography figures still belong when
+they are real. The old analytics routes are retired or reframed around craft.
+**Why.** Austin's own pitches were not tracked, and treating invented precision as
+structure made the product less honest and less useful. The field manual needs the
+hand, the seam, the release, and the claim boundary first.
+**Touches.** README, agent operating docs, data model language, route framing,
+cards, and the tool surfaces.
+**Respects.** Sourced, not corrected. Grip-first. Real, never faked.
 
 ### 2026-06-06: iOS plan pressure-tested — Phase 0 rescoped to the service worker; reuse and 3D claims corrected
 

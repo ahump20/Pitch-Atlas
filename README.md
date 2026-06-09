@@ -14,15 +14,10 @@ This principle governs the README, the UI copy, and the data model in equal meas
 
 ## What the atlas is
 
-A navigable index of pitch specimens. Five are live, in the order they teach best, each its own deep-linkable page (`#/four-seam`, `#/two-seam`, `#/circle-change`, `#/twelve-six`, `#/slider`):
-
-| Specimen | The pitch it teaches |
-|---|---|
-| 00 Four-seam | Pure backspin, Magnus up, the ball that rides |
-| 01 Sinker | The axis tilted toward the arm, ride traded for run and sink |
-| 02 Circle change | Fastball arm, late arrival, arm-side fade |
-| 03 12-6 curve | The fastball mirrored, topspin, Magnus down, the ball that drops |
-| 04 Slider | Gyro spin pointed at the plate, almost no Magnus, late and short |
+A navigable index of pitch specimens. Filed specimens are generated from
+`src/data/pitches`, and each one gets a deep-linkable route at `/pitch/<slug>`.
+The current set is source data, not a hand-counted doc promise; add a pitch to
+`PITCHES` and the prerender list follows.
 
 Every specimen proves the same two things:
 
@@ -35,7 +30,7 @@ The front door is the **Pitch Index**: a searchable directory of every accepted 
 
 - **Real grip photos ship only from clean sources.** First-party photography and geometry, community own-grip uploads (through the own-the-rights gate), verified Creative Commons and public-domain photos with attribution, and properly licensed images. What never ships: unlicensed agency or photographer photos of identifiable players, team or league logos and marks, and broadcast footage. The grip is the lesson, not the celebrity; the full policy lives in [`docs/NORTHSTAR.md`](docs/NORTHSTAR.md).
 - **No copied instructional prose.** Grip and mechanics text is paraphrased in our own words and cited with a link.
-- **Every real-player number carries a `Source`** (`id`, `label`, `url`, `retrievedAt`, optional `season`) and a `confidence` label. Anything that cannot be verified renders as `approximate` or `unverified`. Nothing ships bare.
+- **Every real figure that survives carries a `Source`** (`id`, `label`, `url`, `retrievedAt`, optional `season`) and a `confidence` label. Biography facts, dates, title counts, and cited historical records can ship. Pitch behavior is written as shape language unless this atlas measures it itself.
 - **No runtime API dependencies.** All data is static and sourced in the repo. There are no runtime calls to Statcast, Baseball Savant, Rapsodo, TrackMan, MLB, or any external source.
 
 ## Seam accuracy is auditable
@@ -54,7 +49,7 @@ The discussion layer keeps its safety floor: a standing note that posts are shar
 - **3D:** Three.js with React Three Fiber and drei, classic WebGLRenderer. The 3D ball is original parametric geometry, not a downloaded model.
 - **Fonts (self-hosted, no runtime external request):** Newsreader for editorial display, Hanken Grotesk for prose, Martian Mono for data, gauges, source badges, and on-ball annotations.
 - **Deploy:** Cloudflare Pages (static), live at [pitch-atlas.com](https://pitch-atlas.com).
-- **Routing:** the selected specimen lives in the URL hash (`#/<slug>`), so each pitch is deep-linkable with no router dependency and no server rewrite.
+- **Routing:** React Router plus vite-plugin-react-ssg prerenders real path routes (`/pitch/<slug>`, `/repertoire/<id>`, `/craftsmen/<slug>`, and the other data-derived pages).
 - **Community backend:** Supabase (anonymous sign-in + Postgres with row-level security + Storage for uploads). The publishable key ships in the bundle by design; RLS is the boundary. Per-topic discussion with one-level replies and native media, governed by the safety floor in `docs/community-media-moderation.md`.
 
 ## Develop
