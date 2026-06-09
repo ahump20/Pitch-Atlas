@@ -32,7 +32,7 @@ export const armHealthWing: KnowledgeWing = {
       heading: "Throwing Intensity and Elbow Stress",
       paragraphs: [
         "Higher throwing intensity can correlate with greater stress on the ulnar collateral ligament and the structures stabilizing the elbow. This relationship is biomechanical, not theoretical: throwing harder generates greater valgus torque, the rotational force that pulls the elbow open.",
-        "However, the injury link varies by pitcher. Researchers found that some collegiate pitchers showed a clear relationship between ball speed and elbow torque while others did not. Mechanics, arm slot, kinetic-chain efficiency, and anatomical tolerance all change the risk profile.",
+        "However, the injury link varies by pitcher. Researchers found that some collegiate pitchers showed a clear relationship between ball speed and elbow torque while others did not. Mechanics, arm slot, sequencing efficiency, and anatomical tolerance all change the risk profile.",
         "The broader lesson is not that throwing hard alone causes injury. Throwing hard while fatigued, under-recovered, poorly sequenced, or overused creates the danger.",
       ],
       claims: [

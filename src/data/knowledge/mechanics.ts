@@ -26,7 +26,7 @@ export const mechanicsWing: KnowledgeWing = {
       claims: [
         kc("The kinetic chain represents a coordinated effort of muscle units from the entire body, culminating with explosive motion of the upper extremity.", "official-data", { label: "The Kinetic Chain in Overhand Pitching: Its Potential Role for Performance Enhancement and Injury Prevention", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3445080/" }),
         kc("Reduced kinetic energy delivered from the hip and trunk forces the shoulder to work harder to maintain the throw.", "official-data", { label: "The Kinetic Chain in Overhand Pitching: Its Potential Role for Performance Enhancement and Injury Prevention", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3445080/" }),
-        kc("Energy builds as it moves from larger proximal muscles (lower body) to smaller distal muscles (upper body), with quicker deceleration of proximal segments corresponding to better energy transfer to the next segment.", "reputable-analysis", { label: "Hacking the Kinetic Chain", url: "https://www.drivelinebaseball.com/hacking-the-kinetic-chain/" }),
+        kc("Energy builds as it moves from larger proximal muscles (lower body) to smaller distal muscles (upper body), with quicker deceleration of proximal segments corresponding to better energy transfer to the next segment.", "official-data", { label: "The Kinetic Chain in Overhand Pitching", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC3445080/" }),
       ],
     },
     {
@@ -65,10 +65,10 @@ export const mechanicsWing: KnowledgeWing = {
       claims: [
         kc("At maximum external rotation (end of arm cocking), shoulder abduction is approximately 90°, shoulder horizontal abduction is approximately 20°, and shoulder external rotation is approximately 170°.", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }),
         kc("At maximum external rotation, elbow flexion is approximately 90°, elevated to shoulder height.", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }),
-        kc("Shoulder internal rotation reaches velocities up to 7,500 degrees per second during the acceleration phase, the fastest measured human joint motion.", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }),
+        kc("Shoulder internal rotation becomes extremely fast during the acceleration phase, one reason the delivery must be sequenced before the arm fires.", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }),
         kc("The ulnar collateral ligament (UCL) is a primary static stabilizer of the medial elbow joint against approximately 55% of the valgus load.", "official-data", { label: "The ulnar collateral ligament loading paradox between in-vitro and in-vivo studies on baseball pitching (narrative review)", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8130712/" }),
       ],
-      pullStat: { label: "Shoulder Internal Rotation Velocity", claim: kc("Up to 7,500 degrees per second", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }) },
+      pullStat: { label: "Shoulder Rotation Speed", claim: kc("Extremely fast during acceleration", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }) },
     },
     {
       heading: "Acceleration and Release",
@@ -91,7 +91,7 @@ export const mechanicsWing: KnowledgeWing = {
       claims: [
         kc("The follow-through begins immediately after ball release and ends when the pitcher has decelerated and regained balance.", "reputable-analysis", { label: "The Pitching Follow Through: Key to Power and Health", url: "https://baseballscouter.com/pitching-follow-through-mechanics/" }),
         kc("During deceleration, the big muscles of the back and posterior shoulder slow the arm while the forearm naturally pronates, reducing stress on the shoulder and elbow.", "reputable-analysis", { label: "The Pitching Follow Through: Key to Power and Health", url: "https://baseballscouter.com/pitching-follow-through-mechanics/" }),
-        kc("During arm deceleration, slowing the upper extremity which reaches internal rotation velocities of 7,500 degrees per second generates distraction forces as high as 81% body weight.", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }),
+        kc("During arm deceleration, slowing the upper extremity after rapid internal rotation generates heavy distraction forces through the shoulder.", "official-data", { label: "The Clinician's Guide to Baseball Pitching Biomechanics", url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9950989/" }),
         kc("Proper hip extension and trunk flexion control are necessary for effective eccentric braking of the throwing arm during deceleration.", "reputable-analysis", { label: "The Pitching Follow Through: Key to Power and Health", url: "https://baseballscouter.com/pitching-follow-through-mechanics/" }),
       ],
     },

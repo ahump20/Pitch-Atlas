@@ -51,7 +51,7 @@ export const WINDMILL_PHASES: WindmillPhase[] = [
 
 export const FUNDAMENTAL_BLOCKS: FundamentalBlock[] = [
   {
-    id: 'kinetic-chain',
+    id: 'force-transfer',
     index: '02',
     label: 'Where the speed comes from',
     lede:
