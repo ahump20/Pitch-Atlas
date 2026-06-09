@@ -45,5 +45,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'pitch-atlas' }}
+          # --branch=main makes this a production deploy; without it the upload
+          # lands as a branch preview and the apex domain never updates.
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'pitch-atlas' }} --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
