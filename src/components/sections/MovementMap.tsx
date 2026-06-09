@@ -15,13 +15,13 @@ import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
   so a right-hander's slider and a left-hander's slider read as mirror images.
 */
 
-const W = 520
-const H = 460
+const W = 640
+const H = 500
 const CX = W / 2
 const CY = H / 2
-const COL = 150 // horizontal zone offset (arm-side / glove-side)
+const COL = 180 // horizontal zone offset (arm-side / glove-side)
 const ROW = 132 // vertical zone offset (ride / drop)
-const CLAMP = 188 // axis-guide half-extent
+const CLAMP = 220 // axis-guide half-extent
 
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
   fastball: { label: 'Fastball', color: '#37D6FF' },
@@ -34,6 +34,15 @@ interface Plotted {
   x: number
   y: number
   family: PitchFamily
+}
+
+const LABELS: Record<string, { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' }> = {
+  'two-seam': { dx: 0, dy: -24, anchor: 'middle' },
+  'circle-change': { dx: 16, dy: 2, anchor: 'start' },
+  splitter: { dx: 16, dy: 18, anchor: 'start' },
+  splinker: { dx: -16, dy: 22, anchor: 'end' },
+  forkball: { dx: -16, dy: -16, anchor: 'end' },
+  eephus: { dx: 14, dy: 6, anchor: 'start' },
 }
 
 export function MovementMap() {
@@ -52,7 +61,7 @@ export function MovementMap() {
       cellCounts[key] = i + 1
       // fan pitches that share a direction so labels stay legible
       const ang = (i % 6) * (Math.PI / 3)
-      const rad = i === 0 ? 0 : 26 + Math.floor((i - 1) / 6) * 22
+      const rad = i === 0 ? 0 : 38 + Math.floor((i - 1) / 6) * 24
       const x = baseX + Math.cos(ang) * rad
       const y = baseY + Math.sin(ang) * rad
       return { entry, x, y, family: entry.canonical.family }
@@ -105,18 +114,23 @@ export function MovementMap() {
         {/* the pitches */}
         {plotted.map(({ entry, x, y, family }) => {
           const c = FAMILY_META[family].color
+          const label = LABELS[entry.display.slug] ?? { dx: 0, dy: -14, anchor: 'middle' as const }
           return (
             <g key={entry.display.slug}>
               <line x1={CX} y1={CY} x2={x} y2={y} stroke={c} strokeWidth="0.8" strokeDasharray="2 3" opacity="0.32" />
               <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
               <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />
               <text
-                x={x}
-                y={y - 12}
+                x={x + label.dx}
+                y={y + label.dy}
                 fill="var(--color-bone)"
                 fontFamily="var(--font-mono)"
                 fontSize="10"
-                textAnchor="middle"
+                textAnchor={label.anchor}
+                dominantBaseline="middle"
+                paintOrder="stroke"
+                stroke="var(--color-void)"
+                strokeWidth="3"
               >
                 {entry.display.shortName}
               </text>
