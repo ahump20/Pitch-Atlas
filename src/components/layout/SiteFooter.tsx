@@ -15,6 +15,8 @@ const LINKS: { label: string; to: string }[] = [
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
   { label: 'About', to: '/about' },
+  { label: 'Privacy', to: '/privacy' },
+  { label: 'Support', to: '/support' },
 ]
 
 export function SiteFooter() {

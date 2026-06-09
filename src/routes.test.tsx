@@ -134,6 +134,28 @@ describe('About', () => {
   })
 })
 
+describe('Privacy and support', () => {
+  it('renders the privacy policy with its core promises and the deletion route', async () => {
+    renderRoute('/privacy')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('What the atlas holds')
+    expect(screen.getByText('No tracking')).toBeInTheDocument()
+    expect(screen.getByText('No sale of data')).toBeInTheDocument()
+    expect(screen.getAllByText(/delete\s*account/).length).toBeGreaterThan(0)
+    // the policy is dated, once, in the hero eyebrow
+    expect(screen.getByText(/Privacy policy · \d{4}-\d{2}-\d{2}/)).toBeInTheDocument()
+  })
+
+  it('renders the support page with report, deletion, and contact routes', async () => {
+    renderRoute('/support')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Flag it.')
+    expect(screen.getByText('Report a problem with a note or post')).toBeInTheDocument()
+    expect(screen.getByText('Delete your account')).toBeInTheDocument()
+    expect(screen.getAllByText(/in-product Report flow/).length).toBeGreaterThan(0)
+    // no fabricated contact details
+    expect(screen.queryByText(/@pitch-atlas\.com/)).not.toBeInTheDocument()
+  })
+})
+
 describe('The Pitch Index', () => {
   it('catalogs every accepted pitch by family, including the kick change', async () => {
     renderRoute('/repertoire')
@@ -213,7 +235,7 @@ describe('Lost Pitches of the Negro Leagues', () => {
 })
 
 describe('No failure signatures', () => {
-  it.each(['/', '/about', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/pitch/sweeper', '/pitch/cutter', '/pitch/knuckleball', '/pitch/forkball', '/pitch/eephus', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/slurve', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
+  it.each(['/', '/about', '/privacy', '/support', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/pitch/sweeper', '/pitch/cutter', '/pitch/knuckleball', '/pitch/forkball', '/pitch/eephus', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/slurve', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)

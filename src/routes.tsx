@@ -21,6 +21,8 @@ import { SoftballSlowpitchPage } from './pages/SoftballSlowpitchPage'
 import { SoftballPitchChapter } from './pages/SoftballPitchChapter'
 import { SoftballCraftsmanChapter } from './pages/SoftballCraftsmanChapter'
 import { AboutPage } from './pages/AboutPage'
+import { PrivacyPage } from './pages/PrivacyPage'
+import { SupportPage } from './pages/SupportPage'
 import { NotFound } from './pages/NotFound'
 
 /*
@@ -56,6 +58,8 @@ export const routes: RouteObject[] = [
       { path: 'softball/pitch/:slug', Component: SoftballPitchChapter },
       { path: 'softball/craftsmen/:slug', Component: SoftballCraftsmanChapter },
       { path: 'about', Component: AboutPage },
+      { path: 'privacy', Component: PrivacyPage },
+      { path: 'support', Component: SupportPage },
       { path: '*', Component: NotFound },
     ],
   },
