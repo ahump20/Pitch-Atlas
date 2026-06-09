@@ -123,6 +123,17 @@ describe('Sources', () => {
   })
 })
 
+describe('About', () => {
+  it('explains the grip-first thesis and competitor field', async () => {
+    renderRoute('/about')
+    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
+    expect(screen.getByText('What it is')).toBeInTheDocument()
+    expect(screen.getByText('Measurement dashboards')).toBeInTheDocument()
+    expect(screen.getByText('Useful imperfection')).toBeInTheDocument()
+    expect(screen.getByText('Known, unknown, open')).toBeInTheDocument()
+  })
+})
+
 describe('The Pitch Index', () => {
   it('catalogs every accepted pitch by family, including the kick change', async () => {
     renderRoute('/repertoire')
@@ -202,7 +213,7 @@ describe('Lost Pitches of the Negro Leagues', () => {
 })
 
 describe('No failure signatures', () => {
-  it.each(['/', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/pitch/sweeper', '/pitch/cutter', '/pitch/knuckleball', '/pitch/forkball', '/pitch/eephus', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/slurve', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
+  it.each(['/', '/about', '/pitch/four-seam', '/pitch/splinker', '/pitch/twelve-six', '/pitch/sweeper', '/pitch/cutter', '/pitch/knuckleball', '/pitch/forkball', '/pitch/eephus', '/craftsmen', '/craftsmen/johan-santana', '/craftsmen/adam-wainwright', '/sources', '/repertoire', '/repertoire/slurve', '/repertoire/knuckle-slurve', '/lost-pitches', '/lost-pitches/satchel-paige-hesitation-pitch', '/lost-pitches/doctored-ball-divergence-and-recovery', '/lost-pitches/paige-showman-arsenal'])(
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)
