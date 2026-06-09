@@ -199,9 +199,9 @@ export const LOST_PITCHES: LostPitch[] = [
     tier: "documented",
     specimenNo: "N-05",
     tagline: "27 strikeouts at 44, in a duel where the gentlemen's agreement broke",
-    intro: "Williams threw as hard as anyone of his generation, and the proof is a single recovered box score. On August 2, 1930, at age 44, he and the Monarchs' Chet Brewer met in a night game and a side agreement was struck that neither would throw the emery ball. Brewer broke it first when runners reached base; Williams was handed sandpaper, and the duel was on. Williams struck out 27 over twelve innings and won 1-0 on a one-hitter.",
+    intro: "Williams's fastball legend survives through testimony and a single recovered box score. On August 2, 1930, at age 44, he and the Monarchs' Chet Brewer met in a night game and a side agreement was struck that neither would throw the emery ball. Brewer broke it first when runners reached base; Williams was handed sandpaper, and the duel was on. Williams struck out 27 over twelve innings and won 1-0 on a one-hitter.",
     what: claim(
-      "A fastball ranked among the hardest of his era — an overpowering pitch that, even at age 44, produced one of the most dominant strikeout performances in the recovered Negro Leagues record.",
+      "A feared fastball from the testimony era — an overpowering pitch that, even at age 44, produced one of the most dominant strikeout performances in the recovered Negro Leagues record.",
       "sabr-smokey-bandit",
       "reputable-analysis",
     ),
@@ -422,7 +422,7 @@ export const LOST_PITCHES: LostPitch[] = [
       {
         label: "How the fastball read",
         claim: secondhand(
-          "A teammate remembered the fastball as genuinely overpowering — among the harder ones he stood in against — set off by a strong curveball.",
+          "A teammate remembered the fastball as genuinely overpowering, set off by a strong curveball.",
           "nl-day-sabr",
           "Attributed to Larry Doby in the SABR biography; a contemporary teammate's impression of the heat from an era without radar, kept as a read of the pitch rather than a measured figure.",
         ),

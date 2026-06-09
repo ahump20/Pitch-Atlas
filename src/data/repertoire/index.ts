@@ -133,7 +133,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "mlb-clase-cutter",
       "official-data",
     ),
-    notableThrowers: "Mariano Rivera, whose cutter is the canonical example; Emmanuel Clase throws the hardest cutter on record and leans on it as his primary pitch.",
+    notableThrowers: "Mariano Rivera, whose cutter is the canonical example; Emmanuel Clase is a modern power-cutter reference and leans on it as his primary pitch.",
     plain: "A fastball with a small, late dart at the end. You hold it almost like a heater but slide the fingers slightly off-center, and it veers just enough to clip the bat handle and snap it. For some arms it's basically a hard slider.",
   },
   {
@@ -329,7 +329,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "reputable-analysis",
     ),
     notableThrowers: "Hayden Birdsong (Giants); popularized through Tread Athletics; quickly adopted by other MLB pitchers.",
-    plain: "A recent twist on the changeup that spread fast around the league. You spike a knuckle onto a seam and 'kick' the ball's spin at release, which buys splitter-like drop at higher-than-usual changeup speed. It's the trendy modern version of an old idea.",
+    plain: "A recent twist on the changeup that spread fast around the league. You spike a knuckle onto a seam and 'kick' the ball's spin at release, which buys splitter-like drop from a firmer changeup look. It's the trendy modern version of an old idea.",
   },
   {
     id: "splitter",

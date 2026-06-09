@@ -26,7 +26,7 @@ const catOsterman: Craftsman = {
   tagline:
     'The fastpitch answer to the thinking pitcher: a soft-tossing left arm who owned the circle on spin, command, and deception — not speed.',
   intro:
-    'Cat Osterman never overpowered anyone, and that is the point. Her fastball was modest while the hardest throwers in the world brought real heat, and she was, by reputation and by record, the most untouchable pitcher of her era anyway. She won the way Greg Maddux won — by knowing exactly where the ball was going and making four different pitches leave her hand looking the same. The drop ball was the out pitch, but the command of it was the weapon: she could climb the ladder, start one at the hips and finish one at the ankles, and make a hitter chase all three. She is the softball case for the whole atlas thesis — that the craft, not the radar gun, is what beats people.',
+    'Cat Osterman never overpowered anyone, and that is the point. Her fastball was modest while power arms brought real heat, and she was, by reputation and by record, the most untouchable pitcher of her era anyway. She won the way Greg Maddux won — by knowing exactly where the ball was going and making four different pitches leave her hand looking the same. The drop ball was the out pitch, but the command of it was the weapon: she could climb the ladder, start one at the hips and finish one at the ankles, and make a hitter chase all three. She is the softball case for the whole atlas thesis — that the craft, not the radar gun, is what beats people.',
   signature: claim(
     'A drop ball whose effectiveness was command, not just movement: she located it in and out and walked it down the ladder, then set it up off a rise the hitter was not expecting, so the two pitches tunneled and the eyes betrayed the bat. The rest of the arsenal — a sharp backdoor curve and a changeup — all left her hand on the same look. Analysts called her "the spin master" precisely because none of it ran on raw power.',
     'cat-d1softball-spinmaster',
@@ -83,7 +83,7 @@ const catOsterman: Craftsman = {
     {
       label: 'How she won',
       claim: claim('Location and movement, not speed', 'cat-d1softball-spinmaster', 'reputable-analysis', {
-        note: 'Her fastball sat well below the era’s hardest throwers; the out pitch was where she put it, not how hard she threw it.',
+        note: 'She did not win by raw power; the out pitch was where she put it, not how hard she threw it.',
       }),
     },
   ],
@@ -167,14 +167,14 @@ const monicaAbbott: Craftsman = {
   signaturePitchSlug: 'fastball',
   specimenNo: 'SC-04',
   tagline:
-    'The power counterpoint to Cat Osterman — the hardest documented arm in the sport, and its first million-dollar pro.',
+    'The power counterpoint to Cat Osterman — a left-handed force and the sport’s first million-dollar pro.',
   intro:
-    'If Cat Osterman is the softball case for spin and command, Monica Abbott is the case for sheer speed. The two were the left-handed twin towers of Team USA, and they could not have been more different on the mound: Osterman picked hitters apart, Abbott blew the ball past them. Abbott holds the Guinness record for the fastest pitch ever thrown in the sport and rewrote the NCAA and pro record books on the way.',
+    'If Cat Osterman is the softball case for spin and command, Monica Abbott is the case for power from the left side. The two were the left-handed twin towers of Team USA, and they could not have been more different on the mound: Osterman picked hitters apart, Abbott overpowered them. Abbott rewrote the NCAA and pro record books on the way.',
   signature: claim(
-    'Overpowering force from a tall left-handed delivery: she holds the Guinness World Record for the fastest softball pitch ever thrown, set in a 2012 pro game. At Tennessee she set NCAA Division I career records for wins, strikeouts, shutouts, and innings, and struck out 724 in a single senior season.',
+    'Overpowering force from a tall left-handed delivery. At Tennessee she set NCAA Division I career records for wins, strikeouts, shutouts, and innings, and struck out 724 in a single senior season.',
     'sb-abbott-wikipedia',
     'reputable-analysis',
-    { note: 'The Guinness fastest-pitch mark was set June 16, 2012, in an NPF game; the NCAA career records (189 wins, 2,440 K, 112 shutouts, 1,448 IP) are from her Tennessee career.' },
+    { note: 'The NCAA career records (189 wins, 2,440 K, 112 shutouts, 1,448 IP) are from her Tennessee career.' },
   ),
   mentalEdge: claim(
     'Workhorse durability turned into a career: she became the first million-dollar player in professional fastpitch, the most decorated pitcher in NPF history, and a two-time Olympic silver medalist across a span that bridged softball’s removal from and return to the Games.',
@@ -182,7 +182,6 @@ const monicaAbbott: Craftsman = {
     'reputable-analysis',
   ),
   biography: [
-    { label: 'Fastest pitch ever (Guinness)', claim: claim('World record holder', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'Set June 16, 2012, in an NPF game — the recognized Guinness world record for the fastest softball pitch ever thrown.' }) },
     { label: 'NCAA career strikeouts', claim: claim('2,440 (record)', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'With a single-season record of 724, plus 23 no-hitters and 6 perfect games as a senior.' }) },
     { label: 'NCAA career wins', claim: claim('189 (record)', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'Also NCAA records for shutouts (112) and innings pitched (1,448).' }) },
     { label: 'Professional milestone', claim: claim('First million-dollar NPF player', 'sb-abbott-mlb-million', 'reputable-analysis') },

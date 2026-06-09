@@ -94,7 +94,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     claimTier: CLAIM_TIER,
     proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
-      'Two fingers on the ball, and the four-seam should be a dead giveaway. The fingertips cross the seam slightly — the very ends of the pads catching across it, not riding parallel to it. There is barely any pressure on it at all, and that is why it goes the fastest and the truest. It is the bread and butter of everything: the easiest pitch to place in the zone and the most consistent pitch in the game.',
+      'Two fingers on the ball, and the four-seam should be a dead giveaway. The fingertips cross the seam slightly — the very ends of the pads catching across it, not riding parallel to it. There is barely any pressure on it at all, and that is why it leaves clean and true. It is the bread and butter of everything: the easiest pitch to place in the zone and the most consistent pitch in the game.',
     movement:
       'My best pitch, and the one I had pinpoint command of — it went straight and I could put it anywhere in the zone. The life came late: it tended to explode into the glove at the very last second. That last-second hop is the carry the four-seam is known for — the eye reads it as rising when it is really just falling less than expected.',
     clip: clip(
@@ -322,7 +322,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
 
 /** The grips a hitter cannot see — the through-line that ties the library together. */
 export const GRIP_LIBRARY_INTRO =
-  'Every grip here answers one question: how much resistance is the hand putting on the ball? The four-seam has almost none, so it leaves the fastest and the truest. Stack on fingers and surface — the three-finger and football changes — and the ball drags out softer while the arm still sells a fastball. That is the whole game at the plate: a hitter sits on the fastball and adjusts, because if he sits off-speed the fastball is already in the mitt.'
+  'Every grip here answers one question: how much resistance is the hand putting on the ball? The four-seam has almost none, so it leaves clean and true. Stack on fingers and surface — the three-finger and football changes — and the ball drags out softer while the arm still sells a fastball. That is the whole game at the plate: a hitter sits on the fastball and adjusts, because if he sits off-speed the fastball is already in the mitt.'
 
 /** Austin's actual in-game arsenal — the mix he leaned on versus the ones he carried. */
 export const GRIP_LIBRARY_ARSENAL =

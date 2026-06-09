@@ -98,13 +98,13 @@ const fastball: SoftballPitch = {
   spin: claim('Backspin from the underhand release, axis tilted by grip toward four- or two-seam.', 'sb-wiki-fastpitch', 'reputable-analysis'),
   movement: claim('Mostly straight and fast (four-seam) or with slight arm-side run (two-seam).', 'sb-wiki-fastpitch', 'reputable-analysis'),
   physicsNote: claim(
-    'The fastpitch fastball’s real weapon is the short pitching distance, not the radar gun. The hitter’s reaction window is set by distance as much as speed: a hard fastpitch fastball from the fastpitch rubber gives a batter roughly the reaction time of an elite major-league fastball thrown from the much longer baseball distance. It is why elite arms play even faster than the gun reads — and why the change-up off this look lands so hard.',
+    'The fastpitch fastball’s real weapon is the short pitching distance, not a readout. The hitter’s reaction window is set by distance as much as pace: a firm fastpitch fastball from the fastpitch rubber gives a batter a major-league kind of hurry from a much shorter lane. It is why the change-up off this look lands so hard.',
     'sb-gorout-speed',
     'reputable-analysis',
     { note: 'A reaction-time equivalence that follows from the much shorter fastpitch distance. It runs even shorter in practice because the windmill stride releases the ball closer than the rubber.' },
   ),
   role: 'The base of the arsenal and the timing the whole sequence plays off.',
-  notableThrowers: 'Monica Abbott — among the hardest documented fastpitch fastballs.',
+  notableThrowers: 'Monica Abbott — a modern power fastball reference.',
 }
 
 const changeup: SoftballPitch = {

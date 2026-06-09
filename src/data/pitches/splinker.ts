@@ -162,10 +162,10 @@ export const splinker: PitchAtlasEntry = {
     {
       tier: 'verified-attributed',
       pitcher: 'Jhoan Duran',
-      context: 'The arm who first popularized the splinker, discovering it in a 2018 bullpen after widening a sinker grip. The hardest version in the game.',
+      context: 'The arm who first popularized the splinker, discovering it in a 2018 bullpen after widening a sinker grip. The power version of the pitch.',
       verifiedPro: true,
       distinction: claim(
-        'The firmest version in the game — splitter-grade arm-side dive carried with fastball intent, so the dive lands without the usual soft-pitch tell.',
+        'The power version: splitter-grade arm-side dive carried with fastball intent, so the dive lands without the usual soft-pitch tell.',
         'duran-fangraphs',
         'reputable-analysis',
         { note: '2025; Statcast classifies it as a splitter.' },

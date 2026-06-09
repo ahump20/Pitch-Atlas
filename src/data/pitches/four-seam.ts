@@ -168,10 +168,10 @@ export const fourSeam: PitchAtlasEntry = {
     {
       tier: 'verified-attributed',
       pitcher: 'Gerrit Cole',
-      context: 'The spin ceiling. Among the highest-spin elite four-seams, and nearly all of that spin does work.',
+      context: 'The carry-ceiling case: a clean backspin read and a top-zone finish hitters keep swinging under.',
       verifiedPro: true,
       distinction: claim(
-        'Pure spin, almost all of it doing work. His four-seam is the carry case taken to its ceiling — it plays at the top of the zone because hitters keep swinging under the ride.',
+        'A clean carry read taken to its ceiling. His four-seam plays at the top of the zone because hitters keep swinging under the ride.',
         'mlb-cole',
         'official-data',
       ),
@@ -215,7 +215,7 @@ export const fourSeam: PitchAtlasEntry = {
 
   guide: {
     family: 'The straight one',
-    tagline: 'The pitch you trust for a strike. It travels the straightest and arrives the fastest.',
+    tagline: 'The pitch you trust for a strike. It takes the truest line and gives the hand the cleanest exit.',
     feel: 'Least resistance. Loose in the fingertips, shallow in the hand. Let it sling cleanly off the pads.',
     steps: [
       'Lay your index and middle fingers flat across the wide part of the horseshoe seam, the part that faces away from you.',

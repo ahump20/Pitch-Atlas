@@ -168,7 +168,7 @@ export const slider: PitchAtlasEntry = {
       context: 'The purest gyro of the set, thrown firm and tight. It shows what almost-all-gyro looks like: barely any early deflection, then late chase bite.',
       verifiedPro: true,
       distinction: claim(
-        'The hardest, flattest gyro of the three. Almost none of the spin does Magnus work, so it neither rides nor sweeps, it just holds the fastball line and bites a hair at the end. Firmness and deception carry it where movement does not.',
+        'The tightest, flattest gyro of the three. Almost none of the spin does Magnus work, so it neither rides nor sweeps, it just holds the fastball line and bites a hair at the end. Deception carries it where movement does not.',
         'savant-glasnow',
         'reputable-analysis',
         { note: 'Described as shape and read, not a gauge. The near-pure gyro profile means minimal deflection in either plane.' },
