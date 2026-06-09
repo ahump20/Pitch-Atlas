@@ -9,17 +9,23 @@ import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from './src/data/softball'
 
 /*
   Build-time prerender targets. The plugin discovers the static routes (/, /repertoire,
-  /craftsmen, /learn, /sources, 404) from `routes`; the dynamic pitch, basic-pitch,
-  craftsman, lost-pitch, and knowledge-wing pages need their concrete paths listed here
-  so each gets its own prerendered HTML file. The basic pages cover only repertoire
-  entries without a filed specimen (filed ones live at /pitch/<slug> already). Adding an
-  entry to the data automatically adds its prerender path, so this list never goes stale.
+  /craftsmen, /learn, /sources, /privacy, /support, …) from `routes`; the dynamic pitch,
+  basic-pitch, craftsman, lost-pitch, and knowledge-wing pages need their concrete paths
+  listed here so each gets its own prerendered HTML file. The basic pages cover only
+  repertoire entries without a filed specimen (filed ones live at /pitch/<slug> already).
+  Adding an entry to the data automatically adds its prerender path, so this list never
+  goes stale. '/404' is listed by hand because the catch-all route is a splat the plugin
+  cannot discover; the post-build step in vite.config.ts copies its output to 404.html so
+  Cloudflare Pages serves a real 404 (status and all) for unknown paths.
 */
 export default defineReactSsgConfig({
   history: 'browser',
   origin: 'https://pitch-atlas.com',
   routes,
   paths: [
+    '/404',
+    '/privacy',
+    '/support',
     '/movement-map',
     ...PITCHES.map((p) => `/pitch/${p.display.slug}`),
     ...BASIC_REPERTOIRE.map((e) => `/repertoire/${e.id}`),

@@ -1,9 +1,42 @@
 import { configDefaults, defineConfig } from 'vitest/config'
+import type { Plugin, ResolvedConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import reactSsg from 'vite-plugin-react-ssg'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
+import path from 'node:path'
+import { copyFile, writeFile } from 'node:fs/promises'
+import { renderSitemapXml } from './src/lib/sitemap'
+
+/*
+  Post-prerender artifacts. Runs after vite-plugin-react-ssg's closeBundle (plugin
+  order is execution order), once every route HTML file exists:
+
+  - sitemap.xml is generated from the same data arrays the prerender paths come
+    from (src/lib/sitemap.ts), so it cannot drift the way the old hand-written
+    public/sitemap.xml did. No lastmod — a build date is not a content date.
+  - 404.html is copied from the prerendered /404 route (the NotFound view; the
+    splat route is listed by hand in react-ssg.config.ts). With the _redirects
+    SPA catch-all removed, Cloudflare Pages serves this file with a real 404
+    status for unknown paths instead of a 200 app shell.
+*/
+function postBuildArtifacts(): Plugin {
+  let resolved: ResolvedConfig
+  return {
+    name: 'pitch-atlas-post-build-artifacts',
+    apply: 'build',
+    configResolved(config) {
+      resolved = config
+    },
+    async closeBundle() {
+      if (resolved.build.ssr) return
+      const outDir = path.resolve(resolved.root, resolved.build.outDir)
+      await writeFile(path.join(outDir, 'sitemap.xml'), renderSitemapXml())
+      await copyFile(path.join(outDir, '404', 'index.html'), path.join(outDir, '404.html'))
+    },
+  }
+}
 
 // Static build for Cloudflare Pages. The site is a traditional Vite React SPA;
 // vite-plugin-react-ssg (apply: 'build' only, so it never touches dev or tests)
@@ -18,6 +51,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     reactSsg(),
+    postBuildArtifacts(),
     // Offline support for a LIVE, prerendered site. The live build always wins
     // online (NetworkFirst for navigation), only the immutable hashed bundles are
     // precached, and a new version installs only when the pitcher taps Reload
