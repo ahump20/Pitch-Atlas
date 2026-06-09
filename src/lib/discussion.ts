@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { ensureSession } from './community'
+import { ensureSession, getSessionUserId } from './community'
 import { DISCUSSION_LIMITS } from '../data/discussion'
 
 /*
@@ -205,7 +205,10 @@ async function signMedia(rows: MediaRow[]): Promise<Map<string, DiscussionMedia[
  * hidden posts and hidden media, so what returns is the public set.
  */
 export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
-  const viewerId = await ensureSession()
+  // Reading is anonymous: no session is created here. The anon role can SELECT
+  // visible posts and media (and sign their URLs); with no session the viewer
+  // simply owns nothing.
+  const viewerId = await getSessionUserId()
 
   const { data: rows, error } = await supabase
     .from('discussion_posts')
@@ -233,7 +236,7 @@ export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
     displayName: r.display_name,
     body: r.body,
     createdAt: r.created_at,
-    viewerIsAuthor: r.author_id === viewerId,
+    viewerIsAuthor: viewerId !== null && r.author_id === viewerId,
     media: mediaByPost.get(r.id) ?? [],
     replies: [],
   })
@@ -300,7 +303,9 @@ export async function deletePost(postId: string): Promise<void> {
  * table (anonymous users cannot update their profile row, so it cannot live there).
  */
 export async function hasAcceptedMediaTerms(): Promise<boolean> {
-  await ensureSession()
+  // A read with no session is always "no": there is no account to have accepted
+  // anything, and asking would either mint an account or 403 on the anon role.
+  if ((await getSessionUserId()) === null) return false
   const { data } = await supabase.from('discussion_media_terms').select('user_id').maybeSingle()
   return Boolean(data)
 }

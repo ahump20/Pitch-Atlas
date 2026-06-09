@@ -223,7 +223,7 @@ function friendlyDbError(error: { message?: string } | null): string {
   return raw || 'Could not save that just now. Try again.'
 }
 
-function mapRow(row: FieldNoteRow, viewerId: string, tried: Set<string>, helpful: Set<string>): CommunityNote {
+function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, helpful: Set<string>): CommunityNote {
   return {
     id: row.id,
     pitchSlug: row.pitch_slug,
@@ -247,11 +247,16 @@ function mapRow(row: FieldNoteRow, viewerId: string, tried: Set<string>, helpful
     createdAt: row.created_at,
     viewerTried: tried.has(row.id),
     viewerHelpful: helpful.has(row.id),
-    viewerIsAuthor: row.author_id === viewerId,
+    viewerIsAuthor: viewerId !== null && row.author_id === viewerId,
   }
 }
 
-/** Sign in anonymously if there is no session yet, and return the user id. */
+/**
+ * Sign in anonymously if there is no session yet, and return the user id.
+ * Write-intent only — posting, reacting, reporting, accepting terms, claiming.
+ * Reads use getSessionUserId() instead: the anon role already holds the SELECT
+ * grants, so a visitor who only ever reads never mints an account.
+ */
 export async function ensureSession(): Promise<string> {
   const { data: existing } = await supabase.auth.getSession()
   if (existing.session?.user) return existing.session.user.id
@@ -260,6 +265,12 @@ export async function ensureSession(): Promise<string> {
   if (error) throw error
   if (!data.user) throw new Error('Anonymous sign-in returned no user.')
   return data.user.id
+}
+
+/** The current session's user id, or null. Never creates a session. */
+export async function getSessionUserId(): Promise<string | null> {
+  const { data } = await supabase.auth.getSession()
+  return data.session?.user?.id ?? null
 }
 
 /** Read the current contributor's profile (handle, contribution score, claimed state). */
@@ -306,7 +317,9 @@ export async function setDisplayName(name: string): Promise<void> {
  * RLS already drops hidden / unapproved notes, so what comes back is the public set.
  */
 export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
-  const viewerId = await ensureSession()
+  // Reading is anonymous: no session is created here. The anon role holds the
+  // field_notes SELECT grant, so the public set loads for a signed-out visitor.
+  const viewerId = await getSessionUserId()
 
   const { data: rows, error } = await supabase
     .from('field_notes')
@@ -316,13 +329,19 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
     .order('created_at', { ascending: false })
   if (error) throw error
 
-  // RLS scopes these to the viewer's own rows, so a plain select is the viewer's set.
-  const [{ data: triedRows }, { data: helpfulRows }] = await Promise.all([
-    supabase.from('note_tries').select('note_id'),
-    supabase.from('note_helpful').select('note_id'),
-  ])
-  const tried = new Set((triedRows ?? []).map((r) => r.note_id as string))
-  const helpful = new Set((helpfulRows ?? []).map((r) => r.note_id as string))
+  let tried = new Set<string>()
+  let helpful = new Set<string>()
+  if (viewerId) {
+    // RLS scopes these to the viewer's own rows, so a plain select is the viewer's
+    // set. Without a session there is nothing to fetch (and the anon role has no
+    // SELECT grant on these tables anyway), so the flags stay empty.
+    const [{ data: triedRows }, { data: helpfulRows }] = await Promise.all([
+      supabase.from('note_tries').select('note_id'),
+      supabase.from('note_helpful').select('note_id'),
+    ])
+    tried = new Set((triedRows ?? []).map((r) => r.note_id as string))
+    helpful = new Set((helpfulRows ?? []).map((r) => r.note_id as string))
+  }
 
   return (rows ?? []).map((row) => mapRow(row as FieldNoteRow, viewerId, tried, helpful))
 }

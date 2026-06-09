@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import {
   claimWithEmail,
-  ensureSession,
   getIdentity,
   listNotes,
   reportNote,
@@ -35,10 +34,15 @@ function message(err: unknown): string {
 }
 
 /*
-  Drives the live Field Notes for one pitch: signs the visitor in anonymously,
-  loads the ranked notes and the contributor's identity, and exposes optimistic
-  Tried This / Helpful toggles that revert on failure. Re-loads when the selected
-  pitch changes. The view branches on `status` for loading / error / empty / ready.
+  Drives the live Field Notes for one pitch: loads the ranked notes and the
+  contributor's identity, and exposes optimistic Tried This / Helpful toggles
+  that revert on failure. Re-loads when the selected pitch changes. The view
+  branches on `status` for loading / error / empty / ready.
+
+  Reading never signs anyone in — the anon role's SELECT grants serve the public
+  set, and a visitor without a session just sees no viewer flags. The anonymous
+  account is minted on write intent only (post / mark / report), inside the
+  data-layer functions themselves.
 
   `enabled` gates the whole thing. While the community layer is a preview, or in
   tests, the hook makes NO Supabase calls (no anonymous sign-in, no fetch), so a
@@ -60,7 +64,6 @@ export function useFieldNotes(pitchSlug: string, enabled = true): UseFieldNotes 
       setStatus('loading')
       setError(null)
       try {
-        await ensureSession()
         const [loadedNotes, loadedIdentity] = await Promise.all([listNotes(pitchSlug), getIdentity()])
         if (isCancelled()) return
         setNotes(loadedNotes)

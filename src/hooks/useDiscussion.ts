@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { ensureSession, getIdentity } from '../lib/community'
+import { getIdentity } from '../lib/community'
 import { dispatchBlazeEvent } from '../components/companions/blazeMotion'
 import {
   acceptMediaTerms,
@@ -47,10 +47,11 @@ function countThread(posts: DiscussionPost[]): number {
 
 /*
   Drives one topic's discussion. Lazy: it makes no Supabase call until the panel is
-  opened (`open` true), so a collapsed drop-down on a fast page never signs anyone
-  in or fetches anything. Once open it loads the thread, the viewer's handle, and
-  whether they have accepted the upload terms; submit creates the post then uploads
-  any attached media, surfacing a friendly error if a file is rejected.
+  opened (`open` true), so a collapsed drop-down on a fast page fetches nothing.
+  Opening it loads the thread, the viewer's handle, and whether they have accepted
+  the upload terms — all as anonymous reads that never sign anyone in (the account
+  is minted on write intent only, inside the data layer). Submit creates the post
+  then uploads any attached media, surfacing a friendly error if a file is rejected.
 */
 export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
   const [status, setStatus] = useState<DiscussionStatus>('idle')
@@ -66,7 +67,6 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
     setStatus('loading')
     setError(null)
     try {
-      await ensureSession()
       const [thread, identity, accepted] = await Promise.all([
         listThread(topicKey),
         getIdentity(),
