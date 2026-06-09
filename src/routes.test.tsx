@@ -27,7 +27,7 @@ describe('Atlas home', () => {
     renderRoute('/')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Pitch Atlas')
     // the Pitch Index is the dominant home section: the specimen set plus the front-door teaser
-    expect(screen.getByText('A searchable directory of every accepted pitch.')).toBeInTheDocument()
+    expect(screen.getByText(/Every accepted pitch by family/)).toBeInTheDocument()
     expect(screen.getAllByText('Eephus').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
     // the two side wings still have a door

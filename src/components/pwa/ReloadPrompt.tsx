@@ -28,6 +28,7 @@ export function ReloadPrompt() {
     <div
       role="status"
       aria-live="polite"
+      data-blaze-reserved-bottom=""
       className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
     >
       <Alert className="flex w-full max-w-sm items-center gap-3 border-cyan/30 bg-popover px-4 py-3 text-popover-foreground shadow-2xl shadow-black/60">

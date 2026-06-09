@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ensureSession, getIdentity } from '../lib/community'
+import { dispatchBlazeEvent } from '../components/companions/blazeMotion'
 import {
   acceptMediaTerms,
   createPost,
@@ -95,19 +96,25 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
 
   const submit = useCallback(
     async ({ displayName: name, body, files, parentId }: SubmitInput) => {
-      const postId = await createPost({ topicKey, displayName: name, body, parentId })
-      setDisplayName(name)
-      // media is additive: a rejected file surfaces its reason but the post stays
-      let mediaError: string | null = null
-      for (const file of files) {
-        try {
-          await uploadMedia(postId, topicKey, file)
-        } catch (err) {
-          mediaError = message(err)
+      try {
+        const postId = await createPost({ topicKey, displayName: name, body, parentId })
+        setDisplayName(name)
+        // media is additive: a rejected file surfaces its reason but the post stays
+        let mediaError: string | null = null
+        for (const file of files) {
+          try {
+            await uploadMedia(postId, topicKey, file)
+          } catch (err) {
+            mediaError = message(err)
+          }
         }
+        refresh()
+        if (mediaError) throw new Error(mediaError)
+        dispatchBlazeEvent({ mood: 'caught' })
+      } catch (err) {
+        dispatchBlazeEvent({ mood: 'concerned' })
+        throw err
       }
-      refresh()
-      if (mediaError) throw new Error(mediaError)
     },
     [topicKey, refresh],
   )
@@ -121,6 +128,7 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
     async (target: { postId: string } | { mediaId: string }, reason: string) => {
       if ('postId' in target) await reportPost(target.postId, reason)
       else await reportMedia(target.mediaId, reason)
+      dispatchBlazeEvent({ mood: 'still', ttlMs: 1200 })
     },
     [],
   )
@@ -128,6 +136,7 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
   const remove = useCallback(
     async (postId: string) => {
       await deletePost(postId)
+      dispatchBlazeEvent({ mood: 'still', ttlMs: 1200 })
       refresh()
     },
     [refresh],

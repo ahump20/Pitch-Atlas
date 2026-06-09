@@ -12,6 +12,7 @@ import {
   type CommunityNote,
   type NewFieldNote,
 } from '../lib/community'
+import { dispatchBlazeEvent } from '../components/companions/blazeMotion'
 
 export type FieldNotesStatus = 'loading' | 'error' | 'ready'
 
@@ -133,15 +134,22 @@ export function useFieldNotes(pitchSlug: string, enabled = true): UseFieldNotes 
 
   const submit = useCallback(
     async (input: NewFieldNote) => {
-      const created = await submitNote(input)
-      refresh()
-      return created
+      try {
+        const created = await submitNote(input)
+        refresh()
+        dispatchBlazeEvent({ mood: 'caught' })
+        return created
+      } catch (err) {
+        dispatchBlazeEvent({ mood: 'concerned' })
+        throw err
+      }
     },
     [refresh],
   )
 
   const report = useCallback(async (noteId: string, reason: string) => {
     await reportNote(noteId, reason)
+    dispatchBlazeEvent({ mood: 'still', ttlMs: 1200 })
   }, [])
 
   const claim = useCallback(

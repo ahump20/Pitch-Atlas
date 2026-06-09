@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { Masthead } from './Masthead'
 import { SiteFooter } from './SiteFooter'
 import { scrollToId } from '../../lib/scroll'
+import { BlazeCompanion } from '../companions/BlazeCompanion'
 import { Toaster } from '../ui/sonner'
 import { TooltipProvider } from '../ui/tooltip'
 
@@ -47,6 +48,7 @@ export function RootLayout() {
           </main>
           <SiteFooter />
           <Toaster position="bottom-center" />
+          <BlazeCompanion />
         </div>
       </TooltipProvider>
     </div>

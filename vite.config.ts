@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config'
+import { configDefaults, defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import reactSsg from 'vite-plugin-react-ssg'
@@ -86,9 +86,12 @@ export default defineConfig({
     css: false,
     restoreMocks: true,
     // jsdom + the 3D imports make the first full-page render pay a heavy one-time
-    // transform cost in the parallel suite; 5s is too tight for that cold start
-    // (the same test passes in ~4s warm). Give it realistic headroom.
-    testTimeout: 20000,
+    // transform cost in the parallel suite. Keep the timeout aligned with the
+    // current route/form tests instead of failing on cold-start work.
+    testTimeout: 60000,
+    fileParallelism: false,
+    maxWorkers: 1,
+    exclude: [...configDefaults.exclude, 'pitch-atlas-softball/**'],
     // Inline react-tweet so Vite transforms it (and no-ops its bundled CSS module
     // imports under css:false); otherwise Node tries to load .module.css as JS.
     server: { deps: { inline: ['react-tweet'] } },

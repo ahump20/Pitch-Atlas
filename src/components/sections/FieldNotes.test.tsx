@@ -1,6 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { PITCHES } from '../../data/pitches'
 import { useFieldNotes, type UseFieldNotes } from '../../hooks/useFieldNotes'
 import { FieldNotes } from './FieldNotes'
@@ -30,18 +29,16 @@ const baseFieldNotes: UseFieldNotes = {
 
 describe('FieldNotes', () => {
   it('requires context for an unverified field note', async () => {
-    const user = userEvent.setup()
     vi.mocked(useFieldNotes).mockReturnValue(baseFieldNotes)
 
     render(<FieldNotes entry={{ ...PITCHES[0], community: { ...PITCHES[0].community, enabled: true } }} />)
 
-    await user.click(screen.getByRole('button', { name: /write a note/i }))
-    await user.clear(screen.getByLabelText(/submitted by/i))
-    await user.type(screen.getByLabelText(/submitted by/i), 'RHP_threequarter')
-    await user.type(screen.getByLabelText(/the tweak/i), 'Thumb tucked deeper under the leather.')
+    fireEvent.click(screen.getByRole('button', { name: /write a note/i }))
+    fireEvent.change(screen.getByLabelText(/submitted by/i), { target: { value: 'RHP_threequarter' } })
+    fireEvent.change(screen.getByLabelText(/the tweak/i), { target: { value: 'Thumb tucked deeper under the leather.' } })
 
-    await user.click(screen.getByRole('combobox', { name: /source/i }))
-    await user.click(await screen.findByRole('option', { name: /a hunch - untested/i }))
+    fireEvent.click(screen.getByRole('combobox', { name: /source/i }))
+    fireEvent.click(await screen.findByRole('option', { name: /a hunch - untested/i }))
 
     expect(screen.getByLabelText(/context \(required\)/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /post field note/i })).toBeDisabled()

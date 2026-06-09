@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
+import { BlazePreferenceToggle } from '../companions/BlazePreferenceToggle'
 
 /*
   The slim site footer on the void. Not the colophon — the full provenance legend
@@ -37,10 +38,11 @@ export function SiteFooter() {
           ))}
         </nav>
 
-        <div className="flex flex-col gap-1 md:items-end">
+        <div className="flex flex-col gap-3 md:items-end">
           <a href={SITE.canonicalDomain} className="mono-label-stage transition-colors hover:text-bone">
             pitch-atlas.com
           </a>
+          <BlazePreferenceToggle />
           <span className="mono-label-stage text-ink-3">{SITE.sourcePrinciple}</span>
         </div>
       </div>

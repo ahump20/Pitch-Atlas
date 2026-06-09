@@ -35,9 +35,9 @@ community confidence**. A funny comment never outranks a useful grip variant.
 
 ## Brand system (assets -> jobs)
 
-- Horizontal banner + ball + "The pitch, in your hand." -> marketing hero / OG / about
-- Navy+red parchment frame -> Field Note card template
-- Leather notebook + ball + pencil -> "Add a Field Note" submission moment
+- Retired: horizontal banner, navy/red parchment frame, and leather notebook concepts.
+  The active visual system is dark refractor-first; do not revive those parchment-era
+  concepts without replacing them in the current design-language contract.
 - Circular seam-"A" compass -> Atlas seal: favicon, loading mark, provenance stamp, empty state
 - Colored finger-pad ball -> "Find your grip" interactive grip anatomy
 - Pitcher-seal wordmark -> primary horizontal logo (footer / wide)
