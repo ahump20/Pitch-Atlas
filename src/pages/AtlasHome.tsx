@@ -15,6 +15,7 @@ import { WaxPack, type WaxPackTool } from '../components/sections/WaxPack'
 import { CardBackPanel } from '../components/refractor/CardBackPanel'
 import { ClaimCard } from '../components/provenance/ClaimCard'
 import { Reveal } from '../components/motion/Reveal'
+import { SeamGuide } from '../components/motion/SeamGuide'
 
 /*
   The Atlas home as a collection handled on the warm field. The pull (hero) is
@@ -267,6 +268,7 @@ export function AtlasHome() {
 
       {/* ── THE GRADING SCALE: thesis + provenance on the first cream card back ── */}
       <section className="border-t border-leather/25">
+        <SeamGuide variant="tear" className="opacity-60" />
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <CardBackPanel>
             <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
@@ -388,6 +390,7 @@ export function AtlasHome() {
 
       {/* ── THE WAX PACKS: the tools, sealed ── */}
       <section className="border-t border-leather/25 bg-paper-2">
+        <SeamGuide variant="tear" className="opacity-60" />
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <div className="slab-head">
             <h2 style={{ fontSize: 'clamp(26px,4.6vw,46px)' }}>The Tools</h2>
@@ -509,6 +512,7 @@ export function AtlasHome() {
 
       {/* ── THE RULE SHEET: the honesty contract as card-back fine print ── */}
       <section className="border-t border-leather/25">
+        <SeamGuide variant="tear" className="opacity-60" />
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">The honesty contract</p>
           <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(26px,4vw,44px)]">

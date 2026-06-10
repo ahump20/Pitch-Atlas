@@ -1,6 +1,7 @@
 import { claim } from '../../data/sources'
 import type { Claim } from '../../data/types'
 import { ClaimCard } from '../provenance/ClaimCard'
+import { SeamGuide } from '../motion/SeamGuide'
 
 /*
   The through-line the Lost-Pitches archive was missing: why a pitch dies. Four
@@ -69,6 +70,7 @@ function ForceReceipts({ claims }: { claims: Claim<string>[] }) {
 export function WhyPitchesDie() {
   return (
     <section className="border-t border-ink/15">
+      <SeamGuide variant="tear" className="opacity-60" />
       <div className="mx-auto max-w-4xl px-5 py-16 md:px-8 md:py-20">
         <p className="rfx-skick">The through-line</p>
         <h2 className="rfx-stitle mt-2 text-3xl leading-tight md:text-4xl">Why pitches die.</h2>

@@ -1374,6 +1374,32 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 10px 8px;
   }
 
+  /* ── the red thread (SeamGuide.tsx): section-scoped seam stitching that draws
+     in as the section arrives. Scroll-driven by animation-timeline: view() where
+     supported; elsewhere a one-shot class from a detached IntersectionObserver
+     runs the same wipe. Reduced motion: the stitch is simply there, complete.
+     No scroll handler anywhere. Color rides the scene's seam voice. ── */
+  .seam-guide { color: var(--color-seam); line-height: 0; }
+  .seam-guide--tear { width: 100%; }
+  .seam-guide--underline { width: 150px; max-width: 60%; }
+  .seam-guide-svg { display: block; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .seam-guide .seam-guide-svg {
+        animation: seam-draw linear both;
+        animation-timeline: view();
+        animation-range: entry 15% cover 42%;
+      }
+    }
+    @supports not (animation-timeline: view()) {
+      .seam-guide .seam-guide-svg { clip-path: inset(-8px 100% -8px 0); }
+      .seam-guide.is-stitched .seam-guide-svg {
+        animation: seam-draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+    }
+  }
+
   /* ── the claim card (ClaimCard.tsx): a claim filed as a physical index card.
      Scene-token driven, so one card reads on cream and re-tones inside coal.
      The top edge carries a punched file notch so it reads as a filed record. ── */
@@ -1543,6 +1569,12 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes foil-band {
   0% { background-position: 120% 0; }
   100% { background-position: -20% 0; }
+}
+
+/* the red thread drawing in: a left-to-right wipe, never a scroll handler */
+@keyframes seam-draw {
+  from { clip-path: inset(-8px 100% -8px 0); }
+  to { clip-path: inset(-8px 0% -8px 0); }
 }
 
 /* the hero specimen laying down toward the binder as the scene scrolls out */

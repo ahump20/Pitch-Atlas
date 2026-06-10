@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { SeamGuide } from '../motion/SeamGuide'
 
 /*
   The hall header on the warm field, extracted from RepertoirePage /
@@ -48,6 +49,7 @@ export function SectionHero({
         <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[2.8rem] leading-[0.92] md:text-[4.8rem]">
           {title}
         </h1>
+        <SeamGuide variant="underline" className="mt-5" />
         {sub ? (
           <div className="display mt-6 max-w-[60ch] text-lg italic leading-relaxed text-ink-2">{sub}</div>
         ) : null}

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
+import { SeamGuide } from '../motion/SeamGuide'
 
 /*
   The slim site footer: the leather binding the scorebook closes into. Not the
@@ -29,6 +30,7 @@ export function SiteFooter() {
       {/* closing the manual: the back cover's last beat before the binding.
           One line, one way back to the front door. */}
       <div className="mx-auto max-w-[1320px] px-5 pt-12 md:px-8">
+        <SeamGuide variant="orbit" className="mb-4 opacity-80" />
         <p className="rfx-athletic text-[clamp(20px,2.8vw,30px)] text-bone">The manual closes here.</p>
         <p className="mono-label-stage mt-2.5 max-w-[64ch] leading-relaxed">
           Everything above wears its source. When you want the set again, it reopens at the front
