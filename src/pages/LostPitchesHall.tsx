@@ -51,7 +51,9 @@ export function LostPitchesHall() {
           <p className="text-lg text-ink-2">The archive is being filed.</p>
         </section>
       ) : (
-        <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+        <section className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+          <div className="pa-atmo pa-atmo-leather opacity-[0.06]" aria-hidden="true" />
+          <div className="relative">
           {LOST_PITCH_TIERS.map((t, idx) => {
             const entries = lostPitchesByTier(t.tier)
             if (entries.length === 0) return null
@@ -77,6 +79,7 @@ export function LostPitchesHall() {
               erased the technical record. The tier on each plate is how we stay honest about which of
               those forces we beat and which we did not.
             </p>
+          </div>
           </div>
         </section>
       )}

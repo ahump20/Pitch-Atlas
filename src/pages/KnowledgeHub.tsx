@@ -38,15 +38,46 @@ function WingCard({ wing }: { wing: KnowledgeWing }) {
   )
 }
 
+/** The lead or closing wing, staged full-width on a material plate — the contents
+    page gets a reading order, not ten identical cards. */
+function WingFeature({ wing, atmo }: { wing: KnowledgeWing; atmo: 'seam' | 'leather' }) {
+  return (
+    <Link
+      to={`/learn/${wing.slug}`}
+      className="rfx-plate group relative overflow-hidden sm:col-span-2 lg:col-span-3"
+      style={{ '--gc': 'var(--color-cyan)' } as CSSProperties}
+    >
+      <div className={`pa-atmo ${atmo === 'seam' ? 'pa-atmo-seam' : 'pa-atmo-leather'} opacity-[0.14]`} aria-hidden="true" />
+      <div className="relative flex flex-col gap-3 py-3 md:flex-row md:items-end md:justify-between md:gap-10">
+        <div className="max-w-[62ch]">
+          <p className="mono-label text-ink-3">{wing.eyebrow}</p>
+          <h3 className="rfx-platetitle mt-1 text-3xl md:text-4xl">{wing.navLabel || wing.title}</h3>
+          <p className="mt-3 text-[1.02rem] leading-relaxed text-bone-2">{wing.summary}</p>
+        </div>
+        <span className="mono-label shrink-0 pb-1 text-cyan transition-colors group-hover:text-bone">
+          Open the wing →
+        </span>
+      </div>
+    </Link>
+  )
+}
+
 function Shelf({ label, wings }: { label: string; wings: KnowledgeWing[] }) {
   if (wings.length === 0) return null
+  // The craft shelf reads as a contents page: the delivery leads at full width,
+  // the middle wings hold the grid, and the canon closes as the reading path.
+  const lead = wings.length > 4 ? wings[0] : undefined
+  const closer = wings.length > 4 ? wings[wings.length - 1] : undefined
+  const middle = lead && closer ? wings.slice(1, -1) : wings
   return (
     <div className="mb-14 last:mb-0">
       <h2 className="rfx-skick mb-6">{label}</h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {wings.map((w) => (
+        {lead ? <WingFeature wing={lead} atmo="seam" /> : null}
+        {middle.map((w) => (
           <WingCard key={w.slug} wing={w} />
         ))}
+        {closer ? <WingFeature wing={closer} atmo="leather" /> : null}
       </div>
     </div>
   )
@@ -76,11 +107,6 @@ export function KnowledgeHub() {
             The specimens say what each pitch is. These wings say how the craft works — how the body
             creates timing, how a pitch gets built, how pitches work together, and how to keep an arm
             healthy. Every claim sourced and labeled by confidence.
-            {WINGS.length > 0 ? (
-              <span className="mt-4 block font-mono text-xs uppercase tracking-[0.12em] text-bone-2/70">
-                {WINGS.length} wings
-              </span>
-            ) : null}
           </>
         }
       />

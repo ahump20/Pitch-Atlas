@@ -10,6 +10,7 @@ import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
 import { ClaimNote } from '../components/provenance/SourcedValue'
 import { RecordLinks } from '../components/provenance/RecordLinks'
+import { RiveraTeachingLead } from '../components/embeds/RiveraTeachingLead'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { NotFound } from './NotFound'
 
@@ -185,6 +186,28 @@ export function CraftsmanChapter() {
           <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
             <StageTierMarker index="03" label="The myth, and the physics" />
             <ClaimProse claim={craftsman.legendNote} proseClassName="max-w-[64ch] text-xl leading-relaxed text-ink" />
+          </div>
+        </section>
+      ) : null}
+
+      {craftsman.slug === 'mariano-rivera' ? (
+        <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+          <StageTierMarker index="02b" label="The lesson, on film" />
+          <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-12">
+            <div className="md:col-span-6">
+              <p className="max-w-[52ch] text-lg leading-relaxed text-ink">
+                The rarest footage of a craftsman is the craftsman teaching. Here Rivera walks Roy
+                Halladay and Scott Kazmir through the cutter grip itself — the lesson, hand to hand,
+                the way this whole atlas wishes every pitch had been passed down.
+              </p>
+              <p className="mt-4 max-w-[52ch] text-sm leading-relaxed text-ink-2">
+                Shared by Rob Friedman (@PitchingNinja). Embedded with credit, never rehosted, per the
+                media ledger.
+              </p>
+            </div>
+            <div className="md:col-span-6 lg:col-span-5 lg:col-start-8">
+              <RiveraTeachingLead />
+            </div>
           </div>
         </section>
       ) : null}

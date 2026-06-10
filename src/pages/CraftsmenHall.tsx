@@ -39,7 +39,9 @@ export function CraftsmenHall() {
         }
       />
 
-      <section className="mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+      <section className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
+        <div className="pa-atmo pa-atmo-leather opacity-[0.06]" aria-hidden="true" />
+        <div className="relative">
         <StageTierMarker index="C" label="The masters" />
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {masters.map((c) => (
@@ -65,6 +67,7 @@ export function CraftsmenHall() {
             </div>
           </div>
         ) : null}
+        </div>
       </section>
     </>
   )
