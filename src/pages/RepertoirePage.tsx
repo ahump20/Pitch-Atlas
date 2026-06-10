@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { INDEX_SCOPE } from '../lib/index-scope'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { PitchIndex } from '../components/sections/PitchIndex'
 
@@ -35,7 +36,8 @@ export function RepertoirePage() {
           Every accepted pitch, by family, plus the honest edges: an alias, an illusion, a colloquialism
           that is not a pitch, and the banned doctored balls. A filed pitch opens its full specimen; an
           unfiled one opens a basic file with its sourced one-liners. Nothing fabricates geometry for a
-          pitch the atlas has not measured.
+          pitch the atlas has not measured. The shelf holds {INDEX_SCOPE.headline} —{' '}
+          {INDEX_SCOPE.breakdown}.
         </p>
       </header>
 

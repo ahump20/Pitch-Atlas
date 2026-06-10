@@ -4,6 +4,7 @@ import { PITCHES } from '../data/pitches'
 import { WINGS } from '../data/knowledge'
 import { CONFIDENCE_META, type ClaimConfidence, type PitchFamily } from '../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../data/repertoire'
+import { INDEX_SCOPE } from '../lib/index-scope'
 import { SITE } from '../config/site'
 import { HomeHero } from '../components/sections/HomeHero'
 import { BinderSheet, PocketCard, FillerCard } from '../components/sections/BinderSheet'
@@ -135,7 +136,8 @@ export function AtlasHome() {
           <p className="mt-5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
             Every accepted pitch by family — the filed specimens you can open below, plus the honest
             edges in the full index: an alias, an illusion, a colloquialism that is not a pitch, and
-            the banned doctored balls.
+            the banned doctored balls. The full index holds {INDEX_SCOPE.headline} —{' '}
+            {INDEX_SCOPE.breakdown}.
           </p>
 
           {/* binder tab dividers: the family gateways, in jewel ink */}
