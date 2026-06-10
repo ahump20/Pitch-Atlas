@@ -1,6 +1,9 @@
-import { useId, type CSSProperties, type PointerEventHandler, type ReactNode, type Ref } from 'react'
+import { lazy, Suspense, useId, type CSSProperties, type DOMAttributes, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
-import { useRefractorTilt } from '../../hooks/useRefractorTilt'
+import { useCardTilt } from '../../hooks/useCardTilt'
+import { useWebGLSupport } from '../../hooks/useWebGLSupport'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { SpecimenBoundary } from '../ball/SpecimenBoundary'
 import type { FamilyCrumb } from './familyCrumb'
 
 /*
@@ -11,6 +14,14 @@ import type { FamilyCrumb } from './familyCrumb'
   a player likeness. The card sets its accent triad (--c1/--c2/--c3) and reveal index
   (--i) from props, so every consumer drives the look from data. Gold is the 1/1 chase.
 
+  Tilt now moves through a spring (useCardTilt — same CSS-var contract as the old
+  pointer hook, plus a frame-rate store), and a card can opt into the live WebGL
+  foil with the `foil` prop: a lazy canvas layer behind the DOM content whose
+  houndstooth catches light per-pixel as the card tilts — the physical reference
+  card's behavior, digitized. The gate runs BEFORE Suspense, so the prerender, the
+  jsdom tests, reduced-motion visitors, and no-GL devices never request the chunk:
+  for all of them this card renders exactly the static CSS card below.
+
   Two provenance signals, kept apart on purpose: the crumb (top-right of the window)
   says WHAT KIND of pitch this is; the confidence dot (in the plate) says how well sourced
   the shape read is. The grip-source chip (bottom of the window) says whose grip the face
@@ -18,10 +29,12 @@ import type { FamilyCrumb } from './familyCrumb'
   grip and the shape, in words, never a fabricated figure.
 
   Accessibility: the whole card is one link when `to` is set; the face is decorative
-  (the plate carries the content), and reduced motion freezes the reveal and tilt via
-  the rules in index.css.
+  (the plate carries the content), the canvas is aria-hidden with no pointer events,
+  and reduced motion freezes the reveal and tilt via the rules in index.css.
 */
 export type RefractorAccent = { c1: string; c2: string; c3: string }
+
+const FoilLayer = lazy(() => import('./foil/FoilLayer'))
 
 export interface RefractorCardProps {
   to?: string
@@ -48,6 +61,8 @@ export interface RefractorCardProps {
   wmTab?: string
   /** Override the outer max width (px). Defaults to 360; the hero uses a larger card. */
   maxWidth?: number
+  /** Mount the live WebGL foil layer (hero-tier cards only). Default off. */
+  foil?: boolean
   className?: string
 }
 
@@ -66,10 +81,12 @@ export function RefractorCard({
   gripSource,
   wmTab = 'SPECIMEN',
   maxWidth = 360,
+  foil = false,
   className,
 }: RefractorCardProps) {
-  const { ref: tiltRef, onPointerMove, onPointerLeave } = useRefractorTilt<HTMLElement>()
-  const linkPointerMove = onPointerMove as unknown as PointerEventHandler<HTMLAnchorElement>
+  const { ref: tiltRef, handlers, store } = useCardTilt<HTMLElement>()
+  const webgl = useWebGLSupport()
+  const reduced = useReducedMotion()
   // unique arc-path id per card instance (several cards render per page)
   const arcId = `wmarc-${useId().replace(/:/g, '')}`
 
@@ -82,8 +99,20 @@ export function RefractorCard({
 
   const CrumbIcon = crumb?.Icon
 
+  /* the live foil mounts only when it can actually run; everyone else keeps
+     the CSS card untouched (it is the prerendered DOM and the test DOM) */
+  const liveFoil =
+    foil && webgl && !reduced ? (
+      <SpecimenBoundary fallback={null}>
+        <Suspense fallback={null}>
+          <FoilLayer store={store} accent={accent} gold={gold} />
+        </Suspense>
+      </SpecimenBoundary>
+    ) : null
+
   const inner = (
     <div className="rfx-field">
+      {liveFoil}
       <div className="rfx-inner">
         <div className="rfx-cardtop">
           <span
@@ -169,7 +198,9 @@ export function RefractorCard({
     </div>
   )
 
-  const cardClass = `rfx-card${gold ? ' is-gold' : ''} ${className ?? ''}`
+  const cardClass = `rfx-card${gold ? ' is-gold' : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
+  const linkHandlers = handlers as unknown as DOMAttributes<HTMLAnchorElement>
+  const articleHandlers = handlers as unknown as DOMAttributes<HTMLElement>
 
   return (
     <div style={{ perspective: '1500px', width: '100%', maxWidth }}>
@@ -177,8 +208,7 @@ export function RefractorCard({
         <Link
           to={to}
           ref={tiltRef as Ref<HTMLAnchorElement>}
-          onPointerMove={linkPointerMove}
-          onPointerLeave={onPointerLeave}
+          {...linkHandlers}
           className={`block ${cardClass}`}
           aria-label={`${name} specimen`}
           style={cardStyle}
@@ -186,13 +216,7 @@ export function RefractorCard({
           {inner}
         </Link>
       ) : (
-        <article
-          ref={tiltRef as Ref<HTMLElement>}
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
-          className={cardClass}
-          style={cardStyle}
-        >
+        <article ref={tiltRef as Ref<HTMLElement>} {...articleHandlers} className={cardClass} style={cardStyle}>
           {inner}
         </article>
       )}

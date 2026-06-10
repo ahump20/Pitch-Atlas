@@ -1,24 +1,24 @@
-import { type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { PITCHES } from '../data/pitches'
 import { WINGS } from '../data/knowledge'
-import {
-  CONFIDENCE_META,
-  type ClaimConfidence,
-  type PitchAtlasEntry,
-  type PitchFamily,
-  type RepertoireFamily,
-} from '../data/types'
+import { CONFIDENCE_META, type ClaimConfidence, type PitchFamily } from '../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../data/repertoire'
 import { SITE } from '../config/site'
 import { HomeHero } from '../components/sections/HomeHero'
-import { PitchSpecimenCard } from '../components/refractor/PitchSpecimenCard'
-import { CONFIDENCE_COLOR } from '../components/provenance/RefractorClaim'
+import { BinderSheet, PocketCard, FillerCard } from '../components/sections/BinderSheet'
+import { WaxPack, type WaxPackTool } from '../components/sections/WaxPack'
+import { CardBackPanel } from '../components/refractor/CardBackPanel'
 
-/* The provenance ladder, rendered from the real confidence model. The five tiers
-   a visitor will actually meet, top to bottom, each labeled by where it came from.
-   Rendered as a descending source scale, not five equal boxes. */
+/*
+  The Atlas home as a card table. The rhythm of the page is the rhythm of
+  handling a physical set: the pull (hero), the binder page the set rests in,
+  then the cream card backs where the data lives — grading scale, set checklist,
+  rule sheet — with the wax packs and the chase-card inserts between them.
+  Charcoal is the table; cream is the card back; nothing here is a generic panel.
+*/
+
+/* The provenance ladder, rendered from the real confidence model. */
 const LADDER: { tier: ClaimConfidence; rank: string }[] = [
   { tier: 'official-data', rank: 'highest' },
   { tier: 'pitcher-own-words', rank: 'firsthand' },
@@ -27,23 +27,29 @@ const LADDER: { tier: ClaimConfidence; rank: string }[] = [
   { tier: 'secondhand-attributed', rank: 'flagged' },
 ]
 
-/* The family chips on the index gateway, accent per family (matches the directory). */
-const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  fastball: '#37D6FF',
-  offspeed: '#7CFF52',
-  breaking: '#8A6BFF',
-  specialty: '#FFC23C',
-  banned: '#FF2D44',
+/* tier inks for the cream card back — the bright void dots fail contrast on
+   paper, so the grading card prints in ink densities instead. */
+const TIER_INK: Record<ClaimConfidence, string> = {
+  'official-data': '#1E7A4A',
+  'pitcher-own-words': '#2C5A8C',
+  'coach-observed': '#2C5A8C',
+  'reputable-analysis': '#8A6118',
+  'secondhand-attributed': '#6E5E3A',
+  'community-firsthand': '#6E5E3A',
+  unverified: '#6E675A',
 }
 
-/* The filed-specimen family labels, for the on-page browsing groups. The filed set
-   only carries the three canonical families; the full index (the gateway above)
-   carries specialty and banned too. */
-const PITCH_FAMILY_LABEL: Record<PitchFamily, string> = {
-  fastball: 'Fastballs',
-  breaking: 'Breaking balls',
-  offspeed: 'Offspeed & changeups',
+/* binder tab inks — jewel lifts for the charcoal field (chips above the sheets) */
+const FAMILY_ACCENT: Record<string, string> = {
+  fastball: '#5C84B8',
+  offspeed: '#5FA27B',
+  breaking: '#B0606C',
+  specialty: '#E9C97A',
+  banned: '#E04A5A',
 }
+
+/* the filed set in binder order: family blocks read left-to-right, top-to-bottom */
+const FAMILY_ORDER: PitchFamily[] = ['fastball', 'breaking', 'offspeed']
 
 /* The honesty contract: the lines the product, the data model, and the community
    floor all hold. Editorial copy, not data — the creed made visible. */
@@ -61,157 +67,35 @@ const NEVER = [
 ]
 const ALWAYS = ['Real grip photos, clean sources', 'A source on every claim']
 
-const THESIS_ROWS = [
+const THESIS_ROWS: { stamp: string; ink: string; label: string; text: string }[] = [
   {
     stamp: 'Survives',
+    ink: '#1F3A5F',
     label: 'What modern baseball keeps well',
     text: 'Velocity, spin, movement, outcomes, and the public clips that catch a pitch after it has already left the hand.',
   },
   {
     stamp: 'Vanishes',
+    ink: '#6E2B35',
     label: 'What disappears first',
     text: 'Thumb pressure, hand size, seam feel, and the little variants that work for one arm and never fit another.',
   },
   {
     stamp: 'Filed',
+    ink: '#2F5D46',
     label: 'What Pitch Atlas preserves',
     text: 'The holdable grip first, then the shape language, then the source badge that says how solid the claim is.',
   },
 ]
 
-/* The interactive tools, surfaced together so every one is one click from home.
-   Each carries a `kind` that selects its visual preview plane. */
-const TOOLS: { label: string; to: string; blurb: string; kind: ToolKind }[] = [
-  { label: 'Shape Sandbox', to: '/sandbox', kind: 'dial', blurb: 'Turn the spin-axis clock and watch the shape language change: ride, drop, run, sweep.' },
-  { label: 'The Shape Map', to: '/movement-map', kind: 'quadrant', blurb: 'Every filed pitch on one catcher’s-eye field, grouped by direction and character.' },
-  { label: 'Compare two pitches', to: '/compare', kind: 'tunnel', blurb: 'Overlay any two pitches to read the shared window and late shape split.' },
-  { label: 'Compare two grips', to: '/grips', kind: 'grips', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
+/* the four tools as sealed packs, each printed in one collegiate jewel ink */
+const TOOLS: WaxPackTool[] = [
+  { label: 'Shape Sandbox', to: '/sandbox', kind: 'dial', ink: '#1F3A5F', blurb: 'Turn the spin-axis clock and watch the shape language change: ride, drop, run, sweep.' },
+  { label: 'The Shape Map', to: '/movement-map', kind: 'quadrant', ink: '#2F5D46', blurb: 'Every filed pitch on one catcher’s-eye field, grouped by direction and character.' },
+  { label: 'Compare two pitches', to: '/compare', kind: 'tunnel', ink: '#6E2B35', blurb: 'Overlay any two pitches to read the shared window and late shape split.' },
+  { label: 'Compare two grips', to: '/grips', kind: 'grips', ink: '#8A6B24', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
 ]
 
-type ToolKind = 'dial' | 'quadrant' | 'tunnel' | 'grips'
-
-/* The tool preview planes: small, on-brand line schematics that say what each tool
-   does before the visitor clicks. Cyan strokes on the void; decoration, not data. */
-function ToolGlyph({ kind }: { kind: ToolKind }) {
-  const stroke = 'var(--color-cyan)'
-  const common = { fill: 'none', stroke, strokeWidth: 1.6, strokeLinecap: 'round' as const, strokeLinejoin: 'round' as const }
-  return (
-    <div
-      className="relative h-16 w-full overflow-hidden rounded-md border border-cyan/20"
-      style={{ background: 'radial-gradient(120% 140% at 80% -20%, color-mix(in srgb, var(--color-cyan) 12%, transparent), #08060e)' }}
-      aria-hidden="true"
-    >
-      <svg viewBox="0 0 160 64" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-        {kind === 'dial' && (
-          <>
-            <circle cx="48" cy="32" r="22" {...common} opacity={0.55} />
-            {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => {
-              const r = (a * Math.PI) / 180
-              return <path key={a} d={`M${48 + Math.cos(r) * 19} ${32 + Math.sin(r) * 19} L${48 + Math.cos(r) * 22} ${32 + Math.sin(r) * 22}`} {...common} opacity={0.5} />
-            })}
-            <path d="M48 32 L62 18" {...common} strokeWidth={2.1} />
-            <circle cx="48" cy="32" r="2.6" fill={stroke} stroke="none" />
-            <path d="M92 40 q22 -28 52 -10" {...common} />
-            <circle cx="144" cy="30" r="3" fill={stroke} stroke="none" />
-            <text x="92" y="54" fill="var(--color-bone-2)" style={{ font: '700 7px var(--font-mono)', letterSpacing: '0.12em' }}>SPIN AXIS</text>
-          </>
-        )}
-        {kind === 'quadrant' && (
-          <>
-            <path d="M80 8 V56 M40 32 H120" {...common} strokeWidth={1} opacity={0.4} />
-            <circle cx="80" cy="32" r="24" {...common} strokeWidth={1} opacity={0.3} />
-            <path d="M80 32 q-20 -6 -30 -22" {...common} />
-            <circle cx="50" cy="10" r="3.4" fill={stroke} stroke="none" />
-            <path d="M80 32 q20 8 34 -2" {...common} opacity={0.65} stroke="var(--color-amber-bright)" />
-            <circle cx="114" cy="30" r="3.4" fill="var(--color-amber-bright)" stroke="none" />
-          </>
-        )}
-        {kind === 'tunnel' && (
-          <>
-            <path d="M14 32 q60 0 84 0" {...common} />
-            <path d="M14 32 q60 0 84 18" {...common} stroke="var(--color-amber-bright)" />
-            <path d="M98 32 q22 0 48 -14" {...common} />
-            <path d="M98 50 q22 0 48 8" {...common} stroke="var(--color-amber-bright)" />
-            <line x1="98" y1="16" x2="98" y2="58" {...common} strokeWidth={1} strokeDasharray="2 4" opacity={0.5} />
-            <circle cx="146" cy="18" r="3" fill={stroke} stroke="none" />
-            <circle cx="146" cy="58" r="3" fill="var(--color-amber-bright)" stroke="none" />
-            <text x="84" y="12" fill="var(--color-bone-2)" style={{ font: '700 7px var(--font-mono)', letterSpacing: '0.1em' }}>SPLIT</text>
-          </>
-        )}
-        {kind === 'grips' && (
-          <>
-            <path d="M80 10 L58 40 M80 10 L102 40" {...common} opacity={0.6} />
-            <circle cx="80" cy="10" r="3" fill={stroke} stroke="none" />
-            <circle cx="50" cy="46" r="13" {...common} />
-            <path d="M44 41 q6 5 0 10 M56 41 q-6 5 0 10" {...common} strokeWidth={1.2} stroke="var(--color-seam-bright)" opacity={0.8} />
-            <circle cx="110" cy="46" r="13" {...common} />
-            <path d="M104 41 q6 5 0 10 M116 41 q-6 5 0 10" {...common} strokeWidth={1.2} stroke="var(--color-seam-bright)" opacity={0.8} />
-          </>
-        )}
-      </svg>
-    </div>
-  )
-}
-
-/* One filed specimen, struck as a browsing row (not a second hero card). The specimen
-   number ties the row to its card; the row carries the shape read and the source dot,
-   and opens the full specimen. The `.rfx-entry` look matches the /repertoire directory. */
-function SpecimenRow({ entry, accent }: { entry: PitchAtlasEntry; accent: string }) {
-  const shape = entry.canonical.physics.shape
-  const conf = shape.confidence
-  const color = CONFIDENCE_COLOR[conf] ?? 'var(--color-ink-3)'
-  return (
-    <Link
-      to={`/pitch/${entry.display.slug}`}
-      className="rfx-entry is-filed"
-      style={{ '--gc': accent } as CSSProperties}
-      aria-label={`Open the ${entry.display.shortName} specimen`}
-    >
-      <span
-        className="rfx-athletic rfx-skew flex-none text-[34px] leading-none"
-        style={{ color: accent, WebkitTextStroke: '1px rgba(0,0,0,0.4)' }}
-      >
-        {entry.display.specimenNo}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="flex flex-wrap items-center gap-2">
-          <span className="font-prose text-[15px] font-bold text-bone">{entry.display.shortName}</span>
-          <span className="rounded-[4px] bg-[var(--gold)] px-1.5 py-0.5 font-mono text-[7.5px] uppercase tracking-[0.1em] text-[#2a1d05]">
-            Filed
-          </span>
-        </span>
-        <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2">{shape.value}</span>
-        <span className="mt-1.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone-2">
-          <i className="rfx-dot" style={{ background: color, color, width: 7, height: 7 }} />
-          {CONFIDENCE_META[conf].label}
-        </span>
-      </span>
-      <span className="flex-none self-center font-mono text-[9px] uppercase tracking-[0.1em]" style={{ color: '#caa14a' }}>
-        Open <span aria-hidden="true">→</span>
-      </span>
-    </Link>
-  )
-}
-
-/* Decorative inset corner mark for the rule sheet — a stamped-document frame. */
-function Corner({ at }: { at: 'tl' | 'tr' | 'bl' | 'br' }) {
-  const pos: Record<typeof at, string> = {
-    tl: 'left-2 top-2 border-l border-t',
-    tr: 'right-2 top-2 border-r border-t',
-    bl: 'left-2 bottom-2 border-l border-b',
-    br: 'right-2 bottom-2 border-r border-b',
-  }
-  return <span aria-hidden="true" className={`pointer-events-none absolute h-3.5 w-3.5 border-seam-bright/40 ${pos[at]}`} />
-}
-
-/*
-  The Atlas home, struck in the refractor language — now a variety ladder, not one
-  card form repeated down the page. Each section introduces a new job in its own
-  visual form: the hero's one full specimen card → a source-confidence scale → the
-  index gateway and a family-grouped browsing system → tool preview planes → a
-  stamped rule sheet → the two side wings. The full specimen card appears only at the
-  hero and at one selected spotlight. The philosophy lives once, on /sources.
-*/
 export function AtlasHome() {
   useSeoMeta({
     title: `${SITE.siteName}: The Living Field Manual for Pitching Grips`,
@@ -223,14 +107,13 @@ export function AtlasHome() {
     twitterCard: 'summary_large_image',
   })
 
-  const filedGroups = (['fastball', 'breaking', 'offspeed'] as PitchFamily[])
-    .map((fam) => ({ fam, label: PITCH_FAMILY_LABEL[fam], entries: PITCHES.filter((p) => p.canonical.family === fam) }))
-    .filter((g) => g.entries.length > 0)
-  /* One selected specimen, crop-spotlit in among the browsing rows — a breaking ball,
-     visually distinct from the hero's gold four-seam, so the card form returns once. */
-  const spotlight = PITCHES.find((p) => p.canonical.family === 'breaking')
-  /* The mini-ledger example for the source scale: a real filed reading wearing its
-     real badge, so the model shows itself in practice rather than asserting. */
+  /* the filed set, in binder order: family blocks laid into the pockets */
+  const filed = FAMILY_ORDER.flatMap((fam) => PITCHES.filter((p) => p.canonical.family === fam))
+  const sheetOne = filed.slice(0, 9)
+  const sheetTwo = filed.slice(9)
+
+  /* the mini-ledger example for the grading card: a real filed reading wearing
+     its real badge, so the model shows itself instead of asserting. */
   const ref = PITCHES[0]
   const refShape = ref.canonical.physics.shape
   const refConf = refShape.confidence
@@ -239,328 +122,315 @@ export function AtlasHome() {
     <>
       <HomeHero featured={PITCHES[0]} />
 
-      <section className="border-t border-bone/10">
-        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
-          <div className="md:col-span-5">
-            <p className="rfx-skick">Why it exists</p>
-            <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,56px)]">
-              A grip disappears faster than a <span className="rfx-chrome-text">box score</span>.
-            </h2>
-            <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-bone-2">
-              A dashboard can tell you what the ball did. A coach can show a drill. A clip can catch
-              one grip for ten seconds. Pitch Atlas is for the part that usually vanishes: where the
-              fingers sat, what the pitcher felt, and what the source actually proves.
-            </p>
-            <p className="mt-4 max-w-[46ch] text-[15px] leading-relaxed text-bone-2">
-              It is not a correction engine. It is a place where credible variants can stand next to
-              each other without pretending one hand owns the truth.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
-                style={{ background: 'var(--color-cyan)', boxShadow: '0 6px 24px -8px var(--color-cyan)' }}
-              >
-                Read why it exists <span aria-hidden="true">→</span>
-              </Link>
-              <Link
-                to="/sources"
-                className="inline-flex items-center gap-2 rounded-md border border-bone/30 px-5 py-3 font-mono text-sm uppercase tracking-wide text-bone transition-colors hover:border-bone"
-              >
-                Read the source model <span aria-hidden="true">→</span>
-              </Link>
-            </div>
+      {/* ── THE BINDER: the filed set in nine-pocket sheets ── */}
+      <section id="index" className="scroll-mt-20 border-t border-bone/10">
+        <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
+          <div className="slab-head">
+            <h2 style={{ fontSize: 'clamp(26px,4.6vw,46px)' }}>The Filed Set</h2>
+            <span className="slab-count">
+              {filed.length} specimens · {Math.ceil((filed.length + 6) / 9)} sheets
+            </span>
           </div>
 
-          <div className="md:col-span-7">
-            <div className="border-t border-bone/10">
-              {THESIS_ROWS.map((row, i) => (
-                <div
-                  key={row.label}
-                  className="grid gap-4 border-b border-bone/10 py-5 sm:grid-cols-[7.25rem_1fr]"
-                >
-                  <span
-                    className="h-fit w-fit rounded border px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em]"
-                    style={{
-                      borderColor: i === 1 ? 'color-mix(in srgb, var(--color-seam-bright) 55%, transparent)' : 'color-mix(in srgb, var(--color-cyan) 50%, transparent)',
-                      color: i === 1 ? 'var(--color-seam-bright)' : 'var(--color-cyan)',
-                      transform: `rotate(${i === 1 ? -2 : 2}deg)`,
-                    }}
-                  >
-                    {row.stamp}
-                  </span>
-                  <div>
-                    <h3 className="rfx-athletic rfx-skew text-bone" style={{ fontSize: 'clamp(20px,3vw,30px)' }}>
-                      {row.label}
-                    </h3>
-                    <p className="mt-2 max-w-[58ch] text-[14px] leading-relaxed text-bone-2">{row.text}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ACT 02 — the model, as a descending source-confidence scale (not five equal boxes). */}
-      <section className="border-t border-bone/10">
-        <div className="mx-auto max-w-[1320px] px-5 py-16 md:grid md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
-          <div className="md:col-span-5">
-            <p className="rfx-skick">The model</p>
-            <h2 className="rfx-stitle mt-3 max-w-[14ch] text-[clamp(28px,5vw,54px)]">
-              Sourced, <span className="rfx-chrome-text">not corrected</span>.
-            </h2>
-            <p className="mt-4 max-w-[44ch] text-[15px] leading-relaxed text-bone-2">
-              A pitch can be thrown a dozen credible ways. The atlas does not pick a winner. It records
-              what is known, attributes it, and labels how confident the source is. Official tracking
-              context can support a prose claim; biography facts stay when real; pitch shape is never
-              padded with borrowed gauges.
-            </p>
-          </div>
-
-          <div className="relative mt-9 md:col-span-7 md:mt-0">
-            {/* the source rail: a gauge from official green down to flagged sand */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute bottom-9 left-[10px] top-1.5 w-[3px] rounded-full"
-              style={{
-                background:
-                  'linear-gradient(180deg, var(--color-ok-bright), var(--color-amber-bright) 58%, var(--color-sand-bright))',
-                opacity: 0.7,
-              }}
-            />
-            <ol className="flex flex-col gap-4">
-              {LADDER.map(({ tier, rank }, i) => {
-                const color = CONFIDENCE_COLOR[tier] ?? 'var(--color-ink-3)'
-                const size = 15 - i * 1.6
-                return (
-                  <li key={tier} className="grid grid-cols-[22px_1fr_auto] items-start gap-3.5">
-                    <span className="relative z-10 mt-1 flex justify-center">
-                      <i
-                        className="rfx-dot"
-                        style={{ background: color, color, width: size, height: size, opacity: 1 - i * 0.08 }}
-                      />
-                    </span>
-                    <span style={{ opacity: 1 - i * 0.06 }}>
-                      <span className="block font-prose text-sm font-bold uppercase tracking-[0.02em] text-bone">
-                        {CONFIDENCE_META[tier].label}
-                      </span>
-                      <span className="mt-0.5 block text-[12.5px] leading-snug text-bone-2">
-                        {CONFIDENCE_META[tier].meaning}
-                      </span>
-                    </span>
-                    <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.1em]" style={{ color }}>
-                      {rank}
-                    </span>
-                  </li>
-                )
-              })}
-            </ol>
-
-            {/* mini ledger: one real filed reading, wearing its real badge */}
-            <div className="mt-6 flex items-center gap-4 rounded-xl border border-bone/12 bg-[#0e0c14] px-4 py-3">
-              <span className="rfx-athletic rfx-skew flex-none text-bone" style={{ fontSize: 30, WebkitTextStroke: '1px rgba(0,0,0,0.4)' }}>
-                Shape
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2">
-                  {ref.display.shortName} · {refShape.value}
-                </span>
-                <span className="mt-1 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone-2">
-                  <i className="rfx-dot" style={{ background: CONFIDENCE_COLOR[refConf], color: CONFIDENCE_COLOR[refConf], width: 7, height: 7 }} />
-                  {CONFIDENCE_META[refConf].label}
-                </span>
-              </span>
-              <span className="flex-none text-right font-mono text-[9px] uppercase leading-tight tracking-[0.1em] text-ink-3">
-                Every claim
-                <br />
-                wears its badge
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ACT 05 + 03 + 04 — the index: front-door gateway first, then a family-grouped browsing system. */}
-      <section id="index" className="scroll-mt-20 border-t border-bone/10 pt-16 md:pt-20">
-        <div className="mx-auto max-w-[1320px] px-5 md:px-8">
-          <p className="rfx-skick">The Pitch Index</p>
-          <h2 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone" style={{ fontSize: 'clamp(30px,5vw,58px)' }}>
-            Start at the <span className="rfx-chrome-text">front door</span>.
-          </h2>
-          <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-            Every accepted pitch by family — the filed specimens you can open below, plus the honest edges in
-            the full index: an alias, an illusion, a colloquialism that is not a pitch, and the banned
-            doctored balls.
+          <p className="mt-5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
+            Every accepted pitch by family — the filed specimens you can open below, plus the honest
+            edges in the full index: an alias, an illusion, a colloquialism that is not a pitch, and
+            the banned doctored balls.
           </p>
 
-          {/* ACT 05: the gateway — family chips do the routing, before any stack of cards */}
+          {/* binder tab dividers: the family gateways, in jewel ink */}
           <div className="mt-6 flex flex-wrap items-center gap-2.5">
             {REPERTOIRE_FAMILIES.map((f) => {
-              const accent = FAMILY_ACCENT[f.family]
+              const accent = FAMILY_ACCENT[f.family] ?? '#E9C97A'
               return (
                 <Link
                   key={f.family}
                   to="/repertoire"
-                  className="group inline-flex items-center gap-2.5 rounded-full border px-4 py-2.5 transition-colors"
+                  className="inline-flex items-center gap-2.5 rounded-t-lg border border-b-0 px-4 py-2.5 transition-colors"
                   style={{
                     borderColor: `color-mix(in srgb, ${accent} 45%, transparent)`,
-                    background: `color-mix(in srgb, ${accent} 10%, transparent)`,
+                    background: `color-mix(in srgb, ${accent} 12%, transparent)`,
                   }}
                 >
-                  <span className="font-mono text-[11px] uppercase tracking-[0.1em] text-bone">{f.label}</span>
-                  <b className="rfx-athletic rfx-skew text-[17px] leading-none" style={{ color: accent }}>
+                  <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-bone">{f.label}</span>
+                  <b className="rfx-athletic text-[16px] leading-none" style={{ color: accent }}>
                     {repertoireByFamily(f.family).length}
                   </b>
                 </Link>
               )
             })}
-            <Link
-              to="/repertoire"
-              className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-[#06121b] transition-transform active:translate-y-px"
-              style={{ background: 'var(--color-cyan)', boxShadow: '0 6px 20px -10px var(--color-cyan)' }}
-            >
-              Open the full index <span aria-hidden="true">→</span>
-            </Link>
           </div>
-        </div>
 
-        {/* ACT 03 + 04: the filed set as a browsing system, grouped by family, one card crop interleaved */}
-        <div className="mx-auto mt-11 max-w-[1320px] px-5 md:px-8">
-          <p className="mono-label-stage">The filed set · {PITCHES.length} specimens you can open</p>
-          {filedGroups.map((g, gi) => {
-            const accent = FAMILY_ACCENT[g.fam]
-            return (
-              <div key={g.fam} className="mt-7">
-                <div
-                  className="mb-4 flex items-baseline gap-3.5 border-b pb-2.5"
-                  style={{ borderColor: `color-mix(in srgb, ${accent} 36%, transparent)` }}
-                >
-                  <h3 className="rfx-athletic rfx-skew text-[clamp(20px,3.4vw,30px)]" style={{ color: accent }}>
-                    {g.label}
-                  </h3>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
-                    {g.entries.length} filed
-                  </span>
-                </div>
-                <div className="grid gap-[11px] [grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))]">
-                  {g.entries.map((e) => (
-                    <SpecimenRow key={e.display.slug} entry={e} accent={accent} />
-                  ))}
-                </div>
-
-                {/* one selected specimen, crop-spotlit after the first family — the card form returns once */}
-                {gi === 0 && spotlight ? (
-                  <div className="mt-6 grid items-center gap-5 rounded-2xl border border-bone/12 bg-[#0b0910] p-5 sm:grid-cols-[auto_1fr] sm:gap-7 md:p-7">
-                    <div className="mx-auto w-full max-w-[clamp(180px,52vw,224px)] sm:mx-0">
-                      <PitchSpecimenCard entry={spotlight} maxWidth={224} />
-                    </div>
-                    <div>
-                      <p className="rfx-skick">A selected specimen</p>
-                      <h4 className="rfx-athletic rfx-skew mt-2 text-bone" style={{ fontSize: 'clamp(22px,3.2vw,32px)' }}>
-                        Open one and the full card unfolds.
-                      </h4>
-                      <p className="mt-2.5 max-w-[48ch] text-[14px] leading-relaxed text-bone-2">
-                        Every filed row above opens a specimen like this: the real grip in the window,
-                        the shape read, and the source badge on the prose claim.
-                        The card is the chase; the rows are how you find it.
-                      </p>
-                      <Link
-                        to={`/pitch/${spotlight.display.slug}`}
-                        className="mono-label-stage mt-4 inline-flex items-center gap-1.5 transition-colors hover:text-bone"
-                      >
-                        Open the {spotlight.display.shortName} <span aria-hidden="true">→</span>
-                      </Link>
-                    </div>
+          <div className="flex flex-col gap-8">
+            <div>
+              <p className="mb-2 mt-6 font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink-3">Sheet 1 of 2</p>
+              <BinderSheet label="Filed specimens, sheet one">
+                {sheetOne.map((p) => (
+                  <div className="pocket" key={p.display.slug}>
+                    <PocketCard entry={p} />
                   </div>
-                ) : null}
-              </div>
-            )
-          })}
+                ))}
+              </BinderSheet>
+            </div>
+            <div>
+              <p className="mb-2 font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink-3">Sheet 2 of 2</p>
+              <BinderSheet label="Filed specimens, sheet two">
+                {sheetTwo.map((p) => (
+                  <div className="pocket" key={p.display.slug}>
+                    <PocketCard entry={p} />
+                  </div>
+                ))}
+                <div className="pocket">
+                  <FillerCard to="/repertoire" label="Full Index" note="Every accepted pitch" />
+                </div>
+                <div className="pocket">
+                  <FillerCard to="/softball" label="Softball Set" note="The fastpitch wing" />
+                </div>
+                <div className="pocket">
+                  <FillerCard to="/lost-pitches" label="Lost Pitches" note="Grips history dropped" ghost />
+                </div>
+                {/* three empty sleeves: an incomplete page is a true thing about a living set */}
+                <div className="pocket" aria-hidden="true">
+                  <div style={{ aspectRatio: '5 / 7' }} />
+                </div>
+                <div className="pocket" aria-hidden="true">
+                  <div style={{ aspectRatio: '5 / 7' }} />
+                </div>
+                <div className="pocket" aria-hidden="true">
+                  <div style={{ aspectRatio: '5 / 7' }} />
+                </div>
+              </BinderSheet>
+            </div>
+          </div>
 
-          <Link
-            to="/repertoire"
-            className="mt-10 inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
-            style={{ background: 'var(--color-cyan)', boxShadow: '0 6px 20px -8px var(--color-cyan)' }}
-          >
+          <Link to="/repertoire" className="btn-foil mt-9">
             Open the full Pitch Index <span aria-hidden="true">→</span>
           </Link>
         </div>
       </section>
 
-      {/* The field manual: the Learn wings as a numbered chapter index — a contents page, its own form. */}
-      <section className="border-t border-bone/10">
-        <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
-          <div className="md:col-span-5 lg:col-span-4">
-            <p className="mono-label-stage">The field manual</p>
-            <h2 className="rfx-athletic rfx-skew mt-3 text-bone" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>
-              Not just what each pitch is — how the craft works underneath.
-            </h2>
-            <p className="mt-4 max-w-[46ch] text-base leading-relaxed text-bone-2">
-              Ten sourced chapters: how the body creates timing, how a pitch gets built, how pitches work
-              together, and the arm-health and youth reality beneath all of it.
-            </p>
-            <Link
-              to="/learn"
-              className="mt-7 inline-flex items-center gap-2 rounded-md border border-bone/25 px-5 py-3 font-mono text-sm uppercase tracking-wide text-bone transition-colors hover:border-bone"
-            >
-              Open the field manual <span aria-hidden="true">→</span>
-            </Link>
-          </div>
-
-          <ol className="border-t border-bone/10 md:col-span-7 lg:col-span-8">
-            {WINGS.map((w, i) => (
-              <li key={w.slug}>
-                <Link
-                  to={`/learn/${w.slug}`}
-                  className="group grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 border-b border-bone/10 py-4 transition-colors hover:bg-bone/[0.03] md:gap-x-6"
-                >
-                  <span className="font-mono text-sm tabular-nums text-ink-3 transition-colors group-hover:text-cyan">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="min-w-0">
-                    <span
-                      className="rfx-athletic rfx-skew block text-bone transition-colors group-hover:text-cyan"
-                      style={{ fontSize: '20px' }}
-                    >
-                      {w.navLabel || w.title}
-                    </span>
-                    <span className="mt-1 block max-w-[64ch] text-[13.5px] leading-relaxed text-bone-2 md:line-clamp-2">
-                      {w.summary}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* ACT 06 — the tools, each with its own visual preview plane. */}
+      {/* ── THE GRADING SCALE: thesis + provenance on the first cream card back ── */}
       <section className="border-t border-bone/10">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
-          <p className="mono-label-stage">The tools</p>
-          <h2 className="rfx-athletic rfx-skew mt-3 text-bone" style={{ fontSize: 'clamp(26px,4vw,44px)' }}>
-            The craft map, made playable.
-          </h2>
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <CardBackPanel>
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
+              <div className="md:col-span-6">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--cb-gold-ink)' }}>
+                  Why it exists
+                </p>
+                <h2
+                  className="rfx-athletic mt-3 max-w-[16ch] text-[clamp(26px,4.6vw,46px)]"
+                  style={{ color: 'var(--cb-navy)', lineHeight: 0.95 }}
+                >
+                  A grip disappears faster than a box score.
+                </h2>
+                <p className="mt-4 max-w-[52ch] text-[14.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
+                  A dashboard can tell you what the ball did. A coach can show a drill. A clip can
+                  catch one grip for ten seconds. Pitch Atlas is for the part that usually vanishes:
+                  where the fingers sat, what the pitcher felt, and what the source actually proves.
+                </p>
+
+                <div className="mt-6">
+                  {THESIS_ROWS.map((row) => (
+                    <div key={row.label} className="cb-row grid gap-3 py-4 sm:grid-cols-[6.5rem_1fr]">
+                      <span className="rfx-stamp h-fit w-fit" style={{ color: row.ink }}>
+                        {row.stamp}
+                      </span>
+                      <div>
+                        <h3 className="rfx-athletic text-[clamp(17px,2.4vw,22px)]" style={{ color: 'var(--cb-ink)' }}>
+                          {row.label}
+                        </h3>
+                        <p className="mt-1.5 max-w-[56ch] text-[13.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
+                          {row.text}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link to="/about" className="btn-foil is-ink">
+                    Read why it exists <span aria-hidden="true">→</span>
+                  </Link>
+                  <Link to="/sources" className="btn-foil is-ink">
+                    The source model <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
+              </div>
+
+              <div className="md:col-span-6">
+                <div className="cb-rules">
+                  <h3 style={{ fontSize: 'clamp(17px,2.2vw,22px)' }}>
+                    The grading scale <span aria-hidden="true">★</span> sourced, not corrected
+                  </h3>
+                </div>
+                <p className="mt-3 max-w-[52ch] text-[13.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
+                  A pitch can be thrown a dozen credible ways. The atlas does not pick a winner — it
+                  records what is known, attributes it, and grades how confident the source is. The
+                  five grades below are the real tiers a visitor meets, top to bottom.
+                </p>
+                <ol className="mt-5">
+                  {LADDER.map(({ tier, rank }) => {
+                    const ink = TIER_INK[tier]
+                    return (
+                      <li key={tier} className="cb-row grid grid-cols-[14px_1fr_auto] items-start gap-3 py-3">
+                        <i className="mt-1 inline-block h-2.5 w-2.5 rounded-full" style={{ background: ink }} />
+                        <span>
+                          <span className="block font-mono text-[11px] font-bold uppercase tracking-[0.08em]" style={{ color: 'var(--cb-ink)' }}>
+                            {CONFIDENCE_META[tier].label}
+                          </span>
+                          <span className="mt-0.5 block text-[12.5px] leading-snug" style={{ color: 'var(--cb-ink-2)' }}>
+                            {CONFIDENCE_META[tier].meaning}
+                          </span>
+                        </span>
+                        <span className="mt-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.12em]" style={{ color: ink }}>
+                          {rank}
+                        </span>
+                      </li>
+                    )
+                  })}
+                </ol>
+
+                {/* mini ledger: one real filed reading, wearing its real grade */}
+                <div
+                  className="mt-5 flex items-center gap-4 rounded-md border px-4 py-3"
+                  style={{ borderColor: 'var(--cb-line)', background: 'var(--cb-paper-2)' }}
+                >
+                  <span className="rfx-athletic flex-none" style={{ fontSize: 26, color: 'var(--cb-navy)' }}>
+                    Shape
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-mono text-[10px] uppercase tracking-[0.08em]" style={{ color: 'var(--cb-ink-2)' }}>
+                      {ref.display.shortName} · {refShape.value}
+                    </span>
+                    <span className="mt-1 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em]" style={{ color: TIER_INK[refConf] }}>
+                      <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: TIER_INK[refConf] }} />
+                      {CONFIDENCE_META[refConf].label}
+                    </span>
+                  </span>
+                  <span className="flex-none text-right font-mono text-[9px] uppercase leading-tight tracking-[0.1em]" style={{ color: 'var(--cb-ink-3)' }}>
+                    Every claim
+                    <br />
+                    wears its badge
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardBackPanel>
+        </div>
+      </section>
+
+      {/* ── THE WAX PACKS: the tools, sealed ── */}
+      <section className="border-t border-bone/10">
+        <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
+          <div className="slab-head">
+            <h2 style={{ fontSize: 'clamp(26px,4.6vw,46px)' }}>The Tools</h2>
+            <span className="slab-count">{TOOLS.length} sealed packs</span>
+          </div>
+          <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-bone-2">
+            The craft map, made playable. Tear one open — every pack is one click from home.
+          </p>
+          <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-6 md:gap-x-6 lg:grid-cols-4">
             {TOOLS.map((t) => (
-              <Link
-                key={t.to}
-                to={t.to}
-                className="group rounded-xl border border-bone/12 bg-[#0e0c14] p-4 transition-colors hover:border-cyan/45"
-              >
-                <ToolGlyph kind={t.kind} />
-                <p className="rfx-athletic rfx-skew mt-3.5 text-bone" style={{ fontSize: '19px' }}>{t.label}</p>
-                <p className="mt-1.5 text-[13px] leading-relaxed text-bone-2">{t.blurb}</p>
-                <span className="mono-label-stage mt-3 inline-block transition-colors group-hover:text-bone">Open →</span>
-              </Link>
+              <WaxPack key={t.to} tool={t} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ACT 07 — the honesty contract, as a stamped rule sheet / label wall. */}
+      {/* ── THE SET CHECKLIST: the field manual on a card back ── */}
+      <section className="border-t border-bone/10">
+        <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
+          <CardBackPanel>
+            <div className="cb-rules justify-between">
+              <h2 style={{ fontSize: 'clamp(16px,2.6vw,26px)' }}>
+                Field manual <span aria-hidden="true">★</span> complete set checklist
+              </h2>
+              <span className="hidden font-mono text-[9px] uppercase tracking-[0.16em] sm:block" style={{ color: 'var(--cb-ink-3)' }}>
+                {WINGS.length} of {WINGS.length} filed
+              </span>
+            </div>
+            <p className="mt-3 max-w-[58ch] text-[13.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
+              Not just what each pitch is — how the craft works underneath. Ten sourced chapters,
+              every one published and checked off.
+            </p>
+            <ol className="mt-5 grid grid-cols-2 gap-x-5 md:gap-x-10">
+              {WINGS.map((w, i) => (
+                <li key={w.slug} className="cb-row">
+                  <Link
+                    to={`/learn/${w.slug}`}
+                    className="group flex items-baseline gap-2 py-2.5 transition-colors md:gap-3"
+                  >
+                    {/* the filled square is derived: this wing is in the data, so it is filed */}
+                    <span className="font-mono text-[10px]" style={{ color: 'var(--cb-forest)' }} aria-hidden="true">
+                      ■
+                    </span>
+                    <span className="font-mono text-[10px] tabular-nums" style={{ color: 'var(--cb-ink-3)' }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="min-w-0">
+                      <span
+                        className="block font-mono text-[10px] font-bold uppercase tracking-[0.06em] underline-offset-2 group-hover:underline md:text-[11.5px]"
+                        style={{ color: 'var(--cb-navy)' }}
+                      >
+                        {w.navLabel || w.title}
+                      </span>
+                      <span className="mt-0.5 hidden text-[12px] leading-snug md:line-clamp-1" style={{ color: 'var(--cb-ink-2)' }}>
+                        {w.summary}
+                      </span>
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+            <div className="mt-6">
+              <Link to="/learn" className="btn-foil is-ink">
+                Open the field manual <span aria-hidden="true">→</span>
+              </Link>
+            </div>
+          </CardBackPanel>
+        </div>
+      </section>
+
+      {/* ── THE INSERTS: the two chase wings, kept quiet ── */}
+      <section className="border-t border-bone/10">
+        <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            <Link
+              to="/craftsmen"
+              className="group relative rounded-xl border p-6 transition-colors md:p-7"
+              style={{
+                borderColor: 'color-mix(in srgb, #caa14a 40%, transparent)',
+                background: 'linear-gradient(150deg, rgba(202,161,74,.08), var(--color-press))',
+              }}
+            >
+              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-bone">The Craftsmen</p>
+              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-bone-2">
+                The arms that owned a pitch — and the one pitch that is a legend, not a person.
+              </p>
+              <span className="mono-label-stage mt-4 inline-block transition-colors group-hover:text-bone">
+                Open the hall →
+              </span>
+            </Link>
+            <Link
+              to="/lost-pitches"
+              className="group relative rounded-xl border border-dashed p-6 transition-colors md:p-7"
+              style={{ borderColor: 'color-mix(in srgb, var(--color-seam-bright) 38%, transparent)', background: 'var(--color-press)' }}
+            >
+              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-bone">Lost Pitches</p>
+              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-bone-2">
+                The pitches of the Negro Leagues whose statistics survive but whose grips mostly do
+                not.
+              </p>
+              <span className="mono-label-stage mt-4 inline-block transition-colors group-hover:text-bone">
+                Open the archive →
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── THE RULE SHEET: the honesty contract as card-back fine print ── */}
       <section className="border-t border-bone/10">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">The honesty contract</p>
@@ -568,101 +438,65 @@ export function AtlasHome() {
             What we will <span className="rfx-chrome-text">never fake</span>.
           </h2>
           <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
-            The foil is decoration. The provenance is the point. These lines are load-bearing — in the
-            product copy, the data model, and the community floor in equal measure.
+            The foil is decoration. The provenance is the point. These lines are load-bearing — in
+            the product copy, the data model, and the community floor in equal measure.
           </p>
 
-          <div className="relative mt-8 overflow-hidden rounded-2xl border border-bone/15 bg-[#0b0910] p-5 md:p-8">
-            <Corner at="tl" />
-            <Corner at="tr" />
-            <Corner at="bl" />
-            <Corner at="br" />
+          <div className="mt-8">
+            <CardBackPanel>
+              <div className="cb-rules justify-between">
+                <h3 style={{ fontSize: 'clamp(15px,2.4vw,24px)' }}>
+                  Pitch Atlas <span aria-hidden="true">★</span> rule sheet
+                </h3>
+                <span className="rfx-stamp" style={{ color: 'var(--cb-burgundy)', transform: 'rotate(-3deg)' }}>
+                  On the record
+                </span>
+              </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-dashed border-bone/15 pb-3">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-bone-2">
-                Rule sheet · filed &amp; stamped
-              </span>
-              <span className="inline-block rotate-[-3deg] rounded border border-seam-bright/60 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.12em] text-seam-bright">
-                On the record
-              </span>
-            </div>
+              <div className="mt-4 grid grid-cols-1 gap-x-10 sm:grid-cols-2">
+                {NEVER.map((item, i) => (
+                  <div key={item} className="cb-row flex items-center gap-3 py-2.5">
+                    <span
+                      className="rfx-stamp flex-none"
+                      style={{ color: 'var(--cb-burgundy)', transform: `rotate(${i % 3 === 0 ? -2 : i % 3 === 1 ? 1.5 : -1}deg)` }}
+                    >
+                      Never
+                    </span>
+                    <span className="font-mono text-[11px] uppercase tracking-[0.04em]" style={{ color: 'var(--cb-ink)' }}>
+                      {item}
+                    </span>
+                  </div>
+                ))}
+                {ALWAYS.map((item, i) => (
+                  <div key={item} className="cb-row flex items-center gap-3 py-2.5">
+                    <span
+                      className="rfx-stamp flex-none"
+                      style={{ color: 'var(--cb-forest)', transform: `rotate(${i % 2 ? 2 : -1.5}deg)` }}
+                    >
+                      Always
+                    </span>
+                    <span className="font-mono text-[11px] font-bold uppercase tracking-[0.04em]" style={{ color: 'var(--cb-ink)' }}>
+                      {item}
+                    </span>
+                  </div>
+                ))}
+              </div>
 
-            <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-              {NEVER.map((item, i) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3 rounded-md border px-3 py-2.5"
-                  style={{
-                    borderColor: 'color-mix(in srgb, var(--color-seam-bright) 26%, transparent)',
-                    background: 'color-mix(in srgb, var(--color-seam-bright) 6%, transparent)',
-                  }}
-                >
-                  <span
-                    className="flex-none rounded-[3px] border border-seam-bright/70 px-1.5 py-0.5 font-mono text-[8.5px] font-bold uppercase tracking-[0.08em] text-seam-bright"
-                    style={{ transform: `rotate(${i % 2 ? 2 : -2}deg)` }}
-                  >
-                    No
-                  </span>
-                  <span className="font-prose text-[13.5px] font-semibold leading-snug text-bone-2">{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-3 grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-              {ALWAYS.map((item, i) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-3 rounded-md border px-3 py-2.5"
-                  style={{
-                    borderColor: 'color-mix(in srgb, var(--color-ok-bright) 32%, transparent)',
-                    background: 'color-mix(in srgb, var(--color-ok-bright) 7%, transparent)',
-                  }}
-                >
-                  <span
-                    className="flex-none rounded-[3px] border border-ok-bright/70 px-1.5 py-0.5 font-mono text-[8.5px] font-bold uppercase tracking-[0.08em] text-ok-bright"
-                    style={{ transform: `rotate(${i % 2 ? -2 : 2}deg)` }}
-                  >
-                    Always
-                  </span>
-                  <span className="font-prose text-[13.5px] font-semibold leading-snug text-bone">{item}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* One colophon line + the two side wings. */}
-      <section className="border-t border-bone/10">
-        <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
-          <p className="rfx-athletic rfx-skew max-w-[24ch] text-bone" style={{ fontSize: 'clamp(22px,3vw,34px)' }}>
-            Every claim is labeled by its source, not declared right or wrong.
-          </p>
-          <Link to="/sources" className="mono-label-stage mt-4 inline-block transition-colors hover:text-bone">
-            How a claim is filed →
-          </Link>
-
-          <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2">
-            <Link
-              to="/craftsmen"
-              className="group rounded-md border border-bone/12 bg-[#0e0c14] p-6 transition-colors hover:border-bone/35"
-            >
-              <p className="mono-label-stage text-bone">The Craftsmen</p>
-              <p className="mt-2 max-w-[44ch] text-base leading-relaxed text-bone-2">
-                The arms that owned a pitch — and the one pitch that is a legend, not a person.
-              </p>
-              <span className="mono-label-stage mt-3 inline-block transition-colors group-hover:text-bone">Open the hall →</span>
-            </Link>
-            <Link
-              to="/lost-pitches"
-              className="group rounded-md border border-dashed border-bone/25 bg-[#0e0c14] p-6 transition-colors hover:border-bone/45"
-            >
-              <p className="mono-label-stage text-bone">Lost Pitches</p>
-              <p className="mt-2 max-w-[44ch] text-base leading-relaxed text-bone-2">
-                The pitches of the Negro Leagues whose statistics survive but whose grips mostly do not.
-              </p>
-              <span className="mono-label-stage mt-3 inline-block transition-colors group-hover:text-bone">Open the archive →</span>
-            </Link>
+              {/* the card-back legal block */}
+              <div className="mt-6 border-t-2 pt-3" style={{ borderColor: 'var(--cb-ink)' }}>
+                <p className="font-mono text-[9px] uppercase leading-relaxed tracking-[0.06em]" style={{ color: 'var(--cb-ink-3)' }}>
+                  Every claim is labeled by its source, not declared right or wrong.{' '}
+                  <Link to="/sources" className="underline underline-offset-2 hover:opacity-80" style={{ color: 'var(--cb-navy)' }}>
+                    How a claim is filed →
+                  </Link>
+                </p>
+                <p className="mt-2 flex items-center gap-2 font-mono text-[8.5px] uppercase tracking-[0.14em]" style={{ color: 'var(--cb-ink-3)' }}>
+                  pitch-atlas.com
+                  <span className="inline-block h-[9px] w-[9px] rotate-45 rounded-[2px]" style={{ background: 'var(--cb-ink)' }} aria-hidden="true" />
+                  {SITE.sourcePrinciple}
+                </p>
+              </div>
+            </CardBackPanel>
           </div>
         </div>
       </section>

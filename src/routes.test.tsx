@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { createHead, UnheadProvider } from '@unhead/react/client'
 import { routes } from './routes'
+import { PITCHES } from './data/pitches'
 
 /*
   Multi-page smoke tests. jsdom has no WebGL, so every page renders through its
@@ -26,12 +27,31 @@ describe('Atlas home', () => {
   it('leads with the hero and makes the Pitch Index the front door', async () => {
     renderRoute('/')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Pitch Atlas')
-    // the Pitch Index is the dominant home section: the specimen set plus the front-door teaser
+    // the binder carries the whole filed set: every specimen name is in the DOM
     expect(screen.getByText(/Every accepted pitch by family/)).toBeInTheDocument()
-    expect(screen.getAllByText('Eephus').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
+    for (const p of PITCHES) {
+      expect(screen.getAllByText(p.display.shortName).length).toBeGreaterThan(0)
+    }
+    // the hero card renders its honest DOM fallback, never a blank stage
+    expect(screen.getAllByLabelText(/Four-seam specimen/).length).toBeGreaterThan(0)
     // the two side wings still have a door
     expect(screen.getAllByText('The Craftsmen').length).toBeGreaterThan(0)
+  })
+
+  it('keeps the card-table surfaces honest: thesis, checklist, packs, rule sheet', async () => {
+    renderRoute('/')
+    await screen.findByRole('heading', { level: 1 })
+    // the grading-scale card back keeps the thesis
+    expect(screen.getByText(/A grip disappears faster than a box score/)).toBeInTheDocument()
+    // the set checklist is the field manual's one surface
+    expect(screen.getByText(/complete set checklist/i)).toBeInTheDocument()
+    // all four wax packs are sealed and labeled
+    for (const label of ['Shape Sandbox', 'The Shape Map', 'Compare two pitches', 'Compare two grips']) {
+      expect(screen.getAllByText(label).length).toBeGreaterThan(0)
+    }
+    // the rule sheet keeps its real items through any future redesign
+    expect(screen.getByText('Hardcoded freshness')).toBeInTheDocument()
+    expect(screen.getByText('A source on every claim')).toBeInTheDocument()
   })
 
   it('shows one clear primary nav, not the old per-pitch strip', async () => {

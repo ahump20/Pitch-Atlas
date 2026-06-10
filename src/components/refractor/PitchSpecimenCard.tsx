@@ -32,11 +32,14 @@ export function PitchSpecimenCard({
   entry,
   index = 0,
   maxWidth,
+  foil = false,
 }: {
   entry: PitchAtlasEntry
   index?: number
   /** Override the card's max width (e.g. a larger hero card). Defaults to 360. */
   maxWidth?: number
+  /** Mount the live WebGL foil (the hero card only). */
+  foil?: boolean
 }) {
   const { canonical, motion, display } = entry
   const physics = canonical.physics
@@ -83,6 +86,7 @@ export function PitchSpecimenCard({
       confidence={{ label: conf.label, color: conf.color, approx: shapeClaim.approximate }}
       crumb={familyCrumb(canonical.family)}
       gripSource={gripSource}
+      foil={foil}
     />
   )
 }
