@@ -1,6 +1,7 @@
 # Fable 5 Pitch Atlas Run State
 
 Run started: 2026-06-09 (America/Chicago)
+Run closed: 2026-06-09 ~22:00 CT — all phases complete; open items live in the Austin approval bundle (see final handoff + FABLE5-PITCH-ATLAS-AUDIT.md)
 Work branch (web): `fable5/pitch-atlas-review-safe-sync` off `main` @ ccea952
 Budget: 35 turns / 4 hours, then report blockers.
 
@@ -25,14 +26,15 @@ no fake pitch data / metrics / freshness / community activity.
 - [x] Skills installed (pitch-junky, wabi-sabi, authentic-voice-editor-style) + reviewer agents dispatched
 - [x] State preserved, work branch created
 - [x] Run-state files created
-- [ ] Phase 1 route/live audit
-- [ ] Phase 2 Supabase
-- [ ] Phase 3 Stripe reality
-- [ ] Phase 4 iOS authority + sync
-- [ ] Phase 5 frontend design
-- [ ] Phase 6 PWA/offline
-- [ ] Phase 7 Cloudflare health
-- [ ] Phase 8 tests + fresh verify + handoff
+- [x] Phase 1 route/live audit — routes reconciled, 104-URL sitemap, real 404, /privacy + /support shipped + verified live
+- [x] Phase 2 Supabase — repo/live migration mirror 12/12; remaining DDL parked in docs/fable5/pending-migrations/ (Austin approval gate)
+- [x] Phase 3 Stripe reality — orphaned live engine classified; teardown = Austin's destructive call
+- [x] Phase 4 iOS authority + sync — A authoritative, B salvaged (PR #2), PLATFORM-CONTRACT.md
+- [x] Phase 5 frontend design — specimen-card chip unclip + softball marker fixed + verified live
+- [x] Phase 6 PWA/offline — honest offline proven in-browser; sw.js no-store fix live (zone Browser Cache TTL root cause)
+- [x] Phase 7 Cloudflare health — deploys pinned --branch=main; headers/redirects verified; zone-TTL fix parked for Austin
+- [x] Phase 8 tests + fresh verify + handoff — 326/326 vitest, tsc clean, live checks green; final report delivered in-session
+- [x] Items 7+8 — docs/MEDIA-LEDGER.md (13 + 14-clip addendum, embed/link only) + docs/PLATFORM-CONTRACT.md
 
 ## Resumption notes
 
