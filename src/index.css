@@ -638,6 +638,18 @@
   }
   .pa-stage-content { position: absolute; inset: 0; z-index: 2; }
 
+  /* ── atmosphere plates: macro cuts from Austin's own ball photos (public/atmosphere/).
+     Real material only — the patina is the same game ball the grip photos teach from.
+     Always a whisper under real composition, never the composition itself. Sections
+     tune opacity with an inline style or a utility; the mask keeps edges in the void. */
+  .pa-atmo {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-size: cover; background-position: center; opacity: .08;
+    mask-image: radial-gradient(110% 90% at 50% 40%, #000 30%, transparent 95%);
+  }
+  .pa-atmo-leather { background-image: url(/atmosphere/leather.webp); }
+  .pa-atmo-seam { background-image: url(/atmosphere/seam.webp); }
+
   /* embossed metal nameplate: a brushed-steel plate with an accent-tinted underglow,
      bevelled top highlight + bottom shadow so it reads stamped into the card. */
   .rfx-banner {
