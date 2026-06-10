@@ -12,11 +12,12 @@ import { WaxPack, type WaxPackTool } from '../components/sections/WaxPack'
 import { CardBackPanel } from '../components/refractor/CardBackPanel'
 
 /*
-  The Atlas home as a card table. The rhythm of the page is the rhythm of
-  handling a physical set: the pull (hero), the binder page the set rests in,
-  then the cream card backs where the data lives — grading scale, set checklist,
-  rule sheet — with the wax packs and the chase-card inserts between them.
-  Charcoal is the table; cream is the card back; nothing here is a generic panel.
+  The Atlas home as a collection handled on the warm field. The pull (hero) is
+  the one coal scene — foil viewed under a lamp — and the page hands the card
+  down into daylight: the leather binder the set rests in, the cream card backs
+  where the data lives — grading scale, set checklist, rule sheet — with the wax
+  packs and the chase-card inserts between them. Scorebook paper is the table;
+  nothing here is a generic panel.
 */
 
 /* The provenance ladder, rendered from the real confidence model. */
@@ -40,13 +41,13 @@ const TIER_INK: Record<ClaimConfidence, string> = {
   unverified: '#6E675A',
 }
 
-/* binder tab inks — jewel lifts for the charcoal field (chips above the sheets) */
+/* binder tab inks — collegiate jewels printed at ink density for the cream field */
 const FAMILY_ACCENT: Record<string, string> = {
-  fastball: '#5C84B8',
-  offspeed: '#5FA27B',
-  breaking: '#B0606C',
-  specialty: '#E9C97A',
-  banned: '#E04A5A',
+  fastball: '#2C5A8C',
+  offspeed: '#2F5D46',
+  breaking: '#6E2B35',
+  specialty: '#8A6B24',
+  banned: '#A8232F',
 }
 
 /* the filed set in binder order: family blocks read left-to-right, top-to-bottom */
@@ -124,7 +125,7 @@ export function AtlasHome() {
       <HomeHero featured={PITCHES[0]} />
 
       {/* ── THE BINDER: the filed set in nine-pocket sheets ── */}
-      <section id="index" className="scroll-mt-20 border-t border-bone/10">
+      <section id="index" className="scroll-mt-20 border-t border-leather/25">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <div className="slab-head">
             <h2 style={{ fontSize: 'clamp(26px,4.6vw,46px)' }}>The Filed Set</h2>
@@ -133,7 +134,7 @@ export function AtlasHome() {
             </span>
           </div>
 
-          <p className="mt-5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
+          <p className="mt-5 max-w-[62ch] text-[15px] leading-relaxed text-ink-2">
             Every accepted pitch by family — the filed specimens you can open below, plus the honest
             edges in the full index: an alias, an illusion, a colloquialism that is not a pitch, and
             the banned doctored balls. The full index holds {INDEX_SCOPE.headline} —{' '}
@@ -143,7 +144,7 @@ export function AtlasHome() {
           {/* binder tab dividers: the family gateways, in jewel ink */}
           <div className="mt-6 flex flex-wrap items-center gap-2.5">
             {REPERTOIRE_FAMILIES.map((f) => {
-              const accent = FAMILY_ACCENT[f.family] ?? '#E9C97A'
+              const accent = FAMILY_ACCENT[f.family] ?? '#8A6B24'
               return (
                 <Link
                   key={f.family}
@@ -154,7 +155,7 @@ export function AtlasHome() {
                     background: `color-mix(in srgb, ${accent} 12%, transparent)`,
                   }}
                 >
-                  <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-bone">{f.label}</span>
+                  <span className="font-mono text-[10.5px] uppercase tracking-[0.1em] text-ink">{f.label}</span>
                   <b className="rfx-athletic text-[16px] leading-none" style={{ color: accent }}>
                     {repertoireByFamily(f.family).length}
                   </b>
@@ -212,7 +213,7 @@ export function AtlasHome() {
       </section>
 
       {/* ── THE GRADING SCALE: thesis + provenance on the first cream card back ── */}
-      <section className="border-t border-bone/10">
+      <section className="border-t border-leather/25">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <CardBackPanel>
             <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-12">
@@ -323,13 +324,13 @@ export function AtlasHome() {
       </section>
 
       {/* ── THE WAX PACKS: the tools, sealed ── */}
-      <section className="border-t border-bone/10">
+      <section className="border-t border-leather/25 bg-paper-2">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <div className="slab-head">
             <h2 style={{ fontSize: 'clamp(26px,4.6vw,46px)' }}>The Tools</h2>
             <span className="slab-count">{TOOLS.length} sealed packs</span>
           </div>
-          <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-bone-2">
+          <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-ink-2">
             The craft map, made playable. Tear one open — every pack is one click from home.
           </p>
           <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-6 md:gap-x-6 lg:grid-cols-4">
@@ -341,7 +342,7 @@ export function AtlasHome() {
       </section>
 
       {/* ── THE SET CHECKLIST: the field manual on a card back ── */}
-      <section className="border-t border-bone/10">
+      <section className="border-t border-leather/25">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <CardBackPanel>
             <div className="cb-rules justify-between">
@@ -395,36 +396,33 @@ export function AtlasHome() {
       </section>
 
       {/* ── THE INSERTS: the two chase wings, kept quiet ── */}
-      <section className="border-t border-bone/10">
+      <section className="border-t border-leather/25">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             <Link
               to="/craftsmen"
-              className="group relative rounded-xl border p-6 transition-colors md:p-7"
-              style={{
-                borderColor: 'color-mix(in srgb, #caa14a 40%, transparent)',
-                background: 'linear-gradient(150deg, rgba(202,161,74,.08), var(--color-press))',
-              }}
+              className="group relative rounded-xl border bg-paper-2 p-6 transition-colors md:p-7"
+              style={{ borderColor: 'color-mix(in srgb, #7A4A2E 45%, transparent)' }}
             >
-              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-bone">The Craftsmen</p>
-              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-bone-2">
+              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-ink">The Craftsmen</p>
+              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-ink-2">
                 The arms that owned a pitch — and the one pitch that is a legend, not a person.
               </p>
-              <span className="mono-label-stage mt-4 inline-block transition-colors group-hover:text-bone">
+              <span className="mono-label mt-4 inline-block transition-colors group-hover:text-ink">
                 Open the hall →
               </span>
             </Link>
             <Link
               to="/lost-pitches"
-              className="group relative rounded-xl border border-dashed p-6 transition-colors md:p-7"
-              style={{ borderColor: 'color-mix(in srgb, var(--color-seam-bright) 38%, transparent)', background: 'var(--color-press)' }}
+              className="group relative rounded-xl border border-dashed bg-paper-2 p-6 transition-colors md:p-7"
+              style={{ borderColor: 'color-mix(in srgb, #C8102E 45%, transparent)' }}
             >
-              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-bone">Lost Pitches</p>
-              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-bone-2">
+              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-ink">Lost Pitches</p>
+              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-ink-2">
                 The pitches of the Negro Leagues whose statistics survive but whose grips mostly do
                 not.
               </p>
-              <span className="mono-label-stage mt-4 inline-block transition-colors group-hover:text-bone">
+              <span className="mono-label mt-4 inline-block transition-colors group-hover:text-ink">
                 Open the archive →
               </span>
             </Link>
@@ -433,13 +431,13 @@ export function AtlasHome() {
       </section>
 
       {/* ── THE RULE SHEET: the honesty contract as card-back fine print ── */}
-      <section className="border-t border-bone/10">
+      <section className="border-t border-leather/25">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">The honesty contract</p>
           <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(26px,4vw,44px)]">
-            What we will <span className="rfx-chrome-text">never fake</span>.
+            What we will <span className="text-seam">never fake</span>.
           </h2>
-          <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
+          <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-ink-2">
             The foil is decoration. The provenance is the point. These lines are load-bearing — in
             the product copy, the data model, and the community floor in equal measure.
           </p>

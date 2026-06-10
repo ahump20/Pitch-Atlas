@@ -7,10 +7,12 @@ import { Toaster } from '../ui/sonner'
 import { TooltipProvider } from '../ui/tooltip'
 
 /*
-  The shell every route renders inside. The whole site sits on the dark void with
-  a faint dot-grid underlay (the refractor field); the masthead and the slim
-  footer persist, and the Outlet is the chapter. A route change resets scroll to
-  the top; a hash (a deep link into a section) scrolls there once it is laid out.
+  The shell every route renders inside. The site sits on the warm field — aged
+  cream scorebook paper with faint ink rules — and dark lives only inside the
+  scoped .scene-coal sections (the foil-viewing theaters). The masthead and the
+  leather footer persist, and the Outlet is the chapter. A route change resets
+  scroll to the top; a hash (a deep link into a section) scrolls there once it
+  is laid out.
 */
 
 function ScrollManager() {
@@ -30,13 +32,13 @@ function ScrollManager() {
 
 export function RootLayout() {
   return (
-    <div className="rfx-void min-h-screen">
-      <div className="rfx-dotgrid" aria-hidden="true" />
+    <div className="min-h-screen bg-paper text-ink">
+      <div className="field-rules" aria-hidden="true" />
       <TooltipProvider delayDuration={150}>
         <div className="relative z-10">
           <a
             href="#main"
-            className="sr-only rounded-sm border border-bone/40 bg-[#0a0810] px-4 py-2 font-mono text-sm text-bone focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
+            className="sr-only rounded-sm border border-ink/40 bg-paper-2 px-4 py-2 font-mono text-sm text-ink focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50"
           >
             Skip to content
           </a>

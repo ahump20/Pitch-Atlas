@@ -19,16 +19,18 @@ import { gripEntryFor } from '../../data/grips'
   every reading is sourced from the pitch record.
 */
 
-/* Card-palette color per tier. Labels are never local: every badge on the card
-   reads its wording from CONFIDENCE_META, the one canonical seven-tier model. */
+/* Card-palette color per tier — ink densities, because the badge prints on the
+   cream STATS plate now (the bright void dots fail contrast on paper). Labels
+   are never local: every badge on the card reads its wording from
+   CONFIDENCE_META, the one canonical seven-tier model. */
 const CONF_COLOR: Record<ClaimConfidence, string> = {
-  'official-data': 'var(--color-ok-bright)',
-  'reputable-analysis': 'var(--color-amber-bright)',
-  'pitcher-own-words': 'var(--color-powder)',
-  'coach-observed': 'var(--color-powder)',
-  'secondhand-attributed': 'var(--color-sand-bright)',
-  'community-firsthand': 'var(--color-sand-bright)',
-  unverified: 'var(--color-ink-3)',
+  'official-data': '#1E7A4A',
+  'reputable-analysis': '#8A6118',
+  'pitcher-own-words': '#2C5A8C',
+  'coach-observed': '#2C5A8C',
+  'secondhand-attributed': '#6E5E3A',
+  'community-firsthand': '#6E5E3A',
+  unverified: '#6E675A',
 }
 
 export function PitchSpecimenCard({
@@ -59,9 +61,11 @@ export function PitchSpecimenCard({
   const photo = grip && grip.photos.length > 0 ? grip.photos[0] : undefined
   const austinGrip = Boolean(clip || photo)
   const cue = austinGrip && grip ? grip.shortCue : display.heroSub
+  /* the grip chip sits on the dark window glass, so its inks stay literal —
+     they never re-tone with the page field */
   const gripSource = austinGrip
-    ? { label: "Austin's grip", color: 'var(--color-powder)' }
-    : { label: 'Reference grip', color: 'var(--color-ink-3)' }
+    ? { label: "Austin's grip", color: '#7FC6FF' }
+    : { label: 'Reference grip', color: '#CDBA8E' }
 
   const face = clip ? (
     <GripClip clip={clip} />

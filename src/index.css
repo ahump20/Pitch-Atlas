@@ -21,7 +21,7 @@
 
   /* dark surfaces — the dominant near-black field. Cool, not brown. Gives the
      red, powder, and cream room to breathe. */
-  --color-stage: #16130F;       /* warm near-black chamber: the white ball glows */
+  --color-stage: #16120D;       /* warm near-black chamber: the white ball glows */
   --color-press: #221E18;       /* raised warm charcoal: cards on the table */
 
   /* ink — text on cream surfaces. Cool near-black, matches the field. */
@@ -415,21 +415,18 @@
    Additive: Heritage tokens above stay live until each page is migrated.
    ============================================================ */
 @theme {
-  --color-void: #1C1916;          /* Dugout Charcoal — the warm matte table the set is handled on.
-                                     Was #070509 cool void; the Sluggers system bans pure black. */
+  --color-void: #16120D;          /* warm black — the deep scene foil is viewed on.
+                                     Scoped to .scene-coal sections, never the page. */
   --color-bone: #F6F1E6;          /* refined cream text (overrides the earlier #F2ECDD) */
-  --color-bone-2: #C9C2B0;        /* warm secondary on the charcoal (was cool slate #C2C7D6) */
-  --color-ink-3: #8A8576;         /* warm muted (was cool #7C8294) */
+  --color-bone-2: #C9C2B0;        /* warm secondary on the coal scene */
   --color-ok-bright: #34E27E;     /* official-data dot, tuned for the dark field */
   --color-amber-bright: #FFC23C;  /* reputable-analysis dot, tuned for the dark field */
   --color-sand-bright: #CDBA8E;   /* secondhand / approximate */
-  /* RETONED: the page-chrome accent is Pack Gold now — kickers, links, chips, focus,
-     inputs all cascade through this one token (the variable name is kept so every
-     text-cyan / border-cyan utility re-tones in place). True cyan survives only
-     inside the per-pitch card accent triads, which use literal hexes in accents.ts —
-     the neon triads are the foil identity of the cards and never re-tone. */
-  --color-cyan: #E9C97A;
-  --color-cyan-deep: #BD9849;
+  /* The interactive accent on the coal scene is the cyan glow again — the Pack
+     Gold chrome experiment is retired. On the cream field the page chrome runs
+     leather + seam instead; cyan is a dark-scene voice. */
+  --color-cyan: #37D6FF;
+  --color-cyan-deep: #1C8FD6;
   /* the void-tuned seam red (the leather seam + the banned tier). Distinct from the
      cream-page Heritage --color-seam (#C8102E). */
   --color-seam-bright: #FF2D44;
@@ -445,14 +442,8 @@
     --foil: linear-gradient(115deg,#ff2d6e,#ff8a3c,#ffe14d,#46ff9c,#33e0ff,#6b7bff,#c44bff,#ff2d6e);
     --gold: linear-gradient(150deg,#5a3d12,#caa14a 22%,#fff0c2 38%,#b8893a 54%,#f4d98a 70%,#7a571f 90%);
 
-    /* Chrome-vintage finish. Brushed steel with a warm patina underneath — the card
-       frame catches the light as the pointer moves, the way an old chrome trading-card
-       case does. Foil is demoted to a restrained accent (the diamond, the holo word,
-       the gold 1/1); the metal carries the surface. */
-    --chrome: linear-gradient(152deg,#26282d 0%,#5b616b 14%,#cfd4db 30%,#878d97 44%,#eef1f5 56%,#7d828c 70%,#43474e 86%,#1d1f23 100%);
-    --chrome-soft: linear-gradient(160deg,#34373d,#9aa0aa 38%,#5d626b 62%,#2a2c31);
-    --chrome-edge: linear-gradient(160deg,#5a5f68,#c7ccd4 36%,#71767f 60%,#2e3137);
-    --patina: linear-gradient(150deg,#19130c,#3c3122 38%,#6a5638 56%,#241a10);
+    /* The casino chrome/steel gradients are retired. The rainbow foil and the
+       gold 1/1 are the only metallics in the set — the foil is the jewelry. */
     --bevel-hi: rgba(255,255,255,.62);
     --bevel-lo: rgba(0,0,0,.7);
   }
@@ -468,59 +459,114 @@
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     animation: rfx-slide 7s linear infinite;
   }
-  /* Static brushed-chrome text — the wordmark and page-title accent words. The rainbow
-     foil stays on the cards, where holographic refractors exist in the real world;
-     type is set in metal. No animation by design. */
-  .rfx-chrome-text {
-    background: var(--chrome); background-size: 140% 140%; background-position: 35% 30%;
-    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  /* ── the warm field + the coal scene (page level) ──
+     The page itself is aged-cream scorebook paper (the Heritage tokens carry it).
+     .field-rules is the fixed underlay: faint ink rules, the scorebook's columns.
+     Where dark genuinely belongs — showcase theaters, foil viewing — a section
+     opts into .scene-coal: warm black under one overhead light, with the old
+     sitewide cream→void remap now SCOPED inside it so both component languages
+     keep reading. There is no global dark remap anymore. */
+  .field-rules {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
+    background-image: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 64px);
+    mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
   }
-
-  /* ── the charcoal field + pinstripe atmosphere (page level) ──
-     One warm overhead vignette — a single light over a card table — replaces the
-     old cool void's three colored washes. The fixed underlay keeps the legacy
-     .rfx-dotgrid class name (so the layout shell needs no edit) but draws
-     pinstripes now: vertical bone hairlines are Sluggers DNA; dots were terminal DNA. */
-  .rfx-void {
+  .scene-coal {
+    color-scheme: dark;
+    position: relative;
     background:
-      radial-gradient(64% 50% at 50% -10%, #2B251D 0%, transparent 62%),
+      radial-gradient(64% 50% at 50% -10%, #241B10 0%, transparent 62%),
       var(--color-void);
     color: var(--color-bone);
+
+    /* the scoped remap — the mapping the retired global remap used to apply,
+       re-toned for warm black. Heritage utilities (bg-paper, text-ink,
+       text-navy, .mono-label, .hairline, provenance badges) re-tone in place
+       INSIDE the scene only. */
+    --color-paper: #16120D;
+    --color-paper-2: #221B12;
+    --color-paper-3: #2B2318;
+    --color-cream: #16120D;
+    --color-panel: #221B12;
+    --color-ink: #F6F1E6;
+    --color-ink-2: #C9C2B0;
+    --color-ink-3: #8A8576;
+    --color-navy: #D8D1C0;
+    --color-navy-2: #EFE9DA;
+    --color-navy-line: rgba(216, 209, 192, 0.16);
+    --color-seam: #FF2D44;
+    --color-seam-deep: color-mix(in srgb, #FF2D44 78%, #2A0A10);
+    --color-ok: #34E27E;
+    --color-amber: #FFC23C;
+    --color-sand: #CDBA8E;
+    --color-powder: #7FC6FF;
+    --color-machined: rgba(216, 209, 192, 0.20);
+    --color-columbia: #5AA9E6;
+
+    /* page-chrome voices inside the scene */
+    --kicker: var(--color-cyan);
+    --ctl-bg: #1D1710;
+    --ctl-text: var(--color-bone);
+    --ctl-placeholder: #8A8576;
+    --ctl-border: color-mix(in srgb, var(--color-cyan) 40%, transparent);
+    --ctl-accent: var(--color-cyan);
+    --ctl-on-accent: #06121B;
+
+    /* shadcn semantic bridge, scene-scoped */
+    --background: #16120D;
+    --foreground: #F6F1E6;
+    --card: #221B12;
+    --card-foreground: #F6F1E6;
+    --popover: #221B12;
+    --popover-foreground: #F6F1E6;
+    --primary: #37D6FF;
+    --primary-foreground: #06121B;
+    --secondary: #2B2318;
+    --secondary-foreground: #F6F1E6;
+    --muted: #2B2318;
+    --muted-foreground: #C9C2B0;
+    --accent: #221B12;
+    --accent-foreground: #F6F1E6;
+    --destructive: #FF2D44;
+    --border: rgba(246, 241, 230, 0.12);
+    --input: rgba(246, 241, 230, 0.14);
+    --ring: #37D6FF;
   }
-  .rfx-dotgrid {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .04;
-    background-image: repeating-linear-gradient(90deg, var(--color-bone) 0 1px, transparent 1px 64px);
+  /* bone pinstripes for inside a coal scene (the scene's own light raking) */
+  .scene-rules {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
+    background-image: repeating-linear-gradient(90deg, #F6F1E6 0 1px, transparent 1px 64px);
     mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
   }
 
-  /* ── diamond PA brand mark — black diamond, gold mark, like the tin. The rainbow
-     read as a smear at chip size; the reference object answers it. ── */
+  /* ── diamond PA brand mark — warm black diamond, bone mark, leather edge. ── */
   .rfx-diamond {
     transform: rotate(45deg); border-radius: 8px; display: grid; place-items: center;
-    background: linear-gradient(160deg, #16120a, #0b0a08 70%);
-    border: 1px solid color-mix(in srgb, #caa14a 70%, transparent);
-    box-shadow: 0 2px 8px -2px #000, inset 0 1px 0 rgba(255,240,194,.22);
+    background: linear-gradient(160deg, #1B150C, #0D0A06 70%);
+    border: 1px solid color-mix(in srgb, #9C7350 70%, transparent);
+    box-shadow: 0 2px 8px -2px #000, inset 0 1px 0 rgba(246,241,230,.18);
   }
-  .rfx-diamond > * { transform: rotate(-45deg); font-family: var(--font-mono); font-weight: 700; color: #e9c97a; }
+  .rfx-diamond > * { transform: rotate(-45deg); font-family: var(--font-mono); font-weight: 700; color: #F6F1E6; }
   .rfx-diamond.is-gold { background: var(--gold); border-color: rgba(0,0,0,.5); }
   .rfx-diamond.is-gold > * { color: #2a1d05; }
 
   /* ── refractor card (component sets --c1/--c2/--c3 + --i index) ──
-     The frame is gold on every card — the collectible identity of the physical
-     reference object (a gold-framed card over a black patterned field). The 1/1
-     chase card runs the full bright gold; the standard run wears a deeper antique
-     gold so the chase still reads as the chase. */
+     The frame is the rainbow holo on the standard run — the refractor identity,
+     catching the pointer's light. The 1/1 chase alone wears the gold, so the
+     chase still reads as the chase. A deterministic micro-lean (driven by the
+     reveal index, sin-spread) keeps repeated cards related, never identical —
+     a handled set, not a printed sheet. */
   .rfx-card {
     --mx: 50%; --my: 32%;
-    --gold-deep: linear-gradient(150deg,#33240a,#7c5e1f 20%,#d8b45e 36%,#6e5419 52%,#c9a043 68%,#3c2b0d 88%);
     position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 5px;
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
+    rotate: calc(sin((var(--i, 0) + 1) * 2.1) * 0.45deg);
     transition: transform .4s cubic-bezier(.2,.8,.2,1); will-change: transform;
-    background: var(--gold-deep); background-size: 200% 200%; background-position: var(--mx) var(--my);
+    background: var(--foil); background-size: 300% 300%; background-position: var(--mx) var(--my);
     box-shadow:
-      0 34px 64px -24px rgba(0,0,0,.92),
-      0 0 0 1px rgba(0,0,0,.6),
-      inset 0 1px 0 rgba(255,240,194,.45), inset 0 -2px 5px var(--bevel-lo),
+      0 30px 56px -26px rgba(0,0,0,.6),
+      0 0 0 1px rgba(0,0,0,.55),
+      inset 0 1px 0 rgba(255,255,255,.4), inset 0 -2px 5px var(--bevel-lo),
       0 0 46px -18px color-mix(in srgb, var(--c3,#37D6FF) 30%, transparent);
     /* reveal runs BACKWARDS-fill (hidden through its delay), then releases the
        element entirely. fill:forwards used to pin `transform: none` from the
@@ -529,52 +575,56 @@
        body. Never reintroduce a forwards fill here. */
     opacity: 1; animation: rfx-reveal .8s cubic-bezier(.2,.8,.2,1) backwards; animation-delay: calc(var(--i,0) * .08s);
   }
-  /* the gold frame's light sweep, following the pointer over the antique base */
+  /* the holo frame catching the room's light at the pointer */
   .rfx-card::before {
     content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 20px; pointer-events: none;
-    background: var(--gold); background-size: 230% 230%; background-position: var(--mx) var(--my);
-    opacity: .55; mix-blend-mode: screen;
+    background: radial-gradient(340px circle at var(--mx) var(--my), rgba(255,255,255,.5), transparent 62%);
+    opacity: .6; mix-blend-mode: screen;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude; padding: 5px;
   }
   .rfx-card.is-gold {
-    background: var(--gold); background-size: 240% 240%;
-    box-shadow: 0 34px 64px -24px rgba(0,0,0,.92), 0 0 0 1px rgba(0,0,0,.6),
+    background: var(--gold); background-size: 240% 240%; background-position: var(--mx) var(--my);
+    box-shadow: 0 30px 56px -26px rgba(0,0,0,.7), 0 0 0 1px rgba(0,0,0,.6),
       inset 0 1px 0 rgba(255,240,194,.7), inset 0 -2px 5px rgba(0,0,0,.6), 0 0 54px -12px rgba(212,170,90,.6);
   }
-  .rfx-card.is-gold::before { display: none; }
   .rfx-field {
     position: relative; height: 100%; border-radius: 16px; overflow: hidden; padding: 11px 11px 9px;
     display: flex; flex-direction: column;
-    background: linear-gradient(170deg, color-mix(in srgb, var(--c2,#114A8C) 34%, #0a0810) 0%, #0a0810 52%, #060409 100%);
-  }
-  .rfx-card.is-gold .rfx-field { background: linear-gradient(170deg,#1a1305,#0d0a04 60%,#070500); }
-  /* the gold check in the negative space — the black field wears a woven gold
-     houndstooth read, like the reference card, with a whisper of the pitch accent
-     so the per-pitch triad still breathes through. */
-  .rfx-field::before {
-    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .26; mix-blend-mode: screen;
+    /* worn matte: a turbulence pass blended over the warm-black field so the
+       card stock reads handled, not printed this morning. CSS-only. */
     background:
-      repeating-linear-gradient(45deg, rgba(216,180,94,.7) 0 2px, transparent 2px 11px),
-      repeating-linear-gradient(-45deg, rgba(216,180,94,.5) 0 2px, transparent 2px 11px),
-      repeating-linear-gradient(45deg, rgba(216,180,94,.28) 0 1px, transparent 1px 5.5px),
-      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 35%, transparent) 0 1px, transparent 1px 22px);
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
+      linear-gradient(170deg, color-mix(in srgb, var(--c2,#114A8C) 34%, #0B0805) 0%, #0B0805 52%, #070503 100%);
+    background-blend-mode: overlay, normal;
   }
-  /* brushed-metal specular sweep that catches the light at the pointer. A faint refractor
-     hint remains as a restrained accent, not the dominant note. */
+  .rfx-card.is-gold .rfx-field {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
+      linear-gradient(170deg,#1a1305,#0d0a04 60%,#070500);
+    background-blend-mode: overlay, normal;
+  }
+  /* the woven check in the negative space — bone-warm threads with a whisper of
+     the pitch accent so the per-pitch triad still breathes through. */
+  .rfx-field::before {
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .2; mix-blend-mode: screen;
+    background:
+      repeating-linear-gradient(45deg, rgba(214,205,186,.55) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(-45deg, rgba(214,205,186,.4) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(45deg, rgba(214,205,186,.22) 0 1px, transparent 1px 5.5px),
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 45%, transparent) 0 1px, transparent 1px 22px);
+  }
+  /* the light raking the card face at the pointer — micro-scratches catch first */
   .rfx-field::after {
     content: ""; position: absolute; inset: 0; z-index: 7; pointer-events: none;
     background:
       repeating-linear-gradient(100deg, transparent 0 2px, rgba(255,255,255,.05) 2px 3px),
-      radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,.4), transparent 46%),
-      var(--chrome-soft);
-    background-size: auto, auto, 240% 240%;
-    background-position: 0 0, 0 0, var(--mx) var(--my);
-    mix-blend-mode: soft-light; opacity: .26; transition: opacity .4s;
+      radial-gradient(420px circle at var(--mx) var(--my), rgba(255,255,255,.38), transparent 46%);
+    mix-blend-mode: soft-light; opacity: .3; transition: opacity .4s;
   }
-  .rfx-card:hover .rfx-field::after { opacity: .4; }
-  .rfx-card.is-gold .rfx-field::after { opacity: .14; }
+  .rfx-card:hover .rfx-field::after { opacity: .44; }
+  .rfx-card.is-gold .rfx-field::after { opacity: .16; }
   .rfx-inner { position: relative; z-index: 8; display: flex; flex-direction: column; height: 100%; }
 
   /* card top wordmark bar — the brand arches across the top of the card in gold,
@@ -583,7 +633,8 @@
   .rfx-wmarc { display: block; width: min(58%, 168px); height: auto; overflow: visible; }
   .rfx-wmarc text {
     font-family: var(--font-athletic); font-size: 26px; letter-spacing: .06em; text-transform: uppercase;
-    fill: #e9c97a; stroke: rgba(0,0,0,.65); stroke-width: .8px; paint-order: stroke fill;
+    fill: color-mix(in srgb, var(--c3,#37D6FF) 26%, #F6F1E6);
+    stroke: rgba(0,0,0,.65); stroke-width: .8px; paint-order: stroke fill;
   }
   .rfx-card.is-gold .rfx-wmarc text { fill: #fff0c2; }
 
@@ -598,11 +649,11 @@
   .rfx-window {
     position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden;
     border-radius: 78px 78px 14px 14px / 92px 92px 14px 14px;
-    background: radial-gradient(120% 90% at 50% 24%, color-mix(in srgb, var(--c2,#114A8C) 48%, #000) 0%, #050309 78%);
-    /* a thin brushed-chrome bezel around the portrait, then a soft inner shadow for depth */
+    background: radial-gradient(120% 90% at 50% 24%, color-mix(in srgb, var(--c2,#114A8C) 48%, #000) 0%, #060403 78%);
+    /* a thin bone bezel around the portrait, then a soft inner shadow for depth */
     box-shadow:
       0 0 0 1px rgba(0,0,0,.6) inset,
-      0 0 0 3px color-mix(in srgb, var(--c3,#37D6FF) 22%, rgba(190,196,205,.5)) inset,
+      0 0 0 3px color-mix(in srgb, var(--c3,#37D6FF) 22%, rgba(214,205,186,.5)) inset,
       0 0 0 4px rgba(0,0,0,.5) inset,
       0 8px 18px -8px rgba(0,0,0,.8) inset;
   }
@@ -615,9 +666,10 @@
      gold-shadowed, structural rather than a floating chip. */
   .rfx-vnum {
     position: absolute; top: 5px; left: 10px; z-index: 3; font-family: var(--font-athletic); font-size: 44px; line-height: .8;
-    color: var(--color-bone); -webkit-text-stroke: 2px #000;
-    text-shadow: 3px 3px 0 color-mix(in srgb, #caa14a 85%, #000); transform: skewX(-6deg);
+    color: #F6F1E6; -webkit-text-stroke: 2px #000;
+    text-shadow: 3px 3px 0 color-mix(in srgb, var(--c3,#37D6FF) 72%, #000); transform: skewX(-6deg);
   }
+  .rfx-card.is-gold .rfx-vnum { text-shadow: 3px 3px 0 color-mix(in srgb, #caa14a 85%, #000); }
   /* family crumb (top-right of the window): what KIND of pitch this is. Its own dark
      pill so it never sits on the patterned foil. A different job from the source dot. */
   .rfx-crumb {
@@ -677,17 +729,17 @@
   .pa-atmo-leather { background-image: url(/atmosphere/leather.webp); }
   .pa-atmo-seam { background-image: url(/atmosphere/seam.webp); }
 
-  /* embossed metal nameplate: a brushed-steel plate with an accent-tinted underglow,
-     bevelled top highlight + bottom shadow so it reads stamped into the card. */
+  /* the nameplate: an accent-tinted warm plate, bevelled top highlight + bottom
+     shadow so it reads stamped into the card. */
   .rfx-banner {
     position: relative; z-index: 9; margin: -14px auto 0; width: min(88%, 292px); text-align: center; padding: 7px 12px; border-radius: 999px;
     background:
       linear-gradient(180deg, rgba(255,255,255,.14), transparent 42%),
-      color-mix(in srgb, var(--c2,#114A8C) 26%, #16181d);
+      color-mix(in srgb, var(--c2,#114A8C) 30%, #1B150E);
     border: 1px solid rgba(0,0,0,.6);
     box-shadow: 0 5px 12px -5px #000, inset 0 1px 0 var(--bevel-hi), inset 0 -2px 4px rgba(0,0,0,.55),
       0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 30%, transparent);
-    font-family: var(--font-athletic); font-size: clamp(20px,5.1vw,29px); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: var(--color-bone);
+    font-family: var(--font-athletic); font-size: clamp(20px,5.1vw,29px); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: #F6F1E6;
     -webkit-text-stroke: .5px rgba(0,0,0,.55); text-shadow: 0 1px 0 rgba(255,255,255,.18), 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-5deg);
   }
   .rfx-card.is-gold .rfx-banner {
@@ -695,31 +747,33 @@
     box-shadow: 0 5px 12px -5px #000, inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 4px rgba(120,86,20,.6);
   }
 
-  /* the dark matte content plate — the read lives here, never on the patterned foil.
-     Denser type but fewer lines than the old tagline + scout table + note paragraph,
-     so the window keeps more height and the grip/ball stops clipping. */
-  /* the engraved charcoal plate — the read lives here. A thin chrome top edge + an inset
-     shadow so it reads recessed into the metal card. The shape read is now the lead. */
+  /* the STATS plate — the read lives here, never on the patterned foil. Cream
+     card stock printed in ink, the way the physical card carries its readings:
+     paper let into the dark face. The readings stay sourced words, never a
+     fabricated figure. */
   .rfx-content {
-    position: relative; z-index: 9; margin-top: 9px; border-radius: 11px; padding: 11px 12px 12px;
+    position: relative; z-index: 9; margin-top: 9px; border-radius: 8px; padding: 11px 12px 12px;
     display: flex; flex-direction: column; gap: 9px;
-    background: linear-gradient(180deg, #14161b 0%, #0a0c10 100%);
-    border: 1px solid rgba(0,0,0,.7);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.1), inset 0 -1px 4px rgba(0,0,0,.55);
+    background:
+      radial-gradient(120% 100% at 50% 0%, rgba(255,252,242,.55), transparent 60%),
+      #EFE6D0;
+    border: 1px solid rgba(0,0,0,.55);
+    box-shadow: inset 0 0 0 1px rgba(255,252,242,.65), 0 1px 0 rgba(255,255,255,.06);
   }
   /* shape (the lead read) + cue. The shape key is a stamped mono label; the read is prose. */
   .rfx-summary { display: flex; flex-direction: column; gap: 7px; }
   .rfx-shape { display: flex; flex-direction: column; gap: 3px; }
   .rfx-shape .rfx-k { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .16em; line-height: 1.1;
-    text-transform: uppercase; color: color-mix(in srgb, var(--c3,#37D6FF) 60%, var(--color-ink-3)); }
-  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: .96rem; line-height: 1.34; color: var(--color-bone);
+    text-transform: uppercase; color: color-mix(in srgb, var(--c2,#114A8C) 60%, #211D17); }
+  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: .96rem; line-height: 1.34; color: #211D17;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-  .rfx-cue { font-family: var(--font-prose); font-style: italic; font-size: .8rem; line-height: 1.4; color: var(--color-bone-2); margin: 0;
-    padding-top: 7px; border-top: 1px solid rgba(255,255,255,.08);
+  /* the cue reads in the editorial serif — a coach's margin note on the plate */
+  .rfx-cue { font-family: var(--font-display); font-style: italic; font-size: .84rem; line-height: 1.4; color: #4A443A; margin: 0;
+    padding-top: 7px; border-top: 1px solid rgba(33,29,23,.18);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-  /* source badge: mono — a tag, not prose. How much to trust the number. */
+  /* source badge: mono — a tag, not prose. How much to trust the reading. */
   .rfx-srcbadge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: .66rem;
-    letter-spacing: .06em; line-height: 1; text-transform: uppercase; color: var(--color-bone-2); }
+    letter-spacing: .06em; line-height: 1; text-transform: uppercase; color: #4A443A; }
 
   /* phones: the plate text tightens so the window keeps its portrait height */
   @media (max-width: 480px) {
@@ -727,15 +781,15 @@
     .rfx-cue { -webkit-line-clamp: 1; }
     .rfx-content { padding: 9px 11px 10px; gap: 7px; }
   }
-  .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid var(--color-sand-bright); color: var(--color-sand-bright);
+  .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid #6E5E3A; color: #6E5E3A;
     padding: 1px 6px; font-size: .58rem; letter-spacing: .04em; }
 
   /* confidence dot (sourced, not corrected) */
   .rfx-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
 
-  /* bottom strip */
+  /* bottom strip — always on the dark card face, so its ink is literal */
   .rfx-strip { z-index: 9; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--color-ink-3); }
+    font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
 
   /* a foil-edged surface for non-card sections (tools, wings, content chrome) */
   .rfx-panel { position: relative; border-radius: 12px; background: var(--color-press); border: 1px solid rgba(246,241,230,.10); }
@@ -744,54 +798,53 @@
 
   /* ── shared page chrome (Pitch Index, specimen chapter, halls, tools) ── */
 
-  /* section kicker: a cyan eyebrow with a leading rule. The recurring "skick". */
+  /* section kicker: a mono eyebrow with a leading rule. Leather ink on the cream
+     field; the cyan glow inside a coal scene (via the scoped --kicker token). */
   .rfx-skick {
     display: inline-flex; align-items: center; gap: 9px;
     font-family: var(--font-mono); font-size: 11px; font-weight: 500; letter-spacing: .2em;
-    text-transform: uppercase; color: var(--color-cyan);
+    text-transform: uppercase; color: var(--kicker, #7A4A2E);
   }
   .rfx-skick::before { content: ""; width: 22px; height: 2px; background: currentColor; flex: 0 0 auto; }
 
-  /* athletic section title — upright now, scoreboard-style. The skew survives only
-     inside the card banner, where it is the nameplate's identity; section heads sit
-     square on the page like stadium letters on a recessed bar. */
+  /* athletic section title — upright, scoreboard-style. Rides the scene's ink:
+     near-black on the cream field, bone inside a coal scene. */
   .rfx-stitle {
     font-family: var(--font-athletic); text-transform: uppercase; line-height: .92;
-    color: var(--color-bone);
+    color: var(--color-ink);
   }
 
-  /* ── stadium scoreboard section head: a recessed charcoal bar with gold keylines,
-     upright Anton title left, an optional mono counter right. The section heads of
-     the card-table page. ── */
+  /* ── scorebook section head: the double-ruled header line of a score sheet —
+     ink rules on the cream field, bone rules inside a coal scene. Anton title
+     left, an optional mono counter right. ── */
   .slab-head {
     display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
-    padding: 10px 14px; border-radius: 8px;
-    background: linear-gradient(180deg, #16130F, #1E1A15);
-    border-top: 1px solid color-mix(in srgb, #E9C97A 32%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, #E9C97A 18%, transparent);
-    box-shadow: inset 0 1px 0 rgba(0,0,0,.6), inset 0 -1px 0 rgba(0,0,0,.5);
+    padding: 10px 2px;
+    border-top: 2px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-machined);
+    box-shadow: inset 0 3px 0 -2px var(--color-machined);
   }
   .slab-head > h2, .slab-head > h3 {
     font-family: var(--font-athletic); text-transform: uppercase; line-height: .94;
-    color: var(--color-bone); letter-spacing: .015em;
+    color: var(--color-ink); letter-spacing: .015em;
   }
   .slab-head .slab-count {
     font-family: var(--font-mono); font-size: 10px; letter-spacing: .16em;
-    color: #E9C97A; white-space: nowrap;
+    color: var(--kicker, #7A4A2E); white-space: nowrap;
   }
 
-  /* ── the wax-seal button: charcoal pill, double gold hairline, Anton label. On
-     hover a single foil band sweeps across once — the brief's "light catching a
-     holographic foil strip". Reduced motion gets a static gold sheen instead. ── */
+  /* ── the wax-seal button: warm-black pill, seam-red seal ring, Anton label. On
+     hover a single foil band sweeps across once — light catching a holographic
+     foil strip. Reduced motion gets a static foil sheen instead. ── */
   .btn-foil {
     position: relative; display: inline-flex; align-items: center; gap: 9px;
     padding: 13px 22px; border-radius: 10px; cursor: pointer; overflow: hidden;
-    background: linear-gradient(180deg, #221D16, #171410);
-    border: 1px solid color-mix(in srgb, #E9C97A 55%, transparent);
-    box-shadow: 0 0 0 3px #14110D, 0 0 0 4px color-mix(in srgb, #E9C97A 28%, transparent),
-      0 10px 24px -12px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,240,194,.16);
+    background: linear-gradient(180deg, #221B12, #16120D);
+    border: 1px solid color-mix(in srgb, #C8102E 55%, transparent);
+    box-shadow: 0 0 0 3px var(--color-paper, #F4EEE0), 0 0 0 4px color-mix(in srgb, #C8102E 32%, transparent),
+      0 10px 24px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(246,241,230,.14);
     font-family: var(--font-athletic); font-size: 14px; letter-spacing: .06em;
-    text-transform: uppercase; color: #F0E2BC; line-height: 1;
+    text-transform: uppercase; color: #F6F1E6; line-height: 1;
     transition: transform .15s ease, border-color .2s ease;
   }
   .btn-foil:active { transform: translateY(1px); }
@@ -802,20 +855,20 @@
     -webkit-mask-image: linear-gradient(114deg, transparent 32%, #000 47%, #000 53%, transparent 68%);
     opacity: 0; mix-blend-mode: screen;
   }
-  .btn-foil:hover { border-color: color-mix(in srgb, #E9C97A 85%, transparent); }
+  .btn-foil:hover { border-color: color-mix(in srgb, #FF2D44 85%, transparent); }
   .btn-foil:hover::after { animation: foil-sweep .9s ease-out; }
   .btn-foil.is-ghost {
     background: transparent;
     border-color: color-mix(in srgb, var(--color-bone) 32%, transparent);
     box-shadow: none; color: var(--color-bone);
   }
-  .btn-foil.is-ghost:hover { border-color: color-mix(in srgb, #E9C97A 75%, transparent); }
-  /* ghost on a cream card-back panel: charcoal ink lines and text */
+  .btn-foil.is-ghost:hover { border-color: color-mix(in srgb, #FF2D44 75%, transparent); }
+  /* ghost on a cream surface: ink lines and text */
   .btn-foil.is-ink {
-    background: transparent; border-color: rgba(28,25,22,.45);
-    box-shadow: none; color: #1C1916;
+    background: transparent; border-color: rgba(20,22,27,.45);
+    box-shadow: none; color: #14161B;
   }
-  .btn-foil.is-ink:hover { border-color: rgba(28,25,22,.85); }
+  .btn-foil.is-ink:hover { border-color: rgba(20,22,27,.85); }
   @media (prefers-reduced-motion: reduce) {
     .btn-foil:hover::after { animation: none; opacity: .28; background-position: 50% 0; }
   }
@@ -878,25 +931,26 @@
   .cb-row { border-bottom: 1px solid var(--cb-line); }
   .cb-row:last-child { border-bottom: none; }
 
-  /* dark field input: search bars, tool controls. Gold chrome focus ring. */
+  /* field input: search bars, tool controls. Rides the scene's control tokens —
+     paper-and-ink on the cream field, warm black + cyan inside a coal scene. */
   .rfx-input {
-    width: 100%; background: #16130F; color: var(--color-bone);
-    border: 1px solid color-mix(in srgb, var(--color-cyan) 40%, transparent); border-radius: 12px;
+    width: 100%; background: var(--ctl-bg, #FFFDF6); color: var(--ctl-text, #14161B);
+    border: 1px solid var(--ctl-border, rgba(122,74,46,.45)); border-radius: 12px;
     padding: 12px 16px; font-family: var(--font-prose); font-size: 15px; outline: none;
     transition: border-color .2s, box-shadow .2s;
   }
-  .rfx-input::placeholder { color: var(--color-ink-3); }
-  .rfx-input:focus-visible { border-color: var(--color-cyan); box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cyan) 22%, transparent); }
+  .rfx-input::placeholder { color: var(--ctl-placeholder, #5C6473); }
+  .rfx-input:focus-visible { border-color: var(--ctl-accent, #C8102E); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent); }
 
-  /* filter chip: off by default, fills cyan when on. */
+  /* filter chip: off by default, fills with the scene accent when on. */
   .rfx-chip {
     font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
-    padding: 7px 13px; border-radius: 999px; color: var(--color-bone-2);
-    border: 1px solid rgba(255,255,255,.14); background: transparent; cursor: pointer;
+    padding: 7px 13px; border-radius: 999px; color: var(--ctl-text, #3F4654);
+    border: 1px solid var(--ctl-border, rgba(20,22,27,.22)); background: transparent; cursor: pointer;
     transition: color .2s, background .2s, border-color .2s;
   }
-  .rfx-chip:hover { color: var(--color-bone); border-color: rgba(255,255,255,.34); }
-  .rfx-chip[aria-pressed="true"] { color: #06121b; background: var(--color-cyan); border-color: var(--color-cyan); font-weight: 600; }
+  .rfx-chip:hover { color: var(--ctl-text, #14161B); border-color: var(--ctl-accent, #C8102E); }
+  .rfx-chip[aria-pressed="true"] { color: var(--ctl-on-accent, #FFFFFF); background: var(--ctl-accent, #C8102E); border-color: var(--ctl-accent, #C8102E); font-weight: 600; }
 
   /* status pill: tier color carried via currentColor (set color on the element). */
   .rfx-statpill {
@@ -912,11 +966,13 @@
     border: 1px solid rgba(255,255,255,.07); transition: transform .2s, border-color .2s, background .2s;
   }
   .rfx-entry:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--gc, #37D6FF) 50%, transparent); }
-  .rfx-entry.is-filed { border-color: color-mix(in srgb, #caa14a 42%, transparent); background: linear-gradient(120deg, rgba(202,161,74,.10), var(--color-press)); }
-  .rfx-entry.is-filed:hover { border-color: color-mix(in srgb, #caa14a 70%, transparent); }
+  .rfx-entry.is-filed { border-color: color-mix(in srgb, #D8CFB8 42%, transparent); background: linear-gradient(120deg, rgba(216,207,184,.10), var(--color-press)); }
+  .rfx-entry.is-filed:hover { border-color: color-mix(in srgb, #D8CFB8 70%, transparent); }
+  /* the Filed tag wears the foil — a filed pitch IS the holographic specimen */
   .rfx-filedtag {
     font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .1em; text-transform: uppercase;
-    color: #2a1d05; background: var(--gold); border-radius: 4px; padding: 2px 6px; flex: 0 0 auto;
+    color: #14110A; background: var(--foil); background-size: 300% 100%; background-position: 38% 0;
+    border-radius: 4px; padding: 2px 6px; flex: 0 0 auto;
   }
 
   /* Tier-B plate: the directory / archive card in the refractor family — the
@@ -944,10 +1000,10 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 6px rgba(0,0,0,.45), 0 20px 34px -22px rgba(0,0,0,.85);
   }
   .rfx-plate.is-filed {
-    border-left-color: color-mix(in srgb, #caa14a 82%, transparent);
-    background: linear-gradient(120deg, rgba(202, 161, 74, .10), var(--color-press));
+    border-left-color: color-mix(in srgb, #D8CFB8 82%, transparent);
+    background: linear-gradient(120deg, rgba(216, 207, 184, .10), var(--color-press));
   }
-  .rfx-plate.is-filed:hover { border-color: color-mix(in srgb, #caa14a 55%, transparent); border-left-color: #caa14a; }
+  .rfx-plate.is-filed:hover { border-color: color-mix(in srgb, #D8CFB8 55%, transparent); border-left-color: #D8CFB8; }
   .rfx-plate.is-edge { border-left-color: color-mix(in srgb, var(--color-seam-bright) 82%, transparent); }
   .rfx-plate.is-edge:hover { border-color: color-mix(in srgb, var(--color-seam-bright) 50%, transparent); border-left-color: var(--color-seam-bright); }
   .rfx-plate.is-dashed { border-style: dashed; border-left-style: solid; }
@@ -960,29 +1016,32 @@
     line-height: .98; color: var(--color-bone);
   }
 
-  /* dark refractor <select>: appearance reset, cyan chevron + focus ring. The
-     tool pages (Compare, Grips) use native selects; this reseats them on the void
-     instead of leaving the browser's light system control. */
+  /* refractor <select>: appearance reset, scene-toned chevron + focus ring. The
+     tool pages (Compare, Grips) use native selects; this reseats them on the
+     scene instead of leaving the browser's system control. */
   .rfx-select {
     appearance: none; -webkit-appearance: none;
-    width: 100%; background-color: #16130F; color: var(--color-bone);
-    border: 1px solid color-mix(in srgb, var(--color-cyan) 35%, transparent);
+    width: 100%; background-color: var(--ctl-bg, #FFFDF6); color: var(--ctl-text, #14161B);
+    border: 1px solid var(--ctl-border, rgba(122,74,46,.45));
     border-radius: 10px; padding: 9px 34px 9px 13px;
     font-family: var(--font-mono); font-size: 13px; line-height: 1.2; cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%23E9C97A' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%237A4A2E' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
     transition: border-color .2s, box-shadow .2s;
   }
-  .rfx-select:focus-visible {
-    border-color: var(--color-cyan); outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cyan) 22%, transparent);
+  .scene-coal .rfx-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%2337D6FF' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
-  .rfx-select option { background: #16130F; color: var(--color-bone); }
+  .rfx-select:focus-visible {
+    border-color: var(--ctl-accent, #C8102E); outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent);
+  }
+  .rfx-select option { background: var(--ctl-bg, #FFFDF6); color: var(--ctl-text, #14161B); }
 
-  /* segmented toggle (RHP/LHP, view switches): off = ghost, on = cyan fill. */
+  /* segmented toggle (RHP/LHP, view switches): off = ghost, on = accent fill. */
   .rfx-seg { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
-    padding: 8px 14px; color: var(--color-bone-2); background: transparent; cursor: pointer; transition: color .2s, background .2s; }
-  .rfx-seg[aria-pressed="true"], .rfx-seg.is-on { color: #06121b; background: var(--color-cyan); font-weight: 600; }
+    padding: 8px 14px; color: var(--ctl-text, #3F4654); background: transparent; cursor: pointer; transition: color .2s, background .2s; }
+  .rfx-seg[aria-pressed="true"], .rfx-seg.is-on { color: var(--ctl-on-accent, #FFFFFF); background: var(--ctl-accent, #C8102E); font-weight: 600; }
 }
 
 @keyframes rfx-slide { to { background-position: 300% 0; } }
@@ -1002,90 +1061,63 @@
 }
 
 /* ============================================================
-   SITEWIDE CREAM→VOID REMAP  ·  feat/refractor-redesign
-   The whole app renders inside .rfx-void (see RootLayout); the site is dark-only
-   now. Every page and shared component not yet hand-built in the rfx-* language
-   still leans on the Heritage cream tokens — paper / ink / navy / seam / ok /
-   amber / sand. We remap those token VALUES once, here, to their void
-   equivalents, so the existing Tailwind utilities (bg-paper, text-ink,
-   text-navy, border-navy/15, text-seam) and cream component classes
-   (.mono-label, .hairline, provenance badges) recolor in place — readable on the
-   void, no per-file rewrite. The dark-stage tokens (--color-stage /
-   --color-press / --color-bone) are intentionally left untouched, and the
-   refractor tokens (void / cyan / *-bright) are never overridden. An unlayered
-   :root, last in source order, wins the cascade over the @theme blocks above. */
+   THE WARM FIELD  ·  feat/b2b3-collectible
+   The sitewide cream→void remap is gone. The page is the Heritage cream field
+   again — aged cream, scorebook paper, leather, seam red — and dark lives only
+   inside .scene-coal (defined above), which carries the old remap SCOPED. This
+   unlayered :root holds the light-field control tokens and the shadcn semantic
+   bridge so the source-owned primitives print in the atlas palette. */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* surfaces: cream → Dugout Charcoal + warm raised panels (was cool void/violet) */
-  --color-paper: #1C1916;
-  --color-paper-2: #26221C;
-  --color-paper-3: #2E2922;
-  --color-cream: #1C1916;
-  --color-panel: #26221C;
+  /* page-chrome voices on the cream field */
+  --kicker: #7A4A2E;
+  --ctl-bg: #FFFDF6;
+  --ctl-text: #14161B;
+  --ctl-placeholder: #5C6473;
+  --ctl-border: rgba(122, 74, 46, 0.45);
+  --ctl-accent: #C8102E;
+  --ctl-on-accent: #FFFFFF;
 
-  /* ink: near-black text → bone on the charcoal */
-  --color-ink: #F6F1E6;
-  --color-ink-2: #C9C2B0;
-  --color-ink-3: #8A8576;
-
-  /* navy (text, borders, hovers, plate edges) → warm light bone-slate on charcoal */
-  --color-navy: #D8D1C0;
-  --color-navy-2: #EFE9DA;
-  --color-navy-line: rgba(216, 209, 192, 0.16);
-
-  /* accents tuned for the dark field */
-  --color-seam: #FF2D44;
-  --color-seam-deep: color-mix(in srgb, #FF2D44 78%, #2A0A10);
-  --color-ok: #34E27E;
-  --color-amber: #FFC23C;
-  --color-sand: #CDBA8E;
-  --color-powder: #7FC6FF;
-
-  /* hairline rule on the charcoal (warm bone fade) */
-  --color-machined: rgba(216, 209, 192, 0.20);
-
-  /* inline prose-link blue (text-columbia); kept readable on the charcoal */
-  --color-columbia: #5AA9E6;
   /* shadcn semantic bridge: source-owned primitives, Pitch Atlas palette.
-     Primary/ring follow the Pack Gold chrome accent. */
-  --background: #1C1916;
-  --foreground: #F6F1E6;
-  --card: #26221C;
-  --card-foreground: #F6F1E6;
-  --popover: #26221C;
-  --popover-foreground: #F6F1E6;
-  --primary: #E9C97A;
-  --primary-foreground: #241A05;
-  --secondary: #2E2922;
-  --secondary-foreground: #F6F1E6;
-  --muted: #2E2922;
-  --muted-foreground: #C9C2B0;
-  --accent: #26221C;
-  --accent-foreground: #F6F1E6;
-  --destructive: #FF2D44;
-  --border: rgba(246, 241, 230, 0.12);
-  --input: rgba(246, 241, 230, 0.14);
-  --ring: #E9C97A;
-  --chart-1: #E9C97A;
-  --chart-2: #34E27E;
-  --chart-3: #FFC23C;
-  --chart-4: #8A6BFF;
-  --chart-5: #FF2D44;
+     Primary/ring follow the seam red. */
+  --background: #F4EEE0;
+  --foreground: #14161B;
+  --card: #EAE2D2;
+  --card-foreground: #14161B;
+  --popover: #FFFDF6;
+  --popover-foreground: #14161B;
+  --primary: #C8102E;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EAE2D2;
+  --secondary-foreground: #14161B;
+  --muted: #EAE2D2;
+  --muted-foreground: #3F4654;
+  --accent: #EAE2D2;
+  --accent-foreground: #14161B;
+  --destructive: #C8102E;
+  --border: rgba(20, 22, 27, 0.14);
+  --input: rgba(20, 22, 27, 0.18);
+  --ring: #C8102E;
+  --chart-1: #C8102E;
+  --chart-2: #2E7D55;
+  --chart-3: #B07A1E;
+  --chart-4: #0C2340;
+  --chart-5: #7A4A2E;
   --radius: 0.625rem;
-  --sidebar: #26221C;
-  --sidebar-foreground: #F6F1E6;
-  --sidebar-primary: #E9C97A;
-  --sidebar-primary-foreground: #241A05;
-  --sidebar-accent: #2E2922;
-  --sidebar-accent-foreground: #F6F1E6;
-  --sidebar-border: rgba(246, 241, 230, 0.12);
-  --sidebar-ring: #E9C97A;
+  --sidebar: #EAE2D2;
+  --sidebar-foreground: #14161B;
+  --sidebar-primary: #C8102E;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F4EEE0;
+  --sidebar-accent-foreground: #14161B;
+  --sidebar-border: rgba(20, 22, 27, 0.14);
+  --sidebar-ring: #C8102E;
 }
 
-/* native range + check controls pick up the gold chrome accent */
-input[type="range"] { accent-color: var(--color-cyan); }
-input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
+/* native range + check controls pick up the scene accent */
+input[type="range"] { accent-color: var(--ctl-accent); }
+input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 /*
   ---break---
 */
@@ -1135,44 +1167,45 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
   ---break---
 */
 .dark {
-  --background: #1C1916;
+  --background: #16120D;
   --foreground: #F6F1E6;
-  --card: #26221C;
+  --card: #221B12;
   --card-foreground: #F6F1E6;
-  --popover: #26221C;
+  --popover: #221B12;
   --popover-foreground: #F6F1E6;
-  --primary: #E9C97A;
-  --primary-foreground: #241A05;
-  --secondary: #2E2922;
+  --primary: #37D6FF;
+  --primary-foreground: #06121B;
+  --secondary: #2B2318;
   --secondary-foreground: #F6F1E6;
-  --muted: #2E2922;
+  --muted: #2B2318;
   --muted-foreground: #C9C2B0;
-  --accent: #26221C;
+  --accent: #221B12;
   --accent-foreground: #F6F1E6;
   --destructive: #FF2D44;
   --border: rgba(246, 241, 230, 0.12);
   --input: rgba(246, 241, 230, 0.14);
-  --ring: #E9C97A;
-  --chart-1: #E9C97A;
+  --ring: #37D6FF;
+  --chart-1: #37D6FF;
   --chart-2: #34E27E;
   --chart-3: #FFC23C;
   --chart-4: #8A6BFF;
   --chart-5: #FF2D44;
-  --sidebar: #26221C;
+  --sidebar: #221B12;
   --sidebar-foreground: #F6F1E6;
-  --sidebar-primary: #E9C97A;
-  --sidebar-primary-foreground: #241A05;
-  --sidebar-accent: #2E2922;
+  --sidebar-primary: #37D6FF;
+  --sidebar-primary-foreground: #06121B;
+  --sidebar-accent: #2B2318;
   --sidebar-accent-foreground: #F6F1E6;
   --sidebar-border: rgba(246, 241, 230, 0.12);
-  --sidebar-ring: #E9C97A;
+  --sidebar-ring: #37D6FF;
 }
 
 /* ============================================================
    THE CARD TABLE  ·  landing rebuild (Sluggers system)
-   The page handles a fresh set: one altar (the pull), pocket sheets (the
-   binder), cream card backs (the data), wax packs (the tools). Every form
-   here is a physical card-collecting object, never a generic panel.
+   The page handles a fresh set: one altar (the pull, inside the coal scene),
+   pocket sheets (the leather binder), cream card backs (the data), wax packs
+   (the tools). Every form here is a physical card-collecting object, never a
+   generic panel.
    ============================================================ */
 @layer components {
   /* ── THE PULL: the wordmark splits and the specimen stands in the gap.
@@ -1189,10 +1222,29 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
   .pull-word-l { grid-area: 1 / 1; }
   .pull-card { grid-area: 2 / 1; position: relative; z-index: 2; width: min(76vw, 330px); }
   .pull-word-r { grid-area: 3 / 1; }
-  /* the one overhead light: a warm pool behind the standing card */
+  /* the one overhead light: a warm lamplight pool behind the standing card */
   .pull-light {
     position: absolute; inset: -12% -30%; pointer-events: none; z-index: -1;
-    background: radial-gradient(52% 44% at 50% 30%, rgba(233,201,122,.17), transparent 70%);
+    background: radial-gradient(52% 44% at 50% 30%, rgba(244,232,200,.15), transparent 70%);
+  }
+  /* the table the card stands on: a soft contact shadow under the specimen */
+  .pull-shadow {
+    position: absolute; left: 50%; bottom: -7%; z-index: -1; pointer-events: none;
+    width: 86%; height: 9%; transform: translateX(-50%);
+    background: radial-gradient(50% 50% at 50% 50%, rgba(0,0,0,.55), transparent 72%);
+    filter: blur(6px);
+  }
+  /* the torn wax wrapper the specimen was just pulled from, leaning behind it */
+  .pull-wrapper {
+    position: absolute; left: 50%; bottom: -3%; z-index: -1; pointer-events: none;
+    width: 88%; aspect-ratio: 5 / 6.4; transform: translateX(-46%) rotate(4deg);
+    background:
+      radial-gradient(120% 90% at 50% 0%, rgba(255,252,242,.5), transparent 55%),
+      #E9DFC8;
+    opacity: .5;
+    box-shadow: 0 16px 30px -18px rgba(0,0,0,.85);
+    /* torn top edge */
+    clip-path: polygon(0 6%, 7% 3%, 15% 7%, 24% 2%, 33% 6%, 44% 1%, 55% 6%, 65% 2%, 76% 7%, 86% 3%, 100% 7%, 100% 100%, 0 100%);
   }
   @media (min-width: 768px) {
     .pull-grid { grid-template-columns: 1fr auto 1fr; }
@@ -1202,13 +1254,28 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
     .pull-word-r { grid-area: 1 / 3; justify-self: start; margin-left: -0.16em; }
   }
 
-  /* ── THE BINDER: charcoal-leather pocket sheets, punched for rings. ── */
+  /* ── the card-front-to-binder handoff: as the hero scrolls out, the specimen
+     settles toward the set below — laid down, not dismissed. Native scroll-driven
+     animation; browsers without support and reduced-motion visitors keep the
+     card standing. ── */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .pull-handoff {
+        animation: pull-settle linear both;
+        animation-timeline: view();
+        animation-range: exit 0% exit 95%;
+      }
+    }
+  }
+
+  /* ── THE BINDER: saddle-leather pocket sheets, punched for rings, stitched. ── */
   .binder-sheet {
     position: relative; border-radius: 14px;
     padding: clamp(14px, 2.5vw, 26px); padding-left: clamp(36px, 5vw, 56px);
-    background: linear-gradient(165deg, #221D17, #181410 70%);
-    border: 1px solid rgba(0,0,0,.65);
-    box-shadow: inset 0 1px 0 rgba(246,241,230,.07), 0 26px 50px -28px rgba(0,0,0,.9);
+    background: linear-gradient(165deg, #33210F, #221507 70%);
+    border: 1px solid rgba(0,0,0,.6);
+    box-shadow: inset 0 1px 0 rgba(246,241,230,.09), 0 26px 50px -28px rgba(0,0,0,.55);
+    outline: 1px dashed rgba(244,238,224,.22); outline-offset: -8px;
   }
   .binder-holes {
     position: absolute; left: 11px; top: 6%; bottom: 6%; width: 16px;
@@ -1234,14 +1301,20 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
   .pocket:hover .pocket-lift { transform: translateY(-4px); filter: drop-shadow(0 10px 14px rgba(0,0,0,.55)); }
   @media (prefers-reduced-motion: reduce) { .pocket:hover .pocket-lift { transform: none; filter: none; } }
 
-  /* the compact pocket card: thin gold frame, photo or schematic face, varsity
-     number, name strip. No video in a pocket — motion is the hero's job. */
+  /* the compact pocket card: a thin rainbow-holo frame, photo or schematic face,
+     varsity number, name strip. No video in a pocket — motion is the hero's job.
+     Neighbors catch the light at different angles (the nth-child positions), so
+     a filled sheet reads as a handled page, never a print run. */
   .pocket-card {
     position: relative; display: flex; flex-direction: column; aspect-ratio: 5 / 7;
     border-radius: 9px; padding: 2px;
-    background: linear-gradient(150deg, #3a2a0e, #b08c3a 38%, #6e5419 60%, #caa14a 85%);
+    background: var(--foil); background-size: 240% 240%; background-position: 30% 25%;
     box-shadow: 0 8px 18px -10px rgba(0,0,0,.8);
   }
+  .binder-grid > :nth-child(3n) .pocket-card { background-position: 78% 60%; }
+  .binder-grid > :nth-child(3n + 2) .pocket-card { background-position: 12% 80%; }
+  .binder-grid > :nth-child(4n + 1) .pocket-card { rotate: -0.5deg; }
+  .binder-grid > :nth-child(5n + 3) .pocket-card { rotate: 0.45deg; }
   .pocket-inner {
     position: relative; display: flex; flex-direction: column; flex: 1; min-height: 0;
     border-radius: 7px; overflow: hidden;
@@ -1252,8 +1325,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
   .pocket-vnum {
     position: absolute; top: 4px; left: 6px; z-index: 2;
     font-family: var(--font-athletic); font-size: clamp(17px, 2.6vw, 26px); line-height: .85;
-    color: var(--color-bone); -webkit-text-stroke: 1px #000;
-    text-shadow: 2px 2px 0 color-mix(in srgb, #caa14a 80%, #000);
+    color: #F6F1E6; -webkit-text-stroke: 1px #000;
+    text-shadow: 2px 2px 0 rgba(0,0,0,.75);
   }
   .pocket-tab {
     position: absolute; top: 0; right: 8px; z-index: 2; width: 10px; height: 20px;
@@ -1262,9 +1335,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
   .pocket-name {
     flex: 0 0 auto; padding: 5px 5px 6px; text-align: center;
     font-family: var(--font-athletic); text-transform: uppercase;
-    font-size: clamp(9px, 1.5vw, 13px); letter-spacing: .05em; line-height: 1; color: #EFDFAE;
-    background: linear-gradient(180deg, rgba(255,240,194,.12), transparent 60%), #191510;
-    border-top: 1px solid rgba(202,161,74,.4);
+    font-size: clamp(9px, 1.5vw, 13px); letter-spacing: .05em; line-height: 1; color: #F2ECDD;
+    background: linear-gradient(180deg, rgba(246,241,230,.1), transparent 60%), #17120C;
+    border-top: 1px solid rgba(246,241,230,.22);
   }
   /* filler cards: the checklist/ad cards real packs shipped with — cream stock */
   .pocket-card.is-filler { background: rgba(246,241,230,.18); }
@@ -1284,7 +1357,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
     margin-top: 8px; margin-bottom: 8px; padding: 20px 16px 18px;
     color: #211D17;
     background: radial-gradient(120% 90% at 50% 0%, rgba(255,252,242,.65), transparent 55%), #EFE5CE;
-    box-shadow: 0 18px 36px -20px rgba(0,0,0,.85);
+    box-shadow: 0 18px 36px -20px rgba(0,0,0,.4);
     transition: transform .2s ease;
   }
   .wax-pack:hover { transform: rotate(1.2deg); }
@@ -1314,6 +1387,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
 @keyframes foil-band {
   0% { background-position: 120% 0; }
   100% { background-position: -20% 0; }
+}
+
+/* the hero specimen laying down toward the binder as the scene scrolls out */
+@keyframes pull-settle {
+  to { transform: translateY(44px) scale(0.92) rotate(-2.5deg); opacity: 0.88; }
 }
 
 /* ── the live foil layer (FoilLayer.tsx): a canvas behind the card's DOM
