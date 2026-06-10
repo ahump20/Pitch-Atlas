@@ -24,6 +24,7 @@ export function MediaStage({
   variant = 'bleed',
   scrim = true,
   priority = false,
+  decorative = false,
   className = '',
   children,
 }: {
@@ -32,6 +33,8 @@ export function MediaStage({
   scrim?: boolean
   /** Hero-of-the-page media: poster loads eagerly and paints first (LCP). */
   priority?: boolean
+  /** Backdrop use: real footage as atmosphere. Hidden from assistive tech. */
+  decorative?: boolean
   className?: string
   children?: ReactNode
 }) {
@@ -41,7 +44,8 @@ export function MediaStage({
     <img
       className="pa-stage-media"
       src={clip.poster}
-      alt={clip.alt}
+      alt={decorative ? '' : clip.alt}
+      aria-hidden={decorative || undefined}
       loading={priority ? 'eager' : 'lazy'}
       // @ts-expect-error React 19 passes fetchpriority through; types lag the DOM attr
       fetchpriority={priority ? 'high' : undefined}
@@ -57,7 +61,8 @@ export function MediaStage({
       loop
       playsInline
       preload={priority ? 'auto' : 'metadata'}
-      aria-label={clip.alt}
+      aria-label={decorative ? undefined : clip.alt}
+      aria-hidden={decorative || undefined}
     >
       <source src={clip.mp4} type="video/mp4" />
       <source src={clip.webm} type="video/webm" />

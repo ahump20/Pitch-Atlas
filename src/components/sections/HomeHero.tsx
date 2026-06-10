@@ -3,21 +3,45 @@ import type { PitchAtlasEntry } from '../../data/types'
 import { SITE } from '../../config/site'
 import { scrollToId } from '../../lib/scroll'
 import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
+import { MediaStage } from '../media/MediaStage'
+import { gripEntryFor } from '../../data/grips'
 
 /*
-  The home hero on the void. The holographic wordmark states the product first; the
-  featured pitch (the four-seam, specimen 00, the gold 1/1) is the signature artifact,
-  struck as the one large holographic card on the page, its real grip clip looping in
-  the window. On desktop the claim sits left and the card right, so the promise and the
-  object read together. On mobile the claim leads and a right-sized card follows in the
-  same screen — the object never buries the promise below the fold. The 3D seam-true
-  ball still lives on every /pitch/<slug> chapter. Foil is decoration; the readings are
-  sourced.
+  The home hero: the hand carries the page. Austin's own 12-6 grip clip runs full-bleed
+  behind everything, dimmed under the scrim so the chrome wordmark and bone type sit on
+  real footage instead of empty void. The featured pitch (the four-seam, specimen 00,
+  the gold 1/1) stays the signature artifact, struck as the one large card on the page,
+  its own grip clip looping in the window. On desktop the claim sits left and the card
+  right; on mobile the claim leads and a right-sized card follows in the same screen.
+  The backdrop is decorative (aria-hidden) — the card carries the named media.
 */
+const heroBackdrop = gripEntryFor('twelve-six')?.clip
+
 export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
   return (
     <section id="top" className="relative overflow-hidden">
-      <div className="relative mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-7 px-5 pb-11 pt-7 md:min-h-[calc(100dvh-7rem)] md:grid-cols-12 md:gap-8 md:px-8 md:pb-20 md:pt-16">
+      {heroBackdrop ? (
+        <>
+          <MediaStage
+            clip={heroBackdrop}
+            variant="bleed"
+            priority
+            decorative
+            scrim={false}
+            className="[&_.pa-stage-media]:opacity-40"
+          />
+          {/* claim-side darkening: the type needs a quiet field, the footage stays legible at right */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-[1]"
+            style={{
+              background:
+                'linear-gradient(100deg, rgba(7,5,9,.94) 0%, rgba(7,5,9,.72) 38%, rgba(7,5,9,.34) 64%, rgba(7,5,9,.55) 100%), linear-gradient(to top, var(--color-void) 0%, transparent 30%)',
+            }}
+          />
+        </>
+      ) : null}
+      <div className="relative z-[2] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-7 px-5 pb-11 pt-7 md:min-h-[calc(100dvh-7rem)] md:grid-cols-12 md:gap-8 md:px-8 md:pb-20 md:pt-16">
         <div className="md:col-span-6">
           <p className="mono-label-stage inline-flex items-center gap-2">
             <i className="rfx-dot" style={{ background: 'var(--color-ok-bright)', color: 'var(--color-ok-bright)' }} aria-hidden="true" />
