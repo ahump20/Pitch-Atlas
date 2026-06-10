@@ -2,28 +2,32 @@ import { type CSSProperties, useMemo, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { LayoutGridIcon, ListIcon, SearchIcon } from 'lucide-react'
+import { BookOpenIcon, ListIcon, SearchIcon } from 'lucide-react'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
-import { IndexCard } from '../index/IndexCard'
+import { BinderSheet, RepertoirePocket } from './BinderSheet'
 import { Badge } from '../ui/badge'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 
-type IndexView = 'rows' | 'cards'
+type IndexView = 'rows' | 'binder'
 
 /*
   The Pitch Index directory, in the refractor language. Every accepted pitch by
   family as a scouting row: a seam glyph, the name, a Filed tag when the atlas has
   a full specimen, the sourced aka + velocity, a status tier, and the open
   affordance — "Open specimen" to /pitch/<slug> when filed, else "Basic file" to
-  /repertoire/<id>. Sticky controls search name/aka/family and filter by family or
-  by filed. The Lost Pitches wing sits one click away in its own hall. Default
-  state (no query, all) renders every row, so the prerendered HTML carries the
-  whole index; the filter hydrates on top. Foil is decoration; every line is sourced.
+  /repertoire/<id>. The second view is the binder spread: each family is a leather
+  binder sheet of sleeves (the home set's own pocket vocabulary), a sleeved card
+  pulls on hover, and an entry with no clean photograph wears the honest cream
+  slip instead of a fake thumbnail. Sticky controls search name/aka/family and
+  filter by family or by filed. The Lost Pitches wing sits one click away in its
+  own hall. Default state (no query, all) renders every row, so the prerendered
+  HTML carries the whole index; the filter hydrates on top. Foil is decoration;
+  every line is sourced.
 */
 
 type FamilyFilter = RepertoireFamily | 'filed' | 'all'
@@ -223,9 +227,9 @@ export function PitchIndex({ id }: { id?: string }) {
               <ListIcon data-icon="inline-start" />
               Rows
             </ToggleGroupItem>
-            <ToggleGroupItem value="cards" aria-label="Cards view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-              <LayoutGridIcon data-icon="inline-start" />
-              Cards
+            <ToggleGroupItem value="binder" aria-label="Binder view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+              <BookOpenIcon data-icon="inline-start" />
+              Binder
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
@@ -270,13 +274,13 @@ export function PitchIndex({ id }: { id?: string }) {
                 ))}
               </div>
             ) : (
-              <div className="grid gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))]">
+              <BinderSheet label={`${fam.label} family, binder sheet`}>
                 {entries.map((e) => (
-                  <div key={e.id} style={{ viewTransitionName: `pi-${e.id}` }}>
-                    <IndexCard variant="repertoire" entry={e} />
+                  <div key={e.id} className="pocket" style={{ viewTransitionName: `pi-${e.id}` }}>
+                    <RepertoirePocket entry={e} />
                   </div>
                 ))}
-              </div>
+              </BinderSheet>
             )}
           </section>
         )

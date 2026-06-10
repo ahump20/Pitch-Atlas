@@ -24,16 +24,18 @@ describe('PitchIndex controls', () => {
     expect(screen.getByText(/Try a family, an alias, or clear the search/)).toBeInTheDocument()
   })
 
-  it('switches between row and card views without losing filed routing labels', async () => {
+  it('switches between row and binder views without losing filed routing labels', async () => {
     const user = userEvent.setup()
     renderIndex()
 
     expect(screen.getAllByText('Open specimen').length).toBeGreaterThan(0)
 
-    const cards = screen.getByRole('radio', { name: /cards view/i })
-    await user.click(cards)
+    const binder = screen.getByRole('radio', { name: /binder view/i })
+    await user.click(binder)
 
-    expect(cards).toHaveAttribute('data-state', 'on')
+    expect(binder).toHaveAttribute('data-state', 'on')
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
+    // an entry with no clean photograph says so honestly, never a fake thumbnail
+    expect(screen.getAllByText('No image filed').length).toBeGreaterThan(0)
   })
 })

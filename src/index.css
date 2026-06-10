@@ -1373,6 +1373,47 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 10px 8px;
   }
 
+  /* ── THE INDEX BINDER: the directory's own spread (Pitch Index binder view).
+     Same sleeve vocabulary as the home set — .pocket / .pocket-card — plus the
+     sleeve-pull: a sleeved card slides up out of its pocket on hover or focus,
+     CSS only, and the click is the opening. Entries with no clean photograph
+     wear the honest slip below, never a fake thumbnail. ── */
+  .pocket-pull {
+    display: block;
+    transition: transform 0.26s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.26s ease;
+  }
+  .pocket:hover .pocket-pull,
+  .pocket:focus-within .pocket-pull {
+    transform: translateY(-12px) rotate(-0.6deg);
+    filter: drop-shadow(0 14px 16px rgba(0, 0, 0, 0.55));
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pocket:hover .pocket-pull,
+    .pocket:focus-within .pocket-pull { transform: none; filter: none; }
+  }
+
+  /* the honest slip: a typed cream file slip for an entry the atlas has not
+     photographed. Paper, rule lines, a status stamp — explicitly not an image. */
+  .pocket-slip {
+    position: relative; display: flex; flex-direction: column; gap: 6px;
+    aspect-ratio: 5 / 7; border-radius: 9px; padding: clamp(7px, 1.2vw, 12px);
+    background:
+      radial-gradient(110% 90% at 50% 0%, rgba(255, 252, 242, 0.55), transparent 55%),
+      #EDE3CC;
+    box-shadow: inset 0 0 0 1px rgba(33, 29, 23, 0.28), 0 8px 18px -12px rgba(0, 0, 0, 0.7);
+    color: #211D17;
+  }
+  .pocket-slip.is-edge {
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #C8102E 55%, transparent),
+      0 8px 18px -12px rgba(0, 0, 0, 0.7);
+  }
+  /* the slip's ruled lower half, so it reads as a file slip, not a failed image */
+  .pocket-slip::after {
+    content: ""; position: absolute; left: 10px; right: 10px; bottom: 9px; height: 26%;
+    background: repeating-linear-gradient(180deg, transparent 0 9px, rgba(33, 29, 23, 0.13) 9px 10px);
+    pointer-events: none;
+  }
+
   /* ── THE WAX PACKS: sealed cream wrappers with crimped edges and a foil strip. ── */
   .wax-pack {
     position: relative; display: flex; flex-direction: column; gap: 10px;

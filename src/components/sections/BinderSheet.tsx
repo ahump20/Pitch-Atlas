@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import type { PitchAtlasEntry } from '../../data/types'
+import type { PitchAtlasEntry, RepertoireEntry } from '../../data/types'
 import { ACCENT, FALLBACK_ACCENT } from '../refractor/accents'
 import { RefractorBall } from '../refractor/RefractorBall'
-import { gripEntryFor } from '../../data/grips'
+import { gripEntryFor, gripEntryForRepertoire } from '../../data/grips'
+import { pitchBySlug } from '../../data/pitches'
+import { STATUS_LABEL, isEdgeStatus } from '../index/StatusBadge'
 
 /*
   The nine-pocket binder sheet — the plastic collector page every card kid knows.
@@ -79,6 +81,85 @@ export function FillerCard({ to, label, note, ghost }: { to: string; label: stri
             style={{ fontSize: 8, letterSpacing: '0.14em', color: ghost ? '#8A8576' : 'rgba(33,29,23,.6)' }}
           >
             {note}
+          </span>
+        </span>
+      </span>
+    </Link>
+  )
+}
+
+/*
+  One Pitch Index entry in a binder sleeve. The face is honest by construction:
+  a real grip photograph when the library holds one; the filed specimen's own
+  seam schematic when the atlas authored that geometry; otherwise the typed
+  cream slip that says plainly no image is on file. The name strip prints the
+  index's own entry name (not the specimen short name) so the binder and the
+  rows read as one directory.
+*/
+export function RepertoirePocket({ entry }: { entry: RepertoireEntry }) {
+  const filed = entry.filedSlug ? pitchBySlug(entry.filedSlug) : undefined
+  const grip = gripEntryForRepertoire(entry)
+  const still = grip?.photos[0]?.src ?? grip?.clip?.poster
+  const to = entry.filedSlug ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`
+  const edge = isEdgeStatus(entry.status)
+  const status = STATUS_LABEL[entry.status]
+  const open = entry.filedSlug ? 'Open specimen' : 'Basic file'
+
+  /* no photograph, no authored schematic -> the honest slip */
+  if (!still && !filed) {
+    return (
+      <Link to={to} className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
+        <span className={`pocket-slip ${edge ? 'is-edge' : ''}`}>
+          <span
+            className="font-mono uppercase"
+            style={{ fontSize: 8, letterSpacing: '0.16em', color: edge ? '#A8232F' : 'rgba(33,29,23,.55)' }}
+          >
+            {status}
+          </span>
+          <span className="rfx-athletic block" style={{ fontSize: 'clamp(11px,1.7vw,17px)', lineHeight: 0.95, color: '#211D17' }}>
+            {entry.name}
+          </span>
+          <span className="block font-mono uppercase" style={{ fontSize: 7.5, letterSpacing: '0.12em', color: 'rgba(33,29,23,.6)' }}>
+            No image filed
+          </span>
+          <span className="mt-auto block font-mono uppercase" style={{ fontSize: 7.5, letterSpacing: '0.12em', color: 'rgba(33,29,23,.78)' }}>
+            {open} →
+          </span>
+        </span>
+      </Link>
+    )
+  }
+
+  return (
+    <Link to={to} className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
+      <span className="pocket-card">
+        <span className="pocket-inner">
+          <span className="pocket-face">
+            {still ? (
+              <img src={still} alt="" loading="lazy" decoding="async" draggable={false} />
+            ) : filed ? (
+              <RefractorBall
+                spinAxis={filed.motion.spinAxis}
+                gyro={filed.motion.gyro}
+                accent={ACCENT[filed.display.slug] ?? FALLBACK_ACCENT}
+                id={`index-pocket-${entry.id}`}
+                gripPoints={filed.canonical.fingerPlacement}
+              />
+            ) : null}
+            {filed ? (
+              <i className="pocket-vnum" aria-hidden="true">
+                {filed.display.specimenNo}
+              </i>
+            ) : null}
+          </span>
+          <span className="pocket-name">
+            {entry.name}
+            <span
+              className="mt-0.5 block font-mono"
+              style={{ fontSize: 7.5, letterSpacing: '0.14em', color: edge ? '#FF6B77' : '#8A8576' }}
+            >
+              {status}
+            </span>
           </span>
         </span>
       </span>
