@@ -1,7 +1,7 @@
 import { type ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
-import { AUSTIN_GRIPS, ATTACK_PLAN, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
+import { AUSTIN_GRIPS, ATTACK_PLAN, CIRCLE_CHANGE_DISTINCTION, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
 import type { GripLibraryEntry, GripClip } from '../../data/grips'
 import { ConfidenceDot } from '../provenance/RefractorClaim'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -218,12 +218,25 @@ export function SpecimenGrips({
                 background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 8%, transparent), rgba(255,255,255,0.025))`,
               }}
             >
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
-                Empty gallery
-              </p>
-              <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-bone-2">
-                No Austin grip photo is attached to this pitch. The note below is intentionally text-only.
-              </p>
+              {entry.id === 'circle-change' ? (
+                <>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+                    {CIRCLE_CHANGE_DISTINCTION.marker}
+                  </p>
+                  <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-bone-2">
+                    {CIRCLE_CHANGE_DISTINCTION.reason}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+                    Empty gallery
+                  </p>
+                  <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-bone-2">
+                    No Austin grip photo is attached to this pitch. The note below is intentionally text-only.
+                  </p>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -366,27 +379,40 @@ export function GripLibrary() {
             ) : null}
 
             {/* the theater band: the moving grip at its native portrait scale, the
-                photo angles large beside it. No clip → the photos carry the band. */}
-            <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12">
-              {grip.clip ? (
-                <div className="lg:col-span-5">
-                  <GripMotion clip={grip.clip} large />
-                </div>
-              ) : null}
-              <div className={grip.clip ? 'lg:col-span-7' : 'lg:col-span-12'}>
-                <div
-                  className={
-                    grip.clip
-                      ? 'grid grid-cols-1 gap-5 sm:grid-cols-2'
-                      : 'grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'
-                  }
-                >
-                  {grip.photos.map((p) => (
-                    <GripPhoto key={p.src} photo={p} />
-                  ))}
+                photo angles large beside it. No clip → the photos carry the band.
+                Nothing at all → the labeled gap (the circle change), never a
+                borrowed photo implying Austin's hand. */}
+            {grip.clip || grip.photos.length > 0 ? (
+              <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12">
+                {grip.clip ? (
+                  <div className="lg:col-span-5">
+                    <GripMotion clip={grip.clip} large />
+                  </div>
+                ) : null}
+                <div className={grip.clip ? 'lg:col-span-7' : 'lg:col-span-12'}>
+                  <div
+                    className={
+                      grip.clip
+                        ? 'grid grid-cols-1 gap-5 sm:grid-cols-2'
+                        : 'grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'
+                    }
+                  >
+                    {grip.photos.map((p) => (
+                      <GripPhoto key={p.src} photo={p} />
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : grip.id === 'circle-change' ? (
+              <div className="mt-7 max-w-[74ch] rounded-[16px] border border-dashed border-bone/20 px-5 py-6">
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">
+                  {CIRCLE_CHANGE_DISTINCTION.marker}
+                </p>
+                <p className="mt-2 text-[14px] leading-relaxed text-bone-2">
+                  {CIRCLE_CHANGE_DISTINCTION.reason}
+                </p>
+              </div>
+            ) : null}
           </article>
         )
       })}

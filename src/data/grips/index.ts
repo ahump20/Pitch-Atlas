@@ -328,6 +328,18 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
   },
 ]
 
+/*
+  The circle change is the one entry filed with no first-party photo, on
+  purpose: Austin never threw it. The distinction renders verbatim wherever the
+  entry's grip imagery is communicated, so the gap is labeled, never papered
+  over with a reference photo that would imply his hand.
+*/
+export const CIRCLE_CHANGE_DISTINCTION = {
+  marker: 'Circle Changeup · Filed from external sources · No Austin grip photo',
+  reason:
+    "Austin's personal grip library excludes the circle change because his hand size could not form it cleanly.",
+} as const
+
 /** The grips a hitter cannot see — the through-line that ties the library together. */
 export const GRIP_LIBRARY_INTRO =
   'Every grip here answers one question: how much resistance is the hand putting on the ball? The four-seam has almost none, so it leaves clean and true. Stack on fingers and surface — the three-finger and football changes — and the ball drags out softer while the arm still sells a fastball. That is the whole game at the plate: a hitter sits on the fastball and adjusts, because if he sits off-speed the fastball is already in the mitt.'
