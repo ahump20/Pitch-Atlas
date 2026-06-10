@@ -14,6 +14,8 @@ import { SITE } from '../config/site'
 import { scrollToId } from '../lib/scroll'
 import { BallStage } from '../components/ball/BallStage'
 import { RefractorBall } from '../components/refractor/RefractorBall'
+import { GripClip } from '../components/refractor/GripClip'
+import { GripFace } from '../components/refractor/GripFace'
 import { accentForSlug } from '../components/refractor/accents'
 import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -117,6 +119,11 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
   const pills = [FAMILY_LABEL[canonical.family], guide?.family, motion.forceLabel].filter(
     (p, i, a): p is string => Boolean(p) && a.indexOf(p) === i,
   )
+  // The honest face hierarchy, at chapter scale: Austin's clip when the pitch is
+  // game-day, his photo when it is situational, the seam schematic otherwise.
+  const grip = gripEntryFor(display.slug)
+  const heroClip = grip?.clip
+  const heroPhoto = !heroClip ? grip?.photos[0] : undefined
 
   return (
     <section className="grid grid-cols-1 items-center gap-[clamp(24px,4vw,52px)] pt-3 pb-[clamp(34px,5vw,56px)] md:grid-cols-[0.92fr_1.08fr]">
@@ -155,9 +162,21 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
             Gold · 1 of 1 · Reference
           </span>
         ) : null}
-        <div className="relative z-[1] h-full w-full p-[6%]">
-          <RefractorBall spinAxis={motion.spinAxis} gyro={motion.gyro} accent={accent} id={`hero-${display.slug}`} showHalo />
-        </div>
+        {heroClip ? (
+          <GripClip clip={heroClip} />
+        ) : heroPhoto ? (
+          <GripFace photo={heroPhoto} />
+        ) : (
+          <div className="relative z-[1] h-full w-full p-[6%]">
+            <RefractorBall spinAxis={motion.spinAxis} gyro={motion.gyro} accent={accent} id={`hero-${display.slug}`} showHalo />
+          </div>
+        )}
+        {heroClip || heroPhoto ? (
+          <span className="absolute bottom-3.5 left-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
+            <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
+            Austin&rsquo;s grip{heroClip ? ' · in motion' : ''}
+          </span>
+        ) : null}
       </div>
 
       {/* meta */}
