@@ -15,17 +15,30 @@ import { sharedSeam } from './_shared-seam'
   stays where it is real and sourced; pitch behavior is read in words.
 */
 
+// Anchored on the four-seam's horseshoe placement, then shifted off-center: the
+// cutter is the four-seam grip nudged glove-side, never a slider's side pull.
 const fingerPlacement: SeamAnchoredPoint[] = [
-  { seamT: 0.0, lift: 0.02, label: 'Index', finger: 'index', note: 'On the leather, both fingers shifted slightly toward the glove side of the ball.' },
-  { seamT: 0.06, lift: 0.02, label: 'Middle', finger: 'middle', note: 'Beside the index, carrying a touch more pressure to set the cut.' },
-  { seamT: 0.68, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Underneath, centered, as on a four-seam.' },
+  { seamT: 0.3, lift: 0.02, label: 'Index', finger: 'index', note: 'Across the horseshoe like a four-seam, both fingers shifted slightly toward the glove side of the ball.' },
+  { seamT: 0.35, lift: 0.02, label: 'Middle', finger: 'middle', note: 'Beside the index, carrying a touch more pressure to set the cut.' },
+  { seamT: 0.83, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Underneath, centered, as on a four-seam.' },
 ]
 
 const gripModel: GripModel = {
+  status: 'filed',
   defaultView: 'top',
   ballDepth: 'neutral',
   fingerSpacing: 'touching',
   primaryPressureFinger: 'middle',
+  orientation: {
+    knuckleLine: 'Square behind the ball like the four-seam, nudged a hair glove-side.',
+    palmFacing: 'Palm to the plate — the shift in the grip, not the wrist, makes the cut.',
+  },
+  provenance: claim(
+    'Finger placement solved as an off-center four-seam: pads still crossing the horseshoe seam, the pair displaced toward the glove side, middle finger carrying the pressure. Schematic geometry, not an athlete scan.',
+    'mlb-glossary-cutter',
+    'reputable-analysis',
+    { note: 'MLB.com: both fingers set toward one side of the ball; the cut comes from placement and a touch of supination, never a slider-style pull.' },
+  ),
   thumbRole: 'Thumb stays centered underneath, as on the four-seam it is built from.',
   palmGapCue: 'Held like a fastball, not buried — the cut is from the grip, not from squeezing.',
   releaseCue: 'Throw it like a four-seam with a hair of supination — let the ball cut off the fingers rather than pulling down the side like a slider.',
@@ -34,9 +47,13 @@ const gripModel: GripModel = {
     {
       finger: 'index',
       label: 'Index off-center',
-      seamT: 0.0,
+      seamT: 0.3,
       lift: 0.02,
-      seamRelation: 'Shifted toward the glove side from a four-seam',
+      seamOffset: -0.05,
+      azimuth: 82,
+      engagement: 'pad',
+      pressureTier: 'support',
+      seamRelation: 'Across the horseshoe, shifted toward the glove side from a four-seam',
       pressureRole: 'Sets the off-center grip',
       cue: 'Just off center',
       curl: 0.3,
@@ -44,9 +61,13 @@ const gripModel: GripModel = {
     {
       finger: 'middle',
       label: 'Middle pressure',
-      seamT: 0.06,
+      seamT: 0.35,
       lift: 0.02,
-      seamRelation: 'Beside the index, slightly more pressure',
+      seamOffset: -0.07,
+      azimuth: 80,
+      engagement: 'pad',
+      pressureTier: 'primary',
+      seamRelation: 'Across the horseshoe beside the index, slightly more pressure',
       pressureRole: 'Drives the late cut',
       cue: 'Lead with this finger',
       curl: 0.32,
@@ -54,8 +75,12 @@ const gripModel: GripModel = {
     {
       finger: 'thumb',
       label: 'Thumb',
-      seamT: 0.68,
+      seamT: 0.83,
       lift: 0,
+      seamOffset: 0.02,
+      azimuth: 55,
+      engagement: 'inside',
+      pressureTier: 'support',
       seamRelation: 'Centered underneath',
       pressureRole: 'Fastball support',
       cue: 'Stay centered',

@@ -1,5 +1,5 @@
 import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
-import { claim } from '../sources'
+import { claim, unverified } from '../sources'
 import { sharedSeam } from './_shared-seam'
 
 /*
@@ -16,53 +16,31 @@ import { sharedSeam } from './_shared-seam'
   off it are sourced biography, kept as such.
 */
 
-const fingerPlacement: SeamAnchoredPoint[] = [
-  { seamT: 0.02, lift: 0.0, label: 'Index', finger: 'index', note: 'Across the seams, as on a fastball or curve — the grip barely matters.' },
-  { seamT: 0.08, lift: 0.0, label: 'Middle', finger: 'middle', note: 'Beside the index; the pitch is about the lob, not the grip.' },
-  { seamT: 0.66, lift: 0.0, label: 'Thumb', finger: 'thumb', note: 'Underneath for control of a very slow release.' },
-]
+// No canonical grip exists for the eephus, so no finger geometry is drawn —
+// on the card or in the lab. The sources describe "almost any grip"; drawing
+// one set of fingers would invent a canon the record does not support.
+const fingerPlacement: SeamAnchoredPoint[] = []
 
 const gripModel: GripModel = {
+  status: 'unfiled',
   defaultView: 'top',
   ballDepth: 'neutral',
   fingerSpacing: 'slight-spread',
   primaryPressureFinger: 'index',
+  orientation: {
+    knuckleLine: 'No canonical knuckle line — the hold is whatever the lob trusts.',
+    palmFacing: 'Up and under the ball through the slow, exaggerated release.',
+  },
+  provenance: unverified(
+    'No source supports one canonical eephus grip. The cited references describe an ordinary fastball or curve hold lobbed on a high arc — the pitch lives in the trajectory, not in the fingers.',
+    'The grip stays undrawn on purpose: any fingers placed here would be invented geometry, and this atlas does not invent. Read the release cue instead.',
+    'mlb-glossary-eephus',
+  ),
   thumbRole: 'Thumb underneath for control; the grip is ordinary because the arc, not the spin, is the pitch.',
   palmGapCue: 'Held loosely like a fastball or curve — almost any grip works.',
   releaseCue: 'Throw it on a high, exaggerated overhand arc with drastically reduced arm speed, aiming to peak well above the batter and drop in.',
   visualCaveat: 'Grip geometry is schematic and barely matters here; the eephus is defined by arc and timing, not grip.',
-  contacts: [
-    {
-      finger: 'index',
-      label: 'Index',
-      seamT: 0.02,
-      lift: 0,
-      seamRelation: 'Across the seams',
-      pressureRole: 'Ordinary backspin grip',
-      cue: 'Any normal grip',
-      curl: 0.3,
-    },
-    {
-      finger: 'middle',
-      label: 'Middle',
-      seamT: 0.08,
-      lift: 0,
-      seamRelation: 'Beside the index',
-      pressureRole: 'Ordinary backspin grip',
-      cue: 'Lob it',
-      curl: 0.3,
-    },
-    {
-      finger: 'thumb',
-      label: 'Thumb',
-      seamT: 0.66,
-      lift: 0,
-      seamRelation: 'Underneath',
-      pressureRole: 'Controls a slow release',
-      cue: 'Stay under it',
-      curl: 0.4,
-    },
-  ],
+  contacts: [],
 }
 
 export const eephus: PitchAtlasEntry = {

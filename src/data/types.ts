@@ -122,12 +122,53 @@ export type Handedness = 'right' | 'left'
 export type BallDepth = 'out-in-fingers' | 'neutral' | 'deep-in-hand'
 export type FingerSpacing = 'touching' | 'slight-spread' | 'wide'
 
+/**
+ * Whether a canonical grip is actually on file for this pitch.
+ * 'filed'   — a sourced canonical hold exists and is authored contact by contact.
+ * 'unfiled' — no source supports one canonical hold (the eephus); the Grip Lab
+ *             says so honestly instead of inventing finger geometry.
+ */
+export type GripStatus = 'filed' | 'unfiled'
+
+/** Which part of the finger meets the leather. Drives how long the solver
+    keeps the finger hugging the surface before it lifts away. */
+export type FingerEngagement = 'tip' | 'pad' | 'inside' | 'nail' | 'knuckle'
+
+/** How much of the hold a finger carries. Render emphasis only, never a number. */
+export type PressureTier = 'primary' | 'support' | 'light'
+
+/** How the whole hand sits behind the contacts, in words the panel can caption. */
+export interface HandOrientation {
+  /** Where the knuckle line of the top fingers points when the grip is set. */
+  knuckleLine: string
+  /** Where the palm faces at the moment the hold is shown. */
+  palmFacing: string
+}
+
 export interface GripContactModel {
   finger: SeamAnchoredPoint['finger']
   label: string
-  /** Shared seam parameter so the 2D fallback, 3D pad, and prose cue agree. */
+  /** Shared seam parameter so the 2D fallback, 3D hand, and prose cue agree. */
   seamT: number
   lift: number
+  /**
+   * Signed perpendicular distance from the seam path, in ball radii.
+   * 0 = the finger spine sits on the seam itself. Positive = displaced toward
+   * the open leather outside the seam lanes (the splitter side); negative =
+   * displaced across the seam toward the glove-side shift (the cutter side).
+   */
+  seamOffset: number
+  /**
+   * Finger-spine direction relative to the seam tangent at the contact, in
+   * degrees. 0 = riding along the seam like a rail; +/-90 = crossing it square.
+   */
+  azimuth: number
+  /** Which part of the finger meets the leather. */
+  engagement: FingerEngagement
+  /** The finger this one closes toward (the circle change's thumb-index ring). */
+  pinchesToward?: SeamAnchoredPoint['finger']
+  /** Render emphasis for how much of the hold this finger carries. */
+  pressureTier?: PressureTier
   seamRelation: string
   pressureRole: string
   cue: string
@@ -136,14 +177,26 @@ export interface GripContactModel {
 }
 
 export interface GripModel {
+  /** Filed = sourced contacts below. Unfiled = the honest no-canonical-grip state. */
+  status: GripStatus
   defaultView: GripView
   ballDepth: BallDepth
   fingerSpacing: FingerSpacing
   primaryPressureFinger: SeamAnchoredPoint['finger']
+  /** How the whole hand sits behind the contacts, in words. */
+  orientation: HandOrientation
+  /**
+   * Where the grip geometry comes from, bound to the same seven-tier
+   * ClaimConfidence vocabulary as every other claim on the page. The Grip Lab
+   * renders this badge inside the visual panel; an unfiled grip carries an
+   * 'unverified' claim with its explanatory note.
+   */
+  provenance: Claim<string>
   thumbRole: string
   palmGapCue: string
   releaseCue: string
   visualCaveat: string
+  /** Authored finger contacts. Empty if and only if status is 'unfiled'. */
   contacts: GripContactModel[]
 }
 
