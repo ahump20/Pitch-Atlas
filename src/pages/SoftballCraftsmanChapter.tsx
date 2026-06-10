@@ -5,9 +5,10 @@ import { SOFTBALL_CRAFTSMEN, softballCraftsmanBySlug, softballPitchBySlug } from
 import { SITE } from '../config/site'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
-import { SourcedValue, ClaimNote } from '../components/provenance/SourcedValue'
+import { ClaimNote } from '../components/provenance/SourcedValue'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
+import { RecordLinks } from '../components/provenance/RecordLinks'
 import { NotFound } from './NotFound'
 
 /*
@@ -130,22 +131,35 @@ export function SoftballCraftsmanChapter() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <StageTierMarker index="03" label="The record" />
-        <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {craftsman.biography.map((n, i) => (
-            <div key={n.label} className="border-t border-[rgba(255,255,255,0.12)] pt-3">
-              <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
-              <SourcedValue claim={n.claim} valueClassName="text-lg md:text-xl" accent={i === 0} />
+      {craftsman.record?.length ? (
+        <section className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+          <div className="pa-atmo pa-atmo-leather" aria-hidden="true" />
+          <div className="relative">
+            <StageTierMarker index="03" label="The record" />
+            <div className="flex flex-col gap-10">
+              {craftsman.record.map((c, i) => (
+                <ClaimProse
+                  key={i}
+                  claim={c}
+                  proseClassName={
+                    i === 0
+                      ? 'max-w-[58ch] text-xl leading-relaxed text-ink md:text-2xl'
+                      : 'max-w-[64ch] text-lg leading-relaxed text-ink'
+                  }
+                />
+              ))}
             </div>
-          ))}
-        </div>
-        <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-          Filed the way every record here is: each biography fact confidence-labeled and one click from its source.
-          Where a line is a teammate’s words rather than Osterman’s own, it is labeled as such, not put in her
-          mouth.
-        </p>
-      </section>
+            {craftsman.recordLinks?.length ? (
+              <RecordLinks sources={craftsman.recordLinks} className="mt-12" />
+            ) : null}
+            <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+              The record is told in prose, each claim confidence-labeled and one click from its
+              source. Where a line is a teammate’s words rather than the pitcher’s own, it is labeled
+              as such, not put in her mouth.
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       <nav aria-label="Softball craftsmen chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">

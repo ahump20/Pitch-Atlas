@@ -33,7 +33,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "wiki-satchel-paige",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "The bat-throwing batter",
         claim: claim(
@@ -81,7 +81,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "bbhof-hilton-smith",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Buck O'Neil's verdict",
         claim: secondhand(
@@ -126,7 +126,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "sabr-rube-foster",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Malarcher's description",
         claim: secondhand(
@@ -165,7 +165,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "sabr-bullet-rogan",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "No-windup, two arm slots",
         claim: claim(
@@ -210,7 +210,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "sabr-smokey-bandit",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "The line",
         claim: claim(
@@ -249,7 +249,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "wiki-chet-brewer",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Where he learned it",
         claim: claim(
@@ -288,7 +288,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "sabr-phil-cockrell",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "The 1924 on-field standoff",
         claim: claim(
@@ -329,7 +329,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "cbs-negro-leagues-2024",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "2020: major-league status restored",
         claim: claim(
@@ -378,7 +378,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "nl-redding-sabr",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Repertoire as described",
         claim: secondhand(
@@ -418,7 +418,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "nl-day-sabr",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "How the fastball read",
         claim: secondhand(
@@ -457,7 +457,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "nl-brown-sabr",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Breakout season run prevention",
         claim: claim(
@@ -497,7 +497,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "nl-bell-sabr",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Pitch mix as described",
         claim: claim(
@@ -537,7 +537,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "nl-paige-sabr-journal",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "The name's meaning",
         claim: claim(
@@ -576,7 +576,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "nl-paige-sabr-journal",
       "reputable-analysis",
     ),
-    numbers: [
+    record: [
       {
         label: "Attestation",
         claim: claim(
@@ -617,7 +617,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "reputable-analysis",
       { note: "Wikipedia relays writer Joe Posnanski's read that the differently-named pitches were essentially all fastballs; shipped as analysis, not as a confirmed mechanical inventory." },
     ),
-    numbers: [
+    record: [
       {
         label: "Claimed pitch count",
         claim: secondhand(

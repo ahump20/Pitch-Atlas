@@ -7,7 +7,6 @@ import { SITE } from '../config/site'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
-import { SourcedValue } from '../components/provenance/SourcedValue'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
 import { ClaimNote } from '../components/provenance/SourcedValue'
@@ -150,20 +149,21 @@ export function LostPitchChapter() {
         </div>
       </section>
 
-      {pitch.numbers.length > 0 ? (
-        <section>
-          <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      {pitch.record.length > 0 ? (
+        <section className="relative">
+          <div className="pa-atmo pa-atmo-seam" aria-hidden="true" />
+          <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
             <StageTierMarker index="03" label="The surviving record" />
-            <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-              {pitch.numbers.map((n, i) => (
-                <div key={n.label} className="border-t border-[rgba(255,255,255,0.12)] pt-3">
+            <div className="flex flex-col gap-10">
+              {pitch.record.map((n) => (
+                <div key={n.label}>
                   <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
-                  <SourcedValue claim={n.claim} valueClassName="text-lg md:text-xl" accent={i === 0} />
+                  <ClaimProse claim={n.claim} proseClassName="max-w-[64ch] text-lg leading-relaxed text-ink" />
                 </div>
               ))}
             </div>
             <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-              Every figure here is what the recovered record can actually support, labeled by its source
+              Every line here is what the recovered record can actually support, labeled by its source
               and its confidence. Where the legend says more than the record can prove, the gap is shown,
               not filled.
             </p>

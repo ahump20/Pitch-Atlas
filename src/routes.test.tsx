@@ -94,17 +94,21 @@ describe('The Craftsmen', () => {
     }
   })
 
-  it('renders a craftsman chapter with a sourced quote and record', async () => {
+  it('renders a craftsman chapter with a sourced quote and a prose record', async () => {
     renderRoute('/craftsmen/bob-gibson')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Bob Gibson')
     expect(screen.getByText(/about 90 percent mental/)).toBeInTheDocument()
-    expect(screen.getByText('1.12')).toBeInTheDocument()
+    // the record is told in prose, never a stat grid; the digits live behind the ledger link
+    expect(screen.getByText(/stingiest rate any starter has managed in the live-ball era/)).toBeInTheDocument()
+    expect(screen.queryByText('1.12')).not.toBeInTheDocument()
+    expect(screen.getByText(/The numbers live with the record-keepers/)).toBeInTheDocument()
   })
 
   it('renders the Wainwright chapter linked to its 12-6 specimen', async () => {
     renderRoute('/craftsmen/adam-wainwright')
     expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Adam Wainwright')
-    expect(screen.getByText('2,202')).toBeInTheDocument()
+    expect(screen.getByText(/Eighteen seasons, one uniform/)).toBeInTheDocument()
+    expect(screen.queryByText('2,202')).not.toBeInTheDocument()
     expect(screen.getByText(/Study the 12-6 curveball/)).toBeInTheDocument()
   })
 

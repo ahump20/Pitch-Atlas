@@ -218,10 +218,11 @@ export interface CanonicalPitchRecord {
 }
 
 /**
- * A career or biographical fact for a named pitcher — titles, no-hitters, strikeout
- * totals, eras. KEPT on purpose: this is real sourced biography, not invented pitch
- * behavior. It must never carry a velocity, spin-rate, or break-in-inches figure; those
- * are the fabricated-movement numbers this product removed.
+ * A labeled, sourced historical fact (lost-pitches record entries). The claim value
+ * is a full prose sentence, never a bare figure — the record is told as a story, and
+ * the digits live with the record-keepers via outbound links. It must never carry a
+ * velocity, spin-rate, or break-in-inches figure; those are the fabricated-movement
+ * numbers this product removed.
  */
 export interface BiographyFact {
   label: string
@@ -398,8 +399,15 @@ export interface Craftsman {
   signature: Claim<string>
   /** The competitive / psychological edge: how they thought about pitching. Sourced. Omitted for a legend. */
   mentalEdge?: Claim<string>
-  /** Sourced career biography. Never movement/spin/velocity metrics. */
-  biography: BiographyFact[]
+  /**
+   * The career record, told as era-led prose — one short sourced paragraph per claim,
+   * never a stat grid. This page does not print analytics readouts; the digits live
+   * with the record-keepers via `recordLinks`. Never movement/spin/velocity metrics.
+   * Omitted for a legend (the gyroball has no career).
+   */
+  record?: Claim<string>[]
+  /** Outbound "full record" ledgers (e.g. the Baseball-Reference player page). */
+  recordLinks?: Source[]
   /** A real, verbatim, sourced quote. Present only when one was actually found. */
   quote?: Claim<string>
   /** Legend only (the gyroball): the myth-versus-physics note. Flagged, never fact. */
@@ -522,8 +530,11 @@ export interface LostPitch {
   what: Claim<string>
   /** Why the technique is lost or unrecoverable. Sourced or reputable-analysis. */
   whyLost: Claim<string>
-  /** Sourced facts and figures. Kept for record/history, never movement gauges. */
-  numbers: BiographyFact[]
+  /**
+   * The surviving record: labeled, sourced prose facts. Told as story, never a
+   * stat grid, and never movement gauges.
+   */
+  record: BiographyFact[]
   /** A real, verbatim, sourced quote. Present only when one was actually found. */
   quote?: Claim<string>
   rights: RightsStatus

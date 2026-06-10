@@ -29,6 +29,10 @@ const RETRIEVED_5 = '2026-06-06'
 // of" line honest about the newest check without backdating the baseball wings.
 const RETRIEVED_6 = '2026-06-07'
 
+// The craftsmen "full record" outbound ledgers (Baseball-Reference player pages)
+// were curl-verified in the 2026-06-10 craft-over-numbers pass.
+const RETRIEVED_7 = '2026-06-10'
+
 export const SOURCES = {
   'mlb-active-spin': {
     id: 'mlb-active-spin',
@@ -1748,6 +1752,64 @@ export const SOURCES = {
     label: 'BVM Sports — Teagan Kavan on her five-pitch arsenal (rise ball primary, change, drop)',
     url: 'https://bvmsports.com/2026/05/21/texas-softball-pitcher-teagan-kavan-on-her-5-pitch-arsenal-nike-getting-called-out-by-her-coach/',
     retrievedAt: RETRIEVED_6,
+  },
+
+  /* ── the full-record ledgers (craftsmen recordLinks) ──
+     The atlas tells the record in prose; the digits live with the record-keepers.
+     Every URL below was curl-verified 200 on the retrieval date. */
+  'bref-gibson': {
+    id: 'bref-gibson',
+    label: 'Baseball-Reference, Bob Gibson — the full record',
+    url: 'https://www.baseball-reference.com/players/g/gibsobo01.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-ryan': {
+    id: 'bref-ryan',
+    label: 'Baseball-Reference, Nolan Ryan — the full record',
+    url: 'https://www.baseball-reference.com/players/r/ryanno01.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-clemens': {
+    id: 'bref-clemens',
+    label: 'Baseball-Reference, Roger Clemens — the full record',
+    url: 'https://www.baseball-reference.com/players/c/clemero02.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-maddux': {
+    id: 'bref-maddux',
+    label: 'Baseball-Reference, Greg Maddux — the full record',
+    url: 'https://www.baseball-reference.com/players/m/maddugr01.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-santana': {
+    id: 'bref-santana',
+    label: 'Baseball-Reference, Johan Santana — the full record',
+    url: 'https://www.baseball-reference.com/players/s/santajo02.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-skenes': {
+    id: 'bref-skenes',
+    label: 'Baseball-Reference, Paul Skenes — the full record',
+    url: 'https://www.baseball-reference.com/players/s/skenepa01.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-niekro': {
+    id: 'bref-niekro',
+    label: 'Baseball-Reference, Phil Niekro — the full record',
+    url: 'https://www.baseball-reference.com/players/n/niekrph01.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-hubbell': {
+    id: 'bref-hubbell',
+    label: 'Baseball-Reference, Carl Hubbell — the full record',
+    url: 'https://www.baseball-reference.com/players/h/hubbeca01.shtml',
+    retrievedAt: RETRIEVED_7,
+  },
+  'bref-hamels': {
+    id: 'bref-hamels',
+    label: 'Baseball-Reference, Cole Hamels — the full record',
+    url: 'https://www.baseball-reference.com/players/h/hamelco01.shtml',
+    retrievedAt: RETRIEVED_7,
   },
 } satisfies Record<string, Source>
 

@@ -6,10 +6,10 @@ import { pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
-import { SourcedValue } from '../components/provenance/SourcedValue'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
 import { ClaimNote } from '../components/provenance/SourcedValue'
+import { RecordLinks } from '../components/provenance/RecordLinks'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { NotFound } from './NotFound'
 
@@ -189,22 +189,35 @@ export function CraftsmanChapter() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <StageTierMarker index={isLegend ? '04' : '03'} label="The record" />
-        <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {craftsman.biography.map((n, i) => (
-            <div key={n.label} className="border-t border-[rgba(255,255,255,0.12)] pt-3">
-              <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
-              <SourcedValue claim={n.claim} valueClassName="text-lg md:text-xl" accent={i === 0} />
+      {craftsman.record?.length ? (
+        <section className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+          <div className="pa-atmo pa-atmo-leather" aria-hidden="true" />
+          <div className="relative">
+            <StageTierMarker index={isLegend ? '04' : '03'} label="The record" />
+            <div className="flex flex-col gap-10">
+              {craftsman.record.map((c, i) => (
+                <ClaimProse
+                  key={i}
+                  claim={c}
+                  proseClassName={
+                    i === 0
+                      ? 'max-w-[58ch] text-xl leading-relaxed text-ink md:text-2xl'
+                      : 'max-w-[64ch] text-lg leading-relaxed text-ink'
+                  }
+                />
+              ))}
             </div>
-          ))}
-        </div>
-        <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
-          Filed the way every record here is: each biography fact is confidence-labeled
-          and one click from its source. Where reputation and record disagree, the gap is shown, not
-          smoothed over.
-        </p>
-      </section>
+            {craftsman.recordLinks?.length ? (
+              <RecordLinks sources={craftsman.recordLinks} className="mt-12" />
+            ) : null}
+            <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+              The record is told here the way the rest of the atlas is told: in prose, each claim
+              confidence-labeled and one click from its source. Where reputation and record disagree,
+              the gap is shown, not smoothed over.
+            </p>
+          </div>
+        </section>
+      ) : null}
 
       <ChapterNav prev={prev} next={next} />
     </>

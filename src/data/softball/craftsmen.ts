@@ -1,5 +1,5 @@
 import type { Craftsman } from '../types'
-import { claim, secondhand } from '../sources'
+import { claim, secondhand, src } from '../sources'
 
 /*
   The Softball Craftsmen — the arms that defined fastpitch from inside the circle.
@@ -45,48 +45,24 @@ const catOsterman: Craftsman = {
     'cat-si-2021',
     'Her catcher, Gwen Svekis, to Sports Illustrated (2021), on the belief behind Osterman’s command. A teammate’s characterization, kept as such rather than put in Osterman’s own mouth.',
   ),
-  biography: [
-    {
-      label: 'Career ERA (Texas, 2002-06)',
-      claim: claim('0.51', 'cat-wikipedia', 'reputable-analysis', {
-        note: 'A University of Texas career record, over five seasons in the circle.',
-      }),
-    },
-    {
-      label: 'NCAA Division I strikeout ratio',
-      claim: claim('14.34 per 7 (record)', 'cat-wikipedia', 'reputable-analysis', {
-        note: 'The NCAA Division I career record for strikeouts per seven innings.',
-      }),
-    },
-    {
-      label: 'Career record (Texas)',
-      claim: claim('136-25', 'cat-wikipedia', 'reputable-analysis', {
-        note: 'With 2,265 strikeouts — a UT career record.',
-      }),
-    },
-    {
-      label: 'Shutouts / no-hitters (Texas)',
-      claim: claim('85 shutouts, 20 no-hitters', 'cat-wikipedia', 'reputable-analysis'),
-    },
-    {
-      label: 'USA Softball National Player of the Year',
-      claim: claim('3× (2003, 2005, 2006)', 'cat-wikipedia', 'reputable-analysis', {
-        note: 'The only individual ever to win the award three times.',
-      }),
-    },
-    {
-      label: 'Olympic medals',
-      claim: claim('Gold 2004, Silver 2008 & 2020', 'cat-wikipedia', 'reputable-analysis', {
-        note: 'A career Olympic record of 7-1; in 2004 she was the youngest member and only collegian on the gold-medal team.',
-      }),
-    },
-    {
-      label: 'How she won',
-      claim: claim('Location and movement, not speed', 'cat-d1softball-spinmaster', 'reputable-analysis', {
-        note: 'She did not win by raw power; the out pitch was where she put it, not how hard she threw it.',
-      }),
-    },
+  record: [
+    claim(
+      'Five seasons in the Texas circle left the program record book mostly hers: a career run-prevention mark no Longhorn has touched, a strikeout-per-inning rate that still stands as the Division I career record, and eighty-five shutouts — twenty of them no-hitters.',
+      'cat-wikipedia',
+      'reputable-analysis',
+    ),
+    claim(
+      'USA Softball named her the national player of the year three times, which nobody else has done once more than twice. The Olympic file runs from gold in Athens, where she was the youngest arm on the roster, to silver in Tokyo at thirty-eight, after coming out of retirement to get it.',
+      'cat-wikipedia',
+      'reputable-analysis',
+    ),
+    claim(
+      'None of it ran on speed. The analysts called her the spin master because the out pitch was where she put it, not how hard it arrived.',
+      'cat-d1softball-spinmaster',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('cat-wikipedia')],
   rights: 'original',
 }
 
@@ -114,13 +90,24 @@ const lisaFernandez: Craftsman = {
     'sb-fernandez-wikipedia',
     'reputable-analysis',
   ),
-  biography: [
-    { label: 'Olympic gold medals', claim: claim('3 (1996, 2000, 2004)', 'sb-fernandez-wikipedia', 'reputable-analysis', { note: 'Gold at the first three Olympic softball tournaments.' }) },
-    { label: 'Olympic single-game strikeouts', claim: claim('25 (record)', 'sb-fernandez-olympics', 'reputable-analysis') },
-    { label: 'Olympic batting average', claim: claim('.545 (record)', 'sb-fernandez-olympics', 'reputable-analysis', { note: 'A two-way star: the highest batting average in Olympic softball play.' }) },
-    { label: 'UCLA', claim: claim('2× national champion, 4× first-team All-American', 'sb-fernandez-wikipedia', 'reputable-analysis', { note: 'Still holds UCLA career records for shutouts, WHIP, and winning percentage.' }) },
-    { label: 'Olympic record', claim: claim('7-2', 'sb-fernandez-wikipedia', 'reputable-analysis', { note: 'Six runs allowed over 74.2 Olympic innings, with 93 strikeouts.' }) },
+  record: [
+    claim(
+      'Gold at the first three Olympic softball tournaments, and she finished every one of those gold-medal games herself — the save in 1996, the extra-inning shutout in 2000, the clincher in 2004.',
+      'sb-fernandez-wikipedia',
+      'reputable-analysis',
+    ),
+    claim(
+      'The Olympic single-game strikeout record is hers, twenty-five in one game, and so is the Olympic batting record — she hit better than half the time while she pitched her team to gold. Nobody has owned both sides of a tournament like that.',
+      'sb-fernandez-olympics',
+      'reputable-analysis',
+    ),
+    claim(
+      'At UCLA: two national championships, four first-team All-American seasons, and career marks for shutouts and winning that still lead the Bruin book.',
+      'sb-fernandez-wikipedia',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('sb-fernandez-wikipedia')],
   rights: 'original',
 }
 
@@ -147,13 +134,19 @@ const jennieFinch: Craftsman = {
     'sb-finch-wikipedia',
     'reputable-analysis',
   ),
-  biography: [
-    { label: 'Consecutive wins (NCAA record)', claim: claim('60', 'sb-finch-wikipedia', 'reputable-analysis') },
-    { label: 'Arizona career record', claim: claim('119-16', 'sb-finch-wikipedia', 'reputable-analysis', { note: 'Plus a .301 average and 50 home runs — a two-way contributor.' }) },
-    { label: 'Olympic medals', claim: claim('Gold 2004, Silver 2008', 'sb-finch-wikipedia', 'reputable-analysis') },
-    { label: '2004 Olympics', claim: claim('2-0, 13 K, 1 hit, 0 runs (8 IP)', 'sb-finch-wikipedia', 'reputable-analysis') },
-    { label: 'WCWS title', claim: claim('2001 (Arizona)', 'sb-finch-wikipedia', 'reputable-analysis', { note: 'National Softball Hall of Fame inductee.' }) },
+  record: [
+    claim(
+      'Sixty consecutive wins at Arizona, still the NCAA record, with the 2001 national championship in the middle of the streak — and fifty home runs of her own on the other side of the ball.',
+      'sb-finch-wikipedia',
+      'reputable-analysis',
+    ),
+    claim(
+      'At the 2004 Olympics she won both her starts, allowed one hit and no runs across them, and came home with gold. Silver followed in 2008, and the National Softball Hall of Fame after that.',
+      'sb-finch-wikipedia',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('sb-finch-wikipedia')],
   rights: 'original',
 }
 
@@ -181,12 +174,19 @@ const monicaAbbott: Craftsman = {
     'sb-abbott-mlb-million',
     'reputable-analysis',
   ),
-  biography: [
-    { label: 'NCAA career strikeouts', claim: claim('2,440 (record)', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'With a single-season record of 724, plus 23 no-hitters and 6 perfect games as a senior.' }) },
-    { label: 'NCAA career wins', claim: claim('189 (record)', 'sb-abbott-wikipedia', 'reputable-analysis', { note: 'Also NCAA records for shutouts (112) and innings pitched (1,448).' }) },
-    { label: 'Professional milestone', claim: claim('First million-dollar NPF player', 'sb-abbott-mlb-million', 'reputable-analysis') },
-    { label: 'Olympic medals', claim: claim('Silver 2008 & 2020', 'sb-abbott-wikipedia', 'reputable-analysis') },
+  record: [
+    claim(
+      'The Division I career record book is mostly hers — wins, strikeouts, shutouts, and innings, all set at Tennessee — with a senior season that ran past seven hundred strikeouts on its own. Two Olympic silvers, 2008 and 2020, bracket a career that bridged the sport’s removal from and return to the Games.',
+      'sb-abbott-wikipedia',
+      'reputable-analysis',
+    ),
+    claim(
+      'The first million-dollar contract in professional fastpitch was hers, and she remains the most decorated pitcher the pro league produced.',
+      'sb-abbott-mlb-million',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('sb-abbott-wikipedia')],
   rights: 'original',
 }
 
@@ -219,13 +219,19 @@ const niJareeCanady: Craftsman = {
     'sb-canady-espn',
     'How a figure in the sport described Canady to ESPN, on her becoming college softball’s first million-dollar player. A characterization, kept as such.',
   ),
-  biography: [
-    { label: '2025 ERA (led nation)', claim: claim('0.97', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'On a 34-7 record with 317 strikeouts (second nationally).' }) },
-    { label: 'NIL deal', claim: claim('$1M, then $1.2M', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'The richest in college softball history — college softball’s first million-dollar player.' }) },
-    { label: 'NFCA National Pitcher of the Year', claim: claim('2024 & 2025', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'Back-to-back; also 2025 Big 12 Pitcher of the Year and Big 12 Athlete of the Year.' }) },
-    { label: 'Texas Tech postseason run', claim: claim('686 consecutive pitches', 'sb-canady-wikipedia', 'reputable-analysis', { note: 'From the start of Super Regionals to the WCWS finals, where Texas Tech — in its first-ever WCWS — fell to Texas.' }) },
-    { label: '2025 signature pitch', claim: claim('A power riseball', 'sb-canady-ncaa-top10', 'reputable-analysis', { note: 'NCAA.com’s scouting ranked it among the best riseballs in the college game.' }) },
+  record: [
+    claim(
+      'In 2025 she led the nation in run prevention while carrying Texas Tech, in its first trip, to the Women’s College World Series finals — and from the start of Super Regionals to elimination she threw every pitch the staff needed, six hundred eighty-six of them in a row. National pitcher of the year twice running, 2024 and 2025.',
+      'sb-canady-wikipedia',
+      'reputable-analysis',
+    ),
+    claim(
+      'The deal that brought her to Lubbock made her college softball’s first million-dollar player — the richest commitment the sport had seen — and the riseball made the money look conservative.',
+      'sb-canady-wikipedia',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('sb-canady-wikipedia')],
   rights: 'original',
 }
 
@@ -252,14 +258,24 @@ const teaganKavan: Craftsman = {
     'sb-kavan-wbsc-2026',
     'reputable-analysis',
   ),
-  biography: [
-    { label: 'National championships', claim: claim('Back-to-back (2025, 2026)', 'sb-kavan-ncaa-2026', 'reputable-analysis', { note: 'Texas’s first-ever title in 2025, then a repeat over Texas Tech in 2026 — the same in-state final two years running.' }) },
-    { label: 'WCWS Most Outstanding Player', claim: claim('2× (2025 & 2026) — first ever', 'sb-kavan-wbsc-2026', 'reputable-analysis', { note: 'The first two-time Most Outstanding Player in Women’s College World Series history.' }) },
-    { label: '2025 WCWS scoreless streak', claim: claim('31.2 innings (record)', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'A WCWS record, breaking the previous mark of 27.2 set in 1994.' }) },
-    { label: '2025 season', claim: claim('28-5, 2.16 ERA, 230 K', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'Over 207 innings, with 18 complete games and 5 shutouts.' }) },
-    { label: '2026 WCWS', claim: claim('4-1, 1.47 ERA, 30 K (33.1 IP)', 'sb-kavan-ncaa-2026', 'reputable-analysis', { note: 'A complete game in the opener, then a relief close to clinch the repeat.' }) },
-    { label: 'Freshman season (2024)', claim: claim('20 wins, Big 12 Freshman of the Year', 'sb-kavan-wikipedia', 'reputable-analysis', { note: 'The most wins by a Texas freshman since 2010.' }) },
+  record: [
+    claim(
+      'Back-to-back national championships — Texas’s first ever in 2025, then the repeat in 2026, both finals against Texas Tech, the same in-state showdown two Junes running. In the 2026 series she threw a complete game in the opener and came back in relief to close the clincher.',
+      'sb-kavan-ncaa-2026',
+      'reputable-analysis',
+    ),
+    claim(
+      'She is the first player ever named Women’s College World Series Most Outstanding Player twice.',
+      'sb-kavan-wbsc-2026',
+      'reputable-analysis',
+    ),
+    claim(
+      'The 2025 title run included a scoreless streak across Oklahoma City long enough to break a Series record that had stood since 1994 — and it started in a freshman year that had already produced more wins than any Texas freshman since 2010.',
+      'sb-kavan-wikipedia',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('sb-kavan-wikipedia')],
   rights: 'original',
 }
 

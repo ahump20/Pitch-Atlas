@@ -1,5 +1,5 @@
 import type { Craftsman } from '../types'
-import { claim, secondhand } from '../sources'
+import { claim, secondhand, src } from '../sources'
 
 /*
   The Craftsmen wing. Six arms who defined a pitch, plus one pitch that is a
@@ -42,13 +42,19 @@ const gibson: Craftsman = {
     // of him saying it — so the label is the source's tier, not the speaker's.
     'secondhand-attributed',
   ),
-  biography: [
-    { label: 'ERA (1968)', claim: claim('1.12', 'gibson-hof-1968', 'official-data', { note: 'The lowest live-ball-era ERA for a qualifier; it helped trigger the mound being lowered for 1969.' }) },
-    { label: 'Record (1968)', claim: claim('22-9', 'gibson-hof-1968', 'official-data') },
-    { label: 'Strikeouts (1968)', claim: claim('268', 'gibson-hof-1968', 'official-data') },
-    { label: 'Shutouts (1968)', claim: claim('13', 'gibson-hof-1968', 'official-data') },
-    { label: 'World Series Game 1 K (1968)', claim: claim('17', 'gibson-cbs-backup', 'official-data', { note: 'A single-game World Series record, vs. Detroit; the last strikeout came on the back-up slider.' }) },
+  record: [
+    claim(
+      'The summer of 1968 is the file. He allowed earned runs at the stingiest rate any starter has managed in the live-ball era, won twenty-two games and finished thirteen of them as shutouts, and was so thoroughly unhittable that the league lowered the mound the following spring — partly because of him.',
+      'gibson-hof-1968',
+      'official-data',
+    ),
+    claim(
+      'That October he opened the World Series by striking out seventeen Tigers, still the record for a single Series game, and froze Willie Horton on the back-up slider for the last of them.',
+      'gibson-cbs-backup',
+      'official-data',
+    ),
   ],
+  recordLinks: [src('bref-gibson')],
   rights: 'original',
 }
 
@@ -81,13 +87,19 @@ const ryan: Craftsman = {
     'pitcher-own-words',
     { note: 'To Tony Kornheiser, on his conviction-first approach.' },
   ),
-  biography: [
-    { label: 'Career strikeouts', claim: claim('5,714', 'ryan-hof', 'official-data', { note: 'The MLB record, 839 ahead of the runner-up.' }) },
-    { label: 'No-hitters', claim: claim('7', 'ryan-hof', 'official-data', { note: 'The MLB record; the seventh came at age 44.' }) },
-    { label: 'Seasons pitched', claim: claim('27', 'ryan-hof', 'official-data', { note: '1966 to 1993.' }) },
-    { label: 'Career record', claim: claim('324-292', 'ryan-almanac', 'official-data') },
-    { label: 'Career walks', claim: claim('2,795', 'ryan-almanac', 'official-data', { note: 'Also the MLB record: the trade-off of never throwing to contact.' }) },
+  record: [
+    claim(
+      'Nobody has struck out more hitters, and nobody is close — the career total sits more than eight hundred clear of the runner-up, piled up across twenty-seven seasons from 1966 to 1993. The seven no-hitters are also the record. The seventh came at forty-four.',
+      'ryan-hof',
+      'official-data',
+    ),
+    claim(
+      'The same refusal that built the strikeout record built the walk record: he holds the career mark for both, the cost of three decades of never giving a hitter the pitch he wanted.',
+      'ryan-almanac',
+      'official-data',
+    ),
   ],
+  recordLinks: [src('bref-ryan')],
   rights: 'original',
 }
 
@@ -120,13 +132,24 @@ const clemens: Craftsman = {
     'pitcher-own-words',
     { note: 'Said in 1990 with the Red Sox, on his game-day persona.' },
   ),
-  biography: [
-    { label: 'Career wins', claim: claim('354', 'clemens-wiki', 'official-data') },
-    { label: 'Career strikeouts', claim: claim('4,672', 'clemens-wiki', 'official-data') },
-    { label: 'Cy Young Awards', claim: claim('7', 'clemens-wiki', 'official-data', { note: '1986, 1987, 1991, 1997, 1998, 2001, 2004. A record.' }) },
-    { label: '20-K game, April 29, 1986', claim: claim('20 K, 0 BB, vs. Seattle', 'clemens-sabr-1986', 'official-data', { note: 'The first nine-inning 20-strikeout game in MLB history.' }) },
-    { label: '20-K game, Sept 18, 1996', claim: claim('20 K, 0 BB, vs. Detroit', 'clemens-mlb-1996', 'official-data', { note: 'Tied his own record; his last win in a Red Sox uniform.' }) },
+  record: [
+    claim(
+      'Seven Cy Young Awards, still the record — the first in 1986, the last in 2004, a span long enough to be two careers. The win and strikeout totals underneath them rank with the deepest the game has recorded.',
+      'clemens-wiki',
+      'official-data',
+    ),
+    claim(
+      'The first twenty-strikeout game ever pitched in nine innings was his: April 29, 1986, against Seattle, without walking a man.',
+      'clemens-sabr-1986',
+      'official-data',
+    ),
+    claim(
+      'A decade later he did it again — September 18, 1996, in Detroit, his last win in a Red Sox uniform. He is still the only pitcher with two.',
+      'clemens-mlb-1996',
+      'official-data',
+    ),
   ],
+  recordLinks: [src('bref-clemens')],
   rights: 'original',
 }
 
@@ -158,13 +181,19 @@ const maddux: Craftsman = {
     'pitcher-own-words',
     { note: 'To Thomas Boswell, originally in his January 7, 2014 Washington Post column; confirmed verbatim at two reachable reproductions.' },
   ),
-  biography: [
-    { label: 'Career wins', claim: claim('355', 'maddux-wiki', 'reputable-analysis') },
-    { label: 'Career ERA', claim: claim('3.16', 'maddux-wiki', 'reputable-analysis') },
-    { label: 'Career strikeouts', claim: claim('3,371', 'maddux-wiki', 'reputable-analysis', { note: 'On a fastball that, late in his career, traded power for placement.' }) },
-    { label: 'Cy Young Awards', claim: claim('4 (consecutive)', 'maddux-wiki', 'reputable-analysis', { note: '1992 through 1995, a feat matched by only one other pitcher.' }) },
-    { label: 'Gold Gloves', claim: claim('18', 'maddux-wiki', 'reputable-analysis', { note: 'The most by any player at any position.' }) },
+  record: [
+    claim(
+      'Four Cy Young Awards in a row, 1992 through 1995, a run only one other pitcher has matched — and he won them in the loudest hitting era of the modern game, on placement rather than power. The career wins cleared three hundred fifty; the strikeouts cleared three thousand; the walks never came.',
+      'maddux-wiki',
+      'reputable-analysis',
+    ),
+    claim(
+      'Eighteen Gold Gloves, the most by any player at any position. The fielding was the same craft as the pitching: one motion, finished balanced, ready for what came back.',
+      'maddux-wiki',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('bref-maddux')],
   rights: 'original',
 }
 
@@ -196,9 +225,14 @@ const skenes: Craftsman = {
     'skenes-mlb-confidence',
     'pitcher-own-words',
   ),
-  biography: [
-    { label: 'NL Rookie of the Year', claim: claim('2024', 'skenes-mlb-arsenal', 'official-data', { note: 'In his debut season, after reaching the majors that spring.' }) },
+  record: [
+    claim(
+      'He reached the majors in the spring of 2024 and was the National League Rookie of the Year by fall — the record so far is short because the career is, and the splinker is the reason everyone expects the file to grow.',
+      'skenes-mlb-arsenal',
+      'official-data',
+    ),
   ],
+  recordLinks: [src('bref-skenes')],
   rights: 'original',
 }
 
@@ -231,11 +265,14 @@ const santana: Craftsman = {
     'pitcher-own-words',
     { note: 'On developing the changeup at Triple-A Edmonton in 2002.' },
   ),
-  biography: [
-    { label: 'ERA (2004, unanimous Cy Young)', claim: claim('2.61', 'santana-twinsalmanac', 'reputable-analysis', { note: 'Led the majors; won the AL Cy Young unanimously.' }) },
-    { label: 'Strikeouts (2004)', claim: claim('265', 'santana-twinsalmanac', 'reputable-analysis') },
-    { label: 'ERA (2006, unanimous Cy Young)', claim: claim('2.77', 'santana-twinsalmanac', 'reputable-analysis') },
+  record: [
+    claim(
+      'Two Cy Young Awards, 2004 and 2006, both unanimous — the writers could not find a reason to split a vote either year. Both seasons he led the league in run prevention and piled up strikeouts behind a fastball nobody feared and a changeup everybody did.',
+      'santana-twinsalmanac',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('bref-santana')],
   rights: 'original',
 }
 
@@ -269,12 +306,24 @@ const wainwright: Craftsman = {
     'pitcher-own-words',
     { note: 'To ESPN, on how completely his career rested on the one pitch.' },
   ),
-  biography: [
-    { label: 'Career strikeouts', claim: claim('2,202', 'wainwright-bref', 'official-data', { note: 'All with the Cardinals; the 2,000th came on the curve in 2021.' }) },
-    { label: 'Career wins', claim: claim('200', 'wainwright-bref', 'official-data', { note: 'Plus two Gold Gloves, three All-Star selections, and four top-three Cy Young finishes, all in St. Louis.' }) },
-    { label: 'The Beltran strikeout', claim: claim('NLCS Game 7, 2006', 'wainwright-nlcs-wiki', 'reputable-analysis', { note: 'Rookie Wainwright froze Carlos Beltran on a 0-2 curve, bases loaded and two outs, to clinch the pennant and send St. Louis to the World Series.' }) },
-    { label: '2,000th strikeout', claim: claim('on the curve, 2021', 'wainwright-2000-stlredbirds', 'reputable-analysis', { note: 'The 85th pitcher to reach 2,000; with Bob Gibson, the only two to collect all 2,000 as Cardinals.' }) },
+  record: [
+    claim(
+      'Eighteen seasons, one uniform. He won two hundred games as a Cardinal and struck out more than two thousand hitters without ever throwing a pitch for anyone else — he and Bob Gibson are the only two arms to collect that many strikeouts entirely in St. Louis.',
+      'wainwright-bref',
+      'official-data',
+    ),
+    claim(
+      'The signature at-bat came first: a rookie closing Game 7 of the 2006 NLCS, bases loaded, two outs, Carlos Beltran looking — and the curveball froze him for the pennant.',
+      'wainwright-nlcs-wiki',
+      'reputable-analysis',
+    ),
+    claim(
+      'Fifteen years later, the two-thousandth strikeout came on the same pitch. The curve, again, in 2021.',
+      'wainwright-2000-stlredbirds',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('wainwright-bref')],
   rights: 'original',
 }
 
@@ -305,7 +354,6 @@ const gyroball: Craftsman = {
     'reputable-analysis',
     { note: 'Two independent tracking-era studies reached the same conclusion from different samples. Both are kept here rather than merged.' },
   ),
-  biography: [],
   rights: 'original',
 }
 
@@ -333,13 +381,19 @@ const niekro: Craftsman = {
     'reputable-analysis',
     { note: 'The "ultimate gamer" characterization is Murphy\'s, via FanGraphs; the longevity records are from Wikipedia and the Hall of Fame.' },
   ),
-  biography: [
-    { label: 'Career wins-losses', claim: claim('318-274', 'niekro-hof', 'reputable-analysis', { note: 'Confirmed by the Hall of Fame and Wikipedia.' }) },
-    { label: 'Career strikeouts', claim: claim('3,342', 'niekro-hof', 'reputable-analysis') },
-    { label: 'Innings pitched', claim: claim('5,404.1', 'niekro-wiki', 'reputable-analysis', { note: 'The most of any pitcher who started in the post-1920 live-ball era.' }) },
-    { label: 'Oldest to throw a shutout', claim: claim('46 years, 188 days', 'niekro-wiki', 'reputable-analysis', { note: 'A record until Jamie Moyer (47 years, 170 days) in May 2010.' }) },
-    { label: 'Hall of Fame', claim: claim('Inducted 1997', 'niekro-hof', 'reputable-analysis', { note: 'The only knuckleballer to win 300+ games.' }) },
+  record: [
+    claim(
+      'Three hundred wins and three thousand strikeouts on a pitch most pitchers will not trust for an inning, and a Hall of Fame induction in 1997 — he is still the only knuckleballer ever to clear three hundred.',
+      'niekro-hof',
+      'reputable-analysis',
+    ),
+    claim(
+      'Nobody who started in the live-ball era pitched more innings. At forty-six he became the oldest man ever to throw a shutout, a record that stood for nearly a quarter century until Jamie Moyer finally passed it.',
+      'niekro-wiki',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('bref-niekro')],
   quote: claim(
     "I figured if there's any way I'm going to win my 300th game by striking the guy out, I was going to do it with the pitch that won the first game for me.",
     'niekro-fangraphs',
@@ -371,13 +425,24 @@ const hubbell: Craftsman = {
     'hubbell-sabr',
     'reputable-analysis',
   ),
-  biography: [
-    { label: '1934 All-Star Game', claim: claim('5 straight strikeouts', 'hubbell-asg-sabr', 'reputable-analysis', { note: 'Ruth, Gehrig, Foxx, Simmons, and Cronin in succession, after a leadoff single and a walk left two on with nobody out.' }) },
-    { label: 'Career wins-losses', claim: claim('253-154', 'hubbell-wiki', 'reputable-analysis') },
-    { label: 'Career ERA', claim: claim('2.98', 'hubbell-hof', 'reputable-analysis') },
-    { label: 'Consecutive wins', claim: claim('24', 'hubbell-hof', 'reputable-analysis', { note: 'An all-time record, 16 in 1936 and 8 in 1937.' }) },
-    { label: 'NL MVP', claim: claim('1933 and 1936', 'hubbell-wiki', 'reputable-analysis', { note: 'In 1936 (26-6) he was the first-ever unanimous NL MVP.' }) },
+  record: [
+    claim(
+      'The 1934 All-Star Game is the legend: Ruth, Gehrig, Foxx, Simmons, and Cronin — five Hall of Famers, struck out in succession, after a single and a walk had put two men on with nobody out.',
+      'hubbell-asg-sabr',
+      'reputable-analysis',
+    ),
+    claim(
+      'The career around the legend held up its end: two MVP awards, the second of them the first unanimous MVP the National League ever produced.',
+      'hubbell-wiki',
+      'reputable-analysis',
+    ),
+    claim(
+      'Across 1936 and 1937 he won twenty-four decisions in a row, a streak no pitcher has touched since.',
+      'hubbell-hof',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('bref-hubbell')],
   quote: claim(
     "The screwball's an unnatural pitch. Nature never intended a man to turn his hand like that throwing rocks at a bear.",
     'hubbell-almanac',
@@ -409,13 +474,29 @@ const rivera: Craftsman = {
     'rivera-cbs-cutter',
     'reputable-analysis',
   ),
-  biography: [
-    { label: 'Career saves', claim: claim('652', 'rivera-hof', 'reputable-analysis', { note: 'The all-time record.' }) },
-    { label: 'Career ERA+', claim: claim('205', 'rivera-bref', 'reputable-analysis', { note: 'The best all-time among pitchers with 1,000+ innings; career ERA 2.21.' }) },
-    { label: 'Postseason ERA', claim: claim('0.70', 'rivera-wiki', 'reputable-analysis', { note: 'The lowest in MLB history, over 141 postseason innings, with 42 postseason saves.' }) },
-    { label: 'World Series titles', claim: claim('5', 'rivera-wiki', 'reputable-analysis', { note: '1996, 1998-2000, 2009; World Series MVP in 1999.' }) },
-    { label: 'Hall of Fame vote', claim: claim('425 of 425 (100%)', 'rivera-bbwaa', 'reputable-analysis', { note: 'The first player ever elected unanimously, breaking Ken Griffey Jr.\'s prior record.' }) },
+  record: [
+    claim(
+      'He retired with more saves than any pitcher who ever lived, collected across nineteen seasons of throwing one pitch the whole league knew was coming.',
+      'rivera-hof',
+      'reputable-analysis',
+    ),
+    claim(
+      'Among every arm with a thousand career innings, nobody has allowed earned runs at a stingier lifetime rate relative to his leagues.',
+      'rivera-bref',
+      'reputable-analysis',
+    ),
+    claim(
+      'October sharpened him instead of breaking him: five World Series titles, a Series MVP, and the lowest postseason run-prevention mark the game has ever recorded, held across more than a hundred and forty pressure innings.',
+      'rivera-wiki',
+      'reputable-analysis',
+    ),
+    claim(
+      'When the Hall of Fame ballot came due, every writer said yes. The first unanimous election in the history of the vote.',
+      'rivera-bbwaa',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('rivera-bref')],
   quote: claim(
     'The Lord gave it to me. Oh, the Lord. Definitely.',
     'rivera-cbs-cutter',
@@ -448,12 +529,24 @@ const hamels: Craftsman = {
     'hamels-espn-crasnick',
     'reputable-analysis',
   ),
-  biography: [
-    { label: '2008 postseason', claim: claim('4-0, 1.80 ERA', 'hamels-espn-2008', 'reputable-analysis', { note: 'Across five starts; NLCS MVP and World Series MVP, a rare double.' }) },
-    { label: 'Career strikeouts', claim: claim('2,560', 'hamels-statmuse', 'reputable-analysis') },
-    { label: 'Career wins-losses', claim: claim('163-122', 'hamels-statmuse', 'reputable-analysis', { note: 'With a 3.43 ERA over 2,698 innings.' }) },
-    { label: 'Career WAR', claim: claim('59.0', 'hamels-fangraphs-jaws', 'reputable-analysis', { note: '123 ERA+; a four-time All-Star.' }) },
+  record: [
+    claim(
+      'October 2008 is the headline: five starts, four wins, no losses, and a month so steady he took the NLCS MVP and the World Series MVP in the same postseason — a double almost nobody has managed.',
+      'hamels-espn-2008',
+      'reputable-analysis',
+    ),
+    claim(
+      'The career around the championship was long and quietly relentless: fifteen seasons and more than twenty-five hundred strikeouts, most of them set up by the same changeup.',
+      'hamels-statmuse',
+      'reputable-analysis',
+    ),
+    claim(
+      'Four All-Star selections, and run prevention comfortably better than the leagues he pitched in for a decade and a half.',
+      'hamels-fangraphs-jaws',
+      'reputable-analysis',
+    ),
   ],
+  recordLinks: [src('bref-hamels')],
   quote: claim(
     'It just rolls off my fingers.',
     'hamels-espn-crasnick',
