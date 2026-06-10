@@ -1,7 +1,8 @@
 import { useId, useMemo } from 'react'
-import { SPIN_AXIS, SEAM_VIEW_TILT, seamPoint, v, type Vec3 } from '../../lib/seam'
+import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
-import type { SeamAnchoredPoint } from '../../data/types'
+import { solveGripPose, projectSpine, type ProjectedSpine } from '../../lib/gripPose'
+import type { GripContactModel, Handedness } from '../../data/types'
 
 /*
   The 2D twin of the 3D ball, drawn from the same seam-point function. Roles:
@@ -9,8 +10,9 @@ import type { SeamAnchoredPoint } from '../../data/types'
   dissolves into. Static by design. The 3D layer owns motion; this owns truth.
   The seam is one baseball cover for every pitch; the axis line is the pitch's
   own spin axis. A gyro pitch's axis points at the viewer, so it reads as a dot.
-  When grip contacts are supplied it also lays labeled pads on the seam, so the
-  no-WebGL path still teaches where the fingers go.
+  When grip contacts are supplied it draws the same solved finger spines the 3D
+  hand sweeps — silhouettes from gripPose.ts — so the no-WebGL and reduced-motion
+  paths still teach the actual hold, never a naked ball with abstract dots.
 */
 
 const SEG = 280
@@ -18,8 +20,9 @@ const R = 86
 const CX = 120
 const CY = 120
 
-// Grip pins are powder-blue data markers, not skin (the hand is gone).
-const PIN = '#4B92DB'
+// The plaster silhouette tones — the 2D twin of the 3D specimen hand.
+const FINGER_STAGE = '#C8BEAC'
+const FINGER_PAPER = '#8A8174'
 
 export interface SeamSchematicProps {
   className?: string
@@ -29,10 +32,18 @@ export interface SeamSchematicProps {
   spinAxis?: Vec3
   /** Gyro pitch (slider): the axis points toward the viewer and reads as a red dot. */
   gyro?: boolean
-  /** Grip contacts to draw as labeled pads on the seam (the no-WebGL grip lab). */
-  grip?: SeamAnchoredPoint[]
+  /** Grip contacts to draw as solved finger silhouettes (the no-WebGL grip lab). */
+  grip?: GripContactModel[]
+  /** Which hand holds the ball; mirrors the silhouettes like the 3D hand. */
+  handedness?: Handedness
   surface?: 'paper' | 'stage'
   title?: string
+}
+
+function spinePath(points: ProjectedSpine['points']): string {
+  return points
+    .map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(2)} ${p.y.toFixed(2)}`)
+    .join(' ')
 }
 
 export function SeamSchematic({
@@ -42,6 +53,7 @@ export function SeamSchematic({
   spinAxis = SPIN_AXIS,
   gyro = false,
   grip,
+  handedness = 'right',
   surface = 'paper',
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
 }: SeamSchematicProps) {
@@ -77,20 +89,17 @@ export function SeamSchematic({
   // unnamed role="img", so the decorative case is self-describing.
   const decorative = !title
 
-  const gripDots = useMemo(() => {
-    if (!grip) return []
-    return grip.map((g) => {
-      const p = v.rotateAxis(seamPoint(g.seamT * Math.PI * 2, 1), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
-      return {
-        key: g.label,
-        label: g.label,
-        color: PIN,
-        x: CX + p.x * R,
-        y: CY - p.y * R,
-        front: p.z >= 0,
-      }
-    })
-  }, [grip])
+  // The same solver the 3D hand reads: each contact becomes a finger spine,
+  // projected through the same presentation tilt as the seam itself.
+  const fingers = useMemo(() => {
+    if (!grip || grip.length === 0) return []
+    return grip.map((g) => ({
+      label: g.label,
+      spine: projectSpine(solveGripPose(g, { handedness, samples: 20 }), CX, CY, R),
+    }))
+  }, [grip, handedness])
+
+  const fingerTone = stageSurface ? FINGER_STAGE : FINGER_PAPER
 
   return (
     <svg
@@ -144,6 +153,23 @@ export function SeamSchematic({
         </>
       ) : null}
 
+      {/* finger silhouettes behind the ball — dimmed, drawn under the seam */}
+      {fingers
+        .filter((f) => !f.spine.contact.front)
+        .map((f) => (
+          <path
+            key={`hb-${f.label}`}
+            data-grip-finger={f.label}
+            d={spinePath(f.spine.points)}
+            fill="none"
+            stroke={fingerTone}
+            strokeOpacity="0.22"
+            strokeWidth={f.spine.strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        ))}
+
       {runs
         .filter((r) => !r.front)
         .map((r, i) => (
@@ -187,26 +213,42 @@ export function SeamSchematic({
           />
         ))}
 
-      {/* grip pins — back contacts dimmed, front contacts labeled */}
-      {gripDots.map((g) => (
-        <g key={g.key} opacity={g.front ? 1 : 0.35}>
-          <circle cx={g.x} cy={g.y} r="6.5" fill="var(--color-ink)" opacity="0.18" />
-          <circle cx={g.x} cy={g.y} r="4.6" fill={g.color} stroke="var(--color-ink)" strokeOpacity="0.35" strokeWidth="0.6" />
-          {g.front ? (
-            <text
-              x={g.x}
-              y={g.y - 9}
+      {/* finger silhouettes in front of the ball — the hold itself, labeled */}
+      {fingers
+        .filter((f) => f.spine.contact.front)
+        .map((f) => (
+          <g key={`hf-${f.label}`}>
+            <path
+              data-grip-finger={f.label}
+              d={spinePath(f.spine.points)}
+              fill="none"
+              stroke={fingerTone}
+              strokeOpacity="0.92"
+              strokeWidth={f.spine.strokeWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* contact mark: where the finger meets the leather */}
+            <circle
+              cx={f.spine.contact.x}
+              cy={f.spine.contact.y}
+              r="2.6"
               fill="var(--color-ink)"
+              opacity="0.35"
+            />
+            <text
+              x={f.spine.points[0]?.x ?? f.spine.contact.x}
+              y={(f.spine.points[0]?.y ?? f.spine.contact.y) - 9}
+              fill={stageSurface ? 'var(--color-bone)' : 'var(--color-ink)'}
               fontFamily="var(--font-mono)"
               fontSize="7.5"
               letterSpacing="0.8"
               textAnchor="middle"
             >
-              {g.label.toUpperCase()}
+              {f.label.toUpperCase()}
             </text>
-          ) : null}
-        </g>
-      ))}
+          </g>
+        ))}
     </svg>
   )
 }
