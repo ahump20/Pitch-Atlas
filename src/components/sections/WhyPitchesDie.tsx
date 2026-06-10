@@ -61,7 +61,7 @@ function SourceLinks({ claims }: { claims: Claim<string>[] }) {
         <li key={i} className="text-xs leading-snug text-ink-3">
           <ConfidenceLabel confidence={c.confidence} className="mr-2" />
           {c.source ? (
-            <a href={c.source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-cyan hover:underline">
+            <a href={c.source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-seam hover:underline">
               {c.source.label}
             </a>
           ) : null}
@@ -74,10 +74,10 @@ function SourceLinks({ claims }: { claims: Claim<string>[] }) {
 
 export function WhyPitchesDie() {
   return (
-    <section className="border-t border-[rgba(255,255,255,0.12)]">
+    <section className="border-t border-ink/15">
       <div className="mx-auto max-w-4xl px-5 py-16 md:px-8 md:py-20">
         <p className="rfx-skick">The through-line</p>
-        <h2 className="rfx-stitle mt-2 text-3xl leading-tight text-bone md:text-4xl">Why pitches die.</h2>
+        <h2 className="rfx-stitle mt-2 text-3xl leading-tight md:text-4xl">Why pitches die.</h2>
         <p className="mt-4 max-w-[68ch] text-base leading-relaxed text-ink-2">
           An archive of lost pitches is really an archive of how pitches get lost. Four forces take a pitch
           out of the game — and the entries below are what each one left behind.
@@ -90,7 +90,7 @@ export function WhyPitchesDie() {
                 <span className="mono-label text-seam">{f.era}</span>
               </div>
               <div>
-                <h3 className="font-athletic uppercase text-xl text-bone">{f.heading}</h3>
+                <h3 className="font-athletic uppercase text-xl text-ink">{f.heading}</h3>
                 <p className="mt-2 max-w-[64ch] text-base leading-relaxed text-ink">{f.body}</p>
                 <SourceLinks claims={f.claims} />
               </div>

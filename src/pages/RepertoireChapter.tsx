@@ -33,13 +33,14 @@ const FAMILY_EYEBROW: Record<RepertoireFamily, string> = {
 }
 
 const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  // collegiate jewel lifts on the charcoal — pennant navy, varsity forest,
-  // letterman burgundy, pack gold, seam. The neon triads stay on the card faces.
-  fastball: '#5C84B8',
-  offspeed: '#5FA27B',
-  breaking: '#B0606C',
-  specialty: '#E9C97A',
-  banned: '#E04A5A',
+  // collegiate jewels printed at ink density for the cream field — pennant
+  // navy, varsity forest, letterman burgundy, sand, seam. The neon triads
+  // stay on the card faces.
+  fastball: '#2C5A8C',
+  offspeed: '#2F5D46',
+  breaking: '#6E2B35',
+  specialty: '#8A6B24',
+  banned: '#A8232F',
 }
 
 function HeroBadge({ entry }: { entry: RepertoireEntry }) {
@@ -47,7 +48,7 @@ function HeroBadge({ entry }: { entry: RepertoireEntry }) {
   return (
     <span
       className={`inline-flex items-center gap-2 rounded-sm border px-4 py-2 font-mono text-xs uppercase tracking-[0.12em] ${
-        flagged ? 'border-seam/50 text-seam' : 'border-bone/25 text-bone'
+        flagged ? 'border-seam/50 text-seam' : 'border-ink/30 text-ink'
       }`}
     >
       {STATUS_LABEL[entry.status]}
@@ -57,34 +58,34 @@ function HeroBadge({ entry }: { entry: RepertoireEntry }) {
 
 function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireEntry }) {
   return (
-    <nav aria-label="Pitch index chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
+    <nav aria-label="Pitch index chapters" className="border-t border-ink/15 bg-paper-2">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
         <div className="md:justify-self-start">
           {prev ? (
             <Link
               to={`/repertoire/${prev.id}`}
-              className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-cyan/40 px-4 py-3 transition-colors hover:border-l-cyan"
+              className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-seam/40 px-4 py-3 transition-colors hover:border-l-seam"
             >
               <span className="mono-label text-ink-3">← Previous</span>
-              <span className="font-athletic text-lg uppercase text-bone">{prev.name}</span>
+              <span className="font-athletic text-lg uppercase text-ink">{prev.name}</span>
             </Link>
           ) : null}
         </div>
         <Link
           to="/repertoire"
-          className="flex flex-col items-center justify-center gap-1 rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center"
+          className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-seam md:justify-self-center"
         >
-          <span className="mono-label text-cyan">The Pitch Index</span>
+          <span className="mono-label text-seam">The Pitch Index</span>
           <span className="text-sm leading-snug text-ink-2">Back to every pitch →</span>
         </Link>
         <div className="md:justify-self-end">
           {next ? (
             <Link
               to={`/repertoire/${next.id}`}
-              className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-cyan/40 px-4 py-3 text-right transition-colors hover:border-r-cyan"
+              className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-seam/40 px-4 py-3 text-right transition-colors hover:border-r-seam"
             >
               <span className="mono-label text-ink-3">Next →</span>
-              <span className="font-athletic text-lg uppercase text-bone">{next.name}</span>
+              <span className="font-athletic text-lg uppercase text-ink">{next.name}</span>
             </Link>
           ) : null}
         </div>
@@ -118,7 +119,7 @@ export function RepertoireChapter() {
   if (redirectSlug) return <Navigate to={`/pitch/${redirectSlug}`} replace />
   if (!entry) return <NotFound />
 
-  const accentColor = isEdgeStatus(entry.status) ? '#FF2D44' : FAMILY_ACCENT[entry.family]
+  const accentColor = isEdgeStatus(entry.status) ? '#C8102E' : FAMILY_ACCENT[entry.family]
   const gripEntry = gripEntryFor(entry.id)
   const subParts = [
     entry.aka && entry.aka.length > 0 ? `aka ${entry.aka.join(' · ')}` : null,
@@ -179,8 +180,11 @@ export function RepertoireChapter() {
       </section>
 
       {gripEntry ? (
-        <div className="mx-auto max-w-6xl px-5 md:px-8">
-          <SpecimenGrips entry={gripEntry} accentColor={accentColor} className="border-t-0 pt-0" />
+        /* grip footage is viewed in the dark — the one coal band on the basic file */
+        <div className="scene-coal">
+          <div className="mx-auto max-w-6xl px-5 md:px-8">
+            <SpecimenGrips entry={gripEntry} accentColor={accentColor} className="border-t-0 pt-0" />
+          </div>
         </div>
       ) : null}
 
@@ -210,7 +214,7 @@ export function RepertoireChapter() {
 
       {entry.notableThrowers ? (
         <section className="mx-auto max-w-6xl px-5 pb-4 md:px-8">
-          <p className="max-w-[64ch] border-t border-[rgba(255,255,255,0.12)] pt-5 text-base leading-relaxed text-ink-2">
+          <p className="max-w-[64ch] border-t border-ink/15 pt-5 text-base leading-relaxed text-ink-2">
             <span className="mono-label mr-2 text-ink-3">Who throws it</span>
             {entry.notableThrowers}
           </p>
@@ -219,7 +223,7 @@ export function RepertoireChapter() {
 
       {/* The honest marker: this is a basic file, not a measured specimen. */}
       <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
-        <div className="rfx-panel rounded-sm border border-dashed border-seam/35 px-6 py-5">
+        <div className="rounded-sm border border-dashed border-seam/45 bg-paper-2 px-6 py-5">
           <p className="mono-label mb-2 text-seam">Basic file</p>
           <p className="max-w-[72ch] text-sm leading-relaxed text-ink-2">
             This pitch has a sourced one-line grip and movement and an honest explanation — not yet a filed

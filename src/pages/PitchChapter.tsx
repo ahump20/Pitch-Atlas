@@ -185,7 +185,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         <div
           className="mt-[18px] rounded-2xl p-4"
           style={{
-            background: `linear-gradient(145deg, color-mix(in srgb, ${accentColor} 18%, #0a0810), #070510)`,
+            background: `linear-gradient(145deg, color-mix(in srgb, ${accentColor} 18%, #0B0805), #070503)`,
             border: `1px solid color-mix(in srgb, ${accentColor} 26%, transparent)`,
             boxShadow: `inset 0 1px 0 color-mix(in srgb, ${accentColor} 22%, transparent)`,
           }}
@@ -337,7 +337,7 @@ function GripLabSection({ entry, accentColor }: { entry: PitchAtlasEntry; accent
                     onPointerEnter={() => setActiveContact(c.label)}
                     onPointerLeave={() => setActiveContact(undefined)}
                     className="rounded-lg border px-2.5 py-1.5 text-left font-mono text-[9px] uppercase tracking-[0.06em] text-bone-2 transition-colors"
-                    style={{ background: '#08060e', borderColor: `color-mix(in srgb, ${accentColor} 30%, transparent)` }}
+                    style={{ background: '#14100A', borderColor: `color-mix(in srgb, ${accentColor} 30%, transparent)` }}
                   >
                     {c.label} · {c.pressureRole}
                   </button>
@@ -517,7 +517,7 @@ function MasterCard({ variant, accentColor }: { variant: MasterVariantRecord; ac
     <article
       className="relative overflow-hidden rounded-2xl p-5"
       style={{
-        background: `linear-gradient(165deg, color-mix(in srgb, ${accentColor} 18%, #0a0810), #070510)`,
+        background: `linear-gradient(165deg, color-mix(in srgb, ${accentColor} 18%, #0B0805), #070503)`,
         border: `1px solid color-mix(in srgb, ${accentColor} 24%, transparent)`,
       }}
     >
@@ -705,6 +705,7 @@ export function PitchChapter() {
   const gripEntry = gripEntryFor(entry.display.slug)
 
   return (
+    <div className="scene-coal">
     <div className="mx-auto max-w-[1140px] px-5 md:px-8">
       <div className="pt-6">
         <Breadcrumb
@@ -727,6 +728,7 @@ export function PitchChapter() {
         <DiscussionPanel topicKey={entry.display.slug} topicName={entry.canonical.name} />
       </div>
       <Pager prev={prev} next={next} />
+    </div>
     </div>
   )
 }

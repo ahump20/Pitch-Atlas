@@ -163,7 +163,7 @@ export function SoftballHub() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="The fastpitch arsenal" />
-        <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-bone-2">
+        <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-ink-2">
           The pitches of the circle, filed light for the launch — the riseball leads, carrying the
           atlas’s honest answer to whether it actually rises.
         </p>
@@ -176,7 +176,7 @@ export function SoftballHub() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="02" label="The craftsmen of the circle" />
-        <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-bone-2">
+        <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-ink-2">
           The arms that defined fastpitch from inside the circle. Cat Osterman opens the wing — the
           softball case that command and spin beat raw power — with the legends behind her (Fernandez,
           Finch, Abbott) and the new wave already here (Canady, Kavan).

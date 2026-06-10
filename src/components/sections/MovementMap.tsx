@@ -76,7 +76,7 @@ export function MovementMap() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center gap-3">
         <span className="mono-label text-ink-3">Handedness</span>
-        <div className="inline-flex overflow-hidden rounded-lg border border-cyan/30">
+        <div className="inline-flex overflow-hidden rounded-lg border border-ink/25">
           {(['RHP', 'LHP'] as const).map((h) => (
             <button
               key={h}
@@ -123,7 +123,7 @@ export function MovementMap() {
               <text
                 x={x + label.dx}
                 y={y + label.dy}
-                fill="var(--color-bone)"
+                fill="var(--color-ink)"
                 fontFamily="var(--font-mono)"
                 fontSize="10"
                 textAnchor={label.anchor}
@@ -153,7 +153,7 @@ export function MovementMap() {
           <Link
             key={p.display.slug}
             to={`/pitch/${p.display.slug}`}
-            className="mono-label text-cyan transition-colors hover:text-bone"
+            className="mono-label text-seam transition-colors hover:text-ink"
           >
             {p.display.shortName} →
           </Link>

@@ -1,15 +1,17 @@
 import type { ReactNode } from 'react'
 
 /*
-  The dark-stage section hero, extracted from RepertoirePage / CraftsmenHall /
-  LostPitchesHall / the chapters, which each rolled the same markup. A near-black
-  chamber with a faint accent wash and instrument grid, a mono eyebrow, the display
-  headline, and an optional sub. Accent picks the wash tint: powder for the living
-  catalog and the craftsmen, seam for the lost-pitches archive.
+  The hall header on the warm field, extracted from RepertoirePage /
+  CraftsmenHall / LostPitchesHall / the chapters, which each rolled the same
+  markup. A deeper cream band with a faint accent wash and the scorebook's
+  vertical rules, a mono eyebrow, the display headline in ink, and an optional
+  sub. Accent picks the wash tint: powder for the living catalog and the
+  craftsmen, seam for the lost-pitches archive. Inside a .scene-coal wrapper the
+  ink tokens re-tone to bone on their own.
 */
 const ACCENT_WASH: Record<'powder' | 'seam', string> = {
-  powder: 'rgba(108,172,228,0.16)',
-  seam: 'rgba(200,16,46,0.16)',
+  powder: 'rgba(75,146,219,0.12)',
+  seam: 'rgba(200,16,46,0.10)',
 }
 
 export function SectionHero({
@@ -30,12 +32,12 @@ export function SectionHero({
   children?: ReactNode
 }) {
   return (
-    <section className="on-stage relative overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
+    <section className="relative overflow-hidden border-b border-leather/25 bg-paper-2">
+      <div className="absolute inset-0 opacity-[0.5]" aria-hidden="true">
         <div
-          className="h-full w-full bg-[size:auto,34px_34px]"
+          className="h-full w-full"
           style={{
-            backgroundImage: `radial-gradient(circle at 70% 30%, ${ACCENT_WASH[accent]}, transparent 40%), linear-gradient(115deg, rgba(242,236,221,0.07) 0 1px, transparent 1px 100%)`,
+            backgroundImage: `radial-gradient(circle at 70% 30%, ${ACCENT_WASH[accent]}, transparent 40%), repeating-linear-gradient(90deg, color-mix(in srgb, var(--color-ink) 7%, transparent) 0 1px, transparent 1px 64px)`,
           }}
         />
       </div>
@@ -43,11 +45,11 @@ export function SectionHero({
         {breadcrumb}
         <p className="rfx-skick">{eyebrow}</p>
         {badge ? <div className="mt-4">{badge}</div> : null}
-        <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[2.8rem] leading-[0.92] text-bone md:text-[4.8rem]">
+        <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[2.8rem] leading-[0.92] md:text-[4.8rem]">
           {title}
         </h1>
         {sub ? (
-          <div className="mt-6 max-w-[60ch] text-lg leading-relaxed text-bone-2">{sub}</div>
+          <div className="display mt-6 max-w-[60ch] text-lg italic leading-relaxed text-ink-2">{sub}</div>
         ) : null}
         {children}
       </div>

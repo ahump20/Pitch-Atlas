@@ -38,11 +38,11 @@ export function MovementMapPage() {
       <section>
         <div className="mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-16">
           <MovementMap />
-          <p className="mt-10 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+          <p className="mt-10 max-w-[72ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
             A schematic arranged by each pitch's sourced shape language, not a measured trajectory. To
             read the poles — what ride, drop, run, and sweep mean and why a tilt of the spin axis produces
             them — see{' '}
-            <a href="/learn/spin" className="text-cyan underline-offset-2 hover:underline">
+            <a href="/learn/spin" className="text-seam underline-offset-2 hover:underline">
               Spin &amp; Movement
             </a>
             .
@@ -50,15 +50,15 @@ export function MovementMapPage() {
           <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
             Want the measured version — induced break, spin rates, the tracked numbers this page tells in
             shape language? That craft has its own keepers:{' '}
-            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
               Baseball Savant ↗
             </a>{' '}
             and the{' '}
-            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
               FanGraphs model primer ↗
             </a>
             . How to read them without losing the feel is its own wing:{' '}
-            <a href="/learn/metrics" className="text-cyan underline-offset-2 hover:underline">
+            <a href="/learn/metrics" className="text-seam underline-offset-2 hover:underline">
               Reading Models
             </a>
             .

@@ -56,7 +56,7 @@ export function CraftsmenHall() {
               {legends.map((c) => (
                 <CraftsmanCard key={c.slug} craftsman={c} />
               ))}
-              <div className="flex h-full flex-col justify-center gap-2 rounded-sm border border-dashed border-[rgba(255,255,255,0.12)] p-6 md:col-span-2">
+              <div className="flex h-full flex-col justify-center gap-2 rounded-sm border border-dashed border-ink/15 p-6 md:col-span-2">
                 <p className="mono-label text-ink-2">Why a legend, not a master</p>
                 <p className="max-w-[52ch] text-sm leading-relaxed text-ink-2">
                   The gyroball is filed apart on purpose. It is a real pitch, but most of what is said

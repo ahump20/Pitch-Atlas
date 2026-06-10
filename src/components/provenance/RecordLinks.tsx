@@ -9,7 +9,7 @@ import { SourceBadge } from './SourceBadge'
 export function RecordLinks({ sources, className = '' }: { sources: Source[]; className?: string }) {
   if (sources.length === 0) return null
   return (
-    <div className={`border-t border-[rgba(255,255,255,0.12)] pt-5 ${className}`}>
+    <div className={`border-t border-ink/15 pt-5 ${className}`}>
       <p className="mb-2.5 text-sm leading-relaxed text-ink-2">
         The numbers live with the record-keepers.
       </p>

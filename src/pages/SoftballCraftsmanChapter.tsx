@@ -22,7 +22,7 @@ import { NotFound } from './NotFound'
 
 function Quote({ quote }: { quote: Claim<string> }) {
   return (
-    <figure className="border-l-2 border-cyan/50 pl-6">
+    <figure className="border-l-2 border-seam/50 pl-6">
       <blockquote className="display max-w-[40ch] text-2xl italic leading-snug text-ink md:text-3xl">
         &ldquo;{quote.value}&rdquo;
       </blockquote>
@@ -102,7 +102,7 @@ export function SoftballCraftsmanChapter() {
         {pitch ? (
           <Link
             to={`/softball/pitch/${pitch.slug}`}
-            className="mt-6 inline-flex items-center gap-2 rounded-sm border border-cyan/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-cyan transition-colors hover:bg-cyan/10"
+            className="mt-6 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
           >
             Study the {pitch.name.toLowerCase()}
             <span aria-hidden="true">→</span>
@@ -152,7 +152,7 @@ export function SoftballCraftsmanChapter() {
             {craftsman.recordLinks?.length ? (
               <RecordLinks sources={craftsman.recordLinks} className="mt-12" />
             ) : null}
-            <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+            <p className="mt-10 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
               The record is told in prose, each claim confidence-labeled and one click from its
               source. Where a line is a teammate’s words rather than the pitcher’s own, it is labeled
               as such, not put in her mouth.
@@ -161,7 +161,7 @@ export function SoftballCraftsmanChapter() {
         </section>
       ) : null}
 
-      <nav aria-label="Softball craftsmen chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
+      <nav aria-label="Softball craftsmen chapters" className="rfx-panel border-t border-ink/15">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
           <div className="md:justify-self-start">
             {prev ? (
@@ -171,7 +171,7 @@ export function SoftballCraftsmanChapter() {
               </Link>
             ) : null}
           </div>
-          <Link to="/softball" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
+          <Link to="/softball" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
             <span className="mono-label text-cyan">The softball wing</span>
             <span className="text-sm leading-snug text-ink-2">Back to the circle →</span>
           </Link>

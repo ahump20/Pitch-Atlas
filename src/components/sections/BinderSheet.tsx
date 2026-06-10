@@ -32,7 +32,7 @@ export function PocketCard({ entry }: { entry: PitchAtlasEntry }) {
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const grip = gripEntryFor(display.slug)
   const still = grip?.photos[0]?.src ?? grip?.clip?.poster
-  const tab = FAMILY_TAB[canonical.family] ?? '#E9C97A'
+  const tab = FAMILY_TAB[canonical.family] ?? '#D8CFB8'
 
   return (
     <Link to={`/pitch/${display.slug}`} className="pocket-lift" aria-label={`Open the ${display.shortName} specimen`}>
@@ -76,7 +76,7 @@ export function FillerCard({ to, label, note, ghost }: { to: string; label: stri
           </span>
           <span
             className="block font-mono uppercase"
-            style={{ fontSize: 8, letterSpacing: '0.14em', color: ghost ? 'var(--color-ink-3)' : 'rgba(33,29,23,.6)' }}
+            style={{ fontSize: 8, letterSpacing: '0.14em', color: ghost ? '#8A8576' : 'rgba(33,29,23,.6)' }}
           >
             {note}
           </span>

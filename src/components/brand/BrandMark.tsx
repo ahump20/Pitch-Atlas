@@ -1,11 +1,13 @@
 import { useId } from 'react'
 
 /*
-  The Pitch Atlas brand lockup. The mark is the idea: a steel diamond holding
-  a cream baseball whose seam reads as atlas meridians — the seam is the map.
-  Brushed-chrome edge, dark inner bezel, the ball with two longitude ellipses and
-  the real red horseshoe seam + stitches. Static (no animation) so it stays crisp
-  and reduced-motion-safe; the holographic life lives in the cards, not the logo.
+  The Pitch Atlas brand lockup. The mark is the idea: a leather-edged diamond
+  holding a cream baseball whose seam reads as atlas meridians — the seam is the
+  map. Saddle-leather edge, warm-black inner bezel, the ball with two longitude
+  ellipses and the real red horseshoe seam + stitches. Static (no animation) so
+  it stays crisp and reduced-motion-safe; the holographic life lives in the
+  cards, not the logo. The wordmark prints in currentColor, so it reads ink on
+  the cream masthead and bone on the leather footer.
 
   The diamond + ball carry no text, so the SVG is aria-hidden and the wordmark
   text carries the accessible name. `useId` gives each instance unique gradient
@@ -60,10 +62,10 @@ export function BrandMark({
       >
         <defs>
           <linearGradient id={foil} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#5a5f68" />
-            <stop offset="36%" stopColor="#c7ccd4" />
-            <stop offset="60%" stopColor="#71767f" />
-            <stop offset="100%" stopColor="#2e3137" />
+            <stop offset="0%" stopColor="#5E3A22" />
+            <stop offset="36%" stopColor="#9C7350" />
+            <stop offset="60%" stopColor="#6B4528" />
+            <stop offset="100%" stopColor="#3A2414" />
           </linearGradient>
           <radialGradient id={ball} cx="40%" cy="32%" r="75%">
             <stop offset="0%" stopColor="#FFFCF4" />
@@ -72,7 +74,7 @@ export function BrandMark({
           </radialGradient>
         </defs>
         <rect x="14" y="14" width="72" height="72" rx="16" transform="rotate(45 50 50)" fill={`url(#${foil})`} />
-        <rect x="19" y="19" width="62" height="62" rx="13" transform="rotate(45 50 50)" fill="#0a0810" />
+        <rect x="19" y="19" width="62" height="62" rx="13" transform="rotate(45 50 50)" fill="#16120D" />
         <circle cx="50" cy="50" r="22" fill={`url(#${ball})`} />
         {/* meridians: the seam reads as a map */}
         <ellipse cx="50" cy="50" rx="9" ry="22" fill="none" stroke="#37D6FF" strokeWidth="1" opacity="0.45" />
@@ -85,11 +87,8 @@ export function BrandMark({
         </g>
       </svg>
       {wordmark ? (
-        <span
-          className="rfx-athletic rfx-skew rfx-stroke leading-none text-bone"
-          style={{ fontSize: WORDMARK_SIZE[size] }}
-        >
-          Pitch <span className="rfx-chrome-text">Atlas</span>
+        <span className="rfx-athletic rfx-skew leading-none" style={{ fontSize: WORDMARK_SIZE[size] }}>
+          Pitch <span className="text-seam">Atlas</span>
         </span>
       ) : null}
     </span>

@@ -37,7 +37,7 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
     .join(' · ')
 
   return (
-    <figure className={`overflow-hidden rounded-[14px] border border-bone/12 bg-[#0a0810] ${className}`}>
+    <figure className={`overflow-hidden rounded-[14px] border border-bone/12 bg-[#0B0805] ${className}`}>
       <div className="relative aspect-[4/3] w-full">
         {state === 'loading' ? (
           <div
@@ -100,7 +100,7 @@ export function GripMotion({
 }) {
   const reduced = useReducedMotion()
   return (
-    <figure className={`overflow-hidden rounded-[14px] border border-cyan/25 bg-[#0a0810] ${className}`}>
+    <figure className={`overflow-hidden rounded-[14px] border border-cyan/25 bg-[#0B0805] ${className}`}>
       <div className={`relative w-full ${large ? 'aspect-[9/16]' : 'aspect-[4/3]'}`}>
         {reduced ? (
           <img

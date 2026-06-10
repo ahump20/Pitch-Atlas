@@ -222,7 +222,7 @@ function NoteCard({
         </a>
       ) : null}
 
-      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-[rgba(255,255,255,0.12)] pt-4">
+      <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-ink/15 pt-4">
         {note.viewerIsAuthor ? (
           <Badge variant="outline" className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Your note</Badge>
         ) : (
@@ -471,7 +471,7 @@ function SubmitForm({
 
   return (
     <form onSubmit={submit} className="rfx-panel p-1.5">
-      <div className="rounded-[2px] border border-[rgba(255,255,255,0.12)] p-5">
+      <div className="rounded-[2px] border border-ink/15 p-5">
         <div className="mb-4 flex items-center justify-between gap-4">
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">New field note · {pitchName}</span>
           <Button type="button" onClick={() => setOpen(false)} variant="ghost" size="sm" className="font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3 hover:text-seam">
@@ -641,7 +641,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
               {RANK_SIGNALS.map((signal) => {
                 const pct = Math.round(RANK_WEIGHTS[signal.key] * 100)
                 return (
-                  <li key={signal.key} className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1 border-t border-[rgba(255,255,255,0.12)] py-4">
+                  <li key={signal.key} className="grid grid-cols-[auto_1fr] gap-x-5 gap-y-1 border-t border-ink/15 py-4">
                     <div className="flex w-28 flex-col gap-1.5 sm:w-32">
                       <span className="font-mono text-sm tabular-nums text-cyan">{pct}%</span>
                       <span aria-hidden="true" className="h-1 rounded-full bg-cyan/15">
@@ -661,7 +661,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
               <p className="rfx-skick text-cyan">The vocabulary</p>
               <dl className="mt-4 grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
                 {FIELD_NOTE_PRIMITIVES.map((p) => (
-                  <div key={p.term} className="flex flex-col gap-0.5 border-t border-[rgba(255,255,255,0.12)] pt-2.5">
+                  <div key={p.term} className="flex flex-col gap-0.5 border-t border-ink/15 pt-2.5">
                     <dt className="font-mono text-xs uppercase tracking-[0.1em] text-bone">{p.term}</dt>
                     <dd className="text-sm leading-snug text-bone-2">{p.gloss}</dd>
                   </div>
@@ -693,7 +693,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         {/* the ranked notes for this pitch, four states, only when the layer is open */}
         {live ? (
           <div className="mt-16">
-            <div className="mb-6 flex items-end justify-between gap-4 border-b border-[rgba(255,255,255,0.12)] pb-4">
+            <div className="mb-6 flex items-end justify-between gap-4 border-b border-ink/15 pb-4">
               <h3 className="rfx-athletic rfx-skew text-2xl text-bone md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
               <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} live` : ''}</span>
             </div>
@@ -750,7 +750,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         ) : null}
 
         {/* how the layer sources its notes — present tense once open, the preview copy until then */}
-        <p className="mt-12 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-bone-2">
+        <p className="mt-12 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-bone-2">
           {live
             ? 'Every community variant carries the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.'
             : community.provenanceNote}

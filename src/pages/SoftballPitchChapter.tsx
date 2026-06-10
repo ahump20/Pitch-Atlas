@@ -25,7 +25,7 @@ const FAMILY_LABEL: Record<SoftballPitch['family'], string> = {
 
 function ChapterNav({ prev, next }: { prev?: SoftballPitch; next?: SoftballPitch }) {
   return (
-    <nav aria-label="Softball arsenal chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
+    <nav aria-label="Softball arsenal chapters" className="rfx-panel border-t border-ink/15">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
         <div className="md:justify-self-start">
           {prev ? (
@@ -35,7 +35,7 @@ function ChapterNav({ prev, next }: { prev?: SoftballPitch; next?: SoftballPitch
             </Link>
           ) : null}
         </div>
-        <Link to="/softball" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
+        <Link to="/softball" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
           <span className="mono-label text-cyan">The softball wing</span>
           <span className="text-sm leading-snug text-ink-2">Back to the circle →</span>
         </Link>
@@ -113,16 +113,16 @@ export function SoftballPitchChapter() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="Grip, spin, movement" />
         <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-3">
-          <div className="border-t border-[rgba(255,255,255,0.12)] pt-4">
-            <div className="mono-label mb-3 text-bone-2">The grip</div>
+          <div className="border-t border-ink/15 pt-4">
+            <div className="mono-label mb-3 text-ink-2">The grip</div>
             <ClaimProse claim={pitch.grip} />
           </div>
-          <div className="border-t border-[rgba(255,255,255,0.12)] pt-4">
-            <div className="mono-label mb-3 text-bone-2">The spin</div>
+          <div className="border-t border-ink/15 pt-4">
+            <div className="mono-label mb-3 text-ink-2">The spin</div>
             <ClaimProse claim={pitch.spin} />
           </div>
-          <div className="border-t border-[rgba(255,255,255,0.12)] pt-4">
-            <div className="mono-label mb-3 text-bone-2">The movement</div>
+          <div className="border-t border-ink/15 pt-4">
+            <div className="mono-label mb-3 text-ink-2">The movement</div>
             <ClaimProse claim={pitch.movement} />
           </div>
         </div>
@@ -138,18 +138,18 @@ export function SoftballPitchChapter() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index={pitch.physicsNote ? '03' : '02'} label="The job" />
         <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-2">
-          <div className="border-t border-[rgba(255,255,255,0.12)] pt-4">
-            <div className="mono-label mb-3 text-bone-2">Role in an arsenal</div>
+          <div className="border-t border-ink/15 pt-4">
+            <div className="mono-label mb-3 text-ink-2">Role in an arsenal</div>
             <p className="max-w-[56ch] text-lg leading-relaxed text-ink">{pitch.role}</p>
           </div>
           {pitch.notableThrowers ? (
-            <div className="border-t border-[rgba(255,255,255,0.12)] pt-4">
-              <div className="mono-label mb-3 text-bone-2">Notable arms</div>
+            <div className="border-t border-ink/15 pt-4">
+              <div className="mono-label mb-3 text-ink-2">Notable arms</div>
               <p className="max-w-[56ch] text-lg leading-relaxed text-ink">{pitch.notableThrowers}</p>
             </div>
           ) : null}
         </div>
-        <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+        <p className="mt-10 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
           Every line above is one click from its source. Still to come for the circle: the full grip geometry
           and a 12&Prime; seam, the way the baseball wing files a pitch.
         </p>

@@ -73,12 +73,12 @@ function MediaItem({ m }: { m: DiscussionMedia }) {
         width={m.width ?? undefined}
         height={m.height ?? undefined}
         alt="Contributor upload"
-        className="w-full rounded-sm border border-[rgba(255,255,255,0.12)] object-contain"
+        className="w-full rounded-sm border border-ink/15 object-contain"
       />
     )
   }
   return (
-    <video src={m.url} controls preload="metadata" className="w-full rounded-sm border border-[rgba(255,255,255,0.12)]" />
+    <video src={m.url} controls preload="metadata" className="w-full rounded-sm border border-ink/15" />
   )
 }
 
@@ -96,7 +96,7 @@ function PostBody({
   onDelete: (postId: string) => void
 }) {
   return (
-    <article className={depth > 0 ? 'border-l-2 border-[rgba(255,255,255,0.12)] pl-4' : ''}>
+    <article className={depth > 0 ? 'border-l-2 border-ink/15 pl-4' : ''}>
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span className="rfx-athletic rfx-skew text-base text-cyan">{post.displayName}</span>
         <span className="mono-label text-ink-3">{timeAgo(post.createdAt)}</span>
@@ -566,7 +566,7 @@ export function DiscussionPanel({
           </span>
         </button>
         {open ? (
-          <div id={regionId} className="border-t border-[rgba(255,255,255,0.12)] px-5 py-6">
+          <div id={regionId} className="border-t border-ink/15 px-5 py-6">
             <Forum topicKey={topicKey} open={open} />
           </div>
         ) : null}

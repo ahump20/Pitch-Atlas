@@ -3,9 +3,10 @@ import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
 
 /*
-  The slim site footer on the void. Not the colophon — the full provenance legend
-  and source registry live at /sources. A compact index back into the three wings,
-  the brand lockup, and the principle that governs all of it.
+  The slim site footer: the leather binding the scorebook closes into. Not the
+  colophon — the full provenance legend and source registry live at /sources. A
+  compact index back into the three wings, the brand lockup, and the principle
+  that governs all of it.
 */
 
 const LINKS: { label: string; to: string }[] = [
@@ -21,7 +22,10 @@ const LINKS: { label: string; to: string }[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-bone/10 bg-[#08060d]">
+    <footer
+      className="scene-coal border-t border-bone/10 text-bone"
+      style={{ background: 'linear-gradient(180deg, #2A1B0E, #1C1208)' }}
+    >
       <div className="mx-auto flex max-w-[1320px] flex-col gap-8 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-8">
         <div className="flex flex-col gap-3">
           <BrandMark size="md" />
@@ -44,13 +48,13 @@ export function SiteFooter() {
           <a href={SITE.canonicalDomain} className="mono-label-stage transition-colors hover:text-bone">
             pitch-atlas.com
           </a>
-          <span className="mono-label-stage text-ink-3">{SITE.sourcePrinciple}</span>
+          <span className="mono-label-stage opacity-75">{SITE.sourcePrinciple}</span>
         </div>
       </div>
       {/* True by construction: every content route is prerendered to static HTML,
           so the text reads with scripts off; only the interactive layers hydrate. */}
       <div className="mx-auto max-w-[1320px] border-t border-bone/8 px-5 py-4 md:px-8">
-        <p className="mono-label-stage text-ink-3">
+        <p className="mono-label-stage opacity-75">
           The archive is readable without JavaScript. Interactive grip tools, physics controls, and
           comparison labs need JavaScript.
         </p>

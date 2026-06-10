@@ -79,7 +79,7 @@ export function RepertoireEntryCard({ entry }: { entry: RepertoireEntry }) {
 
       {entry.relationship ? <ClaimLine label="Really" claim={entry.relationship} /> : null}
 
-      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-[rgba(255,255,255,0.12)] pt-3">
+      <div className="mt-auto flex flex-wrap items-center gap-x-4 gap-y-1.5 border-t border-ink/15 pt-3">
         {entry.notableThrowers ? (
           <span className="text-[0.8rem] leading-snug text-bone-2">{entry.notableThrowers}</span>
         ) : null}

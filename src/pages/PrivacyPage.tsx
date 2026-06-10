@@ -60,7 +60,7 @@ export function PrivacyPage() {
         eyebrow={`Privacy policy · ${POLICY_DATE}`}
         title={
           <>
-            What the atlas holds, and what it <span className="rfx-chrome-text">never</span> touches.
+            What the atlas holds, and what it <span className="text-seam">never</span> touches.
           </>
         }
         sub={
@@ -73,7 +73,7 @@ export function PrivacyPage() {
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'Privacy' }]} />}
       />
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">Reading the manual</p>
@@ -82,12 +82,12 @@ export function PrivacyPage() {
             </h2>
           </div>
           <div className="md:col-span-7">
-            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The manual is a set of static pages. No analytics scripts run, no advertising loads,
               and no tracking cookies are set. The pages you open may be cached on your own device
               so they read offline; that cache lives on your device and is never reported back.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The same is true in the Pitch Atlas iOS app: the reference manual works fully logged
               out, with no advertising identifiers and no tracking.
             </p>
@@ -95,31 +95,31 @@ export function PrivacyPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">Community accounts</p>
             <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,52px)]">
               An account exists only if you post.
             </h2>
-            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-ink-2">
               Field Notes and the discussion threads are optional. Accounts and submissions are
               stored with Supabase, the database service behind the community layer.
             </p>
           </div>
           <div className="md:col-span-7">
-            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Reading notes and threads needs no account. The first time you post, mark a note, or
               file a report, an anonymous account is created for you — a random ID with no email
               behind it. You can later claim that account with your email so your notes follow you
               across devices; in the iOS app you can also sign in with an emailed link or with
               Sign in with Apple.
             </p>
-            <div className="mt-8 border-t border-bone/10">
+            <div className="mt-8 border-t border-ink/15">
               {COLLECTED_ROWS.map((row) => (
-                <div key={row.label} className="grid gap-3 border-b border-bone/10 py-5 sm:grid-cols-[10rem_1fr]">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">{row.label}</p>
-                  <p className="max-w-[62ch] text-[14px] leading-relaxed text-bone-2">{row.text}</p>
+                <div key={row.label} className="grid gap-3 border-b border-ink/15 py-5 sm:grid-cols-[10rem_1fr]">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-seam">{row.label}</p>
+                  <p className="max-w-[62ch] text-[14px] leading-relaxed text-ink-2">{row.text}</p>
                 </div>
               ))}
             </div>
@@ -127,21 +127,21 @@ export function PrivacyPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">What is never collected</p>
           <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
             {NOT_COLLECTED_ROWS.map((row) => (
-              <div key={row.label} className="rounded-xl border border-bone/12 bg-[#0e0c14] p-5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-cyan">{row.label}</p>
-                <p className="mt-3 text-[14px] leading-relaxed text-bone-2">{row.text}</p>
+              <div key={row.label} className="rounded-xl border border-ink/15 bg-paper-2 p-5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-seam">{row.label}</p>
+                <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{row.text}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">Retention and deletion</p>
@@ -150,17 +150,17 @@ export function PrivacyPage() {
             </h2>
           </div>
           <div className="md:col-span-7">
-            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               What you file stays in the community record until you remove it, you delete your
               account, or moderation removes it. You can delete your own discussion posts from the
               page where they appear.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               To delete your account entirely, use the Pitch Atlas iOS app: Account → delete
               account. That removes your community posts, your uploaded media files, and the
               account itself.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Moderation works on reports: every note and post carries a Report action, reports go
               to a review queue, and a post reported by enough separate accounts is hidden pending
               review. Abusive language and rapid-fire posting are blocked at the database, not just
@@ -170,18 +170,18 @@ export function PrivacyPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">Contact</p>
-          <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+          <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
             Report a problem with any note or post through its in-product Report action — that is
             the fastest route to a human review. Questions about how the manual itself is built and
             sourced are answered on the{' '}
-            <Link to="/about" className="text-cyan transition-colors hover:text-bone">
+            <Link to="/about" className="text-seam transition-colors hover:text-ink">
               About page
             </Link>{' '}
             and the{' '}
-            <Link to="/sources" className="text-cyan transition-colors hover:text-bone">
+            <Link to="/sources" className="text-seam transition-colors hover:text-ink">
               source registry
             </Link>
             .
