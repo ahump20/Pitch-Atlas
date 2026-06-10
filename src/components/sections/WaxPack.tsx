@@ -3,10 +3,11 @@ import { Link } from 'react-router-dom'
 /*
   A sealed wax pack — the tools section's form. The wrapper is cream stock with
   crimped zigzag seals top and bottom, the tool's line schematic printed as
-  wrapper art in one collegiate jewel ink, and a foil strip across the midsection
-  that catches the light once on hover (the brief's wax-wrapper button mechanic).
-  Clicking is the tear: the pack opens straight into its tool. No fake unwrap
-  state — the navigation IS the opening.
+  wrapper art in one collegiate jewel ink, and a perforated houndstooth-holo
+  tear strip across the top. Pointing at the pack (hover or keyboard focus)
+  tears the cream flap back along the perforation — CSS only, no state — and
+  clicking is the real tear: the pack opens straight into its tool. No fake
+  unwrap state; the navigation IS the opening.
 */
 
 export type ToolKind = 'dial' | 'quadrant' | 'tunnel' | 'grips'
@@ -78,12 +79,13 @@ function PackArt({ kind, ink }: { kind: ToolKind; ink: string }) {
 export function WaxPack({ tool }: { tool: WaxPackTool }) {
   return (
     <Link to={tool.to} className="wax-pack group" aria-label={`Open ${tool.label}`}>
-      <span className="wax-tear">· tear here ·</span>
+      <span className="wax-tearstrip" aria-hidden="true">
+        <span className="wax-tearflap">· tear here ·</span>
+      </span>
       <PackArt kind={tool.kind} ink={tool.ink} />
       <span className="rfx-athletic block" style={{ fontSize: 'clamp(17px,2.4vw,22px)', lineHeight: 0.95, color: tool.ink }}>
         {tool.label}
       </span>
-      <span className="wax-foilstrip" aria-hidden="true" />
       <span className="block text-[12.5px] leading-snug" style={{ color: 'rgba(33,29,23,.78)' }}>
         {tool.blurb}
       </span>
