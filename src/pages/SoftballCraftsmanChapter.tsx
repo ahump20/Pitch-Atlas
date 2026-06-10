@@ -22,7 +22,7 @@ import { NotFound } from './NotFound'
 
 function Quote({ quote }: { quote: Claim<string> }) {
   return (
-    <figure className="border-l-2 border-cyan/50 pl-6">
+    <figure className="border-l-2 border-seam/50 pl-6">
       <blockquote className="display max-w-[40ch] text-2xl italic leading-snug text-ink md:text-3xl">
         &ldquo;{quote.value}&rdquo;
       </blockquote>
@@ -102,7 +102,7 @@ export function SoftballCraftsmanChapter() {
         {pitch ? (
           <Link
             to={`/softball/pitch/${pitch.slug}`}
-            className="mt-6 inline-flex items-center gap-2 rounded-sm border border-cyan/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-cyan transition-colors hover:bg-cyan/10"
+            className="mt-6 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
           >
             Study the {pitch.name.toLowerCase()}
             <span aria-hidden="true">→</span>

@@ -61,7 +61,7 @@ function SourceLinks({ claims }: { claims: Claim<string>[] }) {
         <li key={i} className="text-xs leading-snug text-ink-3">
           <ConfidenceLabel confidence={c.confidence} className="mr-2" />
           {c.source ? (
-            <a href={c.source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-cyan hover:underline">
+            <a href={c.source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-seam hover:underline">
               {c.source.label}
             </a>
           ) : null}

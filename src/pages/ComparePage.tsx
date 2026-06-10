@@ -44,7 +44,7 @@ export function ComparePage() {
             shared tunnel window and the paths leading to each endpoint are a schematic of the shared-release
             idea, not a measured trajectory. A hitter's real reaction window depends on the arm, the release,
             and the pitch sequence. For the full picture of why tunneling works, see{' '}
-            <a href="/learn/sequencing" className="text-cyan underline-offset-2 hover:underline">
+            <a href="/learn/sequencing" className="text-seam underline-offset-2 hover:underline">
               Sequencing &amp; Tunneling
             </a>
             .
@@ -52,15 +52,15 @@ export function ComparePage() {
           <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
             The measured tunnel — release points, separation in inches, the tracked record — lives with
             the record-keepers:{' '}
-            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
               Baseball Savant &#8599;
             </a>{' '}
             and the{' '}
-            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
               FanGraphs model primer &#8599;
             </a>
             . How to read them is its own wing:{' '}
-            <a href="/learn/metrics" className="text-cyan underline-offset-2 hover:underline">
+            <a href="/learn/metrics" className="text-seam underline-offset-2 hover:underline">
               Reading Models
             </a>
             .

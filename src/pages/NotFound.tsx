@@ -20,17 +20,10 @@ export function NotFound() {
         the catalog, or read the craftsmen who defined the craft.
       </p>
       <div className="flex flex-wrap gap-3">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 rounded-sm border border-cyan bg-cyan px-5 py-3 font-mono text-sm tracking-wide text-[#06121b] transition-colors hover:bg-cyan-deep"
-        >
-          The Atlas
-          <span aria-hidden="true">→</span>
+        <Link to="/" className="btn-foil">
+          The Atlas <span aria-hidden="true">→</span>
         </Link>
-        <Link
-          to="/craftsmen"
-          className="inline-flex items-center gap-2 rounded-sm border border-cyan/60 px-5 py-3 font-mono text-sm tracking-wide text-cyan transition-colors hover:bg-cyan/10 hover:border-cyan"
-        >
+        <Link to="/craftsmen" className="btn-foil is-ink">
           The Craftsmen
         </Link>
       </div>

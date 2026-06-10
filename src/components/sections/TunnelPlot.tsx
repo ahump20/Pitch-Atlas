@@ -121,7 +121,7 @@ export function TunnelPlot() {
         </label>
         <div className="block">
           <span className="mono-label text-ink-3">Handedness</span>
-          <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-cyan/30">
+          <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-ink/25">
             {(['RHP', 'LHP'] as const).map((h) => (
               <button
                 key={h}

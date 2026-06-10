@@ -88,7 +88,7 @@ export function SoftballFastpitchPage() {
           </p>
           <Link
             to="/softball"
-            className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-cyan/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-cyan transition-colors hover:bg-cyan/10"
+            className="inline-flex shrink-0 items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
           >
             The softball wing
             <span aria-hidden="true">→</span>

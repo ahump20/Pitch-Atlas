@@ -155,7 +155,7 @@ export function AboutPage() {
                   className="grid gap-4 border-b border-ink/15 py-5 sm:grid-cols-[4.25rem_1fr]"
                 >
                   <span
-                    className="h-fit w-fit rounded border border-cyan/50 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-seam"
+                    className="h-fit w-fit rounded border border-seam/50 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-seam"
                     style={{ transform: `rotate(${i % 2 ? -2 : 2}deg)` }}
                   >
                     {row.stamp}
