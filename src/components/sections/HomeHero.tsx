@@ -24,7 +24,7 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
             {SITE.siteName} · {SITE.sourcePrinciple}
           </p>
           <h1 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone md:mt-4" style={{ fontSize: 'clamp(46px,11vw,104px)' }}>
-            Pitch <span className="rfx-holo">Atlas</span>
+            Pitch <span className="rfx-chrome-text">Atlas</span>
           </h1>
           <p className="mt-3 max-w-[46ch] text-[15px] leading-relaxed text-bone-2 md:mt-5 md:text-lg">
             Every pitch, struck as a sourced specimen — the grip, the movement, and the craftsmen who

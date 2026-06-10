@@ -60,7 +60,7 @@ export function PrivacyPage() {
         eyebrow={`Privacy policy · ${POLICY_DATE}`}
         title={
           <>
-            What the atlas holds, and what it <span className="rfx-holo">never</span> touches.
+            What the atlas holds, and what it <span className="rfx-chrome-text">never</span> touches.
           </>
         }
         sub={

@@ -244,7 +244,7 @@ export function AtlasHome() {
           <div className="md:col-span-5">
             <p className="rfx-skick">Why it exists</p>
             <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,56px)]">
-              A grip disappears faster than a <span className="rfx-holo">box score</span>.
+              A grip disappears faster than a <span className="rfx-chrome-text">box score</span>.
             </h2>
             <p className="mt-4 max-w-[48ch] text-[15px] leading-relaxed text-bone-2">
               A dashboard can tell you what the ball did. A coach can show a drill. A clip can catch
@@ -308,7 +308,7 @@ export function AtlasHome() {
           <div className="md:col-span-5">
             <p className="rfx-skick">The model</p>
             <h2 className="rfx-stitle mt-3 max-w-[14ch] text-[clamp(28px,5vw,54px)]">
-              Sourced, <span className="rfx-holo">not corrected</span>.
+              Sourced, <span className="rfx-chrome-text">not corrected</span>.
             </h2>
             <p className="mt-4 max-w-[44ch] text-[15px] leading-relaxed text-bone-2">
               A pitch can be thrown a dozen credible ways. The atlas does not pick a winner. It records
@@ -386,7 +386,7 @@ export function AtlasHome() {
         <div className="mx-auto max-w-[1320px] px-5 md:px-8">
           <p className="rfx-skick">The Pitch Index</p>
           <h2 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone" style={{ fontSize: 'clamp(30px,5vw,58px)' }}>
-            Start at the <span className="rfx-holo">front door</span>.
+            Start at the <span className="rfx-chrome-text">front door</span>.
           </h2>
           <p className="mt-3 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
             Every accepted pitch by family — the filed specimens you can open below, plus the honest edges in
@@ -565,7 +565,7 @@ export function AtlasHome() {
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">The honesty contract</p>
           <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(26px,4vw,44px)]">
-            What we will <span className="rfx-holo">never fake</span>.
+            What we will <span className="rfx-chrome-text">never fake</span>.
           </h2>
           <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
             The foil is decoration. The provenance is the point. These lines are load-bearing — in the

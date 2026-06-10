@@ -43,7 +43,7 @@ export function SupportPage() {
         eyebrow="Support"
         title={
           <>
-            Something off? <span className="rfx-holo">Flag it.</span>
+            Something off? <span className="rfx-chrome-text">Flag it.</span>
           </>
         }
         sub={

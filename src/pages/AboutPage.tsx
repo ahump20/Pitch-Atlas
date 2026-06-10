@@ -104,7 +104,7 @@ export function AboutPage() {
         eyebrow="About Pitch Atlas"
         title={
           <>
-            The pitch, in your <span className="rfx-holo">hand</span>.
+            The pitch, in your <span className="rfx-chrome-text">hand</span>.
           </>
         }
         sub={

@@ -463,6 +463,13 @@
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     animation: rfx-slide 7s linear infinite;
   }
+  /* Static brushed-chrome text — the wordmark and page-title accent words. The rainbow
+     foil stays on the cards, where holographic refractors exist in the real world;
+     type is set in metal. No animation by design. */
+  .rfx-chrome-text {
+    background: var(--chrome); background-size: 140% 140%; background-position: 35% 30%;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
 
   /* ── the void field + dot-grid atmosphere (page level) ── */
   .rfx-void {

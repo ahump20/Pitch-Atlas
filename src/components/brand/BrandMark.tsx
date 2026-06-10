@@ -1,11 +1,11 @@
 import { useId } from 'react'
 
 /*
-  The Pitch Atlas brand lockup. The mark is the idea: a refractor diamond holding
+  The Pitch Atlas brand lockup. The mark is the idea: a steel diamond holding
   a cream baseball whose seam reads as atlas meridians — the seam is the map.
-  Foil edge, dark inner bezel, the ball with two longitude ellipses and the real
-  red horseshoe seam + stitches. Static (no animation) so it stays crisp and
-  reduced-motion-safe; the holographic life lives in the cards, not the logo.
+  Brushed-chrome edge, dark inner bezel, the ball with two longitude ellipses and
+  the real red horseshoe seam + stitches. Static (no animation) so it stays crisp
+  and reduced-motion-safe; the holographic life lives in the cards, not the logo.
 
   The diamond + ball carry no text, so the SVG is aria-hidden and the wordmark
   text carries the accessible name. `useId` gives each instance unique gradient
@@ -60,11 +60,10 @@ export function BrandMark({
       >
         <defs>
           <linearGradient id={foil} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#ff2d6e" />
-            <stop offset="25%" stopColor="#ffe14d" />
-            <stop offset="50%" stopColor="#46ff9c" />
-            <stop offset="72%" stopColor="#33e0ff" />
-            <stop offset="100%" stopColor="#c44bff" />
+            <stop offset="0%" stopColor="#5a5f68" />
+            <stop offset="36%" stopColor="#c7ccd4" />
+            <stop offset="60%" stopColor="#71767f" />
+            <stop offset="100%" stopColor="#2e3137" />
           </linearGradient>
           <radialGradient id={ball} cx="40%" cy="32%" r="75%">
             <stop offset="0%" stopColor="#FFFCF4" />
@@ -90,7 +89,7 @@ export function BrandMark({
           className="rfx-athletic rfx-skew rfx-stroke leading-none text-bone"
           style={{ fontSize: WORDMARK_SIZE[size] }}
         >
-          Pitch <span className="rfx-holo">Atlas</span>
+          Pitch <span className="rfx-chrome-text">Atlas</span>
         </span>
       ) : null}
     </span>
