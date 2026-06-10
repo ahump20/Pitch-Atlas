@@ -2,8 +2,6 @@ import { type ReactNode, useState } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type {
-  GripView,
-  Handedness,
   MasterVariantRecord,
   PitchAtlasEntry,
   PitchFamily,
@@ -12,7 +10,7 @@ import type {
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
 import { scrollToId } from '../lib/scroll'
-import { BallStage } from '../components/ball/BallStage'
+import { GripViewer } from '../components/grip/GripViewer'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
 import { GripFace } from '../components/refractor/GripFace'
@@ -53,16 +51,6 @@ const FINGER_SPACING_LABEL: Record<string, string> = {
   'slight-spread': 'Slight spread',
   wide: 'Wide spacing',
 }
-
-const VIEW_OPTIONS: { id: GripView; label: string; note: string }[] = [
-  { id: 'top', label: 'Top', note: 'finger pads' },
-  { id: 'side', label: 'Side', note: 'palm gap' },
-  { id: 'thumb', label: 'Thumb', note: 'under support' },
-]
-const HAND_OPTIONS: { id: Handedness; label: string }[] = [
-  { id: 'right', label: 'Right' },
-  { id: 'left', label: 'Left' },
-]
 
 const PITCH_SLUG_ALIASES: Record<string, string> = {
   'twelve-six-curveball': 'twelve-six',
@@ -285,88 +273,30 @@ function SectionHead({
   )
 }
 
-/* ── Grip Lab: the live 3D actor + the sourced hold. ─────────────────────── */
+/* ── Grip Lab: the specimen hand on the ball + the sourced hold. ─────────── */
 function GripLabSection({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
   const { canonical, guide } = entry
-  const [showPins, setShowPins] = useState(true)
-  const [view, setView] = useState<GripView>(canonical.gripModel.defaultView)
-  const [hand, setHand] = useState<Handedness>('right')
   const [activeContact, setActiveContact] = useState<string | undefined>(undefined)
+  const unfiled = canonical.gripModel.status === 'unfiled'
 
   return (
     <section id="grip-lab" className="scroll-mt-20 border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
-      <SectionHead kicker="Grip Lab" title="Hold it like this" accentColor={accentColor}>
+      <SectionHead
+        kicker="Grip Lab"
+        title={unfiled ? 'No one hold owns this pitch' : 'Hold it like this'}
+        accentColor={accentColor}
+      >
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-          Lead with the hand. The grip a human can actually hold comes first; the physics tucks in behind
-          it. Drag the ball, or use the view buttons.
+          {unfiled
+            ? 'This pitch has no canonical grip to draw. The panel shows what the sources actually support, and nothing more.'
+            : 'Lead with the hand. The fingers on the ball below are the sourced contacts, solved onto the seam — drag the ball, or use the view buttons.'}
         </p>
       </SectionHead>
 
       <div className="mt-7 grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-12">
-        {/* live ball + controls */}
+        {/* the grip viewer: 3D hand, schematic fallback, or the unfiled state */}
         <div className="md:col-span-6">
-          <div className="relative mx-auto aspect-square w-full max-w-[480px]">
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-[10%] bottom-[3%] h-[16%] rounded-[50%]"
-              style={{ background: 'radial-gradient(closest-side, rgba(0,0,0,0.42), transparent)' }}
-            />
-            <BallStage
-              entry={entry}
-              grip={showPins}
-              view={view}
-              handedness={hand}
-              surface="stage"
-              faceGrip
-              autoSpin={false}
-              activeContact={activeContact}
-              className="h-full w-full"
-            />
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
-            <div>
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2">View</p>
-              <div className="flex flex-wrap gap-2" role="group" aria-label="Grip view">
-                {VIEW_OPTIONS.map((o) => (
-                  <button
-                    key={o.id}
-                    type="button"
-                    aria-pressed={view === o.id}
-                    onClick={() => setView(o.id)}
-                    className="rfx-chip"
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2">Hand</p>
-              <div className="flex gap-2" role="group" aria-label="Handedness">
-                {HAND_OPTIONS.map((o) => (
-                  <button
-                    key={o.id}
-                    type="button"
-                    aria-pressed={hand === o.id}
-                    onClick={() => setHand(o.id)}
-                    className="rfx-chip"
-                  >
-                    {o.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <button
-              type="button"
-              aria-pressed={showPins}
-              onClick={() => setShowPins((v) => !v)}
-              className="rfx-chip inline-flex items-center gap-2"
-            >
-              <span aria-hidden="true" className={`h-2 w-2 rounded-full ${showPins ? 'bg-cyan' : 'bg-bone/35'}`} />
-              {showPins ? 'Hide pins' : 'Show pins'}
-            </button>
-          </div>
+          <GripViewer entry={entry} accentColor={accentColor} activeContact={activeContact} />
         </div>
 
         {/* steps + feel + grip facts */}
