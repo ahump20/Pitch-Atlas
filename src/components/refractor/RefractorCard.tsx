@@ -100,20 +100,24 @@ export function RefractorCard({
           </span>
         </div>
 
-        <div className="rfx-window">
-          <div className="rfx-halftone" aria-hidden="true" />
+        {/* vnum + crumb live OUTSIDE the window so its arched overflow clip can't
+            slice them — they share the window's box via the unclipped wrap. */}
+        <div className="rfx-windowwrap">
+          <div className="rfx-window">
+            <div className="rfx-halftone" aria-hidden="true" />
+            {face}
+            {gripSource ? (
+              <span className="rfx-gripchip">
+                <i className="rfx-dot" style={{ background: gripSource.color, color: gripSource.color }} />
+                {gripSource.label}
+              </span>
+            ) : null}
+          </div>
           {vnum ? <span className="rfx-vnum">{vnum}</span> : null}
           {crumb && CrumbIcon ? (
             <span className="rfx-crumb">
               <CrumbIcon />
               {crumb.label}
-            </span>
-          ) : null}
-          {face}
-          {gripSource ? (
-            <span className="rfx-gripchip">
-              <i className="rfx-dot" style={{ background: gripSource.color, color: gripSource.color }} />
-              {gripSource.label}
             </span>
           ) : null}
         </div>

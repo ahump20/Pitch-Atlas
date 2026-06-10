@@ -141,7 +141,7 @@ export function SoftballHub() {
       />
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <StageTierMarker index="S" label="Start here" />
+        <StageTierMarker index="00" label="Start here" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <StartPlate
             to="/softball/fastpitch"

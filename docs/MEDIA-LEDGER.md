@@ -71,6 +71,40 @@ a dead end; those rows are **do not use** until someone re-verifies a live URL.
 | 13 | x.com/PitchingNinja/status/1151850495228104707 | unknown | X | @PitchingNinja | **Unavailable** | — | No | — | — | **Do not use** |
 | 14 | dropbox.com/sh/qw77db1loclcm0v/AADbEm4Po_fSzJ_XCK8mnNxQa | Full GIF archive incl. grip-explainer folder | Dropbox | @PitchingNinja (curating MLB footage) | **Liveness unverified** — JS-rendered, not confirmable headlessly; link re-shared by Friedman as late as Feb 2019 (row 3) | "Free for pitchers and coaches" hospitality in press coverage; **no license text** | **No** | n/a | High — the archive is MLB broadcast footage end to end | **Citation only.** Never deep-link items, never mirror, never bundle. Liveness doesn't change the treatment |
 
+## Addendum — Austin's teaching-lead candidates (verified 2026-06-09)
+
+Austin supplied 14 grip-teaching clips as better leads than generic highlight GIFs. All 14
+are **live and syndication-eligible** (official embed pipeline serves them), verified
+2026-06-09. Same rules as everything above: **official embed or outbound link only, never
+rehost**; no license text exists for any of them; commercial App Store reuse: **no**;
+attribution (whole credited tweet) required; broadcast-rights risk is high on every row
+with game footage, lower on interview/demo segments Friedman shot himself — but his
+self-shot interviews still carry player publicity rights, so the treatment doesn't change.
+iOS: outbound link only.
+
+| Pitch lane | Player / clip | URL | Date | Video | Treatment |
+|---|---|---|---|---|---|
+| Four-seam | Verlander — grip/release/spin axis | x.com/PitchingNinja/status/1016866886863278080 | 2018-07-11 | yes | Embed or link |
+| Sinker | Treinen — one-seam sinker grip ("there's not one right grip") | x.com/PitchingNinja/status/776840327009275904 | 2016-09-16 | yes | Embed or link |
+| Sinker | Stroman — grip/release/spin, slow | x.com/PitchingNinja/status/951837874781122561 | 2018-01-12 | yes | Embed or link |
+| Cutter | Pedro Martínez — cutter grip | x.com/PitchingNinja/status/972128267888222209 | 2018-03-09 | yes | Embed or link |
+| Cutter | Mariano Rivera — teaching Halladay & Kazmir the cutter | x.com/PitchingNinja/status/1061649568847269889 | 2018-11-11 | yes | Embed or link |
+| Slider | Kershaw — slider grip | x.com/PitchingNinja/status/1815186437819556161 | 2024-07-22 | yes | Embed or link |
+| Sweeper | Michael King — sweeper grip (from Friedman's own interview) | x.com/PitchingNinja/status/1868325721808285982 | 2024-12-15 | yes | Embed or link |
+| Slider | Chase Burns — slider grip (shown to Friedman directly) | x.com/PitchingNinja/status/1951673761532407921 | 2025-08-02 | yes | Embed or link |
+| Curveball | Yamamoto — curveball grip | x.com/PitchingNinja/status/1635036027550310400 | 2023-03-12 | no (stills) | Embed or link |
+| Knuckleball | Wakefield — knuckleball grip | x.com/PitchingNinja/status/1878791605005779087 | 2025-01-13 | yes | Embed or link |
+| Screwball | Valenzuela — legendary screwball + grip | x.com/PitchingNinja/status/2003437937870954952 | 2025-12-23 | yes | Embed or link |
+| Splitter | Ohtani — splitter grip/spin | x.com/PitchingNinja/status/983083790724685824 | 2018-04-08 | yes | Embed or link |
+| Forkball | Senga — Ghost Fork + grip | x.com/PitchingNinja/status/1422181203470389249 | 2021-08-02 | yes | Embed or link |
+| Changeup (Airbender) | Devin Williams — grip detail + variations | x.com/PitchingNinja/status/1378074273781256193 | 2021-04-02 | yes | Embed or link |
+
+These map cleanly onto existing specimen pages (four-seam, two-seam/sinker, cutter,
+slider, sweeper, curve, knuckleball, screwball, splitter, forkball, changeup) — each could
+sit as one credited embedded tweet in the matching pitch chapter via the existing
+`PitchingNinjaTweet` pattern (parameterize its hardcoded URL first). That's a product
+decision, not done in this run; the rights gate is cleared for **embed-tier use only**.
+
 ## If Austin wants more than embeds
 
 The clean path exists and is cheap to ask for: Friedman is an attorney and reachable
