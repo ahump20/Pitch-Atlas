@@ -1,38 +1,24 @@
 import { defineReactSsgConfig } from 'vite-plugin-react-ssg'
 import { routes } from './src/routes'
-import { PITCHES } from './src/data/pitches'
-import { CRAFTSMEN } from './src/data/craftsmen'
-import { LOST_PITCHES } from './src/data/lost-pitches'
-import { BASIC_REPERTOIRE } from './src/data/repertoire'
-import { WINGS } from './src/data/knowledge'
-import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from './src/data/softball'
+import { sitemapPaths } from './src/lib/sitemap'
 
 /*
-  Build-time prerender targets. The plugin discovers the static routes (/, /repertoire,
-  /craftsmen, /learn, /sources, /privacy, /support, …) from `routes`; the dynamic pitch,
-  basic-pitch, craftsman, lost-pitch, and knowledge-wing pages need their concrete paths
-  listed here so each gets its own prerendered HTML file. The basic pages cover only
-  repertoire entries without a filed specimen (filed ones live at /pitch/<slug> already).
-  Adding an entry to the data automatically adds its prerender path, so this list never
-  goes stale. '/404' is listed by hand because the catch-all route is a splat the plugin
-  cannot discover; the post-build step in vite.config.ts copies its output to 404.html so
-  Cloudflare Pages serves a real 404 (status and all) for unknown paths.
+  Build-time prerender targets, derived — never hand-listed. sitemapPaths()
+  builds the complete published surface from the route table's static mirror
+  plus the data arrays (pitches, basic repertoire, craftsmen, lost pitches,
+  knowledge wings, softball), so adding an entry to the data automatically adds
+  its prerender path and its sitemap line in the same motion; sitemap.test.ts
+  pins the static mirror against src/routes.tsx, and the post-build integrity
+  test (src/test/prerender-integrity.test.ts, run by `npm run build`) diffs
+  this list against the HTML that actually landed in dist/.
+
+  '/404' is the one extra: the catch-all splat the plugin cannot discover. The
+  post-build step in vite.config.ts copies its output to 404.html so Cloudflare
+  Pages serves a real 404 (status and all) for unknown paths.
 */
 export default defineReactSsgConfig({
   history: 'browser',
   origin: 'https://pitch-atlas.com',
   routes,
-  paths: [
-    '/404',
-    '/privacy',
-    '/support',
-    '/movement-map',
-    ...PITCHES.map((p) => `/pitch/${p.display.slug}`),
-    ...BASIC_REPERTOIRE.map((e) => `/repertoire/${e.id}`),
-    ...CRAFTSMEN.map((c) => `/craftsmen/${c.slug}`),
-    ...LOST_PITCHES.map((p) => `/lost-pitches/${p.slug}`),
-    ...WINGS.map((w) => `/learn/${w.slug}`),
-    ...SOFTBALL_PITCHES.map((p) => `/softball/pitch/${p.slug}`),
-    ...SOFTBALL_CRAFTSMEN.map((c) => `/softball/craftsmen/${c.slug}`),
-  ],
+  paths: ['/404', ...sitemapPaths()],
 })
