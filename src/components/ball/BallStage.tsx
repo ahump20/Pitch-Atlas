@@ -49,6 +49,7 @@ export function BallStage({
       spinAxis={entry.motion.spinAxis}
       gyro={entry.motion.gyro}
       grip={grip ? entry.canonical.gripModel.contacts : undefined}
+      handedness={handedness}
       surface={surface}
       title={`A ${entry.canonical.name} specimen. The seam is the closed figure-eight curve laid on the ball, oriented to the pitch's spin axis.`}
     />
