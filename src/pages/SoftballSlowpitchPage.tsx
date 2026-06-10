@@ -4,7 +4,7 @@ import { SLOWPITCH_NOTES, SLOWPITCH_CRAFT, SLOWPITCH_FORMATS } from '../data/sof
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
-import { SourcedValue } from '../components/provenance/SourcedValue'
+import { ClaimProse } from '../components/provenance/ClaimProse'
 
 /*
   Slowpitch, filed honestly and lighter. No windmill, no riseball shape — but a
@@ -46,11 +46,11 @@ export function SoftballSlowpitchPage() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="The rule that shapes it" />
-        <div className="grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-          {SLOWPITCH_NOTES.map((n, i) => (
-            <div key={n.label} className="border-t border-[rgba(255,255,255,0.12)] pt-3">
+        <div className="flex flex-col gap-9">
+          {SLOWPITCH_NOTES.map((n) => (
+            <div key={n.label}>
               <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
-              <SourcedValue claim={n.claim} valueClassName="text-base md:text-lg" accent={i === 0} />
+              <ClaimProse claim={n.claim} proseClassName="max-w-[64ch] text-lg leading-relaxed text-ink" />
             </div>
           ))}
         </div>
