@@ -47,6 +47,22 @@ export function MovementMapPage() {
             </a>
             .
           </p>
+          <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
+            Want the measured version — induced break, spin rates, the tracked numbers this page tells in
+            shape language? That craft has its own keepers:{' '}
+            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+              Baseball Savant ↗
+            </a>{' '}
+            and the{' '}
+            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+              FanGraphs model primer ↗
+            </a>
+            . How to read them without losing the feel is its own wing:{' '}
+            <a href="/learn/metrics" className="text-cyan underline-offset-2 hover:underline">
+              Reading Models
+            </a>
+            .
+          </p>
         </div>
       </section>
     </>

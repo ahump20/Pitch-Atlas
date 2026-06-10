@@ -1,7 +1,5 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { REPERTOIRE } from '../data/repertoire'
-import { LOST_PITCHES } from '../data/lost-pitches'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { PitchIndex } from '../components/sections/PitchIndex'
 
@@ -13,8 +11,6 @@ import { PitchIndex } from '../components/sections/PitchIndex'
   The philosophy lives on /sources.
 */
 export function RepertoirePage() {
-  const count = REPERTOIRE.length + LOST_PITCHES.length
-
   useSeoMeta({
     title: `The Pitch Index: every pitch, by family | ${SITE.siteName}`,
     description:
@@ -40,9 +36,6 @@ export function RepertoirePage() {
           that is not a pitch, and the banned doctored balls. A filed pitch opens its full specimen; an
           unfiled one opens a basic file with its sourced one-liners. Nothing fabricates geometry for a
           pitch the atlas has not measured.
-          <span className="mt-3 block font-mono text-xs uppercase tracking-[0.12em] text-bone-2/70">
-            {count} entries indexed
-          </span>
         </p>
       </header>
 

@@ -49,6 +49,22 @@ export function ComparePage() {
             </a>
             .
           </p>
+          <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
+            The measured tunnel — release points, separation in inches, the tracked record — lives with
+            the record-keepers:{' '}
+            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+              Baseball Savant &#8599;
+            </a>{' '}
+            and the{' '}
+            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-cyan underline-offset-2 hover:underline">
+              FanGraphs model primer &#8599;
+            </a>
+            . How to read them is its own wing:{' '}
+            <a href="/learn/metrics" className="text-cyan underline-offset-2 hover:underline">
+              Reading Models
+            </a>
+            .
+          </p>
         </div>
       </section>
     </>
