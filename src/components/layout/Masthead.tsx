@@ -37,7 +37,7 @@ export function Masthead() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 border-b border-bone/10 bg-[#070509]/85 backdrop-blur-md">
+    <header className="sticky top-0 z-30 border-b border-bone/10 bg-[#1C1916]/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
         <Link to="/" aria-label={`${SITE.siteName}, home`}>
           <BrandMark size="sm" />

@@ -21,8 +21,8 @@
 
   /* dark surfaces — the dominant near-black field. Cool, not brown. Gives the
      red, powder, and cream room to breathe. */
-  --color-stage: #0B0B0D;       /* cool near-black chamber: the white ball glows */
-  --color-press: #15161A;       /* raised near-black: cards on the stage */
+  --color-stage: #16130F;       /* warm near-black chamber: the white ball glows */
+  --color-press: #221E18;       /* raised warm charcoal: cards on the table */
 
   /* ink — text on cream surfaces. Cool near-black, matches the field. */
   --color-ink: #14161B;         /* primary ink */
@@ -415,16 +415,21 @@
    Additive: Heritage tokens above stay live until each page is migrated.
    ============================================================ */
 @theme {
-  --color-void: #070509;          /* the dark field, sitewide */
+  --color-void: #1C1916;          /* Dugout Charcoal — the warm matte table the set is handled on.
+                                     Was #070509 cool void; the Sluggers system bans pure black. */
   --color-bone: #F6F1E6;          /* refined cream text (overrides the earlier #F2ECDD) */
-  --color-bone-2: #C2C7D6;        /* cool secondary on the void */
-  --color-ink-3: #7C8294;         /* muted on the void */
-  --color-ok-bright: #34E27E;     /* official-data dot, tuned for the void */
-  --color-amber-bright: #FFC23C;  /* reputable-analysis dot, tuned for the void */
+  --color-bone-2: #C9C2B0;        /* warm secondary on the charcoal (was cool slate #C2C7D6) */
+  --color-ink-3: #8A8576;         /* warm muted (was cool #7C8294) */
+  --color-ok-bright: #34E27E;     /* official-data dot, tuned for the dark field */
+  --color-amber-bright: #FFC23C;  /* reputable-analysis dot, tuned for the dark field */
   --color-sand-bright: #CDBA8E;   /* secondhand / approximate */
-  /* interactive accent — the prototype leans cyan for nav, kickers, links, focus. */
-  --color-cyan: #37D6FF;
-  --color-cyan-deep: #1C8FD6;
+  /* RETONED: the page-chrome accent is Pack Gold now — kickers, links, chips, focus,
+     inputs all cascade through this one token (the variable name is kept so every
+     text-cyan / border-cyan utility re-tones in place). True cyan survives only
+     inside the per-pitch card accent triads, which use literal hexes in accents.ts —
+     the neon triads are the foil identity of the cards and never re-tone. */
+  --color-cyan: #E9C97A;
+  --color-cyan-deep: #BD9849;
   /* the void-tuned seam red (the leather seam + the banned tier). Distinct from the
      cream-page Heritage --color-seam (#C8102E). */
   --color-seam-bright: #FF2D44;
@@ -471,18 +476,20 @@
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
   }
 
-  /* ── the void field + dot-grid atmosphere (page level) ── */
+  /* ── the charcoal field + pinstripe atmosphere (page level) ──
+     One warm overhead vignette — a single light over a card table — replaces the
+     old cool void's three colored washes. The fixed underlay keeps the legacy
+     .rfx-dotgrid class name (so the layout shell needs no edit) but draws
+     pinstripes now: vertical bone hairlines are Sluggers DNA; dots were terminal DNA. */
   .rfx-void {
     background:
-      radial-gradient(60% 50% at 50% -8%, #15121c 0%, transparent 60%),
-      radial-gradient(40% 40% at 12% 30%, rgba(51,224,255,.10), transparent 60%),
-      radial-gradient(40% 40% at 88% 24%, rgba(196,75,255,.10), transparent 60%),
+      radial-gradient(64% 50% at 50% -10%, #2B251D 0%, transparent 62%),
       var(--color-void);
     color: var(--color-bone);
   }
   .rfx-dotgrid {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
-    background-image: radial-gradient(circle,#fff 0 1px,transparent 1.4px); background-size: 20px 20px;
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .04;
+    background-image: repeating-linear-gradient(90deg, var(--color-bone) 0 1px, transparent 1px 64px);
     mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
   }
 
@@ -649,7 +656,7 @@
   }
   .pa-stage-scrim {
     position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    background: linear-gradient(to top, var(--color-void) 0%, rgba(7,5,9,.62) 34%, rgba(7,5,9,.18) 62%, transparent 88%);
+    background: linear-gradient(to top, var(--color-void) 0%, rgba(28,25,22,.62) 34%, rgba(28,25,22,.18) 62%, transparent 88%);
   }
   .pa-stage-content { position: absolute; inset: 0; z-index: 2; }
 
@@ -728,7 +735,7 @@
   /* a foil-edged surface for non-card sections (tools, wings, content chrome) */
   .rfx-panel { position: relative; border-radius: 12px; background: var(--color-press); border: 1px solid rgba(246,241,230,.10); }
   .rfx-panel-foil { position: relative; border-radius: 12px; padding: 1px; background: var(--foil); background-size: 300% 300%; }
-  .rfx-panel-foil > * { border-radius: 11px; background: #0a0810; }
+  .rfx-panel-foil > * { border-radius: 11px; background: #16130F; }
 
   /* ── shared page chrome (Pitch Index, specimen chapter, halls, tools) ── */
 
@@ -740,15 +747,135 @@
   }
   .rfx-skick::before { content: ""; width: 22px; height: 2px; background: currentColor; flex: 0 0 auto; }
 
-  /* athletic section title (skewed, bone). Pair with .rfx-holo on the accent word. */
+  /* athletic section title — upright now, scoreboard-style. The skew survives only
+     inside the card banner, where it is the nameplate's identity; section heads sit
+     square on the page like stadium letters on a recessed bar. */
   .rfx-stitle {
     font-family: var(--font-athletic); text-transform: uppercase; line-height: .92;
-    transform: skewX(-5deg); color: var(--color-bone);
+    color: var(--color-bone);
   }
 
-  /* dark field input: search bars, tool controls. Cyan focus ring. */
+  /* ── stadium scoreboard section head: a recessed charcoal bar with gold keylines,
+     upright Anton title left, an optional mono counter right. The section heads of
+     the card-table page. ── */
+  .slab-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+    padding: 10px 14px; border-radius: 8px;
+    background: linear-gradient(180deg, #16130F, #1E1A15);
+    border-top: 1px solid color-mix(in srgb, #E9C97A 32%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, #E9C97A 18%, transparent);
+    box-shadow: inset 0 1px 0 rgba(0,0,0,.6), inset 0 -1px 0 rgba(0,0,0,.5);
+  }
+  .slab-head > h2, .slab-head > h3 {
+    font-family: var(--font-athletic); text-transform: uppercase; line-height: .94;
+    color: var(--color-bone); letter-spacing: .015em;
+  }
+  .slab-head .slab-count {
+    font-family: var(--font-mono); font-size: 10px; letter-spacing: .16em;
+    color: #E9C97A; white-space: nowrap;
+  }
+
+  /* ── the wax-seal button: charcoal pill, double gold hairline, Anton label. On
+     hover a single foil band sweeps across once — the brief's "light catching a
+     holographic foil strip". Reduced motion gets a static gold sheen instead. ── */
+  .btn-foil {
+    position: relative; display: inline-flex; align-items: center; gap: 9px;
+    padding: 13px 22px; border-radius: 10px; cursor: pointer; overflow: hidden;
+    background: linear-gradient(180deg, #221D16, #171410);
+    border: 1px solid color-mix(in srgb, #E9C97A 55%, transparent);
+    box-shadow: 0 0 0 3px #14110D, 0 0 0 4px color-mix(in srgb, #E9C97A 28%, transparent),
+      0 10px 24px -12px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,240,194,.16);
+    font-family: var(--font-athletic); font-size: 14px; letter-spacing: .06em;
+    text-transform: uppercase; color: #F0E2BC; line-height: 1;
+    transition: transform .15s ease, border-color .2s ease;
+  }
+  .btn-foil:active { transform: translateY(1px); }
+  .btn-foil::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: var(--foil); background-size: 300% 100%; background-position: 0% 0;
+    mask-image: linear-gradient(114deg, transparent 32%, #000 47%, #000 53%, transparent 68%);
+    -webkit-mask-image: linear-gradient(114deg, transparent 32%, #000 47%, #000 53%, transparent 68%);
+    opacity: 0; mix-blend-mode: screen;
+  }
+  .btn-foil:hover { border-color: color-mix(in srgb, #E9C97A 85%, transparent); }
+  .btn-foil:hover::after { animation: foil-sweep .9s ease-out; }
+  .btn-foil.is-ghost {
+    background: transparent;
+    border-color: color-mix(in srgb, var(--color-bone) 32%, transparent);
+    box-shadow: none; color: var(--color-bone);
+  }
+  .btn-foil.is-ghost:hover { border-color: color-mix(in srgb, #E9C97A 75%, transparent); }
+  /* ghost on a cream card-back panel: charcoal ink lines and text */
+  .btn-foil.is-ink {
+    background: transparent; border-color: rgba(28,25,22,.45);
+    box-shadow: none; color: #1C1916;
+  }
+  .btn-foil.is-ink:hover { border-color: rgba(28,25,22,.85); }
+  @media (prefers-reduced-motion: reduce) {
+    .btn-foil:hover::after { animation: none; opacity: .28; background-position: 50% 0; }
+  }
+
+  /* ── ink-stamp label: the rarity-index stamp — blocky uppercase mono in a thin
+     box, set a degree off-square like a hand stamp. Color rides on currentColor. ── */
+  .rfx-stamp {
+    display: inline-block; padding: 4px 9px; border: 1px solid currentColor;
+    border-radius: 3px; font-family: var(--font-mono); font-size: 9px; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase; line-height: 1;
+    transform: rotate(-1deg);
+  }
+
+  /* ── the cream card-back panel (CardBackPanel.tsx) — Scorecard Cream paper with
+     the Sluggers double border: outer gold hairline, a cream gap, then an inner
+     charcoal hairline. SCOPED TOKENS: the sitewide cream→void remap below rewrites
+     --color-paper/--color-ink for the dark field, so the card back re-declares its
+     own ink locally — cream surfaces read charcoal ink again inside this panel. ── */
+  .rfx-cardback {
+    --cb-paper: #F2E9D5;
+    --cb-paper-2: #EAE0C8;
+    --cb-ink: #211D17;
+    --cb-ink-2: #4A443A;
+    --cb-ink-3: #6E675A;
+    --cb-line: rgba(33,29,23,.22);
+    --cb-navy: #1F3A5F;
+    --cb-forest: #2F5D46;
+    --cb-burgundy: #6E2B35;
+    --cb-gold-ink: #8A6B24;
+    position: relative; border-radius: 14px; padding: 5px;
+    background: linear-gradient(160deg, #C9A85C, #8A6B24 60%, #C9A85C);
+    box-shadow: 0 24px 48px -24px rgba(0,0,0,.85), inset 0 1px 0 rgba(255,240,194,.4);
+    color: var(--cb-ink);
+  }
+  .rfx-cardback-inner {
+    position: relative; border-radius: 10px; overflow: hidden;
+    background:
+      radial-gradient(120% 100% at 50% 0%, rgba(255,252,242,.6), transparent 60%),
+      var(--cb-paper);
+    border: 1px solid rgba(33,29,23,.5);
+    box-shadow: inset 0 0 0 1px rgba(242,233,213,.9), inset 0 0 0 2px var(--cb-line);
+    padding: clamp(16px, 3vw, 30px);
+  }
+  /* paper tooth: a 2% noise pass so the cream reads as card stock, not flat fill */
+  .rfx-cardback-inner::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='p'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23p)'/%3E%3C/svg%3E");
+    mix-blend-mode: multiply;
+  }
+  .rfx-cardback .cb-corner { position: absolute; width: 14px; height: 14px; border-color: rgba(33,29,23,.45); }
+  /* the card-back strip row: title between double rules, vintage card anatomy */
+  .cb-rules {
+    display: flex; align-items: center; gap: 12px;
+    border-top: 2px solid var(--cb-ink); border-bottom: 2px solid var(--cb-ink);
+    box-shadow: inset 0 3px 0 -2px var(--cb-line), inset 0 -3px 0 -2px var(--cb-line);
+    padding: 7px 2px;
+  }
+  .cb-rules > * { font-family: var(--font-athletic); text-transform: uppercase; letter-spacing: .04em; color: var(--cb-navy); }
+  /* tight monospace data rows on pinstripes — the card-back scoreboard register */
+  .cb-row { border-bottom: 1px solid var(--cb-line); }
+  .cb-row:last-child { border-bottom: none; }
+
+  /* dark field input: search bars, tool controls. Gold chrome focus ring. */
   .rfx-input {
-    width: 100%; background: #08060e; color: var(--color-bone);
+    width: 100%; background: #16130F; color: var(--color-bone);
     border: 1px solid color-mix(in srgb, var(--color-cyan) 40%, transparent); border-radius: 12px;
     padding: 12px 16px; font-family: var(--font-prose); font-size: 15px; outline: none;
     transition: border-color .2s, box-shadow .2s;
@@ -833,11 +960,11 @@
      instead of leaving the browser's light system control. */
   .rfx-select {
     appearance: none; -webkit-appearance: none;
-    width: 100%; background-color: #0a0810; color: var(--color-bone);
+    width: 100%; background-color: #16130F; color: var(--color-bone);
     border: 1px solid color-mix(in srgb, var(--color-cyan) 35%, transparent);
     border-radius: 10px; padding: 9px 34px 9px 13px;
     font-family: var(--font-mono); font-size: 13px; line-height: 1.2; cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%2337D6FF' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%23E9C97A' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
     transition: border-color .2s, box-shadow .2s;
   }
@@ -845,7 +972,7 @@
     border-color: var(--color-cyan); outline: none;
     box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-cyan) 22%, transparent);
   }
-  .rfx-select option { background: #0a0810; color: var(--color-bone); }
+  .rfx-select option { background: #16130F; color: var(--color-bone); }
 
   /* segmented toggle (RHP/LHP, view switches): off = ghost, on = cyan fill. */
   .rfx-seg { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
@@ -854,6 +981,12 @@
 }
 
 @keyframes rfx-slide { to { background-position: 300% 0; } }
+@keyframes foil-sweep {
+  0% { opacity: 0; background-position: 120% 0; }
+  18% { opacity: 1; }
+  82% { opacity: 1; }
+  100% { opacity: 0; background-position: -20% 0; }
+}
 @keyframes rfx-reveal { from { opacity: 0; transform: translateY(26px) scale(.96); } to { opacity: 1; transform: none; } }
 @keyframes rfx-drift { 0% { background-position: 0 0,0 0,12% 16%; } 100% { background-position: 0 0,0 0,82% 70%; } }
 @keyframes rfx-spin { to { transform: rotate(360deg); } }
@@ -879,24 +1012,24 @@
 :root {
   color-scheme: dark;
 
-  /* surfaces: cream → void + near-void panels */
-  --color-paper: #070509;
-  --color-paper-2: #100c18;
-  --color-paper-3: #161120;
-  --color-cream: #070509;
-  --color-panel: #100c18;
+  /* surfaces: cream → Dugout Charcoal + warm raised panels (was cool void/violet) */
+  --color-paper: #1C1916;
+  --color-paper-2: #26221C;
+  --color-paper-3: #2E2922;
+  --color-cream: #1C1916;
+  --color-panel: #26221C;
 
-  /* ink: near-black text → bone on the void */
+  /* ink: near-black text → bone on the charcoal */
   --color-ink: #F6F1E6;
-  --color-ink-2: #C2C7D6;
-  --color-ink-3: #7C8294;
+  --color-ink-2: #C9C2B0;
+  --color-ink-3: #8A8576;
 
-  /* navy (text, borders, hovers, plate edges) → light cool slate so it reads on void */
-  --color-navy: #C6D0E2;
-  --color-navy-2: #E4EAF4;
-  --color-navy-line: rgba(198, 208, 226, 0.14);
+  /* navy (text, borders, hovers, plate edges) → warm light bone-slate on charcoal */
+  --color-navy: #D8D1C0;
+  --color-navy-2: #EFE9DA;
+  --color-navy-line: rgba(216, 209, 192, 0.16);
 
-  /* accents tuned for the void */
+  /* accents tuned for the dark field */
   --color-seam: #FF2D44;
   --color-seam-deep: color-mix(in srgb, #FF2D44 78%, #2A0A10);
   --color-ok: #34E27E;
@@ -904,47 +1037,48 @@
   --color-sand: #CDBA8E;
   --color-powder: #7FC6FF;
 
-  /* hairline rule on the void (was the warm machined brown) */
-  --color-machined: rgba(198, 208, 226, 0.20);
+  /* hairline rule on the charcoal (warm bone fade) */
+  --color-machined: rgba(216, 209, 192, 0.20);
 
-  /* inline prose-link blue (text-columbia), undefined before; columbia blue reads on void */
+  /* inline prose-link blue (text-columbia); kept readable on the charcoal */
   --color-columbia: #5AA9E6;
-  /* shadcn semantic bridge: source-owned primitives, Pitch Atlas palette. */
-  --background: #070509;
+  /* shadcn semantic bridge: source-owned primitives, Pitch Atlas palette.
+     Primary/ring follow the Pack Gold chrome accent. */
+  --background: #1C1916;
   --foreground: #F6F1E6;
-  --card: #15161A;
+  --card: #26221C;
   --card-foreground: #F6F1E6;
-  --popover: #100c18;
+  --popover: #26221C;
   --popover-foreground: #F6F1E6;
-  --primary: #37D6FF;
-  --primary-foreground: #06121B;
-  --secondary: #161120;
+  --primary: #E9C97A;
+  --primary-foreground: #241A05;
+  --secondary: #2E2922;
   --secondary-foreground: #F6F1E6;
-  --muted: #161120;
-  --muted-foreground: #C2C7D6;
-  --accent: #15161A;
+  --muted: #2E2922;
+  --muted-foreground: #C9C2B0;
+  --accent: #26221C;
   --accent-foreground: #F6F1E6;
   --destructive: #FF2D44;
   --border: rgba(246, 241, 230, 0.12);
   --input: rgba(246, 241, 230, 0.14);
-  --ring: #37D6FF;
-  --chart-1: #37D6FF;
+  --ring: #E9C97A;
+  --chart-1: #E9C97A;
   --chart-2: #34E27E;
   --chart-3: #FFC23C;
   --chart-4: #8A6BFF;
   --chart-5: #FF2D44;
   --radius: 0.625rem;
-  --sidebar: #100c18;
+  --sidebar: #26221C;
   --sidebar-foreground: #F6F1E6;
-  --sidebar-primary: #37D6FF;
-  --sidebar-primary-foreground: #06121B;
-  --sidebar-accent: #15161A;
+  --sidebar-primary: #E9C97A;
+  --sidebar-primary-foreground: #241A05;
+  --sidebar-accent: #2E2922;
   --sidebar-accent-foreground: #F6F1E6;
   --sidebar-border: rgba(246, 241, 230, 0.12);
-  --sidebar-ring: #37D6FF;
+  --sidebar-ring: #E9C97A;
 }
 
-/* native range + check controls pick up the cyan accent on the void */
+/* native range + check controls pick up the gold chrome accent */
 input[type="range"] { accent-color: var(--color-cyan); }
 input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
 /*
@@ -996,35 +1130,35 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--color-cyan); }
   ---break---
 */
 .dark {
-  --background: #070509;
+  --background: #1C1916;
   --foreground: #F6F1E6;
-  --card: #15161A;
+  --card: #26221C;
   --card-foreground: #F6F1E6;
-  --popover: #100c18;
+  --popover: #26221C;
   --popover-foreground: #F6F1E6;
-  --primary: #37D6FF;
-  --primary-foreground: #06121B;
-  --secondary: #161120;
+  --primary: #E9C97A;
+  --primary-foreground: #241A05;
+  --secondary: #2E2922;
   --secondary-foreground: #F6F1E6;
-  --muted: #161120;
-  --muted-foreground: #C2C7D6;
-  --accent: #15161A;
+  --muted: #2E2922;
+  --muted-foreground: #C9C2B0;
+  --accent: #26221C;
   --accent-foreground: #F6F1E6;
   --destructive: #FF2D44;
   --border: rgba(246, 241, 230, 0.12);
   --input: rgba(246, 241, 230, 0.14);
-  --ring: #37D6FF;
-  --chart-1: #37D6FF;
+  --ring: #E9C97A;
+  --chart-1: #E9C97A;
   --chart-2: #34E27E;
   --chart-3: #FFC23C;
   --chart-4: #8A6BFF;
   --chart-5: #FF2D44;
-  --sidebar: #100c18;
+  --sidebar: #26221C;
   --sidebar-foreground: #F6F1E6;
-  --sidebar-primary: #37D6FF;
-  --sidebar-primary-foreground: #06121B;
-  --sidebar-accent: #15161A;
+  --sidebar-primary: #E9C97A;
+  --sidebar-primary-foreground: #241A05;
+  --sidebar-accent: #2E2922;
   --sidebar-accent-foreground: #F6F1E6;
   --sidebar-border: rgba(246, 241, 230, 0.12);
-  --sidebar-ring: #37D6FF;
+  --sidebar-ring: #E9C97A;
 }

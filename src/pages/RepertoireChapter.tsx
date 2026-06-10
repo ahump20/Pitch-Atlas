@@ -32,11 +32,13 @@ const FAMILY_EYEBROW: Record<RepertoireFamily, string> = {
 }
 
 const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  fastball: '#37D6FF',
-  offspeed: '#7CFF52',
-  breaking: '#8A6BFF',
-  specialty: '#FFC23C',
-  banned: '#FF2D44',
+  // collegiate jewel lifts on the charcoal — pennant navy, varsity forest,
+  // letterman burgundy, pack gold, seam. The neon triads stay on the card faces.
+  fastball: '#5C84B8',
+  offspeed: '#5FA27B',
+  breaking: '#B0606C',
+  specialty: '#E9C97A',
+  banned: '#E04A5A',
 }
 
 function HeroBadge({ entry }: { entry: RepertoireEntry }) {

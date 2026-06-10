@@ -20,15 +20,19 @@ export function useAutoplayGuard<T extends HTMLVideoElement>() {
       if (!cancelled) setBlocked(false)
     }
     el.addEventListener('playing', onPlaying)
+    // a synchronous throw from play() routes through the same rejected-promise
+    // path as a normal autoplay refusal, so the blocked flag is only ever set
+    // asynchronously (never synchronously inside this effect)
+    let attempt: Promise<void> | undefined
     try {
-      const attempt = el.play()
-      if (attempt && typeof attempt.catch === 'function') {
-        attempt.catch(() => {
-          if (!cancelled) setBlocked(true)
-        })
-      }
+      attempt = el.play()
     } catch {
-      if (!cancelled) setBlocked(true)
+      attempt = Promise.reject(new Error('autoplay refused synchronously'))
+    }
+    if (attempt && typeof attempt.catch === 'function') {
+      attempt.catch(() => {
+        if (!cancelled) setBlocked(true)
+      })
     }
     return () => {
       cancelled = true
