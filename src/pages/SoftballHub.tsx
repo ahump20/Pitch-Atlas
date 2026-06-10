@@ -6,6 +6,7 @@ import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from '../data/softball'
 import type { SoftballPitch } from '../data/softball'
 import type { Craftsman } from '../data/types'
 import { accentForSlug } from '../components/refractor/accents'
+import { SoftballProvenanceRow } from '../components/provenance/SoftballProvenanceRow'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
@@ -52,8 +53,8 @@ function PitchPlate({ pitch }: { pitch: SoftballPitch }) {
       </div>
       <h3 className="rfx-platetitle text-2xl">{pitch.name}</h3>
       <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-bone-2">{pitch.tagline}</p>
-      <div className="mt-auto flex items-center gap-x-3 border-t border-white/10 pt-3">
-        <span className="mono-label text-ink-3">Sourced shape</span>
+      <div className="mt-auto flex flex-col gap-2 border-t border-white/10 pt-3">
+        <SoftballProvenanceRow claimType="Movement" claim={pitch.movement} openQuestion={pitch.openQuestion} />
         <span className="ml-auto mono-label text-cyan transition-colors group-hover:text-bone">Open →</span>
       </div>
     </Link>

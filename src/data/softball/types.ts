@@ -43,6 +43,13 @@ export interface SoftballPitch {
   role: string
   /** The honest physics note — used most on the riseball ("does it actually rise?"). */
   physicsNote?: Claim<string>
+  /**
+   * The honest open question this entry leaves on file, when the sources
+   * genuinely record one (the riseball's rise dispute, the peel drop's
+   * backspin-vs-topspin teaching split). Never invented to fill the row:
+   * absent means the provenance row reads "none on file".
+   */
+  openQuestion?: string
   /** Representative arms, plain text. Never a likeness. */
   notableThrowers?: string
   /** The flagship of the arsenal (the riseball): leads the hub and gets the deepest read. */

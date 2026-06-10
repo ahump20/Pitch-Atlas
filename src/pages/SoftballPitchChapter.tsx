@@ -6,6 +6,7 @@ import type { SoftballPitch } from '../data/softball'
 import { accentForSlug } from '../components/refractor/accents'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
+import { SoftballProvenanceRow } from '../components/provenance/SoftballProvenanceRow'
 import { NotFound } from './NotFound'
 
 /*
@@ -96,6 +97,12 @@ export function SoftballPitchChapter() {
             {pitch.name}
           </h1>
           <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-bone-2">{pitch.tagline}</p>
+          <SoftballProvenanceRow
+            claimType="Movement"
+            claim={pitch.movement}
+            openQuestion={pitch.openQuestion}
+            className="mt-5 max-w-[72ch]"
+          />
         </div>
       </section>
 

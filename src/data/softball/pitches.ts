@@ -46,6 +46,10 @@ const riseball: SoftballPitch = {
     'reputable-analysis',
     { note: 'The Armstrong study compared a light training ball against a regulation ball; the lighter ball is far easier to lift. Sources agree the mechanism (backspin Magnus) is real; they disagree on whether a regulation ball nets an actual rise.' },
   ),
+  // The recorded dispute, not an invention: the physics note's own caveat —
+  // sources agree the backspin mechanism is real and disagree on whether a
+  // regulation ball nets an actual rise.
+  openQuestion: 'Does it truly rise, or only drop less than the eye expects?',
   role: 'A chase pitch up and out of the zone, tunneled against the drop — the two move in opposite directions off a similar look.',
   notableThrowers: 'Cat Osterman set up her drop with it; Monica Abbott pairs it with elite power.',
 }
@@ -77,6 +81,10 @@ const drop: SoftballPitch = {
     'reputable-analysis',
     { note: 'The same Student Life physics breakdown that deflates the rise (“the Magnus effect doesn’t have a big enough impact to actually make the ball defy gravity”) confirms the drop’s topspin sends the ball down — Magnus and gravity working in the same direction.' },
   ),
+  // The recorded teaching split from the spin claim's caveat: some coaches
+  // still teach a "backspin peel drop"; the physics-grounded sources describe
+  // the effective drop as topspin.
+  openQuestion: 'Is the peel drop backspin, as some coaches teach, or topspin, as the physics sources describe?',
   role: 'A primary strike-and-ground-ball pitch, lethal when commanded down and tunneled off the rise.',
   notableThrowers: 'Cat Osterman — the spin and command made it her signature.',
 }
