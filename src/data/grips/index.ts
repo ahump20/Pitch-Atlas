@@ -42,15 +42,19 @@ export interface GripClip {
   webm: string
   poster: string
   alt: string
+  /** What the loop shows, in the library's caption voice. The iOS bundle
+   *  renders this under the film card; web surfaces may adopt it too. */
+  caption?: string
 }
 
 /** Build a grip clip from a base name, e.g. `four-seam-grip` → mp4/webm + webp poster. */
-function clip(name: string, alt: string): GripClip {
+function clip(name: string, alt: string, caption?: string): GripClip {
   return {
     mp4: `/grips/${name}.mp4`,
     webm: `/grips/${name}.webm`,
     poster: `/grips/${name}-poster.webp`,
     alt,
+    caption,
   }
 }
 
@@ -100,6 +104,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     clip: clip(
       'four-seam-grip',
       "A looping close-up of Austin's four-seam grip: two fingertips laid across the seam, the ball held out toward the camera.",
+      'The grip in motion: ball turned to the camera with index and middle fingertips riding the wide horseshoe, thumb seated underneath.',
     ),
     photos: [
       shot(
@@ -111,7 +116,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       shot(
         'four-seam-7164.webp',
         'thumb',
-        'From underneath — the thumb on smooth leather, centered below the two top fingers.',
+        'From underneath: the thumb on smooth leather, centered below the two top fingers.',
         'The underside of a four-seam grip, the thumb supporting the ball centered below the two top fingers.',
       ),
       shot(
@@ -139,12 +144,13 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     clip: clip(
       'two-seam-grip',
       "A looping close-up of Austin's two-seam grip: two fingers running along the narrow seams like train tracks.",
+      'The grip in motion: fingertips running with the narrow seams, the ball rolled so the finger pads show on the laces.',
     ),
     photos: [
       shot(
         'two-seam-7166.webp',
         'top',
-        'Two fingers running along the narrow seams — the train-track look that names the pitch.',
+        'Two fingers running along the narrow seams, the train-track look that names the pitch.',
         'A hand gripping a baseball two-seam style, index and middle fingers running along the two narrow parallel seams.',
       ),
       shot(
@@ -178,6 +184,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     clip: clip(
       'twelve-six-grip',
       "A looping close-up of Austin's 12-6 curveball grip: two fingers tucked together and cornered against one seam.",
+      'Setting the grip at the waist: the hand works the ball until the middle finger finds the long seam and the thumb rolls underneath.',
     ),
     photos: [
       shot(
@@ -189,7 +196,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       shot(
         'twelve-six-7169.webp',
         'side',
-        'From the side — the fingers pinched to the seam, thumb braced underneath.',
+        'From the side: the fingers pinched to the seam, thumb braced underneath.',
         'A side view of a 12-6 curveball grip, two fingers against the seam with the thumb under the ball.',
       ),
       shot(
@@ -224,7 +231,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       shot(
         'splitter-7177.webp',
         'top',
-        'Top-down — the gap between the two fingers is the whole pitch.',
+        'Top-down: the gap between the two fingers is the whole pitch.',
         'A top view of a split-finger grip, two fingers spread apart over the ball.',
       ),
       shot(
@@ -253,7 +260,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       shot(
         'palmball-7179.webp',
         'top',
-        'Four fingers laid together across the top of the ball, seated deep toward the palm — the football-change smother.',
+        'Four fingers laid together across the top of the ball, seated deep toward the palm. The football-change smother.',
         'A hand gripping a baseball with all four fingers together across the top, the football change or palmball grip.',
       ),
       shot(
@@ -281,6 +288,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     clip: clip(
       'three-finger-change-grip',
       "A looping close-up of Austin's three-finger changeup grip: three fingers set close together across the top of the ball.",
+      'Three fingers laid across the ball and extended to the camera. The face of the changeup a hitter never gets to read.',
     ),
     photos: [
       shot(
