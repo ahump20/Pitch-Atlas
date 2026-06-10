@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import type { GripClip } from '../../data/grips'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
 
 /*
   The cinematic media panel — real footage staged large enough to carry a page.
@@ -39,8 +40,9 @@ export function MediaStage({
   children?: ReactNode
 }) {
   const reduced = useReducedMotion()
+  const { ref, blocked } = useAutoplayGuard<HTMLVideoElement>()
 
-  const media = reduced ? (
+  const media = reduced || blocked ? (
     <img
       className="pa-stage-media"
       src={clip.poster}
@@ -54,6 +56,7 @@ export function MediaStage({
     />
   ) : (
     <video
+      ref={ref}
       className="pa-stage-media"
       poster={clip.poster}
       autoPlay

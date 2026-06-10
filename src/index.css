@@ -486,35 +486,42 @@
     mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
   }
 
-  /* ── diamond PA brand mark ── */
+  /* ── diamond PA brand mark — black diamond, gold mark, like the tin. The rainbow
+     read as a smear at chip size; the reference object answers it. ── */
   .rfx-diamond {
     transform: rotate(45deg); border-radius: 8px; display: grid; place-items: center;
-    background: var(--foil); background-size: 300% 300%; animation: rfx-slide 5s linear infinite;
-    box-shadow: 0 0 18px -3px rgba(120,160,255,.6), 0 2px 8px -2px #000;
+    background: linear-gradient(160deg, #16120a, #0b0a08 70%);
+    border: 1px solid color-mix(in srgb, #caa14a 70%, transparent);
+    box-shadow: 0 2px 8px -2px #000, inset 0 1px 0 rgba(255,240,194,.22);
   }
-  .rfx-diamond > * { transform: rotate(-45deg); font-family: var(--font-mono); font-weight: 600; color: #0b0a10; }
-  .rfx-diamond.is-gold { background: var(--gold); }
+  .rfx-diamond > * { transform: rotate(-45deg); font-family: var(--font-mono); font-weight: 700; color: #e9c97a; }
+  .rfx-diamond.is-gold { background: var(--gold); border-color: rgba(0,0,0,.5); }
+  .rfx-diamond.is-gold > * { color: #2a1d05; }
 
-  /* ── refractor card (component sets --c1/--c2/--c3 + --i index) ── */
+  /* ── refractor card (component sets --c1/--c2/--c3 + --i index) ──
+     The frame is gold on every card — the collectible identity of the physical
+     reference object (a gold-framed card over a black patterned field). The 1/1
+     chase card runs the full bright gold; the standard run wears a deeper antique
+     gold so the chase still reads as the chase. */
   .rfx-card {
     --mx: 50%; --my: 32%;
+    --gold-deep: linear-gradient(150deg,#33240a,#7c5e1f 20%,#d8b45e 36%,#6e5419 52%,#c9a043 68%,#3c2b0d 88%);
     position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 5px;
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     transition: transform .4s cubic-bezier(.2,.8,.2,1); will-change: transform;
-    /* brushed-steel frame that catches the light at the pointer; warm patina beneath */
-    background: var(--patina); background-size: 200% 200%; background-position: var(--mx) var(--my);
+    background: var(--gold-deep); background-size: 200% 200%; background-position: var(--mx) var(--my);
     box-shadow:
       0 34px 64px -24px rgba(0,0,0,.92),
       0 0 0 1px rgba(0,0,0,.6),
-      inset 0 1px 0 var(--bevel-hi), inset 0 -2px 5px var(--bevel-lo),
-      0 0 46px -18px color-mix(in srgb, var(--c3,#37D6FF) 38%, transparent);
+      inset 0 1px 0 rgba(255,240,194,.45), inset 0 -2px 5px var(--bevel-lo),
+      0 0 46px -18px color-mix(in srgb, var(--c3,#37D6FF) 30%, transparent);
     opacity: 0; animation: rfx-reveal .8s cubic-bezier(.2,.8,.2,1) forwards; animation-delay: calc(var(--i,0) * .08s);
   }
-  /* the brushed-metal frame itself, sweeping with the pointer over the patina base */
+  /* the gold frame's light sweep, following the pointer over the antique base */
   .rfx-card::before {
     content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 20px; pointer-events: none;
-    background: var(--chrome); background-size: 230% 230%; background-position: var(--mx) var(--my);
-    opacity: .92; mix-blend-mode: screen;
+    background: var(--gold); background-size: 230% 230%; background-position: var(--mx) var(--my);
+    opacity: .55; mix-blend-mode: screen;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude; padding: 5px;
@@ -531,14 +538,16 @@
     background: linear-gradient(170deg, color-mix(in srgb, var(--c2,#114A8C) 34%, #0a0810) 0%, #0a0810 52%, #060409 100%);
   }
   .rfx-card.is-gold .rfx-field { background: linear-gradient(170deg,#1a1305,#0d0a04 60%,#070500); }
-  /* argyle + cracked-ice foil in the negative space */
+  /* the gold check in the negative space — the black field wears a woven gold
+     houndstooth read, like the reference card, with a whisper of the pitch accent
+     so the per-pitch triad still breathes through. */
   .rfx-field::before {
-    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .14; mix-blend-mode: screen;
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .26; mix-blend-mode: screen;
     background:
-      repeating-linear-gradient(45deg, color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent) 0 1.5px, transparent 1.5px 13px),
-      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 60%, transparent) 0 1.5px, transparent 1.5px 13px),
-      repeating-linear-gradient(45deg, rgba(255,255,255,.12) 0 1px, transparent 1px 7px),
-      repeating-linear-gradient(-45deg, rgba(255,255,255,.08) 0 1px, transparent 1px 9px);
+      repeating-linear-gradient(45deg, rgba(216,180,94,.7) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(-45deg, rgba(216,180,94,.5) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(45deg, rgba(216,180,94,.28) 0 1px, transparent 1px 5.5px),
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 35%, transparent) 0 1px, transparent 1px 22px);
   }
   /* brushed-metal specular sweep that catches the light at the pointer. A faint refractor
      hint remains as a restrained accent, not the dominant note. */
@@ -556,17 +565,21 @@
   .rfx-card.is-gold .rfx-field::after { opacity: .14; }
   .rfx-inner { position: relative; z-index: 8; display: flex; flex-direction: column; height: 100%; }
 
-  /* card top wordmark bar */
-  .rfx-cardtop { display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; padding: 2px 0 6px; }
-  .rfx-wm {
-    font-family: var(--font-athletic); font-size: 22px; letter-spacing: .02em; text-transform: uppercase;
-    transform: skewX(-7deg); color: var(--color-bone);
-    -webkit-text-stroke: .6px rgba(0,0,0,.5); text-shadow: 2px 2px 0 rgba(0,0,0,.5);
+  /* card top wordmark bar — the brand arches across the top of the card in gold,
+     the way the reference card's script arches over its field. */
+  .rfx-cardtop { display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; padding: 2px 0 4px; }
+  .rfx-wmarc { display: block; width: min(58%, 168px); height: auto; overflow: visible; }
+  .rfx-wmarc text {
+    font-family: var(--font-athletic); font-size: 26px; letter-spacing: .06em; text-transform: uppercase;
+    fill: #e9c97a; stroke: rgba(0,0,0,.65); stroke-width: .8px; paint-order: stroke fill;
   }
+  .rfx-card.is-gold .rfx-wmarc text { fill: #fff0c2; }
 
   /* unclipped twin of the window's box: holds the vnum + family crumb so the
-     arch's overflow:hidden can't slice them at the rounded corners. */
-  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 0; display: flex; }
+     arch's overflow:hidden can't slice them at the rounded corners. The min-height
+     keeps the portrait window from going squat when the plate text is long — the
+     grip is the card; it never collapses to a letterboxed sliver. */
+  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 46%; display: flex; }
   .rfx-windowwrap > .rfx-window { flex: 1 1 auto; min-height: 0; }
 
   /* arched portrait window over a halftone field */
@@ -586,10 +599,12 @@
     background-image: radial-gradient(color-mix(in srgb, var(--c3,#37D6FF) 70%, transparent) 22%, transparent 24%);
     background-size: 9px 9px; mask-image: radial-gradient(80% 70% at 50% 30%, #000, transparent 78%);
   }
+  /* the varsity number — the reference card's big block 33 is the model: large,
+     gold-shadowed, structural rather than a floating chip. */
   .rfx-vnum {
-    position: absolute; top: 6px; left: 10px; z-index: 3; font-family: var(--font-athletic); font-size: 34px; line-height: .8;
+    position: absolute; top: 5px; left: 10px; z-index: 3; font-family: var(--font-athletic); font-size: 44px; line-height: .8;
     color: var(--color-bone); -webkit-text-stroke: 2px #000;
-    text-shadow: 2px 3px 0 color-mix(in srgb, var(--c3,#37D6FF) 80%, #000); transform: skewX(-6deg);
+    text-shadow: 3px 3px 0 color-mix(in srgb, #caa14a 85%, #000); transform: skewX(-6deg);
   }
   /* family crumb (top-right of the window): what KIND of pitch this is. Its own dark
      pill so it never sits on the patterned foil. A different job from the source dot. */
@@ -604,7 +619,7 @@
   .rfx-crumb svg { width: 11px; height: 11px; display: block; color: color-mix(in srgb, var(--c3,#37D6FF) 82%, var(--color-bone)); }
   /* grip-source chip (bottom-left): WHOSE grip the face shows — Austin's, or a reference. */
   .rfx-gripchip {
-    position: absolute; left: 9px; bottom: 8px; z-index: 4;
+    position: absolute; left: 9px; bottom: 20px; z-index: 4;
     display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px;
     background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,.12);
@@ -693,6 +708,13 @@
   /* source badge: mono — a tag, not prose. How much to trust the number. */
   .rfx-srcbadge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: .66rem;
     letter-spacing: .06em; line-height: 1; text-transform: uppercase; color: var(--color-bone-2); }
+
+  /* phones: the plate text tightens so the window keeps its portrait height */
+  @media (max-width: 480px) {
+    .rfx-shape .rfx-v { font-size: .86rem; -webkit-line-clamp: 2; }
+    .rfx-cue { -webkit-line-clamp: 1; }
+    .rfx-content { padding: 9px 11px 10px; gap: 7px; }
+  }
   .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid var(--color-sand-bright); color: var(--color-sand-bright);
     padding: 1px 6px; font-size: .58rem; letter-spacing: .04em; }
 

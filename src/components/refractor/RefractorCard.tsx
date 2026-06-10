@@ -1,4 +1,4 @@
-import type { CSSProperties, PointerEventHandler, ReactNode, Ref } from 'react'
+import { useId, type CSSProperties, type PointerEventHandler, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
 import { useRefractorTilt } from '../../hooks/useRefractorTilt'
 import type { FamilyCrumb } from './familyCrumb'
@@ -70,6 +70,8 @@ export function RefractorCard({
 }: RefractorCardProps) {
   const { ref: tiltRef, onPointerMove, onPointerLeave } = useRefractorTilt<HTMLElement>()
   const linkPointerMove = onPointerMove as unknown as PointerEventHandler<HTMLAnchorElement>
+  // unique arc-path id per card instance (several cards render per page)
+  const arcId = `wmarc-${useId().replace(/:/g, '')}`
 
   const cardStyle = {
     '--c1': accent.c1,
@@ -91,7 +93,17 @@ export function RefractorCard({
           >
             <b style={{ fontSize: 7 }}>PA</b>
           </span>
-          <span className="rfx-wm">Pitch Atlas</span>
+          {/* the brand arches over the field, like the reference card's script */}
+          <svg className="rfx-wmarc" viewBox="0 0 200 34" aria-hidden="true">
+            <defs>
+              <path id={arcId} d="M 8 30 Q 100 4 192 30" fill="none" />
+            </defs>
+            <text>
+              <textPath href={`#${arcId}`} startOffset="50%" textAnchor="middle">
+                PITCH ATLAS
+              </textPath>
+            </text>
+          </svg>
           <span
             className="absolute right-1 top-[5px] font-mono text-bone-2"
             style={{ fontSize: '7.5px', letterSpacing: '0.22em' }}
