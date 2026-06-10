@@ -618,6 +618,26 @@
      hand and ball fill the window instead of the torso above them. */
   video.rfx-grip-img { object-position: center 60%; }
 
+  /* ── the media stage: real footage at page scale (MediaStage.tsx) ──
+     'bleed' fills its positioned parent and crops to cover; 'portrait' keeps the
+     clip's own 9/16 inside a framed column. The scrim darkens the lower third so
+     bone type can sit on footage; the sitewide .grain-overlay already finishes it. */
+  .pa-stage { overflow: hidden; }
+  .pa-stage-bleed { position: absolute; inset: 0; z-index: 0; }
+  .pa-stage-portrait {
+    position: relative; aspect-ratio: 9 / 16; width: 100%; border-radius: 20px;
+    box-shadow: 0 34px 64px -24px rgba(0,0,0,.92), 0 0 0 1px rgba(0,0,0,.6), inset 0 1px 0 var(--bevel-hi);
+  }
+  .pa-stage-media {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    object-fit: cover; object-position: center 55%; display: block;
+  }
+  .pa-stage-scrim {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    background: linear-gradient(to top, var(--color-void) 0%, rgba(7,5,9,.62) 34%, rgba(7,5,9,.18) 62%, transparent 88%);
+  }
+  .pa-stage-content { position: absolute; inset: 0; z-index: 2; }
+
   /* embossed metal nameplate: a brushed-steel plate with an accent-tinted underglow,
      bevelled top highlight + bottom shadow so it reads stamped into the card. */
   .rfx-banner {

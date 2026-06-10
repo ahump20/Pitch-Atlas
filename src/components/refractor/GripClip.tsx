@@ -41,8 +41,10 @@ export function GripClip({ clip }: { clip: GripClipData }) {
         preload="metadata"
         aria-label={clip.alt}
       >
-        <source src={clip.webm} type="video/webm" />
+        {/* mp4 first: for these encodes the H.264 files are smaller than the WebM,
+            and browsers take the first source they support */}
         <source src={clip.mp4} type="video/mp4" />
+        <source src={clip.webm} type="video/webm" />
       </video>
     </figure>
   )

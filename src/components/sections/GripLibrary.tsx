@@ -111,8 +111,8 @@ export function GripMotion({ clip, className = '' }: { clip: GripClip; className
             preload="metadata"
             aria-label={clip.alt}
           >
-            <source src={clip.webm} type="video/webm" />
             <source src={clip.mp4} type="video/mp4" />
+            <source src={clip.webm} type="video/webm" />
           </video>
         )}
         <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone backdrop-blur-sm">
