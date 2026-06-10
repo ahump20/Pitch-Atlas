@@ -26,6 +26,20 @@ export function SiteFooter() {
       className="scene-coal border-t border-bone/10 text-bone"
       style={{ background: 'linear-gradient(180deg, #2A1B0E, #1C1208)' }}
     >
+      {/* closing the manual: the back cover's last beat before the binding.
+          One line, one way back to the front door. */}
+      <div className="mx-auto max-w-[1320px] px-5 pt-12 md:px-8">
+        <p className="rfx-athletic text-[clamp(20px,2.8vw,30px)] text-bone">The manual closes here.</p>
+        <p className="mono-label-stage mt-2.5 max-w-[64ch] leading-relaxed">
+          Everything above wears its source. When you want the set again, it reopens at the front
+          door —{' '}
+          <Link to="/repertoire" className="text-bone underline decoration-1 underline-offset-2 transition-colors hover:decoration-seam">
+            the Pitch Index
+          </Link>
+          .
+        </p>
+      </div>
+
       <div className="mx-auto flex max-w-[1320px] flex-col gap-8 px-5 py-12 md:flex-row md:items-center md:justify-between md:px-8">
         <div className="flex flex-col gap-3">
           <BrandMark size="md" />

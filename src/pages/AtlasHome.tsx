@@ -4,7 +4,9 @@ import { PITCHES } from '../data/pitches'
 import { WINGS } from '../data/knowledge'
 import { CONFIDENCE_META, type Claim, type ClaimConfidence, type PitchFamily } from '../data/types'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../data/repertoire'
-import { lostPitchBySlug } from '../data/lost-pitches'
+import { LOST_PITCHES, lostPitchBySlug } from '../data/lost-pitches'
+import { CRAFTSMEN } from '../data/craftsmen'
+import { DOCUMENTATION_META, type DocumentationTier } from '../data/types'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { SITE } from '../config/site'
 import { HomeHero } from '../components/sections/HomeHero'
@@ -130,6 +132,16 @@ const THESIS_ROWS: ThesisRow[] = [
     },
   },
 ]
+
+/* the two doors read from the real wings: the hall's actual names, and the
+   archive's actual documentation-tier counts. Derived, never hand-listed. */
+const HALL_NAMES = CRAFTSMEN.filter((c) => c.kind === 'craftsman').map((c) => c.name)
+const TIER_ORDER: DocumentationTier[] = ['documented', 'partial', 'legend']
+const ARCHIVE_TIERS = TIER_ORDER.map((tier) => ({
+  tier,
+  label: DOCUMENTATION_META[tier].label,
+  count: LOST_PITCHES.filter((p) => p.tier === tier).length,
+})).filter((t) => t.count > 0)
 
 /* the four tools as sealed packs, each printed in one collegiate jewel ink */
 const TOOLS: WaxPackTool[] = [
@@ -446,35 +458,49 @@ export function AtlasHome() {
         </div>
       </section>
 
-      {/* ── THE INSERTS: the two chase wings, kept quiet ── */}
+      {/* ── THE DOORS: two entries, two temperatures. Warm lamplight into the
+          hall; a still coal face into the archive. The light is the copy. ── */}
       <section className="border-t border-leather/25">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            <Link
-              to="/craftsmen"
-              className="group relative rounded-xl border bg-paper-2 p-6 transition-colors md:p-7"
-              style={{ borderColor: 'color-mix(in srgb, #7A4A2E 45%, transparent)' }}
-            >
-              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-ink">The Craftsmen</p>
-              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-ink-2">
-                The arms that owned a pitch — and the one pitch that is a legend, not a person.
+            <Link to="/craftsmen" className="door-craftsmen group">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em]" style={{ color: '#D9B98A' }}>
+                The hall · door one
               </p>
-              <span className="mono-label mt-4 inline-block transition-colors group-hover:text-ink">
-                Open the hall →
+              <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">The Craftsmen</p>
+              <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
+                The arms that owned a pitch — and the one pitch that is a legend, not a person. Pull
+                up a chair; every quote in here is real and carries its source.
+              </p>
+              <p className="mt-4 font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.1em]" style={{ color: '#B89A6E' }}>
+                {HALL_NAMES.join(' · ')}
+              </p>
+              <span className="mono-label mt-5 inline-block text-bone-2 transition-colors group-hover:text-bone">
+                Step into the hall →
               </span>
             </Link>
-            <Link
-              to="/lost-pitches"
-              className="group relative rounded-xl border border-dashed bg-paper-2 p-6 transition-colors md:p-7"
-              style={{ borderColor: 'color-mix(in srgb, #C8102E 45%, transparent)' }}
-            >
-              <p className="rfx-athletic text-[clamp(20px,3vw,28px)] text-ink">Lost Pitches</p>
-              <p className="mt-2 max-w-[44ch] text-[14.5px] leading-relaxed text-ink-2">
-                The pitches of the Negro Leagues whose statistics survive but whose grips mostly do
-                not.
+
+            <Link to="/lost-pitches" className="door-lost group">
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bone-2 opacity-80">
+                The archive · door two
               </p>
-              <span className="mono-label mt-4 inline-block transition-colors group-hover:text-ink">
-                Open the archive →
+              <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">
+                Lost Pitches of the Negro Leagues
+              </p>
+              <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
+                The statistics are being recovered; the technique mostly never will be. Every entry
+                wears the tier its record can actually support — nothing in this wing is smoothed
+                into legend or out of it.
+              </p>
+              <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2">
+                {ARCHIVE_TIERS.map((t) => (
+                  <span key={t.tier}>
+                    {t.count} {t.label.toLowerCase()}
+                  </span>
+                ))}
+              </p>
+              <span className="mono-label mt-5 inline-block text-bone-2 transition-colors group-hover:text-bone">
+                Enter the archive →
               </span>
             </Link>
           </div>
