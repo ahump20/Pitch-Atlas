@@ -1,6 +1,6 @@
 import { claim } from '../../data/sources'
 import type { Claim } from '../../data/types'
-import { ConfidenceLabel } from '../provenance/ConfidenceLabel'
+import { ClaimCard } from '../provenance/ClaimCard'
 
 /*
   The through-line the Lost-Pitches archive was missing: why a pitch dies. Four
@@ -54,21 +54,15 @@ const FORCES: Force[] = [
   },
 ]
 
-function SourceLinks({ claims }: { claims: Claim<string>[] }) {
+/* The receipts under each force: the precise sourced statements the narrative
+   paraphrases, filed as claim cards — the canonical unit, never an ad-hoc list. */
+function ForceReceipts({ claims }: { claims: Claim<string>[] }) {
   return (
-    <ul className="mt-3 space-y-1">
+    <div className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
       {claims.map((c, i) => (
-        <li key={i} className="text-xs leading-snug text-ink-3">
-          <ConfidenceLabel confidence={c.confidence} className="mr-2" />
-          {c.source ? (
-            <a href={c.source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-seam hover:underline">
-              {c.source.label}
-            </a>
-          ) : null}
-          {c.note ? <span> — {c.note}</span> : null}
-        </li>
+        <ClaimCard key={i} claim={c} />
       ))}
-    </ul>
+    </div>
   )
 }
 
@@ -92,7 +86,7 @@ export function WhyPitchesDie() {
               <div>
                 <h3 className="font-athletic uppercase text-xl text-ink">{f.heading}</h3>
                 <p className="mt-2 max-w-[64ch] text-base leading-relaxed text-ink">{f.body}</p>
-                <SourceLinks claims={f.claims} />
+                <ForceReceipts claims={f.claims} />
               </div>
             </li>
           ))}

@@ -1373,6 +1373,30 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 10px 8px;
   }
 
+  /* ── the claim card (ClaimCard.tsx): a claim filed as a physical index card.
+     Scene-token driven, so one card reads on cream and re-tones inside coal.
+     The top edge carries a punched file notch so it reads as a filed record. ── */
+  .claim-card {
+    position: relative; display: flex; flex-direction: column; gap: 8px;
+    border-radius: 8px; padding: 14px 16px 13px;
+    background: var(--color-paper-2);
+    border: 1px solid var(--color-machined);
+    box-shadow: 0 10px 22px -18px rgba(0, 0, 0, 0.45);
+  }
+  .claim-card::before {
+    content: ""; position: absolute; top: -1px; left: 18px; width: 34px; height: 4px;
+    border-radius: 0 0 3px 3px; background: var(--color-machined);
+  }
+
+  /* ── the grading ladder rail: the seven rungs hang off one vertical rail, so
+     the scale reads as a ladder, not a list. Rung dots sit on the rail. ── */
+  .ladder-rail { position: relative; }
+  .ladder-rail::before {
+    content: ""; position: absolute; left: 6px; top: 14px; bottom: 14px; width: 1px;
+    background: var(--cb-line, var(--color-machined));
+  }
+  .ladder-rail > li > i:first-child { position: relative; z-index: 1; }
+
   /* ── THE INDEX BINDER: the directory's own spread (Pitch Index binder view).
      Same sleeve vocabulary as the home set — .pocket / .pocket-card — plus the
      sleeve-pull: a sleeved card slides up out of its pocket on hover or focus,

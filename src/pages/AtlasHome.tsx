@@ -2,14 +2,17 @@ import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { PITCHES } from '../data/pitches'
 import { WINGS } from '../data/knowledge'
-import { CONFIDENCE_META, type ClaimConfidence, type PitchFamily } from '../data/types'
-import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../data/repertoire'
+import { CONFIDENCE_META, type Claim, type ClaimConfidence, type PitchFamily } from '../data/types'
+import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../data/repertoire'
+import { lostPitchBySlug } from '../data/lost-pitches'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { SITE } from '../config/site'
 import { HomeHero } from '../components/sections/HomeHero'
 import { BinderSheet, PocketCard, FillerCard } from '../components/sections/BinderSheet'
 import { WaxPack, type WaxPackTool } from '../components/sections/WaxPack'
 import { CardBackPanel } from '../components/refractor/CardBackPanel'
+import { ClaimCard } from '../components/provenance/ClaimCard'
+import { Reveal } from '../components/motion/Reveal'
 
 /*
   The Atlas home as a collection handled on the warm field. The pull (hero) is
@@ -20,13 +23,16 @@ import { CardBackPanel } from '../components/refractor/CardBackPanel'
   nothing here is a generic panel.
 */
 
-/* The provenance ladder, rendered from the real confidence model. */
+/* The provenance ladder: all seven canonical tiers, rendered from the real
+   confidence model — including the two rungs the honest gaps wear. */
 const LADDER: { tier: ClaimConfidence; rank: string }[] = [
   { tier: 'official-data', rank: 'highest' },
   { tier: 'pitcher-own-words', rank: 'firsthand' },
   { tier: 'coach-observed', rank: 'firsthand' },
   { tier: 'reputable-analysis', rank: 'cited' },
   { tier: 'secondhand-attributed', rank: 'flagged' },
+  { tier: 'community-firsthand', rank: 'safeguarded' },
+  { tier: 'unverified', rank: 'the gap' },
 ]
 
 /* tier inks for the cream card back — the bright void dots fail contrast on
@@ -69,24 +75,59 @@ const NEVER = [
 ]
 const ALWAYS = ['Real grip photos, clean sources', 'A source on every claim']
 
-const THESIS_ROWS: { stamp: string; ink: string; label: string; text: string }[] = [
+/* The three beats, each anchored to a REAL file in the data — a surviving
+   pitch, a lost pitch, a filed specimen — never an invented example. If a
+   referenced entry ever leaves the data, its beat drops the card rather than
+   pointing at nothing. */
+const SURVIVOR = REPERTOIRE.find((e) => e.id === 'sweeper')
+const VANISHED = lostPitchBySlug('hilton-smith-curveball')
+const FILED_REF = PITCHES[0]
+
+interface ThesisRow {
+  stamp: string
+  ink: string
+  label: string
+  text: string
+  example?: { subject: string; to: string; claim: Claim<string> }
+}
+
+const THESIS_ROWS: ThesisRow[] = [
   {
     stamp: 'Survives',
     ink: '#1F3A5F',
     label: 'What modern baseball keeps well',
     text: 'Velocity, spin, movement, outcomes, and the public clips that catch a pitch after it has already left the hand.',
+    example: SURVIVOR?.filedSlug
+      ? {
+          subject: `${SURVIVOR.name} · alive in today's game`,
+          to: `/pitch/${SURVIVOR.filedSlug}`,
+          claim: SURVIVOR.movement,
+        }
+      : undefined,
   },
   {
     stamp: 'Vanishes',
     ink: '#6E2B35',
     label: 'What disappears first',
     text: 'Thumb pressure, hand size, seam feel, and the little variants that work for one arm and never fit another.',
+    example: VANISHED
+      ? {
+          subject: `${VANISHED.name} · the grip went unrecorded`,
+          to: `/lost-pitches/${VANISHED.slug}`,
+          claim: VANISHED.what,
+        }
+      : undefined,
   },
   {
     stamp: 'Filed',
     ink: '#2F5D46',
     label: 'What Pitch Atlas preserves',
     text: 'The holdable grip first, then the shape language, then the source badge that says how solid the claim is.',
+    example: {
+      subject: `${FILED_REF.display.shortName} · filed, grip first`,
+      to: `/pitch/${FILED_REF.display.slug}`,
+      claim: FILED_REF.canonical.grip,
+    },
   },
 ]
 
@@ -234,20 +275,30 @@ export function AtlasHome() {
                 </p>
 
                 <div className="mt-6">
-                  {THESIS_ROWS.map((row) => (
-                    <div key={row.label} className="cb-row grid gap-3 py-4 sm:grid-cols-[6.5rem_1fr]">
-                      <span className="rfx-stamp h-fit w-fit" style={{ color: row.ink }}>
-                        {row.stamp}
-                      </span>
-                      <div>
-                        <h3 className="rfx-athletic text-[clamp(17px,2.4vw,22px)]" style={{ color: 'var(--cb-ink)' }}>
-                          {row.label}
-                        </h3>
-                        <p className="mt-1.5 max-w-[56ch] text-[13.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
-                          {row.text}
-                        </p>
+                  {THESIS_ROWS.map((row, i) => (
+                    <Reveal key={row.label} delay={i * 110}>
+                      <div className="cb-row grid gap-3 py-4 sm:grid-cols-[6.5rem_1fr]">
+                        <span className="rfx-stamp h-fit w-fit" style={{ color: row.ink }}>
+                          {row.stamp}
+                        </span>
+                        <div>
+                          <h3 className="rfx-athletic text-[clamp(17px,2.4vw,22px)]" style={{ color: 'var(--cb-ink)' }}>
+                            {row.label}
+                          </h3>
+                          <p className="mt-1.5 max-w-[56ch] text-[13.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
+                            {row.text}
+                          </p>
+                          {row.example ? (
+                            <ClaimCard
+                              className="mt-3"
+                              subject={row.example.subject}
+                              to={row.example.to}
+                              claim={row.example.claim}
+                            />
+                          ) : null}
+                        </div>
                       </div>
-                    </div>
+                    </Reveal>
                   ))}
                 </div>
 
@@ -269,10 +320,10 @@ export function AtlasHome() {
                 </div>
                 <p className="mt-3 max-w-[52ch] text-[13.5px] leading-relaxed" style={{ color: 'var(--cb-ink-2)' }}>
                   A pitch can be thrown a dozen credible ways. The atlas does not pick a winner — it
-                  records what is known, attributes it, and grades how confident the source is. The
-                  five grades below are the real tiers a visitor meets, top to bottom.
+                  records what is known, attributes it, and grades how confident the source is. All
+                  seven rungs a visitor meets, top to bottom — including the two the honest gaps wear.
                 </p>
-                <ol className="mt-5">
+                <ol className="ladder-rail mt-5">
                   {LADDER.map(({ tier, rank }) => {
                     const ink = TIER_INK[tier]
                     return (
