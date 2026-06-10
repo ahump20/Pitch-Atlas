@@ -10,6 +10,12 @@
 
 import type { Vec3 } from '../lib/seam'
 
+/**
+ * THE canonical source-tier model: exactly these seven tiers, nowhere else.
+ * Every badge anywhere on the site renders its wording from CONFIDENCE_META
+ * below — no component may carry a parallel label map or shortened tier names.
+ * A non-canonical tier string fails typecheck by construction.
+ */
 export type ClaimConfidence =
   | 'official-data' // measured, published by the source of record (Statcast / MLB)
   | 'pitcher-own-words' // the athlete said it
@@ -19,7 +25,8 @@ export type ClaimConfidence =
   | 'community-firsthand' // a community member's own report (future tiers only)
   | 'unverified' // no source corroborates the value this run
 
-/** Human-readable label + one-line meaning for each confidence level. */
+/** Human-readable label + one-line meaning for each confidence level.
+    The single source of badge wording for the whole codebase. */
 export const CONFIDENCE_META: Record<
   ClaimConfidence,
   { label: string; meaning: string }

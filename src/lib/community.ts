@@ -6,6 +6,7 @@ import type {
   PitchIntent,
   ClaimedResultKind,
 } from '../data/field-notes'
+import type { ClaimConfidence } from '../data/types'
 
 /*
   The Field Notes data layer. Pure functions over Supabase — React lives in the
@@ -15,13 +16,17 @@ import type {
   CHECK constraint, not just the form). Nothing here fabricates a post or a count.
 */
 
-/** Community-relevant subset of the app's ClaimConfidence tiers. */
-export type CommunitySourceTier =
+/** Community-relevant subset of the canonical ClaimConfidence tiers. Extract
+    ties each id to the canonical union, so a non-canonical tier string fails
+    typecheck instead of silently forking the model. */
+export type CommunitySourceTier = Extract<
+  ClaimConfidence,
   | 'coach-observed'
   | 'reputable-analysis'
   | 'community-firsthand'
   | 'secondhand-attributed'
   | 'unverified'
+>
 
 /** A field note as the reader sees it, plus viewer-relative flags. */
 export interface CommunityNote {

@@ -10,6 +10,7 @@ import { SpecimenGrips } from '../components/sections/GripLibrary'
 import { isEdgeStatus, STATUS_LABEL } from '../components/index/StatusBadge'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
+import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { NotFound } from './NotFound'
@@ -152,9 +153,12 @@ export function RepertoireChapter() {
                 {entry.plain}
               </p>
             ) : (
-              <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.7rem]">
-                {entry.movement.value}
-              </p>
+              <>
+                <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.7rem]">
+                  {entry.movement.value}
+                </p>
+                <ConfidenceLabel confidence={entry.movement.confidence} className="mt-3" />
+              </>
             )}
           </div>
           <figure className="md:col-span-4">

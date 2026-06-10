@@ -1,5 +1,6 @@
 import { claim } from '../../data/sources'
 import type { Claim } from '../../data/types'
+import { ConfidenceLabel } from '../provenance/ConfidenceLabel'
 
 /*
   The through-line the Lost-Pitches archive was missing: why a pitch dies. Four
@@ -58,6 +59,7 @@ function SourceLinks({ claims }: { claims: Claim<string>[] }) {
     <ul className="mt-3 space-y-1">
       {claims.map((c, i) => (
         <li key={i} className="text-xs leading-snug text-ink-3">
+          <ConfidenceLabel confidence={c.confidence} className="mr-2" />
           {c.source ? (
             <a href={c.source.url} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:text-cyan hover:underline">
               {c.source.label}

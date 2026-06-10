@@ -608,13 +608,24 @@ function MasterCard({ variant, accentColor }: { variant: MasterVariantRecord; ac
       {variant.accolades && variant.accolades.length > 0 ? (
         <div className="mt-4">
           {variant.accolades.map((n) => (
-            <p key={n.label} className="border-t border-white/8 py-2 text-[12.5px] leading-relaxed text-bone-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-ink-3">
-                {n.label}
-                {' · '}
-              </span>
-              {n.claim.value}
-            </p>
+            <div key={n.label} className="border-t border-white/8 py-2">
+              <p className="text-[12.5px] leading-relaxed text-bone-2">
+                <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-ink-3">
+                  {n.label}
+                  {' · '}
+                </span>
+                {n.claim.value}
+              </p>
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                <ConfidenceDot confidence={n.claim.confidence} />
+                {n.claim.source ? (
+                  <>
+                    <span aria-hidden="true" className="text-ink-3">/</span>
+                    <RefractorSource source={n.claim.source} />
+                  </>
+                ) : null}
+              </div>
+            </div>
           ))}
         </div>
       ) : null}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import type { LostPitch, RepertoireEntry } from '../../data/types'
 import { DOCUMENTATION_META } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
+import { ConfidenceDot } from '../provenance/RefractorClaim'
 import { StatusBadge, isEdgeStatus } from './StatusBadge'
 
 /*
@@ -62,6 +63,7 @@ function RepertoireCard({ entry }: { entry: RepertoireEntry }) {
       </div>
 
       <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-bone-2">{entry.movement.value}</p>
+      <ConfidenceDot confidence={entry.movement.confidence} />
 
       <div className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1.5 border-t border-white/10 pt-3">
         <span className={`mono-label ${filed ? 'text-bone-2' : 'text-ink-3'}`}>

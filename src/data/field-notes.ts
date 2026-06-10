@@ -7,6 +7,8 @@
   posts, no fabricated counts.
 */
 
+import type { ClaimConfidence } from './types'
+
 export type PlayerLevel = 'youth' | 'high-school' | 'college-plus'
 export type ArmSlot = 'over-the-top' | 'three-quarter' | 'sidearm' | 'submarine'
 export type VelocityBand = 'low-effort' | 'developing-arm' | 'prep-arm' | 'college-arm' | 'power-arm'
@@ -28,8 +30,12 @@ export type ClaimedResultKind =
   | 'worked-in-bullpen'
   | 'worked-in-game'
   | 'no-noticeable-change'
-/** Community source tiers. Map directly to the ClaimConfidence values of the same name. */
-export type FieldNoteSourceTier = 'community-firsthand' | 'coach-observed'
+/** Community source tiers. Extract ties them to the canonical ClaimConfidence
+    union, so a non-canonical tier string fails typecheck. */
+export type FieldNoteSourceTier = Extract<
+  ClaimConfidence,
+  'community-firsthand' | 'coach-observed'
+>
 
 export const PLAYER_LEVELS: { value: PlayerLevel; label: string }[] = [
   { value: 'youth', label: 'Youth (under 14)' },

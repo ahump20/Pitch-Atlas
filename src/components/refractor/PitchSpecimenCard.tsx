@@ -1,4 +1,5 @@
 import type { PitchAtlasEntry, ClaimConfidence } from '../../data/types'
+import { CONFIDENCE_META } from '../../data/types'
 import { RefractorCard } from './RefractorCard'
 import { ACCENT, FALLBACK_ACCENT } from './accents'
 import { RefractorBall } from './RefractorBall'
@@ -18,14 +19,16 @@ import { gripEntryFor } from '../../data/grips'
   every reading is sourced from the pitch record.
 */
 
-const CONF: Record<ClaimConfidence, { label: string; color: string }> = {
-  'official-data': { label: 'Official data', color: 'var(--color-ok-bright)' },
-  'reputable-analysis': { label: 'Reputable analysis', color: 'var(--color-amber-bright)' },
-  'pitcher-own-words': { label: "Pitcher's own words", color: 'var(--color-powder)' },
-  'coach-observed': { label: 'Coach-observed', color: 'var(--color-powder)' },
-  'secondhand-attributed': { label: 'Secondhand', color: 'var(--color-sand-bright)' },
-  'community-firsthand': { label: 'Community', color: 'var(--color-sand-bright)' },
-  unverified: { label: 'Unverified', color: 'var(--color-ink-3)' },
+/* Card-palette color per tier. Labels are never local: every badge on the card
+   reads its wording from CONFIDENCE_META, the one canonical seven-tier model. */
+const CONF_COLOR: Record<ClaimConfidence, string> = {
+  'official-data': 'var(--color-ok-bright)',
+  'reputable-analysis': 'var(--color-amber-bright)',
+  'pitcher-own-words': 'var(--color-powder)',
+  'coach-observed': 'var(--color-powder)',
+  'secondhand-attributed': 'var(--color-sand-bright)',
+  'community-firsthand': 'var(--color-sand-bright)',
+  unverified: 'var(--color-ink-3)',
 }
 
 export function PitchSpecimenCard({
@@ -46,7 +49,10 @@ export function PitchSpecimenCard({
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
   const shapeClaim = physics.shape
-  const conf = CONF[shapeClaim.confidence]
+  const conf = {
+    label: CONFIDENCE_META[shapeClaim.confidence].label,
+    color: CONF_COLOR[shapeClaim.confidence],
+  }
 
   const grip = gripEntryFor(display.slug)
   const clip = grip?.clip
