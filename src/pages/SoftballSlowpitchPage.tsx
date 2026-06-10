@@ -49,7 +49,7 @@ export function SoftballSlowpitchPage() {
         <div className="flex flex-col gap-9">
           {SLOWPITCH_NOTES.map((n) => (
             <div key={n.label}>
-              <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
+              <div className="mono-label mb-2.5 text-ink-2">{n.label}</div>
               <ClaimProse claim={n.claim} proseClassName="max-w-[64ch] text-lg leading-relaxed text-ink" />
             </div>
           ))}
@@ -72,7 +72,7 @@ export function SoftballSlowpitchPage() {
             <p key={i} className="text-lg leading-relaxed text-ink">{p}</p>
           ))}
         </div>
-        <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+        <p className="mt-10 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
           Filed lighter than the fastpitch wing on purpose. The honest read: slowpitch pitching is a craft of
           touch and rules, not power — and the rules themselves vary by league, so the arc number is named, not
           smoothed.

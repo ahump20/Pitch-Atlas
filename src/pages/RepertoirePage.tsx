@@ -5,11 +5,12 @@ import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { PitchIndex } from '../components/sections/PitchIndex'
 
 /*
-  The Pitch Index: the front door, struck in the refractor language. A short
-  athletic header on the void, then the searchable, family-grouped directory that
-  routes to a real page for any pitch. A filed pitch opens its full specimen; an
-  unfiled one opens its basic file. The Lost Pitches wing lives one click away.
-  The philosophy lives on /sources.
+  The Pitch Index: the front door, struck in the refractor language. The whole
+  page is a coal scene — the board the set is handled on — with a short athletic
+  header, then the searchable, family-grouped directory that routes to a real
+  page for any pitch. A filed pitch opens its full specimen; an unfiled one
+  opens its basic file. The Lost Pitches wing lives one click away. The
+  philosophy lives on /sources.
 */
 export function RepertoirePage() {
   useSeoMeta({
@@ -22,7 +23,8 @@ export function RepertoirePage() {
   })
 
   return (
-    <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+    <div className="scene-coal">
+      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
       <div className="pt-6">
         <Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'The Pitch Index' }]} />
       </div>
@@ -30,7 +32,7 @@ export function RepertoirePage() {
       <header className="pb-2">
         <p className="rfx-skick">The front door</p>
         <h1 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone" style={{ fontSize: 'clamp(40px,8vw,86px)' }}>
-          The Pitch <span className="rfx-chrome-text">Index</span>
+          The Pitch <span className="rfx-holo">Index</span>
         </h1>
         <p className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           Every accepted pitch, by family, plus the honest edges: an alias, an illusion, a colloquialism
@@ -42,6 +44,7 @@ export function RepertoirePage() {
       </header>
 
       <PitchIndex />
+      </div>
     </div>
   )
 }

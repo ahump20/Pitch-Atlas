@@ -70,7 +70,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                     <p className="mono-label mb-5 text-ink-3">The sources behind it</p>
                     <ul className="flex flex-col gap-6">
                       {claims.map((claim, k) => (
-                        <li key={k} className="border-l border-[rgba(255,255,255,0.12)] pl-4">
+                        <li key={k} className="border-l border-ink/15 pl-4">
                           <ClaimProse
                             claim={claim}
                             proseClassName="text-[0.95rem] leading-relaxed text-ink/90"
@@ -88,7 +88,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
 
       {/* How this wing was sourced — honest footer, in the page's own voice. */}
       <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
-        <p className="max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+        <p className="max-w-[72ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
           <span className="mono-label mr-2 text-ink-3">How this was sourced</span>
           {wing.confidenceNote}
         </p>
@@ -97,7 +97,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
       {wing.related && wing.related.length > 0 ? (
         <section>
           <div className="mx-auto max-w-6xl px-5 py-12 md:px-8">
-            <p className="mono-label mb-5 text-bone-2">Keep reading</p>
+            <p className="mono-label mb-5 text-ink-2">Keep reading</p>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {wing.related.map((r) => (
                 <Link
@@ -106,8 +106,8 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                   className="rfx-plate group flex items-center justify-between gap-3 rounded-sm px-5 py-4"
                   style={{ '--gc': '#37D6FF' } as CSSProperties}
                 >
-                  <span className="font-athletic text-lg uppercase text-bone">{r.label}</span>
-                  <span className="mono-label text-cyan transition-colors group-hover:text-bone">→</span>
+                  <span className="font-athletic text-lg uppercase text-ink">{r.label}</span>
+                  <span className="mono-label text-seam transition-colors group-hover:text-ink">→</span>
                 </Link>
               ))}
             </div>

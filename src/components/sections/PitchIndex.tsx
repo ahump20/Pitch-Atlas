@@ -43,11 +43,11 @@ const STATUS: Record<RepertoireStatus, { color: string; label: string }> = {
 /* family accent, matching the prototype's per-family worlds. */
 const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
   // collegiate jewel lifts on the charcoal — pennant navy, varsity forest,
-  // letterman burgundy, pack gold, seam. The neon triads stay on the card faces.
+  // letterman burgundy, warm sand, seam. The neon triads stay on the card faces.
   fastball: '#5C84B8',
   offspeed: '#5FA27B',
   breaking: '#B0606C',
-  specialty: '#E9C97A',
+  specialty: '#CDBA8E',
   banned: '#E04A5A',
 }
 
@@ -96,7 +96,10 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
         <span className="flex flex-wrap items-center gap-2 pr-20">
           <span className="font-prose text-[15px] font-bold text-bone">{entry.name}</span>
           {filed ? (
-            <Badge className="h-auto rounded-[4px] bg-[var(--gold)] px-1.5 py-0.5 font-mono text-[7.5px] uppercase tracking-[0.1em] text-[#2a1d05]">
+            <Badge
+              className="h-auto rounded-[4px] px-1.5 py-0.5 font-mono text-[7.5px] uppercase tracking-[0.1em] text-[#14110A]"
+              style={{ background: 'var(--foil)', backgroundSize: '300% 100%', backgroundPosition: '38% 0' }}
+            >
               Filed
             </Badge>
           ) : null}
@@ -117,7 +120,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
         ) : null}
         <span
           className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
-          style={{ color: filed ? '#caa14a' : 'var(--color-ink-3)' }}
+          style={{ color: filed ? '#D8CFB8' : 'var(--color-ink-3)' }}
         >
           {filed ? 'Open specimen' : 'Basic file'} <span aria-hidden="true">→</span>
         </span>
@@ -173,7 +176,7 @@ export function PitchIndex({ id }: { id?: string }) {
       <div className="sticky top-16 z-20 -mx-5 mt-6 bg-background/92 px-5 py-4 backdrop-blur-md md:-mx-8 md:px-8">
         <label className="block">
           <span className="sr-only">Search the Pitch Index</span>
-          <InputGroup className="h-11 rounded-xl border-cyan/40 bg-[#08060e] text-bone">
+          <InputGroup className="h-11 rounded-xl border-cyan/40 bg-[#1D1710] text-bone">
             <InputGroupAddon>
               <SearchIcon aria-hidden="true" />
             </InputGroupAddon>
@@ -286,7 +289,7 @@ export function PitchIndex({ id }: { id?: string }) {
         style={{
           borderColor: 'color-mix(in srgb, var(--color-teal-glow) 34%, transparent)',
           background:
-            'radial-gradient(90% 70% at 75% 10%, rgba(31,182,166,0.28), #0a0810), var(--color-press)',
+            'radial-gradient(90% 70% at 75% 10%, rgba(31,182,166,0.28), #16120D), var(--color-press)',
         }}
       >
         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-teal-glow">A wing of its own</p>

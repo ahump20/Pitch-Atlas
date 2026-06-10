@@ -42,7 +42,7 @@ function Quote({ quote }: { quote: Claim<string> }) {
 
 function ChapterNav({ prev, next }: { prev?: LostPitch; next?: LostPitch }) {
   return (
-    <nav aria-label="Lost pitch chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
+    <nav aria-label="Lost pitch chapters" className="rfx-panel border-t border-ink/15">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
         <div className="md:justify-self-start">
           {prev ? (
@@ -52,7 +52,7 @@ function ChapterNav({ prev, next }: { prev?: LostPitch; next?: LostPitch }) {
             </Link>
           ) : null}
         </div>
-        <Link to="/lost-pitches" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
+        <Link to="/lost-pitches" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
           <span className="mono-label text-cyan">Lost Pitches</span>
           <span className="text-sm leading-snug text-ink-2">Back to the archive →</span>
         </Link>
@@ -157,12 +157,12 @@ export function LostPitchChapter() {
             <div className="flex flex-col gap-10">
               {pitch.record.map((n) => (
                 <div key={n.label}>
-                  <div className="mono-label mb-2.5 text-bone-2">{n.label}</div>
+                  <div className="mono-label mb-2.5 text-ink-2">{n.label}</div>
                   <ClaimProse claim={n.claim} proseClassName="max-w-[64ch] text-lg leading-relaxed text-ink" />
                 </div>
               ))}
             </div>
-            <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+            <p className="mt-10 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
               Every line here is what the recovered record can actually support, labeled by its source
               and its confidence. Where the legend says more than the record can prove, the gap is shown,
               not filled.

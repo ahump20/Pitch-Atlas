@@ -114,7 +114,7 @@ export function KnowledgeHub() {
       <section>
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
           {WINGS.length === 0 ? (
-            <p className="max-w-[56ch] text-lg leading-relaxed text-bone-2">
+            <p className="max-w-[56ch] text-lg leading-relaxed text-ink-2">
               The teaching wings are being filed. Check back shortly.
             </p>
           ) : (

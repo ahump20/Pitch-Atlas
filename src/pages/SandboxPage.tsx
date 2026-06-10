@@ -225,13 +225,13 @@ export function SandboxPage() {
               <Stat label="Side shape" value={result.horizontalDir} sub="arm-side, glove-side, or true" />
             </div>
 
-            <p className="mt-4 text-base leading-relaxed text-bone">{describeShape(result)}</p>
+            <p className="mt-4 text-base leading-relaxed text-ink">{describeShape(result)}</p>
           </div>
         </div>
 
         {/* The honest line: what is physics, what is a teaching scale. */}
         <div className="mx-auto max-w-6xl px-5 pb-20 md:px-8">
-          <div className="rfx-panel border-l-2 border-l-[rgba(255,255,255,0.12)] px-5 py-4">
+          <div className="rfx-panel border-l-2 border-l-ink/15 px-5 py-4">
             <p className="mono-label text-bone-2">Teaching model</p>
             <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-ink-2">{ANCHOR_NOTE}</p>
             <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-ink-2">

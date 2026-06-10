@@ -39,7 +39,7 @@ export function ComparePage() {
       <section>
         <div className="mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-16">
           <TunnelPlot />
-          <p className="mt-10 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+          <p className="mt-10 max-w-[72ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
             The endpoints are each pitch's sourced shape direction, taken from the specimen records. The
             shared tunnel window and the paths leading to each endpoint are a schematic of the shared-release
             idea, not a measured trajectory. A hitter's real reaction window depends on the arm, the release,

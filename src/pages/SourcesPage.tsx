@@ -51,7 +51,7 @@ export function SourcesPage() {
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="04" label="Sources" />
 
-        <h1 className="rfx-stitle max-w-[18ch] text-4xl leading-[1.04] text-bone md:text-5xl">
+        <h1 className="rfx-stitle max-w-[18ch] text-4xl leading-[1.04] md:text-5xl">
           Sourced, not corrected.
         </h1>
         <p className="mt-5 max-w-[58ch] text-lg leading-relaxed text-ink-2">
@@ -98,7 +98,7 @@ export function SourcesPage() {
           </div>
         </div>
 
-        <p className="mt-14 max-w-[72ch] border-t border-[rgba(255,255,255,0.12)] pt-8 text-sm leading-relaxed text-ink-2">
+        <p className="mt-14 max-w-[72ch] border-t border-ink/15 pt-8 text-sm leading-relaxed text-ink-2">
           Original geometry, diagrams, and words. Real grip photos ship only from clean sources — our own
           photography, community own-grip uploads, and verified Creative Commons or public-domain images
           with attribution; never an unlicensed agency photo, a team or league mark, or broadcast footage.

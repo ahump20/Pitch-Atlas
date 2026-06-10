@@ -43,7 +43,7 @@ export function SupportPage() {
         eyebrow="Support"
         title={
           <>
-            Something off? <span className="rfx-chrome-text">Flag it.</span>
+            Something off? <span className="text-seam">Flag it.</span>
           </>
         }
         sub={
@@ -56,22 +56,22 @@ export function SupportPage() {
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'Support' }]} />}
       />
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
-          <div className="border-t border-bone/10">
+          <div className="border-t border-ink/15">
             {HELP_ROWS.map((row, i) => (
-              <div key={row.label} className="grid gap-4 border-b border-bone/10 py-6 sm:grid-cols-[4.25rem_1fr]">
+              <div key={row.label} className="grid gap-4 border-b border-ink/15 py-6 sm:grid-cols-[4.25rem_1fr]">
                 <span
-                  className="h-fit w-fit rounded border border-cyan/50 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-cyan"
+                  className="h-fit w-fit rounded border border-cyan/50 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-seam"
                   style={{ transform: `rotate(${i % 2 ? -2 : 2}deg)` }}
                 >
                   {i + 1}
                 </span>
                 <div>
-                  <h2 className="rfx-athletic rfx-skew text-bone" style={{ fontSize: 'clamp(20px,3vw,30px)' }}>
+                  <h2 className="rfx-athletic rfx-skew text-ink" style={{ fontSize: 'clamp(20px,3vw,30px)' }}>
                     {row.label}
                   </h2>
-                  <p className="mt-2 max-w-[64ch] text-[15px] leading-relaxed text-bone-2">{row.text}</p>
+                  <p className="mt-2 max-w-[64ch] text-[15px] leading-relaxed text-ink-2">{row.text}</p>
                 </div>
               </div>
             ))}
@@ -79,17 +79,17 @@ export function SupportPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">Contact</p>
-          <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+          <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
             Report issues through the in-product Report flow on any note or post — every report is
             reviewed. For how the manual handles your data, read the{' '}
-            <Link to="/privacy" className="text-cyan transition-colors hover:text-bone">
+            <Link to="/privacy" className="text-seam transition-colors hover:text-ink">
               privacy policy
             </Link>
             ; for how its claims are sourced, read the{' '}
-            <Link to="/sources" className="text-cyan transition-colors hover:text-bone">
+            <Link to="/sources" className="text-seam transition-colors hover:text-ink">
               source registry
             </Link>
             .

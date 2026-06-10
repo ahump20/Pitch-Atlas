@@ -198,7 +198,7 @@ export function TunnelPlot() {
                 <g key={s.entry.display.slug}>
                   <circle cx={s.x} cy={s.y} r="8" fill={c} fillOpacity="0.92" />
                   <circle cx={s.x} cy={s.y} r="8" fill="none" stroke="var(--color-void)" strokeWidth="1.2" />
-                  <text x={s.x} y={s.y + (s.y > CY ? 22 : -14)} fill="var(--color-bone)" fontFamily="var(--font-mono)" fontSize="10" textAnchor="middle">
+                  <text x={s.x} y={s.y + (s.y > CY ? 22 : -14)} fill="var(--color-ink)" fontFamily="var(--font-mono)" fontSize="10" textAnchor="middle">
                     {s.entry.display.shortName}
                   </text>
                 </g>
@@ -210,30 +210,36 @@ export function TunnelPlot() {
 
       {/* readout */}
       {!same ? (
-        <div className="grid gap-px overflow-hidden rounded-sm border border-[rgba(255,255,255,0.12)] bg-[rgba(255,255,255,0.12)] sm:grid-cols-3">
-          <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
-            <p className="mono-label" style={{ color: colorA }}>{a.display.shortName}</p>
-            <p className="mt-1 text-sm capitalize text-bone-2">{shapeWords(a)}</p>
+        <div className="grid gap-px overflow-hidden rounded-sm border border-ink/15 bg-ink/15 sm:grid-cols-3">
+          <div className="bg-paper-2 px-4 py-3">
+            <p className="mono-label inline-flex items-center gap-2 text-ink">
+              <i className="inline-block h-2 w-2 rounded-full" style={{ background: colorA }} aria-hidden="true" />
+              {a.display.shortName}
+            </p>
+            <p className="mt-1 text-sm capitalize text-ink-2">{shapeWords(a)}</p>
           </div>
-          <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
+          <div className="bg-paper-2 px-4 py-3">
             <p className="mono-label text-seam">The late split</p>
-            <p className="mt-1 text-sm text-bone-2">Same window out of the hand, then each breaks its own way.</p>
+            <p className="mt-1 text-sm text-ink-2">Same window out of the hand, then each breaks its own way.</p>
           </div>
-          <div className="bg-[rgba(5,7,12,0.84)] px-4 py-3">
-            <p className="mono-label" style={{ color: colorB }}>{b.display.shortName}</p>
-            <p className="mt-1 text-sm capitalize text-bone-2">{shapeWords(b)}</p>
+          <div className="bg-paper-2 px-4 py-3">
+            <p className="mono-label inline-flex items-center gap-2 text-ink">
+              <i className="inline-block h-2 w-2 rounded-full" style={{ background: colorB }} aria-hidden="true" />
+              {b.display.shortName}
+            </p>
+            <p className="mt-1 text-sm capitalize text-ink-2">{shapeWords(b)}</p>
           </div>
         </div>
       ) : null}
 
       <div className="flex flex-wrap gap-x-4 gap-y-2">
-        <Link to={`/pitch/${a.display.slug}`} className="mono-label text-cyan transition-colors hover:text-bone">
+        <Link to={`/pitch/${a.display.slug}`} className="mono-label text-seam transition-colors hover:text-ink">
           {a.display.shortName} specimen →
         </Link>
-        <Link to={`/pitch/${b.display.slug}`} className="mono-label text-cyan transition-colors hover:text-bone">
+        <Link to={`/pitch/${b.display.slug}`} className="mono-label text-seam transition-colors hover:text-ink">
           {b.display.shortName} specimen →
         </Link>
-        <Link to="/learn/sequencing" className="mono-label text-cyan transition-colors hover:text-bone">
+        <Link to="/learn/sequencing" className="mono-label text-seam transition-colors hover:text-ink">
           Why tunneling works →
         </Link>
       </div>

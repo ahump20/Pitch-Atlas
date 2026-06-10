@@ -472,11 +472,16 @@
     mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
   }
   .scene-coal {
-    color-scheme: dark;
     position: relative;
     background:
       radial-gradient(64% 50% at 50% -10%, #241B10 0%, transparent 62%),
       var(--color-void);
+  }
+  /* .on-stage (the Heritage dark chamber) shares the coal scene's token scope,
+     so a chapter hero band re-tones its kickers, labels, and controls the same
+     way a full coal page does. */
+  .scene-coal, .on-stage {
+    color-scheme: dark;
     color: var(--color-bone);
 
     /* the scoped remap — the mapping the retired global remap used to apply,
@@ -795,6 +800,23 @@
   .rfx-panel { position: relative; border-radius: 12px; background: var(--color-press); border: 1px solid rgba(246,241,230,.10); }
   .rfx-panel-foil { position: relative; border-radius: 12px; padding: 1px; background: var(--foil); background-size: 300% 300%; }
   .rfx-panel-foil > * { border-radius: 11px; background: #16130F; }
+
+  /* DARK OBJECTS CARRY THEIR OWN INK. A plate, an entry row, a panel, a binder
+     sheet, or a theater card is intrinsically dark — a physical object — so it
+     scopes the Heritage ink tokens locally (the mirror of .rfx-cardback, which
+     does the same for cream). Type inside reads bone no matter which field the
+     object rests on. */
+  .rfx-plate, .rfx-entry, .rfx-panel, .rfx-panel-foil, .binder-sheet, .theater-card {
+    --color-ink: #F6F1E6;
+    --color-ink-2: #C9C2B0;
+    --color-ink-3: #8A8576;
+    --color-navy: #D8D1C0;
+    --color-navy-2: #EFE9DA;
+    --color-navy-line: rgba(216, 209, 192, 0.16);
+    --color-seam: #FF2D44;
+    --color-machined: rgba(216, 209, 192, 0.20);
+    --color-columbia: #5AA9E6;
+  }
 
   /* ── shared page chrome (Pitch Index, specimen chapter, halls, tools) ── */
 

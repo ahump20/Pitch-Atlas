@@ -43,7 +43,7 @@ function Quote({ quote }: { quote: Claim<string> }) {
 
 function ChapterNav({ prev, next }: { prev?: Craftsman; next?: Craftsman }) {
   return (
-    <nav aria-label="Craftsmen chapters" className="rfx-panel border-t border-[rgba(255,255,255,0.12)]">
+    <nav aria-label="Craftsmen chapters" className="rfx-panel border-t border-ink/15">
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
         <div className="md:justify-self-start">
           {prev ? (
@@ -53,7 +53,7 @@ function ChapterNav({ prev, next }: { prev?: Craftsman; next?: Craftsman }) {
             </Link>
           ) : null}
         </div>
-        <Link to="/craftsmen" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-[rgba(255,255,255,0.12)] px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
+        <Link to="/craftsmen" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
           <span className="mono-label text-cyan">The Craftsmen</span>
           <span className="text-sm leading-snug text-ink-2">Back to the hall →</span>
         </Link>
@@ -145,7 +145,7 @@ export function CraftsmanChapter() {
             </div>
             {pitch ? (
               <div className="md:col-span-5">
-                <div className="rfx-panel relative mx-auto aspect-square w-full max-w-[300px] rounded-sm border border-[rgba(255,255,255,0.12)] p-6">
+                <div className="rfx-panel relative mx-auto aspect-square w-full max-w-[300px] rounded-sm border border-ink/15 p-6">
                   <SeamSchematic
                     className="h-full w-full"
                     spinAxis={pitch.motion.spinAxis}
@@ -233,7 +233,7 @@ export function CraftsmanChapter() {
             {craftsman.recordLinks?.length ? (
               <RecordLinks sources={craftsman.recordLinks} className="mt-12" />
             ) : null}
-            <p className="mt-10 max-w-[78ch] border-t border-[rgba(255,255,255,0.12)] pt-6 text-sm leading-relaxed text-ink-2">
+            <p className="mt-10 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
               The record is told here the way the rest of the atlas is told: in prose, each claim
               confidence-labeled and one click from its source. Where reputation and record disagree,
               the gap is shown, not smoothed over.

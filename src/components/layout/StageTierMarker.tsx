@@ -1,7 +1,8 @@
 /*
-  The tier marker for the dark theater rooms. Same instrument-plate logic as the
-  light TierMarker (mono index + label + a hairline), tuned to bone ink so it
-  reads on the stage. The index is a measurement label, never an eyebrow.
+  The tier marker for the chapter rooms. Same instrument-plate logic everywhere:
+  mono index + label + a hairline. Scene-aware by token — ink on the cream
+  field, bone inside a .scene-coal section — so the halls and the theaters share
+  one marker. The index is a measurement label, never an eyebrow.
 */
 export function StageTierMarker({
   index,
@@ -14,9 +15,9 @@ export function StageTierMarker({
 }) {
   return (
     <div id={id} className="mb-10 flex items-center gap-4 scroll-mt-24">
-      <span className="font-mono text-sm font-medium tabular-nums text-bone">{index}</span>
-      <span className="mono-label-stage whitespace-nowrap">{label}</span>
-      <span className="hairline-stage" aria-hidden="true" />
+      <span className="font-mono text-sm font-medium tabular-nums text-ink">{index}</span>
+      <span className="mono-label whitespace-nowrap">{label}</span>
+      <span className="hairline" aria-hidden="true" />
     </div>
   )
 }

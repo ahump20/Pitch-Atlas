@@ -81,7 +81,7 @@ const TRUTH_ROWS = [
 
 function ExternalLink({ href, children }: { href: string; children: string }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="text-cyan transition-colors hover:text-bone">
+    <a href={href} target="_blank" rel="noreferrer" className="text-seam transition-colors hover:text-ink">
       {children}
     </a>
   )
@@ -104,7 +104,7 @@ export function AboutPage() {
         eyebrow="About Pitch Atlas"
         title={
           <>
-            The pitch, in your <span className="rfx-chrome-text">hand</span>.
+            The pitch, in your <span className="text-seam">hand</span>.
           </>
         }
         sub={
@@ -117,58 +117,54 @@ export function AboutPage() {
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'About' }]} />}
       >
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link
-            to="/repertoire"
-            className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
-            style={{ background: 'var(--color-cyan)', boxShadow: '0 6px 24px -8px var(--color-cyan)' }}
-          >
+          <Link to="/repertoire" className="btn-foil">
             Open the Pitch Index <span aria-hidden="true">→</span>
           </Link>
           <Link
             to="/sources"
-            className="inline-flex items-center gap-2 rounded-md border border-bone/30 px-5 py-3 font-mono text-sm uppercase tracking-wide text-bone transition-colors hover:border-bone"
+            className="inline-flex items-center gap-2 rounded-md border border-ink/30 px-5 py-3 font-mono text-sm uppercase tracking-wide text-ink transition-colors hover:border-ink"
           >
             Read the source model <span aria-hidden="true">→</span>
           </Link>
         </div>
       </SectionHero>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">What it is</p>
             <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,56px)]">
               The part a chart cannot hold.
             </h2>
-            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-ink-2">
               A dashboard can tell you what the ball did. It cannot always tell you where the thumb
               sat, which seam caught the pad, or why one pitcher swears by a hold another pitcher
               cannot make work.
             </p>
-            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-ink-2">
               That is the gap. Pitch Atlas treats the grip as the specimen and the source label as
               part of the interface.
             </p>
           </div>
 
           <div className="md:col-span-7">
-            <div className="border-t border-bone/10">
+            <div className="border-t border-ink/15">
               {VALUE_ROWS.map((row, i) => (
                 <div
                   key={row.label}
-                  className="grid gap-4 border-b border-bone/10 py-5 sm:grid-cols-[4.25rem_1fr]"
+                  className="grid gap-4 border-b border-ink/15 py-5 sm:grid-cols-[4.25rem_1fr]"
                 >
                   <span
-                    className="h-fit w-fit rounded border border-cyan/50 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-cyan"
+                    className="h-fit w-fit rounded border border-cyan/50 px-2 py-1 font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-seam"
                     style={{ transform: `rotate(${i % 2 ? -2 : 2}deg)` }}
                   >
                     {row.stamp}
                   </span>
                   <div>
-                    <h3 className="rfx-athletic rfx-skew text-bone" style={{ fontSize: 'clamp(20px,3vw,30px)' }}>
+                    <h3 className="rfx-athletic rfx-skew text-ink" style={{ fontSize: 'clamp(20px,3vw,30px)' }}>
                       {row.label}
                     </h3>
-                    <p className="mt-2 max-w-[62ch] text-[14px] leading-relaxed text-bone-2">{row.text}</p>
+                    <p className="mt-2 max-w-[62ch] text-[14px] leading-relaxed text-ink-2">{row.text}</p>
                   </div>
                 </div>
               ))}
@@ -177,7 +173,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">Where it came from</p>
@@ -186,14 +182,14 @@ export function AboutPage() {
             </h2>
           </div>
           <div className="md:col-span-7">
-            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The first grips filed here are photographs of the builder&apos;s own hand. Austin H.
               worked a four-pitch mix in games: four-seam, two-seam, a three-finger changeup, and a
               12-6 curve, with a splitter that rode along for certain spots. There is no circle
               change in the set. His hands were too small to form one, so the file says that
               instead of faking a textbook page.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               That account seeded the whole source model. It is filed as a pitcher&apos;s own words,
               not tracked data, because that is what it is. And it surfaced the gap the atlas now
               works: where the pads sat, which seam the fingers rode, why one pitch stayed in the
@@ -203,7 +199,7 @@ export function AboutPage() {
             <p className="mt-6">
               <Link
                 to="/grips"
-                className="font-mono text-sm uppercase tracking-wide text-cyan transition-colors hover:text-bone"
+                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink"
               >
                 See the grip library <span aria-hidden="true">→</span>
               </Link>
@@ -212,21 +208,21 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">The nearby field</p>
           <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(28px,5vw,52px)]">
             There are competitors. They answer different questions.
           </h2>
-          <div className="mt-8 overflow-hidden rounded-2xl border border-bone/15 bg-[#0b0910]">
+          <div className="mt-8 overflow-hidden rounded-2xl border border-ink/15 bg-paper-2">
             {FIELD_ROWS.map((row) => (
-              <div key={row.label} className="grid gap-4 border-b border-bone/10 p-5 last:border-b-0 md:grid-cols-[1.1fr_1fr_1.4fr] md:p-6">
+              <div key={row.label} className="grid gap-4 border-b border-ink/15 p-5 last:border-b-0 md:grid-cols-[1.1fr_1fr_1.4fr] md:p-6">
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3">Category</p>
-                  <h3 className="rfx-athletic rfx-skew mt-2 text-bone" style={{ fontSize: 'clamp(20px,3vw,28px)' }}>
+                  <h3 className="rfx-athletic rfx-skew mt-2 text-ink" style={{ fontSize: 'clamp(20px,3vw,28px)' }}>
                     {row.label}
                   </h3>
-                  <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2">
+                  <p className="mt-2 flex flex-wrap gap-x-3 gap-y-1 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-2">
                     {row.examples.map((example) => (
                       <ExternalLink key={example.href} href={example.href}>
                         {example.label}
@@ -236,11 +232,11 @@ export function AboutPage() {
                 </div>
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3">Best question</p>
-                  <p className="mt-2 text-[14px] leading-relaxed text-bone">{row.answer}</p>
+                  <p className="mt-2 text-[14px] leading-relaxed text-ink">{row.answer}</p>
                 </div>
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-3">Where Pitch Atlas fits</p>
-                  <p className="mt-2 text-[14px] leading-relaxed text-bone-2">{row.gap}</p>
+                  <p className="mt-2 text-[14px] leading-relaxed text-ink-2">{row.gap}</p>
                 </div>
               </div>
             ))}
@@ -248,7 +244,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">Useful imperfection</p>
@@ -257,12 +253,12 @@ export function AboutPage() {
             </h2>
           </div>
           <div className="md:col-span-7">
-            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Pitch Atlas has a wabi-sabi streak when it leaves the record imperfect on purpose:
               a missing grip stays missing, a community note stays a field note, and a schematic
               does not call itself measured if the constants are not pinned.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               That is good only when it protects trust. The useful roughness is source honesty,
               hand texture, and visible limits. Fake patina would be worse than a plain page.
             </p>
@@ -270,7 +266,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-8 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
             <p className="rfx-skick">Why it exists</p>
@@ -279,7 +275,7 @@ export function AboutPage() {
             </h2>
           </div>
           <div className="md:col-span-7">
-            <p className="max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               A grip is oral tradition. A coach reshapes a kid&apos;s fingers in a bullpen. A
               teammate shows a seam trick between starts. A pitcher feels his way to a hold nobody
               taught him. Almost none of it gets written down with a name attached, and the
@@ -287,14 +283,14 @@ export function AboutPage() {
               after release down to the inch. The hand before release stayed where it always was:
               in dugouts, in scattered clips, in memory.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The lost-pitches wing shows the price. Holds that won real games survive as
               fragments because nobody filed them while the arm was still around to ask. Pitch
               Atlas exists to file the hold while it can still be asked about. Sourced, because
               memory earns trust through provenance. Uncorrected, because the variant a textbook
               would flag is sometimes the one that fit a real hand.
             </p>
-            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2">
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Nobody built this before because nobody had to own it. Coaching sells the next
               adjustment. Media sells what the ball just did. Trackers sell the measurement. An
               archive of sourced grips pays off years later, when someone wants to know how a
@@ -304,7 +300,7 @@ export function AboutPage() {
             <p className="mt-6">
               <Link
                 to="/lost-pitches"
-                className="font-mono text-sm uppercase tracking-wide text-cyan transition-colors hover:text-bone"
+                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink"
               >
                 Walk the lost-pitches wing <span aria-hidden="true">→</span>
               </Link>
@@ -313,23 +309,23 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-t border-bone/10">
+      <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">Known, unknown, open</p>
           <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
             {TRUTH_ROWS.map((row, i) => (
               <div
                 key={row.label}
-                className="rounded-xl border border-bone/12 bg-[#0e0c14] p-5"
-                style={{ borderColor: i === 1 ? 'color-mix(in srgb, var(--color-seam-bright) 28%, transparent)' : undefined }}
+                className="rounded-xl border border-ink/15 bg-paper-2 p-5"
+                style={{ borderColor: i === 1 ? 'color-mix(in srgb, #C8102E 40%, transparent)' : undefined }}
               >
                 <p
                   className="font-mono text-[10px] uppercase tracking-[0.16em]"
-                  style={{ color: i === 1 ? 'var(--color-seam-bright)' : 'var(--color-cyan)' }}
+                  style={{ color: i === 1 ? '#C8102E' : '#7A4A2E' }}
                 >
                   {row.label}
                 </p>
-                <p className="mt-3 text-[14px] leading-relaxed text-bone-2">{row.text}</p>
+                <p className="mt-3 text-[14px] leading-relaxed text-ink-2">{row.text}</p>
               </div>
             ))}
           </div>

@@ -46,16 +46,16 @@ export function SoftballFastpitchPage() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="The windmill, in four phases" />
-        <p className="mb-10 max-w-[64ch] text-base leading-relaxed text-bone-2">
+        <p className="mb-10 max-w-[64ch] text-base leading-relaxed text-ink-2">
           Biomechanics splits the delivery into four phases — the wind-up, the stride, the acceleration, and
           the follow-through. Each hands energy to the next.
         </p>
         <div className="grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-2">
           {WINDMILL_PHASES.map((phase) => (
-            <div key={phase.num} className="border-t border-[rgba(255,255,255,0.12)] pt-4">
+            <div key={phase.num} className="border-t border-ink/15 pt-4">
               <div className="mb-3 flex items-baseline gap-3">
-                <span className="font-mono text-sm font-medium tabular-nums text-bone">{phase.num}</span>
-                <h3 className="font-athletic text-xl uppercase tracking-wide text-bone">{phase.name}</h3>
+                <span className="font-mono text-sm font-medium tabular-nums text-ink">{phase.num}</span>
+                <h3 className="font-athletic text-xl uppercase tracking-wide text-ink">{phase.name}</h3>
               </div>
               <ClaimProse claim={phase.what} />
             </div>
@@ -68,7 +68,7 @@ export function SoftballFastpitchPage() {
           <StageTierMarker index={block.index} label={block.label} />
           <p
             className={`mb-10 max-w-[68ch] text-lg leading-relaxed ${
-              block.educational ? 'text-seam/90' : 'text-bone-2'
+              block.educational ? 'text-seam/90' : 'text-ink-2'
             }`}
           >
             {block.lede}
@@ -82,7 +82,7 @@ export function SoftballFastpitchPage() {
       ))}
 
       <section className="mx-auto max-w-6xl px-5 pb-20 md:px-8">
-        <div className="rfx-panel flex flex-col gap-4 rounded-sm border border-[rgba(255,255,255,0.12)] p-8 md:flex-row md:items-center md:justify-between">
+        <div className="rfx-panel flex flex-col gap-4 rounded-sm border border-ink/15 p-8 md:flex-row md:items-center md:justify-between">
           <p className="max-w-[52ch] text-base leading-relaxed text-bone-2">
             Next: the arsenal that lives on this delivery — the rise, the drop, and the rest.
           </p>
