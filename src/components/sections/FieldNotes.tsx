@@ -261,9 +261,9 @@ function NoteCard({
             Report
           </Button>
         ) : reportState === 'sending' ? (
-          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagging…</span>
+          <span role="status" className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagging…</span>
         ) : reportState === 'done' ? (
-          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagged for review. Thank you.</span>
+          <span role="status" className="quiet-status ml-auto font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">Flagged for review. Thank you.</span>
         ) : reportState === 'failed' ? (
           <Button
             type="button"
@@ -451,7 +451,7 @@ function SubmitForm({
           your own report, a coach, or a hunch. Sourced, not corrected.
         </p>
         {done ? (
-          <p className="rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">
+          <p role="status" className="quiet-status rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">
             Posted. It is live below. Thank you for shaping the bar.
           </p>
         ) : null}
@@ -549,9 +549,12 @@ function SubmitForm({
             </UiField>
           ) : null}
 
-          <details className="text-sm">
-            <summary className="mono-label cursor-pointer text-bone-2">Optional · reps + evidence link</summary>
-            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <details className="group text-sm">
+            <summary className="disclosure-row mono-label flex cursor-pointer list-none items-center gap-2 text-bone-2 transition-colors hover:text-bone">
+              <span aria-hidden="true" className="transition-transform group-open:rotate-90">›</span>
+              Optional · reps + evidence link
+            </summary>
+            <div className="disclose-body mt-3 grid grid-cols-1 gap-4 sm:grid-cols-3">
               <UiField>
                 <FieldLabel htmlFor="field-note-reps">Reps</FieldLabel>
                 <InputGroup className="h-10 bg-card">

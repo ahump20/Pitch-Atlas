@@ -1,5 +1,7 @@
 import { type CSSProperties, useMemo, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { Link } from 'react-router-dom'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { LayoutGridIcon, ListIcon, SearchIcon } from 'lucide-react'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
@@ -78,7 +80,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
     <Link
       to={filed ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`}
       className={`rfx-entry ${filed ? 'is-filed' : ''}`}
-      style={{ '--gc': accent } as CSSProperties}
+      style={{ '--gc': accent, viewTransitionName: `pi-${entry.id}` } as CSSProperties}
     >
       <Badge
         variant="outline"
@@ -126,7 +128,23 @@ export function PitchIndex({ id }: { id?: string }) {
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<FamilyFilter>('all')
   const [view, setView] = useState<IndexView>('rows')
+  const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
+
+  /*
+    Discrete filter/view switches morph rows to their new positions instead of
+    shuffling (View Transitions API; per-row names below). Keystroke filtering
+    stays instant — animating every keypress is the chaos this avoids. Browsers
+    without the API, and anyone preferring reduced motion, get the instant swap.
+  */
+  function morph(update: () => void) {
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown }
+    if (!reduced && typeof doc.startViewTransition === 'function') {
+      doc.startViewTransition(() => flushSync(update))
+    } else {
+      update()
+    }
+  }
 
   const groups = useMemo(() => {
     return REPERTOIRE_FAMILIES.map((fam) => {
@@ -171,7 +189,7 @@ export function PitchIndex({ id }: { id?: string }) {
             type="single"
             value={filter}
             onValueChange={(next) => {
-              if (next) setFilter(next as FamilyFilter)
+              if (next) morph(() => setFilter(next as FamilyFilter))
             }}
             className="flex flex-wrap"
             aria-label="Filter pitch family"
@@ -181,7 +199,7 @@ export function PitchIndex({ id }: { id?: string }) {
                 key={f.key}
                 value={f.key}
                 aria-label={f.label}
-                className="rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                className="pi-toggle rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
               >
                 {f.label}
               </ToggleGroupItem>
@@ -191,16 +209,16 @@ export function PitchIndex({ id }: { id?: string }) {
             type="single"
             value={view}
             onValueChange={(next) => {
-              if (next) setView(next as IndexView)
+              if (next) morph(() => setView(next as IndexView))
             }}
             className="ml-auto rounded-full border border-white/14 p-0.5"
             aria-label="Index view"
           >
-            <ToggleGroupItem value="rows" aria-label="Rows view" className="rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+            <ToggleGroupItem value="rows" aria-label="Rows view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
               <ListIcon data-icon="inline-start" />
               Rows
             </ToggleGroupItem>
-            <ToggleGroupItem value="cards" aria-label="Cards view" className="rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+            <ToggleGroupItem value="cards" aria-label="Cards view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
               <LayoutGridIcon data-icon="inline-start" />
               Cards
             </ToggleGroupItem>
@@ -249,7 +267,9 @@ export function PitchIndex({ id }: { id?: string }) {
             ) : (
               <div className="grid gap-[clamp(14px,1.6vw,20px)] [grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))]">
                 {entries.map((e) => (
-                  <IndexCard key={e.id} variant="repertoire" entry={e} />
+                  <div key={e.id} style={{ viewTransitionName: `pi-${e.id}` }}>
+                    <IndexCard variant="repertoire" entry={e} />
+                  </div>
                 ))}
               </div>
             )}

@@ -415,11 +415,11 @@ function GripLabSection({ entry, accentColor }: { entry: PitchAtlasEntry; accent
           </div>
 
           <details className="group border-t border-bone/15 pt-5">
-            <summary className="flex cursor-pointer list-none items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2 transition-colors hover:text-bone">
+            <summary className="disclosure-row flex cursor-pointer list-none items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2 transition-colors hover:text-bone">
               <span aria-hidden="true" className="transition-transform group-open:rotate-90" style={{ color: accentColor }}>›</span>
               The sourced grip, in full
             </summary>
-            <div className="mt-5 flex flex-col gap-6">
+            <div className="disclose-body mt-5 flex flex-col gap-6">
               <RefractorClaim claim={canonical.grip} proseClassName="text-[15px] leading-relaxed text-bone" />
               <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
                 {canonical.gripDetails.map((d, i) => (

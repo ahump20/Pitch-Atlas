@@ -254,6 +254,69 @@
 }
 
 /*
+  Field-manual microinteractions. Motion teaches provenance and structure, never
+  measurement: chips settle once on load, disclosures reveal in under a quarter
+  second, the specimen cards answer a hand with a single seam stitch — no glow.
+  Everything here is inert under prefers-reduced-motion.
+*/
+@keyframes chip-settle {
+  from { opacity: 0; transform: translateY(4px); }
+}
+@keyframes disclose {
+  from { opacity: 0; transform: translateY(-4px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* source/confidence chips settle into place; stagger reads as placement, not parade */
+  .chip-settle > * { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .chip-settle > :nth-child(2) { animation-delay: 60ms; }
+  .chip-settle > :nth-child(3) { animation-delay: 120ms; }
+  .chip-settle > :nth-child(4) { animation-delay: 180ms; }
+  .rfx-srcbadge { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 60ms backwards; }
+  .rfx-gripchip { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 100ms backwards; }
+  .rfx-crumb   { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 140ms backwards; }
+
+  /* known/unknown/open disclosures: one quiet 180ms reveal on open */
+  details[open] > .disclose-body { animation: disclose 0.18s ease-out; }
+  .quiet-status { animation: disclose 0.18s ease-out; }
+}
+
+/* the specimen card answers hover/tap with a seam stitch under the nameplate */
+.rfx-banner::after {
+  content: '';
+  position: absolute;
+  left: 22%; right: 22%; bottom: 3px; height: 1px;
+  background: var(--color-seam);
+  opacity: 0; transform: scaleX(0.4);
+  transition: opacity 0.16s ease-out, transform 0.16s ease-out;
+}
+.rfx-card:hover .rfx-banner::after,
+.rfx-card:focus-visible .rfx-banner::after,
+.rfx-card:active .rfx-banner::after { opacity: 1; transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .rfx-banner::after { transition: none; }
+}
+
+/* stable row morphs when the index filter/view changes (View Transitions API;
+   browsers without it swap instantly, which is the same honest fallback) */
+::view-transition-group(*) {
+  animation-duration: 0.18s;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(*),
+::view-transition-new(*) { animation-duration: 0.18s; }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) { animation: none !important; }
+}
+
+/* Fitts on touch: real fingers get 44px rows and chips without resizing the type */
+@media (pointer: coarse) {
+  .pi-toggle { min-height: 44px; }
+  .disclosure-row { min-height: 44px; }
+}
+
+/*
   Embedded tweet, brought onto the field manual's surface. react-tweet ships a
   blue-link Twitter look; these overrides reseat it on the cream inset card with
   the manual's prose font and a parchment hairline, so it reads as a cited

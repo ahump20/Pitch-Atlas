@@ -67,7 +67,7 @@ export function Masthead() {
             aria-expanded={open}
             aria-controls="mobile-nav"
             onClick={() => setOpen((v) => !v)}
-            className="flex h-9 w-9 items-center justify-center rounded-sm border border-bone/25 text-bone transition-colors hover:border-bone md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-sm border border-bone/25 text-bone transition-colors hover:border-bone md:hidden"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
               {open ? (
@@ -89,7 +89,7 @@ export function Masthead() {
                   to={n.to}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `block border-b border-bone/8 py-3 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                    `block border-b border-bone/8 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
                       isActive ? 'text-bone' : 'text-bone-2'
                     }`
                   }

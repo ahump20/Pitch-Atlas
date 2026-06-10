@@ -39,7 +39,7 @@ export function SourcedValue({
         </span>
         {approx ? <span className="mono-label">approx</span> : null}
       </div>
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <div className="chip-settle flex flex-wrap items-center gap-x-2 gap-y-1">
         <ConfidenceLabel confidence={claim.confidence} />
         {claim.source ? (
           <>

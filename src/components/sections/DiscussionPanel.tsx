@@ -353,6 +353,9 @@ function Forum({ topicKey, open }: { topicKey: string; open: boolean }) {
     try {
       await d.reportTarget(reporting, reason)
       toast.success('Report sent')
+    } catch {
+      // a safety report must never claim success it didn't earn
+      toast.error("Report didn't send. Try again.")
     } finally {
       setReporting(null)
     }
