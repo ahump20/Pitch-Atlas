@@ -47,6 +47,14 @@ export function SiteFooter() {
           <span className="mono-label-stage text-ink-3">{SITE.sourcePrinciple}</span>
         </div>
       </div>
+      {/* True by construction: every content route is prerendered to static HTML,
+          so the text reads with scripts off; only the interactive layers hydrate. */}
+      <div className="mx-auto max-w-[1320px] border-t border-bone/8 px-5 py-4 md:px-8">
+        <p className="mono-label-stage text-ink-3">
+          The archive is readable without JavaScript. Interactive grip tools, physics controls, and
+          comparison labs need JavaScript.
+        </p>
+      </div>
     </footer>
   )
 }
