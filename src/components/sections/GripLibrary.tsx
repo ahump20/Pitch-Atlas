@@ -86,12 +86,22 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
 }
 
 /** A looping grip video, framed like a GripPhoto — the moving evidence for a
-    game-day pitch. Honors reduced motion by holding on the poster frame. */
-export function GripMotion({ clip, className = '' }: { clip: GripClip; className?: string }) {
+    game-day pitch. Honors reduced motion by holding on the poster frame.
+    `large` runs the clip at its native 9/16 portrait, uncropped, for the
+    theater layout; the default 4/3 crop stays for inline card use. */
+export function GripMotion({
+  clip,
+  className = '',
+  large = false,
+}: {
+  clip: GripClip
+  className?: string
+  large?: boolean
+}) {
   const reduced = useReducedMotion()
   return (
     <figure className={`overflow-hidden rounded-[14px] border border-cyan/25 bg-[#0a0810] ${className}`}>
-      <div className="relative aspect-[4/3] w-full">
+      <div className={`relative w-full ${large ? 'aspect-[9/16]' : 'aspect-[4/3]'}`}>
         {reduced ? (
           <img
             src={clip.poster}
@@ -355,11 +365,27 @@ export function GripLibrary() {
               </div>
             ) : null}
 
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {grip.clip ? <GripMotion clip={grip.clip} /> : null}
-              {grip.photos.map((p) => (
-                <GripPhoto key={p.src} photo={p} />
-              ))}
+            {/* the theater band: the moving grip at its native portrait scale, the
+                photo angles large beside it. No clip → the photos carry the band. */}
+            <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12">
+              {grip.clip ? (
+                <div className="lg:col-span-5">
+                  <GripMotion clip={grip.clip} large />
+                </div>
+              ) : null}
+              <div className={grip.clip ? 'lg:col-span-7' : 'lg:col-span-12'}>
+                <div
+                  className={
+                    grip.clip
+                      ? 'grid grid-cols-1 gap-5 sm:grid-cols-2'
+                      : 'grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3'
+                  }
+                >
+                  {grip.photos.map((p) => (
+                    <GripPhoto key={p.src} photo={p} />
+                  ))}
+                </div>
+              </div>
             </div>
           </article>
         )
