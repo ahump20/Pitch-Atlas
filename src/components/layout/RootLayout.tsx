@@ -34,6 +34,9 @@ export function RootLayout() {
   return (
     <div className="min-h-screen bg-paper text-ink">
       <div className="field-rules" aria-hidden="true" />
+      {/* the film pass: one fixed multiply layer of grain over the whole page,
+          breathing slowly at rest (the CSS gates it behind reduced-motion) */}
+      <div className="grain-overlay" aria-hidden="true" />
       <TooltipProvider delayDuration={150}>
         <div className="relative z-10">
           <a
