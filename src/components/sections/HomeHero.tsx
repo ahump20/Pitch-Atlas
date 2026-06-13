@@ -19,8 +19,11 @@ import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
   The h1 stays one element ("Pitch Atlas" in source case; CSS uppercases it), so
   the heading reads correctly to tests and assistive tech while the two words sit
   in separate grid cells. On phones the words stack and the card stands between
-  them — same altar, vertical. "Open specimen" belongs to the card face alone;
-  the page's own calls are "Open the set" and "Meet the Craftsmen".
+  them — same altar, vertical. The specimen plate stays in the drawer below md:
+  on a narrow card it lands on the card's own arched wordmark, and the card
+  already wears its number and the gold frame — the plate repeats, it never
+  informs. "Open specimen" belongs to the card face alone; the page's own calls
+  are "Open the set" and "Meet the Craftsmen".
 */
 export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
   const isChase = featured.display.specimenNo === '00'
@@ -43,7 +46,7 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
             <div className="pull-shadow" aria-hidden="true" />
             <PitchSpecimenCard entry={featured} maxWidth={440} foil />
             <p
-              className="rfx-stamp pointer-events-none absolute -right-2 top-3 z-10 md:-right-5"
+              className="rfx-stamp pointer-events-none absolute top-3 z-10 hidden md:-right-5 md:inline-block"
               style={{ color: '#F6F1E6', background: 'rgba(22,18,13,.72)', transform: 'rotate(3deg)' }}
             >
               Specimen {featured.display.specimenNo}

@@ -17,9 +17,11 @@ import { STATUS_LABEL, isEdgeStatus } from '../index/StatusBadge'
 
   Sheets render stacked at every width (no flip control), so all twelve filed
   names are always in the DOM — for visitors scanning, and for the tests that pin
-  them. Open pockets hold the honest fillers real packs shipped with (a checklist
-  card, the softball set, the lost-pitches ghost) and truly empty sleeves say
-  nothing at all: an incomplete page is a true thing about a living set.
+  them. Open pockets hold the honest fillers real packs shipped with (checklist
+  and set-ad cards pointing at real wings and tools, plus the lost-pitches
+  ghost), and the one truly empty sleeve says nothing at all: an incomplete page
+  is a true thing about a living set. The leather field wears the felt pass —
+  the case lining showing between sleeves.
 */
 
 /* family tab inks — the collegiate jewels (lift variants for the charcoal field) */
@@ -169,7 +171,7 @@ export function RepertoirePocket({ entry }: { entry: RepertoireEntry }) {
 
 export function BinderSheet({ children, label }: { children: ReactNode; label: string }) {
   return (
-    <div className="binder-sheet" role="group" aria-label={label}>
+    <div className="binder-sheet texture-felt" role="group" aria-label={label}>
       <div className="binder-holes" aria-hidden="true">
         <i className="binder-hole" />
         <i className="binder-hole" />

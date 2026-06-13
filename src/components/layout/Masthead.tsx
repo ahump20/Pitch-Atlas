@@ -15,6 +15,7 @@ const NAV: { label: string; to: string }[] = [
   { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
   { label: 'Shape Lab', to: '/sandbox' },
+  { label: 'Grips', to: '/grips' },
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Sources', to: '/sources' },
 ]

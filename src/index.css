@@ -1786,6 +1786,44 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   /* a validation message lands with one short settle-shake, then stands still */
   .shake-in { animation: shake-settle 0.26s ease-out; }
 }
+/* ── the material pass: per-surface finish. Real card stock is not one
+   texture — cream stock carries a linen emboss, the coal table wears felt,
+   and the woven check earns a place outside the card face. All of it is a
+   whisper; if a visitor notices the texture before the content, it is too
+   loud. ── */
+@layer components {
+  /* linen emboss for cream surfaces: the crosshatch a press leaves in stock */
+  .texture-linen { position: relative; }
+  .texture-linen::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background:
+      repeating-linear-gradient(0deg, rgba(33, 29, 23, 0.025) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(90deg, rgba(33, 29, 23, 0.02) 0 1px, transparent 1px 3px);
+  }
+  /* worn felt for the coal table: low turbulence, screen-blended, barely there */
+  .texture-felt { position: relative; }
+  .texture-felt::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    opacity: 0.10; mix-blend-mode: screen;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.38' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+  /* the woven check as a site accent: a thin houndstooth band for section
+     stamps and thresholds. Rides currentColor so it re-tones per scene. */
+  .houndstooth-band {
+    height: 6px;
+    background:
+      repeating-linear-gradient(45deg, currentColor 0 2px, transparent 2px 7px),
+      repeating-linear-gradient(-45deg, currentColor 0 2px, transparent 2px 7px);
+    opacity: 0.35;
+  }
+  /* a long-handled plate: the nameplate that has been thumbed — one corner of
+     the border worn through. Apply beside an existing border. */
+  .worn-plate {
+    border-style: solid;
+    border-image: linear-gradient(115deg, currentColor 0 78%, transparent 86%, currentColor 94%) 1;
+  }
+}
+
 @keyframes grain-breathe { from { opacity: 0.03; } to { opacity: 0.042; } }
 @keyframes ambient-drift { from { background-position: 28% 0; } to { background-position: 72% 0; } }
 @keyframes rake-breathe { from { opacity: 0.26; } to { opacity: 0.36; } }

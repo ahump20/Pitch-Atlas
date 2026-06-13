@@ -7,6 +7,10 @@
 /classify/     /repertoire  301
 /kinetic-chain /learn/mechanics 301
 /kinetic-chain/ /learn/mechanics 301
+# The nav and the homepage both say "Shape Lab"; the route says /sandbox. The
+# spoken name must not 404.
+/shape-lab     /sandbox 301
+/shape-lab/    /sandbox 301
 /lost-pitches/smokey-joe-williams-velocity /lost-pitches/smokey-joe-williams-fastball 301
 /lost-pitches/smokey-joe-williams-velocity/ /lost-pitches/smokey-joe-williams-fastball 301
 

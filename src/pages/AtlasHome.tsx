@@ -7,11 +7,14 @@ import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../data/rep
 import { LOST_PITCHES, lostPitchBySlug } from '../data/lost-pitches'
 import { CRAFTSMEN } from '../data/craftsmen'
 import { DOCUMENTATION_META, type DocumentationTier } from '../data/types'
+import { allSources, latestRetrievedAt } from '../data/sources'
+import { gripEntryFor } from '../data/grips'
+import { asOfDate } from '../lib/format'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { SITE } from '../config/site'
 import { HomeHero } from '../components/sections/HomeHero'
 import { BinderSheet, PocketCard, FillerCard } from '../components/sections/BinderSheet'
-import { WaxPack, type WaxPackTool } from '../components/sections/WaxPack'
+import { WaxPack, WaxPackIdleStyles, type WaxPackTool } from '../components/sections/WaxPack'
 import { CardBackPanel } from '../components/refractor/CardBackPanel'
 import { ClaimCard } from '../components/provenance/ClaimCard'
 import { Reveal } from '../components/motion/Reveal'
@@ -86,12 +89,19 @@ const SURVIVOR = REPERTOIRE.find((e) => e.id === 'sweeper')
 const VANISHED = lostPitchBySlug('hilton-smith-curveball')
 const FILED_REF = PITCHES[0]
 
+/* the filed beat's small photo: the real grip poster from the library, resolved
+   by slug — shown only when the asset truly exists, never a stand-in render. */
+const FILED_GRIP = gripEntryFor(FILED_REF.display.slug)
+const FILED_THUMB = FILED_GRIP?.clip
+  ? { src: FILED_GRIP.clip.poster, alt: FILED_GRIP.clip.alt }
+  : undefined
+
 interface ThesisRow {
   stamp: string
   ink: string
   label: string
   text: string
-  example?: { subject: string; to: string; claim: Claim<string> }
+  example?: { subject: string; to: string; claim: Claim<string>; thumb?: { src: string; alt: string } }
 }
 
 const THESIS_ROWS: ThesisRow[] = [
@@ -130,9 +140,15 @@ const THESIS_ROWS: ThesisRow[] = [
       subject: `${FILED_REF.display.shortName} · filed, grip first`,
       to: `/pitch/${FILED_REF.display.slug}`,
       claim: FILED_REF.canonical.grip,
+      thumb: FILED_THUMB,
     },
   },
 ]
+
+/* the colophon figures: the registry counted, the newest check dated — both
+   derived from sources.ts at build, never typed by hand. */
+const REGISTRY_COUNT = allSources().length
+const REGISTRY_AS_OF = asOfDate(latestRetrievedAt(allSources()))
 
 /* the two doors read from the real wings: the hall's actual names, and the
    archive's actual documentation-tier counts. Derived, never hand-listed. */
@@ -246,13 +262,13 @@ export function AtlasHome() {
                 <div className="pocket">
                   <FillerCard to="/lost-pitches" label="Lost Pitches" note="Grips history dropped" ghost />
                 </div>
-                {/* three empty sleeves: an incomplete page is a true thing about a living set */}
-                <div className="pocket" aria-hidden="true">
-                  <div style={{ aspectRatio: '5 / 7' }} />
+                <div className="pocket">
+                  <FillerCard to="/learn" label="Field Manual" note="How the craft works" />
                 </div>
-                <div className="pocket" aria-hidden="true">
-                  <div style={{ aspectRatio: '5 / 7' }} />
+                <div className="pocket">
+                  <FillerCard to="/sandbox" label="Shape Sandbox" note="Turn the spin axis" />
                 </div>
+                {/* one empty sleeve: an incomplete page is a true thing about a living set */}
                 <div className="pocket" aria-hidden="true">
                   <div style={{ aspectRatio: '5 / 7' }} />
                 </div>
@@ -308,6 +324,7 @@ export function AtlasHome() {
                               subject={row.example.subject}
                               to={row.example.to}
                               claim={row.example.claim}
+                              thumb={row.example.thumb}
                             />
                           ) : null}
                         </div>
@@ -399,6 +416,7 @@ export function AtlasHome() {
           <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-ink-2">
             The craft map, made playable. Tear one open — every pack is one click from home.
           </p>
+          <WaxPackIdleStyles />
           <div className="mt-9 grid grid-cols-2 gap-x-4 gap-y-6 md:gap-x-6 lg:grid-cols-4">
             {TOOLS.map((t) => (
               <WaxPack key={t.to} tool={t} />
@@ -514,14 +532,46 @@ export function AtlasHome() {
       <section className="border-t border-leather/25">
         <SeamGuide variant="tear" className="opacity-60" />
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
-          <p className="rfx-skick">The honesty contract</p>
-          <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(26px,4vw,44px)]">
-            What we will <span className="text-seam">never fake</span>.
-          </h2>
-          <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-ink-2">
-            The foil is decoration. The provenance is the point. These lines are load-bearing — in
-            the product copy, the data model, and the community floor in equal measure.
-          </p>
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(280px,340px)] lg:items-end">
+            <div>
+              <p className="rfx-skick">The honesty contract</p>
+              <h2 className="rfx-stitle mt-3 max-w-[16ch] text-[clamp(26px,4vw,44px)]">
+                What we will <span className="text-seam">never fake</span>.
+              </h2>
+              <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-ink-2">
+                The foil is decoration. The provenance is the point. These lines are load-bearing —
+                in the product copy, the data model, and the community floor in equal measure.
+              </p>
+            </div>
+
+            {/* the colophon slip: the registry counted and dated — figures derived
+                from sources.ts, the same way every claim on the site is filed */}
+            <aside
+              className="claim-card texture-linen shadow-rest h-fit lg:-rotate-1"
+              aria-label="Citation registry colophon"
+            >
+              <span className="rfx-stamp w-fit" style={{ color: '#8A6118' }}>
+                Colophon
+              </span>
+              <p className="flex items-baseline gap-2.5">
+                <b className="rfx-athletic text-[clamp(30px,3.4vw,40px)] leading-none text-ink">
+                  {REGISTRY_COUNT}
+                </b>
+                <span className="text-[13px] leading-snug text-ink-2">
+                  sources in the citation registry
+                </span>
+              </p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
+                Last checked {REGISTRY_AS_OF} · not auto-refreshed
+              </p>
+              <Link
+                to="/sources"
+                className="link-stitch w-fit font-mono text-[10px] uppercase tracking-[0.14em] text-ink-2"
+              >
+                Open the registry <span aria-hidden="true">→</span>
+              </Link>
+            </aside>
+          </div>
 
           <div className="mt-8">
             <CardBackPanel>

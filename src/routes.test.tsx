@@ -23,10 +23,16 @@ function renderRoute(path: string) {
 
 const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random', 'Loading...', 'TODO', 'Baseball Atlas']
 
+/* the first lazy route a file renders pays the whole transform bill cold —
+   the same one-time cost vite.config.ts already sizes testTimeout for. The
+   first await in a file gets the same allowance; everything after rides the
+   warm module graph at the default. */
+const COLD_LOAD = { timeout: 15000 }
+
 describe('Atlas home', () => {
   it('leads with the hero and makes the Pitch Index the front door', async () => {
     renderRoute('/')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Pitch Atlas')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Pitch Atlas')
     // the binder carries the whole filed set: every specimen name is in the DOM
     expect(screen.getByText(/Every accepted pitch by family/)).toBeInTheDocument()
     for (const p of PITCHES) {
@@ -68,7 +74,7 @@ describe('Atlas home', () => {
 describe('Pitch chapters', () => {
   it('leads the four-seam chapter with the pitch name and shows a sourced master figure', async () => {
     renderRoute('/pitch/four-seam')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Four-seam fastball')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Four-seam fastball')
     expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
     expect(screen.getByAltText(/four-seam style/i)).toBeInTheDocument()
     expect(screen.getByText(/Shape read/i)).toBeInTheDocument()

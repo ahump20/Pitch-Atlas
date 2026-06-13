@@ -54,6 +54,33 @@ describe('ClaimCard', () => {
     expect(outbound).toHaveAttribute('target', '_blank')
   })
 
+  it('clips the optional thumb at the card edge and files plainly without one', () => {
+    const claim: Claim<string> = {
+      value: 'Fingertips cross the seam, never ride it.',
+      source,
+      confidence: 'reputable-analysis',
+    }
+    const { rerender } = render(
+      <MemoryRouter>
+        <ClaimCard
+          claim={claim}
+          thumb={{ src: '/grips/four-seam-grip-poster.webp', alt: 'A four-seam grip, fingertips across the seam' }}
+        />
+      </MemoryRouter>,
+    )
+    const img = screen.getByRole('img', { name: /four-seam grip/i })
+    expect(img).toHaveAttribute('src', '/grips/four-seam-grip-poster.webp')
+    // the claim itself still reads beside the photo
+    expect(screen.getByText(/Fingertips cross the seam/)).toBeInTheDocument()
+    // backward-compatible: no thumb, no image — the card never invents a visual
+    rerender(
+      <MemoryRouter>
+        <ClaimCard claim={claim} />
+      </MemoryRouter>,
+    )
+    expect(screen.queryByRole('img')).not.toBeInTheDocument()
+  })
+
   it('keeps the explanatory note visible on a weak claim', () => {
     const claim: Claim<string> = {
       value: 'A relayed figure.',

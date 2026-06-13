@@ -10,12 +10,15 @@ import { SourceBadge } from './SourceBadge'
   exists. The card-density sibling of ClaimProse — same primitives, same
   CONFIDENCE_META vocabulary, never a parallel tier system. It rides the scene
   tokens, so the same card reads ink-on-cream on the field and bone-on-coal
-  inside a scene.
+  inside a scene. An optional thumb — a small square photo clipped to the card's
+  right edge, a degree off-square like anything hand-filed — carries a REAL
+  asset only; a card with no photo simply files without one.
 */
 export function ClaimCard({
   claim,
   subject,
   to,
+  thumb,
   className = '',
 }: {
   claim: Claim<string>
@@ -23,10 +26,12 @@ export function ClaimCard({
   subject?: string
   /** Internal route to the subject's own page. */
   to?: string
+  /** A small square visual clipped at the card's right edge. Real assets only. */
+  thumb?: { src: string; alt: string }
   className?: string
 }) {
-  return (
-    <div className={`claim-card ${className}`}>
+  const filed = (
+    <>
       {subject ? (
         to ? (
           <Link
@@ -56,6 +61,27 @@ export function ClaimCard({
           {claim.note}
         </p>
       ) : null}
+    </>
+  )
+
+  return (
+    <div className={`claim-card ${className}`}>
+      {thumb ? (
+        <div className="flex items-start gap-3.5">
+          <div className="flex min-w-0 flex-1 flex-col gap-2">{filed}</div>
+          <img
+            src={thumb.src}
+            alt={thumb.alt}
+            loading="lazy"
+            decoding="async"
+            draggable={false}
+            className="h-16 w-16 flex-none rounded-[4px] border border-machined object-cover"
+            style={{ transform: 'rotate(1.2deg)' }}
+          />
+        </div>
+      ) : (
+        filed
+      )}
     </div>
   )
 }

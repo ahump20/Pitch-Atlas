@@ -7,6 +7,9 @@ import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
+import { projectSeam, splitRuns } from '../../lib/seam2d'
+import { accentForSlug } from '../refractor/accents'
+import { FAMILY_ACCENT } from './family-accent'
 import { BinderSheet, RepertoirePocket } from './BinderSheet'
 import { Badge } from '../ui/badge'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
@@ -17,17 +20,21 @@ type IndexView = 'rows' | 'binder'
 
 /*
   The Pitch Index directory, in the refractor language. Every accepted pitch by
-  family as a scouting row: a seam glyph, the name, a Filed tag when the atlas has
-  a full specimen, the sourced aka + velocity, a status tier, and the open
+  family as a scouting row: the mark, the name, a Filed tag when the atlas has
+  a full specimen, the sourced aka + grip tell, a status tier, and the open
   affordance — "Open specimen" to /pitch/<slug> when filed, else "Basic file" to
-  /repertoire/<id>. The second view is the binder spread: each family is a leather
-  binder sheet of sleeves (the home set's own pocket vocabulary), a sleeved card
-  pulls on hover, and an entry with no clean photograph wears the honest cream
-  slip instead of a fake thumbnail. Sticky controls search name/aka/family and
-  filter by family or by filed. The Lost Pitches wing sits one click away in its
-  own hall. Default state (no query, all) renders every row, so the prerendered
-  HTML carries the whole index; the filter hydrates on top. Foil is decoration;
-  every line is sourced.
+  /repertoire/<id>. The mark is honest by tier: a real grip photograph where the
+  library holds one; otherwise the true projected seam (the same curve every 2D
+  ball on the site is drawn from), inked in the entry's accent and resting at
+  its own turn — a bucket of handled balls, no two set down the same way. The
+  second view is the binder spread: each family is a leather binder sheet of
+  sleeves (the home set's own pocket vocabulary), a sleeved card pulls on hover,
+  and an entry with no clean photograph wears the honest cream slip instead of a
+  fake thumbnail. Sticky controls search name/aka/family and filter by family or
+  by filed. The Lost Pitches wing sits one click away in its own hall. Default
+  state (no query, all) renders every row, so the prerendered HTML carries the
+  whole index; the filter hydrates on top. Foil is decoration; every line is
+  sourced.
 */
 
 type FamilyFilter = RepertoireFamily | 'filed' | 'all'
@@ -44,17 +51,6 @@ const STATUS: Record<RepertoireStatus, { color: string; label: string }> = {
   'not-a-pitch': { color: 'var(--color-ink-3)', label: 'Not a pitch' },
 }
 
-/* family accent, matching the prototype's per-family worlds. */
-const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  // collegiate jewel lifts on the charcoal — pennant navy, varsity forest,
-  // letterman burgundy, warm sand, seam. The neon triads stay on the card faces.
-  fastball: '#5C84B8',
-  offspeed: '#5FA27B',
-  breaking: '#B0606C',
-  specialty: '#CDBA8E',
-  banned: '#E04A5A',
-}
-
 const FILTERS: { key: FamilyFilter; label: string }[] = [
   { key: 'all', label: 'All' },
   { key: 'fastball', label: 'Fastball' },
@@ -65,15 +61,74 @@ const FILTERS: { key: FamilyFilter; label: string }[] = [
   { key: 'filed', label: 'Filed specimens' },
 ]
 
-/* A small static seam glyph: cream ball, family-tinted meridian, red horseshoe. */
-function SeamGlyph({ color }: { color: string }) {
+/* the one true seam, projected once at module scope and shared by every mark.
+   rotation happens per entry on a <g>, so forty marks cost one projection. */
+const MARK_SEAM = splitRuns(projectSeam(20, 20, 13.2, 160))
+
+/* how an entry rests: seeded off its id, never the clock, never a die. The
+   same ball lands the same way on the server and in the hand. */
+function restFor(id: string): number {
+  let h = 0
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) % 1000
+  return Math.sin(h) // -1..1
+}
+
+/* The unphotographed mark: a dark leather disc carrying the real projected
+   seam — the same curve every 2D ball on the site is drawn from — inked in
+   the entry's accent and set down at its own turn. Static; rotation is how
+   the ball rests, not an animation. */
+function IndexSeamMark({ tint, turn }: { tint: string; turn: number }) {
   return (
     <svg viewBox="0 0 40 40" aria-hidden="true" className="h-10 w-10 flex-none">
-      <circle cx="20" cy="20" r="14" fill="#EFE7D4" />
-      <circle cx="20" cy="20" r="14" fill="none" stroke={color} strokeWidth="1" opacity="0.4" />
-      <path d="M11 13 Q17 20 11 27" fill="none" stroke="#FF2433" strokeWidth="1.6" strokeLinecap="round" />
-      <path d="M29 13 Q23 20 29 27" fill="none" stroke="#FF2433" strokeWidth="1.6" strokeLinecap="round" />
+      <circle cx="20" cy="20" r="13.8" fill="#17120C" />
+      <circle cx="20" cy="20" r="13.8" fill="none" stroke={tint} strokeWidth="1" opacity="0.38" />
+      <g transform={`rotate(${turn.toFixed(2)} 20 20)`}>
+        {MARK_SEAM.map((run, i) => (
+          <path
+            key={i}
+            d={run.d}
+            fill="none"
+            stroke={tint}
+            strokeWidth={run.front ? 1.5 : 1}
+            strokeOpacity={run.front ? 0.9 : 0.26}
+            strokeLinecap="round"
+          />
+        ))}
+      </g>
     </svg>
+  )
+}
+
+/* A real grip photograph at thumbnail scale, leaning its own degree. Loading
+   fades up (.media-fade, reduced-motion-gated in CSS); a failed fetch falls
+   back to the seam mark — never a broken-image hole in the column. */
+function GripThumb({ src, tint, rest }: { src: string; tint: string; rest: number }) {
+  const [state, setState] = useState<'loading' | 'loaded' | 'error'>('loading')
+  if (state === 'error') return <IndexSeamMark tint={tint} turn={rest * 48} />
+  return (
+    <span
+      aria-hidden="true"
+      className="relative h-10 w-10 flex-none overflow-hidden rounded-[10px] bg-[#14100B]"
+      style={{
+        transform: `rotate(${(rest * 2).toFixed(2)}deg)`,
+        boxShadow: `0 0 0 1px color-mix(in srgb, ${tint} 38%, transparent)`,
+      }}
+    >
+      <img
+        src={src}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        draggable={false}
+        // a cached image can finish before hydration attaches onLoad — read it off the element
+        ref={(el) => {
+          if (el?.complete && el.naturalWidth > 0) setState('loaded')
+        }}
+        onLoad={() => setState('loaded')}
+        onError={() => setState('error')}
+        className={`media-fade h-full w-full object-cover ${state === 'loaded' ? 'is-loaded' : ''}`}
+      />
+    </span>
   )
 }
 
@@ -82,6 +137,11 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
   const status = STATUS[entry.status]
   const aka = entry.aka?.join(', ')
   const gripEntry = gripEntryForRepertoire(entry)
+  // the same photo the binder pocket resolves: first still, else the clip's poster
+  const still = gripEntry?.photos[0]?.src ?? gripEntry?.clip?.poster
+  const rest = restFor(entry.id)
+  // a filed pitch wears its own specimen world; a basic file wears the family ink
+  const markTint = entry.filedSlug ? accentForSlug(entry.filedSlug).c3 : accent
   return (
     <Link
       to={filed ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`}
@@ -95,7 +155,11 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
       >
         {status.label}
       </Badge>
-      <SeamGlyph color={accent} />
+      {still ? (
+        <GripThumb src={still} tint={markTint} rest={rest} />
+      ) : (
+        <IndexSeamMark tint={markTint} turn={rest * 48} />
+      )}
       <span className="min-w-0 flex-1">
         <span className="flex flex-wrap items-center gap-2 pr-20">
           <span className="font-prose text-[15px] font-bold text-bone">{entry.name}</span>
@@ -110,16 +174,22 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
         </span>
         {aka ? <span className="mt-1 block text-[11.5px] leading-snug text-ink-3">{aka}</span> : null}
         {gripEntry ? (
+          /* the tell is a ten-word phrase, not a ticker — it wraps whole on
+             desktop and clamps at two lines on a phone, never mid-word */
           <Badge
             variant="outline"
-            className="mt-2 h-auto max-w-full justify-start gap-2 rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.08em] text-bone-2"
+            className="mt-2 h-auto max-w-full items-start justify-start gap-2 whitespace-normal rounded-[10px] px-2.5 py-1 text-left font-mono text-[9px] uppercase tracking-[0.08em] text-bone-2"
             style={{
               borderColor: `color-mix(in srgb, ${accent} 30%, transparent)`,
               background: `color-mix(in srgb, ${accent} 8%, transparent)`,
             }}
           >
-            <span style={{ color: accent }}>Grip tell</span>
-            <span className="min-w-0 truncate">{gripEntry.shortCue}</span>
+            <span className="flex-none" style={{ color: accent }}>
+              Grip tell
+            </span>
+            <span className="line-clamp-2 min-w-0 leading-snug sm:line-clamp-none">
+              {gripEntry.shortCue}
+            </span>
           </Badge>
         ) : null}
         <span

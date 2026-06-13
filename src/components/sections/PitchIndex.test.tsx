@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { REPERTOIRE } from '../../data/repertoire'
+import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
+import { gripEntryForRepertoire } from '../../data/grips'
+import { IndexLedger } from './IndexLedger'
 import { PitchIndex } from './PitchIndex'
 
 function renderIndex() {
@@ -56,5 +58,59 @@ describe('PitchIndex controls', () => {
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
     // an entry with no clean photograph says so honestly, never a fake thumbnail
     expect(screen.getAllByText('No image filed').length).toBeGreaterThan(0)
+  })
+})
+
+describe('PitchIndex row marks', () => {
+  it('shows a grip thumbnail where a real photo exists and a turned seam mark elsewhere', () => {
+    const { container } = renderIndex()
+
+    // expected thumbnails derive from the same resolver the rows use — the
+    // count is read off the data, never typed in
+    const expected = REPERTOIRE.filter((e) => {
+      const g = gripEntryForRepertoire(e)
+      return !!(g?.photos[0]?.src ?? g?.clip?.poster)
+    }).length
+    expect(expected).toBeGreaterThan(0)
+
+    const rows = container.querySelectorAll('a.rfx-entry')
+    expect(rows.length).toBe(REPERTOIRE.length)
+    const thumbs = container.querySelectorAll('a.rfx-entry img')
+    expect(thumbs.length).toBe(expected)
+
+    // the unphotographed marks rest at their own turn — a handled set, not one
+    // icon repeated; rotation is seeded per entry, deterministic for SSG
+    const turns = [...container.querySelectorAll('a.rfx-entry svg g')].map((g) =>
+      g.getAttribute('transform'),
+    )
+    expect(turns.length).toBe(REPERTOIRE.length - expected)
+    expect(new Set(turns).size).toBeGreaterThan(1)
+  })
+
+  it('lets the grip tell wrap whole instead of cutting mid-word', () => {
+    renderIndex()
+    const cue = screen.getByText('Fingertips cross the seam path')
+    expect(cue.className).not.toMatch(/truncate/)
+    expect(cue.className).toMatch(/line-clamp-2/)
+  })
+})
+
+describe('IndexLedger', () => {
+  it('derives every count on the plate from the data', () => {
+    render(<IndexLedger />)
+
+    const filed = REPERTOIRE.filter((e) => e.filedSlug).length
+    const basic = REPERTOIRE.length - filed
+    expect(screen.getByText(`${filed} open a full specimen`)).toBeInTheDocument()
+    expect(screen.getByText(new RegExp(`${basic} basic files`))).toBeInTheDocument()
+    expect(screen.getByText(`${REPERTOIRE.length} rows`)).toBeInTheDocument()
+
+    for (const fam of REPERTOIRE_FAMILIES) {
+      const row = screen.getByText(fam.label).closest('li')
+      expect(row).not.toBeNull()
+      expect(
+        within(row as HTMLElement).getByText(String(repertoireByFamily(fam.family).length)),
+      ).toBeInTheDocument()
+    }
   })
 })
