@@ -1,3 +1,4 @@
+import type { RouteObject } from 'react-router-dom'
 import { defineReactSsgConfig } from 'vite-plugin-react-ssg'
 import { routes } from './src/routes'
 import { sitemapPaths } from './src/lib/sitemap'
@@ -16,9 +17,32 @@ import { sitemapPaths } from './src/lib/sitemap'
   post-build step in vite.config.ts copies its output to 404.html so Cloudflare
   Pages serves a real 404 (status and all) for unknown paths.
 */
+
+/*
+  The routes are code-split (route-level `lazy` in src/routes.tsx), but the
+  plugin loads this config through a short-lived Vite module runner and closes
+  it BEFORE prerendering — a lazy() that fires during render finds a dead
+  runner and every page prerenders as an error shell. So the chunks resolve
+  HERE, by top-level await while the runner is still open, and the plugin gets
+  an eager route table. The client bundle never sees this file; it keeps the
+  real per-page splits.
+*/
+async function resolveLazyRoutes(list: RouteObject[]): Promise<RouteObject[]> {
+  return Promise.all(
+    list.map(async (route) => {
+      const { lazy, children, ...rest } = route
+      return {
+        ...rest,
+        ...(typeof lazy === 'function' ? await lazy() : null),
+        ...(children ? { children: await resolveLazyRoutes(children) } : null),
+      } as RouteObject
+    }),
+  )
+}
+
 export default defineReactSsgConfig({
   history: 'browser',
   origin: 'https://pitch-atlas.com',
-  routes,
+  routes: await resolveLazyRoutes(routes),
   paths: ['/404', ...sitemapPaths()],
 })

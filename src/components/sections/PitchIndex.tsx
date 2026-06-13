@@ -1,10 +1,10 @@
-import { type CSSProperties, useMemo, useState } from 'react'
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { BookOpenIcon, ListIcon, SearchIcon } from 'lucide-react'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
-import { REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
+import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { BinderSheet, RepertoirePocket } from './BinderSheet'
@@ -140,6 +140,18 @@ export function PitchIndex({ id }: { id?: string }) {
   const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
 
+  // the announcer: a hidden live region for events the screen can't show
+  // (Escape clearing the search). The message clears itself so a repeat
+  // of the same event re-announces.
+  const [announce, setAnnounce] = useState('')
+  const announceTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(announceTimer.current), [])
+  function say(msg: string) {
+    setAnnounce(msg)
+    window.clearTimeout(announceTimer.current)
+    announceTimer.current = window.setTimeout(() => setAnnounce(''), 1600)
+  }
+
   /*
     Discrete filter/view switches morph rows to their new positions instead of
     shuffling (View Transitions API; per-row names below). Keystroke filtering
@@ -188,6 +200,13 @@ export function PitchIndex({ id }: { id?: string }) {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                // Escape wipes the search clean and says so
+                if (e.key === 'Escape' && query) {
+                  setQuery('')
+                  say('Search cleared')
+                }
+              }}
               placeholder="Search a pitch, an alias, a family…"
               className="h-full text-[15px] placeholder:text-ink-3"
             />
@@ -233,19 +252,30 @@ export function PitchIndex({ id }: { id?: string }) {
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
-        <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">{countLabel}</p>
+        <p aria-live="polite" className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
+          {countLabel}
+        </p>
+        <span role="status" aria-live="polite" className="sr-only">
+          {announce}
+        </span>
       </div>
 
-      {/* Empty state */}
+      {/* Empty state — says which lever to pull: the search term or the filter */}
       {total === 0 ? (
         <Empty className="my-12 border border-dashed border-white/12 bg-card/70 py-16">
           <EmptyHeader>
             <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
               <SearchIcon aria-hidden="true" />
             </EmptyMedia>
-            <EmptyTitle className="rfx-athletic rfx-skew text-3xl text-bone-2">No pitch by that name</EmptyTitle>
+            <EmptyTitle className="rfx-athletic rfx-skew text-3xl text-bone-2">
+              {q ? 'No pitch by that name' : 'Nothing under this filter'}
+            </EmptyTitle>
             <EmptyDescription className="text-[13px] text-ink-3">
-            Try a family, an alias, or clear the search. The index only shows what the atlas has actually filed.
+              {q
+                ? `“${query.trim()}” is not in the ${REPERTOIRE.length} indexed entries. Try a family or an alias${
+                    filter === 'all' ? '' : `, or clear the ${FILTERS.find((f) => f.key === filter)?.label} filter`
+                  }. The index only shows what the atlas has actually filed.`
+                : `Every entry is excluded by the ${FILTERS.find((f) => f.key === filter)?.label} filter. Clear it to see the full index.`}
             </EmptyDescription>
           </EmptyHeader>
         </Empty>

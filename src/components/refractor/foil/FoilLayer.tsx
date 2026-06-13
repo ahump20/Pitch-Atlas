@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { TiltStore } from '../../../hooks/useCardTilt'
 import type { RefractorAccent } from '../RefractorCard'
 import { createFoilProgram, hexToTriple, type FoilProgram } from './foilProgram'
@@ -11,6 +11,12 @@ import { createFoilProgram, hexToTriple, type FoilProgram } from './foilProgram'
   restore. On its first successful frame the layer marks the card `is-foil-live`,
   which fades the canvas in and mutes the CSS gradient stand-in so there is
   never double glare. Any GL failure just leaves the CSS card standing.
+
+  Context loss gets exactly one second chance: when the browser evicts this
+  context (it caps ~16 live ones), the layer waits ~150ms — long enough for a
+  neighboring card to release its slot — and swaps in a fresh canvas (keyed
+  remount; a lost canvas hands back the same dead context forever). If the
+  retry dies too, the CSS card stands. Never a loop.
 */
 export default function FoilLayer({
   store,
@@ -22,6 +28,7 @@ export default function FoilLayer({
   gold: boolean
 }) {
   const ref = useRef<HTMLCanvasElement | null>(null)
+  const [epoch, setEpoch] = useState(0)
 
   useEffect(() => {
     const canvas = ref.current
@@ -65,7 +72,14 @@ export default function FoilLayer({
     }
     document.addEventListener('visibilitychange', onVisible)
 
-    const onLost = (e: Event) => e.preventDefault()
+    let retryTimer = 0
+    const onLost = (e: Event) => {
+      e.preventDefault()
+      // the CSS card takes back the glare while the context is gone
+      card?.classList.remove('is-foil-live')
+      if (epoch > 0 || retryTimer) return // one retry, ever
+      retryTimer = window.setTimeout(() => setEpoch(1), 150)
+    }
     canvas.addEventListener('webglcontextlost', onLost)
 
     const unsubscribe = store.subscribe(schedule)
@@ -77,11 +91,12 @@ export default function FoilLayer({
       ro.disconnect()
       document.removeEventListener('visibilitychange', onVisible)
       canvas.removeEventListener('webglcontextlost', onLost)
+      window.clearTimeout(retryTimer)
       cancelAnimationFrame(raf)
       card?.classList.remove('is-foil-live')
       prog.dispose()
     }
-  }, [store, accent, gold])
+  }, [store, accent, gold, epoch])
 
-  return <canvas ref={ref} className="rfx-foil-canvas" aria-hidden="true" />
+  return <canvas key={epoch} ref={ref} className="rfx-foil-canvas" aria-hidden="true" />
 }

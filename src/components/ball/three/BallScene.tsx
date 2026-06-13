@@ -9,10 +9,11 @@ import { v, seamPoint } from '../../../lib/seam'
 import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
 
 /*
-  The 3D specimen. frameloop is on-demand: the spin loop self-sustains by
-  invalidating each frame while active, and halts the moment the ball is paused
-  (reduced motion / faced for study) or scrolled off screen. OrbitControls
-  invalidates on drag, so inspection works with zero idle GPU cost.
+  The 3D specimen. frameloop is on-demand: while the spin is active a ~30 fps
+  interval requests repaints (capped — never the raw 120 Hz ProMotion rAF), and
+  the loop halts the moment the ball is paused (reduced motion / faced for
+  study) or scrolled off screen. OrbitControls invalidates on drag at full
+  rate, so inspection stays smooth with zero idle GPU cost.
 
   Three presentations, one component:
     - hero    : auto-spinning showpiece, no grip, no vectors.
@@ -93,6 +94,15 @@ function SpinGroup({
     // demand-mode: repaint once whenever the active state flips (spin on/off,
     // disclosure open, pitch change), so a static faced ball still draws.
     invalidate()
+    if (!active) return
+    // The idle spin's metronome. Self-invalidating from useFrame rides the raw
+    // rAF — 120 Hz on ProMotion — for a slow showcase spin that reads identically
+    // at 30. Tick the repaint at ~30 fps instead; the rotation below advances by
+    // real elapsed time, so the ball covers the same arc either way. Pointer
+    // interaction stays full-rate: OrbitControls invalidates per drag event on
+    // its own, outside this clock.
+    const id = window.setInterval(() => invalidate(), 33)
+    return () => window.clearInterval(id)
   }, [active, invalidate])
 
   useFrame((_, delta) => {
@@ -101,7 +111,6 @@ function SpinGroup({
     if (!g) return
     // clamp delta so a backgrounded tab does not snap the ball on return
     g.rotateOnWorldAxis(axis, Math.min(delta, 0.05) * 0.55)
-    invalidate()
   })
 
   return <group ref={groupRef}>{children}</group>

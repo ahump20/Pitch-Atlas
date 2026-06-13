@@ -13,8 +13,9 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
   schematic — and no third party is in frame. Four states are honored by
   construction: the data is static so there is no loading/empty/fetch state, and a
   broken or missing asset falls back to a labeled tile (the error state) instead
-  of a blank box. Every image carries alt text, so the zero-WebGL/accessibility
-  floor holds. The same GripPhoto card is reused inline on the specimen pages.
+  of a blank box — with a one-tap retry when there is a src worth re-requesting.
+  Every image carries alt text, so the zero-WebGL/accessibility floor holds. The
+  same GripPhoto card is reused inline on the specimen pages.
 */
 
 const VIEW_LABEL: Record<GripView, string> = { top: 'Top', side: 'Side', thumb: 'Underside' }
@@ -31,6 +32,8 @@ type GripImageState = 'loading' | 'loaded' | 'error'
 
 export function GripPhoto({ photo, className = '' }: { photo: VisualReference; className?: string }) {
   const [state, setState] = useState<GripImageState>('loading')
+  // bumping the attempt remounts the img, which re-requests the same src
+  const [attempt, setAttempt] = useState(0)
   const failed = state === 'error'
   const credit = [KIND_LABEL[photo.kind], photo.attribution, photo.capturedAt?.slice(0, 4)]
     .filter(Boolean)
@@ -51,21 +54,40 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
         ) : null}
         {photo.src && !failed ? (
           <img
+            key={attempt}
             src={photo.src}
             alt={photo.alt}
             loading="lazy"
             decoding="async"
+            // a cached image can finish before hydration attaches onLoad — read it off the element
+            ref={(el) => {
+              if (el?.complete && el.naturalWidth > 0) setState('loaded')
+            }}
             onLoad={() => setState('loaded')}
             onError={() => setState('error')}
-            className={`h-full w-full object-cover transition-opacity duration-300 ${
-              state === 'loaded' ? 'opacity-100' : 'opacity-0'
-            }`}
+            className={`media-fade h-full w-full object-cover ${state === 'loaded' ? 'is-loaded' : ''}`}
           />
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center">
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex h-full w-full flex-col items-center justify-center gap-2 px-4 text-center"
+          >
             <img src="/brand/seal-128.webp" alt="" width={40} height={40} loading="lazy" decoding="async" className="opacity-70" aria-hidden="true" />
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">Grip photo unavailable</span>
             <span className="max-w-[28ch] text-[11px] leading-snug text-ink-3">{photo.alt}</span>
+            {photo.src && failed ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setState('loading')
+                  setAttempt((n) => n + 1)
+                }}
+                className="mt-1 rounded-full border border-cyan/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-cyan transition-colors hover:border-cyan hover:text-bone"
+              >
+                Retry
+              </button>
+            ) : null}
           </div>
         )}
         {photo.view ? (
@@ -99,6 +121,9 @@ export function GripMotion({
   large?: boolean
 }) {
   const reduced = useReducedMotion()
+  // media settle: the window fades up when the first real frame lands
+  const [settled, setSettled] = useState(false)
+  const mediaClass = `media-fade h-full w-full object-cover ${settled ? 'is-loaded' : ''}`
   return (
     <figure className={`overflow-hidden rounded-[14px] border border-cyan/25 bg-[#0B0805] ${className}`}>
       <div className={`relative w-full ${large ? 'aspect-[9/16]' : 'aspect-[4/3]'}`}>
@@ -108,11 +133,15 @@ export function GripMotion({
             alt={clip.alt}
             loading="lazy"
             decoding="async"
-            className="h-full w-full object-cover"
+            ref={(el) => {
+              if (el?.complete && el.naturalWidth > 0) setSettled(true)
+            }}
+            onLoad={() => setSettled(true)}
+            className={mediaClass}
           />
         ) : (
           <video
-            className="h-full w-full object-cover"
+            className={mediaClass}
             poster={clip.poster}
             autoPlay
             muted
@@ -120,6 +149,9 @@ export function GripMotion({
             playsInline
             preload="metadata"
             aria-label={clip.alt}
+            onLoadedData={() => setSettled(true)}
+            // a decode failure reveals the poster instead of holding the window dark
+            onError={() => setSettled(true)}
           >
             <source src={clip.mp4} type="video/mp4" />
             <source src={clip.webm} type="video/webm" />

@@ -37,7 +37,8 @@ export function Masthead() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-30 border-b border-leather/30 bg-paper/92 text-ink backdrop-blur-md">
+    // scroll-shade: the bar earns its shadow only once the page moves under it
+    <header className="scroll-shade sticky top-0 z-30 border-b border-leather/30 bg-paper/92 text-ink backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
         <Link to="/" aria-label={`${SITE.siteName}, home`}>
           <BrandMark size="sm" />
@@ -49,7 +50,7 @@ export function Masthead() {
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-ink ${
+                `link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-ink ${
                   isActive ? 'text-seam' : 'text-ink-2'
                 }`
               }
@@ -89,7 +90,7 @@ export function Masthead() {
                   to={n.to}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-ink ${
+                    `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-ink ${
                       isActive ? 'text-seam' : 'text-ink-2'
                     }`
                   }

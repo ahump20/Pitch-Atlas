@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { RefreshCwIcon, XIcon } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
@@ -9,13 +10,24 @@ import { Button } from '../ui/button'
   online (NetworkFirst navigation); this toast only appears when a new version is
   waiting, and that version installs only when the pitcher taps Reload — no
   stale-build trap, no auto-reload in the middle of reading a grip.
+
+  The saved-offline notice is a courtesy, not a decision: it says its piece and
+  leaves on its own. Only the update prompt (a real choice) waits for a tap.
 */
+const OFFLINE_NOTICE_MS = 4500
+
 export function ReloadPrompt() {
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW()
+
+  useEffect(() => {
+    if (!offlineReady || needRefresh) return
+    const timer = window.setTimeout(() => setOfflineReady(false), OFFLINE_NOTICE_MS)
+    return () => window.clearTimeout(timer)
+  }, [offlineReady, needRefresh, setOfflineReady])
 
   if (!offlineReady && !needRefresh) return null
 

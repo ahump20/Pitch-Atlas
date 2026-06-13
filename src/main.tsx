@@ -43,12 +43,31 @@ if (!rootEl) throw new Error('Pitch Atlas: mount element #app not found')
 
 const head = createHead()
 const router = createBrowserRouter(routes)
+const root = createRoot(rootEl)
 
-createRoot(rootEl).render(
-  <StrictMode>
-    <UnheadProvider head={head}>
-      <RouterProvider router={router} />
-      <ReloadPrompt />
-    </UnheadProvider>
-  </StrictMode>,
-)
+function mount() {
+  root.render(
+    <StrictMode>
+      <UnheadProvider head={head}>
+        <RouterProvider router={router} />
+        <ReloadPrompt />
+      </UnheadProvider>
+    </StrictMode>,
+  )
+}
+
+/*
+  Routes are code-split (route-level lazy in routes.tsx), so the router reports
+  `initialized` only once the first matched page's chunk is in hand. Mount then —
+  mounting earlier would wipe the prerendered HTML and flash a blank shell while
+  the chunk travels. The prerendered page holds the screen in the meantime.
+*/
+if (router.state.initialized) {
+  mount()
+} else {
+  const unsubscribe = router.subscribe((state) => {
+    if (!state.initialized) return
+    unsubscribe()
+    mount()
+  })
+}

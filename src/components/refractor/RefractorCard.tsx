@@ -1,8 +1,9 @@
-import { lazy, Suspense, useId, type CSSProperties, type DOMAttributes, type ReactNode, type Ref } from 'react'
+import { lazy, Suspense, useEffect, useId, useState, type CSSProperties, type DOMAttributes, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
 import { useCardTilt } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { useInView } from '../../hooks/useInView'
 import { SpecimenBoundary } from '../ball/SpecimenBoundary'
 import type { FamilyCrumb } from './familyCrumb'
 
@@ -19,8 +20,9 @@ import type { FamilyCrumb } from './familyCrumb'
   foil with the `foil` prop: a lazy canvas layer behind the DOM content whose
   houndstooth catches light per-pixel as the card tilts — the physical reference
   card's behavior, digitized. The gate runs BEFORE Suspense, so the prerender, the
-  jsdom tests, reduced-motion visitors, and no-GL devices never request the chunk:
-  for all of them this card renders exactly the static CSS card below.
+  jsdom tests, reduced-motion visitors, no-GL devices, and cards scrolled well off
+  screen never request the chunk or hold a GL context: for all of them this card
+  renders exactly the static CSS card below.
 
   Two provenance signals, kept apart on purpose: the crumb (top-right of the window)
   says WHAT KIND of pitch this is; the confidence dot (in the plate) says how well sourced
@@ -87,6 +89,34 @@ export function RefractorCard({
   const { ref: tiltRef, handlers, store } = useCardTilt<HTMLElement>()
   const webgl = useWebGLSupport()
   const reduced = useReducedMotion()
+  /* Context budget. Browsers keep ~16 live WebGL contexts; a binder of foil
+     cards would blow through that on its own. Each card opens its context only
+     near the viewport and surrenders it when scrolled well away (FoilLayer's
+     cleanup loses the context, freeing the slot). */
+  const { ref: viewRef, inView } = useInView<HTMLDivElement>()
+  /* useInView reports in-view until its observer attaches — optimistic for
+     content, wrong for a GL budget: every offscreen card would open a context
+     for one frame at load. Arm the foil only after a real answer: while the
+     report is the optimistic "on", confirm with one geometry read a frame
+     later; a report of "off" proves the observer is live, so arm and let
+     inView rule from there. Once armed, armed for good — inView alone mounts
+     and unmounts the layer. */
+  const [foilArmed, setFoilArmed] = useState(false)
+  useEffect(() => {
+    if (!foil || foilArmed) return
+    if (inView) {
+      const el = viewRef.current
+      if (!el) return
+      const id = window.requestAnimationFrame(() => {
+        const margin = 160 // match the hook's default rootMargin
+        const r = el.getBoundingClientRect()
+        if (r.bottom >= -margin && r.top <= window.innerHeight + margin) setFoilArmed(true)
+      })
+      return () => window.cancelAnimationFrame(id)
+    }
+    const id = window.setTimeout(() => setFoilArmed(true), 0)
+    return () => window.clearTimeout(id)
+  }, [foil, foilArmed, inView, viewRef])
   // unique arc-path id per card instance (several cards render per page)
   const arcId = `wmarc-${useId().replace(/:/g, '')}`
 
@@ -99,10 +129,11 @@ export function RefractorCard({
 
   const CrumbIcon = crumb?.Icon
 
-  /* the live foil mounts only when it can actually run; everyone else keeps
-     the CSS card untouched (it is the prerendered DOM and the test DOM) */
+  /* the live foil mounts only when it can actually run AND is near the
+     viewport; everyone else keeps the CSS card untouched (it is the
+     prerendered DOM and the test DOM) */
   const liveFoil =
-    foil && webgl && !reduced ? (
+    foil && webgl && !reduced && inView && foilArmed ? (
       <SpecimenBoundary fallback={null}>
         <Suspense fallback={null}>
           <FoilLayer store={store} accent={accent} gold={gold} />
@@ -203,7 +234,7 @@ export function RefractorCard({
   const articleHandlers = handlers as unknown as DOMAttributes<HTMLElement>
 
   return (
-    <div style={{ perspective: '1500px', width: '100%', maxWidth }}>
+    <div ref={viewRef} style={{ perspective: '1500px', width: '100%', maxWidth }}>
       {to ? (
         <Link
           to={to}

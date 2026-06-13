@@ -53,7 +53,7 @@ export function SiteFooter() {
             <Link
               key={l.to}
               to={l.to}
-              className="mono-label-stage transition-colors hover:text-bone"
+              className="link-stitch mono-label-stage transition-colors hover:text-bone"
             >
               {l.label}
             </Link>
@@ -61,7 +61,7 @@ export function SiteFooter() {
         </nav>
 
         <div className="flex flex-col gap-3 md:items-end">
-          <a href={SITE.canonicalDomain} className="mono-label-stage transition-colors hover:text-bone">
+          <a href={SITE.canonicalDomain} className="link-stitch mono-label-stage transition-colors hover:text-bone">
             pitch-atlas.com
           </a>
           <span className="mono-label-stage opacity-75">{SITE.sourcePrinciple}</span>

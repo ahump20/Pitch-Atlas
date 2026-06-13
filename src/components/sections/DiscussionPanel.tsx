@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { FlagIcon, ImagePlusIcon, MessageCircleIcon, RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDiscussion } from '../../hooks/useDiscussion'
@@ -186,6 +186,10 @@ function Composer({
   const [files, setFiles] = useState<File[]>([])
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
+  // the brief 'Filed ✓' confirmation; settles back on its own
+  const [sent, setSent] = useState(false)
+  const sentTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(sentTimer.current), [])
   const fileId = useId()
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -225,6 +229,9 @@ function Composer({
       setBody('')
       setFiles([])
       if (fileRef.current) fileRef.current.value = ''
+      setSent(true)
+      window.clearTimeout(sentTimer.current)
+      sentTimer.current = window.setTimeout(() => setSent(false), 2000)
     } catch (e2) {
       setErr(e2 instanceof Error ? e2.message : 'Could not post that.')
     } finally {
@@ -321,16 +328,25 @@ function Composer({
         </Alert>
       )}
 
-      {err ? <FieldError>{err}</FieldError> : null}
+      {err ? (
+        <FieldError key={err} className="shake-in">
+          {err}
+        </FieldError>
+      ) : null}
 
       <div className="flex items-center gap-3">
         <Button
           type="submit"
           disabled={busy}
-          className="font-mono text-xs uppercase tracking-[0.1em]"
+          className={`font-mono text-xs uppercase tracking-[0.1em]${busy ? ' is-busy' : ''}`}
         >
           {busy ? 'Posting…' : 'Post'}
         </Button>
+        {sent ? (
+          <span role="status" className="quiet-status font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">
+            Filed ✓
+          </span>
+        ) : null}
         {onCancel ? (
           <Button type="button" onClick={onCancel} variant="ghost" size="sm" className="font-mono text-xs uppercase tracking-[0.12em] text-ink-3 hover:text-seam">
             Cancel

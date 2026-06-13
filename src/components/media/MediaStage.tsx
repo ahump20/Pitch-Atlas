@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import type { GripClip } from '../../data/grips'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
@@ -41,10 +41,13 @@ export function MediaStage({
 }) {
   const reduced = useReducedMotion()
   const { ref, blocked } = useAutoplayGuard<HTMLVideoElement>()
+  // media settle: the stage fades up on the first real frame, never snapping in
+  const [settled, setSettled] = useState(false)
+  const mediaClass = `pa-stage-media media-fade${settled ? ' is-loaded' : ''}`
 
   const media = reduced || blocked ? (
     <img
-      className="pa-stage-media"
+      className={mediaClass}
       src={clip.poster}
       alt={decorative ? '' : clip.alt}
       aria-hidden={decorative || undefined}
@@ -53,11 +56,16 @@ export function MediaStage({
       fetchpriority={priority ? 'high' : undefined}
       decoding="async"
       draggable={false}
+      // a cached poster can finish before hydration attaches onLoad — read it off the element
+      ref={(el) => {
+        if (el?.complete && el.naturalWidth > 0) setSettled(true)
+      }}
+      onLoad={() => setSettled(true)}
     />
   ) : (
     <video
       ref={ref}
-      className="pa-stage-media"
+      className={mediaClass}
       poster={clip.poster}
       autoPlay
       muted
@@ -66,6 +74,9 @@ export function MediaStage({
       preload={priority ? 'auto' : 'metadata'}
       aria-label={decorative ? undefined : clip.alt}
       aria-hidden={decorative || undefined}
+      onLoadedData={() => setSettled(true)}
+      // a decode failure reveals the poster instead of holding the stage dark
+      onError={() => setSettled(true)}
     >
       <source src={clip.mp4} type="video/mp4" />
       <source src={clip.webm} type="video/webm" />

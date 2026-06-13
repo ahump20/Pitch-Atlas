@@ -1,4 +1,4 @@
-import { useId, useState, type CSSProperties, type FormEvent } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties, type FormEvent } from 'react'
 import { FlagIcon, RefreshCwIcon, TrophyIcon } from 'lucide-react'
 import type { PitchAtlasEntry } from '../../data/types'
 import {
@@ -116,7 +116,7 @@ function IdentityStrip({
           Your account is claimed. Your notes and credit follow you on any device you sign in on.
         </p>
       ) : state === 'sent' ? (
-        <p className="rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">{msg}</p>
+        <p role="status" className="quiet-status rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">{msg}</p>
       ) : (
         <form onSubmit={claim} className="mt-3">
           <p className="mb-2 text-xs leading-relaxed text-bone-2">
@@ -136,12 +136,16 @@ function IdentityStrip({
             <Button
               type="submit"
               disabled={state === 'sending' || !email.includes('@')}
-              className="shrink-0 font-mono text-xs tracking-wide"
+              className={`shrink-0 font-mono text-xs tracking-wide${state === 'sending' ? ' is-busy' : ''}`}
             >
               {state === 'sending' ? 'Sending…' : 'Claim'}
             </Button>
           </div>
-          {state === 'error' ? <FieldError className="mt-2">{msg}</FieldError> : null}
+          {state === 'error' ? (
+            <FieldError key={msg} className="mt-2 shake-in">
+              {msg}
+            </FieldError>
+          ) : null}
         </form>
       )}
     </div>
@@ -397,7 +401,10 @@ function SubmitForm({
   const [form, setForm] = useState<FormState>({ ...EMPTY_FORM, displayName: defaultName ?? '' })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  // the brief 'Filed ✓' confirmation; settles back on its own
   const [done, setDone] = useState(false)
+  const doneTimer = useRef<number | undefined>(undefined)
+  useEffect(() => () => window.clearTimeout(doneTimer.current), [])
 
   const tierMeta = SOURCE_TIER_OPTIONS.find((o) => o.value === form.sourceTier)
   const noteRequired = tierMeta?.requiresNote ?? false
@@ -435,6 +442,8 @@ function SubmitForm({
       setForm({ ...EMPTY_FORM, displayName: form.displayName })
       setDone(true)
       setOpen(false)
+      window.clearTimeout(doneTimer.current)
+      doneTimer.current = window.setTimeout(() => setDone(false), 2000)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not post the note. Try again.')
     } finally {
@@ -452,7 +461,7 @@ function SubmitForm({
         </p>
         {done ? (
           <p role="status" className="quiet-status rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">
-            Posted. It is live below. Thank you for shaping the bar.
+            Filed ✓ · your note is live below.
           </p>
         ) : null}
         <Button
@@ -576,13 +585,17 @@ function SubmitForm({
             </div>
           </details>
 
-          {error ? <FieldError>{error}</FieldError> : null}
+          {error ? (
+            <FieldError key={error} className="shake-in">
+              {error}
+            </FieldError>
+          ) : null}
 
           <div className="flex items-center gap-3">
             <Button
               type="submit"
               disabled={!valid || busy}
-              className="font-mono text-sm tracking-wide"
+              className={`font-mono text-sm tracking-wide${busy ? ' is-busy' : ''}`}
             >
               {busy ? 'Posting…' : 'Post field note'} <span aria-hidden="true">→</span>
             </Button>
@@ -615,7 +628,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
         <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
           <p className="rfx-skick text-cyan">Tier 03 / Field Notes</p>
           <h2 className="rfx-athletic rfx-skew mt-4 max-w-[16ch] text-[2.4rem] leading-[1.02] text-bone md:text-5xl">Field notes from the bullpen.</h2>
-          <p className="mt-6 max-w-[54ch] text-lg leading-relaxed text-bone-2">
+          {/* bone, not bone-2: this line sits on the workbench footage behind the scrim */}
+          <p className="mt-6 max-w-[54ch] text-lg leading-relaxed text-bone">
             Every pitcher fiddles. A thumb creeps lower, a seam catches more leather, a cue from a coach
             suddenly makes the pitch move. Pitch Atlas keeps those experiments visible, labeled, and debated,
             so the small discoveries stop disappearing into group chats and comment sections.

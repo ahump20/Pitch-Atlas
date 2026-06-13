@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
+import { REPERTOIRE } from '../../data/repertoire'
 import { PitchIndex } from './PitchIndex'
 
 function renderIndex() {
@@ -21,7 +22,25 @@ describe('PitchIndex controls', () => {
     await user.type(search, 'zzzz no pitch')
 
     expect(screen.getByText('No pitch by that name')).toBeInTheDocument()
-    expect(screen.getByText(/Try a family, an alias, or clear the search/)).toBeInTheDocument()
+    // the copy names the real indexed-entry count and the next move — never a vague shrug
+    expect(
+      screen.getByText(new RegExp(`is not in the ${REPERTOIRE.length} indexed entries`)),
+    ).toBeInTheDocument()
+    expect(screen.getByText(/Try a family or an alias/)).toBeInTheDocument()
+  })
+
+  it('clears the search on Escape and announces it', async () => {
+    const user = userEvent.setup()
+    renderIndex()
+
+    const search = screen.getByRole('searchbox', { name: /search the pitch index/i })
+    await user.type(search, 'cutter')
+    expect(search).toHaveValue('cutter')
+
+    await user.keyboard('{Escape}')
+
+    expect(search).toHaveValue('')
+    expect(screen.getByRole('status')).toHaveTextContent('Search cleared')
   })
 
   it('switches between row and binder views without losing filed routing labels', async () => {

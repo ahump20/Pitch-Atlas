@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { GripClip as GripClipData } from '../../data/grips'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
@@ -17,17 +18,25 @@ import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
 export function GripClip({ clip }: { clip: GripClipData }) {
   const reduced = useReducedMotion()
   const { ref, blocked } = useAutoplayGuard<HTMLVideoElement>()
+  // media settle: the window fades up on the first real frame, never snapping in
+  const [settled, setSettled] = useState(false)
+  const mediaClass = `rfx-grip-img media-fade${settled ? ' is-loaded' : ''}`
 
   if (reduced || blocked) {
     return (
       <figure className="rfx-grip">
         <img
-          className="rfx-grip-img"
+          className={mediaClass}
           src={clip.poster}
           alt={clip.alt}
           loading="lazy"
           decoding="async"
           draggable={false}
+          // a cached poster can finish before hydration attaches onLoad — read it off the element
+          ref={(el) => {
+            if (el?.complete && el.naturalWidth > 0) setSettled(true)
+          }}
+          onLoad={() => setSettled(true)}
         />
       </figure>
     )
@@ -37,7 +46,7 @@ export function GripClip({ clip }: { clip: GripClipData }) {
     <figure className="rfx-grip">
       <video
         ref={ref}
-        className="rfx-grip-img"
+        className={mediaClass}
         poster={clip.poster}
         autoPlay
         muted
@@ -45,6 +54,9 @@ export function GripClip({ clip }: { clip: GripClipData }) {
         playsInline
         preload="metadata"
         aria-label={clip.alt}
+        onLoadedData={() => setSettled(true)}
+        // a decode failure reveals the poster instead of holding the window dark
+        onError={() => setSettled(true)}
       >
         {/* mp4 first: for these encodes the H.264 files are smaller than the WebM,
             and browsers take the first source they support */}

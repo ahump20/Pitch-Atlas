@@ -960,10 +960,18 @@
     width: 100%; background: var(--ctl-bg, #FFFDF6); color: var(--ctl-text, #14161B);
     border: 1px solid var(--ctl-border, rgba(122,74,46,.45)); border-radius: 12px;
     padding: 12px 16px; font-family: var(--font-prose); font-size: 15px; outline: none;
-    transition: border-color .2s, box-shadow .2s;
+    transition: border-color .2s, box-shadow .2s, background-color .2s;
   }
   .rfx-input::placeholder { color: var(--ctl-placeholder, #5C6473); }
-  .rfx-input:focus-visible { border-color: var(--ctl-accent, #C8102E); box-shadow: 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent); }
+  /* focus deepens the field itself, not just the ring: the paper warms a step
+     toward the accent and a soft inner pool says "writing here now". */
+  .rfx-input:focus-visible {
+    border-color: var(--ctl-accent, #C8102E);
+    background: color-mix(in srgb, var(--ctl-bg, #FFFDF6) 94%, var(--ctl-accent, #C8102E));
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent),
+      inset 0 1px 6px color-mix(in srgb, var(--ctl-accent, #C8102E) 10%, transparent);
+  }
 
   /* filter chip: off by default, fills with the scene accent when on. */
   .rfx-chip {
@@ -1600,4 +1608,195 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .rfx-card.is-live-tilt { transition: none; }
   /* horizontal drags rock the card; vertical swipes stay the page's scroll */
   .rfx-card.has-foil { touch-action: pan-y; }
+}
+
+/* ============================================================
+   THE LIVING LAYER  ·  wave 1 foundation
+   Three jobs. One: the set's implicit scales, published — the type, space, and
+   shadow values the components already converged on, named so new work lands on
+   the same grid instead of inventing its own. Two: a depth vocabulary — frosted
+   glass, the mid shadow, the vintage double rule — so panels can sit ABOVE a
+   scene instead of flat against it. Three: ambient motion and answer-the-hand
+   micro-interactions. A handled object is never perfectly still; the grain
+   breathes, the raking light wanders, a link answers with a drawn stitch.
+   Everything observes prefers-reduced-motion. Nothing here measures a pitch.
+   ============================================================ */
+:root {
+  /* — the published type scale. Plain custom properties, NOT @theme: Tailwind's
+     own text-* utilities stay untouched; components reference these directly.
+     Values gathered from the set, not invented: the mono metadata, the mono
+     label, the serif cue, the plate prose, the Anton tiers. — */
+  --pa-text-2xs: 0.58rem;    /* mono metadata: rfx-k, card strips */
+  --pa-text-xs: 0.6875rem;   /* mono-label, source badges */
+  --pa-text-sm: 0.84rem;     /* the serif margin-note cue */
+  --pa-text-base: 0.96rem;   /* plate prose, body reads */
+  --pa-text-md: 1.0625rem;   /* lifted body, lede lines */
+  --pa-text-lg: 1.25rem;     /* small Anton tiers, panel titles */
+  --pa-text-xl: clamp(1.6rem, 3.2vw, 2.25rem);   /* section titles */
+  --pa-text-display: clamp(2.5rem, 6.5vw, 4.5rem); /* page heroes */
+  --pa-line-tight: 0.92;     /* Anton display */
+  --pa-line-snug: 1.12;      /* titles */
+  --pa-line-normal: 1.34;    /* plate prose */
+  --pa-line-loose: 1.55;     /* long-form reading */
+
+  /* — the spacing grid: 4px base step. Same rule as the dugout: snap to it. — */
+  --pa-space-2xs: 4px;
+  --pa-space-xs: 8px;
+  --pa-space-sm: 12px;
+  --pa-space-md: 16px;
+  --pa-space-lg: 24px;
+  --pa-space-xl: 32px;
+  --pa-space-2xl: 48px;
+  --pa-space-3xl: 64px;
+
+  /* — the shadow ladder. Three rungs: resting on the table, lifted by a hand,
+     floating in the spotlight. Components used to jump from nothing to the
+     dramatic float; the middle rung is where most objects belong. — */
+  --pa-shadow-rest: 0 1px 2px rgba(0, 0, 0, 0.16), 0 3px 9px -5px rgba(0, 0, 0, 0.22);
+  --pa-shadow-lift: 0 2px 6px -3px rgba(0, 0, 0, 0.28), 0 14px 28px -18px rgba(0, 0, 0, 0.45);
+  --pa-shadow-float: 0 30px 56px -26px rgba(0, 0, 0, 0.6);
+
+  /* — the two house easings, named. settle = entrances and reveals;
+     spring = anything a hand moves. — */
+  --pa-ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
+  --pa-ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  /* NOTE on the two seam reds: Heritage --color-seam (#C8102E) on cream and the
+     void-tuned --color-seam-bright (#FF2D44) inside coal scenes are DELIBERATE
+     scene voices, not drift — the bright red exists because #C8102E muddies on
+     warm black. Both are sourced above; do not "unify" them. */
+}
+
+@layer components {
+  /* ── frosted glass, dark scene. A pane lifted off the coal — for control
+     clusters, floating chips, plates that sit over footage. The blur earns its
+     keep only where content actually passes beneath; use on overlays, not on
+     every panel. ── */
+  .rfx-frost {
+    background: color-mix(in srgb, #16120D 74%, transparent);
+    -webkit-backdrop-filter: blur(10px) saturate(0.85);
+    backdrop-filter: blur(10px) saturate(0.85);
+    border: 1px solid rgba(246, 241, 230, 0.14);
+    box-shadow: inset 0 1px 0 rgba(246, 241, 230, 0.10), var(--pa-shadow-lift);
+  }
+  /* ── frosted glass, cream field: a vellum slip over the scorebook. ── */
+  .frost-cream {
+    background: color-mix(in srgb, #F4EEE0 78%, transparent);
+    -webkit-backdrop-filter: blur(6px) brightness(1.04);
+    backdrop-filter: blur(6px) brightness(1.04);
+    border: 1px solid rgba(20, 22, 27, 0.12);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), var(--pa-shadow-rest);
+  }
+  /* no backdrop-filter: the pane goes opaque instead of disappearing */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .rfx-frost { background: color-mix(in srgb, #16120D 95%, #F6F1E6); }
+    .frost-cream { background: #F1EADA; }
+  }
+
+  /* the ladder as utilities */
+  .shadow-rest { box-shadow: var(--pa-shadow-rest); }
+  .shadow-lift { box-shadow: var(--pa-shadow-lift); }
+
+  /* ── the vintage double rule: outer gold hairline, a breath of the surface,
+     then an inner ink hairline — the Sluggers card-back edge, portable. ── */
+  .border-vintage {
+    border: 1px solid rgba(138, 107, 36, 0.5);
+    box-shadow: inset 0 0 0 3px var(--color-paper, #F4EEE0), inset 0 0 0 4px rgba(33, 29, 23, 0.35);
+  }
+  /* stamped ink: type pressed into the stock, not printed on it */
+  .emboss-ink { text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35), 0 -1px 0 rgba(0, 0, 0, 0.16); }
+  /* handled edges: the soft burn a card earns by being carried around */
+  .edge-burn { position: relative; }
+  .edge-burn::after {
+    content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.20), inset 0 0 2px rgba(0, 0, 0, 0.26);
+  }
+
+  /* ── the stitch link: an inline link answers hover/focus with a seam-red
+     running stitch drawn left to right under the words. Rides currentColor
+     scenes via --color-seam, so it re-tones inside coal. ── */
+  .link-stitch {
+    background-image: repeating-linear-gradient(90deg, var(--color-seam) 0 5px, transparent 5px 9px);
+    background-repeat: no-repeat;
+    background-position: 0 calc(100% - 1px);
+    background-size: 0% 1px;
+    transition: background-size 0.28s var(--pa-ease-settle);
+  }
+  .link-stitch:hover,
+  .link-stitch:focus-visible { background-size: 100% 1px; }
+
+  /* ── lift on hover: the cream-field card answer. Dark plates already lift
+     (.rfx-plate, .rfx-entry); this gives claim cards, wax packs, and any cream
+     tile the same hand-feel at the same weight. ── */
+  .lift-hover { transition: transform 0.22s var(--pa-ease-spring), box-shadow 0.22s ease; }
+  .lift-hover:hover { transform: translateY(-3px); box-shadow: var(--pa-shadow-lift); }
+
+  /* ── the busy control: a submitting button shows a turning seam ring and goes
+     quiet until the work lands. Pair with disabled in the component. ── */
+  .is-busy { position: relative; pointer-events: none; opacity: 0.72; }
+  .is-busy::before {
+    content: ""; display: inline-block; width: 12px; height: 12px; flex: 0 0 auto;
+    border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent;
+    animation: rfx-spin 0.7s linear infinite;
+  }
+
+  /* ── media settle: footage and photos fade up when their first frame is real,
+     never snapping in over a skeleton. Component flips is-loaded. ── */
+  .media-fade { opacity: 0; transition: opacity 0.35s ease-out; }
+  .media-fade.is-loaded { opacity: 1; }
+  /* no scripting, no hydration: the prerendered page shows its media plainly
+     instead of holding it at zero waiting for a flip that never comes */
+  @media (scripting: none) {
+    .media-fade { opacity: 1; }
+  }
+
+  /* ── the masthead shade: the sticky bar earns a shadow only once the page
+     actually scrolls under it. Native scroll-driven; browsers without support
+     keep the flat bar, which is the same honest fallback. ── */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .scroll-shade {
+        animation: shade-in linear both;
+        animation-timeline: scroll();
+        animation-range: 0 120px;
+      }
+    }
+  }
+
+  /* dialogs settle on the spring, not the browser default */
+  [data-slot="dialog-content"],
+  [data-slot="alert-dialog-content"] {
+    animation-duration: 0.22s;
+    animation-timing-function: var(--pa-ease-spring);
+  }
+}
+
+/* ── ambient motion: the set at rest. All of it idles inside the no-preference
+   gate; the global reduced-motion clamp above is the second lock. ── */
+@media (prefers-reduced-motion: no-preference) {
+  /* the grain breathes — film, not wallpaper */
+  .grain-overlay { animation: grain-breathe 11s ease-in-out infinite alternate; }
+  /* foil strips and tags drift as the room's light moves */
+  .ambient-foil { animation: ambient-drift 16s ease-in-out infinite alternate; }
+  /* the raking light wanders across a resting card (the live foil canvas and a
+     held card run their own light, so both stand down) */
+  .rfx-card:not(.is-foil-live):not(:hover) .rfx-field::after {
+    animation: rake-breathe 9s ease-in-out infinite alternate;
+  }
+  /* a validation message lands with one short settle-shake, then stands still */
+  .shake-in { animation: shake-settle 0.26s ease-out; }
+}
+@keyframes grain-breathe { from { opacity: 0.03; } to { opacity: 0.042; } }
+@keyframes ambient-drift { from { background-position: 28% 0; } to { background-position: 72% 0; } }
+@keyframes rake-breathe { from { opacity: 0.26; } to { opacity: 0.36; } }
+@keyframes shake-settle {
+  0% { translate: 0 0; }
+  28% { translate: -4px 0; }
+  58% { translate: 3px 0; }
+  82% { translate: -1px 0; }
+  100% { translate: 0 0; }
+}
+@keyframes shade-in {
+  from { box-shadow: 0 0 0 rgba(0, 0, 0, 0); }
+  to { box-shadow: 0 10px 28px -18px rgba(0, 0, 0, 0.5); }
 }
