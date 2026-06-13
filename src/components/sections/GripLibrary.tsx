@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
 import { AUSTIN_GRIPS, ATTACK_PLAN, CIRCLE_CHANGE_DISTINCTION, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
@@ -34,10 +34,27 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
   const [state, setState] = useState<GripImageState>('loading')
   // bumping the attempt remounts the img, which re-requests the same src
   const [attempt, setAttempt] = useState(0)
+  // the examine view: the same real photo, held full-frame so a grip can be read
+  const [zoomed, setZoomed] = useState(false)
   const failed = state === 'error'
   const credit = [KIND_LABEL[photo.kind], photo.attribution, photo.capturedAt?.slice(0, 4)]
     .filter(Boolean)
     .join(' · ')
+
+  // while the examine view is open: lock the page behind it and let Escape close it
+  useEffect(() => {
+    if (!zoomed) return
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setZoomed(false)
+    }
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [zoomed])
 
   return (
     <figure className={`overflow-hidden rounded-[14px] border border-bone/12 bg-[#0B0805] ${className}`}>
@@ -91,9 +108,24 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
           </div>
         )}
         {photo.view ? (
-          <span className="absolute left-2.5 top-2.5 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone backdrop-blur-sm">
+          <span className="pointer-events-none absolute left-2.5 top-2.5 z-10 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone backdrop-blur-sm">
             {VIEW_LABEL[photo.view]}
           </span>
+        ) : null}
+        {state === 'loaded' && photo.src && !failed ? (
+          <button
+            type="button"
+            onClick={() => setZoomed(true)}
+            aria-label={`Examine grip photo full size: ${photo.alt}`}
+            className="group/zoom absolute inset-0 z-[5] flex cursor-zoom-in items-end justify-end p-2.5"
+          >
+            <span
+              aria-hidden="true"
+              className="inline-flex items-center gap-1 rounded-full bg-black/60 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover/zoom:opacity-100 group-focus-visible/zoom:opacity-100"
+            >
+              ⤢ Examine
+            </span>
+          </button>
         ) : null}
       </div>
       <figcaption className="flex flex-col gap-2 px-3.5 py-3.5">
@@ -103,6 +135,42 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
           {credit}
         </span>
       </figcaption>
+
+      {zoomed ? (
+        // the examine view: the same photo, full-frame on a dimmed page. Click the
+        // backdrop or press Escape to close. No higher-resolution claim — it is the
+        // filed asset, simply given room to be read.
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${photo.alt} — full size`}
+          onClick={() => setZoomed(false)}
+          className="grip-examine fixed inset-0 z-[120] flex items-center justify-center bg-black/92 p-4 sm:p-8"
+        >
+          <div className="relative max-h-full w-auto max-w-5xl" onClick={(e) => e.stopPropagation()}>
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              className="mx-auto max-h-[80vh] w-auto rounded-[10px] border border-bone/15 object-contain"
+            />
+            <p className="mx-auto mt-3 max-w-[60ch] text-center text-[13px] leading-relaxed text-bone-2">
+              {photo.caption}
+              <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.1em] text-ink-3">
+                {credit}
+              </span>
+            </p>
+            <button
+              type="button"
+              onClick={() => setZoomed(false)}
+              aria-label="Close the examine view"
+              autoFocus
+              className="absolute -right-2 -top-2 flex h-9 w-9 items-center justify-center rounded-full border border-bone/30 bg-black/70 font-mono text-lg text-bone backdrop-blur-sm transition-colors hover:border-cyan hover:text-cyan sm:-right-4 sm:-top-4"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      ) : null}
     </figure>
   )
 }
