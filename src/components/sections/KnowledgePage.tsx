@@ -1,10 +1,12 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { KnowledgeWing } from '../../data/knowledge/types'
+import { WINGS } from '../../data/knowledge'
 import { SectionHero } from '../layout/SectionHero'
 import { Breadcrumb } from '../layout/Breadcrumb'
 import { StageTierMarker } from '../layout/StageTierMarker'
 import { ClaimProse } from '../provenance/ClaimProse'
+import { WingNav } from '../knowledge/WingNav'
 import { EducationalDisclaimer } from './EducationalDisclaimer'
 import { DiscussionPanel } from './DiscussionPanel'
 
@@ -21,6 +23,11 @@ function pad(n: number): string {
 }
 
 export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
+  // place in the reading order, so a wing turns to the next page instead of ending
+  const idx = WINGS.findIndex((w) => w.slug === wing.slug)
+  const prev = idx > 0 ? WINGS[idx - 1] : undefined
+  const next = idx >= 0 && idx < WINGS.length - 1 ? WINGS[idx + 1] : undefined
+
   return (
     <>
       <SectionHero
@@ -113,6 +120,10 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
             </div>
           </div>
         </section>
+      ) : null}
+
+      {idx >= 0 ? (
+        <WingNav prev={prev} next={next} position={idx + 1} total={WINGS.length} />
       ) : null}
 
       <DiscussionPanel topicKey={`learn:${wing.slug}`} topicName={wing.navLabel || wing.title} />

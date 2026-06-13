@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type { Claim, Craftsman } from '../data/types'
-import { CRAFTSMEN, craftsmanBySlug } from '../data/craftsmen'
+import { CRAFTSMEN_BY_ERA, craftsmanBySlug } from '../data/craftsmen'
 import { pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
@@ -76,9 +76,10 @@ export function CraftsmanChapter() {
   const isLegend = craftsman?.kind === 'legend'
   const pitch = craftsman?.signaturePitchSlug ? pitchBySlug(craftsman.signaturePitchSlug) : undefined
 
-  const idx = craftsman ? CRAFTSMEN.findIndex((c) => c.slug === craftsman.slug) : -1
-  const prev = idx > 0 ? CRAFTSMEN[idx - 1] : undefined
-  const next = idx >= 0 && idx < CRAFTSMEN.length - 1 ? CRAFTSMEN[idx + 1] : undefined
+  // walk chapter-to-chapter in the hall's chronology, so "next" is the next era
+  const idx = craftsman ? CRAFTSMEN_BY_ERA.findIndex((c) => c.slug === craftsman.slug) : -1
+  const prev = idx > 0 ? CRAFTSMEN_BY_ERA[idx - 1] : undefined
+  const next = idx >= 0 && idx < CRAFTSMEN_BY_ERA.length - 1 ? CRAFTSMEN_BY_ERA[idx + 1] : undefined
 
   useSeoMeta(
     craftsman

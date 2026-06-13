@@ -1,5 +1,6 @@
 import type { Craftsman } from '../types'
 import { claim, secondhand, src } from '../sources'
+import { byEraStart } from '../../lib/era'
 
 /*
   The Craftsmen wing. Six arms who defined a pitch, plus one pitch that is a
@@ -570,3 +571,15 @@ const BY_SLUG: Record<string, Craftsman> = Object.fromEntries(
 export function craftsmanBySlug(slug: string): Craftsman | undefined {
   return BY_SLUG[slug]
 }
+
+/*
+  The hall as a chronology: the masters laid out by the real year their era began
+  (Hubbell, 1928, to Skenes), the gyroball legend filed last because it is a
+  design, not a career. One source of truth so the hall and the chapter-to-chapter
+  walk agree on which arm comes next. Derived from the era strings — re-file a
+  craftsman and the order re-sorts itself.
+*/
+export const CRAFTSMEN_BY_ERA: Craftsman[] = [
+  ...CRAFTSMEN.filter((c) => c.kind === 'craftsman').slice().sort(byEraStart),
+  ...CRAFTSMEN.filter((c) => c.kind === 'legend'),
+]

@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { CRAFTSMEN } from '../data/craftsmen'
+import { CRAFTSMEN, CRAFTSMEN_BY_ERA } from '../data/craftsmen'
+import { parseEra } from '../lib/era'
 import { CraftsmanCard } from '../components/craftsmen/CraftsmanCard'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { SectionHero } from '../components/layout/SectionHero'
@@ -14,8 +15,11 @@ import { Breadcrumb } from '../components/layout/Breadcrumb'
   chapter is sourced.
 */
 export function CraftsmenHall() {
-  const masters = CRAFTSMEN.filter((c) => c.kind === 'craftsman')
+  const masters = CRAFTSMEN_BY_ERA.filter((c) => c.kind === 'craftsman')
   const legends = CRAFTSMEN.filter((c) => c.kind === 'legend')
+  // the chronology's real bookends, read off the data — never typed in
+  const firstYear = parseEra(masters[0]?.era ?? '')?.start
+  const lastName = masters[masters.length - 1]?.name
 
   useSeoMeta({
     title: `The Craftsmen: the arms that defined the pitches | ${SITE.siteName}`,
@@ -43,6 +47,13 @@ export function CraftsmenHall() {
         <div className="pa-atmo pa-atmo-leather opacity-[0.06]" aria-hidden="true" />
         <div className="relative">
         <StageTierMarker index="C" label="The masters" />
+        {firstYear && lastName ? (
+          <p className="-mt-2 mb-7 max-w-[60ch] font-mono text-[11px] uppercase tracking-[0.13em] text-ink-3">
+            {masters.length} arms, filed in the order their eras began — {firstYear} to {lastName}.
+            Each card's band is the career laid against the same century; the longer the bar, the
+            longer the arm lasted.
+          </p>
+        ) : null}
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
           {masters.map((c) => (
             <CraftsmanCard key={c.slug} craftsman={c} />

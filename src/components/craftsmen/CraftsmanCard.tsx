@@ -4,6 +4,8 @@ import type { Craftsman } from '../../data/types'
 import { pitchBySlug } from '../../data/pitches'
 import { accentForSlug } from '../refractor/accents'
 import { SeamSchematic } from '../fallback/SeamSchematic'
+import { parseEra } from '../../lib/era'
+import { EraBand } from './EraBand'
 
 /*
   A craftsman, filed as a refractor plate (Tier-B `.rfx-plate`). The master wears his
@@ -20,6 +22,9 @@ export function CraftsmanCard({ craftsman }: { craftsman: Craftsman }) {
     : craftsman.signaturePitchSlug
       ? accentForSlug(craftsman.signaturePitchSlug).c3
       : 'var(--color-cyan)'
+  // a master sits on the timeline by his real era; the legend is a design, not a
+  // career, so it carries no span band — only the masters chart against history
+  const span = isLegend ? null : parseEra(craftsman.era)
 
   return (
     <Link
@@ -36,6 +41,8 @@ export function CraftsmanCard({ craftsman }: { craftsman: Craftsman }) {
         </span>
         <span className="mono-label text-ink-3">{craftsman.era}</span>
       </div>
+
+      {span ? <EraBand span={span} accent={gc} /> : null}
 
       <div className="flex items-center gap-4">
         <div className="w-14 shrink-0" aria-hidden="true">

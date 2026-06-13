@@ -16,7 +16,14 @@ import { Breadcrumb } from '../components/layout/Breadcrumb'
   the whole atlas reads as one system.
 */
 
+/** The wing's place in the ten, read once off the canonical teaching order. The
+    numbers ascend within each shelf; the gaps (a health wing filed on the second
+    shelf) are the truth, not a glitch — this is chapter N of the whole manual. */
+const READING_NO = new Map(WINGS.map((w, i) => [w.slug, i + 1]))
+const pad = (n: number | undefined) => (n ? String(n).padStart(2, '0') : '')
+
 function WingCard({ wing }: { wing: KnowledgeWing }) {
+  const no = READING_NO.get(wing.slug)
   return (
     <Link
       to={`/learn/${wing.slug}`}
@@ -25,7 +32,15 @@ function WingCard({ wing }: { wing: KnowledgeWing }) {
     >
       <span aria-hidden="true" className="absolute left-2.5 top-2.5 h-3 w-3 border-l border-t border-white/15" />
       <span aria-hidden="true" className="absolute right-2.5 top-2.5 h-3 w-3 border-r border-t border-white/15" />
-      <p className={`mono-label ${wing.educational ? 'text-seam' : 'text-ink-3'}`}>{wing.eyebrow}</p>
+      <div className="flex items-baseline justify-between gap-3">
+        <p className={`mono-label ${wing.educational ? 'text-seam' : 'text-ink-3'}`}>{wing.eyebrow}</p>
+        <span
+          aria-hidden="true"
+          className="font-athletic text-2xl leading-none text-bone/25 tabular-nums"
+        >
+          {pad(no)}
+        </span>
+      </div>
       <h3 className="rfx-platetitle text-2xl">{wing.navLabel || wing.title}</h3>
       <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-bone-2">{wing.summary}</p>
       <div className="mt-auto flex items-center gap-x-3 border-t border-white/10 pt-3">
@@ -50,7 +65,9 @@ function WingFeature({ wing, atmo }: { wing: KnowledgeWing; atmo: 'seam' | 'leat
       <div className={`pa-atmo ${atmo === 'seam' ? 'pa-atmo-seam' : 'pa-atmo-leather'} opacity-[0.14]`} aria-hidden="true" />
       <div className="relative flex flex-col gap-3 py-3 md:flex-row md:items-end md:justify-between md:gap-10">
         <div className="max-w-[62ch]">
-          <p className="mono-label text-ink-3">{wing.eyebrow}</p>
+          <p className="mono-label text-ink-3">
+            <span className="text-cyan">Wing {pad(READING_NO.get(wing.slug))}</span> · {wing.eyebrow}
+          </p>
           <h3 className="rfx-platetitle mt-1 text-3xl md:text-4xl">{wing.navLabel || wing.title}</h3>
           <p className="mt-3 text-[1.02rem] leading-relaxed text-bone-2">{wing.summary}</p>
         </div>
