@@ -583,3 +583,16 @@ export const CRAFTSMEN_BY_ERA: Craftsman[] = [
   ...CRAFTSMEN.filter((c) => c.kind === 'craftsman').slice().sort(byEraStart),
   ...CRAFTSMEN.filter((c) => c.kind === 'legend'),
 ]
+
+/*
+  The reciprocal of a craftsman's signature pitch: every master who owned this
+  pitch, oldest first. A specimen page used to point only at the whole hall;
+  this lets it name the arm. Matches on the same slug the craftsman cross-links
+  out by, so the link is two-way and never guessed — a pitch with no filed master
+  simply returns none.
+*/
+export function craftsmenForPitch(pitchSlug: string): Craftsman[] {
+  return CRAFTSMEN_BY_ERA.filter(
+    (c) => c.kind === 'craftsman' && c.signaturePitchSlug === pitchSlug,
+  )
+}

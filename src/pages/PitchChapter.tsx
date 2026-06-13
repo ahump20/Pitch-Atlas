@@ -23,6 +23,7 @@ import { CONFIDENCE_META } from '../data/types'
 import { FieldNotes } from '../components/sections/FieldNotes'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { SpecimenGrips } from '../components/sections/GripLibrary'
+import { PitchConnections } from '../components/pitch/PitchConnections'
 import { NotFound } from './NotFound'
 
 /*
@@ -703,6 +704,10 @@ export function PitchChapter() {
   const isGold = entry.display.specimenNo === '00'
   const accentColor = isGold ? '#caa14a' : accentForSlug(entry.display.slug).c3
   const gripEntry = gripEntryFor(entry.display.slug)
+  // siblings: every other filed specimen in the same family, in filed order
+  const siblings = PITCHES.filter(
+    (p) => p.canonical.family === entry.canonical.family && p.display.slug !== entry.display.slug,
+  )
 
   return (
     <div className="scene-coal">
@@ -723,6 +728,12 @@ export function PitchChapter() {
       <MovementSection entry={entry} accentColor={accentColor} />
       <MasterFilesSection entry={entry} accentColor={accentColor} />
       <ColophonSection entry={entry} accentColor={accentColor} />
+      <PitchConnections
+        entry={entry}
+        accentColor={accentColor}
+        familyLabel={FAMILY_LABEL[entry.canonical.family]}
+        siblings={siblings}
+      />
       <div className="border-t border-bone/8 pt-8">
         <FieldNotes entry={entry} />
         <DiscussionPanel topicKey={entry.display.slug} topicName={entry.canonical.name} />
