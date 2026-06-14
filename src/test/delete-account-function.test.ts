@@ -36,6 +36,15 @@ describe('delete-account Edge Function source contract', () => {
     expect(bearerParserLine).not.toContain('/^Bearer\\\\s+(.+)$/i')
   })
 
+  it('answers missing-token requests before runtime secret checks', () => {
+    expect(source.indexOf('if (!token)')).toBeLessThan(
+      source.indexOf('Deno.env.get("SUPABASE_URL")'),
+    )
+    expect(source.indexOf('missing_bearer_token')).toBeLessThan(
+      source.indexOf('server_not_configured'),
+    )
+  })
+
   it('drains media storage beyond the first page and removes objects in batches', () => {
     expect(source).toContain('offset += STORAGE_LIST_PAGE_SIZE')
     expect(source).toContain('STORAGE_REMOVE_BATCH_SIZE')
