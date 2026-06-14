@@ -99,17 +99,29 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
       try {
         const postId = await createPost({ topicKey, displayName: name, body, parentId })
         setDisplayName(name)
-        // media is additive: a rejected file surfaces its reason but the post stays
-        let mediaError: string | null = null
+        // Media is additive: the post is already saved, so a failed upload never
+        // loses the comment. Collect every failure (not just the last) and surface
+        // a real, specific error — how many of how many files didn't attach, with
+        // the reason — so a media problem renders an explicit state, never a
+        // silent blank.
+        const mediaErrors: string[] = []
         for (const file of files) {
           try {
             await uploadMedia(postId, topicKey, file)
           } catch (err) {
-            mediaError = message(err)
+            mediaErrors.push(message(err))
           }
         }
         refresh()
-        if (mediaError) throw new Error(mediaError)
+        if (mediaErrors.length > 0) {
+          dispatchBlazeEvent({ mood: 'concerned' })
+          const reasons = Array.from(new Set(mediaErrors)).join(' ')
+          throw new Error(
+            files.length === 1
+              ? `Your comment posted, but the file didn't attach. ${reasons}`
+              : `Your comment posted, but ${mediaErrors.length} of ${files.length} files didn't attach. ${reasons}`,
+          )
+        }
         dispatchBlazeEvent({ mood: 'caught' })
       } catch (err) {
         dispatchBlazeEvent({ mood: 'concerned' })

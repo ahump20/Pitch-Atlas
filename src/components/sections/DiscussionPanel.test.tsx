@@ -8,6 +8,7 @@ vi.mock('../../hooks/useDiscussion', () => ({
   useDiscussion: vi.fn(),
 }))
 
+
 const baseDiscussion: UseDiscussion = {
   status: 'ready',
   error: null,
@@ -34,7 +35,10 @@ describe('DiscussionPanel', () => {
 
     await user.click(screen.getByRole('button', { name: /discussion/i }))
 
-    expect(screen.getByText('No comments yet')).toBeInTheDocument()
+    // The forum is code-split (React.lazy): a labelled skeleton holds while the
+    // chunk loads, then the empty state lands. Flush the lazy import's microtask
+    // so the suspended boundary resolves before we assert.
+    expect(await screen.findByText('No comments yet', {}, { timeout: 5000 })).toBeInTheDocument()
     expect(screen.getByText(/Start the thread with a grip cue/)).toBeInTheDocument()
   })
 
@@ -48,7 +52,8 @@ describe('DiscussionPanel', () => {
     render(<DiscussionPanel topicKey="pitch:four-seam" topicName="Four-seam fastball" />)
     await userEvent.click(screen.getByRole('button', { name: /discussion/i }))
 
-    expect(screen.getByText('Could not load the discussion.')).toBeInTheDocument()
+    // Await the lazy forum chunk, then assert its error state.
+    expect(await screen.findByText('Could not load the discussion.', {}, { timeout: 5000 })).toBeInTheDocument()
     expect(screen.getByText('Supabase unavailable')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
   })

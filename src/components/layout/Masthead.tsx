@@ -20,14 +20,21 @@ const NAV: { label: string; to: string }[] = [
   { label: 'Sources', to: '/sources' },
 ]
 
+// The interactive tools — reachable from the body of pages, but easy to miss.
+// Grouped behind one "Tools" disclosure on the desktop bar and a labelled
+// section in the mobile sheet so the shape map and the comparators are always
+// one click from anywhere.
+const TOOLS: { label: string; to: string; note: string }[] = [
+  { label: 'Shape map', to: '/movement-map', note: 'Every pitch, plotted by direction' },
+  { label: 'Compare two pitches', to: '/compare', note: 'Read two shapes side by side' },
+  { label: 'Compare two grips', to: '/grips', note: 'Two grips in the hand at once' },
+]
+
 const MOBILE_NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
   { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
   { label: 'Shape Lab', to: '/sandbox' },
-  { label: 'Shape map', to: '/movement-map' },
-  { label: 'Compare two pitches', to: '/compare' },
-  { label: 'Compare two grips', to: '/grips' },
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
@@ -41,6 +48,32 @@ export function Masthead() {
   const toggleRef = useRef<HTMLButtonElement>(null)
   const navRef = useRef<HTMLElement>(null)
   const wasOpen = useRef(false)
+
+  // Desktop "Tools" disclosure. Closes on route change, on Escape, and on a
+  // click outside the group so it never strands focus or floats over the page.
+  const [toolsOpen, setToolsOpen] = useState(false)
+  const toolsRef = useRef<HTMLDivElement>(null)
+  const toolsActive = TOOLS.some((t) => t.to === pathname)
+
+  useEffect(() => {
+    setToolsOpen(false)
+  }, [pathname])
+
+  useEffect(() => {
+    if (!toolsOpen) return
+    const onPointerDown = (event: MouseEvent) => {
+      if (!toolsRef.current?.contains(event.target as Node)) setToolsOpen(false)
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setToolsOpen(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKeyDown)
+    }
+  }, [toolsOpen])
 
   useEffect(() => {
     if (!open) return
@@ -82,6 +115,55 @@ export function Masthead() {
               {n.label}
             </NavLink>
           ))}
+
+          <div ref={toolsRef} className="relative">
+            <button
+              type="button"
+              aria-expanded={toolsOpen}
+              aria-controls="tools-menu"
+              aria-haspopup="true"
+              onClick={() => setToolsOpen((v) => !v)}
+              className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-ink ${
+                toolsActive ? 'text-seam' : 'text-ink-2'
+              }`}
+            >
+              Tools
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                aria-hidden="true"
+                className={`transition-transform ${toolsOpen ? 'rotate-180' : ''}`}
+              >
+                <path d="M2 3.5 L5 6.5 L8 3.5" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" />
+              </svg>
+            </button>
+            {toolsOpen ? (
+              <div
+                id="tools-menu"
+                className="absolute right-0 top-[calc(100%+0.75rem)] z-40 w-64 rounded-sm border border-ink/15 bg-paper-2 p-1.5 shadow-lg"
+              >
+                <ul className="flex flex-col">
+                  {TOOLS.map((t) => (
+                    <li key={`${t.to}-${t.label}`}>
+                      <NavLink
+                        to={t.to}
+                        onClick={() => setToolsOpen(false)}
+                        className={({ isActive }) =>
+                          `block rounded-sm px-3 py-2.5 transition-colors hover:bg-ink/[0.04] ${
+                            isActive ? 'text-seam' : 'text-ink-2'
+                          }`
+                        }
+                      >
+                        <span className="block font-mono text-xs uppercase tracking-[0.1em]">{t.label}</span>
+                        <span className="mt-0.5 block text-[0.78rem] leading-snug text-ink-3">{t.note}</span>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
         </nav>
 
         <div className="flex items-center gap-4">
@@ -130,6 +212,27 @@ export function Masthead() {
                 </NavLink>
               </li>
             ))}
+
+            <li className="pt-4">
+              <h2 className="mono-label text-ink-3">Tools</h2>
+              <ul className="mt-1 flex flex-col">
+                {TOOLS.map((t) => (
+                  <li key={`${t.to}-${t.label}`}>
+                    <NavLink
+                      to={t.to}
+                      onClick={() => setMenu({ open: false, pathname })}
+                      className={({ isActive }) =>
+                        `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-ink ${
+                          isActive ? 'text-seam' : 'text-ink-2'
+                        }`
+                      }
+                    >
+                      {t.label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </li>
           </ul>
         </nav>
       ) : null}
