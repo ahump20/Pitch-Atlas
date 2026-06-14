@@ -61,6 +61,20 @@ describe('delete-account Edge Function source contract', () => {
     expect(source.indexOf('missing_bearer_token')).toBeLessThan(
       source.indexOf('server_not_configured'),
     )
+    expect(source.indexOf('if (requestBodyTooLarge(req))')).toBeLessThan(
+      source.indexOf('Deno.env.get("SUPABASE_URL")'),
+    )
+  })
+
+  it('rejects oversized requests before Supabase client work', () => {
+    expect(source).toContain('const MAX_BODY_BYTES = 4096')
+    expect(source).toContain('function requestBodyTooLarge(req: Request): boolean')
+    expect(source).toContain('req.headers.get("Content-Length")')
+    expect(source).toContain('length > MAX_BODY_BYTES')
+    expect(source).toContain('return json(413, { ok: false, error: "request_too_large" })')
+    expect(source.indexOf('if (requestBodyTooLarge(req))')).toBeLessThan(
+      source.indexOf('createClient<DeleteAccountDatabase>'),
+    )
   })
 
   it('drains media storage beyond the first page and removes objects in batches', () => {
