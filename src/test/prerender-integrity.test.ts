@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { describe, it, expect } from 'vitest'
@@ -67,6 +67,17 @@ describe.runIf(shouldCheckDist)('prerender integrity (post-build)', () => {
       if (bad.some((sig) => html.includes(sig))) offenders.push(route)
     }
     expect(offenders).toEqual([])
+  })
+
+  it('keeps JavaScript chunks inside the explicit build budget', () => {
+    const assets = path.join(DIST, 'assets')
+    const jsFiles = readdirSync(assets).filter((file) => file.endsWith('.js'))
+    const overBudget = jsFiles
+      .map((file) => ({ file, kb: statSync(path.join(assets, file)).size / 1024 }))
+      .filter(({ file, kb }) => (file.startsWith('three-core-') ? kb > 800 : kb > 500))
+      .map(({ file, kb }) => `${file} ${kb.toFixed(1)} kB`)
+
+    expect(overBudget).toEqual([])
   })
 })
 

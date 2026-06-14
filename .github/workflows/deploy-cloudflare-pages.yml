@@ -83,6 +83,14 @@ jobs:
           test "$status" = "404" || (echo "Expected unknown route to return 404, got $status" && exit 1)
           grep -Fq 'That file is not in the atlas.' /tmp/pitch-atlas-404.html
 
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps --only-shell chromium
+
+      - name: Browser smoke test preview
+        env:
+          PREVIEW_URL: ${{ steps.deploy_preview.outputs['pages-deployment-alias-url'] || steps.deploy_preview.outputs['deployment-url'] }}
+        run: npm run test:preview:browser -- "$PREVIEW_URL"
+
       - name: Deploy production to Cloudflare Pages
         uses: cloudflare/wrangler-action@v4
         with:

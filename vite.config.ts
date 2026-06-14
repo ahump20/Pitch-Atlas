@@ -112,6 +112,32 @@ export default defineConfig({
   build: {
     target: 'es2022',
     sourcemap: false,
+    // The only allowed >500 kB chunk is the lazy Three.js vendor core, pinned by
+    // src/test/prerender-integrity.test.ts so this global Vite warning stays useful.
+    chunkSizeWarningLimit: 800,
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: 'three-core',
+              test: /node_modules[\\/]three[\\/]/,
+              priority: 30,
+            },
+            {
+              name: 'react-three',
+              test: /node_modules[\\/]@react-three[\\/]/,
+              priority: 25,
+            },
+            {
+              name: 'three-support',
+              test: /node_modules[\\/](?:camera-controls|maath|meshline|stats-gl|suspend-react|troika-three-text|troika-worker-utils|use-sync-external-store|zustand)[\\/]/,
+              priority: 20,
+            },
+          ],
+        },
+      },
+    },
   },
   test: {
     environment: 'jsdom',

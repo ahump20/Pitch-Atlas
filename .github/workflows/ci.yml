@@ -28,6 +28,15 @@ jobs:
         with:
           persist-credentials: false
 
+      - name: Download actionlint
+        id: get_actionlint
+        shell: bash
+        run: bash <(curl --fail --silent --show-error --location https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+
+      - name: Lint GitHub Actions workflows
+        shell: bash
+        run: ${{ steps.get_actionlint.outputs.executable }} -color
+
       - name: Check for Node app
         id: node_app
         shell: bash
