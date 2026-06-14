@@ -38,6 +38,18 @@ function policyStatements(sql: string) {
   )
 }
 
+function publicTableNamesCreated(sql: string) {
+  return [...stripSqlComments(sql).matchAll(
+    /\bcreate\s+table\s+(?:if\s+not\s+exists\s+)?public\.([a-zA-Z_][a-zA-Z0-9_]*)\b/gi,
+  )].map((match) => match[1].toLowerCase())
+}
+
+function publicTablesWithRlsEnabled(sql: string) {
+  return [...stripSqlComments(sql).matchAll(
+    /\balter\s+table\s+public\.([a-zA-Z_][a-zA-Z0-9_]*)\s+enable\s+row\s+level\s+security\b/gi,
+  )].map((match) => match[1].toLowerCase())
+}
+
 function securityDefinerFunctionStatements(sql: string) {
   return (
     stripSqlComments(sql).match(
@@ -75,6 +87,29 @@ function migrationFiles() {
 }
 
 describe('Supabase RLS migration contracts', () => {
+  it('enables RLS on every public table created by migrations', () => {
+    const createdTables = new Map<string, string[]>()
+    const rlsEnabledTables = new Set<string>()
+
+    for (const file of migrationFiles()) {
+      const sql = readFileSync(resolve(migrationsDir, file), 'utf8')
+
+      for (const tableName of publicTableNamesCreated(sql)) {
+        createdTables.set(tableName, [...(createdTables.get(tableName) ?? []), file])
+      }
+
+      for (const tableName of publicTablesWithRlsEnabled(sql)) {
+        rlsEnabledTables.add(tableName)
+      }
+    }
+
+    const violations = [...createdTables.entries()]
+      .filter(([tableName]) => !rlsEnabledTables.has(tableName))
+      .map(([tableName, files]) => `public.${tableName} created without RLS enabled (${files.join(', ')})`)
+
+    expect(violations).toEqual([])
+  })
+
   it('keeps storage.objects auth.uid policies covered by a later initplan migration', () => {
     const files = migrationFiles()
 
