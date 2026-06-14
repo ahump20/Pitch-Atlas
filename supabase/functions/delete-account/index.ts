@@ -154,16 +154,16 @@ Deno.serve(async (req: Request) => {
     return json(405, { ok: false, error: "method_not_allowed" });
   }
 
+  const token = bearerToken(req);
+  if (!token) {
+    return json(401, { ok: false, error: "missing_bearer_token" });
+  }
+
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  const token = bearerToken(req);
 
   if (!supabaseUrl || !serviceRoleKey) {
     return json(500, { ok: false, error: "server_not_configured" });
-  }
-
-  if (!token) {
-    return json(401, { ok: false, error: "missing_bearer_token" });
   }
 
   const admin: SupabaseAdmin = createClient<DeleteAccountDatabase>(supabaseUrl, serviceRoleKey, {
