@@ -107,11 +107,28 @@ async function readBody(req: Request): Promise<Record<string, unknown> | null> {
   }
 }
 
+function senderLabel(senderId: string | null, labels: Map<string, string>): string {
+  const key = senderId?.trim();
+  if (!key) {
+    return "Unknown participant";
+  }
+
+  const existing = labels.get(key);
+  if (existing) {
+    return existing;
+  }
+
+  const label = `Participant ${labels.size + 1}`;
+  labels.set(key, label);
+  return label;
+}
+
 function buildTranscript(messages: MessageRow[]): string {
+  const senderLabels = new Map<string, string>();
   const transcript = messages
     .map((message) => {
       const timestamp = message.created_at ?? "unknown-time";
-      const sender = message.sender_id ?? "unknown-sender";
+      const sender = senderLabel(message.sender_id, senderLabels);
       const body = message.body ?? "";
       return `[${timestamp}] ${sender}: ${body}`;
     })
@@ -139,6 +156,35 @@ function parseSummary(content: unknown): Record<string, unknown> | null {
       sentiment: "unknown",
     };
   }
+}
+
+async function readCompletion(response: Response): Promise<Record<string, unknown> | null> {
+  try {
+    const completion = await response.json();
+    return completion && typeof completion === "object" ? completion as Record<string, unknown> : null;
+  } catch (error) {
+    console.error("summarize-thread OpenAI response JSON parse failed", error);
+    return null;
+  }
+}
+
+function completionMessageContent(completion: Record<string, unknown> | null): unknown {
+  const choices = completion?.choices;
+  if (!Array.isArray(choices)) {
+    return null;
+  }
+
+  const firstChoice = choices[0];
+  if (!firstChoice || typeof firstChoice !== "object") {
+    return null;
+  }
+
+  const message = (firstChoice as Record<string, unknown>).message;
+  if (!message || typeof message !== "object") {
+    return null;
+  }
+
+  return (message as Record<string, unknown>).content;
 }
 
 async function requestSummary(openaiApiKey: string, transcript: string): Promise<Response | null> {
@@ -266,11 +312,11 @@ Deno.serve(async (req: Request) => {
     return json(502, { error: "summary_unavailable" });
   }
 
-  const completion = await openaiResp.json();
-  const result = parseSummary(completion?.choices?.[0]?.message?.content);
+  const completion = await readCompletion(openaiResp);
+  const result = parseSummary(completionMessageContent(completion));
 
   if (!result) {
-    console.error("summarize-thread OpenAI response was empty");
+    console.error("summarize-thread OpenAI response was empty or malformed");
     return json(502, { error: "summary_unavailable" });
   }
 
