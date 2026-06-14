@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { stepSpring, clamp, lightFromTilt } from './useCardTilt'
+import type React from 'react'
+import { stepSpring, clamp, lightFromTilt, createTiltEngine } from './useCardTilt'
 import { backingSize, hexToTriple, DPR_CAP } from '../components/refractor/foil/foilProgram'
 
 /*
@@ -46,6 +47,41 @@ describe('stepSpring', () => {
       if (Math.abs(x - 10) < 0.05 && Math.abs(v) < 0.05) break
     }
     expect(frames / 60).toBeLessThan(0.5)
+  })
+})
+
+describe('createTiltEngine: touch-drag click suppression', () => {
+  const touch = (x: number) =>
+    ({ clientX: x, clientY: 0, pointerType: 'touch' }) as unknown as React.PointerEvent<HTMLElement>
+  const clickEvent = () => {
+    let prevented = false
+    return {
+      evt: { preventDefault: () => { prevented = true }, stopPropagation: () => {} } as unknown as React.MouseEvent<HTMLElement>,
+      get prevented() { return prevented },
+    }
+  }
+
+  it('suppresses the click that follows a real drag, and lets a plain tap through', () => {
+    const engine = createTiltEngine()
+    engine.ref.current = document.createElement('div')
+    const { handlers } = engine
+
+    // a real drag: down, move past the 8px threshold, up
+    handlers.onPointerDown(touch(100))
+    handlers.onPointerMove(touch(140)) // dx = 40 -> moved
+    handlers.onPointerUp(touch(140))
+    const dragClick = clickEvent()
+    handlers.onClickCapture(dragClick.evt)
+    expect(dragClick.prevented).toBe(true)
+
+    // a plain tap (no movement) on the same card must navigate normally
+    handlers.onPointerDown(touch(100))
+    handlers.onPointerUp(touch(100))
+    const tapClick = clickEvent()
+    handlers.onClickCapture(tapClick.evt)
+    expect(tapClick.prevented).toBe(false)
+
+    engine.dispose()
   })
 })
 

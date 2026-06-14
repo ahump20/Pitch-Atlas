@@ -96,6 +96,10 @@ export function createTiltEngine(): TiltEngine {
   let target: TiltState = { ...REST }
   let engaged = false
   let dragging: { x: number; y: number; moved: boolean } | null = null
+  // set at pointer-up when the gesture was a real drag; consumed by the click
+  // that the browser fires next. Kept separate from `dragging` because tick()
+  // and dragMove() branch on `dragging`, so it cannot linger past settleHome().
+  let suppressClick = false
   let raf = 0
   let lastT = 0
   const listeners = new Set<() => void>()
@@ -201,16 +205,23 @@ export function createTiltEngine(): TiltEngine {
       dragging = { x: e.clientX, y: e.clientY, moved: false }
       engaged = true
     },
-    onPointerUp: settleHome,
+    onPointerUp: () => {
+      // capture the verdict before settleHome() nulls `dragging`, or the click
+      // that follows always reads null and the drag navigates through
+      if (dragging?.moved) suppressClick = true
+      settleHome()
+    },
     onPointerCancel: settleHome,
     onPointerLeave: settleHome,
-    /* a real drag must not navigate when the finger lifts */
+    /* a real drag must not navigate when the finger lifts. The flag is set only
+       at pointer-up, so a stray pointerleave/cancel never suppresses a later
+       legitimate click. */
     onClickCapture: (e) => {
-      if (dragging?.moved) {
+      if (suppressClick) {
         e.preventDefault()
         e.stopPropagation()
-        dragging = null
       }
+      suppressClick = false
     },
   }
 
