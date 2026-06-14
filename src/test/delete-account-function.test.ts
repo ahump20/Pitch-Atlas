@@ -90,6 +90,21 @@ describe('delete-account Edge Function source contract', () => {
     )
   })
 
+  it('bounds Supabase client network waits and keeps auth lookup failures stamped', () => {
+    expect(source).toContain('const SUPABASE_REQUEST_TIMEOUT_MS = 15000')
+    expect(source).toContain('async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response>')
+    expect(source).toContain('const controller = new AbortController()')
+    expect(source).toContain('const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS)')
+    expect(source).toContain('return await fetch(input, { ...init, signal: controller.signal })')
+    expect(source).toContain('clearTimeout(timeoutId)')
+    expect(source).toContain('global: { fetch: fetchWithTimeout }')
+    expect(source).toContain('console.error("delete-account auth lookup failed", error)')
+    expect(source).toContain('return json(502, { ok: false, error: "auth_lookup_failed" })')
+    expect(source.indexOf('try {\n    userLookup = await admin.auth.getUser(token)')).toBeLessThan(
+      source.indexOf('if (userError || !user)'),
+    )
+  })
+
   it('drains media storage beyond the first page and removes objects in batches', () => {
     expect(source).toContain('offset += STORAGE_LIST_PAGE_SIZE')
     expect(source).toContain('STORAGE_REMOVE_BATCH_SIZE')
