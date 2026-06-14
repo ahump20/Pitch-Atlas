@@ -11,19 +11,42 @@ function stripSqlLineComments(sql: string) {
     .join('\n')
 }
 
-function stripInitplanAuthUid(sql: string) {
-  return sql.replace(/\(\s*select\s+auth\.uid\(\)\s*\)/gi, '')
+function stripSqlComments(sql: string) {
+  return stripSqlLineComments(sql.replace(/\/\*[\s\S]*?\*\//g, ''))
+}
+
+function stripInitplanAuthCalls(sql: string) {
+  return sql.replace(
+    /\(\s*select\s+auth\.(?:uid|jwt)\(\)(?:\s+as\s+\w+)?\s*\)/gi,
+    '',
+  )
+}
+
+function hasBareAuthCall(sql: string) {
+  const normalizedSql = stripInitplanAuthCalls(stripSqlComments(sql))
+  return /\bauth\.(?:uid|jwt)\(\)/i.test(normalizedSql)
 }
 
 function hasBareAuthUid(sql: string) {
-  return /\bauth\.uid\(\)/i.test(stripInitplanAuthUid(stripSqlLineComments(sql)))
+  const normalizedSql = stripInitplanAuthCalls(stripSqlComments(sql))
+  return /\bauth\.uid\(\)/i.test(normalizedSql)
+}
+
+function policyStatements(sql: string) {
+  return (
+    stripSqlComments(sql).match(/\b(?:create|alter)\s+policy\b[\s\S]*?;/gi) ?? []
+  )
+}
+
+function migrationFiles() {
+  return readdirSync(migrationsDir)
+    .filter((file) => file.endsWith('.sql'))
+    .sort()
 }
 
 describe('Supabase RLS migration contracts', () => {
   it('keeps storage.objects auth.uid policies covered by a later initplan migration', () => {
-    const files = readdirSync(migrationsDir)
-      .filter((file) => file.endsWith('.sql'))
-      .sort()
+    const files = migrationFiles()
 
     const storagePolicyBareAuthIndexes = files
       .map((file, index) => {
@@ -37,5 +60,25 @@ describe('Supabase RLS migration contracts', () => {
 
     expect(storageInitplanIndex).toBeGreaterThanOrEqual(0)
     expect(storageInitplanIndex).toBeGreaterThanOrEqual(Math.max(...storagePolicyBareAuthIndexes))
+  })
+
+  it('keeps new policy migrations on initplan-wrapped auth calls', () => {
+    const files = migrationFiles()
+    const initplanIndex = files.indexOf('20260614042849_optimize_rls_initplan_wrap_auth_calls.sql')
+
+    expect(initplanIndex).toBeGreaterThanOrEqual(0)
+
+    const violations = files.slice(initplanIndex + 1).flatMap((file) => {
+      const sql = readFileSync(resolve(migrationsDir, file), 'utf8')
+
+      return policyStatements(sql)
+        .filter(hasBareAuthCall)
+        .map((_statement, statementIndex) => {
+          const label = `policy statement ${statementIndex + 1}`
+          return `${file}: ${label} uses auth.uid()/auth.jwt() without (select ...)`
+        })
+    })
+
+    expect(violations).toEqual([])
   })
 })
