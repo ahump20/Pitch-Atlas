@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sniffMediaKind } from './discussion'
+import { sniffMediaKind, sniffMediaType } from './discussion'
 
 /*
   The upload sniff is a security control, not a nicety: it reads the real leading
@@ -31,6 +31,26 @@ describe('sniffMediaKind', () => {
   it('detects an mp4 by the ftyp box at offset 4', async () => {
     const mp4 = [0, 0, 0, 0x18, 0x66, 0x74, 0x79, 0x70, 0x6d, 0x70, 0x34, 0x32]
     expect(await sniffMediaKind(fileFrom(mp4, 'x.mp4', 'video/mp4'))).toBe('video')
+  })
+
+  it('derives the storage MIME and extension from bytes instead of the declared type', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+
+    await expect(sniffMediaType(fileFrom(webm, 'clip.txt', 'text/plain'))).resolves.toEqual({
+      kind: 'video',
+      mime: 'video/webm',
+      extension: 'webm',
+    })
+  })
+
+  it('detects QuickTime ftyp by its major brand', async () => {
+    const mov = [0, 0, 0, 0x14, 0x66, 0x74, 0x79, 0x70, 0x71, 0x74, 0x20, 0x20]
+
+    await expect(sniffMediaType(fileFrom(mov, 'clip.mov', 'application/octet-stream'))).resolves.toEqual({
+      kind: 'video',
+      mime: 'video/quicktime',
+      extension: 'mov',
+    })
   })
 
   it('rejects a renamed executable even with an image name and type', async () => {
