@@ -54,11 +54,14 @@ describe('summarize-thread Edge Function source contract', () => {
       source.indexOf('const config = runtimeConfig()'),
     )
     expect(source.indexOf('if (!token)')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
-    expect(source.indexOf('const body = await readBody(req)')).toBeLessThan(
+    expect(source.indexOf('const bodyResult = await readBody(req)')).toBeLessThan(
       source.indexOf('const config = runtimeConfig()'),
     )
+    expect(source.indexOf('if (bodyResult.tooLarge)')).toBeLessThan(
+      source.indexOf('const body = bodyResult.body'),
+    )
     expect(source.indexOf('if (requestBodyTooLarge(req))')).toBeLessThan(
-      source.indexOf('const body = await readBody(req)'),
+      source.indexOf('const bodyResult = await readBody(req)'),
     )
     expect(source.indexOf('invalid_thread_id')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
     expect(source).toContain('return json(500, { error: "server_not_configured" })')
@@ -70,6 +73,16 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('req.headers.get("Content-Length")')
     expect(source).toContain('length > MAX_BODY_BYTES')
     expect(source).toContain('return json(413, { error: "request_too_large" })')
+  })
+
+  it('bounds streamed summary request bodies before decoding JSON', () => {
+    expect(source).toContain('type BodyReadResult')
+    expect(source).toContain('req.body.getReader()')
+    expect(source).toContain('receivedBytes += value.byteLength')
+    expect(source).toContain('receivedBytes > MAX_BODY_BYTES')
+    expect(source).toContain('await reader.cancel()')
+    expect(source).toContain('new TextDecoder().decode(bytes)')
+    expect(source).not.toContain('await req.json()')
   })
 
   it('trims captured Bearer tokens before auth lookups', () => {
