@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { uploadMedia } from './discussion'
+import { deletePost, uploadMedia } from './discussion'
 
 const mocks = vi.hoisted(() => ({
   ensureSession: vi.fn(),
@@ -9,6 +9,10 @@ const mocks = vi.hoisted(() => ({
   upload: vi.fn(),
   remove: vi.fn(),
   insert: vi.fn(),
+  selectMedia: vi.fn(),
+  mediaEq: vi.fn(),
+  deletePost: vi.fn(),
+  deleteEq: vi.fn(),
 }))
 
 vi.mock('./community', () => ({
@@ -34,8 +38,20 @@ beforeEach(() => {
   mocks.upload.mockResolvedValue({ error: null })
   mocks.remove.mockResolvedValue({ error: null })
   mocks.insert.mockResolvedValue({ error: null })
+  mocks.mediaEq.mockResolvedValue({ data: [], error: null })
+  mocks.deleteEq.mockResolvedValue({ error: null })
   mocks.storageFrom.mockReturnValue({ upload: mocks.upload, remove: mocks.remove })
-  mocks.from.mockReturnValue({ insert: mocks.insert })
+  mocks.selectMedia.mockReturnValue({ eq: mocks.mediaEq })
+  mocks.deletePost.mockReturnValue({ eq: mocks.deleteEq })
+  mocks.from.mockImplementation((table: string) => {
+    if (table === 'discussion_media') {
+      return { insert: mocks.insert, select: mocks.selectMedia }
+    }
+    if (table === 'discussion_posts') {
+      return { delete: mocks.deletePost }
+    }
+    return { insert: mocks.insert }
+  })
 })
 
 describe('uploadMedia', () => {
@@ -58,5 +74,36 @@ describe('uploadMedia', () => {
         byte_size: 8,
       }),
     )
+  })
+})
+
+describe('deletePost', () => {
+  it('removes owned media objects after the authored post is deleted', async () => {
+    mocks.mediaEq.mockResolvedValue({
+      data: [
+        { storage_path: 'user-1/photo.jpg' },
+        { storage_path: 'user-1/clip.webm' },
+        { storage_path: 'other-user/reply.jpg' },
+        { storage_path: null },
+      ],
+      error: null,
+    })
+
+    await deletePost('post-1')
+
+    expect(mocks.selectMedia).toHaveBeenCalledWith('storage_path')
+    expect(mocks.mediaEq).toHaveBeenCalledWith('post_id', 'post-1')
+    expect(mocks.deletePost).toHaveBeenCalled()
+    expect(mocks.deleteEq).toHaveBeenCalledWith('id', 'post-1')
+    expect(mocks.remove).toHaveBeenCalledWith(['user-1/photo.jpg', 'user-1/clip.webm'])
+  })
+
+  it('does not remove storage when the database delete is rejected', async () => {
+    mocks.mediaEq.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
+    mocks.deleteEq.mockResolvedValue({ error: { message: 'not allowed' } })
+
+    await expect(deletePost('post-1')).rejects.toThrow('not allowed')
+
+    expect(mocks.remove).not.toHaveBeenCalled()
   })
 })
