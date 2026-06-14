@@ -74,13 +74,19 @@ export function friendlyError(error: { message?: string } | null): string {
 
 /* ------------------------------------------------------------------ media */
 
-const MAGIC: { sig: number[]; offset: number; kind: MediaKind }[] = [
-  { sig: [0xff, 0xd8, 0xff], offset: 0, kind: 'image' }, // jpeg
-  { sig: [0x89, 0x50, 0x4e, 0x47], offset: 0, kind: 'image' }, // png
-  { sig: [0x47, 0x49, 0x46, 0x38], offset: 0, kind: 'image' }, // gif
-  { sig: [0x52, 0x49, 0x46, 0x46], offset: 0, kind: 'image' }, // webp (RIFF; WEBP checked below)
-  { sig: [0x66, 0x74, 0x79, 0x70], offset: 4, kind: 'video' }, // mp4 / quicktime (ftyp box)
-  { sig: [0x1a, 0x45, 0xdf, 0xa3], offset: 0, kind: 'video' }, // webm / matroska
+interface SniffedMediaType {
+  kind: MediaKind
+  mime: string
+  extension: string
+}
+
+const MAGIC: { sig: number[]; offset: number; type: SniffedMediaType }[] = [
+  { sig: [0xff, 0xd8, 0xff], offset: 0, type: { kind: 'image', mime: 'image/jpeg', extension: 'jpg' } },
+  { sig: [0x89, 0x50, 0x4e, 0x47], offset: 0, type: { kind: 'image', mime: 'image/png', extension: 'png' } },
+  { sig: [0x47, 0x49, 0x46, 0x38], offset: 0, type: { kind: 'image', mime: 'image/gif', extension: 'gif' } },
+  { sig: [0x52, 0x49, 0x46, 0x46], offset: 0, type: { kind: 'image', mime: 'image/webp', extension: 'webp' } },
+  { sig: [0x66, 0x74, 0x79, 0x70], offset: 4, type: { kind: 'video', mime: 'video/mp4', extension: 'mp4' } },
+  { sig: [0x1a, 0x45, 0xdf, 0xa3], offset: 0, type: { kind: 'video', mime: 'video/webm', extension: 'webm' } },
 ]
 
 /**
@@ -88,32 +94,27 @@ const MAGIC: { sig: number[]; offset: number; kind: MediaKind }[] = [
  * (an XSS vector, deliberately excluded) is rejected regardless of its extension
  * or declared type. Returns the detected kind, or null if nothing matches.
  */
-export async function sniffMediaKind(file: File): Promise<MediaKind | null> {
+export async function sniffMediaType(file: File): Promise<SniffedMediaType | null> {
   const buf = new Uint8Array(await file.slice(0, 16).arrayBuffer())
   for (const m of MAGIC) {
     if (m.sig.every((b, i) => buf[m.offset + i] === b)) {
-      if (m.kind === 'image' && m.sig[0] === 0x52) {
+      if (m.type.mime === 'image/webp') {
         // RIFF container: confirm it is WEBP at offset 8
         const webp = [0x57, 0x45, 0x42, 0x50]
         if (!webp.every((b, i) => buf[8 + i] === b)) continue
       }
-      return m.kind
+      if (m.type.mime === 'video/mp4') {
+        const brand = String.fromCharCode(...buf.slice(8, 12))
+        if (brand === 'qt  ') return { kind: 'video', mime: 'video/quicktime', extension: 'mov' }
+      }
+      return m.type
     }
   }
   return null
 }
 
-function extFor(mime: string): string {
-  const map: Record<string, string> = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/webp': 'webp',
-    'image/gif': 'gif',
-    'video/mp4': 'mp4',
-    'video/webm': 'webm',
-    'video/quicktime': 'mov',
-  }
-  return map[mime] ?? 'bin'
+export async function sniffMediaKind(file: File): Promise<MediaKind | null> {
+  return (await sniffMediaType(file))?.kind ?? null
 }
 
 async function readImageDims(file: File): Promise<{ width: number | null; height: number | null }> {
@@ -140,17 +141,18 @@ async function readImageDims(file: File): Promise<{ width: number | null; height
  */
 export async function uploadMedia(postId: string, topicKey: string, file: File): Promise<void> {
   const uid = await ensureSession()
-  const kind = await sniffMediaKind(file)
-  if (!kind) throw new Error('That file is not an allowed image or video.')
+  const mediaType = await sniffMediaType(file)
+  if (!mediaType) throw new Error('That file is not an allowed image or video.')
+  const { kind, mime, extension } = mediaType
   const cap = kind === 'image' ? DISCUSSION_LIMITS.imageMaxBytes : DISCUSSION_LIMITS.videoMaxBytes
   if (file.size > cap) {
     throw new Error(kind === 'image' ? 'Images must be under 8 MB.' : 'Videos must be under 50 MB.')
   }
 
-  const path = `${uid}/${crypto.randomUUID()}.${extFor(file.type)}`
+  const path = `${uid}/${crypto.randomUUID()}.${extension}`
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
-    .upload(path, file, { contentType: file.type, upsert: false })
+    .upload(path, file, { contentType: mime, upsert: false })
   if (upErr) throw new Error(friendlyError(upErr))
 
   const dims = kind === 'image' ? await readImageDims(file) : { width: null, height: null }
@@ -158,7 +160,7 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
     post_id: postId,
     topic_key: topicKey,
     storage_path: path,
-    mime_type: file.type,
+    mime_type: mime,
     kind,
     byte_size: file.size,
     width: dims.width,
