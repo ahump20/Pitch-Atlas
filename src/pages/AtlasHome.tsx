@@ -12,6 +12,7 @@ import { gripEntryFor } from '../data/grips'
 import { asOfDate } from '../lib/format'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { HomeHero } from '../components/sections/HomeHero'
 import { BinderSheet, PocketCard, FillerCard } from '../components/sections/BinderSheet'
 import { WaxPack, WaxPackIdleStyles, type WaxPackTool } from '../components/sections/WaxPack'
@@ -175,7 +176,7 @@ export function AtlasHome() {
       'A searchable atlas of every pitch — grip, movement, and the craftsmen who defined it. Every claim labeled by its source. Sourced, not corrected.',
     ogTitle: `${SITE.siteName}: the living field manual for pitching grips`,
     ogDescription: 'Every pitch, gripped and sourced. Sourced, not corrected.',
-    ogUrl: SITE.canonicalDomain,
+    ogUrl: canonicalUrl('/'),
     twitterCard: 'summary_large_image',
   })
 

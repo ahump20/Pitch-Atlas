@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { WINGS } from '../data/knowledge'
 import type { KnowledgeWing } from '../data/knowledge/types'
 import { SectionHero } from '../components/layout/SectionHero'
@@ -110,7 +111,7 @@ export function KnowledgeHub() {
       'The teaching layer of Pitch Atlas — mechanics, pitch design, sequencing and tunneling, spin literacy, arm health, and youth development. Every claim sourced and labeled by confidence.',
     ogTitle: `Learn | ${SITE.siteName}`,
     ogDescription: 'The craft underneath the pitch. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/learn`,
+    ogUrl: canonicalUrl('/learn'),
   })
 
   return (

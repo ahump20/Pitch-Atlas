@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { GripLibrary, AttackPlan } from '../components/sections/GripLibrary'
@@ -19,7 +20,7 @@ export function GripsPage() {
       'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright, sourced not corrected. Plus the same-release, different-grip comparison tool.',
     ogTitle: `The Grip Library | ${SITE.siteName}`,
     ogDescription: 'Real grips, in the hand. The part a hitter never gets to see. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/grips`,
+    ogUrl: canonicalUrl('/grips'),
   })
 
   return (

@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SOFTBALL_PITCHES, softballPitchBySlug } from '../data/softball'
 import type { SoftballPitch } from '../data/softball'
 import { accentForSlug } from '../components/refractor/accents'
@@ -67,7 +68,7 @@ export function SoftballPitchChapter() {
           description: `${pitch.tagline} ${pitch.intro}`.slice(0, 200),
           ogTitle: `${pitch.name} | ${SITE.siteName}`,
           ogDescription: pitch.tagline,
-          ogUrl: `${SITE.canonicalDomain}/softball/pitch/${pitch.slug}`,
+          ogUrl: canonicalUrl('/softball/pitch/' + pitch.slug),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )

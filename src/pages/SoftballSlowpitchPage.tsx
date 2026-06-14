@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SLOWPITCH_NOTES, SLOWPITCH_CRAFT, SLOWPITCH_FORMATS } from '../data/softball'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -20,7 +21,7 @@ export function SoftballSlowpitchPage() {
       'Slowpitch softball pitching, filed honestly — the legal arc (and why the number differs by sanctioning body), the real craft of arc, deadening spin, and placement, and how men’s and coed differ. Sourced, not corrected.',
     ogTitle: `Slowpitch | ${SITE.siteName}`,
     ogDescription: 'Arc, spin, and placement. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/softball/slowpitch`,
+    ogUrl: canonicalUrl('/softball/slowpitch'),
   })
 
   return (

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SectionHero } from '../components/layout/SectionHero'
 
@@ -94,7 +95,7 @@ export function AboutPage() {
       'Pitch Atlas is a sourced field manual for pitching grips: grip-first, provenance-labeled, and honest about what each source can prove.',
     ogTitle: `About ${SITE.siteName}: why the grip comes first`,
     ogDescription: 'The grip-first field manual for pitch craft. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/about`,
+    ogUrl: canonicalUrl('/about'),
     twitterCard: 'summary_large_image',
   })
 

@@ -3,6 +3,7 @@ import { useSeoMeta } from '@unhead/react'
 import type { Claim } from '../data/types'
 import { SOFTBALL_CRAFTSMEN, softballCraftsmanBySlug, softballPitchBySlug } from '../data/softball'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { ClaimNote } from '../components/provenance/SourcedValue'
@@ -56,7 +57,7 @@ export function SoftballCraftsmanChapter() {
           description: `${craftsman.tagline} ${craftsman.intro}`.slice(0, 200),
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
-          ogUrl: `${SITE.canonicalDomain}/softball/craftsmen/${craftsman.slug}`,
+          ogUrl: canonicalUrl('/softball/craftsmen/' + craftsman.slug),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )

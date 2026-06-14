@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { TunnelPlot } from '../components/sections/TunnelPlot'
@@ -15,7 +16,7 @@ export function ComparePage() {
       'Pick any two filed pitches and see how they share a release tunnel and split late. The comparison reads direction and character, not measured separation.',
     ogTitle: `Compare two pitches | ${SITE.siteName}`,
     ogDescription: 'The tunnel and the late shape split, on one frame. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/compare`,
+    ogUrl: canonicalUrl('/compare'),
   })
 
   return (

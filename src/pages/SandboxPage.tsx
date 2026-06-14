@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
@@ -140,7 +141,7 @@ export function SandboxPage() {
       'Set a pitch’s spin tilt and watch the ball and catcher’s-eye shape redraw live. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
     ogTitle: `Shape Lab | ${SITE.siteName}`,
     ogDescription: 'The spin-axis sandbox. Turn the clock and read the shape.',
-    ogUrl: `${SITE.canonicalDomain}/sandbox`,
+    ogUrl: canonicalUrl('/sandbox'),
   })
 
   return (

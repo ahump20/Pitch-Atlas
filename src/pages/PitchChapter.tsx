@@ -9,6 +9,7 @@ import type {
 } from '../data/types'
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { scrollToId } from '../lib/scroll'
 import { GripViewer } from '../components/grip/GripViewer'
 import { RefractorBall } from '../components/refractor/RefractorBall'
@@ -692,7 +693,7 @@ export function PitchChapter() {
           description: `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files. Sourced, not corrected.`,
           ogTitle: `${entry.canonical.name} | ${SITE.siteName}`,
           ogDescription: entry.display.heroIntro,
-          ogUrl: `${SITE.canonicalDomain}/pitch/${entry.display.slug}`,
+          ogUrl: canonicalUrl('/pitch/' + entry.display.slug),
           twitterCard: 'summary_large_image',
         }
       : { title: `Pitch not found | ${SITE.siteName}` },

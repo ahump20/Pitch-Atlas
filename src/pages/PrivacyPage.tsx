@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SectionHero } from '../components/layout/SectionHero'
 
@@ -50,7 +51,7 @@ export function PrivacyPage() {
       'What Pitch Atlas collects, what it never collects, and how to delete your account. No ads, no tracking analytics, no sale of data.',
     ogTitle: `Privacy | ${SITE.siteName}`,
     ogDescription: 'No ads, no tracking analytics, no sale of data. The community layer holds only what you choose to file.',
-    ogUrl: `${SITE.canonicalDomain}/privacy`,
+    ogUrl: canonicalUrl('/privacy'),
     twitterCard: 'summary_large_image',
   })
 

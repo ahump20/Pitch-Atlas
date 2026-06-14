@@ -495,7 +495,7 @@
     --color-panel: #221B12;
     --color-ink: #F6F1E6;
     --color-ink-2: #C9C2B0;
-    --color-ink-3: #8A8576;
+    --color-ink-3: #969080;
     --color-navy: #D8D1C0;
     --color-navy-2: #EFE9DA;
     --color-navy-line: rgba(216, 209, 192, 0.16);
@@ -810,7 +810,7 @@
   .door-craftsmen, .door-lost {
     --color-ink: #F6F1E6;
     --color-ink-2: #C9C2B0;
-    --color-ink-3: #8A8576;
+    --color-ink-3: #969080;
     --color-navy: #D8D1C0;
     --color-navy-2: #EFE9DA;
     --color-navy-line: rgba(216, 209, 192, 0.16);

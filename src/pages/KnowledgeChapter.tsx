@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { wingBySlug } from '../data/knowledge'
 import { KnowledgePage } from '../components/sections/KnowledgePage'
 import { NotFound } from './NotFound'
@@ -21,7 +22,7 @@ export function KnowledgeChapter() {
           description: wing.summary,
           ogTitle: `${wing.navLabel || wing.title} | ${SITE.siteName}`,
           ogDescription: wing.summary,
-          ogUrl: `${SITE.canonicalDomain}/learn/${wing.slug}`,
+          ogUrl: canonicalUrl('/learn/' + wing.slug),
         }
       : { title: `Wing not found | ${SITE.siteName}` },
   )

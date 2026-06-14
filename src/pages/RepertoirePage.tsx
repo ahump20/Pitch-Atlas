@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { IndexLedger } from '../components/sections/IndexLedger'
@@ -20,7 +21,7 @@ export function RepertoirePage() {
       'A searchable index of every accepted pitch a coach, a pitcher, or the tracking taxonomy would name — plus the lost pitches of the Negro Leagues. Each one a sourced one-liner, labeled by confidence. Open any file.',
     ogTitle: `The Pitch Index | ${SITE.siteName}`,
     ogDescription: 'Every accepted pitch, by family. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/repertoire`,
+    ogUrl: canonicalUrl('/repertoire'),
   })
 
   return (

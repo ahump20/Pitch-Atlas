@@ -4,6 +4,7 @@ import type { RepertoireEntry, RepertoireFamily } from '../data/types'
 import { repertoireById, BASIC_REPERTOIRE } from '../data/repertoire'
 import { gripEntryFor } from '../data/grips'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SpecimenGrips } from '../components/sections/GripLibrary'
@@ -111,7 +112,7 @@ export function RepertoireChapter() {
           description: `${entry.name}: ${entry.movement.value}`.slice(0, 200),
           ogTitle: `${entry.name} | ${SITE.siteName}`,
           ogDescription: entry.movement.value.slice(0, 160),
-          ogUrl: `${SITE.canonicalDomain}/repertoire/${entry.id}`,
+          ogUrl: canonicalUrl('/repertoire/' + entry.id),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SectionHero } from '../components/layout/SectionHero'
 
@@ -33,7 +34,7 @@ export function SupportPage() {
       'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitching grips.',
     ogTitle: `Support | ${SITE.siteName}`,
     ogDescription: 'Report a problem, delete your account, or question a claim in the field manual.',
-    ogUrl: `${SITE.canonicalDomain}/support`,
+    ogUrl: canonicalUrl('/support'),
     twitterCard: 'summary_large_image',
   })
 

@@ -4,6 +4,7 @@ import type { Claim, Craftsman } from '../data/types'
 import { CRAFTSMEN_BY_ERA, craftsmanBySlug } from '../data/craftsmen'
 import { pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
@@ -88,7 +89,7 @@ export function CraftsmanChapter() {
           description: `${craftsman.tagline} ${craftsman.intro}`.slice(0, 200),
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
-          ogUrl: `${SITE.canonicalDomain}/craftsmen/${craftsman.slug}`,
+          ogUrl: canonicalUrl('/craftsmen/' + craftsman.slug),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )

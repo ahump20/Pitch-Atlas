@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { WINDMILL_PHASES, FUNDAMENTAL_BLOCKS } from '../data/softball'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -21,7 +22,7 @@ export function SoftballFastpitchPage() {
       'The core of fastpitch softball pitching — the four phases of the windmill delivery, where the speed actually comes from (the lower half, not the arm circle), and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
     ogTitle: `Fastpitch fundamentals | ${SITE.siteName}`,
     ogDescription: 'The windmill, from the ground up. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/softball/fastpitch`,
+    ogUrl: canonicalUrl('/softball/fastpitch'),
   })
 
   return (

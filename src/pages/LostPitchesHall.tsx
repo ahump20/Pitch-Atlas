@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { LOST_PITCHES, LOST_PITCH_TIERS, lostPitchesByTier } from '../data/lost-pitches'
 import { LostPitchCard } from '../components/lost-pitches/LostPitchCard'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
@@ -24,7 +25,7 @@ export function LostPitchesHall() {
       'The pitches and the arms the box scores cannot hold: Satchel Paige’s banned hesitation pitch, Hilton Smith’s documented curve, the doctored-ball craft that diverged from the segregated majors. Filed by how solid the record is. Sourced, not corrected.',
     ogTitle: `Lost Pitches of the Negro Leagues | ${SITE.siteName}`,
     ogDescription: 'The pitches the record cannot hold, filed by how well they survive. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/lost-pitches`,
+    ogUrl: canonicalUrl('/lost-pitches'),
   })
 
   return (

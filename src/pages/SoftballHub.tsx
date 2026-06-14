@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from '../data/softball'
 import type { SoftballPitch } from '../data/softball'
 import type { Craftsman } from '../data/types'
@@ -122,7 +123,7 @@ export function SoftballHub() {
       'The softball wing of Pitch Atlas — the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched. Sourced, not corrected.',
     ogTitle: `Softball | ${SITE.siteName}`,
     ogDescription: 'The underhand craft, filed honestly. Fastpitch first, anchored on Cat Osterman.',
-    ogUrl: `${SITE.canonicalDomain}/softball`,
+    ogUrl: canonicalUrl('/softball'),
   })
 
   return (

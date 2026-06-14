@@ -4,6 +4,7 @@ import type { Claim, LostPitch } from '../data/types'
 import { DOCUMENTATION_META } from '../data/types'
 import { LOST_PITCHES, lostPitchBySlug } from '../data/lost-pitches'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
@@ -84,7 +85,7 @@ export function LostPitchChapter() {
           description: `${pitch.tagline} ${pitch.intro}`.slice(0, 200),
           ogTitle: `${pitch.name} | ${SITE.siteName}`,
           ogDescription: pitch.tagline,
-          ogUrl: `${SITE.canonicalDomain}/lost-pitches/${pitch.slug}`,
+          ogUrl: canonicalUrl('/lost-pitches/' + pitch.slug),
         }
       : { title: `Lost pitch not found | ${SITE.siteName}` },
   )

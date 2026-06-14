@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { canonicalUrl } from '../lib/seo'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { MovementMap } from '../components/sections/MovementMap'
@@ -15,7 +16,7 @@ export function MovementMapPage() {
       "Every filed pitch on one catcher's-eye field by shape language: ride, drop, arm-side run, and glove-side sweep.",
     ogTitle: `The shape map | ${SITE.siteName}`,
     ogDescription: 'Every filed pitch by direction and character. Sourced, not corrected.',
-    ogUrl: `${SITE.canonicalDomain}/movement-map`,
+    ogUrl: canonicalUrl('/movement-map'),
   })
 
   return (

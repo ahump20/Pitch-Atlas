@@ -67,6 +67,11 @@ export default defineConfig({
         // Precache ONLY the content-hashed bundles + self-hosted fonts. NEVER the
         // ~78 prerendered route HTML files — that is the stale-build trap.
         globPatterns: ['assets/**/*.{js,css,woff,woff2}'],
+        // Keep every subset on disk for runtime unicode-range (accented names in
+        // community content still render), but drop the non-Latin weights from
+        // the eager first-visit precache — this site's content is Latin-only.
+        // `cyrillic` also covers `cyrillic-ext`; `latin` (no -ext) stays cached.
+        globIgnores: ['**/*-{latin-ext,vietnamese,cyrillic}-*.woff2'],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
         clientsClaim: true,
