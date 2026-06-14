@@ -146,7 +146,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         />
         {isGold ? (
           <span
-            className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-[#2a1d05]"
+            className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#2a1d05]"
             style={{ background: 'var(--gold)' }}
           >
             Gold · 1 of 1 · Reference
@@ -162,7 +162,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           </div>
         )}
         {heroClip || heroPhoto ? (
-          <span className="absolute bottom-3.5 left-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[8px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
+          <span className="absolute bottom-3.5 left-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
             <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
             Austin&rsquo;s grip{heroClip ? ' · in motion' : ''}
           </span>

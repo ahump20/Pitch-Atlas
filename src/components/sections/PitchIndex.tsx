@@ -176,7 +176,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
           <span className="font-prose text-[15px] font-bold text-bone">{entry.name}</span>
           {filed ? (
             <Badge
-              className="h-auto rounded-[4px] px-1.5 py-0.5 font-mono text-[7.5px] uppercase tracking-[0.1em] text-[#14110A]"
+              className="h-auto rounded-[4px] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#14110A]"
               style={{ background: 'var(--foil)', backgroundSize: '300% 100%', backgroundPosition: '38% 0' }}
             >
               Filed

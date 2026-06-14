@@ -32,12 +32,12 @@ export function GripSourceBadge({
             href={provenance.source.url}
             target="_blank"
             rel="noreferrer"
-            className="block truncate font-mono text-[8.5px] tracking-[0.04em] text-bone-2 underline decoration-bone/30 underline-offset-2 transition-colors hover:text-bone"
+            className="block truncate font-mono text-[10px] tracking-[0.04em] text-bone-2 underline decoration-bone/30 underline-offset-2 transition-colors hover:text-bone"
           >
             {provenance.source.label}
           </a>
         ) : (
-          <span className="block truncate font-mono text-[8.5px] tracking-[0.04em] text-bone-2">
+          <span className="block truncate font-mono text-[10px] tracking-[0.04em] text-bone-2">
             No source corroborates this grip
           </span>
         )}
