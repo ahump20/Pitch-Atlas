@@ -107,6 +107,41 @@ function requestBodyTooLarge(req: Request): boolean {
   return Number.isFinite(length) && length > MAX_BODY_BYTES;
 }
 
+async function streamedRequestBodyTooLarge(req: Request): Promise<boolean> {
+  if (!req.body) {
+    return false;
+  }
+
+  const reader = req.body.getReader();
+  let receivedBytes = 0;
+
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        return false;
+      }
+
+      if (!value) {
+        continue;
+      }
+
+      receivedBytes += value.byteLength;
+      if (receivedBytes > MAX_BODY_BYTES) {
+        try {
+          await reader.cancel();
+        } catch (error) {
+          console.error("delete-account body reader cancel failed", error);
+        }
+        return true;
+      }
+    }
+  } catch (error) {
+    console.error("delete-account body reader failed", error);
+    return false;
+  }
+}
+
 async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string): Promise<number> {
   const bucket = admin.storage.from("discussion-media");
   const paths: string[] = [];
@@ -179,6 +214,10 @@ Deno.serve(async (req: Request) => {
   }
 
   if (requestBodyTooLarge(req)) {
+    return json(413, { ok: false, error: "request_too_large" });
+  }
+
+  if (await streamedRequestBodyTooLarge(req)) {
     return json(413, { ok: false, error: "request_too_large" });
   }
 

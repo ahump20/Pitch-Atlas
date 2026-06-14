@@ -77,6 +77,18 @@ describe('delete-account Edge Function source contract', () => {
     )
   })
 
+  it('bounds streamed delete-account request bodies before Supabase client work', () => {
+    expect(source).toContain('async function streamedRequestBodyTooLarge(req: Request): Promise<boolean>')
+    expect(source).toContain('req.body.getReader()')
+    expect(source).toContain('receivedBytes += value.byteLength')
+    expect(source).toContain('receivedBytes > MAX_BODY_BYTES')
+    expect(source).toContain('await reader.cancel()')
+    expect(source).toContain('delete-account body reader cancel failed')
+    expect(source.indexOf('if (await streamedRequestBodyTooLarge(req))')).toBeLessThan(
+      source.indexOf('createClient<DeleteAccountDatabase>'),
+    )
+  })
+
   it('drains media storage beyond the first page and removes objects in batches', () => {
     expect(source).toContain('offset += STORAGE_LIST_PAGE_SIZE')
     expect(source).toContain('STORAGE_REMOVE_BATCH_SIZE')
