@@ -144,17 +144,40 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty or malformed"\);\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
   })
 
+  it('bounds Supabase client waits before falling back to stamped lookup errors', () => {
+    expect(source).toContain('const SUPABASE_REQUEST_TIMEOUT_MS = 15000')
+    expect(source).toContain('async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response>')
+    expect(source).toContain('const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS)')
+    expect(source).toContain('return await fetch(input, { ...init, signal: controller.signal })')
+    expect(source).toContain('clearTimeout(timeoutId)')
+    expect(source).toContain('global: { fetch: fetchWithTimeout }')
+    expect(source).toContain('console.error("summarize-thread auth lookup failed", error)')
+    expect(source).toContain('return json(502, { error: "auth_lookup_failed" })')
+    expect(source).toContain('console.error("summarize-thread participant lookup crashed", error)')
+    expect(source).toContain('console.error("summarize-thread messages lookup crashed", error)')
+    expect(source.indexOf('try {\n    userLookup = await admin.auth.getUser(token)')).toBeLessThan(
+      source.indexOf('if (userError || !user)'),
+    )
+    expect(source.indexOf('try {\n    participantLookup = await admin')).toBeLessThan(
+      source.indexOf('if (participantError)'),
+    )
+    expect(source.indexOf('try {\n    messagesLookup = await admin')).toBeLessThan(
+      source.indexOf('if (messagesError)'),
+    )
+  })
+
   it('bounds OpenAI waits before falling back to the summary error envelope', () => {
+    const requestSummaryIndex = source.indexOf('async function requestSummary(')
+    const signalIndex = source.indexOf('signal: controller.signal', requestSummaryIndex)
+    const crashedLogIndex = source.indexOf('console.error("summarize-thread OpenAI request crashed"', requestSummaryIndex)
+    const clearTimeoutIndex = source.indexOf('clearTimeout(timeoutId)', requestSummaryIndex)
+
     expect(source).toContain('const OPENAI_TIMEOUT_MS = 15000')
     expect(source).toContain('const controller = new AbortController()')
     expect(source).toContain('const timeoutId = setTimeout(() => controller.abort(), OPENAI_TIMEOUT_MS)')
     expect(source).toContain('signal: controller.signal')
     expect(source).toContain('clearTimeout(timeoutId)')
-    expect(source.indexOf('signal: controller.signal')).toBeLessThan(
-      source.indexOf('console.error("summarize-thread OpenAI request crashed"'),
-    )
-    expect(source.indexOf('clearTimeout(timeoutId)')).toBeGreaterThan(
-      source.indexOf('console.error("summarize-thread OpenAI request crashed"'),
-    )
+    expect(signalIndex).toBeLessThan(crashedLogIndex)
+    expect(clearTimeoutIndex).toBeGreaterThan(crashedLogIndex)
   })
 })

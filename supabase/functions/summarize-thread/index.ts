@@ -56,6 +56,7 @@ const jsonHeaders = {
 const MAX_MESSAGES = 200;
 const MAX_TRANSCRIPT_CHARS = 12000;
 const MAX_BODY_BYTES = 4096;
+const SUPABASE_REQUEST_TIMEOUT_MS = 15000;
 const OPENAI_TIMEOUT_MS = 15000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -125,7 +126,28 @@ function runtimeConfig(): RuntimeConfig | null {
 function createAdminClient(config: RuntimeConfig): SupabaseClient {
   return createClient(config.supabaseUrl, config.serviceKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: fetchWithTimeout },
   });
+}
+
+async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS);
+  const upstreamSignal = init?.signal;
+  const abort = () => controller.abort();
+
+  if (upstreamSignal?.aborted) {
+    controller.abort();
+  } else {
+    upstreamSignal?.addEventListener("abort", abort, { once: true });
+  }
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+    upstreamSignal?.removeEventListener("abort", abort);
+  }
 }
 
 async function readBody(req: Request): Promise<BodyReadResult> {
@@ -362,21 +384,37 @@ Deno.serve(async (req: Request) => {
 
   const admin = createAdminClient(config);
 
+  let userLookup;
+  try {
+    userLookup = await admin.auth.getUser(token);
+  } catch (error) {
+    console.error("summarize-thread auth lookup failed", error);
+    return json(502, { error: "auth_lookup_failed" });
+  }
+
   const {
     data: { user },
     error: userError,
-  } = await admin.auth.getUser(token);
+  } = userLookup;
 
   if (userError || !user) {
     return json(401, { error: "invalid_session" });
   }
 
-  const { data: participant, error: participantError } = await admin
-    .from("thread_participants")
-    .select("thread_id")
-    .eq("thread_id", threadId)
-    .eq("user_id", user.id)
-    .maybeSingle();
+  let participantLookup;
+  try {
+    participantLookup = await admin
+      .from("thread_participants")
+      .select("thread_id")
+      .eq("thread_id", threadId)
+      .eq("user_id", user.id)
+      .maybeSingle();
+  } catch (error) {
+    console.error("summarize-thread participant lookup crashed", error);
+    return json(502, { error: "participant_lookup_failed" });
+  }
+
+  const { data: participant, error: participantError } = participantLookup;
 
   if (participantError) {
     console.error("summarize-thread participant lookup failed", participantError);
@@ -387,12 +425,20 @@ Deno.serve(async (req: Request) => {
     return json(403, { error: "forbidden" });
   }
 
-  const { data: messages, error: messagesError } = await admin
-    .from("messages")
-    .select("sender_id, body, created_at")
-    .eq("thread_id", threadId)
-    .order("created_at", { ascending: true })
-    .limit(MAX_MESSAGES);
+  let messagesLookup;
+  try {
+    messagesLookup = await admin
+      .from("messages")
+      .select("sender_id, body, created_at")
+      .eq("thread_id", threadId)
+      .order("created_at", { ascending: true })
+      .limit(MAX_MESSAGES);
+  } catch (error) {
+    console.error("summarize-thread messages lookup crashed", error);
+    return json(502, { error: "messages_lookup_failed" });
+  }
+
+  const { data: messages, error: messagesError } = messagesLookup;
 
   if (messagesError) {
     console.error("summarize-thread messages lookup failed", messagesError);
