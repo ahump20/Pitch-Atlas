@@ -47,6 +47,8 @@ const jsonHeaders = {
   "Content-Type": "application/json",
   "Cache-Control": "no-store",
   "Pragma": "no-cache",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "no-referrer",
   "Connection": "keep-alive",
 };
 

@@ -12,6 +12,8 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toContain('"Access-Control-Allow-Methods"')
     expect(source).toContain('"Cache-Control": "no-store"')
     expect(source).toContain('"Pragma": "no-cache"')
+    expect(source).toContain('"X-Content-Type-Options": "nosniff"')
+    expect(source).toContain('"Referrer-Policy": "no-referrer"')
     expect(source).toMatch(/const jsonHeaders = \{\s+\.\.\.corsHeaders,/)
   })
 
