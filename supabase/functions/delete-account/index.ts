@@ -48,6 +48,8 @@ const corsHeaders = {
 const jsonHeaders = {
   ...corsHeaders,
   "Content-Type": "application/json",
+  "Cache-Control": "no-store",
+  "Pragma": "no-cache",
   "Connection": "keep-alive",
 };
 
