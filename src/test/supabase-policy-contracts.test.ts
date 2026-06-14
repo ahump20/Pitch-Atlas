@@ -18,4 +18,15 @@ describe('community safety database policy contracts', () => {
     expect(migrations).toContain("(select auth.jwt()) ->> 'is_anonymous'")
     expect(migrations).toContain('= false')
   })
+
+  it('keeps note reports write-only for public client roles', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260614233000_note_reports_insert_only_client_role.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke update on public.note_reports from anon, authenticated')
+    expect(migration).toContain('drop policy if exists reports_admin_update on public.note_reports')
+    expect(migration).not.toMatch(/\bgrant\s+update\b[\s\S]*\bpublic\.note_reports\b/i)
+  })
 })
