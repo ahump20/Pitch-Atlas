@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { CRAFTSMEN, CRAFTSMEN_BY_ERA } from '../data/craftsmen'
 import { parseEra } from '../lib/era'
 import { CraftsmanCard } from '../components/craftsmen/CraftsmanCard'
@@ -29,10 +30,21 @@ export function CraftsmenHall() {
     ogTitle: `The Craftsmen | ${SITE.siteName}`,
     ogDescription: 'The arms that defined the pitches, and the mental edge behind them. Sourced, not corrected.',
     ogUrl: canonicalUrl('/craftsmen'),
+    ...ogImageMeta('craftsmen', 'The Craftsmen — the arms that defined the pitches'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/craftsmen'),
+          name: 'The Craftsmen: the arms that defined the pitches',
+          description:
+            'A sourced hall of the pitchers who defined a pitch, Gibson to Skenes, plus the gyroball legend. The mental edge, the signature pitch, and the record, each labeled by source.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'The Craftsmen' }],
+        })}
+      />
       <SectionHero
         breadcrumb={
           <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'The Craftsmen' }]} />

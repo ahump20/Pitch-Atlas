@@ -9,7 +9,8 @@ import type {
 } from '../data/types'
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { scrollToId } from '../lib/scroll'
 import { GripViewer } from '../components/grip/GripViewer'
 import { RefractorBall } from '../components/refractor/RefractorBall'
@@ -694,7 +695,7 @@ export function PitchChapter() {
           ogTitle: `${entry.canonical.name} | ${SITE.siteName}`,
           ogDescription: entry.display.heroIntro,
           ogUrl: canonicalUrl('/pitch/' + entry.display.slug),
-          twitterCard: 'summary_large_image',
+          ...ogImageMeta('repertoire', `${entry.canonical.name} — grip, release, and movement`),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )
@@ -712,6 +713,19 @@ export function PitchChapter() {
 
   return (
     <div className="scene-coal">
+    <StructuredData
+      graph={contentJsonLd({
+        type: 'CreativeWork',
+        url: canonicalUrl('/pitch/' + entry.display.slug),
+        name: `${entry.canonical.name}: grip, release, and movement`,
+        description: entry.display.heroIntro,
+        breadcrumb: [
+          { name: 'Pitch Atlas', to: '/' },
+          { name: 'Pitch Index', to: '/repertoire' },
+          { name: entry.canonical.name },
+        ],
+      })}
+    />
     <div className="mx-auto max-w-[1140px] px-5 md:px-8">
       <div className="pt-6">
         <Breadcrumb

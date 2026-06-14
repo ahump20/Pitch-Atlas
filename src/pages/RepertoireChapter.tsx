@@ -4,7 +4,8 @@ import type { RepertoireEntry, RepertoireFamily } from '../data/types'
 import { repertoireById, BASIC_REPERTOIRE } from '../data/repertoire'
 import { gripEntryFor } from '../data/grips'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SpecimenGrips } from '../components/sections/GripLibrary'
@@ -113,6 +114,7 @@ export function RepertoireChapter() {
           ogTitle: `${entry.name} | ${SITE.siteName}`,
           ogDescription: entry.movement.value.slice(0, 160),
           ogUrl: canonicalUrl('/repertoire/' + entry.id),
+          ...ogImageMeta('repertoire', `${entry.name} — the Pitch Index`),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )
@@ -128,6 +130,19 @@ export function RepertoireChapter() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/repertoire/' + entry.id),
+          name: entry.name,
+          description: (entry.plain ?? entry.movement.value).slice(0, 200),
+          breadcrumb: [
+            { name: 'The Atlas', to: '/' },
+            { name: 'The Pitch Index', to: '/repertoire' },
+            { name: entry.name },
+          ],
+        })}
+      />
       <SectionHero
         accent={isEdgeStatus(entry.status) ? 'seam' : 'powder'}
         breadcrumb={

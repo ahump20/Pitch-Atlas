@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { WINGS } from '../data/knowledge'
 import type { KnowledgeWing } from '../data/knowledge/types'
 import { SectionHero } from '../components/layout/SectionHero'
@@ -112,10 +113,21 @@ export function KnowledgeHub() {
     ogTitle: `Learn | ${SITE.siteName}`,
     ogDescription: 'The craft underneath the pitch. Sourced, not corrected.',
     ogUrl: canonicalUrl('/learn'),
+    ...ogImageMeta('learn', 'Learn — the craft underneath the pitch'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/learn'),
+          name: 'Learn: the craft underneath the pitch',
+          description:
+            'The teaching layer of Pitch Atlas — mechanics, pitch design, sequencing and tunneling, spin literacy, arm health, and youth development. Every claim sourced and labeled by confidence.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Learn' }],
+        })}
+      />
       <SectionHero
         breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Learn' }]} />}
         eyebrow="The field manual"

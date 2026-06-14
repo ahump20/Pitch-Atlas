@@ -12,7 +12,7 @@ import { gripEntryFor } from '../data/grips'
 import { asOfDate } from '../lib/format'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta } from '../lib/seo'
 import { HomeHero } from '../components/sections/HomeHero'
 import { BinderSheet, PocketCard, FillerCard } from '../components/sections/BinderSheet'
 import { WaxPack, WaxPackIdleStyles, type WaxPackTool } from '../components/sections/WaxPack'
@@ -177,7 +177,7 @@ export function AtlasHome() {
     ogTitle: `${SITE.siteName}: the living field manual for pitching grips`,
     ogDescription: 'Every pitch, gripped and sourced. Sourced, not corrected.',
     ogUrl: canonicalUrl('/'),
-    twitterCard: 'summary_large_image',
+    ...ogImageMeta('home', `${SITE.siteName} — every pitch, gripped and sourced`),
   })
 
   /* the filed set, in binder order: family blocks laid into the pockets */

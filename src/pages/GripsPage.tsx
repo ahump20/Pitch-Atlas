@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { GripLibrary, AttackPlan } from '../components/sections/GripLibrary'
@@ -21,10 +22,21 @@ export function GripsPage() {
     ogTitle: `The Grip Library | ${SITE.siteName}`,
     ogDescription: 'Real grips, in the hand. The part a hitter never gets to see. Sourced, not corrected.',
     ogUrl: canonicalUrl('/grips'),
+    ...ogImageMeta('grips', 'The Grip Library — real grips, in the hand'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/grips'),
+          name: 'The Grip Library: real grips, in the hand',
+          description:
+            'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright, sourced not corrected.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Grip Library' }],
+        })}
+      />
       <SectionHero
         breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Grip Library' }]} />}
         eyebrow="Grip library"

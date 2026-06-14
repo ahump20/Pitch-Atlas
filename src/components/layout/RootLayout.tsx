@@ -40,7 +40,7 @@ function RouteHead() {
     script: [
       {
         type: 'application/ld+json',
-        innerHTML: JSON.stringify(siteJsonLd()),
+        innerHTML: JSON.stringify(siteJsonLd(pathname === '/')),
       },
     ],
   })

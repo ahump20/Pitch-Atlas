@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { INDEX_SCOPE } from '../lib/index-scope'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { IndexLedger } from '../components/sections/IndexLedger'
@@ -22,10 +23,21 @@ export function RepertoirePage() {
     ogTitle: `The Pitch Index | ${SITE.siteName}`,
     ogDescription: 'Every accepted pitch, by family. Sourced, not corrected.',
     ogUrl: canonicalUrl('/repertoire'),
+    ...ogImageMeta('repertoire', 'The Pitch Index — every accepted pitch, by family'),
   })
 
   return (
     <div className="scene-coal">
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/repertoire'),
+          name: 'The Pitch Index: every pitch, by family',
+          description:
+            'A searchable index of every accepted pitch a coach, a pitcher, or the tracking taxonomy would name — plus the lost pitches of the Negro Leagues. Each one a sourced one-liner, labeled by confidence.',
+          breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'The Pitch Index' }],
+        })}
+      />
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
       <div className="pt-6">
         <Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'The Pitch Index' }]} />

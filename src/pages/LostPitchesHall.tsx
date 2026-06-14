@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { LOST_PITCHES, LOST_PITCH_TIERS, lostPitchesByTier } from '../data/lost-pitches'
 import { LostPitchCard } from '../components/lost-pitches/LostPitchCard'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
@@ -26,10 +27,21 @@ export function LostPitchesHall() {
     ogTitle: `Lost Pitches of the Negro Leagues | ${SITE.siteName}`,
     ogDescription: 'The pitches the record cannot hold, filed by how well they survive. Sourced, not corrected.',
     ogUrl: canonicalUrl('/lost-pitches'),
+    ...ogImageMeta('lost-pitches', 'Lost Pitches of the Negro Leagues'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/lost-pitches'),
+          name: 'Lost Pitches of the Negro Leagues',
+          description:
+            'The pitches and the arms the box scores cannot hold: the banned hesitation pitch, the documented curve, the doctored-ball craft that diverged from the segregated majors. Filed by how solid the record is.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Lost Pitches' }],
+        })}
+      />
       <SectionHero
         accent="seam"
         breadcrumb={

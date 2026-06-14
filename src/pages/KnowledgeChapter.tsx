@@ -1,7 +1,8 @@
 import { useParams } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { wingBySlug } from '../data/knowledge'
 import { KnowledgePage } from '../components/sections/KnowledgePage'
 import { NotFound } from './NotFound'
@@ -23,10 +24,28 @@ export function KnowledgeChapter() {
           ogTitle: `${wing.navLabel || wing.title} | ${SITE.siteName}`,
           ogDescription: wing.summary,
           ogUrl: canonicalUrl('/learn/' + wing.slug),
+          ...ogImageMeta('learn', `${wing.title} — Learn`),
         }
       : { title: `Wing not found | ${SITE.siteName}` },
   )
 
   if (!wing) return <NotFound />
-  return <KnowledgePage wing={wing} />
+  return (
+    <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'Article',
+          url: canonicalUrl('/learn/' + wing.slug),
+          name: wing.title,
+          description: wing.summary,
+          breadcrumb: [
+            { name: 'The Atlas', to: '/' },
+            { name: 'Learn', to: '/learn' },
+            { name: wing.title },
+          ],
+        })}
+      />
+      <KnowledgePage wing={wing} />
+    </>
+  )
 }

@@ -4,7 +4,8 @@ import type { Claim, Craftsman } from '../data/types'
 import { CRAFTSMEN_BY_ERA, craftsmanBySlug } from '../data/craftsmen'
 import { pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
@@ -90,6 +91,7 @@ export function CraftsmanChapter() {
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
           ogUrl: canonicalUrl('/craftsmen/' + craftsman.slug),
+          ...ogImageMeta('craftsmen', `${craftsman.name} — ${craftsman.signaturePitch}`),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )
@@ -98,6 +100,19 @@ export function CraftsmanChapter() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'Article',
+          url: canonicalUrl('/craftsmen/' + craftsman.slug),
+          name: `${craftsman.name}: ${craftsman.signaturePitch}`,
+          description: `${craftsman.tagline} ${craftsman.intro}`.slice(0, 200),
+          breadcrumb: [
+            { name: 'The Atlas', to: '/' },
+            { name: 'The Craftsmen', to: '/craftsmen' },
+            { name: craftsman.name },
+          ],
+        })}
+      />
       <section className="on-stage relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
           <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(108,172,228,0.15),transparent_42%),linear-gradient(115deg,rgba(242,236,221,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />

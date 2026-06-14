@@ -6,6 +6,44 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-32.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/brand/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <!--
+      LCP font preload. The hero wordmark "PITCH ATLAS" is the largest paint on
+      the home page and it is set in Anton (the athletic logotype). Anton's
+      @fontsource face is bundled into a JS-imported CSS chunk that only loads
+      after the main bundle parses, so the glyphs arrive late and the wordmark's
+      paint waits on a swap. This preload fetches the Latin subset (all the
+      wordmark's glyphs are Latin) in parallel with the bundle, off a stable
+      hashed-by-content path, so the real type can paint as soon as first layout
+      runs. crossorigin is required for font preloads even same-origin.
+    -->
+    <link
+      rel="preload"
+      href="/brand/anton-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <!--
+      The face that consumes that preload. Declared inline (and ahead of the JS
+      bundle's CSS) so the browser has an Anton Latin source the instant first
+      layout runs, instead of waiting for the @fontsource chunk. The unicode-range
+      is @fontsource's Latin subset — the only range the wordmark needs — so the
+      @fontsource faces still cover Latin-ext / Vietnamese without conflict.
+      font-display: swap matches @fontsource: fallback paints immediately, real
+      type swaps in the moment this file (already preloading) lands.
+    -->
+    <style>
+      @font-face {
+        font-family: 'Anton';
+        font-style: normal;
+        font-weight: 400;
+        font-display: swap;
+        src: url('/brand/anton-latin-400.woff2') format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+          U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+          U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta
       name="description"
