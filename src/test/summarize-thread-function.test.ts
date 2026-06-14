@@ -14,6 +14,7 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('"Access-Control-Allow-Origin"')
     expect(source).toContain('"Access-Control-Allow-Headers"')
     expect(source).toContain('"Access-Control-Allow-Methods"')
+    expect(source).toContain('"Vary": "Authorization, Origin"')
     expect(source).toContain('"Cache-Control": "no-store"')
     expect(source).toContain('"Pragma": "no-cache"')
     expect(source).toContain('"X-Content-Type-Options": "nosniff"')
