@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
 
@@ -35,7 +35,18 @@ const MOBILE_NAV: { label: string; to: string }[] = [
 ]
 
 export function Masthead() {
-  const [open, setOpen] = useState(false)
+  const { pathname } = useLocation()
+  const [menu, setMenu] = useState({ open: false, pathname })
+  const open = menu.open && menu.pathname === pathname
+
+  useEffect(() => {
+    if (!open) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenu({ open: false, pathname })
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [open, pathname])
 
   return (
     // scroll-shade: the bar earns its shadow only once the page moves under it
@@ -68,7 +79,7 @@ export function Masthead() {
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setMenu({ open: !open, pathname })}
             className="flex h-11 w-11 items-center justify-center rounded-sm border border-ink/30 text-ink transition-colors hover:border-ink md:hidden"
           >
             <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
@@ -89,7 +100,7 @@ export function Masthead() {
               <li key={n.to}>
                 <NavLink
                   to={n.to}
-                  onClick={() => setOpen(false)}
+                  onClick={() => setMenu({ open: false, pathname })}
                   className={({ isActive }) =>
                     `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-ink ${
                       isActive ? 'text-seam' : 'text-ink-2'

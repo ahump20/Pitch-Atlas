@@ -1,8 +1,8 @@
-import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { BookOpenIcon, ListIcon, SearchIcon } from 'lucide-react'
+import { BookOpenIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
@@ -12,6 +12,7 @@ import { accentForSlug } from '../refractor/accents'
 import { FAMILY_ACCENT } from './family-accent'
 import { BinderSheet, RepertoirePocket } from './BinderSheet'
 import { Badge } from '../ui/badge'
+import { Button } from '../ui/button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
@@ -60,6 +61,16 @@ const FILTERS: { key: FamilyFilter; label: string }[] = [
   { key: 'banned', label: 'Banned' },
   { key: 'filed', label: 'Filed specimens' },
 ]
+const FILTER_KEYS = new Set<FamilyFilter>(FILTERS.map((f) => f.key))
+const VIEW_KEYS = new Set<IndexView>(['rows', 'binder'])
+
+function searchFilter(value: string | null): FamilyFilter {
+  return FILTER_KEYS.has(value as FamilyFilter) ? (value as FamilyFilter) : 'all'
+}
+
+function searchView(value: string | null): IndexView {
+  return VIEW_KEYS.has(value as IndexView) ? (value as IndexView) : 'rows'
+}
 
 /* the one true seam, projected once at module scope and shared by every mark.
    rotation happens per entry on a <g>, so forty marks cost one projection. */
@@ -204,9 +215,10 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
 }
 
 export function PitchIndex({ id }: { id?: string }) {
-  const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState<FamilyFilter>('all')
-  const [view, setView] = useState<IndexView>('rows')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const query = searchParams.get('q') ?? ''
+  const filter = searchFilter(searchParams.get('family'))
+  const view = searchView(searchParams.get('view'))
   const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
 
@@ -220,6 +232,40 @@ export function PitchIndex({ id }: { id?: string }) {
     setAnnounce(msg)
     window.clearTimeout(announceTimer.current)
     announceTimer.current = window.setTimeout(() => setAnnounce(''), 1600)
+  }
+
+  function updateIndexParams(
+    patch: { q?: string | null; family?: FamilyFilter | null; view?: IndexView | null },
+    options: { replace?: boolean; announce?: string } = {},
+  ) {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        if ('q' in patch) {
+          const nextQuery = patch.q?.trim() ?? ''
+          if (nextQuery) next.set('q', nextQuery)
+          else next.delete('q')
+        }
+        if ('family' in patch) {
+          if (patch.family && patch.family !== 'all') next.set('family', patch.family)
+          else next.delete('family')
+        }
+        if ('view' in patch) {
+          if (patch.view && patch.view !== 'rows') next.set('view', patch.view)
+          else next.delete('view')
+        }
+        return next
+      },
+      { replace: options.replace ?? false, preventScrollReset: true, flushSync: true },
+    )
+    if (options.announce) say(options.announce)
+  }
+
+  function resetIndex() {
+    updateIndexParams(
+      { q: null, family: null, view: null },
+      { replace: true, announce: 'Index reset' },
+    )
   }
 
   /*
@@ -237,21 +283,21 @@ export function PitchIndex({ id }: { id?: string }) {
     }
   }
 
-  const groups = useMemo(() => {
-    return REPERTOIRE_FAMILIES.map((fam) => {
-      let entries = repertoireByFamily(fam.family)
-      if (filter === 'filed') entries = entries.filter((e) => e.filedSlug)
-      else if (filter !== 'all') entries = entries.filter(() => fam.family === filter)
-      if (q) {
-        entries = entries.filter((e) =>
-          [e.name, ...(e.aka ?? []), e.family].join(' ').toLowerCase().includes(q),
-        )
-      }
-      return { fam, entries }
-    }).filter((g) => g.entries.length > 0)
-  }, [q, filter])
+  const groups = REPERTOIRE_FAMILIES.map((fam) => {
+    let entries = repertoireByFamily(fam.family)
+    if (filter === 'filed') entries = entries.filter((e) => e.filedSlug)
+    else if (filter !== 'all') entries = entries.filter(() => fam.family === filter)
+    if (q) {
+      entries = entries.filter((e) =>
+        [e.name, ...(e.aka ?? []), e.family].join(' ').toLowerCase().includes(q),
+      )
+    }
+    return { fam, entries }
+  }).filter((g) => g.entries.length > 0)
 
   const total = groups.reduce((n, g) => n + g.entries.length, 0)
+  const activeFilterLabel = FILTERS.find((f) => f.key === filter)?.label ?? 'All'
+  const hasActiveState = q.length > 0 || filter !== 'all' || view !== 'rows'
   const countLabel = `${total} ${total === 1 ? 'pitch' : 'pitches'}${
     filter === 'all' ? '' : filter === 'filed' ? ' · filed specimens' : ` · ${filter}`
   }${q ? ` · matching "${query.trim()}"` : ''}`
@@ -269,12 +315,11 @@ export function PitchIndex({ id }: { id?: string }) {
             <InputGroupInput
               type="search"
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => updateIndexParams({ q: e.target.value }, { replace: true })}
               onKeyDown={(e) => {
                 // Escape wipes the search clean and says so
                 if (e.key === 'Escape' && query) {
-                  setQuery('')
-                  say('Search cleared')
+                  updateIndexParams({ q: null }, { replace: true, announce: 'Search cleared' })
                 }
               }}
               placeholder="Search a pitch, an alias, a family…"
@@ -287,7 +332,7 @@ export function PitchIndex({ id }: { id?: string }) {
             type="single"
             value={filter}
             onValueChange={(next) => {
-              if (next) morph(() => setFilter(next as FamilyFilter))
+              if (next) morph(() => updateIndexParams({ family: next as FamilyFilter }, { announce: `${FILTERS.find((f) => f.key === next)?.label ?? 'All'} filter applied` }))
             }}
             className="flex flex-wrap"
             aria-label="Filter pitch family"
@@ -307,7 +352,7 @@ export function PitchIndex({ id }: { id?: string }) {
             type="single"
             value={view}
             onValueChange={(next) => {
-              if (next) morph(() => setView(next as IndexView))
+              if (next) morph(() => updateIndexParams({ view: next as IndexView }, { announce: `${next === 'binder' ? 'Binder' : 'Rows'} view selected` }))
             }}
             className="ml-auto rounded-full border border-white/14 p-0.5"
             aria-label="Index view"
@@ -321,11 +366,23 @@ export function PitchIndex({ id }: { id?: string }) {
               Binder
             </ToggleGroupItem>
           </ToggleGroup>
+          {hasActiveState ? (
+            <Button
+              type="button"
+              onClick={resetIndex}
+              variant="ghost"
+              size="sm"
+              className="h-9 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:text-bone"
+            >
+              <XIcon data-icon="inline-start" />
+              Reset
+            </Button>
+          ) : null}
         </div>
         <p aria-live="polite" className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
           {countLabel}
         </p>
-        <span role="status" aria-live="polite" className="sr-only">
+        <span role="status" aria-live="polite" data-testid="pitch-index-announcer" className="sr-only">
           {announce}
         </span>
       </div>
@@ -342,11 +399,20 @@ export function PitchIndex({ id }: { id?: string }) {
             </EmptyTitle>
             <EmptyDescription className="text-[13px] text-ink-3">
               {q
-                ? `“${query.trim()}” is not in the ${REPERTOIRE.length} indexed entries. Try a family or an alias${
-                    filter === 'all' ? '' : `, or clear the ${FILTERS.find((f) => f.key === filter)?.label} filter`
+                ? `"${query.trim()}" is not in the ${REPERTOIRE.length} indexed entries. Try a family or an alias${
+                    filter === 'all' ? '' : `, or clear the ${activeFilterLabel} filter`
                   }. The index only shows what the atlas has actually filed.`
-                : `Every entry is excluded by the ${FILTERS.find((f) => f.key === filter)?.label} filter. Clear it to see the full index.`}
+                : `Every entry is excluded by the ${activeFilterLabel} filter. Clear it to see the full index.`}
             </EmptyDescription>
+            <Button
+              type="button"
+              onClick={resetIndex}
+              variant="outline"
+              className="mt-4 w-fit font-mono text-[10px] uppercase tracking-[0.12em]"
+            >
+              <XIcon data-icon="inline-start" />
+              Reset index
+            </Button>
           </EmptyHeader>
         </Empty>
       ) : null}

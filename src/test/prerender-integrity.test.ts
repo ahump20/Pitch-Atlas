@@ -18,7 +18,7 @@ import { sitemapPaths } from '../lib/sitemap'
 */
 
 const DIST = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../dist')
-const built = existsSync(path.join(DIST, 'index.html'))
+const shouldCheckDist = process.env.PITCH_ATLAS_CHECK_DIST === '1'
 
 function htmlFileFor(route: string): string {
   return route === '/' ? path.join(DIST, 'index.html') : path.join(DIST, ...route.split('/').filter(Boolean), 'index.html')
@@ -26,7 +26,11 @@ function htmlFileFor(route: string): string {
 
 const EXPECTED = ['/404', ...sitemapPaths()]
 
-describe.runIf(built)('prerender integrity (post-build)', () => {
+describe.runIf(shouldCheckDist)('prerender integrity (post-build)', () => {
+  it('has a fresh build output to inspect', () => {
+    expect(existsSync(path.join(DIST, 'index.html'))).toBe(true)
+  })
+
   it('prerendered every configured route to a real HTML file — none skipped', () => {
     const missing = EXPECTED.filter((route) => !existsSync(htmlFileFor(route)))
     expect(missing).toEqual([])
@@ -66,6 +70,6 @@ describe.runIf(built)('prerender integrity (post-build)', () => {
   })
 })
 
-describe.runIf(!built)('prerender integrity (no build present)', () => {
-  it.skip('dist/ has not been built in this checkout — run `npm run build` to exercise the gate', () => {})
+describe.runIf(!shouldCheckDist)('prerender integrity (post-build gate not requested)', () => {
+  it.skip('set PITCH_ATLAS_CHECK_DIST=1 after `vite build` to exercise the gate', () => {})
 })

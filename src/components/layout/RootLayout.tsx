@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
+import { useHead } from '@unhead/react'
 import { Outlet, useLocation } from 'react-router-dom'
 import { Masthead } from './Masthead'
 import { SiteFooter } from './SiteFooter'
 import { scrollToId } from '../../lib/scroll'
+import { canonicalUrl, siteJsonLd } from '../../lib/seo'
 import { Toaster } from '../ui/sonner'
 import { TooltipProvider } from '../ui/tooltip'
 
@@ -30,6 +32,22 @@ function ScrollManager() {
   return null
 }
 
+function RouteHead() {
+  const { pathname } = useLocation()
+
+  useHead({
+    link: [{ rel: 'canonical', href: canonicalUrl(pathname) }],
+    script: [
+      {
+        type: 'application/ld+json',
+        innerHTML: JSON.stringify(siteJsonLd()),
+      },
+    ],
+  })
+
+  return null
+}
+
 export function RootLayout() {
   return (
     <div className="min-h-screen bg-paper text-ink">
@@ -45,6 +63,7 @@ export function RootLayout() {
           >
             Skip to content
           </a>
+          <RouteHead />
           <ScrollManager />
           <Masthead />
           <main id="main" tabIndex={-1} className="outline-none">

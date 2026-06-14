@@ -1,16 +1,22 @@
 import { describe, expect, it } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, useLocation } from 'react-router-dom'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { IndexLedger } from './IndexLedger'
 import { PitchIndex } from './PitchIndex'
 
-function renderIndex() {
+function LocationProbe() {
+  const location = useLocation()
+  return <output data-testid="location-search">{location.search}</output>
+}
+
+function renderIndex(initialEntry = '/repertoire') {
   return render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[initialEntry]}>
       <PitchIndex />
+      <LocationProbe />
     </MemoryRouter>,
   )
 }
@@ -42,7 +48,8 @@ describe('PitchIndex controls', () => {
     await user.keyboard('{Escape}')
 
     expect(search).toHaveValue('')
-    expect(screen.getByRole('status')).toHaveTextContent('Search cleared')
+    expect(screen.getByTestId('pitch-index-announcer')).toHaveTextContent('Search cleared')
+    expect(screen.getByTestId('location-search')).toHaveTextContent('')
   })
 
   it('switches between row and binder views without losing filed routing labels', async () => {
@@ -58,6 +65,29 @@ describe('PitchIndex controls', () => {
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
     // an entry with no clean photograph says so honestly, never a fake thumbnail
     expect(screen.getAllByText('No image filed').length).toBeGreaterThan(0)
+    expect(screen.getByTestId('location-search')).toHaveTextContent('view=binder')
+  })
+
+  it('restores search, filter, and view from the URL', () => {
+    renderIndex('/repertoire?q=curve&family=breaking&view=binder')
+
+    expect(screen.getByRole('searchbox', { name: /search the pitch index/i })).toHaveValue('curve')
+    expect(screen.getByRole('radio', { name: /breaking/i })).toHaveAttribute('data-state', 'on')
+    expect(screen.getByRole('radio', { name: /binder view/i })).toHaveAttribute('data-state', 'on')
+    expect(screen.getByText(/matching "curve"/)).toBeInTheDocument()
+  })
+
+  it('resets active URL state from an empty result', async () => {
+    const user = userEvent.setup()
+    renderIndex('/repertoire?q=zzzz&family=breaking&view=binder')
+
+    expect(screen.getByText('No pitch by that name')).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /reset index/i }))
+
+    expect(screen.getByRole('searchbox', { name: /search the pitch index/i })).toHaveValue('')
+    expect(screen.getByRole('radio', { name: /^all$/i })).toHaveAttribute('data-state', 'on')
+    expect(screen.getByRole('radio', { name: /rows view/i })).toHaveAttribute('data-state', 'on')
+    expect(screen.getByTestId('location-search')).toHaveTextContent('')
   })
 })
 

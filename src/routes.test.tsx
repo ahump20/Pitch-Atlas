@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { createHead, UnheadProvider } from '@unhead/react/client'
 import { routes } from './routes'
@@ -12,6 +12,7 @@ import { PITCHES } from './data/pitches'
 */
 
 function renderRoute(path: string) {
+  document.head.innerHTML = ''
   const head = createHead()
   const router = createMemoryRouter(routes, { initialEntries: [path] })
   return render(
@@ -19,6 +20,14 @@ function renderRoute(path: string) {
       <RouterProvider router={router} />
     </UnheadProvider>,
   )
+}
+
+async function expectCanonical(path: string, href: string) {
+  renderRoute(path)
+  await screen.findByRole('navigation', { name: 'Primary' }, COLD_LOAD)
+  await waitFor(() => {
+    expect(document.head.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(href)
+  }, COLD_LOAD)
 }
 
 const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random', 'Loading...', 'TODO', 'Baseball Atlas']
@@ -30,6 +39,17 @@ const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random'
 const COLD_LOAD = { timeout: 15000 }
 
 describe('Atlas home', () => {
+  it('publishes a route canonical and non-stale site schema', async () => {
+    await expectCanonical('/', 'https://pitch-atlas.com/')
+
+    const schema = [...document.head.querySelectorAll('script[type="application/ld+json"]')]
+      .map((script) => script.textContent ?? '')
+      .join('\n')
+    expect(schema).toContain('SearchAction')
+    expect(schema).not.toContain('five pitches')
+    expect(schema).not.toContain('2026-06-04')
+  })
+
   it('leads with the hero and makes the Pitch Index the front door', async () => {
     renderRoute('/')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Pitch Atlas')
@@ -46,7 +66,7 @@ describe('Atlas home', () => {
 
   it('keeps the card-table surfaces honest: thesis, checklist, packs, rule sheet', async () => {
     renderRoute('/')
-    await screen.findByRole('heading', { level: 1 })
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     // the grading-scale card back keeps the thesis
     expect(screen.getByText(/A grip disappears faster than a box score/)).toBeInTheDocument()
     // the set checklist is the field manual's one surface
@@ -62,7 +82,7 @@ describe('Atlas home', () => {
 
   it('shows one clear primary nav, not the old per-pitch strip', async () => {
     renderRoute('/')
-    const nav = await screen.findByRole('navigation', { name: 'Primary' })
+    const nav = await screen.findByRole('navigation', { name: 'Primary' }, COLD_LOAD)
     for (const label of ['Pitch Index', 'Craftsmen', 'Sources']) {
       expect(within(nav).getByText(label)).toBeInTheDocument()
     }
@@ -83,26 +103,26 @@ describe('Pitch chapters', () => {
 
   it('renders the new splitter specimen with its pioneer master', async () => {
     renderRoute('/pitch/splitter')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Splitter')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Splitter')
     expect(screen.getByText('Bruce Sutter')).toBeInTheDocument()
   })
 
   it('renders the new splinker specimen with Skenes as a master', async () => {
     renderRoute('/pitch/splinker')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Splinker')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Splinker')
     expect(screen.getAllByText('Paul Skenes').length).toBeGreaterThan(0)
   })
 
   it('files Wainwright as a master on the 12-6 curve page', async () => {
     renderRoute('/pitch/twelve-six')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('12-6 curveball')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('12-6 curveball')
     expect(screen.getAllByText('Adam Wainwright').length).toBeGreaterThan(0)
     expect(screen.getByText(/The curve as a career/)).toBeInTheDocument()
   })
 
   it('redirects the full 12-6 slug alias to the filed specimen', async () => {
     renderRoute('/pitch/twelve-six-curveball')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('12-6 curveball')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('12-6 curveball')
   })
 
   it('shows the 404 for an unknown specimen', async () => {
@@ -114,7 +134,7 @@ describe('Pitch chapters', () => {
 describe('The Craftsmen', () => {
   it('lists the masters and the legend in the hall', async () => {
     renderRoute('/craftsmen')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The arms that defined the pitches.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('The arms that defined the pitches.')
     for (const name of ['Bob Gibson', 'Nolan Ryan', 'Roger Clemens', 'Greg Maddux', 'Johan Santana', 'Adam Wainwright', 'Paul Skenes', 'The gyroball']) {
       expect(screen.getAllByText(name).length).toBeGreaterThan(0)
     }
@@ -122,7 +142,7 @@ describe('The Craftsmen', () => {
 
   it('renders a craftsman chapter with a sourced quote and a prose record', async () => {
     renderRoute('/craftsmen/bob-gibson')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Bob Gibson')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Bob Gibson')
     expect(screen.getByText(/about 90 percent mental/)).toBeInTheDocument()
     // the record is told in prose, never a stat grid; the digits live behind the ledger link
     expect(screen.getByText(/stingiest rate any starter has managed in the live-ball era/)).toBeInTheDocument()
@@ -132,7 +152,7 @@ describe('The Craftsmen', () => {
 
   it('renders the Wainwright chapter linked to its 12-6 specimen', async () => {
     renderRoute('/craftsmen/adam-wainwright')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Adam Wainwright')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Adam Wainwright')
     expect(screen.getByText(/Eighteen seasons, one uniform/)).toBeInTheDocument()
     expect(screen.queryByText('2,202')).not.toBeInTheDocument()
     expect(screen.getByText(/Study the 12-6 curveball/)).toBeInTheDocument()
@@ -140,7 +160,7 @@ describe('The Craftsmen', () => {
 
   it('files the gyroball as a legend with a myth-versus-physics block', async () => {
     renderRoute('/craftsmen/gyroball')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The gyroball')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('The gyroball')
     expect(screen.getByText('The myth, and the physics')).toBeInTheDocument()
   })
 })
@@ -148,7 +168,7 @@ describe('The Craftsmen', () => {
 describe('Sources', () => {
   it('states the provenance model and a computed as-of date', async () => {
     renderRoute('/sources')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Sourced, not corrected.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Sourced, not corrected.')
     expect(screen.getByText(/As of .*\d{4}\./)).toBeInTheDocument()
   })
 })
@@ -156,7 +176,7 @@ describe('Sources', () => {
 describe('About', () => {
   it('explains the grip-first thesis and competitor field', async () => {
     renderRoute('/about')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The pitch, in your hand.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('The pitch, in your hand.')
     expect(screen.getByText('What it is')).toBeInTheDocument()
     expect(screen.getByText('Measurement dashboards')).toBeInTheDocument()
     expect(screen.getByText('Useful imperfection')).toBeInTheDocument()
@@ -171,7 +191,7 @@ describe('About', () => {
 describe('Privacy and support', () => {
   it('renders the privacy policy with its core promises and the deletion route', async () => {
     renderRoute('/privacy')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('What the atlas holds')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('What the atlas holds')
     expect(screen.getByText('No tracking')).toBeInTheDocument()
     expect(screen.getByText('No sale of data')).toBeInTheDocument()
     expect(screen.getAllByText(/delete\s*account/).length).toBeGreaterThan(0)
@@ -181,7 +201,7 @@ describe('Privacy and support', () => {
 
   it('renders the support page with report, deletion, and contact routes', async () => {
     renderRoute('/support')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Flag it.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Flag it.')
     expect(screen.getByText('Report a problem with a note or post')).toBeInTheDocument()
     expect(screen.getByText('Delete your account')).toBeInTheDocument()
     expect(screen.getAllByText(/in-product Report flow/).length).toBeGreaterThan(0)
@@ -191,9 +211,13 @@ describe('Privacy and support', () => {
 })
 
 describe('The Pitch Index', () => {
+  it('publishes the Pitch Index canonical without search UI state', async () => {
+    await expectCanonical('/repertoire?q=curve&family=breaking', 'https://pitch-atlas.com/repertoire/')
+  })
+
   it('catalogs every accepted pitch by family, including the kick change', async () => {
     renderRoute('/repertoire')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('The Pitch Index')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('The Pitch Index')
     expect(screen.getAllByText('Kick Change').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
@@ -202,14 +226,14 @@ describe('The Pitch Index', () => {
 
   it('files the knuckle-slurve honestly as not a pitch', async () => {
     renderRoute('/repertoire')
-    await screen.findByRole('heading', { level: 1 })
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     expect(screen.getAllByText(/Knuckle-Slurve/).length).toBeGreaterThan(0)
     expect(screen.getAllByText('Not a pitch').length).toBeGreaterThan(0)
   })
 
   it('also surfaces the lost-pitches wing in the index', async () => {
     renderRoute('/repertoire')
-    await screen.findByRole('heading', { level: 1 })
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     expect(screen.getAllByText('Lost Pitches of the Negro Leagues').length).toBeGreaterThan(0)
   })
 })
@@ -217,21 +241,21 @@ describe('The Pitch Index', () => {
 describe('Basic pitch files', () => {
   it('renders a basic file for an unfiled pitch with an honest marker and a discussion', async () => {
     renderRoute('/repertoire/slurve')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Slurve')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Slurve')
     expect(screen.getByText('Basic file')).toBeInTheDocument()
     expect(screen.getAllByText('Discussion').length).toBeGreaterThan(0)
   })
 
   it('opens the football-change grip evidence on the palmball file', async () => {
     renderRoute('/repertoire/palmball')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Palmball')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Palmball')
     expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
     expect(screen.getByAltText(/football change or palmball grip/i)).toBeInTheDocument()
   })
 
   it('redirects a filed pitch id straight to its full specimen', async () => {
     renderRoute('/repertoire/four-seam-fastball')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Four-seam fastball')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Four-seam fastball')
   })
 
   it('shows the 404 for an unknown pitch id', async () => {
@@ -243,7 +267,7 @@ describe('Basic pitch files', () => {
 describe('Lost Pitches of the Negro Leagues', () => {
   it('leads the hall with the documented anchors', async () => {
     renderRoute('/lost-pitches')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('Lost Pitches of the Negro Leagues.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Lost Pitches of the Negro Leagues.')
     for (const name of ["Satchel Paige's Hesitation Pitch", "Hilton Smith's Curveball", "Chet Brewer's Emery Ball"]) {
       expect(screen.getAllByText(name).length).toBeGreaterThan(0)
     }
@@ -251,14 +275,14 @@ describe('Lost Pitches of the Negro Leagues', () => {
 
   it('renders the hesitation-pitch chapter with the documented Harridge ruling', async () => {
     renderRoute('/lost-pitches/satchel-paige-hesitation-pitch')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent("Satchel Paige's Hesitation Pitch")
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent("Satchel Paige's Hesitation Pitch")
     expect(screen.getAllByText(/Will Harridge/).length).toBeGreaterThan(0)
     expect(screen.getAllByText('Documented').length).toBeGreaterThan(0)
   })
 
   it('files the Paige showman arsenal as a flagged legend', async () => {
     renderRoute('/lost-pitches/paige-showman-arsenal')
-    expect(await screen.findByRole('heading', { level: 1 })).toHaveTextContent('the showman layer')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('the showman layer')
     expect(screen.getAllByText('Legend').length).toBeGreaterThan(0)
   })
 
@@ -273,7 +297,7 @@ describe('No failure signatures', () => {
     'renders %s with no failure signatures',
     async (path) => {
       const { container } = renderRoute(path)
-      await screen.findByRole('heading', { level: 1 })
+      await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
       const text = container.textContent ?? ''
       for (const bad of FAILURE_SIGNATURES) {
         expect(text).not.toContain(bad)
