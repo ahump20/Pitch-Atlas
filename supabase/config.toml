@@ -4,3 +4,8 @@ project_id = "cloeoulvrrfcbitrjpso"
 enabled = true
 verify_jwt = true
 entrypoint = "./functions/delete-account/index.ts"
+
+[functions.summarize-thread]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/summarize-thread/index.ts"
