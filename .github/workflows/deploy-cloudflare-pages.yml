@@ -73,8 +73,14 @@ jobs:
           grep -Fq '<title>The Pitch Index: every pitch, by family | Pitch Atlas</title>' <<< "$repertoire"
           grep -Fq '<link rel="canonical" href="https://pitch-atlas.com/repertoire/">' <<< "$repertoire"
           grep -Fq 'SearchAction' <<< "$repertoire"
-          ! grep -Fq 'five pitches' <<< "$repertoire"
-          ! grep -Fq '2026-06-04' <<< "$repertoire"
+          if grep -Fq 'five pitches' <<< "$repertoire"; then
+            echo "Stale Pitch Index copy found"
+            exit 1
+          fi
+          if grep -Fq '2026-06-04' <<< "$repertoire"; then
+            echo "Stale Pitch Index retrieval date found"
+            exit 1
+          fi
 
           grep -Fq '<title>Four-seam fastball: grip, release, and movement | Pitch Atlas</title>' <<< "$four_seam"
           grep -Fq '<link rel="canonical" href="https://pitch-atlas.com/pitch/four-seam/">' <<< "$four_seam"
