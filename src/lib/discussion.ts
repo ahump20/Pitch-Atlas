@@ -67,6 +67,10 @@ interface MediaPathRow {
   storage_path: string | null
 }
 
+interface PostIdRow {
+  id: string
+}
+
 /** Turn a Postgres/PostgREST error into a sentence a contributor can act on. */
 export function friendlyError(error: { message?: string } | null): string {
   const raw = error?.message ?? ''
@@ -298,10 +302,23 @@ export async function reportMedia(mediaId: string, reason: string): Promise<void
 
 export async function deletePost(postId: string): Promise<void> {
   const uid = await ensureSession()
+  const { data: replyRows, error: replyErr } = await supabase
+    .from('discussion_posts')
+    .select('id')
+    .eq('parent_id', postId)
+  if (replyErr) throw new Error(friendlyError(replyErr))
+
+  const cascadePostIds = [
+    postId,
+    ...((replyRows ?? []) as PostIdRow[])
+      .map((row) => row.id)
+      .filter((id): id is string => typeof id === 'string' && id.length > 0),
+  ]
+
   const { data: mediaRows, error: mediaErr } = await supabase
     .from('discussion_media')
     .select('storage_path')
-    .eq('post_id', postId)
+    .in('post_id', cascadePostIds)
   if (mediaErr) throw new Error(friendlyError(mediaErr))
 
   const ownPaths = ((mediaRows ?? []) as MediaPathRow[])
