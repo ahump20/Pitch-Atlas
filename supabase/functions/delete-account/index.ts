@@ -1,5 +1,24 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+
+type CleanupTable = {
+  Row: Record<string, unknown>;
+  Insert: Record<string, unknown>;
+  Update: Record<string, unknown>;
+  Relationships: [];
+};
+
+type CleanupSchema = {
+  Tables: Record<string, CleanupTable>;
+  Views: Record<string, never>;
+  Functions: Record<string, never>;
+  Enums: Record<string, never>;
+  CompositeTypes: Record<string, never>;
+};
+
+type DeleteAccountDatabase = {
+  public: CleanupSchema;
+};
 
 type CleanupResult = {
   ok: boolean;
@@ -9,7 +28,18 @@ type CleanupResult = {
   error?: string;
 };
 
+type SupabaseAdmin = SupabaseClient<DeleteAccountDatabase>;
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS",
+  "Access-Control-Max-Age": "86400",
+  "Vary": "Origin",
+};
+
 const jsonHeaders = {
+  ...corsHeaders,
   "Content-Type": "application/json",
   "Connection": "keep-alive",
 };
@@ -30,7 +60,7 @@ function bearerToken(req: Request): string | null {
   return match?.[1] ?? null;
 }
 
-async function removeDiscussionMediaObjects(admin: ReturnType<typeof createClient>, userId: string): Promise<number> {
+async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string): Promise<number> {
   const bucket = admin.storage.from("discussion-media");
   const paths: string[] = [];
   let offset = 0;
@@ -73,7 +103,7 @@ async function removeDiscussionMediaObjects(admin: ReturnType<typeof createClien
   return paths.length;
 }
 
-async function deleteIfPresent(admin: ReturnType<typeof createClient>, table: string, column: string, value: string) {
+async function deleteIfPresent(admin: SupabaseAdmin, table: string, column: string, value: string) {
   const { error } = await admin.from(table).delete().eq(column, value);
   if (error) {
     throw new Error(`${table}_delete_failed: ${error.message}`);
@@ -81,6 +111,10 @@ async function deleteIfPresent(admin: ReturnType<typeof createClient>, table: st
 }
 
 Deno.serve(async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   if (req.method !== "POST" && req.method !== "DELETE") {
     return json(405, { ok: false, error: "method_not_allowed" });
   }
@@ -97,7 +131,7 @@ Deno.serve(async (req: Request) => {
     return json(401, { ok: false, error: "missing_bearer_token" });
   }
 
-  const admin = createClient(supabaseUrl, serviceRoleKey, {
+  const admin: SupabaseAdmin = createClient<DeleteAccountDatabase>(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
