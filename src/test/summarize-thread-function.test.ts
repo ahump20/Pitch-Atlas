@@ -57,8 +57,26 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source.indexOf('const body = await readBody(req)')).toBeLessThan(
       source.indexOf('const config = runtimeConfig()'),
     )
+    expect(source.indexOf('if (requestBodyTooLarge(req))')).toBeLessThan(
+      source.indexOf('const body = await readBody(req)'),
+    )
     expect(source.indexOf('invalid_thread_id')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
     expect(source).toContain('return json(500, { error: "server_not_configured" })')
+  })
+
+  it('rejects oversized summary request bodies before JSON parsing', () => {
+    expect(source).toContain('const MAX_BODY_BYTES = 4096')
+    expect(source).toContain('function requestBodyTooLarge(req: Request): boolean')
+    expect(source).toContain('req.headers.get("Content-Length")')
+    expect(source).toContain('length > MAX_BODY_BYTES')
+    expect(source).toContain('return json(413, { error: "request_too_large" })')
+  })
+
+  it('trims captured Bearer tokens before auth lookups', () => {
+    const bearerParserLine = source.split('\n').find((line) => line.includes('header.match'))
+    expect(bearerParserLine).toContain('/^Bearer\\s+(.+)$/i')
+    expect(source).toContain('const token = match?.[1]?.trim()')
+    expect(source).toContain('return token ? token : null')
   })
 
   it('validates thread ids before Supabase lookups', () => {

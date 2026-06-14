@@ -92,7 +92,8 @@ function failCleanup(code: string, detail: unknown): never {
 function bearerToken(req: Request): string | null {
   const header = req.headers.get("Authorization") ?? "";
   const match = header.match(/^Bearer\s+(.+)$/i);
-  return match?.[1] ?? null;
+  const token = match?.[1]?.trim();
+  return token ? token : null;
 }
 
 async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string): Promise<number> {
