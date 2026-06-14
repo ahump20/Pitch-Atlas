@@ -28,6 +28,8 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('participant_lookup_failed')
     expect(source).toContain('messages_lookup_failed')
     expect(source).toContain('summary_unavailable')
+    expect(source).toContain('summarize-thread OpenAI request crashed')
+    expect(source).toContain('summarize-thread OpenAI response was empty')
     expect(source).not.toContain('participantError.message')
     expect(source).not.toContain('messagesError.message')
     expect(source).not.toContain('errText')
@@ -47,5 +49,12 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('MAX_MESSAGES = 200')
     expect(source).toContain('MAX_TRANSCRIPT_CHARS = 12000')
     expect(source).toContain('transcript.slice(-MAX_TRANSCRIPT_CHARS)')
+  })
+
+  it('keeps OpenAI transport and empty response failures in the JSON envelope', () => {
+    expect(source).toContain('async function requestSummary(')
+    expect(source).toContain('catch (error)')
+    expect(source).toMatch(/if \(!openaiResp\) \{\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
+    expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty"\);\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
   })
 })
