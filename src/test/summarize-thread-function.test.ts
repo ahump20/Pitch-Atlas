@@ -33,6 +33,16 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).not.toContain('errText')
   })
 
+  it('answers cheap request guards before runtime secret checks', () => {
+    expect(source).not.toContain('throw new Error("OPENAI_API_KEY is required")')
+    expect(source).not.toContain('const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY")')
+    expect(source.indexOf('if (req.method === "OPTIONS")')).toBeLessThan(
+      source.indexOf('const config = runtimeConfig()'),
+    )
+    expect(source.indexOf('if (!token)')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
+    expect(source).toContain('return json(500, { error: "server_not_configured" })')
+  })
+
   it('caps the transcript before sending it to the model', () => {
     expect(source).toContain('MAX_MESSAGES = 200')
     expect(source).toContain('MAX_TRANSCRIPT_CHARS = 12000')

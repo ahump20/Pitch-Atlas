@@ -17,27 +17,11 @@ type MessageRow = {
   created_at: string | null;
 };
 
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
-const SUPABASE_SECRET_KEYS_RAW = Deno.env.get("SUPABASE_SECRET_KEYS");
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-const OPENAI_API_KEY = Deno.env.get("OPENAI_API_KEY");
-
-if (!SUPABASE_URL) throw new Error("SUPABASE_URL is required");
-if (!SUPABASE_SECRET_KEYS_RAW && !SUPABASE_SERVICE_ROLE_KEY) {
-  throw new Error("SUPABASE_SECRET_KEYS or SUPABASE_SERVICE_ROLE_KEY is required");
-}
-if (!OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is required");
-
-const parsedSecretKeys = SUPABASE_SECRET_KEYS_RAW
-  ? JSON.parse(SUPABASE_SECRET_KEYS_RAW) as Record<string, string | undefined>
-  : {};
-const serviceKey = parsedSecretKeys.default ?? SUPABASE_SERVICE_ROLE_KEY;
-
-if (!serviceKey) throw new Error("Supabase service key is required");
-
-const admin: SupabaseClient = createClient(SUPABASE_URL, serviceKey, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+type RuntimeConfig = {
+  supabaseUrl: string;
+  serviceKey: string;
+  openaiApiKey: string;
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -75,6 +59,43 @@ function bearerToken(req: Request): string | null {
   const header = req.headers.get("Authorization") ?? "";
   const match = header.match(/^Bearer\s+(.+)$/i);
   return match?.[1] ?? null;
+}
+
+function serviceKeyFromEnv(): string | null {
+  const rawSecretKeys = Deno.env.get("SUPABASE_SECRET_KEYS");
+  const fallback = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+  if (!rawSecretKeys) {
+    return fallback ?? null;
+  }
+
+  try {
+    const parsed = JSON.parse(rawSecretKeys) as Record<string, unknown>;
+    const value = parsed.default;
+    return typeof value === "string" && value.length > 0 ? value : fallback ?? null;
+  } catch (error) {
+    console.error("summarize-thread Supabase secret config is invalid", error);
+    return fallback ?? null;
+  }
+}
+
+function runtimeConfig(): RuntimeConfig | null {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const serviceKey = serviceKeyFromEnv();
+  const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
+
+  if (!supabaseUrl || !serviceKey || !openaiApiKey) {
+    console.error("summarize-thread runtime config is missing");
+    return null;
+  }
+
+  return { supabaseUrl, serviceKey, openaiApiKey };
+}
+
+function createAdminClient(config: RuntimeConfig): SupabaseClient {
+  return createClient(config.supabaseUrl, config.serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 }
 
 async function readBody(req: Request): Promise<Record<string, unknown> | null> {
@@ -133,6 +154,13 @@ Deno.serve(async (req: Request) => {
   if (!token) {
     return json(401, { error: "missing_bearer_token" });
   }
+
+  const config = runtimeConfig();
+  if (!config) {
+    return json(500, { error: "server_not_configured" });
+  }
+
+  const admin = createAdminClient(config);
 
   const {
     data: { user },
@@ -198,7 +226,7 @@ Deno.serve(async (req: Request) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
+      "Authorization": `Bearer ${config.openaiApiKey}`,
     },
     body: JSON.stringify({
       model: "gpt-4o-mini",
