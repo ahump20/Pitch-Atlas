@@ -61,6 +61,7 @@ const jsonHeaders = {
 const STORAGE_LIST_PAGE_SIZE = 1000;
 const STORAGE_REMOVE_BATCH_SIZE = 100;
 const MAX_BODY_BYTES = 4096;
+const SUPABASE_REQUEST_TIMEOUT_MS = 15000;
 const OPTIONAL_DELETE_MISSING_CODES = new Set(["42P01", "42703"]);
 
 class CleanupFailure extends Error {
@@ -139,6 +140,26 @@ async function streamedRequestBodyTooLarge(req: Request): Promise<boolean> {
   } catch (error) {
     console.error("delete-account body reader failed", error);
     return false;
+  }
+}
+
+async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS);
+  const upstreamSignal = init?.signal;
+  const abort = () => controller.abort();
+
+  if (upstreamSignal?.aborted) {
+    controller.abort();
+  } else {
+    upstreamSignal?.addEventListener("abort", abort, { once: true });
+  }
+
+  try {
+    return await fetch(input, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+    upstreamSignal?.removeEventListener("abort", abort);
   }
 }
 
@@ -230,9 +251,18 @@ Deno.serve(async (req: Request) => {
 
   const admin: SupabaseAdmin = createClient<DeleteAccountDatabase>(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
+    global: { fetch: fetchWithTimeout },
   });
 
-  const { data: userResult, error: userError } = await admin.auth.getUser(token);
+  let userLookup;
+  try {
+    userLookup = await admin.auth.getUser(token);
+  } catch (error) {
+    console.error("delete-account auth lookup failed", error);
+    return json(502, { ok: false, error: "auth_lookup_failed" });
+  }
+
+  const { data: userResult, error: userError } = userLookup;
   const user = userResult?.user;
 
   if (userError || !user) {
