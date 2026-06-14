@@ -51,10 +51,23 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('transcript.slice(-MAX_TRANSCRIPT_CHARS)')
   })
 
+  it('does not send raw sender ids to the model transcript', () => {
+    expect(source).toContain('function senderLabel(')
+    expect(source).toContain('const senderLabels = new Map<string, string>()')
+    expect(source).toContain('`Participant ${labels.size + 1}`')
+    expect(source).toContain('senderLabel(message.sender_id, senderLabels)')
+    expect(source).not.toContain('message.sender_id ?? "unknown-sender"')
+  })
+
   it('keeps OpenAI transport and empty response failures in the JSON envelope', () => {
     expect(source).toContain('async function requestSummary(')
+    expect(source).toContain('async function readCompletion(')
+    expect(source).toContain('function completionMessageContent(')
     expect(source).toContain('catch (error)')
     expect(source).toMatch(/if \(!openaiResp\) \{\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
-    expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty"\);\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
+    expect(source).toContain('summarize-thread OpenAI response JSON parse failed')
+    expect(source).toContain('const completion = await readCompletion(openaiResp)')
+    expect(source).toContain('parseSummary(completionMessageContent(completion))')
+    expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty or malformed"\);\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
   })
 })
