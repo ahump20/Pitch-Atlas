@@ -13,6 +13,12 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toMatch(/const jsonHeaders = \{\s+\.\.\.corsHeaders,/)
   })
 
+  it('parses standard Bearer authorization headers', () => {
+    const bearerParserLine = source.split('\n').find((line) => line.includes('header.match'))
+    expect(bearerParserLine).toContain('/^Bearer\\s+(.+)$/i')
+    expect(bearerParserLine).not.toContain('/^Bearer\\\\s+(.+)$/i')
+  })
+
   it('drains media storage beyond the first page and removes objects in batches', () => {
     expect(source).toContain('offset += STORAGE_LIST_PAGE_SIZE')
     expect(source).toContain('STORAGE_REMOVE_BATCH_SIZE')

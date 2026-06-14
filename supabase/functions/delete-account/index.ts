@@ -57,7 +57,7 @@ function json(status: number, body: CleanupResult): Response {
 
 function bearerToken(req: Request): string | null {
   const header = req.headers.get("Authorization") ?? "";
-  const match = header.match(/^Bearer\\s+(.+)$/i);
+  const match = header.match(/^Bearer\s+(.+)$/i);
   return match?.[1] ?? null;
 }
 
