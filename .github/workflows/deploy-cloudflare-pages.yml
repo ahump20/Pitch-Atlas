@@ -40,12 +40,55 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy preview to Cloudflare Pages
+        id: deploy_preview
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # --branch=main makes this a production deploy; without it the upload
-          # lands as a branch preview and the apex domain never updates.
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'pitch-atlas' }} --branch=preflight-${{ github.run_id }}
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Smoke test preview
+        shell: bash
+        env:
+          PREVIEW_URL: ${{ steps.deploy_preview.outputs['pages-deployment-alias-url'] || steps.deploy_preview.outputs['deployment-url'] }}
+        run: |
+          set -euo pipefail
+          test -n "$PREVIEW_URL" || (echo "Preview deployment URL was not returned" && exit 1)
+
+          origin="${PREVIEW_URL%/}"
+          fetch() {
+            curl --fail --silent --show-error --location --retry 5 --retry-delay 2 "$origin$1"
+          }
+
+          home="$(fetch /)"
+          repertoire="$(fetch /repertoire/)"
+          four_seam="$(fetch /pitch/four-seam/)"
+
+          grep -Fq '<h1' <<< "$home"
+          grep -Fq 'Pitch Atlas' <<< "$home"
+          grep -Fq 'https://pitch-atlas.com/' <<< "$home"
+
+          grep -Fq '<title>The Pitch Index: every pitch, by family | Pitch Atlas</title>' <<< "$repertoire"
+          grep -Fq '<link rel="canonical" href="https://pitch-atlas.com/repertoire/">' <<< "$repertoire"
+          grep -Fq 'SearchAction' <<< "$repertoire"
+          ! grep -Fq 'five pitches' <<< "$repertoire"
+          ! grep -Fq '2026-06-04' <<< "$repertoire"
+
+          grep -Fq '<title>Four-seam fastball: grip, release, and movement | Pitch Atlas</title>' <<< "$four_seam"
+          grep -Fq '<link rel="canonical" href="https://pitch-atlas.com/pitch/four-seam/">' <<< "$four_seam"
+
+          status="$(curl --silent --show-error --location --output /tmp/pitch-atlas-404.html --write-out '%{http_code}' "$origin/not-in-the-atlas")"
+          test "$status" = "404" || (echo "Expected unknown route to return 404, got $status" && exit 1)
+          grep -Fq 'That file is not in the atlas.' /tmp/pitch-atlas-404.html
+
+      - name: Deploy production to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Production runs only after the exact dist/ artifact has rendered on
+          # a Pages preview and passed the public route smoke test above.
           command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'pitch-atlas' }} --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
