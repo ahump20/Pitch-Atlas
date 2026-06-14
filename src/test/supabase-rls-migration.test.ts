@@ -46,6 +46,28 @@ function securityDefinerFunctionStatements(sql: string) {
   ).filter((statement) => /\bsecurity\s+definer\b/i.test(statement))
 }
 
+function publicSecurityDefinerFunctionNames(sql: string) {
+  return securityDefinerFunctionStatements(sql).flatMap((statement) => {
+    const match = statement.match(
+      /\bcreate\s+(?:or\s+replace\s+)?function\s+public\.([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/i,
+    )
+    return match ? [match[1].toLowerCase()] : []
+  })
+}
+
+function executePrivilegeEvents(sql: string) {
+  return (
+    stripSqlComments(sql).match(
+      /\b(?:grant|revoke)\s+execute\s+on\s+function\s+public\.([a-zA-Z_][a-zA-Z0-9_]*)\s*\([^;]*\)[^;]*;/gi,
+    ) ?? []
+  ).map((statement) => {
+    const action = statement.match(/\b(grant|revoke)\b/i)?.[1]?.toLowerCase()
+    const functionName = statement.match(/public\.([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/i)?.[1]?.toLowerCase()
+
+    return { action, functionName }
+  })
+}
+
 function migrationFiles() {
   return readdirSync(migrationsDir)
     .filter((file) => file.endsWith('.sql'))
@@ -101,6 +123,32 @@ describe('Supabase RLS migration contracts', () => {
           return `${file}: ${label} does not pin search_path`
         })
     })
+
+    expect(violations).toEqual([])
+  })
+
+  it('keeps public security definer functions closed to direct client execute', () => {
+    const files = migrationFiles()
+    const functionNames = new Set<string>()
+    const lastExecuteEvent = new Map<string, string | undefined>()
+
+    for (const file of files) {
+      const sql = readFileSync(resolve(migrationsDir, file), 'utf8')
+
+      for (const functionName of publicSecurityDefinerFunctionNames(sql)) {
+        functionNames.add(functionName)
+      }
+
+      for (const event of executePrivilegeEvents(sql)) {
+        if (event.functionName) {
+          lastExecuteEvent.set(event.functionName, event.action)
+        }
+      }
+    }
+
+    const violations = [...functionNames]
+      .filter((functionName) => lastExecuteEvent.get(functionName) !== 'revoke')
+      .map((functionName) => `public.${functionName} has no final client execute revoke`)
 
     expect(violations).toEqual([])
   })
