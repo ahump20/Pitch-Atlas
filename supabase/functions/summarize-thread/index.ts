@@ -56,6 +56,7 @@ const jsonHeaders = {
 const MAX_MESSAGES = 200;
 const MAX_TRANSCRIPT_CHARS = 12000;
 const MAX_BODY_BYTES = 4096;
+const OPENAI_TIMEOUT_MS = 15000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function meta(): SummaryMeta {
@@ -286,9 +287,13 @@ function completionMessageContent(completion: Record<string, unknown> | null): u
 }
 
 async function requestSummary(openaiApiKey: string, transcript: string): Promise<Response | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), OPENAI_TIMEOUT_MS);
+
   try {
     return await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
+      signal: controller.signal,
       headers: {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${openaiApiKey}`,
@@ -312,6 +317,8 @@ async function requestSummary(openaiApiKey: string, transcript: string): Promise
   } catch (error) {
     console.error("summarize-thread OpenAI request crashed", error);
     return null;
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
