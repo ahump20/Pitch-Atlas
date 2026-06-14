@@ -18,4 +18,18 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toContain('STORAGE_REMOVE_BATCH_SIZE')
     expect(source).toContain('paths.slice(i, i + STORAGE_REMOVE_BATCH_SIZE)')
   })
+
+  it('cleans private thread rows for the deleted user before auth removal', () => {
+    expect(source).toContain('OPTIONAL_DELETE_MISSING_CODES')
+    expect(source).toContain('"42P01"')
+    expect(source).toContain('"42703"')
+    expect(source).toContain('deleteIfTableExists(admin, "messages", "sender_id", userId)')
+    expect(source).toContain('deleteIfTableExists(admin, "thread_participants", "user_id", userId)')
+    expect(source).toContain('deleteIfTableExists(admin, "threads", "created_by", userId)')
+
+    const messagesCleanupIndex = source.indexOf('deleteIfTableExists(admin, "messages", "sender_id", userId)')
+    const authDeleteIndex = source.indexOf('admin.auth.admin.deleteUser(userId)')
+    expect(messagesCleanupIndex).toBeGreaterThan(-1)
+    expect(authDeleteIndex).toBeGreaterThan(messagesCleanupIndex)
+  })
 })

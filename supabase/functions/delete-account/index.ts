@@ -46,6 +46,7 @@ const jsonHeaders = {
 
 const STORAGE_LIST_PAGE_SIZE = 1000;
 const STORAGE_REMOVE_BATCH_SIZE = 100;
+const OPTIONAL_DELETE_MISSING_CODES = new Set(["42P01", "42703"]);
 
 function json(status: number, body: CleanupResult): Response {
   return new Response(JSON.stringify(body), {
@@ -110,6 +111,13 @@ async function deleteIfPresent(admin: SupabaseAdmin, table: string, column: stri
   }
 }
 
+async function deleteIfTableExists(admin: SupabaseAdmin, table: string, column: string, value: string) {
+  const { error } = await admin.from(table).delete().eq(column, value);
+  if (!error) return;
+  if (OPTIONAL_DELETE_MISSING_CODES.has(error.code ?? "")) return;
+  throw new Error(`${table}_delete_failed: ${error.message}`);
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -153,6 +161,9 @@ Deno.serve(async (req: Request) => {
     await deleteIfPresent(admin, "note_reports", "reporter_id", userId);
     await deleteIfPresent(admin, "note_tries", "user_id", userId);
     await deleteIfPresent(admin, "note_helpful", "user_id", userId);
+    await deleteIfTableExists(admin, "messages", "sender_id", userId);
+    await deleteIfTableExists(admin, "thread_participants", "user_id", userId);
+    await deleteIfTableExists(admin, "threads", "created_by", userId);
 
     const { error: blockError } = await admin
       .from("blocked_users")
