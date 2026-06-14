@@ -34,30 +34,6 @@ export function ivbSign(spinAxis: Vec3, velocity: Vec3): number {
   return z > 1e-9 ? 1 : z < -1e-9 ? -1 : 0
 }
 
-export interface SpinSplit {
-  activeRpm: number
-  gyroRpm: number
-  efficiencyPct: number
-}
-
-/**
- * Split total spin into the transverse (active) share that drives movement and
- * the gyro share that does not. Cole 2019: 2,530 rpm at 97.1% -> ~2,457 active.
- */
-export function activeSpinSplit(totalRpm: number, efficiencyPct: number): SpinSplit {
-  const eff = Math.max(0, Math.min(100, efficiencyPct))
-  const activeRpm = (totalRpm * eff) / 100
-  return { activeRpm, gyroRpm: totalRpm - activeRpm, efficiencyPct: eff }
-}
-
-/**
- * The carry gap drawn by the gravity ghost: how many inches less a spinning
- * four-seam drops than a spinless ball over the same flight. This IS the induced
- * vertical break. League average is about +16 in; the "15 to 20 in vs spinless"
- * span is approximate and depends on the arm.
- */
-export const CARRY_GAP_AVG_IN = 16
-
 /*
   Render-space frame (the 3D stage as the viewer sees it):
     +x: camera right        +y: up        +z: toward the camera

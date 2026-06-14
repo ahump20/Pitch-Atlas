@@ -207,8 +207,8 @@ export function AtlasHome() {
           <p className="mt-5 max-w-[62ch] text-[15px] leading-relaxed text-ink-2">
             Every accepted pitch by family — the filed specimens you can open below, plus the honest
             edges in the full index: an alias, an illusion, a colloquialism that is not a pitch, and
-            the banned doctored balls. The full index holds {INDEX_SCOPE.headline} —{' '}
-            {INDEX_SCOPE.breakdown}.
+            the banned doctored balls. The full index holds {INDEX_SCOPE.shelfLabel}, plus{' '}
+            {INDEX_SCOPE.lostNote} in the lost-pitches wing, one click away.
           </p>
 
           {/* binder tab dividers: the family gateways, in jewel ink */}

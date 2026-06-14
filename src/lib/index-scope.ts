@@ -1,28 +1,33 @@
 import { PITCHES } from '../data/pitches'
-import { BASIC_REPERTOIRE } from '../data/repertoire'
+import { BASIC_REPERTOIRE, REPERTOIRE, REPERTOIRE_FAMILIES } from '../data/repertoire'
 import { LOST_PITCHES } from '../data/lost-pitches'
 
 /*
   The index's scope, computed from the data arrays — never typed-in numerals.
-  Pitch files are the distinct destinations the index can open: the filed
-  specimens (src/data/pitches) plus the basic repertoire files (catalog entries
-  without a filed specimen). Lost-pitch records are the Negro Leagues wing.
-  Note: this counts files, not index rows — two catalog rows (the sinker, the
-  gyroball) cross-reference specimens already counted, so the row count of the
-  rendered index can sit above the file count. This is scope copy, not a
-  per-family counter (those were deliberately removed in efd4308).
+
+  The shelf a visitor actually sees is REPERTOIRE: one catalog row per pitch,
+  filed specimens and basic files together, grouped into families. The
+  IndexLedger plate beside the lede counts those same REPERTOIRE rows ("40
+  rows"), so the lede leads with that count and the two agree in one viewport.
+
+  The lost-pitches wing (the Negro Leagues records) is a separate destination,
+  counted on its own and named in its own clause — so the shelf total and the
+  wing total never read as a single summed number. pitchFiles stays available
+  for any caller that needs the distinct-file count, but it is not the headline.
 */
 
+const repertoireRows = REPERTOIRE.length
+const familyCount = REPERTOIRE_FAMILIES.length
 const pitchFiles = PITCHES.length + BASIC_REPERTOIRE.length
 const lostPitchRecords = LOST_PITCHES.length
-const indexedEntries = pitchFiles + lostPitchRecords
 
 export const INDEX_SCOPE = {
+  repertoireRows,
+  familyCount,
   pitchFiles,
   lostPitchRecords,
-  indexedEntries,
-  /** e.g. "54 indexed entries" — the number is derived, never typed in. */
-  headline: `${indexedEntries} indexed entries`,
-  /** e.g. "39 pitch files + 15 lost-pitch records" — derived, never typed in. */
-  breakdown: `${pitchFiles} pitch files + ${lostPitchRecords} lost-pitch records`,
+  /** Primary lede — matches the ledger's "{n} rows". Derived, never typed in. */
+  shelfLabel: `${repertoireRows} pitches across ${familyCount} families`,
+  /** The lost-pitches wing, named as its own destination. Derived. */
+  lostNote: `${lostPitchRecords} lost-pitch records`,
 } as const
