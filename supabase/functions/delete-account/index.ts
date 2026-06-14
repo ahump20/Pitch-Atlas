@@ -34,12 +34,18 @@ type DeleteAccountMeta = {
   timezone: "America/Chicago";
 };
 
+const allowedMethods = "POST, DELETE, OPTIONS";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, DELETE, OPTIONS",
+  "Access-Control-Allow-Methods": allowedMethods,
   "Access-Control-Max-Age": "86400",
   "Vary": "Origin",
+};
+
+const allowHeaders = {
+  "Allow": allowedMethods,
 };
 
 const jsonHeaders = {
@@ -71,10 +77,10 @@ function meta(): DeleteAccountMeta {
   };
 }
 
-function json(status: number, body: CleanupResult): Response {
+function json(status: number, body: CleanupResult, extraHeaders: Record<string, string> = {}): Response {
   return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
     status,
-    headers: jsonHeaders,
+    headers: { ...jsonHeaders, ...extraHeaders },
   });
 }
 
@@ -148,11 +154,11 @@ async function deleteIfTableExists(admin: SupabaseAdmin, table: string, column: 
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: { ...corsHeaders, ...allowHeaders } });
   }
 
   if (req.method !== "POST" && req.method !== "DELETE") {
-    return json(405, { ok: false, error: "method_not_allowed" });
+    return json(405, { ok: false, error: "method_not_allowed" }, allowHeaders);
   }
 
   const token = bearerToken(req);
