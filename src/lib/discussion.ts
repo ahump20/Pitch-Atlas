@@ -63,6 +63,10 @@ interface MediaRow {
   height: number | null
 }
 
+interface MediaPathRow {
+  storage_path: string | null
+}
+
 /** Turn a Postgres/PostgREST error into a sentence a contributor can act on. */
 export function friendlyError(error: { message?: string } | null): string {
   const raw = error?.message ?? ''
@@ -293,9 +297,23 @@ export async function reportMedia(mediaId: string, reason: string): Promise<void
 }
 
 export async function deletePost(postId: string): Promise<void> {
-  await ensureSession()
+  const uid = await ensureSession()
+  const { data: mediaRows, error: mediaErr } = await supabase
+    .from('discussion_media')
+    .select('storage_path')
+    .eq('post_id', postId)
+  if (mediaErr) throw new Error(friendlyError(mediaErr))
+
+  const ownPaths = ((mediaRows ?? []) as MediaPathRow[])
+    .map((row) => row.storage_path)
+    .filter((path): path is string => typeof path === 'string' && path.startsWith(`${uid}/`))
+
   const { error } = await supabase.from('discussion_posts').delete().eq('id', postId)
   if (error) throw new Error(friendlyError(error))
+  if (ownPaths.length > 0) {
+    // The row delete is what hides the post; storage cleanup removes the now-unreferenced bytes.
+    await supabase.storage.from(BUCKET).remove(ownPaths)
+  }
 }
 
 /* ------------------------------------------------------------- terms gate */
