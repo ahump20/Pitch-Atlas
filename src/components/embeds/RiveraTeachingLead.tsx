@@ -6,10 +6,10 @@ import { EmbedFallback } from './EmbedFallback'
 /*
   Mariano Rivera teaching the cutter to Roy Halladay and Scott Kazmir, shot and
   shared by @PitchingNinja — the one craftsman-matched lead in the media ledger
-  (docs/MEDIA-LEDGER.md: embed or link, never rehost). Same discipline as
-  PitchingNinjaTweet: the tweet is baked to local JSON (no runtime fetch, no
-  third-party script), react-tweet loads lazily after mount so the prerender
-  stays clean, and the credited fallback covers every other state.
+  (docs/MEDIA-LEDGER.md: embed or link, never rehost). The tweet is baked to
+  local JSON (no runtime fetch, no third-party script), react-tweet loads lazily
+  after mount so the prerender stays clean, and the credited fallback covers
+  every other state.
 */
 
 const TWEET_URL = 'https://x.com/PitchingNinja/status/1061649568847269889'

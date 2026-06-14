@@ -190,14 +190,6 @@ export function solveGripPose(contact: GripPoseContact, opts: SolveOptions = {})
   }
 }
 
-/** Solve every contact of a grip at once. */
-export function solveGrip(
-  contacts: readonly GripPoseContact[],
-  opts: SolveOptions = {},
-): FingerSpine[] {
-  return contacts.map((c) => solveGripPose(c, opts))
-}
-
 /* ── 2D projection, for the schematic fallback ──────────────────────────────
    The same presentation tilt the seam schematic applies, then an orthographic
    drop of z. Front/back flags let the renderer dim what sits behind the ball. */

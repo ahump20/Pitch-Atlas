@@ -1,5 +1,5 @@
 import { strict as assert } from 'node:assert'
-import { chromium } from 'playwright'
+import { chromium } from '@playwright/test'
 
 const rawOrigin = process.argv[2] ?? process.env.PREVIEW_URL
 

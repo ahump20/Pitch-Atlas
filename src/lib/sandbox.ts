@@ -32,16 +32,6 @@ function normalizeDeg(deg: number): number {
   return ((deg % 360) + 360) % 360
 }
 
-function nearestCardinal(deg: number): 0 | 90 | 180 | 270 {
-  const norm = normalizeDeg(deg)
-  const cardinals = [0, 90, 180, 270] as const
-  return cardinals.reduce((best, cur) => {
-    const bestDist = Math.min(Math.abs(norm - best), 360 - Math.abs(norm - best))
-    const curDist = Math.min(Math.abs(norm - cur), 360 - Math.abs(norm - cur))
-    return curDist < bestDist ? cur : best
-  }, 0 as 0 | 90 | 180 | 270)
-}
-
 function shapeFromTilt(tiltDeg: number): Pick<BreakResult, 'verticalShape' | 'horizontalDir' | 'shapeNote'> {
   const rad = (normalizeDeg(tiltDeg) * Math.PI) / 180
   const vertical = Math.cos(rad)
@@ -94,10 +84,6 @@ export function tiltClock(tiltDeg: number): string {
   const m = totalMin % 60
   const hour = h === 0 ? 12 : h
   return `${hour}:${m.toString().padStart(2, '0')}`
-}
-
-export function snapTilt(tiltDeg: number): number {
-  return nearestCardinal(tiltDeg)
 }
 
 /** Plain-English read of the resulting pitch shape. Neutral on handedness. */
