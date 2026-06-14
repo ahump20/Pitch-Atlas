@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
@@ -38,6 +38,9 @@ export function Masthead() {
   const { pathname } = useLocation()
   const [menu, setMenu] = useState({ open: false, pathname })
   const open = menu.open && menu.pathname === pathname
+  const toggleRef = useRef<HTMLButtonElement>(null)
+  const navRef = useRef<HTMLElement>(null)
+  const wasOpen = useRef(false)
 
   useEffect(() => {
     if (!open) return
@@ -47,6 +50,15 @@ export function Masthead() {
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [open, pathname])
+
+  // Keep focus from dropping to <body> when the disclosure toggles: move into
+  // the menu on open, hand it back to the trigger on close. Guarded on the
+  // transition so the initial closed mount never steals focus.
+  useEffect(() => {
+    if (open && !wasOpen.current) navRef.current?.focus()
+    else if (!open && wasOpen.current) toggleRef.current?.focus()
+    wasOpen.current = open
+  }, [open])
 
   return (
     // scroll-shade: the bar earns its shadow only once the page moves under it
@@ -75,6 +87,7 @@ export function Masthead() {
         <div className="flex items-center gap-4">
           <span className="mono-label hidden xl:inline">{SITE.sourcePrinciple}</span>
           <button
+            ref={toggleRef}
             type="button"
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
@@ -94,7 +107,13 @@ export function Masthead() {
       </div>
 
       {open ? (
-        <nav id="mobile-nav" aria-label="Mobile" className="border-t border-ink/12 bg-paper-2 md:hidden">
+        <nav
+          ref={navRef}
+          tabIndex={-1}
+          id="mobile-nav"
+          aria-label="Mobile"
+          className="border-t border-ink/12 bg-paper-2 outline-none md:hidden"
+        >
           <ul className="mx-auto flex max-w-[1320px] flex-col px-5 py-2">
             {MOBILE_NAV.map((n) => (
               <li key={n.to}>

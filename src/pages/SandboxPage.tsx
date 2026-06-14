@@ -203,7 +203,7 @@ export function SandboxPage() {
 
           {/* Visuals + readouts */}
           <div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <figure className="on-stage stage-spot flex flex-col items-center justify-center rounded-sm p-4">
                 <SeamSchematic
                   className="h-40 w-40"

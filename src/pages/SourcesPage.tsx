@@ -49,7 +49,7 @@ export function SourcesPage() {
   return (
     <section>
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <StageTierMarker index="04" label="Sources" />
+        <StageTierMarker index="04" label="Sources" as="span" />
 
         <h1 className="rfx-stitle max-w-[18ch] text-4xl leading-[1.04] md:text-5xl">
           Sourced, not corrected.

@@ -434,7 +434,7 @@ export function PitchIndex({ id }: { id?: string }) {
               </span>
             </div>
             {view === 'rows' ? (
-              <div className="grid gap-[11px] [grid-template-columns:repeat(auto-fill,minmax(320px,1fr))]">
+              <div className="grid gap-[11px] [grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr))]">
                 {entries.map((e) => (
                   <EntryRow key={e.id} entry={e} accent={accent} />
                 ))}

@@ -7,7 +7,7 @@ import { SITE } from '../config/site'
   point back into the three wings of the manual.
 */
 export function NotFound() {
-  useSeoMeta({ title: `Page not found | ${SITE.siteName}` })
+  useSeoMeta({ title: `Page not found | ${SITE.siteName}`, robots: 'noindex, follow' })
 
   return (
     <section className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-start justify-center gap-6 px-5 py-24 md:px-8">
