@@ -42,7 +42,24 @@ describe('summarize-thread Edge Function source contract', () => {
       source.indexOf('const config = runtimeConfig()'),
     )
     expect(source.indexOf('if (!token)')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
+    expect(source.indexOf('const body = await readBody(req)')).toBeLessThan(
+      source.indexOf('const config = runtimeConfig()'),
+    )
+    expect(source.indexOf('invalid_thread_id')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
     expect(source).toContain('return json(500, { error: "server_not_configured" })')
+  })
+
+  it('validates thread ids before Supabase lookups', () => {
+    expect(source).toContain('const UUID_PATTERN =')
+    expect(source).toContain('function threadIdFromBody(')
+    expect(source).toContain('return { error: "thread_id_required" }')
+    expect(source).toContain('return { error: "invalid_thread_id" }')
+    expect(source.indexOf('const threadIdResult = threadIdFromBody(body)')).toBeLessThan(
+      source.indexOf('admin.auth.getUser(token)'),
+    )
+    expect(source.indexOf('const { threadId } = threadIdResult')).toBeLessThan(
+      source.indexOf('.from("thread_participants")'),
+    )
   })
 
   it('caps the transcript before sending it to the model', () => {

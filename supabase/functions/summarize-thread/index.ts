@@ -39,6 +39,7 @@ const jsonHeaders = {
 
 const MAX_MESSAGES = 200;
 const MAX_TRANSCRIPT_CHARS = 12000;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function meta(): SummaryMeta {
   return {
@@ -105,6 +106,24 @@ async function readBody(req: Request): Promise<Record<string, unknown> | null> {
   } catch {
     return null;
   }
+}
+
+function threadIdFromBody(body: Record<string, unknown> | null): { threadId: string } | { error: string } {
+  const raw = body?.thread_id;
+  if (typeof raw !== "string") {
+    return { error: "thread_id_required" };
+  }
+
+  const threadId = raw.trim();
+  if (!threadId) {
+    return { error: "thread_id_required" };
+  }
+
+  if (!UUID_PATTERN.test(threadId)) {
+    return { error: "invalid_thread_id" };
+  }
+
+  return { threadId };
 }
 
 function senderLabel(senderId: string | null, labels: Map<string, string>): string {
@@ -231,6 +250,13 @@ Deno.serve(async (req: Request) => {
     return json(401, { error: "missing_bearer_token" });
   }
 
+  const body = await readBody(req);
+  const threadIdResult = threadIdFromBody(body);
+  if ("error" in threadIdResult) {
+    return json(400, { error: threadIdResult.error });
+  }
+  const { threadId } = threadIdResult;
+
   const config = runtimeConfig();
   if (!config) {
     return json(500, { error: "server_not_configured" });
@@ -245,13 +271,6 @@ Deno.serve(async (req: Request) => {
 
   if (userError || !user) {
     return json(401, { error: "invalid_session" });
-  }
-
-  const body = await readBody(req);
-  const threadId = typeof body?.thread_id === "string" ? body.thread_id.trim() : "";
-
-  if (!threadId) {
-    return json(400, { error: "thread_id_required" });
   }
 
   const { data: participant, error: participantError } = await admin
