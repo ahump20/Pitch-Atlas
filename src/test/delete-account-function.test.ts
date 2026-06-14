@@ -13,6 +13,23 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toMatch(/const jsonHeaders = \{\s+\.\.\.corsHeaders,/)
   })
 
+  it('keeps a provenance meta envelope on success and error replies', () => {
+    expect(source).toContain('source: "pitch-atlas-delete-account"')
+    expect(source).toContain('fetched_at: new Date().toISOString()')
+    expect(source).toContain('timezone: "America/Chicago"')
+    expect(source).toMatch(/JSON\.stringify\(\{ \.\.\.body, meta: body\.meta \?\? meta\(\) \}\)/)
+  })
+
+  it('does not return raw storage, database, or auth error text to the browser', () => {
+    expect(source).toContain('class CleanupFailure extends Error')
+    expect(source).toContain('console.error(`delete-account ${code}`, detail)')
+    expect(source).toContain('error: "delete_account_failed"')
+    expect(source).not.toContain('error.message')
+    expect(source).not.toContain('removeError.message')
+    expect(source).not.toContain('blockError.message')
+    expect(source).not.toContain('deleteUserError.message')
+  })
+
   it('parses standard Bearer authorization headers', () => {
     const bearerParserLine = source.split('\n').find((line) => line.includes('header.match'))
     expect(bearerParserLine).toContain('/^Bearer\\s+(.+)$/i')
