@@ -23,12 +23,18 @@ type RuntimeConfig = {
   openaiApiKey: string;
 };
 
+const allowedMethods = "POST, OPTIONS";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Methods": allowedMethods,
   "Access-Control-Max-Age": "86400",
   "Vary": "Origin",
+};
+
+const allowHeaders = {
+  "Allow": allowedMethods,
 };
 
 const jsonHeaders = {
@@ -53,10 +59,10 @@ function meta(): SummaryMeta {
   };
 }
 
-function json(status: number, body: JsonBody): Response {
+function json(status: number, body: JsonBody, extraHeaders: Record<string, string> = {}): Response {
   return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
     status,
-    headers: jsonHeaders,
+    headers: { ...jsonHeaders, ...extraHeaders },
   });
 }
 
@@ -242,11 +248,11 @@ async function requestSummary(openaiApiKey: string, transcript: string): Promise
 
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: { ...corsHeaders, ...allowHeaders } });
   }
 
   if (req.method !== "POST") {
-    return json(405, { error: "method_not_allowed" });
+    return json(405, { error: "method_not_allowed" }, allowHeaders);
   }
 
   const token = bearerToken(req);

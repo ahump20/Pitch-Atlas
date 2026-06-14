@@ -21,6 +21,14 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toMatch(/const jsonHeaders = \{\s+\.\.\.corsHeaders,/)
   })
 
+  it('advertises allowed methods on preflight and unsupported methods', () => {
+    expect(source).toContain('const allowedMethods = "POST, OPTIONS"')
+    expect(source).toContain('"Access-Control-Allow-Methods": allowedMethods')
+    expect(source).toContain('"Allow": allowedMethods')
+    expect(source).toContain('headers: { ...corsHeaders, ...allowHeaders }')
+    expect(source).toContain('return json(405, { error: "method_not_allowed" }, allowHeaders)')
+  })
+
   it('keeps a provenance meta envelope on success and error replies', () => {
     expect(source).toContain('source: "pitch-atlas-summarize-thread"')
     expect(source).toContain('fetched_at: new Date().toISOString()')
