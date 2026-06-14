@@ -1,7 +1,10 @@
 # Fable 5 Pitch Atlas Run State
 
 Run started: 2026-06-09 (America/Chicago)
-Run closed: 2026-06-09 ~22:00 CT — all phases complete; open items live in the Austin approval bundle (see final handoff + FABLE5-PITCH-ATLAS-AUDIT.md)
+Run closed: 2026-06-09 ~22:00 CT. Refreshed 2026-06-14 UTC / 2026-06-13 CDT:
+the former open SQL/design/function rows are resolved in source and, where
+applicable, live Supabase. The remaining platform row is Supabase branch
+automation reporting `MIGRATIONS_FAILED`.
 Work branch (web): `fable5/pitch-atlas-review-safe-sync` off `main` @ ccea952
 Budget: 35 turns / 4 hours, then report blockers.
 
@@ -27,7 +30,7 @@ no fake pitch data / metrics / freshness / community activity.
 - [x] State preserved, work branch created
 - [x] Run-state files created
 - [x] Phase 1 route/live audit — routes reconciled, 104-URL sitemap, real 404, /privacy + /support shipped + verified live
-- [x] Phase 2 Supabase — repo/live migration mirror 12/12; remaining DDL parked in docs/fable5/pending-migrations/ (Austin approval gate)
+- [x] Phase 2 Supabase — repo/live migration mirror refreshed through `20260614045210`; no pending SQL bundle remains
 - [x] Phase 3 Stripe reality — orphaned live engine classified; teardown = Austin's destructive call
 - [x] Phase 4 iOS authority + sync — A authoritative, B salvaged (PR #2), PLATFORM-CONTRACT.md
 - [x] Phase 5 frontend design — specimen-card chip unclip + softball marker fixed + verified live

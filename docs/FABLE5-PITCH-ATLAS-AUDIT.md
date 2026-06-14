@@ -4,6 +4,10 @@ Run: `fable5/pitch-atlas-review-safe-sync` · Evidence: `docs/fable5/PITCH-EVIDE
 
 Status legend: **verified** (tool-checked this run) · **reasoned** (inferred, not directly checked) · **blocked** (needs credentials/approval/platform state).
 
+Refresh note, 2026-06-14 UTC / 2026-06-13 CDT: the open-list rows were rechecked from
+the current repo, GitHub, Supabase, and local render proof. Resolved rows below keep
+the original finding text, but their status now reflects current evidence.
+
 ## 1. Health snapshot (verified)
 
 | Area | State |
@@ -25,7 +29,9 @@ Status legend: **verified** (tool-checked this run) · **reasoned** (inferred, n
 Verified this run:
 - Real routes 308-redirect to trailing-slash form and 200.
 - `/pitch-index`, `/classify` → 301 → `/repertoire/`; `/kinetic-chain` → 301 → `/learn/mechanics/`. The two-index-views fork is resolved live: `/repertoire` is the single front door (rows/cards toggle).
-- Soft-404: ALL unknown paths (incl. `/community`, `/auth`, `/login`, `/account`) return 200 with the home document. No standalone community/auth routes exist; Discussion + Field Notes are embedded `#discussion` / `#field-notes` sections on specimen/repertoire pages.
+- Soft-404 finding is resolved in current source: `src/pages/NotFound.tsx`, the `*`
+  route, `public/_redirects`, and the post-build `404.html` copy now ship a real
+  not-found page instead of a 200 app shell for unknown paths.
 - Full router × ssg-paths × sitemap × live matrix: `docs/route-map.pitch-atlas.json` (pending workflow output).
 
 ## 4. Supabase (project cloeoulvrrfcbitrjpso) — remediation list
@@ -34,19 +40,19 @@ Live access verified via the project-scoped MCP (the bare `supabase` MCP server 
 
 | # | Item | Before | Action this run | After / status |
 |---|---|---|---|---|
-| 1 | Migration drift (HIGH, verified) | live 12 vs repo 5, zero matching versions; both Supabase git branches MIGRATIONS_FAILED | 5 repo files renamed to live versions; 5 live-only migrations captured byte-faithfully from `supabase_migrations.schema_migrations` into repo | repo == live for 10/12; PR #16 carries the final 2; Supabase branch CI re-check after merge |
-| 2 | Default-ACL hole (HIGH, verified — BSI-incident root cause) | postgres + supabase_admin default ACLs grant full DML to anon/authenticated on every new table | prepared `docs/fable5/pending-migrations/01` | **blocked on Austin's approval** (auto-mode gate denied live DDL); supabase_admin default is residual, may need Supabase support like at BSI |
-| 3 | DM cluster residue (threads/messages/thread_participants) | anon+authenticated hold full DML; no SELECT for authenticated → feature unreachable; 0 rows | prepared `pending-migrations/02` (revoke all; product decision to enable or remove stays open) | **blocked on approval** |
-| 4 | 3 unindexed FKs | perf advisor INFO | prepared in `pending-migrations/02` | **blocked on approval** |
-| 5 | pitches table missing 7 specimen slugs (live bug: note submit FK-fails on 7 of 12 specimens) | 5 rows vs 12 web specimens | prepared `pending-migrations/03` (idempotent insert + two-seam name fix) | **blocked on approval** |
+| 1 | Migration drift (HIGH, verified) | live 12 vs repo 5, zero matching versions; both Supabase git branches MIGRATIONS_FAILED | live migrations captured into repo through `20260614045210_community_grant_cleanup_followup.sql` | repo source mirrors live migration list; branch automation still reports `MIGRATIONS_FAILED` |
+| 2 | Default-ACL hole (HIGH, verified — BSI-incident root cause) | postgres + supabase_admin default ACLs grant full DML to anon/authenticated on every new table | `20260610162418_default_privilege_hardening.sql` applied live and kept in repo | resolved for postgres-created public objects; supabase_admin residual remains platform-managed |
+| 3 | DM cluster residue (threads/messages/thread_participants) | anon+authenticated hold full DML; no SELECT for authenticated → feature unreachable; 0 rows | `20260610162459_dm_revoke_and_fk_indexes.sql` applied live and kept in repo | DML exposure resolved; product choice to enable or remove DM tables remains separate |
+| 4 | 3 unindexed FKs | perf advisor INFO | `20260610162459_dm_revoke_and_fk_indexes.sql` applied live and kept in repo | resolved |
+| 5 | pitches table missing 7 specimen slugs (live bug: note submit FK-fails on 7 of 12 specimens) | 5 rows vs 12 web specimens | `20260610162340_pitches_backfill_chapter_routes.sql` applied live and kept in repo | resolved |
 | 6 | Anonymous-user minting on read path | 66/67 auth users anonymous; signInAnonymously() fires on listNotes | web client fix in this run's fix bundle (read without session; session only on write intent) | in work branch; live after deploy |
 | 7 | banned_terms RLS-without-policy advisor | WARN | explained: deliberate default-deny (migration 20260605110439, now captured in repo) | documented intentional |
 | 8 | pg_graphql anon/authenticated exposure WARNs | WARN on community/profile tables | public community reads are the product design | documented intentional |
 | 9 | cron.job anonymous-policy WARNs | WARN | pg_cron defaults, not project policies | documented no-action |
 | 10 | Leaked-password protection disabled | WARN | dashboard-only toggle | **blocked: Austin** (belt-and-braces; password auth appears unused) |
 | 11 | auth_rls_initplan ×30 (bare auth.uid() in 06-09 policies) | perf WARN | fold `(select auth.uid())` rewrite into the next policy-touching migration | documented advisory |
-| 12 | profiles anon SELECT exposes is_admin; dead admin-read policies on report tables | low | left open (column-scoping risks client select-*) | documented open |
-| 13 | delete-account storage list capped at 1000 objects | low | patch in repo once PR #16 lands the function source | follow-up |
+| 12 | profiles anon SELECT exposes is_admin; dead admin-read policies on report tables | low | `20260614045210_community_grant_cleanup_followup.sql` applied live and kept in repo | resolved: `is_admin` no longer selectable by anon/authenticated; report queues stay write-only to clients |
+| 13 | delete-account storage list capped at 1000 objects | low | Edge Function v23 deployed with paginated listing and chunked removes; repo source updated | resolved |
 | 14 | Orphaned Stripe engine (schema ~25 tables, 3 edge functions, every-minute pg_cron) | running, zero consumers, signature-verified webhook, not API-exposed | none (destructive teardown) | **Austin's decision** |
 
 ## 5. Stripe reality — CLASSIFIED
@@ -69,11 +75,11 @@ Design is honest (see §1). Residual: in-browser offline toggle proof — blocke
 
 | # | Sev | Area | Issue | Status |
 |---|---|---|---|---|
-| 1 | med | routes | Soft-404: unknown paths return 200 + home doc; no 404.html / not-found view proof | open |
-| 2 | med | supabase | PR #16 gitlink defect blocks merge | open (fix at merge) |
-| 3 | low | supabase | field_notes UPDATE policy dead (no grant) | open (decide) |
+| 1 | med | routes | Soft-404: unknown paths return 200 + home doc; no 404.html / not-found view proof | RESOLVED — current source ships `404.html` from `NotFound`; deploy workflow checks unknown route returns 404 |
+| 2 | med | supabase | PR #16 gitlink defect blocks merge | RESOLVED — PR #16 merged on 2026-06-09 |
+| 3 | low | supabase | field_notes UPDATE policy dead (no grant) | RESOLVED — live/source migration `20260614045210` restores narrow owner update grants and `note_tries.outcome_kind` update |
 | 4 | med | supabase | delete-account cascade assumption (posts/notes/profiles) | RESOLVED — cascades verified live |
-| 5 | low | design | Hero specimen card: clipped chip artifact top-left | open |
-| 6 | low | design | Softball "S START HERE" stray drop-cap | open |
-| 7 | low | repo | Stale untracked dist/ in repo root | note only |
-| 8 | med | supabase | Supabase GitHub branch automation reports MIGRATIONS_FAILED (per PR #16 body) | blocked/confirm |
+| 5 | low | design | Hero specimen card: clipped chip artifact top-left | RESOLVED — local render proof shows chip and stamp contained on desktop/mobile |
+| 6 | low | design | Softball "S START HERE" stray drop-cap | RESOLVED — local render proof shows `00 START HERE` with no stray drop-cap or overflow |
+| 7 | low | repo | Stale untracked dist/ in repo root | note only — no `dist/` is currently shown by `git status`; unrelated untracked user folders are preserved |
+| 8 | med | supabase | Supabase GitHub branch automation reports MIGRATIONS_FAILED (per PR #16 body) | OPEN/BLOCKED — rechecked via Supabase connector; main still reports `MIGRATIONS_FAILED` while project is `ACTIVE_HEALTHY` |

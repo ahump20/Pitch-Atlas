@@ -14,6 +14,9 @@ const jsonHeaders = {
   "Connection": "keep-alive",
 };
 
+const STORAGE_LIST_PAGE_SIZE = 1000;
+const STORAGE_REMOVE_BATCH_SIZE = 100;
+
 function json(status: number, body: CleanupResult): Response {
   return new Response(JSON.stringify(body), {
     status,
@@ -29,23 +32,42 @@ function bearerToken(req: Request): string | null {
 
 async function removeDiscussionMediaObjects(admin: ReturnType<typeof createClient>, userId: string): Promise<number> {
   const bucket = admin.storage.from("discussion-media");
-  const { data, error } = await bucket.list(userId, { limit: 1000, offset: 0 });
+  const paths: string[] = [];
+  let offset = 0;
 
-  if (error) {
-    throw new Error(`storage_list_failed: ${error.message}`);
+  while (true) {
+    const { data, error } = await bucket.list(userId, {
+      limit: STORAGE_LIST_PAGE_SIZE,
+      offset,
+    });
+
+    if (error) {
+      throw new Error(`storage_list_failed: ${error.message}`);
+    }
+
+    const objects = data ?? [];
+    paths.push(
+      ...objects
+        .filter((object) => object.name && object.name !== ".emptyFolderPlaceholder")
+        .map((object) => `${userId}/${object.name}`),
+    );
+
+    if (objects.length < STORAGE_LIST_PAGE_SIZE) {
+      break;
+    }
+
+    offset += STORAGE_LIST_PAGE_SIZE;
   }
-
-  const paths = (data ?? [])
-    .filter((object) => object.name && object.name !== ".emptyFolderPlaceholder")
-    .map((object) => `${userId}/${object.name}`);
 
   if (paths.length === 0) {
     return 0;
   }
 
-  const { error: removeError } = await bucket.remove(paths);
-  if (removeError) {
-    throw new Error(`storage_remove_failed: ${removeError.message}`);
+  for (let i = 0; i < paths.length; i += STORAGE_REMOVE_BATCH_SIZE) {
+    const { error: removeError } = await bucket.remove(paths.slice(i, i + STORAGE_REMOVE_BATCH_SIZE));
+    if (removeError) {
+      throw new Error(`storage_remove_failed: ${removeError.message}`);
+    }
   }
 
   return paths.length;
