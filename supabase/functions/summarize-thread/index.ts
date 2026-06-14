@@ -23,6 +23,11 @@ type RuntimeConfig = {
   openaiApiKey: string;
 };
 
+type BodyReadResult = {
+  body: Record<string, unknown> | null;
+  tooLarge: boolean;
+};
+
 const allowedMethods = "POST, OPTIONS";
 
 const corsHeaders = {
@@ -121,12 +126,58 @@ function createAdminClient(config: RuntimeConfig): SupabaseClient {
   });
 }
 
-async function readBody(req: Request): Promise<Record<string, unknown> | null> {
+async function readBody(req: Request): Promise<BodyReadResult> {
   try {
-    const body = await req.json();
-    return body && typeof body === "object" ? body as Record<string, unknown> : null;
+    if (!req.body) {
+      return { body: null, tooLarge: false };
+    }
+
+    const reader = req.body.getReader();
+    const chunks: Uint8Array[] = [];
+    let receivedBytes = 0;
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) {
+        break;
+      }
+
+      if (!value) {
+        continue;
+      }
+
+      receivedBytes += value.byteLength;
+      if (receivedBytes > MAX_BODY_BYTES) {
+        try {
+          await reader.cancel();
+        } catch (error) {
+          console.error("summarize-thread body reader cancel failed", error);
+        }
+        return { body: null, tooLarge: true };
+      }
+
+      chunks.push(value);
+    }
+
+    const bytes = new Uint8Array(receivedBytes);
+    let offset = 0;
+    for (const chunk of chunks) {
+      bytes.set(chunk, offset);
+      offset += chunk.byteLength;
+    }
+
+    const text = new TextDecoder().decode(bytes);
+    if (!text.trim()) {
+      return { body: null, tooLarge: false };
+    }
+
+    const body = JSON.parse(text);
+    return {
+      body: body && typeof body === "object" ? body as Record<string, unknown> : null,
+      tooLarge: false,
+    };
   } catch {
-    return null;
+    return { body: null, tooLarge: false };
   }
 }
 
@@ -276,7 +327,12 @@ Deno.serve(async (req: Request) => {
     return json(413, { error: "request_too_large" });
   }
 
-  const body = await readBody(req);
+  const bodyResult = await readBody(req);
+  if (bodyResult.tooLarge) {
+    return json(413, { error: "request_too_large" });
+  }
+
+  const body = bodyResult.body;
   const threadIdResult = threadIdFromBody(body);
   if ("error" in threadIdResult) {
     return json(400, { error: threadIdResult.error });
