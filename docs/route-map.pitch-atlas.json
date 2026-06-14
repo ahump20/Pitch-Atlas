@@ -165,18 +165,18 @@
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/PitchChapter.tsx + src/data/pitches/",
-   "notes": "12 members from PITCHES. All 12 bulk-verified 200 live with real prerendered titles (e.g. /pitch/sweeper/ 'Sweeper: grip, release...'). Sitemap covers only 7 of 12 \u2014 cutter, eephus, forkball, knuckleball, sweeper missing. Garbage slug /pitch/not-a-real-pitch -> 200 soft-404 (SPA fallback)."
+   "notes": "12 members from PITCHES. sitemapPaths() now includes all filed specimens, so the sitemap and SSG paths share the same data source. Bad slugs render the NotFound view; unknown public paths fall through to 404.html."
   },
   {
    "route": "/repertoire/:id",
    "in_router": true,
    "in_ssg_paths": true,
-   "in_sitemap": false,
+   "in_sitemap": true,
    "in_static_output": true,
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/RepertoireChapter.tsx + src/data/repertoire/",
-   "notes": "27 members from BASIC_REPERTOIRE (entries without a filed specimen). All bulk-verified 200. Zero in sitemap. DiscussionPanel (community layer) renders inside these pages \u2014 no separate forum route exists. Garbage id -> 200 soft-404."
+   "notes": "27 members from BASIC_REPERTOIRE (entries without a filed specimen). sitemapPaths() includes every basic file. DiscussionPanel (community layer) renders inside these pages \u2014 no separate forum route exists. Bad ids render the NotFound view."
   },
   {
    "route": "/craftsmen/:slug",
@@ -187,58 +187,58 @@
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/CraftsmanChapter.tsx + src/data/craftsmen/",
-   "notes": "12 members from CRAFTSMEN. All verified 200. Sitemap covers 8 of 12 \u2014 carl-hubbell, cole-hamels, mariano-rivera, phil-niekro missing. Garbage slug -> 200 soft-404."
+   "notes": "12 members from CRAFTSMEN. sitemapPaths() includes every craftsman file. Bad slugs render the NotFound view."
   },
   {
    "route": "/lost-pitches/:slug",
    "in_router": true,
    "in_ssg_paths": true,
-   "in_sitemap": false,
+   "in_sitemap": true,
    "in_static_output": true,
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/LostPitchChapter.tsx + src/data/lost-pitches/",
-   "notes": "15 members from LOST_PITCHES. All verified 200. Zero in sitemap. Renamed slug smokey-joe-williams-velocity 301s to -fastball via _redirects."
+   "notes": "15 members from LOST_PITCHES. sitemapPaths() includes every lost-pitch file. Renamed slug smokey-joe-williams-velocity 301s to -fastball via _redirects."
   },
   {
    "route": "/learn/:slug",
    "in_router": true,
    "in_ssg_paths": true,
-   "in_sitemap": false,
+   "in_sitemap": true,
    "in_static_output": true,
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/KnowledgeChapter.tsx + src/data/knowledge/",
-   "notes": "10 wings: arm-health, canon, handedness, mechanics, metrics, pitch-design, sequencing, spin, trends, youth. All verified 200 (/learn/mechanics/ carries the kinetic-chain content; /kinetic-chain 301s to it). Zero in sitemap."
+   "notes": "10 wings: arm-health, canon, handedness, mechanics, metrics, pitch-design, sequencing, spin, trends, youth. sitemapPaths() includes every Learn wing. /learn/mechanics/ carries the kinetic-chain content; /kinetic-chain 301s to it."
   },
   {
    "route": "/softball/pitch/:slug",
    "in_router": true,
    "in_ssg_paths": true,
-   "in_sitemap": false,
+   "in_sitemap": true,
    "in_static_output": true,
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/SoftballPitchChapter.tsx + src/data/softball/",
-   "notes": "6 members: changeup, curve, drop, fastball, riseball, screwball. All verified 200 with prerendered titles. Zero in sitemap."
+   "notes": "6 members: changeup, curve, drop, fastball, riseball, screwball. sitemapPaths() includes every softball pitch chapter."
   },
   {
    "route": "/softball/craftsmen/:slug",
    "in_router": true,
    "in_ssg_paths": true,
-   "in_sitemap": false,
+   "in_sitemap": true,
    "in_static_output": true,
    "live_status": 200,
    "classification": "dynamic-family",
    "owner_file": "src/pages/SoftballCraftsmanChapter.tsx + src/data/softball/",
-   "notes": "6 members: cat-osterman, jennie-finch, lisa-fernandez, monica-abbott, nijaree-canady, teagan-kavan. All verified 200. Zero in sitemap."
+   "notes": "6 members: cat-osterman, jennie-finch, lisa-fernandez, monica-abbott, nijaree-canady, teagan-kavan. sitemapPaths() includes every softball craftsman chapter."
   },
   {
    "route": "/pitch-index",
-   "in_router": false,
-   "in_ssg_paths": false,
-   "in_sitemap": false,
-   "in_static_output": false,
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": true,
+   "in_static_output": true,
    "live_status": 301,
    "classification": "hidden-intentional",
    "owner_file": "public/_redirects",
@@ -284,31 +284,31 @@
    "in_sitemap": false,
    "in_static_output": false,
    "live_status": 200,
-   "classification": "live-but-absent-from-source",
-   "owner_file": "(none \u2014 expected by Pitch-Atlas-iOS AccountView.swift:112)",
-   "notes": "Returns 200 ONLY via the SPA catch-all; client renders the 404 page. iOS Account screen links here. See finding RC-1."
+   "classification": "public",
+   "owner_file": "src/pages/SupportPage.tsx",
+   "notes": "Real support route. iOS Account screen links here; sitemap and SSG paths include it."
   },
   {
    "route": "/privacy",
-   "in_router": false,
-   "in_ssg_paths": false,
-   "in_sitemap": false,
-   "in_static_output": false,
+   "in_router": true,
+   "in_ssg_paths": true,
+   "in_sitemap": true,
+   "in_static_output": true,
    "live_status": 200,
-   "classification": "live-but-absent-from-source",
-   "owner_file": "(none \u2014 expected by Pitch-Atlas-iOS AccountView.swift:117)",
-   "notes": "Same soft-404 behavior. Privacy-policy URL is an App Store requirement. See finding RC-1."
+   "classification": "public",
+   "owner_file": "src/pages/PrivacyPage.tsx",
+   "notes": "Real privacy route. iOS Account screen links here; sitemap and SSG paths include it."
   },
   {
    "route": "/* (wildcard NotFound)",
    "in_router": true,
-   "in_ssg_paths": false,
+   "in_ssg_paths": true,
    "in_sitemap": false,
-   "in_static_output": false,
-   "live_status": 200,
+   "in_static_output": true,
+   "live_status": 404,
    "classification": "public",
    "owner_file": "src/pages/NotFound.tsx + public/_redirects",
-   "notes": "Catch-all: any unknown path (probe /this-route-does-not-exist) returns HTTP 200 with the homepage prerender, then client renders NotFound. No dist/404.html exists. Soft-404 \u2014 see finding RC-3. Old /prototype/*.html URLs verified clean: they now serve the current app shell, not the stale BSI-era prototype files."
+   "notes": "Catch-all source route plus explicit /404 SSG path. Build copies /404/index.html to 404.html; Cloudflare Pages falls through to that file with a real 404 status because public/_redirects has no SPA catch-all."
   }
  ]
 }

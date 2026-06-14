@@ -25,17 +25,15 @@ is sound (private-schema is_admin/blocked_between helpers, block-edge trigger,
 narrowed grants, anonymous-session exclusion on block management and note edits).
 Merging does not touch prod; it reconciles source with live.
 
-Conditions before merge:
-1. Remove the accidental gitlink commit of pitch-atlas-softball (mode 160000
-   entry) from the PR. It would add a phantom submodule.
-2. Confirm with the Supabase auditor that live migrations list includes both
-   migrations and advisors reflect the grant cleanup.
-3. Flag (not block): field_notes_update_own policy exists but UPDATE was never
-   granted to authenticated, so the policy is dead through the API. Either
-   intentional (immutable notes) or needs a grant — decide at merge time.
-4. delete-account does not explicitly delete discussion_posts / field_notes /
-   profiles rows; verify those FKs cascade from auth.users before calling the
-   App Store deletion story complete.
+Resolution refresh, 2026-06-14 UTC / 2026-06-13 CDT:
+1. PR #16 is merged.
+2. The live migration list includes the iOS preflight/grant cleanup and later
+   repo-synced migrations through `20260614045210_community_grant_cleanup_followup`.
+3. The dead owner-update grant is resolved by `20260614045210`: authenticated users
+   have narrow update access for editable `field_notes` columns and
+   `note_tries.outcome_kind`.
+4. The delete-account cascade assumption was verified in the Fable 5 audit, and
+   the function is now version 23 with paginated `discussion-media` cleanup.
 
 ## D3 — iOS authority: preliminary read, proof pending (2026-06-09)
 
