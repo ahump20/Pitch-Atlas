@@ -40,7 +40,7 @@ Live access verified via the project-scoped MCP (the bare `supabase` MCP server 
 
 | # | Item | Before | Action this run | After / status |
 |---|---|---|---|---|
-| 1 | Migration drift (HIGH, verified) | live 12 vs repo 5, zero matching versions; both Supabase git branches MIGRATIONS_FAILED | live migrations captured into repo through `20260614045210_community_grant_cleanup_followup.sql` | repo source mirrors live migration list; branch automation still reports `MIGRATIONS_FAILED` |
+| 1 | Migration drift (HIGH, verified) | live 12 vs repo 5, zero matching versions; both Supabase git branches MIGRATIONS_FAILED | live migrations captured into repo through `20260614045210_community_grant_cleanup_followup.sql` | repo source mirrors live migration list; branch automation now reports `FUNCTIONS_DEPLOYED` with `ACTIVE_HEALTHY` preview status (rechecked 2026-06-14) |
 | 2 | Default-ACL hole (HIGH, verified — BSI-incident root cause) | postgres + supabase_admin default ACLs grant full DML to anon/authenticated on every new table | `20260610162418_default_privilege_hardening.sql` applied live and kept in repo | resolved for postgres-created public objects; supabase_admin residual remains platform-managed |
 | 3 | DM cluster residue (threads/messages/thread_participants) | anon+authenticated hold full DML; no SELECT for authenticated → feature unreachable; 0 rows | `20260610162459_dm_revoke_and_fk_indexes.sql` applied live and kept in repo | DML exposure resolved; product choice to enable or remove DM tables remains separate |
 | 4 | 3 unindexed FKs | perf advisor INFO | `20260610162459_dm_revoke_and_fk_indexes.sql` applied live and kept in repo | resolved |
@@ -82,4 +82,4 @@ Design is honest (see §1). Residual: in-browser offline toggle proof — blocke
 | 5 | low | design | Hero specimen card: clipped chip artifact top-left | RESOLVED — local render proof shows chip and stamp contained on desktop/mobile |
 | 6 | low | design | Softball "S START HERE" stray drop-cap | RESOLVED — local render proof shows `00 START HERE` with no stray drop-cap or overflow |
 | 7 | low | repo | Stale untracked dist/ in repo root | note only — no `dist/` is currently shown by `git status`; unrelated untracked user folders are preserved |
-| 8 | med | supabase | Supabase GitHub branch automation reports MIGRATIONS_FAILED (per PR #16 body) | OPEN/BLOCKED — rechecked via Supabase connector; main still reports `MIGRATIONS_FAILED` while project is `ACTIVE_HEALTHY` |
+| 8 | med | supabase | Supabase GitHub branch automation reports MIGRATIONS_FAILED (per PR #16 body) | RESOLVED — rechecked via Supabase connector on 2026-06-14; main reports `FUNCTIONS_DEPLOYED` and preview status `ACTIVE_HEALTHY` |
