@@ -187,4 +187,25 @@ describe('Supabase RLS migration contracts', () => {
 
     expect(violations).toEqual([])
   })
+
+  it('keeps internal SQL helpers closed to direct client execute', () => {
+    const internalHelpers = new Set(['note_base_rank'])
+    const lastExecuteEvent = new Map<string, string | undefined>()
+
+    for (const file of migrationFiles()) {
+      const sql = readFileSync(resolve(migrationsDir, file), 'utf8')
+
+      for (const event of executePrivilegeEvents(sql)) {
+        if (event.functionName && internalHelpers.has(event.functionName)) {
+          lastExecuteEvent.set(event.functionName, event.action)
+        }
+      }
+    }
+
+    const violations = [...internalHelpers]
+      .filter((functionName) => lastExecuteEvent.get(functionName) !== 'revoke')
+      .map((functionName) => `public.${functionName} has no final client execute revoke`)
+
+    expect(violations).toEqual([])
+  })
 })
