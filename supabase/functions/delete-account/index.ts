@@ -26,9 +26,16 @@ type CleanupResult = {
   removed_storage_objects?: number;
   deleted_auth_user?: boolean;
   error?: string;
+  meta?: DeleteAccountMeta;
 };
 
 type SupabaseAdmin = SupabaseClient<DeleteAccountDatabase>;
+
+type DeleteAccountMeta = {
+  source: "pitch-atlas-delete-account";
+  fetched_at: string;
+  timezone: "America/Chicago";
+};
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -48,11 +55,31 @@ const STORAGE_LIST_PAGE_SIZE = 1000;
 const STORAGE_REMOVE_BATCH_SIZE = 100;
 const OPTIONAL_DELETE_MISSING_CODES = new Set(["42P01", "42703"]);
 
+class CleanupFailure extends Error {
+  constructor(readonly code: string) {
+    super(code);
+    this.name = "CleanupFailure";
+  }
+}
+
+function meta(): DeleteAccountMeta {
+  return {
+    source: "pitch-atlas-delete-account",
+    fetched_at: new Date().toISOString(),
+    timezone: "America/Chicago",
+  };
+}
+
 function json(status: number, body: CleanupResult): Response {
-  return new Response(JSON.stringify(body), {
+  return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
     status,
     headers: jsonHeaders,
   });
+}
+
+function failCleanup(code: string, detail: unknown): never {
+  console.error(`delete-account ${code}`, detail);
+  throw new CleanupFailure(code);
 }
 
 function bearerToken(req: Request): string | null {
@@ -73,7 +100,7 @@ async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string
     });
 
     if (error) {
-      throw new Error(`storage_list_failed: ${error.message}`);
+      failCleanup("storage_list_failed", error);
     }
 
     const objects = data ?? [];
@@ -97,7 +124,7 @@ async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string
   for (let i = 0; i < paths.length; i += STORAGE_REMOVE_BATCH_SIZE) {
     const { error: removeError } = await bucket.remove(paths.slice(i, i + STORAGE_REMOVE_BATCH_SIZE));
     if (removeError) {
-      throw new Error(`storage_remove_failed: ${removeError.message}`);
+      failCleanup("storage_remove_failed", removeError);
     }
   }
 
@@ -107,7 +134,7 @@ async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string
 async function deleteIfPresent(admin: SupabaseAdmin, table: string, column: string, value: string) {
   const { error } = await admin.from(table).delete().eq(column, value);
   if (error) {
-    throw new Error(`${table}_delete_failed: ${error.message}`);
+    failCleanup("required_row_delete_failed", { table, error });
   }
 }
 
@@ -115,7 +142,7 @@ async function deleteIfTableExists(admin: SupabaseAdmin, table: string, column: 
   const { error } = await admin.from(table).delete().eq(column, value);
   if (!error) return;
   if (OPTIONAL_DELETE_MISSING_CODES.has(error.code ?? "")) return;
-  throw new Error(`${table}_delete_failed: ${error.message}`);
+  failCleanup("optional_row_delete_failed", { table, error });
 }
 
 Deno.serve(async (req: Request) => {
@@ -171,12 +198,12 @@ Deno.serve(async (req: Request) => {
       .or(`blocker_id.eq.${userId},blocked_id.eq.${userId}`);
 
     if (blockError && blockError.code !== "42P01") {
-      throw new Error(`blocked_users_delete_failed: ${blockError.message}`);
+      failCleanup("blocked_users_delete_failed", blockError);
     }
 
     const { error: deleteUserError } = await admin.auth.admin.deleteUser(userId);
     if (deleteUserError) {
-      throw new Error(`auth_delete_failed: ${deleteUserError.message}`);
+      failCleanup("auth_delete_failed", deleteUserError);
     }
 
     return json(200, {
@@ -186,11 +213,13 @@ Deno.serve(async (req: Request) => {
       deleted_auth_user: true,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "delete_account_failed";
+    if (!(error instanceof CleanupFailure)) {
+      console.error("delete-account unexpected failure", error);
+    }
     return json(500, {
       ok: false,
       user_id: userId,
-      error: message,
+      error: "delete_account_failed",
     });
   }
 });
