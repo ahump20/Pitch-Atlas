@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import type { GripClip as GripClipData } from '../../data/grips'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
+import { AutoplayVideo } from '../media/AutoplayVideo'
 
 /*
   The moving card face: Austin's own grip, looping in the arched window. Only the
@@ -17,52 +17,41 @@ import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
 */
 export function GripClip({ clip }: { clip: GripClipData }) {
   const reduced = useReducedMotion()
-  const { ref, blocked } = useAutoplayGuard<HTMLVideoElement>()
   // media settle: the window fades up on the first real frame, never snapping in
   const [settled, setSettled] = useState(false)
   const mediaClass = `rfx-grip-img media-fade${settled ? ' is-loaded' : ''}`
 
-  if (reduced || blocked) {
-    return (
-      <figure className="rfx-grip">
-        <img
-          className={mediaClass}
-          src={clip.poster}
-          alt={clip.alt}
-          loading="lazy"
-          decoding="async"
-          draggable={false}
-          // a cached poster can finish before hydration attaches onLoad — read it off the element
-          ref={(el) => {
-            if (el?.complete && el.naturalWidth > 0) setSettled(true)
-          }}
-          onLoad={() => setSettled(true)}
-        />
-      </figure>
-    )
-  }
+  const poster = (
+    <img
+      className={mediaClass}
+      src={clip.poster}
+      alt={clip.alt}
+      loading="lazy"
+      decoding="async"
+      draggable={false}
+      // a cached poster can finish before hydration attaches onLoad — read it off the element
+      ref={(el) => {
+        if (el?.complete && el.naturalWidth > 0) setSettled(true)
+      }}
+      onLoad={() => setSettled(true)}
+    />
+  )
 
+  // Reduced motion holds the poster. Otherwise the loop is viewport-gated: it
+  // plays when the card is on screen, pauses when it scrolls away, and falls back
+  // to the poster if the platform refuses autoplay (iOS Low Power Mode).
   return (
     <figure className="rfx-grip">
-      <video
-        ref={ref}
-        className={mediaClass}
-        poster={clip.poster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-        aria-label={clip.alt}
-        onLoadedData={() => setSettled(true)}
-        // a decode failure reveals the poster instead of holding the window dark
-        onError={() => setSettled(true)}
-      >
-        {/* mp4 first: for these encodes the H.264 files are smaller than the WebM,
-            and browsers take the first source they support */}
-        <source src={clip.mp4} type="video/mp4" />
-        <source src={clip.webm} type="video/webm" />
-      </video>
+      {reduced ? (
+        poster
+      ) : (
+        <AutoplayVideo
+          clip={clip}
+          className={mediaClass}
+          onSettled={() => setSettled(true)}
+          render={() => poster}
+        />
+      )}
     </figure>
   )
 }

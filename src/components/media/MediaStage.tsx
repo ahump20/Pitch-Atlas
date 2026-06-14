@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import type { GripClip } from '../../data/grips'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
+import { AutoplayVideo } from './AutoplayVideo'
 
 /*
   The cinematic media panel — real footage staged large enough to carry a page.
@@ -40,12 +40,11 @@ export function MediaStage({
   children?: ReactNode
 }) {
   const reduced = useReducedMotion()
-  const { ref, blocked } = useAutoplayGuard<HTMLVideoElement>()
   // media settle: the stage fades up on the first real frame, never snapping in
   const [settled, setSettled] = useState(false)
   const mediaClass = `pa-stage-media media-fade${settled ? ' is-loaded' : ''}`
 
-  const media = reduced || blocked ? (
+  const poster = (
     <img
       className={mediaClass}
       src={clip.poster}
@@ -62,25 +61,22 @@ export function MediaStage({
       }}
       onLoad={() => setSettled(true)}
     />
+  )
+
+  // Reduced motion never mounts the clip. Otherwise the clip is viewport-gated:
+  // it autoplays when on screen, pauses when it scrolls away, and falls back to
+  // the poster if the platform refuses autoplay.
+  const media = reduced ? (
+    poster
   ) : (
-    <video
-      ref={ref}
+    <AutoplayVideo
+      clip={clip}
       className={mediaClass}
-      poster={clip.poster}
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload={priority ? 'auto' : 'metadata'}
-      aria-label={decorative ? undefined : clip.alt}
-      aria-hidden={decorative || undefined}
-      onLoadedData={() => setSettled(true)}
-      // a decode failure reveals the poster instead of holding the stage dark
-      onError={() => setSettled(true)}
-    >
-      <source src={clip.mp4} type="video/mp4" />
-      <source src={clip.webm} type="video/webm" />
-    </video>
+      decorative={decorative}
+      priority={priority}
+      onSettled={() => setSettled(true)}
+      render={() => poster}
+    />
   )
 
   return (
