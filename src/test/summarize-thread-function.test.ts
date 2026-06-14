@@ -143,4 +143,18 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('parseSummary(completionMessageContent(completion))')
     expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty or malformed"\);\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
   })
+
+  it('bounds OpenAI waits before falling back to the summary error envelope', () => {
+    expect(source).toContain('const OPENAI_TIMEOUT_MS = 15000')
+    expect(source).toContain('const controller = new AbortController()')
+    expect(source).toContain('const timeoutId = setTimeout(() => controller.abort(), OPENAI_TIMEOUT_MS)')
+    expect(source).toContain('signal: controller.signal')
+    expect(source).toContain('clearTimeout(timeoutId)')
+    expect(source.indexOf('signal: controller.signal')).toBeLessThan(
+      source.indexOf('console.error("summarize-thread OpenAI request crashed"'),
+    )
+    expect(source.indexOf('clearTimeout(timeoutId)')).toBeGreaterThan(
+      source.indexOf('console.error("summarize-thread OpenAI request crashed"'),
+    )
+  })
 })
