@@ -50,6 +50,8 @@ describe('delete-account Edge Function source contract', () => {
     const bearerParserLine = source.split('\n').find((line) => line.includes('header.match'))
     expect(bearerParserLine).toContain('/^Bearer\\s+(.+)$/i')
     expect(bearerParserLine).not.toContain('/^Bearer\\\\s+(.+)$/i')
+    expect(source).toContain('const token = match?.[1]?.trim()')
+    expect(source).toContain('return token ? token : null')
   })
 
   it('answers missing-token requests before runtime secret checks', () => {

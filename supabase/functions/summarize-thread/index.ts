@@ -49,6 +49,7 @@ const jsonHeaders = {
 
 const MAX_MESSAGES = 200;
 const MAX_TRANSCRIPT_CHARS = 12000;
+const MAX_BODY_BYTES = 4096;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 function meta(): SummaryMeta {
@@ -69,7 +70,18 @@ function json(status: number, body: JsonBody, extraHeaders: Record<string, strin
 function bearerToken(req: Request): string | null {
   const header = req.headers.get("Authorization") ?? "";
   const match = header.match(/^Bearer\s+(.+)$/i);
-  return match?.[1] ?? null;
+  const token = match?.[1]?.trim();
+  return token ? token : null;
+}
+
+function requestBodyTooLarge(req: Request): boolean {
+  const rawLength = req.headers.get("Content-Length");
+  if (!rawLength) {
+    return false;
+  }
+
+  const length = Number.parseInt(rawLength, 10);
+  return Number.isFinite(length) && length > MAX_BODY_BYTES;
 }
 
 function serviceKeyFromEnv(): string | null {
@@ -258,6 +270,10 @@ Deno.serve(async (req: Request) => {
   const token = bearerToken(req);
   if (!token) {
     return json(401, { error: "missing_bearer_token" });
+  }
+
+  if (requestBodyTooLarge(req)) {
+    return json(413, { error: "request_too_large" });
   }
 
   const body = await readBody(req);
