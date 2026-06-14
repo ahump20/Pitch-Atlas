@@ -22,9 +22,6 @@ type DeleteAccountDatabase = {
 
 type CleanupResult = {
   ok: boolean;
-  user_id?: string;
-  removed_storage_objects?: number;
-  deleted_auth_user?: boolean;
   error?: string;
   meta?: DeleteAccountMeta;
 };
@@ -182,7 +179,7 @@ Deno.serve(async (req: Request) => {
   const userId = user.id;
 
   try {
-    const removedStorageObjects = await removeDiscussionMediaObjects(admin, userId);
+    await removeDiscussionMediaObjects(admin, userId);
 
     await deleteIfPresent(admin, "discussion_media", "owner_id", userId);
     await deleteIfPresent(admin, "discussion_media_terms", "user_id", userId);
@@ -210,9 +207,6 @@ Deno.serve(async (req: Request) => {
 
     return json(200, {
       ok: true,
-      user_id: userId,
-      removed_storage_objects: removedStorageObjects,
-      deleted_auth_user: true,
     });
   } catch (error) {
     if (!(error instanceof CleanupFailure)) {
@@ -220,7 +214,6 @@ Deno.serve(async (req: Request) => {
     }
     return json(500, {
       ok: false,
-      user_id: userId,
       error: "delete_account_failed",
     });
   }
