@@ -3,8 +3,8 @@
 Run started: 2026-06-09 (America/Chicago)
 Run closed: 2026-06-09 ~22:00 CT. Refreshed 2026-06-14 UTC / 2026-06-13 CDT:
 the former open SQL/design/function rows are resolved in source and, where
-applicable, live Supabase. The remaining platform row is Supabase branch
-automation reporting `MIGRATIONS_FAILED`.
+applicable, live Supabase. Refreshed again 2026-06-14: Supabase branch
+automation now reports `FUNCTIONS_DEPLOYED` with `ACTIVE_HEALTHY` preview status.
 Work branch (web): `fable5/pitch-atlas-review-safe-sync` off `main` @ ccea952
 Budget: 35 turns / 4 hours, then report blockers.
 
