@@ -60,6 +60,7 @@ const jsonHeaders = {
 
 const STORAGE_LIST_PAGE_SIZE = 1000;
 const STORAGE_REMOVE_BATCH_SIZE = 100;
+const MAX_BODY_BYTES = 4096;
 const OPTIONAL_DELETE_MISSING_CODES = new Set(["42P01", "42703"]);
 
 class CleanupFailure extends Error {
@@ -94,6 +95,16 @@ function bearerToken(req: Request): string | null {
   const match = header.match(/^Bearer\s+(.+)$/i);
   const token = match?.[1]?.trim();
   return token ? token : null;
+}
+
+function requestBodyTooLarge(req: Request): boolean {
+  const rawLength = req.headers.get("Content-Length");
+  if (!rawLength) {
+    return false;
+  }
+
+  const length = Number.parseInt(rawLength, 10);
+  return Number.isFinite(length) && length > MAX_BODY_BYTES;
 }
 
 async function removeDiscussionMediaObjects(admin: SupabaseAdmin, userId: string): Promise<number> {
@@ -165,6 +176,10 @@ Deno.serve(async (req: Request) => {
   const token = bearerToken(req);
   if (!token) {
     return json(401, { ok: false, error: "missing_bearer_token" });
+  }
+
+  if (requestBodyTooLarge(req)) {
+    return json(413, { ok: false, error: "request_too_large" });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
