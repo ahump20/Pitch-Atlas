@@ -38,6 +38,14 @@ function policyStatements(sql: string) {
   )
 }
 
+function securityDefinerFunctionStatements(sql: string) {
+  return (
+    stripSqlComments(sql).match(
+      /\bcreate\s+(?:or\s+replace\s+)?function\b[\s\S]*?\bas\s+\$[A-Za-z0-9_]*\$/gi,
+    ) ?? []
+  ).filter((statement) => /\bsecurity\s+definer\b/i.test(statement))
+}
+
 function migrationFiles() {
   return readdirSync(migrationsDir)
     .filter((file) => file.endsWith('.sql'))
@@ -76,6 +84,21 @@ describe('Supabase RLS migration contracts', () => {
         .map((_statement, statementIndex) => {
           const label = `policy statement ${statementIndex + 1}`
           return `${file}: ${label} uses auth.uid()/auth.jwt() without (select ...)`
+        })
+    })
+
+    expect(violations).toEqual([])
+  })
+
+  it('pins search_path on security definer functions', () => {
+    const violations = migrationFiles().flatMap((file) => {
+      const sql = readFileSync(resolve(migrationsDir, file), 'utf8')
+
+      return securityDefinerFunctionStatements(sql)
+        .filter((statement) => !/\bset\s+search_path\s+(?:=|to)\s+/i.test(statement))
+        .map((_statement, statementIndex) => {
+          const label = `security definer function ${statementIndex + 1}`
+          return `${file}: ${label} does not pin search_path`
         })
     })
 
