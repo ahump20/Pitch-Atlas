@@ -26,6 +26,7 @@ type RuntimeConfig = {
 type BodyReadResult = {
   body: Record<string, unknown> | null;
   tooLarge: boolean;
+  invalidJson: boolean;
 };
 
 const allowedMethods = "POST, OPTIONS";
@@ -129,7 +130,7 @@ function createAdminClient(config: RuntimeConfig): SupabaseClient {
 async function readBody(req: Request): Promise<BodyReadResult> {
   try {
     if (!req.body) {
-      return { body: null, tooLarge: false };
+      return { body: null, tooLarge: false, invalidJson: false };
     }
 
     const reader = req.body.getReader();
@@ -153,7 +154,7 @@ async function readBody(req: Request): Promise<BodyReadResult> {
         } catch (error) {
           console.error("summarize-thread body reader cancel failed", error);
         }
-        return { body: null, tooLarge: true };
+        return { body: null, tooLarge: true, invalidJson: false };
       }
 
       chunks.push(value);
@@ -168,16 +169,21 @@ async function readBody(req: Request): Promise<BodyReadResult> {
 
     const text = new TextDecoder().decode(bytes);
     if (!text.trim()) {
-      return { body: null, tooLarge: false };
+      return { body: null, tooLarge: false, invalidJson: false };
     }
 
-    const body = JSON.parse(text);
-    return {
-      body: body && typeof body === "object" ? body as Record<string, unknown> : null,
-      tooLarge: false,
-    };
+    try {
+      const body = JSON.parse(text);
+      return {
+        body: body && typeof body === "object" ? body as Record<string, unknown> : null,
+        tooLarge: false,
+        invalidJson: false,
+      };
+    } catch {
+      return { body: null, tooLarge: false, invalidJson: true };
+    }
   } catch {
-    return { body: null, tooLarge: false };
+    return { body: null, tooLarge: false, invalidJson: false };
   }
 }
 
@@ -330,6 +336,9 @@ Deno.serve(async (req: Request) => {
   const bodyResult = await readBody(req);
   if (bodyResult.tooLarge) {
     return json(413, { error: "request_too_large" });
+  }
+  if (bodyResult.invalidJson) {
+    return json(400, { error: "invalid_json" });
   }
 
   const body = bodyResult.body;

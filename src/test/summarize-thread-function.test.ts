@@ -77,12 +77,24 @@ describe('summarize-thread Edge Function source contract', () => {
 
   it('bounds streamed summary request bodies before decoding JSON', () => {
     expect(source).toContain('type BodyReadResult')
+    expect(source).toContain('invalidJson: boolean')
     expect(source).toContain('req.body.getReader()')
     expect(source).toContain('receivedBytes += value.byteLength')
     expect(source).toContain('receivedBytes > MAX_BODY_BYTES')
     expect(source).toContain('await reader.cancel()')
     expect(source).toContain('new TextDecoder().decode(bytes)')
     expect(source).not.toContain('await req.json()')
+  })
+
+  it('returns malformed JSON as a distinct cheap request error', () => {
+    expect(source).toContain('invalidJson: true')
+    expect(source).toContain('return json(400, { error: "invalid_json" })')
+    expect(source.indexOf('if (bodyResult.invalidJson)')).toBeLessThan(
+      source.indexOf('const threadIdResult = threadIdFromBody(body)'),
+    )
+    expect(source.indexOf('if (bodyResult.invalidJson)')).toBeLessThan(
+      source.indexOf('const config = runtimeConfig()'),
+    )
   })
 
   it('trims captured Bearer tokens before auth lookups', () => {
