@@ -51,21 +51,18 @@ export function Masthead() {
 
   // Desktop "Tools" disclosure. Closes on route change, on Escape, and on a
   // click outside the group so it never strands focus or floats over the page.
-  const [toolsOpen, setToolsOpen] = useState(false)
+  const [toolsMenu, setToolsMenu] = useState({ open: false, pathname })
+  const toolsOpen = toolsMenu.open && toolsMenu.pathname === pathname
   const toolsRef = useRef<HTMLDivElement>(null)
   const toolsActive = TOOLS.some((t) => t.to === pathname)
 
   useEffect(() => {
-    setToolsOpen(false)
-  }, [pathname])
-
-  useEffect(() => {
     if (!toolsOpen) return
     const onPointerDown = (event: MouseEvent) => {
-      if (!toolsRef.current?.contains(event.target as Node)) setToolsOpen(false)
+      if (!toolsRef.current?.contains(event.target as Node)) setToolsMenu({ open: false, pathname })
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setToolsOpen(false)
+      if (event.key === 'Escape') setToolsMenu({ open: false, pathname })
     }
     document.addEventListener('mousedown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -73,7 +70,7 @@ export function Masthead() {
       document.removeEventListener('mousedown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [toolsOpen])
+  }, [toolsOpen, pathname])
 
   useEffect(() => {
     if (!open) return
@@ -122,7 +119,12 @@ export function Masthead() {
               aria-expanded={toolsOpen}
               aria-controls="tools-menu"
               aria-haspopup="true"
-              onClick={() => setToolsOpen((v) => !v)}
+              onClick={() =>
+                setToolsMenu((state) => ({
+                  open: !(state.open && state.pathname === pathname),
+                  pathname,
+                }))
+              }
               className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-ink ${
                 toolsActive ? 'text-seam' : 'text-ink-2'
               }`}
@@ -148,7 +150,7 @@ export function Masthead() {
                     <li key={`${t.to}-${t.label}`}>
                       <NavLink
                         to={t.to}
-                        onClick={() => setToolsOpen(false)}
+                        onClick={() => setToolsMenu({ open: false, pathname })}
                         className={({ isActive }) =>
                           `block rounded-sm px-3 py-2.5 transition-colors hover:bg-ink/[0.04] ${
                             isActive ? 'text-seam' : 'text-ink-2'

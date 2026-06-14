@@ -141,6 +141,36 @@ function parseSummary(content: unknown): Record<string, unknown> | null {
   }
 }
 
+async function requestSummary(openaiApiKey: string, transcript: string): Promise<Response | null> {
+  try {
+    return await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${openaiApiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        temperature: 0.2,
+        messages: [
+          {
+            role: "system",
+            content: "Summarize chat threads clearly. Return JSON with keys: summary, action_items (array), sentiment.",
+          },
+          {
+            role: "user",
+            content: transcript,
+          },
+        ],
+        response_format: { type: "json_object" },
+      }),
+    });
+  } catch (error) {
+    console.error("summarize-thread OpenAI request crashed", error);
+    return null;
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -222,28 +252,11 @@ Deno.serve(async (req: Request) => {
 
   const transcript = buildTranscript(rows);
 
-  const openaiResp = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${config.openaiApiKey}`,
-    },
-    body: JSON.stringify({
-      model: "gpt-4o-mini",
-      temperature: 0.2,
-      messages: [
-        {
-          role: "system",
-          content: "Summarize chat threads clearly. Return JSON with keys: summary, action_items (array), sentiment.",
-        },
-        {
-          role: "user",
-          content: transcript,
-        },
-      ],
-      response_format: { type: "json_object" },
-    }),
-  });
+  const openaiResp = await requestSummary(config.openaiApiKey, transcript);
+
+  if (!openaiResp) {
+    return json(502, { error: "summary_unavailable" });
+  }
 
   if (!openaiResp.ok) {
     console.error("summarize-thread OpenAI request failed", {
@@ -255,6 +268,11 @@ Deno.serve(async (req: Request) => {
 
   const completion = await openaiResp.json();
   const result = parseSummary(completion?.choices?.[0]?.message?.content);
+
+  if (!result) {
+    console.error("summarize-thread OpenAI response was empty");
+    return json(502, { error: "summary_unavailable" });
+  }
 
   return json(200, {
     thread_id: threadId,
