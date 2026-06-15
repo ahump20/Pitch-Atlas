@@ -275,6 +275,17 @@ describe('community safety database policy contracts', () => {
     ]))
   })
 
+  it('keeps unused client deletes closed to normal roles', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615053500_close_unused_delete_grants.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke delete on public.field_notes from anon, authenticated')
+    expect(migration).toContain('revoke delete on public.blocked_users from anon, authenticated')
+    expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.(field_notes|blocked_users)\b/i)
+  })
+
   it('keeps consensus view reads limited to aggregate columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615042000_note_consensus_read_column_grant.sql'),
