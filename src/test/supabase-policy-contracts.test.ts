@@ -384,6 +384,22 @@ describe('community safety database policy contracts', () => {
     expect(migration).not.toMatch(/\bto\s+anon\b/i)
   })
 
+  it('keeps discussion media storage mutations off anonymous sessions', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615095000_storage_media_permanent_users.sql'),
+      'utf8',
+    )
+
+    expect(migration).toMatch(
+      /create\s+policy\s+discussion_media_object_insert[\s\S]*?\bfor\s+insert\s+to\s+authenticated\b[\s\S]*?\(select\s+auth\.jwt\(\)\)\s*->>\s*'is_anonymous'[\s\S]*?\bis\s+false/i,
+    )
+    expect(migration).toMatch(
+      /create\s+policy\s+discussion_media_object_delete[\s\S]*?\bfor\s+delete\s+to\s+authenticated\b[\s\S]*?\(select\s+auth\.jwt\(\)\)\s*->>\s*'is_anonymous'[\s\S]*?\bis\s+false/i,
+    )
+    expect(migration).not.toMatch(/\bto\s+authenticated\s*,\s*anon\b/i)
+    expect(migration).not.toMatch(/\bto\s+anon\b/i)
+  })
+
   it('keeps dormant direct-message policies removed', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615074000_drop_dormant_dm_policies.sql'),
