@@ -161,6 +161,26 @@ describe('community safety database policy contracts', () => {
     expect(migration).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
   })
 
+  it('pins admin and block helpers to empty search paths', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615200500_pin_admin_helper_search_paths.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.blocked_between\(left_user\s+uuid,\s+right_user\s+uuid\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain('from public.profiles p')
+    expect(executableSql).toContain('from public.blocked_users b')
+    expect(executableSql).toContain('grant execute on function private.is_admin() to anon, authenticated')
+    expect(executableSql).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
+    expect(executableSql).toContain('revoke all on function public.is_admin() from public')
+    expect(executableSql).toContain('grant execute on function public.is_admin() to service_role')
+    expect(executableSql).toContain('revoke execute on function public.is_admin() from anon, authenticated')
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
+  })
+
   it('keeps discussion reads limited to rendered thread columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
