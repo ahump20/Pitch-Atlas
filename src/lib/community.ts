@@ -140,6 +140,12 @@ interface FieldNoteRow {
   created_at: string
 }
 
+interface ViewerEngagementRow {
+  note_id: string
+  tried: boolean | null
+  helpful: boolean | null
+}
+
 const NOTE_COLUMNS =
   'id, pitch_slug, author_id, display_name, tweak, player_level, arm_slot, velocity_band, intent, claimed_result_kind, claimed_result_note, sample_size, evidence_url, evidence_label, source_tier, note, adoption_count, helpful_count, base_rank, created_at'
 
@@ -337,15 +343,13 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
   let tried = new Set<string>()
   let helpful = new Set<string>()
   if (viewerId) {
-    // RLS scopes these to the viewer's own rows, so a plain select is the viewer's
-    // set. Without a session there is nothing to fetch (and the anon role has no
-    // SELECT grant on these tables anyway), so the flags stay empty.
-    const [{ data: triedRows }, { data: helpfulRows }] = await Promise.all([
-      supabase.from('note_tries').select('note_id'),
-      supabase.from('note_helpful').select('note_id'),
-    ])
-    tried = new Set((triedRows ?? []).map((r) => r.note_id as string))
-    helpful = new Set((helpfulRows ?? []).map((r) => r.note_id as string))
+    // Direct SELECT on note_tries/note_helpful stays closed; the RPC returns
+    // only current-session booleans for notes this viewer has touched.
+    const { data: engagementRows, error: engagementError } = await supabase.rpc('viewer_note_engagement')
+    if (engagementError) throw engagementError
+    const rows = (engagementRows ?? []) as ViewerEngagementRow[]
+    tried = new Set(rows.filter((r) => r.tried).map((r) => r.note_id))
+    helpful = new Set(rows.filter((r) => r.helpful).map((r) => r.note_id))
   }
 
   return (rows ?? []).map((row) => mapRow(row as FieldNoteRow, viewerId, tried, helpful))

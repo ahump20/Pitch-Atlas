@@ -89,6 +89,7 @@ function migrationFiles() {
 const clientCallablePublicDefinerFunctions = new Set([
   'accept_media_terms',
   'has_accepted_media_terms',
+  'viewer_note_engagement',
 ])
 
 describe('Supabase RLS migration contracts', () => {

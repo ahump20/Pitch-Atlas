@@ -268,6 +268,22 @@ describe('community safety database policy contracts', () => {
     expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).not.toContain('accepted_at')
   })
 
+  it('keeps viewer engagement reads behind an RPC', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615102000_viewer_engagement_rpc.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain('revoke select on public.note_tries from anon, authenticated')
+    expect(executableSql).toContain('revoke select on public.note_helpful from anon, authenticated')
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.viewer_note_engagement\(\)[\s\S]*?\breturns\s+table\s*\([\s\S]*?\bnote_id\s+uuid[\s\S]*?\btried\s+boolean[\s\S]*?\bhelpful\s+boolean/i)
+    expect(executableSql).toMatch(/security\s+definer[\s\S]*?set\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain('select (select auth.uid()) as user_id')
+    expect(executableSql).toContain('grant execute on function public.viewer_note_engagement() to authenticated')
+    expect(executableSql).not.toMatch(/\bgrant\s+select\b[\s\S]*?\bon\s+public\.(note_tries|note_helpful)\b/i)
+  })
+
   it('keeps media terms policies authenticated-only', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615092000_media_terms_policies_authenticated.sql'),
