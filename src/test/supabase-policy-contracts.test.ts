@@ -463,6 +463,35 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/\bgrant\b/i)
   })
 
+  it('keeps dormant direct-message tables explicitly denied to client roles', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615112500_dormant_dm_explicit_deny.sql'),
+      'utf8',
+    )
+
+    const dormantPolicies = [
+      ['threads', 'dormant_threads_client_deny'],
+      ['thread_participants', 'dormant_thread_participants_client_deny'],
+      ['messages', 'dormant_messages_client_deny'],
+    ]
+
+    for (const [table, policy] of dormantPolicies) {
+      expect(migration).toContain(`to_regclass('public.${table}')`)
+      expect(migration).toMatch(new RegExp(`drop\\s+policy\\s+if\\s+exists\\s+${policy}\\b`, 'i'))
+      expect(migration).toMatch(
+        new RegExp(
+          `create\\s+policy\\s+${policy}\\s+on\\s+public\\.${table}[\\s\\S]*?as\\s+restrictive[\\s\\S]*?for\\s+all\\s+to\\s+authenticated[\\s\\S]*?using\\s*\\(false\\)[\\s\\S]*?with\\s+check\\s*\\(false\\)`,
+          'i',
+        ),
+      )
+    }
+
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).not.toMatch(/\bto\s+anon\b/i)
+    expect(executableSql).not.toMatch(/\bgrant\b/i)
+  })
+
   it('keeps consensus view reads limited to aggregate columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615042000_note_consensus_read_column_grant.sql'),
