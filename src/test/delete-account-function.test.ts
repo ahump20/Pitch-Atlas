@@ -43,7 +43,11 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toContain('source: "pitch-atlas-delete-account"')
     expect(source).toContain('fetched_at: new Date().toISOString()')
     expect(source).toContain('timezone: "America/Chicago"')
-    expect(source).toMatch(/JSON\.stringify\(\{ \.\.\.body, meta: body\.meta \?\? meta\(\) \}\)/)
+    expect(source).toContain('const responseMeta = body.meta ?? meta()')
+    expect(source).toContain('JSON.stringify({ ...body, meta: responseMeta })')
+    expect(source).toContain('"X-Data-Source": responseMeta.source')
+    expect(source).toContain('"X-Origin-Data-Source": responseMeta.source')
+    expect(source).toContain('"X-Last-Updated": responseMeta.fetched_at')
   })
 
   it('does not return raw storage, database, or auth error text to the browser', () => {

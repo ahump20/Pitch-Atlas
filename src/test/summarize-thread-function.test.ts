@@ -48,7 +48,11 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('source: "pitch-atlas-summarize-thread"')
     expect(source).toContain('fetched_at: new Date().toISOString()')
     expect(source).toContain('timezone: "America/Chicago"')
-    expect(source).toMatch(/JSON\.stringify\(\{ \.\.\.body, meta: body\.meta \?\? meta\(\) \}\)/)
+    expect(source).toContain('const responseMeta = body.meta ?? meta()')
+    expect(source).toContain('JSON.stringify({ ...body, meta: responseMeta })')
+    expect(source).toContain('"X-Data-Source": responseMeta.source')
+    expect(source).toContain('"X-Origin-Data-Source": responseMeta.source')
+    expect(source).toContain('"X-Last-Updated": responseMeta.fetched_at')
   })
 
   it('does not return raw database or OpenAI error text to the browser', () => {
