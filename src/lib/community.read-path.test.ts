@@ -16,6 +16,7 @@ const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   signInAnonymously: vi.fn(),
   from: vi.fn(),
+  rpc: vi.fn(),
   storageFrom: vi.fn(),
 }))
 
@@ -24,6 +25,7 @@ vi.mock('./supabase', () => ({
   supabase: {
     auth: { getSession: mocks.getSession, signInAnonymously: mocks.signInAnonymously },
     from: mocks.from,
+    rpc: mocks.rpc,
     storage: { from: mocks.storageFrom },
   },
 }))
@@ -134,6 +136,16 @@ describe('read path mints no account', () => {
     await expect(hasAcceptedMediaTerms()).resolves.toBe(false)
     expect(mocks.signInAnonymously).not.toHaveBeenCalled()
     expect(mocks.from).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalled()
+  })
+
+  it('hasAcceptedMediaTerms with a session uses the RPC, not direct table reads', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'user-1' } } } })
+    mocks.rpc.mockResolvedValue({ data: true, error: null })
+
+    await expect(hasAcceptedMediaTerms()).resolves.toBe(true)
+    expect(mocks.rpc).toHaveBeenCalledWith('has_accepted_media_terms')
+    expect(mocks.from).not.toHaveBeenCalledWith('discussion_media_terms')
   })
 })
 

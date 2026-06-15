@@ -300,6 +300,23 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/\bto\s+(anon|public)\b/i)
   })
 
+  it('keeps media terms behind RPCs instead of direct table grants', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615094500_media_terms_rpc_gate.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain('revoke select, insert on public.discussion_media_terms from anon, authenticated')
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.has_accepted_media_terms\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.accept_media_terms\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain("auth.jwt() ->> 'is_anonymous'")
+    expect(executableSql).toContain('on conflict (user_id) do nothing')
+    expect(executableSql).toContain('grant execute on function public.has_accepted_media_terms() to authenticated')
+    expect(executableSql).toContain('grant execute on function public.accept_media_terms() to authenticated')
+    expect(executableSql).not.toMatch(/\bgrant\s+(select|insert)\b[\s\S]*?\bon\s+public\.discussion_media_terms\b/i)
+  })
+
   it('keeps block-list reads limited to the target user', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615035000_blocked_users_read_column_grant.sql'),
