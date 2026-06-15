@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { friendlyError, sniffMediaKind, sniffMediaType } from './discussion'
+import { friendlyError, friendlyReadError, sniffMediaKind, sniffMediaType } from './discussion'
 
 /*
   The upload sniff is a security control, not a nicety: it reads the real leading
@@ -72,5 +72,14 @@ describe('friendlyError', () => {
       'Could not save that just now. Try again.',
     )
     expect(friendlyError(null)).toBe('Could not save that just now. Try again.')
+  })
+})
+
+describe('friendlyReadError', () => {
+  it('uses load copy and hides raw database errors', () => {
+    expect(friendlyReadError({ message: 'permission denied for table discussion_posts' })).toBe(
+      'Could not load the discussion just now. Try again.',
+    )
+    expect(friendlyReadError(null)).toBe('Could not load the discussion just now. Try again.')
   })
 })

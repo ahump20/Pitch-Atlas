@@ -88,6 +88,15 @@ export function friendlyError(error: { message?: string } | null): string {
   return 'Could not save that just now. Try again.'
 }
 
+/** Reads use their own fallback copy so load errors do not sound like failed writes. */
+export function friendlyReadError(error: { message?: string } | null): string {
+  const raw = error?.message ?? ''
+  for (const [tag, fallback] of Object.entries(taggedErrorMessages)) {
+    if (raw.includes(tag)) return raw.split(tag)[1]?.trim() || fallback
+  }
+  return 'Could not load the discussion just now. Try again.'
+}
+
 /* ------------------------------------------------------------------ media */
 
 interface SniffedMediaType {
@@ -233,17 +242,18 @@ export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
     .select('id, topic_key, author_id, display_name, parent_id, body, created_at')
     .eq('topic_key', topicKey)
     .order('created_at', { ascending: true })
-  if (error) throw error
+  if (error) throw new Error(friendlyReadError(error))
 
   const postRows = (rows ?? []) as PostRow[]
   const ids = postRows.map((p) => p.id)
 
   let mediaByPost = new Map<string, DiscussionMedia[]>()
   if (ids.length > 0) {
-    const { data: mediaRows } = await supabase
+    const { data: mediaRows, error: mediaError } = await supabase
       .from('discussion_media')
       .select('id, post_id, storage_path, kind, width, height')
       .in('post_id', ids)
+    if (mediaError) throw new Error(friendlyReadError(mediaError))
     mediaByPost = await signMedia((mediaRows ?? []) as MediaRow[])
   }
 
