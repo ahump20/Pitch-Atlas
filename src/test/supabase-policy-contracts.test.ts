@@ -21,6 +21,17 @@ describe('community safety database policy contracts', () => {
       .filter(Boolean)
   }
 
+  function selectGrantColumns(sql: string, table: string) {
+    const match = sql.match(
+      new RegExp(`grant\\s+select\\s*\\(([^)]+)\\)\\s+on\\s+public\\.${table}\\s+to\\s+anon,\\s*authenticated`, 'i'),
+    )
+
+    return (match?.[1] ?? '')
+      .split(',')
+      .map((column) => column.trim())
+      .filter(Boolean)
+  }
+
   it('keeps banned terms admin reads closed to anonymous Supabase sessions', () => {
     expect(migrations).toContain('drop policy if exists banned_terms_admin_read on public.banned_terms')
     expect(migrations).toContain('create policy banned_terms_admin_read')
@@ -141,5 +152,46 @@ describe('community safety database policy contracts', () => {
     expect(migration).toContain('when viewer.id is null then false')
     expect(migration).toContain('when viewer.id <> left_user and viewer.id <> right_user then false')
     expect(migration).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
+  })
+
+  it('keeps discussion reads limited to rendered thread columns', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke select on public.discussion_posts from anon, authenticated')
+    expect(selectGrantColumns(migration, 'discussion_posts')).toEqual([
+      'id',
+      'topic_key',
+      'author_id',
+      'display_name',
+      'parent_id',
+      'body',
+      'created_at',
+    ])
+    expect(selectGrantColumns(migration, 'discussion_posts')).not.toEqual(expect.arrayContaining([
+      'is_hidden',
+      'report_count',
+      'updated_at',
+    ]))
+
+    expect(migration).toContain('revoke select on public.discussion_media from anon, authenticated')
+    expect(selectGrantColumns(migration, 'discussion_media')).toEqual([
+      'id',
+      'post_id',
+      'storage_path',
+      'kind',
+      'width',
+      'height',
+    ])
+    expect(selectGrantColumns(migration, 'discussion_media')).not.toEqual(expect.arrayContaining([
+      'owner_id',
+      'is_hidden',
+      'report_count',
+      'mime_type',
+      'byte_size',
+      'created_at',
+    ]))
   })
 })
