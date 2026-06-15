@@ -91,4 +91,19 @@ describe('community safety database policy contracts', () => {
       'created_at',
     ]))
   })
+
+  it('keeps block-list inserts limited to the target user', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615002500_blocked_users_insert_column_grant.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke insert on public.blocked_users from anon, authenticated')
+    expect(insertGrantColumns(migration, 'blocked_users')).toEqual(['blocked_id'])
+    expect(migration).not.toMatch(/\bgrant\s+insert\s+on\s+public\.blocked_users\b/i)
+    expect(insertGrantColumns(migration, 'blocked_users')).not.toEqual(expect.arrayContaining([
+      'blocker_id',
+      'created_at',
+    ]))
+  })
 })
