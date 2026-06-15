@@ -243,6 +243,26 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
   })
 
+  it('uses initplan viewer lookup inside admin and block helpers', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615212500_initplan_admin_block_helpers.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.blocked_between\(left_user\s+uuid,\s+right_user\s+uuid\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql.match(/\(select auth\.uid\(\)\) as id/gi)).toHaveLength(3)
+    expect(executableSql).not.toMatch(/\bwhere\s+p\.id\s*=\s*auth\.uid\(\)/i)
+    expect(executableSql).not.toMatch(/\bselect\s+auth\.uid\(\)\s+as\s+id\b/i)
+    expect(executableSql).toContain('grant execute on function private.is_admin() to anon, authenticated')
+    expect(executableSql).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
+    expect(executableSql).toContain('grant execute on function public.is_admin() to service_role')
+    expect(executableSql).toContain('revoke execute on function public.is_admin() from anon, authenticated')
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
+  })
+
   it('keeps discussion reads limited to rendered thread columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
