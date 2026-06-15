@@ -347,6 +347,18 @@ describe('community safety database policy contracts', () => {
     ]))
   })
 
+  it('keeps block-list reads closed to direct clients', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615105500_blocked_users_read_closed.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain('revoke select on public.blocked_users from anon, authenticated')
+    expect(executableSql).toContain('revoke select (blocked_id) on public.blocked_users from anon, authenticated')
+    expect(executableSql).not.toMatch(/\bgrant\s+select\b[\s\S]*?\bon\s+public\.blocked_users\b/i)
+  })
+
   it('keeps unused client deletes closed to normal roles', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615053500_close_unused_delete_grants.sql'),
