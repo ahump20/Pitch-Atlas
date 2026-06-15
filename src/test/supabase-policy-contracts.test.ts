@@ -280,10 +280,17 @@ describe('community safety database policy contracts', () => {
       resolve(process.cwd(), 'supabase/migrations/20260615053500_close_unused_delete_grants.sql'),
       'utf8',
     )
+    const policyCleanup = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615071000_drop_unused_delete_policies.sql'),
+      'utf8',
+    )
 
     expect(migration).toContain('revoke delete on public.field_notes from anon, authenticated')
     expect(migration).toContain('revoke delete on public.blocked_users from anon, authenticated')
     expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.(field_notes|blocked_users)\b/i)
+    expect(policyCleanup).toContain('drop policy if exists field_notes_delete_own on public.field_notes')
+    expect(policyCleanup).toContain('drop policy if exists blocked_users_delete_own on public.blocked_users')
+    expect(policyCleanup).not.toMatch(/\bcreate\s+policy\s+(field_notes_delete_own|blocked_users_delete_own)\b/i)
   })
 
   it('keeps reaction deletes limited to signed-in contributors', () => {
