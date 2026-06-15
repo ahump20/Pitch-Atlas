@@ -47,7 +47,7 @@ Live access verified via the project-scoped MCP (the bare `supabase` MCP server 
 | 5 | pitches table missing 7 specimen slugs (live bug: note submit FK-fails on 7 of 12 specimens) | 5 rows vs 12 web specimens | `20260610162340_pitches_backfill_chapter_routes.sql` applied live and kept in repo | resolved |
 | 6 | Anonymous-user minting on read path | 66/67 auth users anonymous; signInAnonymously() fires on listNotes | web client fix in this run's fix bundle (read without session; session only on write intent) | in work branch; live after deploy |
 | 7 | banned_terms RLS-without-policy advisor | WARN | explained: deliberate default-deny (migration 20260605110439, now captured in repo) | documented intentional |
-| 8 | pg_graphql anon/authenticated exposure WARNs | WARN on community/profile tables | public community reads are the product design | documented intentional |
+| 8 | pg_graphql anon/authenticated exposure WARNs | WARN on community/profile tables | disable unused `pg_graphql`; public REST reads stay unchanged | resolved after migration |
 | 9 | cron.job anonymous-policy WARNs | WARN | pg_cron defaults, not project policies | documented no-action |
 | 10 | Leaked-password protection disabled | WARN | dashboard-only toggle | **blocked: Austin** (belt-and-braces; password auth appears unused) |
 | 11 | auth_rls_initplan ×30 (bare auth.uid() in 06-09 policies) | perf WARN | fold `(select auth.uid())` rewrite into the next policy-touching migration | documented advisory |

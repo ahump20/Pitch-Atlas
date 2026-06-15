@@ -215,4 +215,16 @@ describe('Supabase RLS migration contracts', () => {
 
     expect(violations).toEqual([])
   })
+
+  it('keeps the unused Supabase GraphQL API disabled without changing table reads', () => {
+    const migration = readFileSync(
+      resolve(migrationsDir, '20260615133500_disable_unused_pg_graphql.sql'),
+      'utf8',
+    )
+    const sql = stripSqlComments(migration)
+
+    expect(sql).toMatch(/\bdrop\s+extension\s+if\s+exists\s+pg_graphql\s*;/i)
+    expect(sql).not.toMatch(/\brevoke\s+select\s+on\s+public\./i)
+    expect(sql).not.toMatch(/\brevoke\s+all\s+on\s+public\./i)
+  })
 })
