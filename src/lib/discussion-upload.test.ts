@@ -129,7 +129,7 @@ describe('deletePost', () => {
     mocks.mediaIn.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
     mocks.deleteEq.mockResolvedValue({ error: { message: 'not allowed' } })
 
-    await expect(deletePost('post-1')).rejects.toThrow('not allowed')
+    await expect(deletePost('post-1')).rejects.toThrow('Could not save that just now. Try again.')
 
     expect(mocks.remove).not.toHaveBeenCalled()
   })

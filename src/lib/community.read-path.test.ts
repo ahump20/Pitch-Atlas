@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { listNotes, setTried } from './community'
+import { friendlyDbError, listNotes, setTried } from './community'
 import { listThread, hasAcceptedMediaTerms } from './discussion'
 
 /*
@@ -147,5 +147,15 @@ describe('write path still signs in first', () => {
 
     expect(mocks.signInAnonymously).toHaveBeenCalledTimes(1)
     expect(tablesQueried()).toContain('note_tries')
+  })
+})
+
+describe('community write errors', () => {
+  it('keeps trigger-tagged messages but hides raw database errors', () => {
+    expect(friendlyDbError({ message: 'content_blocked: keep it clean' })).toBe('keep it clean')
+    expect(friendlyDbError({ message: 'duplicate key value violates unique constraint "field_notes_pkey"' })).toBe(
+      'Could not save that just now. Try again.',
+    )
+    expect(friendlyDbError(null)).toBe('Could not save that just now. Try again.')
   })
 })

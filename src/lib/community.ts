@@ -213,11 +213,11 @@ const resultToDb: Record<ClaimedResultKind, string> = {
 
 /**
  * Turn a Postgres/PostgREST error into a sentence a contributor can act on. The
- * safety triggers raise prefixed messages ("content_blocked: …", "rate_limit: …");
+ * safety triggers raise prefixed messages ("content_blocked: ...", "rate_limit: ...");
  * the "Sourced, not corrected" CHECK surfaces by constraint name. Anything else
- * falls back to its own message.
+ * stays generic so raw database text does not leak to the browser.
  */
-function friendlyDbError(error: { message?: string } | null): string {
+export function friendlyDbError(error: { message?: string } | null): string {
   const raw = error?.message ?? ''
   if (raw.includes('content_blocked:'))
     return raw.split('content_blocked:')[1]?.trim() || 'That note contains language we do not allow here.'
@@ -225,7 +225,7 @@ function friendlyDbError(error: { message?: string } | null): string {
     return raw.split('rate_limit:')[1]?.trim() || 'Too many notes in a short time - please slow down.'
   if (raw.includes('weak_tier_requires_note'))
     return 'A relayed or untested claim needs a short source note - say where it came from.'
-  return raw || 'Could not save that just now. Try again.'
+  return 'Could not save that just now. Try again.'
 }
 
 function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, helpful: Set<string>): CommunityNote {

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sniffMediaKind, sniffMediaType } from './discussion'
+import { friendlyError, sniffMediaKind, sniffMediaType } from './discussion'
 
 /*
   The upload sniff is a security control, not a nicety: it reads the real leading
@@ -61,5 +61,16 @@ describe('sniffMediaKind', () => {
     const svg = '<svg xmlns="http://www.w3.org/2000/svg"></svg>'
     const bytes = Array.from(svg).map((c) => c.charCodeAt(0))
     expect(await sniffMediaKind(fileFrom(bytes, 'x.svg', 'image/svg+xml'))).toBeNull()
+  })
+})
+
+describe('friendlyError', () => {
+  it('keeps trigger-tagged copy but hides raw database errors', () => {
+    expect(friendlyError({ message: 'rate_limit: slow down' })).toBe('slow down')
+    expect(friendlyError({ message: 'content_blocked:' })).toBe('That post contains language we do not allow here.')
+    expect(friendlyError({ message: 'permission denied for table discussion_posts' })).toBe(
+      'Could not save that just now. Try again.',
+    )
+    expect(friendlyError(null)).toBe('Could not save that just now. Try again.')
   })
 })
