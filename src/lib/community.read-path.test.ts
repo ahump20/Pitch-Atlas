@@ -5,11 +5,11 @@ import { listThread, hasAcceptedMediaTerms } from './discussion'
 /*
   The no-minting contract for the READ path. Listing notes or a discussion thread
   must never create a Supabase account: the anon role's SELECT grants serve the
-  public set, and the live database denies the viewer-scoped tables (note_tries,
-  note_helpful, discussion_media_terms) to a sessionless caller — so touching them
-  without a session is not just wasteful, it throws. An anonymous account is minted
-  on write intent only. These tests pin both directions: reads never sign in or
-  touch viewer-scoped tables; a write still signs in first.
+  public set, and the live database denies viewer-scoped table reads to a
+  sessionless caller. Viewer flags go through narrow RPCs only when a session
+  already exists. An anonymous account is minted on write intent only. These
+  tests pin both directions: reads never sign in or touch viewer-scoped tables;
+  a write still signs in first.
 */
 
 const mocks = vi.hoisted(() => ({
@@ -101,18 +101,19 @@ describe('read path mints no account', () => {
     expect(notes[0].viewerIsAuthor).toBe(false)
   })
 
-  it('listNotes with a session: still no sign-in, viewer flags come from the scoped tables', async () => {
+  it('listNotes with a session: still no sign-in, viewer flags come from the scoped RPC', async () => {
     mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
     mocks.from.mockImplementation((table: string) => {
       if (table === 'field_notes') return chainFor([NOTE_ROW])
-      if (table === 'note_tries') return chainFor([{ note_id: 'note-1' }])
       return chainFor([])
     })
+    mocks.rpc.mockResolvedValue({ data: [{ note_id: 'note-1', tried: true, helpful: false }], error: null })
 
     const notes = await listNotes('four-seam')
 
     expect(mocks.signInAnonymously).not.toHaveBeenCalled()
-    expect(tablesQueried()).toEqual(expect.arrayContaining(['field_notes', 'note_tries', 'note_helpful']))
+    expect(tablesQueried()).toEqual(['field_notes'])
+    expect(mocks.rpc).toHaveBeenCalledWith('viewer_note_engagement')
     expect(notes[0].viewerTried).toBe(true)
     expect(notes[0].viewerHelpful).toBe(false)
     expect(notes[0].viewerIsAuthor).toBe(true)
