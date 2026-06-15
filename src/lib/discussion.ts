@@ -361,14 +361,14 @@ export async function hasAcceptedMediaTerms(): Promise<boolean> {
   // A read with no session is always "no": there is no account to have accepted
   // anything, and asking would either mint an account or 403 on the anon role.
   if ((await getSessionUserId()) === null) return false
-  const { data } = await supabase.from('discussion_media_terms').select('user_id').maybeSingle()
-  return Boolean(data)
+  const { data, error } = await supabase.rpc('has_accepted_media_terms')
+  if (error) throw new Error(friendlyReadError(error))
+  return data === true
 }
 
 /** Record the contributor's acceptance of the upload terms (timestamped, one row per account). */
 export async function acceptMediaTerms(): Promise<void> {
-  const uid = await ensureSession()
-  const { error } = await supabase.from('discussion_media_terms').insert({ user_id: uid })
-  // 23505 = already accepted (one row per user); treat as success
-  if (error && error.code !== '23505') throw new Error(friendlyError(error))
+  await ensureSession()
+  const { error } = await supabase.rpc('accept_media_terms')
+  if (error) throw new Error(friendlyError(error))
 }

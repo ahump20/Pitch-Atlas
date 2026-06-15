@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   getSessionUserId: vi.fn(),
   from: vi.fn(),
   storageFrom: vi.fn(),
+  rpc: vi.fn(),
   upload: vi.fn(),
   remove: vi.fn(),
   insert: vi.fn(),
@@ -26,6 +27,7 @@ vi.mock('./supabase', () => ({
   COMMUNITY_ENABLED: true,
   supabase: {
     from: mocks.from,
+    rpc: mocks.rpc,
     storage: { from: mocks.storageFrom },
   },
 }))
@@ -37,6 +39,7 @@ function fileFrom(bytes: number[], name: string, type: string): File {
 beforeEach(() => {
   vi.clearAllMocks()
   mocks.ensureSession.mockResolvedValue('user-1')
+  mocks.rpc.mockResolvedValue({ error: null })
   mocks.upload.mockResolvedValue({ error: null })
   mocks.remove.mockResolvedValue({ error: null })
   mocks.insert.mockResolvedValue({ error: null })
@@ -136,12 +139,12 @@ describe('deletePost', () => {
 })
 
 describe('acceptMediaTerms', () => {
-  it('records only the accepting account and leaves accepted_at to the database', async () => {
+  it('records acceptance through the database RPC without exposing table writes', async () => {
     await acceptMediaTerms()
 
     expect(mocks.ensureSession).toHaveBeenCalled()
-    expect(mocks.from).toHaveBeenCalledWith('discussion_media_terms')
-    expect(mocks.insert).toHaveBeenCalledWith({ user_id: 'user-1' })
+    expect(mocks.rpc).toHaveBeenCalledWith('accept_media_terms')
+    expect(mocks.from).not.toHaveBeenCalledWith('discussion_media_terms')
     expect(mocks.insert).not.toHaveBeenCalledWith(expect.objectContaining({ accepted_at: expect.anything() }))
   })
 })

@@ -86,6 +86,11 @@ function migrationFiles() {
     .sort()
 }
 
+const clientCallablePublicDefinerFunctions = new Set([
+  'accept_media_terms',
+  'has_accepted_media_terms',
+])
+
 describe('Supabase RLS migration contracts', () => {
   it('enables RLS on every public table created by migrations', () => {
     const createdTables = new Map<string, string[]>()
@@ -182,6 +187,7 @@ describe('Supabase RLS migration contracts', () => {
     }
 
     const violations = [...functionNames]
+      .filter((functionName) => !clientCallablePublicDefinerFunctions.has(functionName))
       .filter((functionName) => lastExecuteEvent.get(functionName) !== 'revoke')
       .map((functionName) => `public.${functionName} has no final client execute revoke`)
 
