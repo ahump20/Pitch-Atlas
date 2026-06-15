@@ -194,4 +194,44 @@ describe('community safety database policy contracts', () => {
       'created_at',
     ]))
   })
+
+  it('keeps field note reads limited to rendered note columns', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615030000_field_notes_read_column_grants.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke select on public.field_notes from anon, authenticated')
+    expect(selectGrantColumns(migration, 'field_notes')).toEqual([
+      'id',
+      'pitch_slug',
+      'author_id',
+      'display_name',
+      'tweak',
+      'player_level',
+      'arm_slot',
+      'velocity_band',
+      'intent',
+      'claimed_result_kind',
+      'claimed_result_note',
+      'sample_size',
+      'evidence_url',
+      'evidence_label',
+      'source_tier',
+      'note',
+      'adoption_count',
+      'helpful_count',
+      'base_rank',
+      'created_at',
+    ])
+    expect(selectGrantColumns(migration, 'field_notes')).not.toEqual(expect.arrayContaining([
+      'is_hidden',
+      'visibility',
+      'updated_at',
+      'tries_worked_count',
+      'tries_mixed_count',
+      'tries_no_change_count',
+      'tries_worse_count',
+    ]))
+  })
 })
