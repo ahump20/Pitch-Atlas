@@ -260,4 +260,18 @@ describe('community safety database policy contracts', () => {
     expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).toEqual(['user_id'])
     expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).not.toContain('accepted_at')
   })
+
+  it('keeps block-list reads limited to the target user', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615035000_blocked_users_read_column_grant.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke select on public.blocked_users from anon, authenticated')
+    expect(selectGrantColumns(migration, 'blocked_users', 'authenticated')).toEqual(['blocked_id'])
+    expect(selectGrantColumns(migration, 'blocked_users', 'authenticated')).not.toEqual(expect.arrayContaining([
+      'blocker_id',
+      'created_at',
+    ]))
+  })
 })
