@@ -129,4 +129,17 @@ describe('community safety database policy contracts', () => {
     expect(migration).toContain('drop policy if exists discussion_media_delete on public.discussion_media')
     expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.discussion_media\b/i)
   })
+
+  it('keeps block relationship checks scoped to the current viewer', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615015000_blocked_between_current_user_guard.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('create or replace function private.blocked_between(left_user uuid, right_user uuid)')
+    expect(migration).toContain('select auth.uid() as id')
+    expect(migration).toContain('when viewer.id is null then false')
+    expect(migration).toContain('when viewer.id <> left_user and viewer.id <> right_user then false')
+    expect(migration).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
+  })
 })
