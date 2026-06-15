@@ -286,6 +286,19 @@ describe('community safety database policy contracts', () => {
     expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.(field_notes|blocked_users)\b/i)
   })
 
+  it('keeps reaction deletes limited to signed-in contributors', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615055632_reaction_deletes_authenticated_only.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke delete on public.note_tries from anon')
+    expect(migration).toContain('revoke delete on public.note_helpful from anon')
+    expect(migration).toContain('grant delete on public.note_tries to authenticated')
+    expect(migration).toContain('grant delete on public.note_helpful to authenticated')
+    expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.note_(?:tries|helpful)\s+to\s+anon\b/i)
+  })
+
   it('keeps consensus view reads limited to aggregate columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615042000_note_consensus_read_column_grant.sql'),
