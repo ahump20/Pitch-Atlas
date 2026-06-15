@@ -349,8 +349,8 @@ export async function hasAcceptedMediaTerms(): Promise<boolean> {
 
 /** Record the contributor's acceptance of the upload terms (timestamped, one row per account). */
 export async function acceptMediaTerms(): Promise<void> {
-  await ensureSession()
-  const { error } = await supabase.from('discussion_media_terms').insert({})
+  const uid = await ensureSession()
+  const { error } = await supabase.from('discussion_media_terms').insert({ user_id: uid })
   // 23505 = already accepted (one row per user); treat as success
   if (error && error.code !== '23505') throw new Error(friendlyError(error))
 }
