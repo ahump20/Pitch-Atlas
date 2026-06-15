@@ -220,6 +220,17 @@ async function deleteIfTableExists(admin: SupabaseAdmin, table: string, column: 
   failCleanup("optional_row_delete_failed", { table, error });
 }
 
+async function deleteBlockedUsersForDeletedAccount(admin: SupabaseAdmin, userId: string) {
+  const columns = ["blocker_id", "blocked_id"] as const;
+
+  for (const column of columns) {
+    const { error } = await admin.from("blocked_users").delete().eq(column, userId);
+    if (!error) continue;
+    if (error.code === "42P01") continue;
+    failCleanup("blocked_users_delete_failed", { column, error });
+  }
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: { ...corsHeaders, ...allowHeaders } });
@@ -284,14 +295,7 @@ Deno.serve(async (req: Request) => {
     await deleteIfTableExists(admin, "thread_participants", "user_id", userId);
     await deleteIfTableExists(admin, "threads", "created_by", userId);
 
-    const { error: blockError } = await admin
-      .from("blocked_users")
-      .delete()
-      .or(`blocker_id.eq.${userId},blocked_id.eq.${userId}`);
-
-    if (blockError && blockError.code !== "42P01") {
-      failCleanup("blocked_users_delete_failed", blockError);
-    }
+    await deleteBlockedUsersForDeletedAccount(admin, userId);
 
     const { error: deleteUserError } = await admin.auth.admin.deleteUser(userId);
     if (deleteUserError) {

@@ -124,4 +124,16 @@ describe('delete-account Edge Function source contract', () => {
     expect(messagesCleanupIndex).toBeGreaterThan(-1)
     expect(authDeleteIndex).toBeGreaterThan(messagesCleanupIndex)
   })
+
+  it('cleans block-list rows without string-built filters', () => {
+    expect(source).toContain('async function deleteBlockedUsersForDeletedAccount')
+    expect(source).toContain('const columns = ["blocker_id", "blocked_id"] as const')
+    expect(source).toContain('await admin.from("blocked_users").delete().eq(column, userId)')
+    expect(source).not.toContain('.or(`blocker_id.eq.${userId},blocked_id.eq.${userId}`)')
+
+    const blockCleanupIndex = source.indexOf('await deleteBlockedUsersForDeletedAccount(admin, userId)')
+    const authDeleteIndex = source.indexOf('admin.auth.admin.deleteUser(userId)')
+    expect(blockCleanupIndex).toBeGreaterThan(-1)
+    expect(authDeleteIndex).toBeGreaterThan(blockCleanupIndex)
+  })
 })
