@@ -19,15 +19,29 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('"Pragma": "no-cache"')
     expect(source).toContain('"X-Content-Type-Options": "nosniff"')
     expect(source).toContain('"Referrer-Policy": "no-referrer"')
-    expect(source).toMatch(/const jsonHeaders = \{\s+\.\.\.corsHeaders,/)
+    expect(source).toContain('function corsHeaders(req: Request): Record<string, string>')
+    expect(source).toContain('function jsonHeaders(req: Request): Record<string, string>')
+    expect(source).toContain('...corsHeaders(req)')
+    expect(source).not.toContain('"Access-Control-Allow-Origin": "*"')
+  })
+
+  it('restricts browser origins to Pitch Atlas and local development', () => {
+    expect(source).toContain('const trustedOrigins = new Set([')
+    expect(source).toContain('"https://pitch-atlas.com"')
+    expect(source).toContain('"https://www.pitch-atlas.com"')
+    expect(source).toContain('const localDevPorts = new Set(["3000", "4173", "5173"])')
+    expect(source).toContain('function allowedOriginFor(req: Request): string')
+    expect(source).toContain('req.headers.get("Origin")?.trim()')
+    expect(source).toContain('trustedOrigins.has(origin) || isLocalDevOrigin(origin)')
+    expect(source).toContain('"Access-Control-Allow-Origin": allowedOriginFor(req)')
   })
 
   it('advertises allowed methods on preflight and unsupported methods', () => {
     expect(source).toContain('const allowedMethods = "POST, OPTIONS"')
     expect(source).toContain('"Access-Control-Allow-Methods": allowedMethods')
     expect(source).toContain('"Allow": allowedMethods')
-    expect(source).toContain('headers: { ...corsHeaders, ...allowHeaders }')
-    expect(source).toContain('return json(405, { error: "method_not_allowed" }, allowHeaders)')
+    expect(source).toContain('headers: { ...corsHeaders(req), ...allowHeaders }')
+    expect(source).toContain('return reply(405, { error: "method_not_allowed" }, allowHeaders)')
   })
 
   it('keeps a provenance meta envelope on success and error replies', () => {
@@ -65,7 +79,7 @@ describe('summarize-thread Edge Function source contract', () => {
       source.indexOf('const bodyResult = await readBody(req)'),
     )
     expect(source.indexOf('invalid_thread_id')).toBeLessThan(source.indexOf('const config = runtimeConfig()'))
-    expect(source).toContain('return json(500, { error: "server_not_configured" })')
+    expect(source).toContain('return reply(500, { error: "server_not_configured" })')
   })
 
   it('rejects oversized summary request bodies before JSON parsing', () => {
@@ -73,7 +87,7 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('function requestBodyTooLarge(req: Request): boolean')
     expect(source).toContain('req.headers.get("Content-Length")')
     expect(source).toContain('length > MAX_BODY_BYTES')
-    expect(source).toContain('return json(413, { error: "request_too_large" })')
+    expect(source).toContain('return reply(413, { error: "request_too_large" })')
   })
 
   it('bounds streamed summary request bodies before decoding JSON', () => {
@@ -89,7 +103,7 @@ describe('summarize-thread Edge Function source contract', () => {
 
   it('returns malformed JSON as a distinct cheap request error', () => {
     expect(source).toContain('invalidJson: true')
-    expect(source).toContain('return json(400, { error: "invalid_json" })')
+    expect(source).toContain('return reply(400, { error: "invalid_json" })')
     expect(source.indexOf('if (bodyResult.invalidJson)')).toBeLessThan(
       source.indexOf('const threadIdResult = threadIdFromBody(body)'),
     )
@@ -145,22 +159,23 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('async function readCompletion(')
     expect(source).toContain('function completionMessageContent(')
     expect(source).toContain('catch (error)')
-    expect(source).toMatch(/if \(!openaiResp\) \{\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
+    expect(source).toMatch(/if \(!openaiResp\) \{\s+return reply\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
     expect(source).toContain('summarize-thread OpenAI response JSON parse failed')
     expect(source).toContain('const completion = await readCompletion(openaiResp)')
     expect(source).toContain('parseSummary(completionMessageContent(completion))')
-    expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty or malformed"\);\s+return json\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
+    expect(source).toMatch(/if \(!result\) \{\s+console\.error\("summarize-thread OpenAI response was empty or malformed"\);\s+return reply\(502, \{ error: "summary_unavailable" \}\);\s+\}/)
   })
 
   it('bounds Supabase client waits before falling back to stamped lookup errors', () => {
     expect(source).toContain('const SUPABASE_REQUEST_TIMEOUT_MS = 15000')
-    expect(source).toContain('async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response>')
+    expect(source).toContain('type FetchInitWithSignal = Parameters<typeof fetch>[1] & {')
+    expect(source).toContain('async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: FetchInitWithSignal): Promise<Response>')
     expect(source).toContain('const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS)')
     expect(source).toContain('return await fetch(input, { ...init, signal: controller.signal })')
     expect(source).toContain('clearTimeout(timeoutId)')
     expect(source).toContain('global: { fetch: fetchWithTimeout }')
     expect(source).toContain('console.error("summarize-thread auth lookup failed", error)')
-    expect(source).toContain('return json(502, { error: "auth_lookup_failed" })')
+    expect(source).toContain('return reply(502, { error: "auth_lookup_failed" })')
     expect(source).toContain('console.error("summarize-thread participant lookup crashed", error)')
     expect(source).toContain('console.error("summarize-thread messages lookup crashed", error)')
     expect(source.indexOf('try {\n    userLookup = await admin.auth.getUser(token)')).toBeLessThan(
