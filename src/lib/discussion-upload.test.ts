@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { deletePost, uploadMedia } from './discussion'
+import { acceptMediaTerms, deletePost, uploadMedia } from './discussion'
 
 const mocks = vi.hoisted(() => ({
   ensureSession: vi.fn(),
@@ -132,5 +132,16 @@ describe('deletePost', () => {
     await expect(deletePost('post-1')).rejects.toThrow('not allowed')
 
     expect(mocks.remove).not.toHaveBeenCalled()
+  })
+})
+
+describe('acceptMediaTerms', () => {
+  it('records only the accepting account and leaves accepted_at to the database', async () => {
+    await acceptMediaTerms()
+
+    expect(mocks.ensureSession).toHaveBeenCalled()
+    expect(mocks.from).toHaveBeenCalledWith('discussion_media_terms')
+    expect(mocks.insert).toHaveBeenCalledWith({ user_id: 'user-1' })
+    expect(mocks.insert).not.toHaveBeenCalledWith(expect.objectContaining({ accepted_at: expect.anything() }))
   })
 })

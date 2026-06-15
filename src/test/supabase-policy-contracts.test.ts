@@ -106,4 +106,16 @@ describe('community safety database policy contracts', () => {
       'created_at',
     ]))
   })
+
+  it('keeps media terms acceptance timestamp database-owned', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615005000_media_terms_insert_column_grant.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke insert on public.discussion_media_terms from anon, authenticated')
+    expect(insertGrantColumns(migration, 'discussion_media_terms')).toEqual(['user_id'])
+    expect(migration).not.toMatch(/\bgrant\s+insert\s+on\s+public\.discussion_media_terms\b/i)
+    expect(insertGrantColumns(migration, 'discussion_media_terms')).not.toContain('accepted_at')
+  })
 })
