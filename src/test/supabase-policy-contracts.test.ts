@@ -274,4 +274,31 @@ describe('community safety database policy contracts', () => {
       'created_at',
     ]))
   })
+
+  it('keeps consensus view reads limited to aggregate columns', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615042000_note_consensus_read_column_grant.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke select on public.note_consensus from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_consensus')).toEqual([
+      'note_id',
+      'pitch_slug',
+      'tried_count',
+      'reported_count',
+      'worked_count',
+      'mixed_count',
+      'no_change_count',
+      'worse_count',
+      'consensus',
+    ])
+    expect(migration).not.toMatch(/\bgrant\s+select\s+on\s+public\.note_consensus\b/i)
+    expect(selectGrantColumns(migration, 'note_consensus')).not.toEqual(expect.arrayContaining([
+      'author_id',
+      'is_hidden',
+      'report_count',
+      'updated_at',
+    ]))
+  })
 })
