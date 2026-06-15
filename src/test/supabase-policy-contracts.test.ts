@@ -118,4 +118,15 @@ describe('community safety database policy contracts', () => {
     expect(migration).not.toMatch(/\bgrant\s+insert\s+on\s+public\.discussion_media_terms\b/i)
     expect(insertGrantColumns(migration, 'discussion_media_terms')).not.toContain('accepted_at')
   })
+
+  it('keeps discussion media deletes tied to parent post deletion', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615012500_discussion_media_delete_via_posts.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke delete on public.discussion_media from anon, authenticated')
+    expect(migration).toContain('drop policy if exists discussion_media_delete on public.discussion_media')
+    expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.discussion_media\b/i)
+  })
 })
