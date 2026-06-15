@@ -505,7 +505,7 @@ Deno.serve(async (req: Request) => {
       .from("messages")
       .select("sender_id, body, created_at")
       .eq("thread_id", threadId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(MAX_MESSAGES);
   } catch (error) {
     console.error("summarize-thread messages lookup crashed", error);
@@ -519,7 +519,7 @@ Deno.serve(async (req: Request) => {
     return reply(500, { error: "messages_lookup_failed" });
   }
 
-  const rows = (messages ?? []) as MessageRow[];
+  const rows = ((messages ?? []) as MessageRow[]).slice().reverse();
 
   if (rows.length === 0) {
     return reply(200, {

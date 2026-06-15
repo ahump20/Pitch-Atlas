@@ -146,6 +146,19 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('transcript.slice(-MAX_TRANSCRIPT_CHARS)')
   })
 
+  it('summarizes the latest thread messages in chronological transcript order', () => {
+    expect(source).toContain('.order("created_at", { ascending: false })')
+    expect(source).toContain('.limit(MAX_MESSAGES)')
+    expect(source).toContain('const rows = ((messages ?? []) as MessageRow[]).slice().reverse()')
+
+    const newestFirstIndex = source.indexOf('.order("created_at", { ascending: false })')
+    const reverseIndex = source.indexOf('const rows = ((messages ?? []) as MessageRow[]).slice().reverse()')
+    const transcriptIndex = source.indexOf('const transcript = buildTranscript(rows)')
+    expect(newestFirstIndex).toBeGreaterThan(-1)
+    expect(reverseIndex).toBeGreaterThan(newestFirstIndex)
+    expect(transcriptIndex).toBeGreaterThan(reverseIndex)
+  })
+
   it('does not send raw sender ids to the model transcript', () => {
     expect(source).toContain('function senderLabel(')
     expect(source).toContain('const senderLabels = new Map<string, string>()')
