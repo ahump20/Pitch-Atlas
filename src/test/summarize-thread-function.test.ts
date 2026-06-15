@@ -175,6 +175,25 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('content: SUMMARY_SYSTEM_PROMPT')
   })
 
+  it('sanitizes model summary output before returning it to the browser', () => {
+    expect(source).toContain('type SummaryResult = {')
+    expect(source).toContain('summary: string;')
+    expect(source).toContain('action_items: string[];')
+    expect(source).toContain('sentiment: string;')
+    expect(source).toContain('const MAX_SUMMARY_CHARS = 1600')
+    expect(source).toContain('const MAX_ACTION_ITEMS = 10')
+    expect(source).toContain('const MAX_ACTION_ITEM_CHARS = 240')
+    expect(source).toContain('const MAX_SENTIMENT_CHARS = 80')
+    expect(source).toContain('function normalizeSummaryResult(candidate: unknown): SummaryResult | null')
+    expect(source).toContain('return normalizeSummaryResult(parsed)')
+    expect(source).toContain('.slice(0, MAX_ACTION_ITEMS)')
+    expect(source).toContain('return {')
+    expect(source).toContain('summary,')
+    expect(source).toContain('action_items: actionItems,')
+    expect(source).toContain('sentiment,')
+    expect(source).not.toContain('return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : null')
+  })
+
   it('keeps OpenAI transport and empty response failures in the JSON envelope', () => {
     expect(source).toContain('async function requestSummary(')
     expect(source).toContain('async function readCompletion(')

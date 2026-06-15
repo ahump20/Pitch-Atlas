@@ -17,6 +17,12 @@ type MessageRow = {
   created_at: string | null;
 };
 
+type SummaryResult = {
+  summary: string;
+  action_items: string[];
+  sentiment: string;
+};
+
 type RuntimeConfig = {
   supabaseUrl: string;
   serviceKey: string;
@@ -92,6 +98,10 @@ function jsonHeaders(req: Request): Record<string, string> {
 const MAX_MESSAGES = 200;
 const MAX_TRANSCRIPT_CHARS = 12000;
 const MAX_BODY_BYTES = 4096;
+const MAX_SUMMARY_CHARS = 1600;
+const MAX_ACTION_ITEMS = 10;
+const MAX_ACTION_ITEM_CHARS = 240;
+const MAX_SENTIMENT_CHARS = 80;
 const SUPABASE_REQUEST_TIMEOUT_MS = 15000;
 const OPENAI_TIMEOUT_MS = 15000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -333,20 +343,59 @@ function buildTranscript(messages: MessageRow[]): string {
   return transcript.slice(-MAX_TRANSCRIPT_CHARS);
 }
 
-function parseSummary(content: unknown): Record<string, unknown> | null {
+function trimString(value: unknown, maxChars: number): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  return trimmed.slice(0, maxChars);
+}
+
+function normalizeSummaryResult(candidate: unknown): SummaryResult | null {
+  if (!candidate || typeof candidate !== "object") {
+    return null;
+  }
+
+  const record = candidate as Record<string, unknown>;
+  const summary = trimString(record.summary, MAX_SUMMARY_CHARS);
+  if (!summary) {
+    return null;
+  }
+
+  const actionItems = Array.isArray(record.action_items)
+    ? record.action_items
+        .map((item) => trimString(item, MAX_ACTION_ITEM_CHARS))
+        .filter((item): item is string => Boolean(item))
+        .slice(0, MAX_ACTION_ITEMS)
+    : [];
+  const sentiment = trimString(record.sentiment, MAX_SENTIMENT_CHARS) ?? "unknown";
+
+  return {
+    summary,
+    action_items: actionItems,
+    sentiment,
+  };
+}
+
+function parseSummary(content: unknown): SummaryResult | null {
   if (typeof content !== "string" || content.trim().length === 0) {
     return null;
   }
 
   try {
     const parsed = JSON.parse(content);
-    return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : null;
+    return normalizeSummaryResult(parsed);
   } catch {
-    return {
+    return normalizeSummaryResult({
       summary: content,
       action_items: [],
       sentiment: "unknown",
-    };
+    });
   }
 }
 
