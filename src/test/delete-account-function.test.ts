@@ -139,6 +139,19 @@ describe('delete-account Edge Function source contract', () => {
     expect(authDeleteIndex).toBeGreaterThan(messagesCleanupIndex)
   })
 
+  it('cleans authored community rows before auth removal', () => {
+    expect(source).toContain('deleteIfPresent(admin, "field_notes", "author_id", userId)')
+    expect(source).toContain('deleteIfPresent(admin, "discussion_posts", "author_id", userId)')
+
+    const fieldNotesCleanupIndex = source.indexOf('deleteIfPresent(admin, "field_notes", "author_id", userId)')
+    const discussionPostsCleanupIndex = source.indexOf('deleteIfPresent(admin, "discussion_posts", "author_id", userId)')
+    const authDeleteIndex = source.indexOf('admin.auth.admin.deleteUser(userId)')
+
+    expect(fieldNotesCleanupIndex).toBeGreaterThan(-1)
+    expect(discussionPostsCleanupIndex).toBeGreaterThan(fieldNotesCleanupIndex)
+    expect(authDeleteIndex).toBeGreaterThan(discussionPostsCleanupIndex)
+  })
+
   it('cleans block-list rows without string-built filters', () => {
     expect(source).toContain('async function deleteBlockedUsersForDeletedAccount')
     expect(source).toContain('const columns = ["blocker_id", "blocked_id"] as const')
