@@ -40,19 +40,23 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('const allowedMethods = "POST, OPTIONS"')
     expect(source).toContain('"Access-Control-Allow-Methods": allowedMethods')
     expect(source).toContain('"Allow": allowedMethods')
-    expect(source).toContain('headers: { ...corsHeaders(req), ...allowHeaders }')
+    expect(source).toContain('function preflight(req: Request): Response')
+    expect(source).toContain('return preflight(req)')
     expect(source).toContain('return reply(405, { error: "method_not_allowed" }, allowHeaders)')
   })
 
-  it('keeps a provenance meta envelope on success and error replies', () => {
+  it('keeps provenance on JSON replies and preflight responses', () => {
     expect(source).toContain('source: "pitch-atlas-summarize-thread"')
     expect(source).toContain('fetched_at: new Date().toISOString()')
     expect(source).toContain('timezone: "America/Chicago"')
+    expect(source).toContain('function provenanceHeaders(responseMeta: SummaryMeta): Record<string, string>')
     expect(source).toContain('const responseMeta = body.meta ?? meta()')
+    expect(source).toContain('const responseMeta = meta()')
     expect(source).toContain('JSON.stringify({ ...body, meta: responseMeta })')
     expect(source).toContain('"X-Data-Source": responseMeta.source')
     expect(source).toContain('"X-Origin-Data-Source": responseMeta.source')
     expect(source).toContain('"X-Last-Updated": responseMeta.fetched_at')
+    expect(source).toContain('...provenanceHeaders(responseMeta)')
   })
 
   it('does not return raw database or OpenAI error text to the browser', () => {
