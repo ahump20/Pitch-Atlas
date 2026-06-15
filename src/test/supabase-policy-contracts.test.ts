@@ -21,9 +21,9 @@ describe('community safety database policy contracts', () => {
       .filter(Boolean)
   }
 
-  function selectGrantColumns(sql: string, table: string) {
+  function selectGrantColumns(sql: string, table: string, granteePattern = 'anon,\\s*authenticated') {
     const match = sql.match(
-      new RegExp(`grant\\s+select\\s*\\(([^)]+)\\)\\s+on\\s+public\\.${table}\\s+to\\s+anon,\\s*authenticated`, 'i'),
+      new RegExp(`grant\\s+select\\s*\\(([^)]+)\\)\\s+on\\s+public\\.${table}\\s+to\\s+${granteePattern}`, 'i'),
     )
 
     return (match?.[1] ?? '')
@@ -233,5 +233,31 @@ describe('community safety database policy contracts', () => {
       'tries_no_change_count',
       'tries_worse_count',
     ]))
+  })
+
+  it('keeps viewer engagement reads limited to current-client columns', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615032000_viewer_engagement_read_column_grants.sql'),
+      'utf8',
+    )
+
+    expect(migration).toContain('revoke select on public.note_tries from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_tries', 'authenticated')).toEqual(['note_id', 'user_id'])
+    expect(selectGrantColumns(migration, 'note_tries', 'authenticated')).not.toEqual(expect.arrayContaining([
+      'id',
+      'created_at',
+      'outcome_kind',
+    ]))
+
+    expect(migration).toContain('revoke select on public.note_helpful from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_helpful', 'authenticated')).toEqual(['note_id', 'user_id'])
+    expect(selectGrantColumns(migration, 'note_helpful', 'authenticated')).not.toEqual(expect.arrayContaining([
+      'id',
+      'created_at',
+    ]))
+
+    expect(migration).toContain('revoke select on public.discussion_media_terms from anon, authenticated')
+    expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).toEqual(['user_id'])
+    expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).not.toContain('accepted_at')
   })
 })
