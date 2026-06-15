@@ -181,6 +181,49 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
   })
 
+  it('pins internal trigger helpers to empty search paths', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615203500_pin_internal_trigger_search_paths.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+    const internalHelpers = [
+      'refresh_author_rollup',
+      'on_engagement_change',
+      'on_field_note_after',
+      'handle_new_user',
+      'handle_user_claim',
+      'on_note_report_autohide',
+      'text_has_banned_term',
+      'enforce_field_note_rate_limit',
+      'enforce_field_note_content_safety',
+      'enforce_profile_content_safety',
+      'enforce_discussion_depth',
+      'enforce_discussion_content_safety',
+      'enforce_discussion_rate_limit',
+      'enforce_discussion_media_limits',
+      'on_discussion_report',
+      'enforce_discussion_block_edges',
+    ]
+
+    for (const helper of internalHelpers) {
+      expect(executableSql).toMatch(
+        new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\(`, 'i'),
+      )
+      expect(executableSql).toMatch(
+        new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\([\\s\\S]*?\\bsecurity\\s+definer\\b[\\s\\S]*?\\bset\\s+search_path\\s*=\\s*''`, 'i'),
+      )
+      expect(executableSql).toContain(`revoke execute on function public.${helper}(`)
+    }
+
+    expect(executableSql).toContain("to_regclass('public.thread_participants')")
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?(?:public|auth)/i)
+    expect(executableSql).toContain('from public.field_notes')
+    expect(executableSql).toContain('from public.discussion_posts')
+    expect(executableSql).toContain('from public.banned_terms b')
+    expect(executableSql).toContain('private.blocked_between(new.author_id, v_parent_author)')
+  })
+
   it('keeps discussion reads limited to rendered thread columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
