@@ -71,13 +71,21 @@ interface PostIdRow {
   id: string
 }
 
+const taggedErrorMessages: Record<string, string> = {
+  'content_blocked:': 'That post contains language we do not allow here.',
+  'rate_limit:': 'Too many posts in a short time - please slow down.',
+  'media_blocked:': 'That media file is not allowed here.',
+  'too_deep:': 'Replies can only go one level deep.',
+  'invalid_parent:': 'That reply target is no longer available.',
+}
+
 /** Turn a Postgres/PostgREST error into a sentence a contributor can act on. */
 export function friendlyError(error: { message?: string } | null): string {
   const raw = error?.message ?? ''
-  for (const tag of ['content_blocked:', 'rate_limit:', 'media_blocked:', 'too_deep:', 'invalid_parent:']) {
-    if (raw.includes(tag)) return raw.split(tag)[1]?.trim() || raw
+  for (const [tag, fallback] of Object.entries(taggedErrorMessages)) {
+    if (raw.includes(tag)) return raw.split(tag)[1]?.trim() || fallback
   }
-  return raw || 'Could not save that just now. Try again.'
+  return 'Could not save that just now. Try again.'
 }
 
 /* ------------------------------------------------------------------ media */
