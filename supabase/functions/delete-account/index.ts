@@ -116,9 +116,17 @@ function meta(): DeleteAccountMeta {
 }
 
 function json(req: Request, status: number, body: CleanupResult, extraHeaders: Record<string, string> = {}): Response {
-  return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
+  const responseMeta = body.meta ?? meta();
+
+  return new Response(JSON.stringify({ ...body, meta: responseMeta }), {
     status,
-    headers: { ...jsonHeaders(req), ...extraHeaders },
+    headers: {
+      ...jsonHeaders(req),
+      "X-Data-Source": responseMeta.source,
+      "X-Origin-Data-Source": responseMeta.source,
+      "X-Last-Updated": responseMeta.fetched_at,
+      ...extraHeaders,
+    },
   });
 }
 
