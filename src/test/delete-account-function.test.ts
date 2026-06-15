@@ -15,15 +15,28 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toContain('"Pragma": "no-cache"')
     expect(source).toContain('"X-Content-Type-Options": "nosniff"')
     expect(source).toContain('"Referrer-Policy": "no-referrer"')
-    expect(source).toMatch(/const jsonHeaders = \{\s+\.\.\.corsHeaders,/)
+    expect(source).toContain('function corsHeaders(req: Request): Record<string, string>')
+    expect(source).toContain('function jsonHeaders(req: Request): Record<string, string>')
+    expect(source).toContain('...corsHeaders(req)')
+    expect(source).not.toContain('"Access-Control-Allow-Origin": "*"')
+  })
+
+  it('only echoes trusted Pitch Atlas and local development origins', () => {
+    expect(source).toContain('function allowedOriginFor(req: Request): string')
+    expect(source).toContain('"https://pitch-atlas.com"')
+    expect(source).toContain('"https://www.pitch-atlas.com"')
+    expect(source).toContain('const localDevPorts = new Set(["3000", "4173", "5173"])')
+    expect(source).toContain('function isLocalDevOrigin(origin: string): boolean')
+    expect(source).toContain('"Access-Control-Allow-Origin": allowedOriginFor(req)')
+    expect(source).toContain('return "https://pitch-atlas.com"')
   })
 
   it('advertises allowed methods on preflight and unsupported methods', () => {
     expect(source).toContain('const allowedMethods = "POST, DELETE, OPTIONS"')
     expect(source).toContain('"Access-Control-Allow-Methods": allowedMethods')
     expect(source).toContain('"Allow": allowedMethods')
-    expect(source).toContain('headers: { ...corsHeaders, ...allowHeaders }')
-    expect(source).toContain('return json(405, { ok: false, error: "method_not_allowed" }, allowHeaders)')
+    expect(source).toContain('headers: { ...corsHeaders(req), ...allowHeaders }')
+    expect(source).toContain('return reply(405, { ok: false, error: "method_not_allowed" }, allowHeaders)')
   })
 
   it('keeps a provenance meta envelope on success and error replies', () => {
@@ -72,7 +85,7 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toContain('function requestBodyTooLarge(req: Request): boolean')
     expect(source).toContain('req.headers.get("Content-Length")')
     expect(source).toContain('length > MAX_BODY_BYTES')
-    expect(source).toContain('return json(413, { ok: false, error: "request_too_large" })')
+    expect(source).toContain('return reply(413, { ok: false, error: "request_too_large" })')
     expect(source.indexOf('if (requestBodyTooLarge(req))')).toBeLessThan(
       source.indexOf('createClient<DeleteAccountDatabase>'),
     )
@@ -92,14 +105,15 @@ describe('delete-account Edge Function source contract', () => {
 
   it('bounds Supabase client network waits and keeps auth lookup failures stamped', () => {
     expect(source).toContain('const SUPABASE_REQUEST_TIMEOUT_MS = 15000')
-    expect(source).toContain('async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response>')
+    expect(source).toContain('type FetchInitWithSignal = Parameters<typeof fetch>[1] & {')
+    expect(source).toContain('async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: FetchInitWithSignal): Promise<Response>')
     expect(source).toContain('const controller = new AbortController()')
     expect(source).toContain('const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS)')
     expect(source).toContain('return await fetch(input, { ...init, signal: controller.signal })')
     expect(source).toContain('clearTimeout(timeoutId)')
     expect(source).toContain('global: { fetch: fetchWithTimeout }')
     expect(source).toContain('console.error("delete-account auth lookup failed", error)')
-    expect(source).toContain('return json(502, { ok: false, error: "auth_lookup_failed" })')
+    expect(source).toContain('return reply(502, { ok: false, error: "auth_lookup_failed" })')
     expect(source.indexOf('try {\n    userLookup = await admin.auth.getUser(token)')).toBeLessThan(
       source.indexOf('if (userError || !user)'),
     )

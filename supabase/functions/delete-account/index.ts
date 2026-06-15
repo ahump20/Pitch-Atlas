@@ -34,29 +34,65 @@ type DeleteAccountMeta = {
   timezone: "America/Chicago";
 };
 
+type FetchInitWithSignal = Parameters<typeof fetch>[1] & {
+  signal?: AbortSignal | null;
+};
+
 const allowedMethods = "POST, DELETE, OPTIONS";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": allowedMethods,
-  "Access-Control-Max-Age": "86400",
-  "Vary": "Authorization, Origin",
-};
+const trustedOrigins = new Set([
+  "https://pitch-atlas.com",
+  "https://www.pitch-atlas.com",
+]);
+
+const localDevPorts = new Set(["3000", "4173", "5173"]);
+
+function isLocalDevOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return (
+      (url.hostname === "localhost" || url.hostname === "127.0.0.1") &&
+      (url.port === "" || localDevPorts.has(url.port))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function allowedOriginFor(req: Request): string {
+  const origin = req.headers.get("Origin")?.trim();
+  if (origin && (trustedOrigins.has(origin) || isLocalDevOrigin(origin))) {
+    return origin;
+  }
+
+  return "https://pitch-atlas.com";
+}
+
+function corsHeaders(req: Request): Record<string, string> {
+  return {
+    "Access-Control-Allow-Origin": allowedOriginFor(req),
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": allowedMethods,
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Authorization, Origin",
+  };
+}
 
 const allowHeaders = {
   "Allow": allowedMethods,
 };
 
-const jsonHeaders = {
-  ...corsHeaders,
-  "Content-Type": "application/json",
-  "Cache-Control": "no-store",
-  "Pragma": "no-cache",
-  "X-Content-Type-Options": "nosniff",
-  "Referrer-Policy": "no-referrer",
-  "Connection": "keep-alive",
-};
+function jsonHeaders(req: Request): Record<string, string> {
+  return {
+    ...corsHeaders(req),
+    "Content-Type": "application/json",
+    "Cache-Control": "no-store",
+    "Pragma": "no-cache",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Connection": "keep-alive",
+  };
+}
 
 const STORAGE_LIST_PAGE_SIZE = 1000;
 const STORAGE_REMOVE_BATCH_SIZE = 100;
@@ -79,10 +115,10 @@ function meta(): DeleteAccountMeta {
   };
 }
 
-function json(status: number, body: CleanupResult, extraHeaders: Record<string, string> = {}): Response {
+function json(req: Request, status: number, body: CleanupResult, extraHeaders: Record<string, string> = {}): Response {
   return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
     status,
-    headers: { ...jsonHeaders, ...extraHeaders },
+    headers: { ...jsonHeaders(req), ...extraHeaders },
   });
 }
 
@@ -143,7 +179,7 @@ async function streamedRequestBodyTooLarge(req: Request): Promise<boolean> {
   }
 }
 
-async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response> {
+async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: FetchInitWithSignal): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS);
   const upstreamSignal = init?.signal;
@@ -232,32 +268,35 @@ async function deleteBlockedUsersForDeletedAccount(admin: SupabaseAdmin, userId:
 }
 
 Deno.serve(async (req: Request) => {
+  const reply = (status: number, body: CleanupResult, extraHeaders: Record<string, string> = {}) =>
+    json(req, status, body, extraHeaders);
+
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: { ...corsHeaders, ...allowHeaders } });
+    return new Response("ok", { headers: { ...corsHeaders(req), ...allowHeaders } });
   }
 
   if (req.method !== "POST" && req.method !== "DELETE") {
-    return json(405, { ok: false, error: "method_not_allowed" }, allowHeaders);
+    return reply(405, { ok: false, error: "method_not_allowed" }, allowHeaders);
   }
 
   const token = bearerToken(req);
   if (!token) {
-    return json(401, { ok: false, error: "missing_bearer_token" });
+    return reply(401, { ok: false, error: "missing_bearer_token" });
   }
 
   if (requestBodyTooLarge(req)) {
-    return json(413, { ok: false, error: "request_too_large" });
+    return reply(413, { ok: false, error: "request_too_large" });
   }
 
   if (await streamedRequestBodyTooLarge(req)) {
-    return json(413, { ok: false, error: "request_too_large" });
+    return reply(413, { ok: false, error: "request_too_large" });
   }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
   if (!supabaseUrl || !serviceRoleKey) {
-    return json(500, { ok: false, error: "server_not_configured" });
+    return reply(500, { ok: false, error: "server_not_configured" });
   }
 
   const admin: SupabaseAdmin = createClient<DeleteAccountDatabase>(supabaseUrl, serviceRoleKey, {
@@ -270,14 +309,14 @@ Deno.serve(async (req: Request) => {
     userLookup = await admin.auth.getUser(token);
   } catch (error) {
     console.error("delete-account auth lookup failed", error);
-    return json(502, { ok: false, error: "auth_lookup_failed" });
+    return reply(502, { ok: false, error: "auth_lookup_failed" });
   }
 
   const { data: userResult, error: userError } = userLookup;
   const user = userResult?.user;
 
   if (userError || !user) {
-    return json(401, { ok: false, error: "invalid_session" });
+    return reply(401, { ok: false, error: "invalid_session" });
   }
 
   const userId = user.id;
@@ -302,14 +341,14 @@ Deno.serve(async (req: Request) => {
       failCleanup("auth_delete_failed", deleteUserError);
     }
 
-    return json(200, {
+    return reply(200, {
       ok: true,
     });
   } catch (error) {
     if (!(error instanceof CleanupFailure)) {
       console.error("delete-account unexpected failure", error);
     }
-    return json(500, {
+    return reply(500, {
       ok: false,
       error: "delete_account_failed",
     });
