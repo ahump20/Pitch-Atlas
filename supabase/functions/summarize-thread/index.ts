@@ -111,6 +111,28 @@ function meta(): SummaryMeta {
   };
 }
 
+function provenanceHeaders(responseMeta: SummaryMeta): Record<string, string> {
+  return {
+    "X-Data-Source": responseMeta.source,
+    "X-Origin-Data-Source": responseMeta.source,
+    "X-Last-Updated": responseMeta.fetched_at,
+  };
+}
+
+function preflight(req: Request): Response {
+  const responseMeta = meta();
+
+  return new Response("ok", {
+    headers: {
+      ...corsHeaders(req),
+      ...allowHeaders,
+      "Cache-Control": "no-store",
+      "Pragma": "no-cache",
+      ...provenanceHeaders(responseMeta),
+    },
+  });
+}
+
 function json(req: Request, status: number, body: JsonBody, extraHeaders: Record<string, string> = {}): Response {
   const responseMeta = body.meta ?? meta();
 
@@ -118,9 +140,7 @@ function json(req: Request, status: number, body: JsonBody, extraHeaders: Record
     status,
     headers: {
       ...jsonHeaders(req),
-      "X-Data-Source": responseMeta.source,
-      "X-Origin-Data-Source": responseMeta.source,
-      "X-Last-Updated": responseMeta.fetched_at,
+      ...provenanceHeaders(responseMeta),
       ...extraHeaders,
     },
   });
@@ -400,7 +420,7 @@ Deno.serve(async (req: Request) => {
     json(req, status, body, extraHeaders);
 
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: { ...corsHeaders(req), ...allowHeaders } });
+    return preflight(req);
   }
 
   if (req.method !== "POST") {
