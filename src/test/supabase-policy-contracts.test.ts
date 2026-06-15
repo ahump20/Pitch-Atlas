@@ -283,6 +283,23 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/\bto\s+(anon|public)\b/i)
   })
 
+  it('keeps media terms policies closed to anonymous Supabase sessions', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615093000_media_terms_permanent_users.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toMatch(
+      /create\s+policy\s+dmt_select[\s\S]*?\bfor\s+select\s+to\s+authenticated\b[\s\S]*?\busing\b/i,
+    )
+    expect(executableSql).toMatch(
+      /create\s+policy\s+dmt_insert[\s\S]*?\bfor\s+insert\s+to\s+authenticated\b[\s\S]*?\bwith\s+check\b/i,
+    )
+    expect(executableSql).toContain("((select auth.jwt()) ->> 'is_anonymous')::boolean is false")
+    expect(executableSql).not.toMatch(/\bto\s+(anon|public)\b/i)
+  })
+
   it('keeps block-list reads limited to the target user', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615035000_blocked_users_read_column_grant.sql'),
