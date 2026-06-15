@@ -299,6 +299,28 @@ describe('community safety database policy contracts', () => {
     expect(migration).not.toMatch(/\bgrant\s+delete\s+on\s+public\.note_(?:tries|helpful)\s+to\s+anon\b/i)
   })
 
+  it('keeps discussion media storage mutations signed-in only', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615063056_storage_mutations_authenticated_only.sql'),
+      'utf8',
+    )
+
+    expect(migration).toMatch(
+      /drop\s+policy\s+if\s+exists\s+discussion_media_object_insert\s+on\s+storage\.objects/i,
+    )
+    expect(migration).toMatch(
+      /create\s+policy\s+discussion_media_object_insert[\s\S]*?\bfor\s+insert\s+to\s+authenticated\b[\s\S]*?\bwith\s+check\b/i,
+    )
+    expect(migration).toMatch(
+      /drop\s+policy\s+if\s+exists\s+discussion_media_object_delete\s+on\s+storage\.objects/i,
+    )
+    expect(migration).toMatch(
+      /create\s+policy\s+discussion_media_object_delete[\s\S]*?\bfor\s+delete\s+to\s+authenticated\b[\s\S]*?\busing\b/i,
+    )
+    expect(migration).not.toMatch(/\bto\s+authenticated\s*,\s*anon\b/i)
+    expect(migration).not.toMatch(/\bto\s+anon\b/i)
+  })
+
   it('keeps consensus view reads limited to aggregate columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615042000_note_consensus_read_column_grant.sql'),
