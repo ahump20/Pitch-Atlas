@@ -29,29 +29,65 @@ type BodyReadResult = {
   invalidJson: boolean;
 };
 
+type FetchInitWithSignal = Parameters<typeof fetch>[1] & {
+  signal?: AbortSignal | null;
+};
+
 const allowedMethods = "POST, OPTIONS";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": allowedMethods,
-  "Access-Control-Max-Age": "86400",
-  "Vary": "Authorization, Origin",
-};
+const trustedOrigins = new Set([
+  "https://pitch-atlas.com",
+  "https://www.pitch-atlas.com",
+]);
+
+const localDevPorts = new Set(["3000", "4173", "5173"]);
+
+function isLocalDevOrigin(origin: string): boolean {
+  try {
+    const url = new URL(origin);
+    return (
+      (url.hostname === "localhost" || url.hostname === "127.0.0.1") &&
+      (url.port === "" || localDevPorts.has(url.port))
+    );
+  } catch {
+    return false;
+  }
+}
+
+function allowedOriginFor(req: Request): string {
+  const origin = req.headers.get("Origin")?.trim();
+  if (origin && (trustedOrigins.has(origin) || isLocalDevOrigin(origin))) {
+    return origin;
+  }
+
+  return "https://pitch-atlas.com";
+}
+
+function corsHeaders(req: Request): Record<string, string> {
+  return {
+    "Access-Control-Allow-Origin": allowedOriginFor(req),
+    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Methods": allowedMethods,
+    "Access-Control-Max-Age": "86400",
+    "Vary": "Authorization, Origin",
+  };
+}
 
 const allowHeaders = {
   "Allow": allowedMethods,
 };
 
-const jsonHeaders = {
-  ...corsHeaders,
-  "Content-Type": "application/json",
-  "Cache-Control": "no-store",
-  "Pragma": "no-cache",
-  "X-Content-Type-Options": "nosniff",
-  "Referrer-Policy": "no-referrer",
-  "Connection": "keep-alive",
-};
+function jsonHeaders(req: Request): Record<string, string> {
+  return {
+    ...corsHeaders(req),
+    "Content-Type": "application/json",
+    "Cache-Control": "no-store",
+    "Pragma": "no-cache",
+    "X-Content-Type-Options": "nosniff",
+    "Referrer-Policy": "no-referrer",
+    "Connection": "keep-alive",
+  };
+}
 
 const MAX_MESSAGES = 200;
 const MAX_TRANSCRIPT_CHARS = 12000;
@@ -75,10 +111,10 @@ function meta(): SummaryMeta {
   };
 }
 
-function json(status: number, body: JsonBody, extraHeaders: Record<string, string> = {}): Response {
+function json(req: Request, status: number, body: JsonBody, extraHeaders: Record<string, string> = {}): Response {
   return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
     status,
-    headers: { ...jsonHeaders, ...extraHeaders },
+    headers: { ...jsonHeaders(req), ...extraHeaders },
   });
 }
 
@@ -137,7 +173,7 @@ function createAdminClient(config: RuntimeConfig): SupabaseClient {
   });
 }
 
-async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]): Promise<Response> {
+async function fetchWithTimeout(input: Parameters<typeof fetch>[0], init?: FetchInitWithSignal): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), SUPABASE_REQUEST_TIMEOUT_MS);
   const upstreamSignal = init?.signal;
@@ -352,41 +388,44 @@ async function requestSummary(openaiApiKey: string, transcript: string): Promise
 }
 
 Deno.serve(async (req: Request) => {
+  const reply = (status: number, body: JsonBody, extraHeaders: Record<string, string> = {}) =>
+    json(req, status, body, extraHeaders);
+
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: { ...corsHeaders, ...allowHeaders } });
+    return new Response("ok", { headers: { ...corsHeaders(req), ...allowHeaders } });
   }
 
   if (req.method !== "POST") {
-    return json(405, { error: "method_not_allowed" }, allowHeaders);
+    return reply(405, { error: "method_not_allowed" }, allowHeaders);
   }
 
   const token = bearerToken(req);
   if (!token) {
-    return json(401, { error: "missing_bearer_token" });
+    return reply(401, { error: "missing_bearer_token" });
   }
 
   if (requestBodyTooLarge(req)) {
-    return json(413, { error: "request_too_large" });
+    return reply(413, { error: "request_too_large" });
   }
 
   const bodyResult = await readBody(req);
   if (bodyResult.tooLarge) {
-    return json(413, { error: "request_too_large" });
+    return reply(413, { error: "request_too_large" });
   }
   if (bodyResult.invalidJson) {
-    return json(400, { error: "invalid_json" });
+    return reply(400, { error: "invalid_json" });
   }
 
   const body = bodyResult.body;
   const threadIdResult = threadIdFromBody(body);
   if ("error" in threadIdResult) {
-    return json(400, { error: threadIdResult.error });
+    return reply(400, { error: threadIdResult.error });
   }
   const { threadId } = threadIdResult;
 
   const config = runtimeConfig();
   if (!config) {
-    return json(500, { error: "server_not_configured" });
+    return reply(500, { error: "server_not_configured" });
   }
 
   const admin = createAdminClient(config);
@@ -396,7 +435,7 @@ Deno.serve(async (req: Request) => {
     userLookup = await admin.auth.getUser(token);
   } catch (error) {
     console.error("summarize-thread auth lookup failed", error);
-    return json(502, { error: "auth_lookup_failed" });
+    return reply(502, { error: "auth_lookup_failed" });
   }
 
   const {
@@ -405,7 +444,7 @@ Deno.serve(async (req: Request) => {
   } = userLookup;
 
   if (userError || !user) {
-    return json(401, { error: "invalid_session" });
+    return reply(401, { error: "invalid_session" });
   }
 
   let participantLookup;
@@ -418,18 +457,18 @@ Deno.serve(async (req: Request) => {
       .maybeSingle();
   } catch (error) {
     console.error("summarize-thread participant lookup crashed", error);
-    return json(502, { error: "participant_lookup_failed" });
+    return reply(502, { error: "participant_lookup_failed" });
   }
 
   const { data: participant, error: participantError } = participantLookup;
 
   if (participantError) {
     console.error("summarize-thread participant lookup failed", participantError);
-    return json(500, { error: "participant_lookup_failed" });
+    return reply(500, { error: "participant_lookup_failed" });
   }
 
   if (!participant) {
-    return json(403, { error: "forbidden" });
+    return reply(403, { error: "forbidden" });
   }
 
   let messagesLookup;
@@ -442,20 +481,20 @@ Deno.serve(async (req: Request) => {
       .limit(MAX_MESSAGES);
   } catch (error) {
     console.error("summarize-thread messages lookup crashed", error);
-    return json(502, { error: "messages_lookup_failed" });
+    return reply(502, { error: "messages_lookup_failed" });
   }
 
   const { data: messages, error: messagesError } = messagesLookup;
 
   if (messagesError) {
     console.error("summarize-thread messages lookup failed", messagesError);
-    return json(500, { error: "messages_lookup_failed" });
+    return reply(500, { error: "messages_lookup_failed" });
   }
 
   const rows = (messages ?? []) as MessageRow[];
 
   if (rows.length === 0) {
-    return json(200, {
+    return reply(200, {
       thread_id: threadId,
       message_count: 0,
       result: {
@@ -471,7 +510,7 @@ Deno.serve(async (req: Request) => {
   const openaiResp = await requestSummary(config.openaiApiKey, transcript);
 
   if (!openaiResp) {
-    return json(502, { error: "summary_unavailable" });
+    return reply(502, { error: "summary_unavailable" });
   }
 
   if (!openaiResp.ok) {
@@ -479,7 +518,7 @@ Deno.serve(async (req: Request) => {
       status: openaiResp.status,
       statusText: openaiResp.statusText,
     });
-    return json(502, { error: "summary_unavailable" });
+    return reply(502, { error: "summary_unavailable" });
   }
 
   const completion = await readCompletion(openaiResp);
@@ -487,10 +526,10 @@ Deno.serve(async (req: Request) => {
 
   if (!result) {
     console.error("summarize-thread OpenAI response was empty or malformed");
-    return json(502, { error: "summary_unavailable" });
+    return reply(502, { error: "summary_unavailable" });
   }
 
-  return json(200, {
+  return reply(200, {
     thread_id: threadId,
     message_count: rows.length,
     result,
