@@ -32,6 +32,13 @@ describe('community safety database policy contracts', () => {
       .filter(Boolean)
   }
 
+  function stripSqlLineComments(sql: string) {
+    return sql
+      .split('\n')
+      .map((line) => line.replace(/--.*$/, ''))
+      .join('\n')
+  }
+
   it('keeps banned terms admin reads closed to anonymous Supabase sessions', () => {
     expect(migrations).toContain('drop policy if exists banned_terms_admin_read on public.banned_terms')
     expect(migrations).toContain('create policy banned_terms_admin_read')
@@ -326,6 +333,41 @@ describe('community safety database policy contracts', () => {
     )
     expect(migration).not.toMatch(/\bto\s+authenticated\s*,\s*anon\b/i)
     expect(migration).not.toMatch(/\bto\s+anon\b/i)
+  })
+
+  it('keeps dormant direct-message policies removed', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615074000_drop_dormant_dm_policies.sql'),
+      'utf8',
+    )
+
+    const dormantTables = ['threads', 'thread_participants', 'messages']
+    const dormantPolicies = [
+      'threads_delete_creator',
+      'threads_insert_own',
+      'threads_select_participant',
+      'threads_update_creator',
+      'participants_delete_thread_member',
+      'participants_insert_thread_member',
+      'participants_select_thread_member',
+      'messages_delete_sender',
+      'messages_insert_sender_member',
+      'messages_select_thread_member',
+      'messages_update_sender',
+    ]
+
+    for (const table of dormantTables) {
+      expect(migration).toContain(`to_regclass('public.${table}')`)
+    }
+
+    for (const policy of dormantPolicies) {
+      expect(migration).toMatch(new RegExp(`drop\\s+policy\\s+if\\s+exists\\s+${policy}\\b`, 'i'))
+    }
+
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).not.toMatch(/\bcreate\s+policy\b/i)
+    expect(executableSql).not.toMatch(/\bgrant\b/i)
   })
 
   it('keeps consensus view reads limited to aggregate columns', () => {
