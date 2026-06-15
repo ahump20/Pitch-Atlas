@@ -45,6 +45,21 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).toContain('return reply(405, { error: "method_not_allowed" }, allowHeaders)')
   })
 
+  it('keeps preflight replies no-store and browser-hardened', () => {
+    const preflightStart = source.indexOf('function preflight(req: Request): Response')
+    const jsonStart = source.indexOf('function json(req: Request')
+    const preflightSource = source.slice(preflightStart, jsonStart)
+
+    expect(preflightStart).toBeGreaterThan(-1)
+    expect(jsonStart).toBeGreaterThan(preflightStart)
+    expect(preflightSource).toContain('"Content-Type": "text/plain; charset=utf-8"')
+    expect(preflightSource).toContain('"Cache-Control": "no-store"')
+    expect(preflightSource).toContain('"Pragma": "no-cache"')
+    expect(preflightSource).toContain('"X-Content-Type-Options": "nosniff"')
+    expect(preflightSource).toContain('"Referrer-Policy": "no-referrer"')
+    expect(preflightSource).toContain('...provenanceHeaders(responseMeta)')
+  })
+
   it('keeps provenance on JSON replies and preflight responses', () => {
     expect(source).toContain('source: "pitch-atlas-summarize-thread"')
     expect(source).toContain('fetched_at: new Date().toISOString()')

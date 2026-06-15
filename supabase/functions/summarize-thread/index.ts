@@ -136,8 +136,11 @@ function preflight(req: Request): Response {
     headers: {
       ...corsHeaders(req),
       ...allowHeaders,
+      "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",
       "Pragma": "no-cache",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
       ...provenanceHeaders(responseMeta),
     },
   });
