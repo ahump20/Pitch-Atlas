@@ -333,6 +333,34 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/\bgrant\s+(select|insert)\b[\s\S]*?\bon\s+public\.discussion_media_terms\b/i)
   })
 
+  it('runs current-user RPCs as invoker with narrow authenticated column grants', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615193000_rpc_invoker_current_user_grants.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain('revoke select on public.note_tries from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_tries', 'authenticated')).toEqual(['note_id', 'user_id'])
+    expect(executableSql).not.toMatch(/\bgrant\s+select\s+on\s+public\.note_tries\b/i)
+
+    expect(executableSql).toContain('revoke select on public.note_helpful from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_helpful', 'authenticated')).toEqual(['note_id', 'user_id'])
+    expect(executableSql).not.toMatch(/\bgrant\s+select\s+on\s+public\.note_helpful\b/i)
+
+    expect(executableSql).toContain('revoke select, insert on public.discussion_media_terms from anon, authenticated')
+    expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).toEqual(['user_id'])
+    expect(insertGrantColumns(migration, 'discussion_media_terms')).toEqual(['user_id'])
+    expect(executableSql).not.toMatch(/\bto\s+anon\b/i)
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.has_accepted_media_terms\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.accept_media_terms\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.viewer_note_engagement\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain('grant execute on function public.has_accepted_media_terms() to authenticated')
+    expect(executableSql).toContain('grant execute on function public.accept_media_terms() to authenticated')
+    expect(executableSql).toContain('grant execute on function public.viewer_note_engagement() to authenticated')
+  })
+
   it('keeps block-list reads limited to the target user', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615035000_blocked_users_read_column_grant.sql'),
