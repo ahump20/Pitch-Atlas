@@ -224,6 +224,25 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).toContain('private.blocked_between(new.author_id, v_parent_author)')
   })
 
+  it('pins service-only invoker helpers to empty search paths', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615205500_pin_remaining_helper_search_paths.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain("alter function public.note_base_rank(text, boolean, integer, integer, integer)\n  set search_path = ''")
+    expect(executableSql).toContain("alter function public.on_field_note_biu()\n  set search_path = ''")
+    expect(executableSql).toContain("alter function public.set_updated_at()\n  set search_path = ''")
+    expect(executableSql).toContain('revoke execute on function public.note_base_rank(text, boolean, integer, integer, integer)\n  from public, anon, authenticated')
+    expect(executableSql).toContain('revoke execute on function public.on_field_note_biu()\n  from public, anon, authenticated')
+    expect(executableSql).toContain('revoke execute on function public.set_updated_at()\n  from public, anon, authenticated')
+    expect(executableSql).toContain('grant execute on function public.note_base_rank(text, boolean, integer, integer, integer)\n  to service_role')
+    expect(executableSql).toContain('grant execute on function public.on_field_note_biu()\n  to service_role')
+    expect(executableSql).toContain('grant execute on function public.set_updated_at()\n  to service_role')
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
+  })
+
   it('keeps discussion reads limited to rendered thread columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
