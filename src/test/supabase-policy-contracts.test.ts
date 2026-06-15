@@ -268,6 +268,21 @@ describe('community safety database policy contracts', () => {
     expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).not.toContain('accepted_at')
   })
 
+  it('keeps media terms policies authenticated-only', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615092000_media_terms_policies_authenticated.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(migration).toContain('revoke select, insert on public.discussion_media_terms from anon, authenticated')
+    expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).toEqual(['user_id'])
+    expect(insertGrantColumns(migration, 'discussion_media_terms')).toEqual(['user_id'])
+    expect(executableSql).toMatch(/create\s+policy\s+dmt_select[\s\S]*?\bfor\s+select\s+to\s+authenticated\b[\s\S]*?\busing\b/i)
+    expect(executableSql).toMatch(/create\s+policy\s+dmt_insert[\s\S]*?\bfor\s+insert\s+to\s+authenticated\b[\s\S]*?\bwith\s+check\b/i)
+    expect(executableSql).not.toMatch(/\bto\s+(anon|public)\b/i)
+  })
+
   it('keeps block-list reads limited to the target user', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615035000_blocked_users_read_column_grant.sql'),
