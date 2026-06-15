@@ -330,6 +330,8 @@ Deno.serve(async (req: Request) => {
     await deleteIfPresent(admin, "note_reports", "reporter_id", userId);
     await deleteIfPresent(admin, "note_tries", "user_id", userId);
     await deleteIfPresent(admin, "note_helpful", "user_id", userId);
+    await deleteIfPresent(admin, "field_notes", "author_id", userId);
+    await deleteIfPresent(admin, "discussion_posts", "author_id", userId);
     await deleteIfTableExists(admin, "messages", "sender_id", userId);
     await deleteIfTableExists(admin, "thread_participants", "user_id", userId);
     await deleteIfTableExists(admin, "threads", "created_by", userId);
