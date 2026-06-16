@@ -16,6 +16,7 @@ const BUCKET = 'discussion-media'
 const SIGN_TTL = 3600 // seconds a media URL stays valid before a reload re-signs it
 const MEDIA_LOOKUP_BATCH_SIZE = 100
 const SIGNED_URL_BATCH_SIZE = 100
+const STORAGE_REMOVE_BATCH_SIZE = 100
 
 export type MediaKind = 'image' | 'video'
 
@@ -352,10 +353,20 @@ export async function deletePost(postId: string): Promise<void> {
   const { data: mediaRows, error: mediaErr } = await supabase
     .from('discussion_media')
     .select('storage_path')
-    .in('post_id', cascadePostIds)
+    .in('post_id', cascadePostIds.slice(0, MEDIA_LOOKUP_BATCH_SIZE))
   if (mediaErr) throw new Error(friendlyError(mediaErr))
 
-  const ownPaths = ((mediaRows ?? []) as MediaPathRow[])
+  const allMediaRows = [...((mediaRows ?? []) as MediaPathRow[])]
+  for (const batch of batchesOf(cascadePostIds.slice(MEDIA_LOOKUP_BATCH_SIZE), MEDIA_LOOKUP_BATCH_SIZE)) {
+    const { data, error } = await supabase
+      .from('discussion_media')
+      .select('storage_path')
+      .in('post_id', batch)
+    if (error) throw new Error(friendlyError(error))
+    allMediaRows.push(...((data ?? []) as MediaPathRow[]))
+  }
+
+  const ownPaths = allMediaRows
     .map((row) => row.storage_path)
     .filter((path): path is string => typeof path === 'string' && path.startsWith(`${uid}/`))
 
@@ -363,7 +374,10 @@ export async function deletePost(postId: string): Promise<void> {
   if (error) throw new Error(friendlyError(error))
   if (ownPaths.length > 0) {
     // The row delete is what hides the post; storage cleanup removes the now-unreferenced bytes.
-    await supabase.storage.from(BUCKET).remove(ownPaths)
+    for (const batch of batchesOf(ownPaths, STORAGE_REMOVE_BATCH_SIZE)) {
+      const { error: removeError } = await supabase.storage.from(BUCKET).remove(batch)
+      if (removeError) throw new Error(friendlyError(removeError))
+    }
   }
 }
 
