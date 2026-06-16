@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { friendlyDbError, listNotes, setTried } from './community'
+import { friendlyDbError, friendlyReadError, getIdentity, listNotes, setHelpful, setTried } from './community'
 import { listThread, hasAcceptedMediaTerms } from './discussion'
 
 /*
@@ -31,15 +31,15 @@ vi.mock('./supabase', () => ({
 }))
 
 /** A thenable PostgREST-style chain that resolves every shape the libs await. */
-function chainFor(data: unknown) {
+function chainFor(data: unknown, error: unknown = null) {
   const chain: Record<string, unknown> = {}
   for (const m of ['select', 'eq', 'in', 'order', 'insert', 'delete', 'update']) {
     chain[m] = () => chain
   }
-  chain.maybeSingle = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error: null })
-  chain.single = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error: null })
+  chain.maybeSingle = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error })
+  chain.single = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error })
   chain.then = (resolve: (v: unknown) => unknown, reject: (e: unknown) => unknown) =>
-    Promise.resolve({ data, error: null }).then(resolve, reject)
+    Promise.resolve({ data, error }).then(resolve, reject)
   return chain
 }
 
@@ -148,6 +148,34 @@ describe('read path mints no account', () => {
     expect(mocks.rpc).toHaveBeenCalledWith('has_accepted_media_terms')
     expect(mocks.from).not.toHaveBeenCalledWith('discussion_media_terms')
   })
+
+  it('hides raw field note lookup errors behind load copy', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: null } })
+    mocks.from.mockImplementation((table: string) =>
+      chainFor(table === 'field_notes' ? null : [], { message: 'permission denied for table field_notes' }),
+    )
+
+    await expect(listNotes('four-seam')).rejects.toThrow('Could not load community notes just now. Try again.')
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+  })
+
+  it('hides raw engagement RPC errors behind load copy', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) => chainFor(table === 'field_notes' ? [NOTE_ROW] : []))
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: 'permission denied for function viewer_note_engagement' } })
+
+    await expect(listNotes('four-seam')).rejects.toThrow('Could not load community notes just now. Try again.')
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+  })
+
+  it('hides raw profile lookup errors behind load copy', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) =>
+      chainFor(table === 'profiles' ? null : [], { message: 'permission denied for table profiles' }),
+    )
+
+    await expect(getIdentity()).rejects.toThrow('Could not load community notes just now. Try again.')
+  })
 })
 
 describe('write path still signs in first', () => {
@@ -164,11 +192,32 @@ describe('write path still signs in first', () => {
 })
 
 describe('community write errors', () => {
+  it('keeps read failures generic', () => {
+    expect(friendlyReadError({ message: 'permission denied for table field_notes' })).toBe(
+      'Could not load community notes just now. Try again.',
+    )
+    expect(friendlyReadError(null)).toBe('Could not load community notes just now. Try again.')
+  })
+
   it('keeps trigger-tagged messages but hides raw database errors', () => {
     expect(friendlyDbError({ message: 'content_blocked: keep it clean' })).toBe('keep it clean')
     expect(friendlyDbError({ message: 'duplicate key value violates unique constraint "field_notes_pkey"' })).toBe(
       'Could not save that just now. Try again.',
     )
     expect(friendlyDbError(null)).toBe('Could not save that just now. Try again.')
+  })
+
+  it('hides raw Tried This write errors', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation(() => chainFor(null, { message: 'permission denied for table note_tries' }))
+
+    await expect(setTried('note-1', true)).rejects.toThrow('Could not save that just now. Try again.')
+  })
+
+  it('hides raw Helpful write errors', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation(() => chainFor(null, { message: 'permission denied for table note_helpful' }))
+
+    await expect(setHelpful('note-1', false)).rejects.toThrow('Could not save that just now. Try again.')
   })
 })

@@ -234,6 +234,14 @@ export function friendlyDbError(error: { message?: string } | null): string {
   return 'Could not save that just now. Try again.'
 }
 
+/** Reads use their own fallback copy so load failures do not sound like failed writes. */
+export function friendlyReadError(error: { message?: string } | null): string {
+  const raw = error?.message ?? ''
+  if (raw.includes('content_blocked:'))
+    return raw.split('content_blocked:')[1]?.trim() || 'That note contains language we do not allow here.'
+  return 'Could not load community notes just now. Try again.'
+}
+
 function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, helpful: Set<string>): CommunityNote {
   return {
     id: row.id,
@@ -295,7 +303,7 @@ export async function getIdentity(): Promise<CommunityIdentity | null> {
     .select('display_name, is_claimed, contribution_score, notes_count')
     .eq('id', user.id)
     .maybeSingle()
-  if (error) throw error
+  if (error) throw new Error(friendlyReadError(error))
 
   return {
     userId: user.id,
@@ -338,7 +346,7 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
     .eq('pitch_slug', pitchSlug)
     .order('base_rank', { ascending: false })
     .order('created_at', { ascending: false })
-  if (error) throw error
+  if (error) throw new Error(friendlyReadError(error))
 
   let tried = new Set<string>()
   let helpful = new Set<string>()
@@ -346,7 +354,7 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
     // Direct SELECT on note_tries/note_helpful stays closed; the RPC returns
     // only current-session booleans for notes this viewer has touched.
     const { data: engagementRows, error: engagementError } = await supabase.rpc('viewer_note_engagement')
-    if (engagementError) throw engagementError
+    if (engagementError) throw new Error(friendlyReadError(engagementError))
     const rows = (engagementRows ?? []) as ViewerEngagementRow[]
     tried = new Set(rows.filter((r) => r.tried).map((r) => r.note_id))
     helpful = new Set(rows.filter((r) => r.helpful).map((r) => r.note_id))
@@ -393,14 +401,14 @@ export async function setTried(noteId: string, on: boolean): Promise<void> {
   if (on) {
     const { error } = await supabase.from('note_tries').insert({ note_id: noteId })
     // 23505 = the one-per-account unique violation; treat as already-on.
-    if (error && error.code !== '23505') throw error
+    if (error && error.code !== '23505') throw new Error(friendlyDbError(error))
   } else {
     const { error } = await supabase
       .from('note_tries')
       .delete()
       .eq('note_id', noteId)
       .eq('user_id', viewerId)
-    if (error) throw error
+    if (error) throw new Error(friendlyDbError(error))
   }
 }
 
@@ -409,14 +417,14 @@ export async function setHelpful(noteId: string, on: boolean): Promise<void> {
   const viewerId = await ensureSession()
   if (on) {
     const { error } = await supabase.from('note_helpful').insert({ note_id: noteId })
-    if (error && error.code !== '23505') throw error
+    if (error && error.code !== '23505') throw new Error(friendlyDbError(error))
   } else {
     const { error } = await supabase
       .from('note_helpful')
       .delete()
       .eq('note_id', noteId)
       .eq('user_id', viewerId)
-    if (error) throw error
+    if (error) throw new Error(friendlyDbError(error))
   }
 }
 
