@@ -308,7 +308,11 @@ export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
 /** Create a post or a reply. Saves the handle to the profile for next time. */
 export async function createPost(input: NewPost): Promise<string> {
   const uid = await ensureSession()
-  await supabase.from('profiles').update({ display_name: input.displayName }).eq('id', uid)
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({ display_name: input.displayName })
+    .eq('id', uid)
+  if (profileError) throw new Error(friendlyError(profileError))
 
   const { data, error } = await supabase
     .from('discussion_posts')

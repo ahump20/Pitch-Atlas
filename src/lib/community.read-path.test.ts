@@ -7,6 +7,7 @@ import {
   listNotes,
   setHelpful,
   setTried,
+  submitNote,
 } from './community'
 import { listThread, hasAcceptedMediaTerms } from './discussion'
 
@@ -248,6 +249,34 @@ describe('community write errors', () => {
     mocks.from.mockImplementation(() => chainFor(null, { message: 'permission denied for table note_helpful' }))
 
     await expect(setHelpful('note-1', false)).rejects.toThrow('Could not save that just now. Try again.')
+  })
+
+  it('does not submit a field note when the profile write fails', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } }, error: null })
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'profiles') return chainFor(null, { message: 'permission denied for table profiles' })
+      return chainFor([NOTE_ROW])
+    })
+
+    await expect(
+      submitNote({
+        pitchSlug: 'four-seam',
+        displayName: 'RHP_threequarter',
+        tweak: 'Thumb tucked deeper under the leather.',
+        playerLevel: 'college-plus',
+        armSlot: 'three-quarter',
+        velocityBand: null,
+        intent: 'more-movement',
+        claimedResultKind: 'worked-in-bullpen',
+        claimedResultNote: null,
+        sampleSize: null,
+        evidenceUrl: null,
+        evidenceLabel: null,
+        sourceTier: 'community-firsthand',
+        note: null,
+      }),
+    ).rejects.toThrow('Could not save that just now. Try again.')
+    expect(tablesQueried()).toEqual(['profiles'])
   })
 
   it('hides raw anonymous sign-in errors on write intent', async () => {
