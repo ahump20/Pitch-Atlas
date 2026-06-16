@@ -82,6 +82,31 @@ describe('uploadMedia', () => {
       }),
     )
   })
+
+  it('removes uploaded bytes and preserves the row error when media row insert fails', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
+
+    await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
+      'slow down',
+    )
+
+    const [path] = mocks.upload.mock.calls[0]
+    expect(mocks.remove).toHaveBeenCalledWith([path])
+  })
+
+  it('does not hide storage cleanup failure during media row rollback', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
+    mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
+
+    await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
+      'Could not save that just now. Try again.',
+    )
+
+    const [path] = mocks.upload.mock.calls[0]
+    expect(mocks.remove).toHaveBeenCalledWith([path])
+  })
 })
 
 describe('deletePost', () => {

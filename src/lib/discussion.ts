@@ -202,7 +202,8 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
   })
   if (error) {
     // roll back the orphaned object so a failed row never leaves bytes behind
-    await supabase.storage.from(BUCKET).remove([path])
+    const { error: cleanupError } = await supabase.storage.from(BUCKET).remove([path])
+    if (cleanupError) throw new Error(friendlyError(cleanupError))
     throw new Error(friendlyError(error))
   }
 }
