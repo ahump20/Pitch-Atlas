@@ -14,6 +14,8 @@ import { DISCUSSION_LIMITS } from '../data/discussion'
 
 const BUCKET = 'discussion-media'
 const SIGN_TTL = 3600 // seconds a media URL stays valid before a reload re-signs it
+const MEDIA_LOOKUP_BATCH_SIZE = 100
+const SIGNED_URL_BATCH_SIZE = 100
 
 export type MediaKind = 'image' | 'video'
 
@@ -77,6 +79,12 @@ const taggedErrorMessages: Record<string, string> = {
   'media_blocked:': 'That media file is not allowed here.',
   'too_deep:': 'Replies can only go one level deep.',
   'invalid_parent:': 'That reply target is no longer available.',
+}
+
+function batchesOf<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = []
+  for (let i = 0; i < items.length; i += size) batches.push(items.slice(i, i + size))
+  return batches
 }
 
 /** Turn a Postgres/PostgREST error into a sentence a contributor can act on. */
@@ -205,10 +213,14 @@ async function signMedia(rows: MediaRow[]): Promise<Map<string, DiscussionMedia[
   if (rows.length === 0) return byPost
 
   const paths = rows.map((r) => r.storage_path)
-  const { data: signed } = await supabase.storage.from(BUCKET).createSignedUrls(paths, SIGN_TTL)
   const urlByPath = new Map<string, string>()
-  for (const s of signed ?? []) {
-    if (s.signedUrl && s.path) urlByPath.set(s.path, s.signedUrl)
+
+  for (const batch of batchesOf(paths, SIGNED_URL_BATCH_SIZE)) {
+    const { data: signed, error } = await supabase.storage.from(BUCKET).createSignedUrls(batch, SIGN_TTL)
+    if (error) throw new Error(friendlyReadError(error))
+    for (const s of signed ?? []) {
+      if (s.signedUrl && s.path) urlByPath.set(s.path, s.signedUrl)
+    }
   }
 
   for (const r of rows) {
@@ -249,12 +261,16 @@ export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
 
   let mediaByPost = new Map<string, DiscussionMedia[]>()
   if (ids.length > 0) {
-    const { data: mediaRows, error: mediaError } = await supabase
-      .from('discussion_media')
-      .select('id, post_id, storage_path, kind, width, height')
-      .in('post_id', ids)
-    if (mediaError) throw new Error(friendlyReadError(mediaError))
-    mediaByPost = await signMedia((mediaRows ?? []) as MediaRow[])
+    const mediaRows: MediaRow[] = []
+    for (const batch of batchesOf(ids, MEDIA_LOOKUP_BATCH_SIZE)) {
+      const { data, error: mediaError } = await supabase
+        .from('discussion_media')
+        .select('id, post_id, storage_path, kind, width, height')
+        .in('post_id', batch)
+      if (mediaError) throw new Error(friendlyReadError(mediaError))
+      mediaRows.push(...((data ?? []) as MediaRow[]))
+    }
+    mediaByPost = await signMedia(mediaRows)
   }
 
   const toPost = (r: PostRow): DiscussionPost => ({
