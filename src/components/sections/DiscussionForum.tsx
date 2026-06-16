@@ -425,6 +425,17 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
     }
   }
 
+  async function confirmDelete() {
+    if (!deleting) return
+    try {
+      await d.remove(deleting)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Post didn't delete. Try again.")
+    } finally {
+      setDeleting(null)
+    }
+  }
+
   if (d.status === 'loading' || d.status === 'idle') {
     return (
       <div className="flex flex-col gap-3" aria-busy="true">
@@ -549,9 +560,7 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
-                if (!deleting) return
-                void d.remove(deleting)
-                setDeleting(null)
+                void confirmDelete()
               }}
             >
               Delete

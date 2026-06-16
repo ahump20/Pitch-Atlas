@@ -70,8 +70,9 @@ interface MediaPathRow {
   storage_path: string | null
 }
 
-interface PostIdRow {
+interface ReplyRow {
   id: string
+  author_id: string | null
 }
 
 const taggedErrorMessages: Record<string, string> = {
@@ -344,13 +345,18 @@ export async function deletePost(postId: string): Promise<void> {
   const uid = await ensureSession()
   const { data: replyRows, error: replyErr } = await supabase
     .from('discussion_posts')
-    .select('id')
+    .select('id, author_id')
     .eq('parent_id', postId)
   if (replyErr) throw new Error(friendlyError(replyErr))
 
+  const replies = (replyRows ?? []) as ReplyRow[]
+  if (replies.some((row) => row.author_id !== uid)) {
+    throw new Error('That post has replies from other contributors, so it cannot be deleted.')
+  }
+
   const cascadePostIds = [
     postId,
-    ...((replyRows ?? []) as PostIdRow[])
+    ...replies
       .map((row) => row.id)
       .filter((id): id is string => typeof id === 'string' && id.length > 0),
   ]
