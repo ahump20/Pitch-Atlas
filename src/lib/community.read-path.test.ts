@@ -1,5 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { friendlyDbError, friendlyReadError, getIdentity, listNotes, setHelpful, setTried } from './community'
+import {
+  claimWithEmail,
+  friendlyDbError,
+  friendlyReadError,
+  getIdentity,
+  listNotes,
+  setHelpful,
+  setTried,
+} from './community'
 import { listThread, hasAcceptedMediaTerms } from './discussion'
 
 /*
@@ -15,6 +23,7 @@ import { listThread, hasAcceptedMediaTerms } from './discussion'
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   signInAnonymously: vi.fn(),
+  updateUser: vi.fn(),
   from: vi.fn(),
   rpc: vi.fn(),
   storageFrom: vi.fn(),
@@ -23,7 +32,11 @@ const mocks = vi.hoisted(() => ({
 vi.mock('./supabase', () => ({
   COMMUNITY_ENABLED: true,
   supabase: {
-    auth: { getSession: mocks.getSession, signInAnonymously: mocks.signInAnonymously },
+    auth: {
+      getSession: mocks.getSession,
+      signInAnonymously: mocks.signInAnonymously,
+      updateUser: mocks.updateUser,
+    },
     from: mocks.from,
     rpc: mocks.rpc,
     storage: { from: mocks.storageFrom },
@@ -96,6 +109,22 @@ describe('read path mints no account', () => {
     expect(notes).toHaveLength(1)
     expect(notes[0].displayName).toBe('RHP_threequarter')
     expect(notes[0].adoptionCount).toBe(3)
+    expect(notes[0].viewerTried).toBe(false)
+    expect(notes[0].viewerHelpful).toBe(false)
+    expect(notes[0].viewerIsAuthor).toBe(false)
+  })
+
+  it('listNotes treats session lookup failure as signed-out instead of minting a user', async () => {
+    mocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: { message: 'AuthApiError: token refresh failed' },
+    })
+    mocks.from.mockImplementation((table: string) => chainFor(table === 'field_notes' ? [NOTE_ROW] : []))
+
+    const notes = await listNotes('four-seam')
+
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+    expect(tablesQueried()).toEqual(['field_notes'])
     expect(notes[0].viewerTried).toBe(false)
     expect(notes[0].viewerHelpful).toBe(false)
     expect(notes[0].viewerIsAuthor).toBe(false)
@@ -219,5 +248,43 @@ describe('community write errors', () => {
     mocks.from.mockImplementation(() => chainFor(null, { message: 'permission denied for table note_helpful' }))
 
     await expect(setHelpful('note-1', false)).rejects.toThrow('Could not save that just now. Try again.')
+  })
+
+  it('hides raw anonymous sign-in errors on write intent', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: null }, error: null })
+    mocks.signInAnonymously.mockResolvedValue({
+      data: { user: null },
+      error: { message: 'AuthApiError: anonymous sign-ins disabled for this project' },
+    })
+
+    await expect(setTried('note-1', true)).rejects.toThrow(
+      'Could not start your community session just now. Try again.',
+    )
+    expect(mocks.from).not.toHaveBeenCalled()
+  })
+
+  it('does not create a replacement anonymous account when session lookup fails on write intent', async () => {
+    mocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: { message: 'AuthApiError: token refresh failed' },
+    })
+
+    await expect(setHelpful('note-1', true)).rejects.toThrow(
+      'Could not start your community session just now. Try again.',
+    )
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+    expect(mocks.from).not.toHaveBeenCalled()
+  })
+
+  it('hides raw email-claim auth errors', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } }, error: null })
+    mocks.updateUser.mockResolvedValue({
+      data: null,
+      error: { message: 'AuthApiError: For security purposes, you can only request this once every 60 seconds' },
+    })
+
+    await expect(claimWithEmail('person@example.com')).rejects.toThrow(
+      'Could not send the claim email just now. Try again.',
+    )
   })
 })

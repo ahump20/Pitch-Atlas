@@ -217,6 +217,9 @@ const resultToDb: Record<ClaimedResultKind, string> = {
   'no-noticeable-change': 'no-noticeable-change',
 }
 
+const SESSION_START_ERROR = 'Could not start your community session just now. Try again.'
+const CLAIM_EMAIL_ERROR = 'Could not send the claim email just now. Try again.'
+
 /**
  * Turn a Postgres/PostgREST error into a sentence a contributor can act on. The
  * safety triggers raise prefixed messages ("content_blocked: ...", "rate_limit: ...");
@@ -240,6 +243,26 @@ export function friendlyReadError(error: { message?: string } | null): string {
   if (raw.includes('content_blocked:'))
     return raw.split('content_blocked:')[1]?.trim() || 'That note contains language we do not allow here.'
   return 'Could not load community notes just now. Try again.'
+}
+
+async function getSessionUserForRead() {
+  try {
+    const { data, error } = await supabase.auth.getSession()
+    if (error) return null
+    return data.session?.user ?? null
+  } catch {
+    return null
+  }
+}
+
+async function getSessionUserForWrite() {
+  try {
+    const { data, error } = await supabase.auth.getSession()
+    if (error) throw error
+    return data.session?.user ?? null
+  } catch {
+    throw new Error(SESSION_START_ERROR)
+  }
 }
 
 function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, helpful: Set<string>): CommunityNote {
@@ -277,25 +300,28 @@ function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, 
  * grants, so a visitor who only ever reads never mints an account.
  */
 export async function ensureSession(): Promise<string> {
-  const { data: existing } = await supabase.auth.getSession()
-  if (existing.session?.user) return existing.session.user.id
+  const existing = await getSessionUserForWrite()
+  if (existing) return existing.id
 
-  const { data, error } = await supabase.auth.signInAnonymously()
-  if (error) throw error
-  if (!data.user) throw new Error('Anonymous sign-in returned no user.')
-  return data.user.id
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously()
+    if (error) throw error
+    if (!data.user) throw new Error('Anonymous sign-in returned no user.')
+    return data.user.id
+  } catch {
+    throw new Error(SESSION_START_ERROR)
+  }
 }
 
 /** The current session's user id, or null. Never creates a session. */
 export async function getSessionUserId(): Promise<string | null> {
-  const { data } = await supabase.auth.getSession()
-  return data.session?.user?.id ?? null
+  const user = await getSessionUserForRead()
+  return user?.id ?? null
 }
 
 /** Read the current contributor's profile (handle, contribution score, claimed state). */
 export async function getIdentity(): Promise<CommunityIdentity | null> {
-  const { data: sessionData } = await supabase.auth.getSession()
-  const user = sessionData.session?.user
+  const user = await getSessionUserForRead()
   if (!user) return null
 
   const { data, error } = await supabase
@@ -318,8 +344,7 @@ export async function getIdentity(): Promise<CommunityIdentity | null> {
 
 /** Persist the contributor's display name for next time. */
 export async function setDisplayName(name: string): Promise<void> {
-  const { data: sessionData } = await supabase.auth.getSession()
-  const user = sessionData.session?.user
+  const user = await getSessionUserForWrite()
   if (!user) throw new Error('Not signed in.')
   const { error } = await supabase
     .from('profiles')
@@ -447,6 +472,10 @@ export async function reportNote(noteId: string, reason: string): Promise<void> 
  */
 export async function claimWithEmail(email: string): Promise<void> {
   await ensureSession()
-  const { error } = await supabase.auth.updateUser({ email })
-  if (error) throw error
+  try {
+    const { error } = await supabase.auth.updateUser({ email })
+    if (error) throw error
+  } catch {
+    throw new Error(CLAIM_EMAIL_ERROR)
+  }
 }
