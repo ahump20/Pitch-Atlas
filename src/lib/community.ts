@@ -392,8 +392,11 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
 export async function submitNote(input: NewFieldNote): Promise<CommunityNote> {
   const viewerId = await ensureSession()
 
-  // Keep the handle for next time; ignore a failure here (the note still matters).
-  await supabase.from('profiles').update({ display_name: input.displayName }).eq('id', viewerId)
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({ display_name: input.displayName })
+    .eq('id', viewerId)
+  if (profileError) throw new Error(friendlyDbError(profileError))
 
   const { data, error } = await supabase
     .from('field_notes')
