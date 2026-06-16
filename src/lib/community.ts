@@ -146,8 +146,13 @@ interface ViewerEngagementRow {
   helpful: boolean | null
 }
 
+interface ViewerMarkRow {
+  note_id: string
+}
+
 const NOTE_COLUMNS =
   'id, pitch_slug, author_id, display_name, tweak, player_level, arm_slot, velocity_band, intent, claimed_result_kind, claimed_result_note, sample_size, evidence_url, evidence_label, source_tier, note, adoption_count, helpful_count, base_rank, created_at'
+const ENGAGEMENT_LOOKUP_BATCH_SIZE = 100
 
 const paceFromDb: Record<string, VelocityBand> = {
   'under-60': 'low-effort',
@@ -293,6 +298,57 @@ function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, 
   }
 }
 
+function batchesOf<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = []
+  for (let i = 0; i < items.length; i += size) batches.push(items.slice(i, i + size))
+  return batches
+}
+
+function mergeViewerMarks(noteIds: string[], tried: Set<string>, helpful: Set<string>): ViewerEngagementRow[] {
+  return noteIds
+    .filter((noteId) => tried.has(noteId) || helpful.has(noteId))
+    .map((noteId) => ({
+      note_id: noteId,
+      tried: tried.has(noteId),
+      helpful: helpful.has(noteId),
+    }))
+}
+
+async function fallbackViewerEngagement(noteIds: string[]): Promise<ViewerEngagementRow[]> {
+  const visibleNotes = new Set(noteIds)
+  const { data, error } = await supabase.rpc('viewer_note_engagement')
+  if (error) throw new Error(friendlyReadError(error))
+  return ((data ?? []) as ViewerEngagementRow[]).filter((row) => visibleNotes.has(row.note_id))
+}
+
+async function readViewerEngagement(noteIds: string[]): Promise<ViewerEngagementRow[]> {
+  const uniqueNoteIds = [...new Set(noteIds.filter(Boolean))]
+  if (uniqueNoteIds.length === 0) return []
+
+  const tried = new Set<string>()
+  const helpful = new Set<string>()
+
+  for (const batch of batchesOf(uniqueNoteIds, ENGAGEMENT_LOOKUP_BATCH_SIZE)) {
+    const [triedResult, helpfulResult] = await Promise.all([
+      supabase.from('note_tries').select('note_id').in('note_id', batch),
+      supabase.from('note_helpful').select('note_id').in('note_id', batch),
+    ])
+
+    if (triedResult.error || helpfulResult.error) {
+      return fallbackViewerEngagement(uniqueNoteIds)
+    }
+
+    for (const row of (triedResult.data ?? []) as ViewerMarkRow[]) {
+      if (row.note_id) tried.add(row.note_id)
+    }
+    for (const row of (helpfulResult.data ?? []) as ViewerMarkRow[]) {
+      if (row.note_id) helpful.add(row.note_id)
+    }
+  }
+
+  return mergeViewerMarks(uniqueNoteIds, tried, helpful)
+}
+
 /**
  * Sign in anonymously if there is no session yet, and return the user id.
  * Write-intent only — posting, reacting, reporting, accepting terms, claiming.
@@ -375,14 +431,13 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
 
   let tried = new Set<string>()
   let helpful = new Set<string>()
-  if (viewerId) {
-    // Direct SELECT on note_tries/note_helpful stays closed; the RPC returns
-    // only current-session booleans for notes this viewer has touched.
-    const { data: engagementRows, error: engagementError } = await supabase.rpc('viewer_note_engagement')
-    if (engagementError) throw new Error(friendlyReadError(engagementError))
-    const rows = (engagementRows ?? []) as ViewerEngagementRow[]
-    tried = new Set(rows.filter((r) => r.tried).map((r) => r.note_id))
-    helpful = new Set(rows.filter((r) => r.helpful).map((r) => r.note_id))
+  if (viewerId && (rows ?? []).length > 0) {
+    // RLS and column grants expose only this viewer's note ids. Scope the read to
+    // the notes on this page; fall back to the legacy RPC if a deployment still
+    // has older engagement grants.
+    const engagementRows = await readViewerEngagement((rows ?? []).map((row) => (row as FieldNoteRow).id))
+    tried = new Set(engagementRows.filter((r) => r.tried).map((r) => r.note_id))
+    helpful = new Set(engagementRows.filter((r) => r.helpful).map((r) => r.note_id))
   }
 
   return (rows ?? []).map((row) => mapRow(row as FieldNoteRow, viewerId, tried, helpful))

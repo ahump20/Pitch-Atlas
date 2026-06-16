@@ -45,10 +45,13 @@ vi.mock('./supabase', () => ({
 }))
 
 /** A thenable PostgREST-style chain that resolves every shape the libs await. */
-function chainFor(data: unknown, error: unknown = null) {
+function chainFor(data: unknown, error: unknown = null, hooks: { in?: (...args: unknown[]) => void } = {}) {
   const chain: Record<string, unknown> = {}
   for (const m of ['select', 'eq', 'in', 'order', 'insert', 'delete', 'update']) {
-    chain[m] = () => chain
+    chain[m] = (...args: unknown[]) => {
+      if (m === 'in') hooks.in?.(...args)
+      return chain
+    }
   }
   chain.maybeSingle = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error })
   chain.single = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error })
@@ -131,22 +134,50 @@ describe('read path mints no account', () => {
     expect(notes[0].viewerIsAuthor).toBe(false)
   })
 
-  it('listNotes with a session: still no sign-in, viewer flags come from the scoped RPC', async () => {
+  it('listNotes with a session: still no sign-in, viewer flags use bounded direct reads', async () => {
+    const triesIn = vi.fn()
+    const helpfulIn = vi.fn()
     mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
     mocks.from.mockImplementation((table: string) => {
       if (table === 'field_notes') return chainFor([NOTE_ROW])
+      if (table === 'note_tries') return chainFor([{ note_id: 'note-1' }], null, { in: triesIn })
+      if (table === 'note_helpful') return chainFor([], null, { in: helpfulIn })
       return chainFor([])
     })
-    mocks.rpc.mockResolvedValue({ data: [{ note_id: 'note-1', tried: true, helpful: false }], error: null })
 
     const notes = await listNotes('four-seam')
 
     expect(mocks.signInAnonymously).not.toHaveBeenCalled()
-    expect(tablesQueried()).toEqual(['field_notes'])
-    expect(mocks.rpc).toHaveBeenCalledWith('viewer_note_engagement')
+    expect(tablesQueried()).toEqual(['field_notes', 'note_tries', 'note_helpful'])
+    expect(triesIn).toHaveBeenCalledWith('note_id', ['note-1'])
+    expect(helpfulIn).toHaveBeenCalledWith('note_id', ['note-1'])
+    expect(mocks.rpc).not.toHaveBeenCalled()
     expect(notes[0].viewerTried).toBe(true)
     expect(notes[0].viewerHelpful).toBe(false)
     expect(notes[0].viewerIsAuthor).toBe(true)
+  })
+
+  it('listNotes falls back to the scoped RPC if bounded engagement reads are unavailable', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'field_notes') return chainFor([NOTE_ROW])
+      if (table === 'note_tries') return chainFor(null, { message: 'permission denied for table note_tries' })
+      if (table === 'note_helpful') return chainFor([])
+      return chainFor([])
+    })
+    mocks.rpc.mockResolvedValue({
+      data: [
+        { note_id: 'note-1', tried: true, helpful: true },
+        { note_id: 'other-note', tried: true, helpful: true },
+      ],
+      error: null,
+    })
+
+    const notes = await listNotes('four-seam')
+
+    expect(mocks.rpc).toHaveBeenCalledWith('viewer_note_engagement')
+    expect(notes[0].viewerTried).toBe(true)
+    expect(notes[0].viewerHelpful).toBe(true)
   })
 
   it('listThread with no session: no sign-in, posts load, viewer owns nothing', async () => {
@@ -191,7 +222,12 @@ describe('read path mints no account', () => {
 
   it('hides raw engagement RPC errors behind load copy', async () => {
     mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
-    mocks.from.mockImplementation((table: string) => chainFor(table === 'field_notes' ? [NOTE_ROW] : []))
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'field_notes') return chainFor([NOTE_ROW])
+      if (table === 'note_tries') return chainFor(null, { message: 'permission denied for table note_tries' })
+      if (table === 'note_helpful') return chainFor([])
+      return chainFor([])
+    })
     mocks.rpc.mockResolvedValue({ data: null, error: { message: 'permission denied for function viewer_note_engagement' } })
 
     await expect(listNotes('four-seam')).rejects.toThrow('Could not load community notes just now. Try again.')
