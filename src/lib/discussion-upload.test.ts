@@ -123,7 +123,7 @@ describe('deletePost', () => {
 
     await deletePost('post-1')
 
-    expect(mocks.selectPosts).toHaveBeenCalledWith('id')
+    expect(mocks.selectPosts).toHaveBeenCalledWith('id, author_id')
     expect(mocks.postEq).toHaveBeenCalledWith('parent_id', 'post-1')
     expect(mocks.selectMedia).toHaveBeenCalledWith('storage_path')
     expect(mocks.mediaIn).toHaveBeenCalledWith('post_id', ['post-1'])
@@ -134,7 +134,7 @@ describe('deletePost', () => {
 
   it('removes owned media from replies that the post delete cascades', async () => {
     mocks.postEq.mockResolvedValue({
-      data: [{ id: 'reply-1' }, { id: 'reply-2' }],
+      data: [{ id: 'reply-1', author_id: 'user-1' }, { id: 'reply-2', author_id: 'user-1' }],
       error: null,
     })
     mocks.mediaIn.mockResolvedValue({
@@ -153,8 +153,26 @@ describe('deletePost', () => {
     expect(mocks.remove).toHaveBeenCalledWith(['user-1/parent.jpg', 'user-1/reply.jpg'])
   })
 
+  it('does not delete a post that has replies from another contributor', async () => {
+    mocks.postEq.mockResolvedValue({
+      data: [{ id: 'reply-1', author_id: 'other-user' }],
+      error: null,
+    })
+
+    await expect(deletePost('post-1')).rejects.toThrow(
+      'That post has replies from other contributors, so it cannot be deleted.',
+    )
+
+    expect(mocks.mediaIn).not.toHaveBeenCalled()
+    expect(mocks.deletePost).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+  })
+
   it('batches media lookups when a deleted post has many replies', async () => {
-    const replies = Array.from({ length: 100 }, (_, index) => ({ id: `reply-${index + 1}` }))
+    const replies = Array.from({ length: 100 }, (_, index) => ({
+      id: `reply-${index + 1}`,
+      author_id: 'user-1',
+    }))
     mocks.postEq.mockResolvedValue({ data: replies, error: null })
     mocks.mediaIn.mockResolvedValue({ data: [], error: null })
 
