@@ -128,6 +128,38 @@ describe('deletePost', () => {
     expect(mocks.remove).toHaveBeenCalledWith(['user-1/parent.jpg', 'user-1/reply.jpg'])
   })
 
+  it('batches media lookups when a deleted post has many replies', async () => {
+    const replies = Array.from({ length: 100 }, (_, index) => ({ id: `reply-${index + 1}` }))
+    mocks.postEq.mockResolvedValue({ data: replies, error: null })
+    mocks.mediaIn.mockResolvedValue({ data: [], error: null })
+
+    await deletePost('post-1')
+
+    expect(mocks.mediaIn).toHaveBeenNthCalledWith(
+      1,
+      'post_id',
+      ['post-1', ...replies.slice(0, 99).map((row) => row.id)],
+    )
+    expect(mocks.mediaIn).toHaveBeenNthCalledWith(2, 'post_id', ['reply-100'])
+    expect(mocks.mediaIn).toHaveBeenCalledTimes(2)
+  })
+
+  it('batches storage removals for media-heavy deleted discussions', async () => {
+    const mediaRows = Array.from({ length: 101 }, (_, index) => ({
+      storage_path: `user-1/media-${index + 1}.jpg`,
+    }))
+    mocks.mediaIn.mockResolvedValue({ data: mediaRows, error: null })
+
+    await deletePost('post-1')
+
+    expect(mocks.remove).toHaveBeenNthCalledWith(
+      1,
+      mediaRows.slice(0, 100).map((row) => row.storage_path),
+    )
+    expect(mocks.remove).toHaveBeenNthCalledWith(2, ['user-1/media-101.jpg'])
+    expect(mocks.remove).toHaveBeenCalledTimes(2)
+  })
+
   it('does not remove storage when the database delete is rejected', async () => {
     mocks.mediaIn.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
     mocks.deleteEq.mockResolvedValue({ error: { message: 'not allowed' } })
@@ -135,6 +167,16 @@ describe('deletePost', () => {
     await expect(deletePost('post-1')).rejects.toThrow('Could not save that just now. Try again.')
 
     expect(mocks.remove).not.toHaveBeenCalled()
+  })
+
+  it('does not report deletion success when storage cleanup fails', async () => {
+    mocks.mediaIn.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
+    mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
+
+    await expect(deletePost('post-1')).rejects.toThrow('Could not save that just now. Try again.')
+
+    expect(mocks.deleteEq).toHaveBeenCalledWith('id', 'post-1')
+    expect(mocks.remove).toHaveBeenCalledWith(['user-1/photo.jpg'])
   })
 })
 
