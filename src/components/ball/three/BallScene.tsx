@@ -149,8 +149,10 @@ export default function BallScene({
       camera={{ position: [0, 0.15, 6.4], fov: 32 }}
       onCreated={({ gl }) => {
         // The recipe's visual target. Set explicitly — do not rely on defaults.
+        // Pulled up a touch to suit the studio's darker gradient env, so the warm
+        // key still rolls a crisp specular across the leather.
         gl.toneMapping = THREE.ACESFilmicToneMapping
-        gl.toneMappingExposure = 1.08
+        gl.toneMappingExposure = 1.14
       }}
     >
       <Studio />
