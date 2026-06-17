@@ -4,7 +4,7 @@ import type { Claim, Craftsman } from '../data/types'
 import { CRAFTSMEN_BY_ERA, craftsmanBySlug } from '../data/craftsmen'
 import { pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
-import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
@@ -87,7 +87,7 @@ export function CraftsmanChapter() {
     craftsman
       ? {
           title: `${craftsman.name}: ${craftsman.signaturePitch} | ${SITE.siteName}`,
-          description: `${craftsman.tagline} ${craftsman.intro}`.slice(0, 200),
+          description: truncateForMeta(`${craftsman.tagline} ${craftsman.intro}`),
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
           ogUrl: canonicalUrl('/craftsmen/' + craftsman.slug),

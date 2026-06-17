@@ -239,6 +239,7 @@ const teaganKavan: Craftsman = {
   slug: 'teagan-kavan',
   name: 'Teagan Kavan',
   kind: 'craftsman',
+  hand: 'right',
   era: '2024-present',
   signaturePitch: 'Riseball',
   signaturePitchSlug: 'riseball',

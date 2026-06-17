@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd, ogImageMeta } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SLOWPITCH_NOTES, SLOWPITCH_CRAFT, SLOWPITCH_FORMATS } from '../data/softball'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -22,10 +23,25 @@ export function SoftballSlowpitchPage() {
     ogTitle: `Slowpitch | ${SITE.siteName}`,
     ogDescription: 'Arc, spin, and placement. Sourced, not corrected.',
     ogUrl: canonicalUrl('/softball/slowpitch'),
+    ...ogImageMeta('softball', 'Slowpitch — arc, spin, and placement'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'Article',
+          url: canonicalUrl('/softball/slowpitch'),
+          name: 'Slowpitch: arc and touch',
+          description:
+            'Slowpitch softball pitching, filed honestly — the legal arc (and why the number differs by sanctioning body), the real craft of arc, deadening spin, and placement, and how men’s and coed differ.',
+          breadcrumb: [
+            { name: 'The Atlas', to: '/' },
+            { name: 'Softball', to: '/softball' },
+            { name: 'Slowpitch' },
+          ],
+        })}
+      />
       <SectionHero
         accent="seam"
         breadcrumb={

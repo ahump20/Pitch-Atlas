@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { MovementMap } from '../components/sections/MovementMap'
@@ -21,6 +22,16 @@ export function MovementMapPage() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/movement-map'),
+          name: 'The shape map: every pitch by direction',
+          description:
+            "Every filed pitch on one catcher's-eye field by shape language: ride, drop, arm-side run, and glove-side sweep.",
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Shape map' }],
+        })}
+      />
       <SectionHero
         breadcrumb={
           <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Shape map' }]} />

@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useId, useState, type CSSProperties, type DOMAttributes, type ReactNode, type Ref } from 'react'
+import { lazy, Suspense, useEffect, useId, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
 import { useCardTilt } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
@@ -230,8 +230,6 @@ export function RefractorCard({
   )
 
   const cardClass = `rfx-card${gold ? ' is-gold' : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
-  const linkHandlers = handlers as unknown as DOMAttributes<HTMLAnchorElement>
-  const articleHandlers = handlers as unknown as DOMAttributes<HTMLElement>
 
   return (
     <div ref={viewRef} style={{ perspective: '1500px', width: '100%', maxWidth }}>
@@ -239,7 +237,7 @@ export function RefractorCard({
         <Link
           to={to}
           ref={tiltRef as Ref<HTMLAnchorElement>}
-          {...linkHandlers}
+          {...handlers}
           className={`block ${cardClass}`}
           aria-label={`${name} specimen`}
           style={cardStyle}
@@ -247,7 +245,7 @@ export function RefractorCard({
           {inner}
         </Link>
       ) : (
-        <article ref={tiltRef as Ref<HTMLElement>} {...articleHandlers} className={cardClass} style={cardStyle}>
+        <article ref={tiltRef as Ref<HTMLElement>} {...handlers} className={cardClass} style={cardStyle}>
           {inner}
         </article>
       )}

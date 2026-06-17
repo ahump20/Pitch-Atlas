@@ -2,7 +2,8 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd, ogImageMeta } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from '../data/softball'
 import type { SoftballPitch } from '../data/softball'
 import type { Craftsman } from '../data/types'
@@ -124,10 +125,21 @@ export function SoftballHub() {
     ogTitle: `Softball | ${SITE.siteName}`,
     ogDescription: 'The underhand craft, filed honestly. Fastpitch first, anchored on Cat Osterman.',
     ogUrl: canonicalUrl('/softball'),
+    ...ogImageMeta('softball', 'Softball — the circle enters the atlas'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/softball'),
+          name: 'Softball: the circle enters the atlas',
+          description:
+            'The softball wing of Pitch Atlas — the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Softball' }],
+        })}
+      />
       <SectionHero
         breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Softball' }]} />}
         eyebrow="The circle · soft launch"

@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { friendlyDbError, listNotes, setTried } from './community'
+import {
+  claimWithEmail,
+  friendlyDbError,
+  friendlyReadError,
+  getIdentity,
+  listNotes,
+  setHelpful,
+  setTried,
+  submitNote,
+} from './community'
 import { listThread, hasAcceptedMediaTerms } from './discussion'
 
 /*
@@ -15,6 +24,7 @@ import { listThread, hasAcceptedMediaTerms } from './discussion'
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   signInAnonymously: vi.fn(),
+  updateUser: vi.fn(),
   from: vi.fn(),
   rpc: vi.fn(),
   storageFrom: vi.fn(),
@@ -23,7 +33,11 @@ const mocks = vi.hoisted(() => ({
 vi.mock('./supabase', () => ({
   COMMUNITY_ENABLED: true,
   supabase: {
-    auth: { getSession: mocks.getSession, signInAnonymously: mocks.signInAnonymously },
+    auth: {
+      getSession: mocks.getSession,
+      signInAnonymously: mocks.signInAnonymously,
+      updateUser: mocks.updateUser,
+    },
     from: mocks.from,
     rpc: mocks.rpc,
     storage: { from: mocks.storageFrom },
@@ -31,15 +45,18 @@ vi.mock('./supabase', () => ({
 }))
 
 /** A thenable PostgREST-style chain that resolves every shape the libs await. */
-function chainFor(data: unknown) {
+function chainFor(data: unknown, error: unknown = null, hooks: { in?: (...args: unknown[]) => void } = {}) {
   const chain: Record<string, unknown> = {}
   for (const m of ['select', 'eq', 'in', 'order', 'insert', 'delete', 'update']) {
-    chain[m] = () => chain
+    chain[m] = (...args: unknown[]) => {
+      if (m === 'in') hooks.in?.(...args)
+      return chain
+    }
   }
-  chain.maybeSingle = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error: null })
-  chain.single = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error: null })
+  chain.maybeSingle = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error })
+  chain.single = () => Promise.resolve({ data: Array.isArray(data) ? data[0] ?? null : data, error })
   chain.then = (resolve: (v: unknown) => unknown, reject: (e: unknown) => unknown) =>
-    Promise.resolve({ data, error: null }).then(resolve, reject)
+    Promise.resolve({ data, error }).then(resolve, reject)
   return chain
 }
 
@@ -101,22 +118,66 @@ describe('read path mints no account', () => {
     expect(notes[0].viewerIsAuthor).toBe(false)
   })
 
-  it('listNotes with a session: still no sign-in, viewer flags come from the scoped RPC', async () => {
-    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
-    mocks.from.mockImplementation((table: string) => {
-      if (table === 'field_notes') return chainFor([NOTE_ROW])
-      return chainFor([])
+  it('listNotes treats session lookup failure as signed-out instead of minting a user', async () => {
+    mocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: { message: 'AuthApiError: token refresh failed' },
     })
-    mocks.rpc.mockResolvedValue({ data: [{ note_id: 'note-1', tried: true, helpful: false }], error: null })
+    mocks.from.mockImplementation((table: string) => chainFor(table === 'field_notes' ? [NOTE_ROW] : []))
 
     const notes = await listNotes('four-seam')
 
     expect(mocks.signInAnonymously).not.toHaveBeenCalled()
     expect(tablesQueried()).toEqual(['field_notes'])
-    expect(mocks.rpc).toHaveBeenCalledWith('viewer_note_engagement')
+    expect(notes[0].viewerTried).toBe(false)
+    expect(notes[0].viewerHelpful).toBe(false)
+    expect(notes[0].viewerIsAuthor).toBe(false)
+  })
+
+  it('listNotes with a session: still no sign-in, viewer flags use bounded direct reads', async () => {
+    const triesIn = vi.fn()
+    const helpfulIn = vi.fn()
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'field_notes') return chainFor([NOTE_ROW])
+      if (table === 'note_tries') return chainFor([{ note_id: 'note-1' }], null, { in: triesIn })
+      if (table === 'note_helpful') return chainFor([], null, { in: helpfulIn })
+      return chainFor([])
+    })
+
+    const notes = await listNotes('four-seam')
+
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+    expect(tablesQueried()).toEqual(['field_notes', 'note_tries', 'note_helpful'])
+    expect(triesIn).toHaveBeenCalledWith('note_id', ['note-1'])
+    expect(helpfulIn).toHaveBeenCalledWith('note_id', ['note-1'])
+    expect(mocks.rpc).not.toHaveBeenCalled()
     expect(notes[0].viewerTried).toBe(true)
     expect(notes[0].viewerHelpful).toBe(false)
     expect(notes[0].viewerIsAuthor).toBe(true)
+  })
+
+  it('listNotes falls back to the scoped RPC if bounded engagement reads are unavailable', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'field_notes') return chainFor([NOTE_ROW])
+      if (table === 'note_tries') return chainFor(null, { message: 'permission denied for table note_tries' })
+      if (table === 'note_helpful') return chainFor([])
+      return chainFor([])
+    })
+    mocks.rpc.mockResolvedValue({
+      data: [
+        { note_id: 'note-1', tried: true, helpful: true },
+        { note_id: 'other-note', tried: true, helpful: true },
+      ],
+      error: null,
+    })
+
+    const notes = await listNotes('four-seam')
+
+    expect(mocks.rpc).toHaveBeenCalledWith('viewer_note_engagement')
+    expect(notes[0].viewerTried).toBe(true)
+    expect(notes[0].viewerHelpful).toBe(true)
   })
 
   it('listThread with no session: no sign-in, posts load, viewer owns nothing', async () => {
@@ -148,6 +209,39 @@ describe('read path mints no account', () => {
     expect(mocks.rpc).toHaveBeenCalledWith('has_accepted_media_terms')
     expect(mocks.from).not.toHaveBeenCalledWith('discussion_media_terms')
   })
+
+  it('hides raw field note lookup errors behind load copy', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: null } })
+    mocks.from.mockImplementation((table: string) =>
+      chainFor(table === 'field_notes' ? null : [], { message: 'permission denied for table field_notes' }),
+    )
+
+    await expect(listNotes('four-seam')).rejects.toThrow('Could not load community notes just now. Try again.')
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+  })
+
+  it('hides raw engagement RPC errors behind load copy', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'field_notes') return chainFor([NOTE_ROW])
+      if (table === 'note_tries') return chainFor(null, { message: 'permission denied for table note_tries' })
+      if (table === 'note_helpful') return chainFor([])
+      return chainFor([])
+    })
+    mocks.rpc.mockResolvedValue({ data: null, error: { message: 'permission denied for function viewer_note_engagement' } })
+
+    await expect(listNotes('four-seam')).rejects.toThrow('Could not load community notes just now. Try again.')
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+  })
+
+  it('hides raw profile lookup errors behind load copy', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation((table: string) =>
+      chainFor(table === 'profiles' ? null : [], { message: 'permission denied for table profiles' }),
+    )
+
+    await expect(getIdentity()).rejects.toThrow('Could not load community notes just now. Try again.')
+  })
 })
 
 describe('write path still signs in first', () => {
@@ -164,11 +258,98 @@ describe('write path still signs in first', () => {
 })
 
 describe('community write errors', () => {
+  it('keeps read failures generic', () => {
+    expect(friendlyReadError({ message: 'permission denied for table field_notes' })).toBe(
+      'Could not load community notes just now. Try again.',
+    )
+    expect(friendlyReadError(null)).toBe('Could not load community notes just now. Try again.')
+  })
+
   it('keeps trigger-tagged messages but hides raw database errors', () => {
     expect(friendlyDbError({ message: 'content_blocked: keep it clean' })).toBe('keep it clean')
     expect(friendlyDbError({ message: 'duplicate key value violates unique constraint "field_notes_pkey"' })).toBe(
       'Could not save that just now. Try again.',
     )
     expect(friendlyDbError(null)).toBe('Could not save that just now. Try again.')
+  })
+
+  it('hides raw Tried This write errors', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation(() => chainFor(null, { message: 'permission denied for table note_tries' }))
+
+    await expect(setTried('note-1', true)).rejects.toThrow('Could not save that just now. Try again.')
+  })
+
+  it('hides raw Helpful write errors', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } } })
+    mocks.from.mockImplementation(() => chainFor(null, { message: 'permission denied for table note_helpful' }))
+
+    await expect(setHelpful('note-1', false)).rejects.toThrow('Could not save that just now. Try again.')
+  })
+
+  it('does not submit a field note when the profile write fails', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } }, error: null })
+    mocks.from.mockImplementation((table: string) => {
+      if (table === 'profiles') return chainFor(null, { message: 'permission denied for table profiles' })
+      return chainFor([NOTE_ROW])
+    })
+
+    await expect(
+      submitNote({
+        pitchSlug: 'four-seam',
+        displayName: 'RHP_threequarter',
+        tweak: 'Thumb tucked deeper under the leather.',
+        playerLevel: 'college-plus',
+        armSlot: 'three-quarter',
+        velocityBand: null,
+        intent: 'more-movement',
+        claimedResultKind: 'worked-in-bullpen',
+        claimedResultNote: null,
+        sampleSize: null,
+        evidenceUrl: null,
+        evidenceLabel: null,
+        sourceTier: 'community-firsthand',
+        note: null,
+      }),
+    ).rejects.toThrow('Could not save that just now. Try again.')
+    expect(tablesQueried()).toEqual(['profiles'])
+  })
+
+  it('hides raw anonymous sign-in errors on write intent', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: null }, error: null })
+    mocks.signInAnonymously.mockResolvedValue({
+      data: { user: null },
+      error: { message: 'AuthApiError: anonymous sign-ins disabled for this project' },
+    })
+
+    await expect(setTried('note-1', true)).rejects.toThrow(
+      'Could not start your community session just now. Try again.',
+    )
+    expect(mocks.from).not.toHaveBeenCalled()
+  })
+
+  it('does not create a replacement anonymous account when session lookup fails on write intent', async () => {
+    mocks.getSession.mockResolvedValue({
+      data: { session: null },
+      error: { message: 'AuthApiError: token refresh failed' },
+    })
+
+    await expect(setHelpful('note-1', true)).rejects.toThrow(
+      'Could not start your community session just now. Try again.',
+    )
+    expect(mocks.signInAnonymously).not.toHaveBeenCalled()
+    expect(mocks.from).not.toHaveBeenCalled()
+  })
+
+  it('hides raw email-claim auth errors', async () => {
+    mocks.getSession.mockResolvedValue({ data: { session: { user: { id: 'author-9' } } }, error: null })
+    mocks.updateUser.mockResolvedValue({
+      data: null,
+      error: { message: 'AuthApiError: For security purposes, you can only request this once every 60 seconds' },
+    })
+
+    await expect(claimWithEmail('person@example.com')).rejects.toThrow(
+      'Could not send the claim email just now. Try again.',
+    )
   })
 })
