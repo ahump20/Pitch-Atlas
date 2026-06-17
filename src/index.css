@@ -868,9 +868,24 @@
       0 10px 24px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(246,241,230,.14);
     font-family: var(--font-athletic); font-size: 14px; letter-spacing: .06em;
     text-transform: uppercase; color: #F6F1E6; line-height: 1;
-    transition: transform .15s ease, border-color .2s ease;
+    transition: transform .15s var(--pa-ease-spring), border-color .2s ease, box-shadow .15s ease;
   }
-  .btn-foil:active { transform: translateY(1px); }
+  /* the anisotropic light edge: a thin raking highlight across the top lip, the
+     same raking-light vocabulary the card face uses — not a generic box-shadow.
+     Inset so it reads as light caught on the bevel, never a second border. */
+  .btn-foil::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(100deg, transparent 0 8%, rgba(246,241,230,.34) 22%, transparent 38%);
+    mix-blend-mode: screen; opacity: .5;
+  }
+  .btn-foil > * { position: relative; z-index: 1; }
+  /* tactile depth: the wax seal presses into the table — drop and shrink a touch,
+     the shadow tucks under so the press reads in the body, not just the label. */
+  .btn-foil:active {
+    transform: translateY(1px) scale(.985);
+    box-shadow: 0 0 0 3px var(--color-paper, #F4EEE0), 0 0 0 4px color-mix(in srgb, #C8102E 32%, transparent),
+      0 3px 10px -8px rgba(0,0,0,.5), inset 0 2px 5px rgba(0,0,0,.35);
+  }
   .btn-foil::after {
     content: ""; position: absolute; inset: 0; pointer-events: none;
     background: var(--foil); background-size: 300% 100%; background-position: 0% 0;
@@ -1063,16 +1078,31 @@
   .scene-coal .rfx-select {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%2337D6FF' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
+  /* a thin light catch along the top lip — the same raking-light read as the
+     card and the buttons, so the select reads as cut from the same stock. The
+     inset highlight rides over the chevron background-image without touching it. */
+  .rfx-select { box-shadow: inset 0 1px 0 rgba(246,241,230,.18); }
+  :root .rfx-select { box-shadow: inset 0 1px 0 rgba(255,255,255,.5); }
   .rfx-select:focus-visible {
     border-color: var(--ctl-accent, #C8102E); outline: none;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent);
+  }
+  .scene-coal .rfx-select:focus-visible {
+    box-shadow: inset 0 1px 0 rgba(246,241,230,.2), 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #37D6FF) 22%, transparent);
   }
   .rfx-select option { background: var(--ctl-bg, #FFFDF6); color: var(--ctl-text, #14161B); }
 
-  /* segmented toggle (RHP/LHP, view switches): off = ghost, on = accent fill. */
-  .rfx-seg { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
-    padding: 8px 14px; color: var(--ctl-text, #3F4654); background: transparent; cursor: pointer; transition: color .2s, background .2s; }
-  .rfx-seg[aria-pressed="true"], .rfx-seg.is-on { color: var(--ctl-on-accent, #FFFFFF); background: var(--ctl-accent, #C8102E); font-weight: 600; }
+  /* segmented toggle (RHP/LHP, view switches): off = ghost, on = accent fill.
+     The on-state now catches the same top-lip light as the buttons, so a pressed
+     segment reads as a key pushed in, part of the same material. */
+  .rfx-seg { position: relative; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    padding: 8px 14px; color: var(--ctl-text, #3F4654); background: transparent; cursor: pointer;
+    transition: color .2s, background .2s, box-shadow .15s var(--pa-ease-spring); }
+  .rfx-seg[aria-pressed="true"], .rfx-seg.is-on {
+    color: var(--ctl-on-accent, #FFFFFF); background: var(--ctl-accent, #C8102E); font-weight: 600;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 4px rgba(0,0,0,.22);
+  }
+  .rfx-seg:active { box-shadow: inset 0 2px 5px rgba(0,0,0,.28); }
 }
 
 @keyframes rfx-slide { to { background-position: 300% 0; } }
@@ -1842,4 +1872,161 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes shade-in {
   from { box-shadow: 0 0 0 rgba(0, 0, 0, 0); }
   to { box-shadow: 0 10px 28px -18px rgba(0, 0, 0, 0.5); }
+}
+
+/* ============================================================
+   THE REFRACTIVE CHROME  ·  material polish pass
+   The card's own refractive material — its raking top-lip light and its
+   --c3-mixed halo — carried into the chrome that frames the set: the panels and
+   plates, the sticky masthead, the floating overlays. One vocabulary, not a
+   second generic glass system. The translucent backdrop-blur is reserved for
+   things that actually float over content (the masthead, dropdowns, sheets);
+   every such surface carries a prefers-reduced-transparency solid fallback, and
+   nav/control contrast holds with the blur off.
+   ============================================================ */
+@layer components {
+  /* ── 8 · panels + plates cut from the refractor stock ──
+     A thin anisotropic light catches the top lip (the card's raking-light read,
+     not a box-shadow), and a tuned rim mixes the surface's own accent — --gc on
+     a plate (the per-pitch/family accent, the plate's --c3), --c3 on a panel,
+     a neutral fallback when neither is set. No new radius or shadow scale: the
+     catch is a pseudo-element over the existing corner radius. */
+  .rfx-panel { isolation: isolate; }
+  .rfx-panel::before,
+  .rfx-plate::before,
+  .rfx-readplate::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
+    /* the raking catch: a narrow bone highlight raked off the top-left, screen-blended */
+    background: linear-gradient(101deg, transparent 0 6%, rgba(246,241,230,.16) 20%, transparent 40%);
+    mix-blend-mode: screen; opacity: .55;
+    /* the accent rim: a hairline of the surface's own --c3/--gc around the edge */
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gc, var(--c3, #37D6FF)) 16%, transparent);
+  }
+  /* the plate already lays its content in normal flow; keep it above the catch */
+  .rfx-panel > *, .rfx-plate > *, .rfx-readplate > * { position: relative; z-index: 1; }
+  /* on the cream field a panel reads in leather, so the catch warms a touch */
+  :root .rfx-panel::before { background: linear-gradient(101deg, transparent 0 6%, rgba(255,255,255,.4) 20%, transparent 40%); }
+
+  /* ── 7 · the refractive sticky masthead ──
+     A restrained liquid-glass approximation: the coal hero glows faintly through
+     the cream bar on scroll. backdrop-blur + saturate, with a mandatory solid
+     fill for prefers-reduced-transparency and for no-backdrop-filter browsers.
+     A thin anisotropic light edge rides the bottom lip in the foil's raking
+     vocabulary. Nav text (ink / ink-2 / seam on cream) clears AA over both the
+     translucent surface and the solid fallback. */
+  .masthead-glass {
+    position: relative;
+    background: color-mix(in srgb, var(--color-paper, #F4EEE0) 82%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.18);
+    backdrop-filter: blur(14px) saturate(1.18);
+  }
+  /* the light edge: a raked bone-to-seam hairline along the bottom of the bar,
+     deepening with the scroll-shade. Not a border — a caught edge of light. */
+  .masthead-glass::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; z-index: 1; pointer-events: none;
+    background: linear-gradient(100deg,
+      transparent 0 4%,
+      color-mix(in srgb, var(--color-seam) 30%, transparent) 18%,
+      rgba(246,241,230,.5) 32%,
+      transparent 60%);
+    opacity: .5; transition: opacity .2s ease;
+  }
+  /* solid fallbacks: reduced-transparency users and browsers without the filter
+     get an opaque cream bar — same contrast, no translucency. */
+  @media (prefers-reduced-transparency: reduce) {
+    .masthead-glass {
+      background: var(--color-paper, #F4EEE0);
+      -webkit-backdrop-filter: none; backdrop-filter: none;
+    }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .masthead-glass { background: var(--color-paper, #F4EEE0); }
+  }
+  /* scroll-shade deepens the depth: as the page moves under the bar, the glass
+     darkens a step and the light edge sharpens. Native scroll-driven; the flat
+     bar is the honest fallback where unsupported. */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .masthead-glass {
+        animation: masthead-deepen linear both;
+        animation-timeline: scroll();
+        animation-range: 0 120px;
+      }
+      .masthead-glass::after {
+        animation: masthead-edge linear both;
+        animation-timeline: scroll();
+        animation-range: 0 120px;
+      }
+    }
+  }
+  /* the deepen keeps a backdrop-filter fallback intact: only the translucent
+     surface animates its mix, and the reduced-transparency block above wins the
+     cascade for users who asked for an opaque bar. */
+  @media (prefers-reduced-transparency: no-preference) {
+    @keyframes masthead-deepen {
+      from { background: color-mix(in srgb, var(--color-paper, #F4EEE0) 82%, transparent); }
+      to { background: color-mix(in srgb, var(--color-paper, #F4EEE0) 90%, #16120D); }
+    }
+  }
+  @keyframes masthead-edge {
+    from { opacity: .35; }
+    to { opacity: .8; }
+  }
+
+  /* ── 10 · floating overlays get the refractive frosted treatment ──
+     The Tools dropdown, the mobile nav sheet, and the discussion-panel header
+     float over content, so they earn the blur. Cream-field overlays (masthead
+     menus) frost the cream; the discussion header sits inside a coal scene, so
+     it frosts the coal. Both carry the reduced-transparency + no-filter solid
+     fallback, and both ride the house spring on open. */
+  .overlay-frost-cream {
+    background: color-mix(in srgb, var(--color-paper, #F4EEE0) 86%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.1);
+    backdrop-filter: blur(12px) saturate(1.1);
+  }
+  .overlay-frost-coal {
+    background: color-mix(in srgb, #16120D 78%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(.9);
+    backdrop-filter: blur(12px) saturate(.9);
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .overlay-frost-cream { background: var(--color-paper-2, #EAE2D2); -webkit-backdrop-filter: none; backdrop-filter: none; }
+    .overlay-frost-coal { background: #1A140D; -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .overlay-frost-cream { background: var(--color-paper-2, #EAE2D2); }
+    .overlay-frost-coal { background: #1A140D; }
+  }
+  /* the dropdown and sheet settle on the house spring, not a default snap */
+  @media (prefers-reduced-motion: no-preference) {
+    .overlay-settle { animation: overlay-settle .2s var(--pa-ease-spring) backwards; }
+  }
+
+  /* ── 10b · skeleton in the material vocabulary ──
+     A loading skeleton that reads as the set's own stock, not a generic gray
+     pulse: a faint accent-tinted block on the scene surface. Under reduced
+     motion the shimmer stops and the block holds a static low-contrast fill —
+     no infinite animation. Shape-matched in the markup; this is the finish. */
+  .skel-stock {
+    position: relative; overflow: hidden; border-radius: 8px;
+    background: color-mix(in srgb, var(--color-press, #221E18) 88%, var(--color-bone, #F6F1E6));
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .skel-stock::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(100deg, transparent 30%, rgba(246,241,230,.10) 50%, transparent 70%);
+      transform: translateX(-100%);
+      animation: skel-sweep 1.4s ease-in-out infinite;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skel-stock { background: color-mix(in srgb, var(--color-press, #221E18) 92%, var(--color-bone, #F6F1E6)); }
+  }
+}
+
+@keyframes overlay-settle {
+  from { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes skel-sweep {
+  to { transform: translateX(100%); }
 }

@@ -97,8 +97,11 @@ export function Masthead() {
   }, [open])
 
   return (
-    // scroll-shade: the bar earns its shadow only once the page moves under it
-    <header className="scroll-shade sticky top-0 z-30 border-b border-leather/30 bg-paper/92 text-ink backdrop-blur-md">
+    // scroll-shade: the bar earns its shadow only once the page moves under it.
+    // masthead-glass carries the refractive translucency (coal glows faintly
+    // through on scroll) with its own reduced-transparency + no-filter solid
+    // fallbacks, so the bg-paper utility is no longer needed here.
+    <header className="masthead-glass scroll-shade sticky top-0 z-30 border-b border-leather/30 text-ink">
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
         <Link to="/" aria-label={`${SITE.siteName}, home`}>
           <BrandMark size="sm" />
@@ -148,7 +151,7 @@ export function Masthead() {
             {toolsOpen ? (
               <div
                 id="tools-menu"
-                className="absolute right-0 top-[calc(100%+0.75rem)] z-40 w-64 rounded-sm border border-ink/15 bg-paper-2 p-1.5 shadow-lg"
+                className="overlay-frost-cream overlay-settle absolute right-0 top-[calc(100%+0.75rem)] z-40 w-64 rounded-sm border border-ink/15 p-1.5 shadow-lg"
               >
                 <ul className="flex flex-col">
                   {TOOLS.map((t) => (
@@ -201,7 +204,7 @@ export function Masthead() {
           tabIndex={-1}
           id="mobile-nav"
           aria-label="Mobile"
-          className="border-t border-ink/12 bg-paper-2 outline-none md:hidden"
+          className="overlay-frost-cream overlay-settle border-t border-ink/12 outline-none md:hidden"
         >
           <ul className="mx-auto flex max-w-[1320px] flex-col px-5 py-2">
             {MOBILE_NAV.map((n) => (

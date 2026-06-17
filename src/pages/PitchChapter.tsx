@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react'
+import { type CSSProperties, type ReactNode, useState } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type {
@@ -186,12 +186,13 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         </p>
 
         <div
-          className="mt-[18px] rounded-2xl p-4"
+          className="rfx-readplate relative mt-[18px] rounded-2xl p-4"
           style={{
+            '--c3': accentColor,
             background: `linear-gradient(145deg, color-mix(in srgb, ${accentColor} 18%, #0B0805), #070503)`,
             border: `1px solid color-mix(in srgb, ${accentColor} 26%, transparent)`,
             boxShadow: `inset 0 1px 0 color-mix(in srgb, ${accentColor} 22%, transparent)`,
-          }}
+          } as CSSProperties}
         >
           <span className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
             Shape read
