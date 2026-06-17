@@ -95,13 +95,15 @@ describe('uploadMedia', () => {
     expect(mocks.remove).toHaveBeenCalledWith([path])
   })
 
-  it('does not hide storage cleanup failure during media row rollback', async () => {
+  it('preserves the original row error even when storage cleanup also fails', async () => {
     const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
     mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
     mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
 
+    // The insert error is the cause the contributor needs; a failed best-effort
+    // cleanup must not replace it. Cleanup is still attempted.
     await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
-      'Could not save that just now. Try again.',
+      'slow down',
     )
 
     const [path] = mocks.upload.mock.calls[0]
@@ -168,6 +170,19 @@ describe('deletePost', () => {
     expect(mocks.remove).not.toHaveBeenCalled()
   })
 
+  it('allows deletion when a reply has a null author_id (orphaned, not a contributor)', async () => {
+    mocks.postEq.mockResolvedValue({
+      data: [{ id: 'reply-1', author_id: null }],
+      error: null,
+    })
+    mocks.mediaIn.mockResolvedValue({ data: [], error: null })
+
+    // A null author_id is an anonymous-cleaned/orphaned reply, not a living
+    // contributor — it must not block the author from deleting their own post.
+    await expect(deletePost('post-1')).resolves.toBeUndefined()
+    expect(mocks.deleteEq).toHaveBeenCalledWith('id', 'post-1')
+  })
+
   it('batches media lookups when a deleted post has many replies', async () => {
     const replies = Array.from({ length: 100 }, (_, index) => ({
       id: `reply-${index + 1}`,
@@ -212,11 +227,13 @@ describe('deletePost', () => {
     expect(mocks.remove).not.toHaveBeenCalled()
   })
 
-  it('does not report deletion success when storage cleanup fails', async () => {
+  it('still resolves when the post is deleted but best-effort storage cleanup fails', async () => {
     mocks.mediaIn.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
     mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
 
-    await expect(deletePost('post-1')).rejects.toThrow('Could not save that just now. Try again.')
+    // The row is gone — that is the user-visible outcome. A failed storage sweep
+    // leaves orphaned bytes for separate cleanup but must not surface a false error.
+    await expect(deletePost('post-1')).resolves.toBeUndefined()
 
     expect(mocks.deleteEq).toHaveBeenCalledWith('id', 'post-1')
     expect(mocks.remove).toHaveBeenCalledWith(['user-1/photo.jpg'])

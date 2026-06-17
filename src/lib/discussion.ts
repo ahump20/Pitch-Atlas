@@ -202,9 +202,10 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
     height: dims.height,
   })
   if (error) {
-    // roll back the orphaned object so a failed row never leaves bytes behind
-    const { error: cleanupError } = await supabase.storage.from(BUCKET).remove([path])
-    if (cleanupError) throw new Error(friendlyError(cleanupError))
+    // Roll back the orphaned object so a failed row never leaves bytes behind, but
+    // the insert error is the cause the contributor needs — surface it even if the
+    // best-effort cleanup also fails (a stray object can be swept separately).
+    await supabase.storage.from(BUCKET).remove([path])
     throw new Error(friendlyError(error))
   }
 }
@@ -350,7 +351,9 @@ export async function deletePost(postId: string): Promise<void> {
   if (replyErr) throw new Error(friendlyError(replyErr))
 
   const replies = (replyRows ?? []) as ReplyRow[]
-  if (replies.some((row) => row.author_id !== uid)) {
+  // A null author_id is an orphaned/anonymous-cleaned reply, not a living
+  // contributor — it must not block the author from deleting their own post.
+  if (replies.some((row) => row.author_id !== null && row.author_id !== uid)) {
     throw new Error('That post has replies from other contributors, so it cannot be deleted.')
   }
 
@@ -384,10 +387,11 @@ export async function deletePost(postId: string): Promise<void> {
   const { error } = await supabase.from('discussion_posts').delete().eq('id', postId)
   if (error) throw new Error(friendlyError(error))
   if (ownPaths.length > 0) {
-    // The row delete is what hides the post; storage cleanup removes the now-unreferenced bytes.
+    // The row delete already hid the post — that is the user-visible outcome.
+    // Storage cleanup is best-effort: a failure here leaves orphaned bytes to be
+    // swept separately, but must not surface as a delete error the user can't act on.
     for (const batch of batchesOf(ownPaths, STORAGE_REMOVE_BATCH_SIZE)) {
-      const { error: removeError } = await supabase.storage.from(BUCKET).remove(batch)
-      if (removeError) throw new Error(friendlyError(removeError))
+      await supabase.storage.from(BUCKET).remove(batch)
     }
   }
 }

@@ -25,7 +25,8 @@ const baseDiscussion: UseDiscussion = {
   acceptedTerms: false,
   count: 0,
   refresh: vi.fn(),
-  submit: vi.fn(),
+  // submit resolves to the SubmitResult contract: { ok, mediaError? }
+  submit: vi.fn().mockResolvedValue({ ok: true }),
   acceptTerms: vi.fn(),
   reportTarget: vi.fn(),
   remove: vi.fn(),
