@@ -1318,6 +1318,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     box-shadow: inset 0 2px 3px rgba(0,0,0,.95), 0 1px 0 rgba(246,241,230,.08);
   }
   .binder-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(8px, 1.6vw, 16px); }
+  /* Phones: two pockets across so a 5:7 card stays legible instead of crushing
+     to a ~80px thumbnail under the ring gutter. The 3-up binder reads from 640px up. */
+  @media (max-width: 639px) {
+    .binder-grid { grid-template-columns: repeat(2, 1fr); }
+  }
   /* a plastic sleeve: inset edge + one fixed diagonal gloss streak */
   .pocket {
     position: relative; border-radius: 10px; padding: clamp(5px, 1vw, 9px);
