@@ -71,7 +71,16 @@ export default defineConfig({
         // community content still render), but drop the non-Latin weights from
         // the eager first-visit precache — this site's content is Latin-only.
         // `cyrillic` also covers `cyrillic-ext`; `latin` (no -ext) stays cached.
-        globIgnores: ['**/*-{latin-ext,vietnamese,cyrillic}-*.woff2'],
+        // Also drop the lazy 3D vendor chunks (~1.1 MB combined): they load on
+        // demand only when a pitch's 3D ball mounts, and `_headers` already gives
+        // them immutable year-long HTTP caching — no reason to precache them on a
+        // first visit a text reader may never spend in a chapter.
+        globIgnores: [
+          '**/*-{latin-ext,vietnamese,cyrillic}-*.woff2',
+          '**/three-core-*.js',
+          '**/react-three-*.js',
+          '**/three-support-*.js',
+        ],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
         clientsClaim: true,

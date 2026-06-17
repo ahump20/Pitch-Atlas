@@ -44,7 +44,7 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
             <div className="pull-light" aria-hidden="true" />
             <div className="pull-wrapper" aria-hidden="true" />
             <div className="pull-shadow" aria-hidden="true" />
-            <PitchSpecimenCard entry={featured} maxWidth={440} foil />
+            <PitchSpecimenCard entry={featured} maxWidth={440} foil priority />
             <p
               className="rfx-stamp pointer-events-none absolute top-3 z-10 hidden md:-right-5 md:inline-block"
               style={{ color: '#F6F1E6', background: 'rgba(22,18,13,.72)', transform: 'rotate(3deg)' }}

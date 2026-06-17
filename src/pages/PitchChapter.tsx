@@ -154,9 +154,9 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           </span>
         ) : null}
         {heroClip ? (
-          <GripClip clip={heroClip} />
+          <GripClip clip={heroClip} priority />
         ) : heroPhoto ? (
-          <GripFace photo={heroPhoto} />
+          <GripFace photo={heroPhoto} priority />
         ) : (
           <div className="relative z-[1] h-full w-full p-[6%]">
             <RefractorBall spinAxis={motion.spinAxis} gyro={motion.gyro} accent={accent} id={`hero-${display.slug}`} showHalo />
