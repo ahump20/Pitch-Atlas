@@ -3,7 +3,7 @@ import { useSeoMeta } from '@unhead/react'
 import type { Claim } from '../data/types'
 import { SOFTBALL_CRAFTSMEN, softballCraftsmanBySlug, softballPitchBySlug } from '../data/softball'
 import { SITE } from '../config/site'
-import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { canonicalUrl, contentJsonLd, ogImageMeta, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
@@ -55,10 +55,11 @@ export function SoftballCraftsmanChapter() {
     craftsman
       ? {
           title: `${craftsman.name}: ${craftsman.signaturePitch} | ${SITE.siteName}`,
-          description: `${craftsman.tagline} ${craftsman.intro}`.slice(0, 200),
+          description: truncateForMeta(`${craftsman.tagline} ${craftsman.intro}`),
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
           ogUrl: canonicalUrl('/softball/craftsmen/' + craftsman.slug),
+          ...ogImageMeta('softball', `${craftsman.name} — ${craftsman.signaturePitch}`),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )

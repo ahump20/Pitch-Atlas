@@ -2,7 +2,9 @@ import { useSeoMeta } from '@unhead/react'
 import type { ClaimConfidence } from '../data/types'
 import { CONFIDENCE_META } from '../data/types'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
+import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { PITCHES } from '../data/pitches'
 import { allSources, latestRetrievedAt } from '../data/sources'
 import { knowledgeSources } from '../data/knowledge'
@@ -49,7 +51,18 @@ export function SourcesPage() {
 
   return (
     <section>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/sources'),
+          name: 'Sources and provenance',
+          description:
+            'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the manual. Sourced, not corrected.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Sources' }],
+        })}
+      />
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+        <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Sources' }]} />
         <StageTierMarker index="04" label="Sources" as="span" />
 
         <h1 className="rfx-stitle max-w-[18ch] text-4xl leading-[1.04] md:text-5xl">

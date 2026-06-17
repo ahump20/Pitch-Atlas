@@ -9,7 +9,7 @@ import type {
 } from '../data/types'
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
-import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { scrollToId } from '../lib/scroll'
 import { GripViewer } from '../components/grip/GripViewer'
@@ -691,7 +691,9 @@ export function PitchChapter() {
     entry
       ? {
           title: `${entry.canonical.name}: grip, release, and movement | ${SITE.siteName}`,
-          description: `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files. Sourced, not corrected.`,
+          description: truncateForMeta(
+            `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files. Sourced, not corrected.`,
+          ),
           ogTitle: `${entry.canonical.name} | ${SITE.siteName}`,
           ogDescription: entry.display.heroIntro,
           ogUrl: canonicalUrl('/pitch/' + entry.display.slug),

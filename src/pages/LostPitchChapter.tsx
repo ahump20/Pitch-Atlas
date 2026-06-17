@@ -4,7 +4,7 @@ import type { Claim, LostPitch } from '../data/types'
 import { DOCUMENTATION_META } from '../data/types'
 import { LOST_PITCHES, lostPitchBySlug } from '../data/lost-pitches'
 import { SITE } from '../config/site'
-import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
@@ -83,7 +83,7 @@ export function LostPitchChapter() {
     pitch
       ? {
           title: `${pitch.name} | Lost Pitches | ${SITE.siteName}`,
-          description: `${pitch.tagline} ${pitch.intro}`.slice(0, 200),
+          description: truncateForMeta(`${pitch.tagline} ${pitch.intro}`),
           ogTitle: `${pitch.name} | ${SITE.siteName}`,
           ogDescription: pitch.tagline,
           ogUrl: canonicalUrl('/lost-pitches/' + pitch.slug),

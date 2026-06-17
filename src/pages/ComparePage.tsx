@@ -1,6 +1,7 @@
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { TunnelPlot } from '../components/sections/TunnelPlot'
@@ -21,6 +22,16 @@ export function ComparePage() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/compare'),
+          name: 'Compare two pitches: the tunnel and the late shape split',
+          description:
+            'Pick any two filed pitches and see how they share a release tunnel and split late. The comparison reads direction and character, not measured separation.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Compare' }],
+        })}
+      />
       <SectionHero
         breadcrumb={
           <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Compare' }]} />
