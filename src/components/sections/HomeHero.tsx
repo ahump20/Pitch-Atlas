@@ -31,7 +31,7 @@ export function HomeHero({ featured }: { featured: PitchAtlasEntry }) {
     <section id="top" className="scene-coal relative overflow-hidden">
       <div className="scene-rules" aria-hidden="true" />
       <div className="relative mx-auto flex max-w-[1320px] flex-col items-center px-5 pb-14 pt-8 md:min-h-[calc(100dvh-4rem)] md:justify-center md:px-8 md:pb-20 md:pt-6">
-        <p className="rfx-stamp" style={{ color: '#CDBA8E', background: 'rgba(22,18,13,.6)' }}>
+        <p className="rfx-stamp" style={{ color: '#F2ECDD', background: 'rgba(22,18,13,.78)', borderColor: 'rgba(242,236,221,.55)' }}>
           {SITE.sourcePrinciple}
         </p>
 

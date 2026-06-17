@@ -897,16 +897,54 @@
   .btn-foil:hover::after { animation: foil-sweep .9s ease-out; }
   .btn-foil.is-ghost {
     background: transparent;
-    border-color: color-mix(in srgb, var(--color-bone) 32%, transparent);
-    box-shadow: none; color: var(--color-bone);
+    border-color: color-mix(in srgb, var(--color-bone) 55%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-bone) 8%, transparent);
+    color: var(--color-bone);
   }
-  .btn-foil.is-ghost:hover { border-color: color-mix(in srgb, #FF2D44 75%, transparent); }
+  .btn-foil.is-ghost:hover {
+    border-color: color-mix(in srgb, #FF2D44 75%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, #FF2D44 18%, transparent);
+  }
   /* ghost on a cream surface: ink lines and text */
   .btn-foil.is-ink {
     background: transparent; border-color: rgba(20,22,27,.45);
     box-shadow: none; color: #14161B;
   }
   .btn-foil.is-ink:hover { border-color: rgba(20,22,27,.85); }
+
+  /* foil button focus: the base :focus-visible already applies (an element's own
+     overflow:hidden never clips its outline); bump the offset so the ring clears the seal edge */
+  .btn-foil:focus-visible {
+    outline: 2px solid var(--color-seam);
+    outline-offset: 4px;
+  }
+
+  /* field-manual section header — a hairline rule + mono section label, like a printed manual */
+  .manual-section {
+    position: relative;
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+  }
+  .manual-section::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right,
+      color-mix(in srgb, var(--color-ink-3) 38%, transparent) 0%,
+      color-mix(in srgb, var(--color-ink-3) 38%, transparent) 64%,
+      transparent 100%);
+  }
+  .manual-section__no {
+    font-family: var(--font-mono); font-size: 0.625rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-ink-3); display: block; margin-bottom: 0.5rem;
+  }
+
+  /* 44px touch target wrapper for footer/mobile links — height is the WCAG-relevant axis
+     for inline text links, so we expand vertically and leave width to the label */
+  .touch-link {
+    display: inline-flex; align-items: center;
+    min-height: 44px;
+    padding: 0 6px; text-decoration: none;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .btn-foil:hover::after { animation: none; opacity: .28; background-position: 50% 0; }
   }
@@ -1012,8 +1050,17 @@
     border: 1px solid rgba(255,255,255,.07); transition: transform .2s, border-color .2s, background .2s;
   }
   .rfx-entry:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--gc, #37D6FF) 50%, transparent); }
-  .rfx-entry.is-filed { border-color: color-mix(in srgb, #D8CFB8 42%, transparent); background: linear-gradient(120deg, rgba(216,207,184,.10), var(--color-press)); }
-  .rfx-entry.is-filed:hover { border-color: color-mix(in srgb, #D8CFB8 70%, transparent); }
+  /* filed entries already wear a bone-tinted edge + paper wash; add a 2px family-accent
+     top rule (--gc, set inline in PitchIndex) so the grid scans as "specimens vs stubs".
+     This is the single canonical is-filed rule — the accent is declared after border-color
+     so it wins the top edge; no competing earlier rule. */
+  .rfx-entry.is-filed {
+    border-color: color-mix(in srgb, #D8CFB8 42%, transparent);
+    border-top: 2px solid var(--gc);
+    border-top-left-radius: 0; border-top-right-radius: 0;
+    background: linear-gradient(120deg, rgba(216,207,184,.10), var(--color-press));
+  }
+  .rfx-entry.is-filed:hover { border-color: color-mix(in srgb, #D8CFB8 70%, transparent); border-top-color: var(--gc); }
   /* the Filed tag wears the foil — a filed pitch IS the holographic specimen */
   .rfx-filedtag {
     font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .1em; text-transform: uppercase;
