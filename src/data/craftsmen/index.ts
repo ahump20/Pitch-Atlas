@@ -36,12 +36,12 @@ const gibson: Craftsman = {
     'reputable-analysis',
     { note: 'Paraphrased from the FanGraphs appreciation, which quotes Gibson on owning the outside half. The knockdown was part of the toolkit: he listed "knockdown, brushback, and hit-batsman" among his nine pitches.' },
   ),
-  quote: claim(
+  quote: secondhand(
     'The part of pitching that separates the stars from everyone else is about 90 percent mental. That is why I considered it so important to mess with a batter’s head without letting him inside mine.',
     'gibson-wiki',
     // Gibson's words, but relayed through Wikipedia rather than a primary record
     // of him saying it — so the label is the source's tier, not the speaker's.
-    'secondhand-attributed',
+    "Gibson's own phrasing, but reachable only through the Wikipedia biography — no primary interview, autobiography passage, or transcript placing this exact sentence in his direct words was located. The label reflects the secondary pathway, not doubt about the sentiment.",
   ),
   record: [
     claim(

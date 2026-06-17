@@ -1,5 +1,5 @@
 import type { RepertoireEntry, RepertoireFamily } from '../types'
-import { claim, unverified } from '../sources'
+import { claim, secondhand, unverified } from '../sources'
 
 /*
   The Repertoire: a field-wide catalog of every accepted pitch, grouped by family.
@@ -856,15 +856,17 @@ export const REPERTOIRE: RepertoireEntry[] = [
     family: "breaking",
     status: "alias",
     aka: ["slip", "Paul Richards slider", "Richards slip pitch"],
-    grip: claim(
+    grip: secondhand(
       "Held and thrown like a slider with off-center finger pressure on the seams, which is the only specific the historical record offers — the detailed grip was never documented in a primary source.",
       'exp-baltimore-sun-reckless-richards',
-      'secondhand-attributed', { note: "No primary grip diagram survives. Contemporary accounts describe it only as Richards's branded slider; the seam-pressure detail is reputable inference, not a documented teaching cue, so it is tagged secondhand and approximate.", approximate: true },
+      "No primary grip diagram survives. Contemporary accounts describe it only as Richards's branded slider; the seam-pressure detail is reputable inference, not a documented teaching cue, so it is tagged secondhand and approximate.",
+      { approximate: true },
     ),
-    movement: claim(
+    movement: secondhand(
       "A softer slider with lateral, glove-side break that read like a breaking ball arriving late, which is how Richards used it to revive veteran arms — but no tracked break or spin figure exists for it.",
       'exp-sabr-paul-richards-bio',
-      'secondhand-attributed', { note: "The pitch was thrown in the 1950s, decades before radar or Statcast, so any spin-axis or break number would be fabricated. The Baltimore Sun retrospective characterizes it only as a slider Richards renamed; movement description here is paraphrase of that characterization.", approximate: true },
+      "The pitch was thrown in the 1950s, decades before radar or Statcast, so any spin-axis or break number would be fabricated. The Baltimore Sun retrospective characterizes it only as a slider Richards renamed; movement description here is paraphrase of that characterization.",
+      { approximate: true },
     ),
     relationship: claim(
       "The slip pitch is not a distinct pitch type but Paul Richards's mid-century coaching name for a slider — the Baltimore Sun describes it directly as \"a slider he called a 'slip pitch.'\" It resolves to the existing slider entry; this entry exists to file the historical alias honestly rather than erase it.",

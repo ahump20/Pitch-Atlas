@@ -39,7 +39,7 @@ export const SOURCES = {
     label: 'MLB.com Statcast Glossary, Active Spin',
     url: 'https://www.mlb.com/glossary/statcast/active-spin',
     retrievedAt: RETRIEVED,
-    season: '2019 reference (Verlander 98.5%)',
+    season: '2019 reference',
   },
   'mlb-ivb': {
     id: 'mlb-ivb',
@@ -1822,19 +1822,26 @@ export function src(id: SourceId): Source {
   return s
 }
 
-/** A sourced, confident claim. */
+/** A sourced, confident claim. `secondhand-attributed` is intentionally excluded
+    here — a relayed claim must carry its attribution note, so it goes through
+    `secondhand()` instead, which the type system now enforces. */
 export function claim<T>(
   value: T,
   id: SourceId,
-  confidence: Exclude<ClaimConfidence, 'unverified'>,
+  confidence: Exclude<ClaimConfidence, 'unverified' | 'secondhand-attributed'>,
   opts: { note?: string; approximate?: boolean } = {},
 ): Claim<T> {
   return { value, source: src(id), confidence, ...opts }
 }
 
 /** A claim relayed through a secondary source. Requires a note. */
-export function secondhand<T>(value: T, id: SourceId, note: string): Claim<T> {
-  return { value, source: src(id), confidence: 'secondhand-attributed', note }
+export function secondhand<T>(
+  value: T,
+  id: SourceId,
+  note: string,
+  opts: { approximate?: boolean } = {},
+): Claim<T> {
+  return { value, source: src(id), confidence: 'secondhand-attributed', note, ...opts }
 }
 
 /** A claim no source corroborated this run. Requires a note. Shown, not hidden. */
