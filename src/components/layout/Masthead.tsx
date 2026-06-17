@@ -10,31 +10,37 @@ import { BrandMark } from '../brand/BrandMark'
   slate ink. The mobile menu drops on the deeper cream with ink hairlines.
 */
 
+// The primary bar holds content destinations only — every wing of the manual,
+// including Lost Pitches (previously reachable on desktop only through body
+// links). The interactive tools live one click away in the Tools disclosure.
 const NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
   { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
-  { label: 'Shape Lab', to: '/sandbox' },
   { label: 'Grips', to: '/grips' },
   { label: 'Craftsmen', to: '/craftsmen' },
+  { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
 ]
 
 // The interactive tools — reachable from the body of pages, but easy to miss.
 // Grouped behind one "Tools" disclosure on the desktop bar and a labelled
-// section in the mobile sheet so the shape map and the comparators are always
-// one click from anywhere.
+// section in the mobile sheet so the shape lab, the shape map, and the
+// comparators are always one click from anywhere. Shape Lab is a sandbox tool,
+// so it lives here with its kin rather than crowding the content bar. "Compare
+// two grips" deep-links to the comparator itself, not the top of the library.
 const TOOLS: { label: string; to: string; note: string }[] = [
+  { label: 'Shape Lab', to: '/sandbox', note: 'Dial a grip and watch the shape' },
   { label: 'Shape map', to: '/movement-map', note: 'Every pitch, plotted by direction' },
   { label: 'Compare two pitches', to: '/compare', note: 'Read two shapes side by side' },
-  { label: 'Compare two grips', to: '/grips', note: 'Two grips in the hand at once' },
+  { label: 'Compare two grips', to: '/grips#grip-compare', note: 'Two grips in the hand at once' },
 ]
 
 const MOBILE_NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
   { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
-  { label: 'Shape Lab', to: '/sandbox' },
+  { label: 'Grips', to: '/grips' },
   { label: 'Craftsmen', to: '/craftsmen' },
   { label: 'Lost Pitches', to: '/lost-pitches' },
   { label: 'Sources', to: '/sources' },
@@ -118,7 +124,6 @@ export function Masthead() {
               type="button"
               aria-expanded={toolsOpen}
               aria-controls="tools-menu"
-              aria-haspopup="true"
               onClick={() =>
                 setToolsMenu((state) => ({
                   open: !(state.open && state.pathname === pathname),
