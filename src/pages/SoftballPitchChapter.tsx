@@ -1,7 +1,8 @@
 import { useParams, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SOFTBALL_PITCHES, softballPitchBySlug } from '../data/softball'
 import type { SoftballPitch } from '../data/softball'
 import { accentForSlug } from '../components/refractor/accents'
@@ -79,6 +80,15 @@ export function SoftballPitchChapter() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/softball/pitch/' + pitch.slug),
+          name: pitch.name,
+          description: pitch.tagline,
+          breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'Softball', to: '/softball' }, { name: pitch.name }],
+        })}
+      />
       <section className="on-stage relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
           <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(108,172,228,0.15),transparent_42%),linear-gradient(115deg,rgba(242,236,221,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
