@@ -332,13 +332,21 @@ export async function createPost(input: NewPost): Promise<string> {
 
 export async function reportPost(postId: string, reason: string): Promise<void> {
   await ensureSession()
-  const { error } = await supabase.from('discussion_reports').insert({ post_id: postId, reason })
+  // An empty optional reason is stored as NULL, not '', so the moderation table
+  // distinguishes "no reason given" from a blank string.
+  const cleanReason = reason.trim() || null
+  const { error } = await supabase
+    .from('discussion_reports')
+    .insert({ post_id: postId, reason: cleanReason })
   if (error && error.code !== '23505') throw new Error(friendlyError(error))
 }
 
 export async function reportMedia(mediaId: string, reason: string): Promise<void> {
   await ensureSession()
-  const { error } = await supabase.from('discussion_reports').insert({ media_id: mediaId, reason })
+  const cleanReason = reason.trim() || null
+  const { error } = await supabase
+    .from('discussion_reports')
+    .insert({ media_id: mediaId, reason: cleanReason })
   if (error && error.code !== '23505') throw new Error(friendlyError(error))
 }
 
