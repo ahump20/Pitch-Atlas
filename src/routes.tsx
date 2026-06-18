@@ -17,6 +17,7 @@ export const routes: RouteObject[] = [
     Component: RootLayout,
     children: [
       { index: true, lazy: () => import('./pages/AtlasHome').then((m) => ({ Component: m.AtlasHome })) },
+      { path: 'v2', lazy: () => import('./pages/AtlasHomeV2').then((m) => ({ Component: m.AtlasHomeV2 })) },
       { path: 'pitch/:slug', lazy: () => import('./pages/PitchChapter').then((m) => ({ Component: m.PitchChapter })) },
       { path: 'repertoire', lazy: () => import('./pages/RepertoirePage').then((m) => ({ Component: m.RepertoirePage })) },
       { path: 'repertoire/:id', lazy: () => import('./pages/RepertoireChapter').then((m) => ({ Component: m.RepertoireChapter })) },

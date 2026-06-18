@@ -2077,3 +2077,169 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes skel-sweep {
   to { transform: translateX(100%); }
 }
+
+/* ============================================================
+   v2 · THE REFRACTOR CASE  ·  the /v2 landing prototype
+   A bolder staging of the existing refractor card + R3F ball:
+   glossy chromium (the --foil rainbow + a brushed-metal display
+   face) set against matte Topps-Now card stock. Extends the
+   refractive-chrome vocabulary above (raking light + --c3 rim +
+   foil); never the retired casino-chrome / steel gradients.
+   Every motion gates on prefers-reduced-motion; the no-WebGL
+   ball path (BallStage -> SpecimenBoundary -> 2D schematic) is
+   unchanged. Lives only under .v2 surfaces, so / is untouched.
+   ============================================================ */
+@layer components {
+  /* ── the matte Topps-Now stage ──
+     A flat, light-absorbing black that gives the chrome its pop:
+     cooler and blacker than the warm scene-coal, a soft top
+     vignette, and a 2% paper tooth (the .v2-tooth overlay). No
+     gloss here on purpose; matte is the half of the thesis that
+     isn't chrome. */
+  .v2-stage {
+    position: relative; isolation: isolate;
+    background: radial-gradient(125% 85% at 50% -8%, #1a1613 0%, #0c0b0a 52%, #060605 100%);
+    color: var(--color-bone);
+  }
+  .v2-tooth::after {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    opacity: .05; mix-blend-mode: overlay;
+  }
+
+  /* ── the v2 display type ──
+     Solid, confident athletic type (the shipping Anton identity face,
+     preserved) that lifts off the matte stage with a struck-metal
+     bevel: a light top edge, a dark drop, a soft depth shadow. The
+     chromium lives in the MATERIALS around the words (the --foil, the
+     polished CTA lips, the card mounts, the ball's specular), never in
+     a gradient text fill. The retired casino-chrome lesson holds: the
+     chrome is the room, not the letters. */
+  .v2-display {
+    color: var(--color-bone);
+    text-shadow:
+      0 -1px 0 rgba(255, 255, 255, .16),
+      0 1px 1px rgba(0, 0, 0, .5),
+      0 4px 16px rgba(0, 0, 0, .5);
+  }
+
+  /* ── the hero rim-light sweep ──
+     A raking band behind the hero card: atmosphere over a real
+     asset, never a stand-in for one. The static accent glow always
+     shows; the moving rake runs only with motion allowed. */
+  .v2-rim {
+    position: absolute; inset: -12% -18%; z-index: 0; pointer-events: none;
+    background: radial-gradient(58% 54% at 62% 40%,
+      color-mix(in srgb, var(--c3, #37D6FF) 22%, transparent) 0%, transparent 70%);
+    opacity: .5;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .v2-rim::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(100deg, transparent 36%, rgba(246,241,230,.12) 50%, transparent 64%);
+      mix-blend-mode: screen; animation: v2-rake 9s ease-in-out infinite alternate;
+    }
+  }
+
+  /* ── the chrome wall ──
+     A matte grid of Topps-Now mounts, each a flip card. The mount
+     is the matte black border; the card inside is the chrome. Two
+     up on phones, four up at md; the gold 1/1 takes the one wide
+     cell as the wall's single accent. */
+  .v2-wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  @media (min-width: 768px) { .v2-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; } }
+  .v2-mount {
+    position: relative; border-radius: var(--radius-md);
+    background: linear-gradient(180deg, #141210 0%, #0a0908 100%);
+    border: 1px solid color-mix(in srgb, var(--color-bone) 12%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 26px -18px #000;
+    padding: 10px;
+  }
+  .v2-mount.is-chase { grid-column: span 2; }
+
+  /* ── the flip: chrome front <-> matte card back ──
+     A real toggle (button + aria-pressed in markup); the transform
+     is the only motion and it's removed under reduced motion. */
+  .v2-flip { position: relative; perspective: 1400px; }
+  .v2-flip-inner { position: relative; transform-style: preserve-3d; transition: transform .72s cubic-bezier(.2,.8,.2,1); }
+  .v2-flip.is-flipped .v2-flip-inner { transform: rotateY(180deg); }
+  .v2-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .v2-face-back { position: absolute; inset: 0; transform: rotateY(180deg); }
+  @media (prefers-reduced-motion: reduce) { .v2-flip-inner { transition: none; } }
+
+  .v2-flip-btn {
+    position: absolute; bottom: 8px; right: 8px; z-index: 6;
+    display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--color-bone); background: color-mix(in srgb, #0a0908 64%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-bone) 22%, transparent);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    cursor: pointer; transition: border-color .18s ease, transform .12s ease;
+  }
+  .v2-flip-btn:hover { border-color: color-mix(in srgb, var(--c3, #37D6FF) 60%, transparent); }
+  .v2-flip-btn:active { transform: scale(.95); }
+  .v2-flip-btn:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 2px; }
+  @media (prefers-reduced-transparency: reduce) { .v2-flip-btn { background: #0a0908; -webkit-backdrop-filter: none; backdrop-filter: none; } }
+
+  /* ── the matte black card back (v2) ──
+     Topps-Now matte stock: the sourced data on flat black, the
+     deliberate counterpoint to the glossy front. Distinct from the
+     cream .rfx-cardback; this is the black register. */
+  .v2-back {
+    position: relative; height: 100%; border-radius: var(--radius-md);
+    background: radial-gradient(120% 90% at 50% 0%, #15120f 0%, #0a0908 100%);
+    border: 1px solid color-mix(in srgb, var(--color-bone) 10%, transparent);
+    padding: 15px; overflow: hidden;
+  }
+  .v2-back::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    background: linear-gradient(101deg, transparent 0 6%, rgba(246,241,230,.10) 20%, transparent 40%);
+    mix-blend-mode: screen; opacity: .5;
+  }
+  .v2-back > * { position: relative; z-index: 1; }
+
+  /* ── the 2D refraction bridge ──
+     The seam flattened: the same seamPoint geometry the 3D ball
+     draws, as a 2D schematic that scales + blooms its foil on
+     scroll-in. The honest "one function, two media" beat. Without
+     view-timeline (or under reduced motion) it simply shows. */
+  .v2-bridge { position: relative; }
+  .v2-bridge-foil { opacity: .42; }
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .v2-bridge-svg { animation: v2-bridge-in linear both; animation-timeline: view(); animation-range: entry 4% cover 38%; }
+      .v2-bridge-foil { animation: v2-bridge-bloom linear both; animation-timeline: view(); animation-range: entry 12% cover 46%; }
+      .v2-refract { animation: v2-refract-out linear both; animation-timeline: view(); animation-range: exit 2% exit 92%; }
+    }
+  }
+
+  /* ── the chrome-lipped CTA (distinct from btn-foil's rainbow) ──
+     A matte pill with a single raked bone highlight on the top lip:
+     the chrome read at control scale, AA contrast both states. */
+  .v2-cta {
+    position: relative; display: inline-flex; align-items: center; gap: 8px; overflow: hidden;
+    padding: 11px 20px; border-radius: 999px; font-family: var(--font-mono);
+    font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
+    color: #080706; background: linear-gradient(176deg, #F6F2E8 0%, #C9CFD7 52%, #EDEFF3 100%);
+    border: 1px solid rgba(0,0,0,.25); transition: transform .12s ease, box-shadow .2s ease;
+    box-shadow: 0 8px 22px -14px rgba(0,0,0,.8);
+  }
+  .v2-cta.is-ghost {
+    color: var(--color-bone); background: color-mix(in srgb, #0a0908 55%, transparent);
+    border-color: color-mix(in srgb, var(--color-bone) 40%, transparent);
+  }
+  .v2-cta:hover { transform: translateY(-1px); }
+  .v2-cta:active { transform: scale(.98); }
+  .v2-cta:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 3px; }
+  .v2-cta::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(101deg, transparent 0 8%, rgba(255,255,255,.45) 22%, transparent 42%);
+    mix-blend-mode: screen; opacity: .6;
+  }
+  .v2-cta.is-ghost::after { background: linear-gradient(101deg, transparent 0 8%, rgba(246,241,230,.18) 22%, transparent 42%); }
+}
+
+@keyframes v2-rake { from { opacity: .26; transform: translateX(-4%); } to { opacity: .5; transform: translateX(4%); } }
+@keyframes v2-bridge-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
+@keyframes v2-bridge-bloom { from { opacity: 0; } to { opacity: .58; } }
+@keyframes v2-refract-out { to { transform: translateY(-3%) scale(1.04); filter: saturate(1.5) brightness(1.12); opacity: 0; } }

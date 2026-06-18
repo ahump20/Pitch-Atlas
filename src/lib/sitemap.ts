@@ -42,6 +42,13 @@ export const STATIC_PATHS = [
   '/support',
 ] as const
 
+/* Routes that prerender real HTML but are deliberately kept OUT of the public
+   sitemap (and carry a noindex) until promoted: the /v2 "Refractor Case"
+   prototype duplicates the home content and is not a published page yet. The
+   sitemap test subtracts these before its parity check, so the drift alarm still
+   fires for every real static route. Remove an entry here the day it ships. */
+export const SITEMAP_EXCLUDED = ['/v2'] as const
+
 /** Every published path, static + data-derived, without origin or trailing slash. */
 export function sitemapPaths(): string[] {
   return [
