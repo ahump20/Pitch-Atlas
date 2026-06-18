@@ -11,6 +11,23 @@ export function canonicalUrl(pathname: string): string {
   return `${SITE.canonicalDomain}${clean}/`
 }
 
+/* ── Meta description length ────────────────────────────────────────────────
+  Google renders ~155-160 characters of a meta description and hard-cuts the
+  rest, usually mid-word. Trim to a clean length on a word boundary so the SERP
+  snippet reads as a finished thought. Presentation-only: the on-page prose, the
+  og:description, and the JSON-LD description keep the full sourced sentence —
+  this never touches a number, a claim, or a source, so the provenance doctrine
+  is untouched. An ellipsis is appended only when the text was actually shortened.
+*/
+export function truncateForMeta(text: string, max = 155): string {
+  const clean = text.trim()
+  if (clean.length <= max) return clean
+  const cut = clean.slice(0, max)
+  const lastSpace = cut.lastIndexOf(' ')
+  const body = (lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[\s.,;:!?—–-]+$/u, '')
+  return `${body}…`
+}
+
 /* ── Per-route share art ───────────────────────────────────────────────────
   Distinct OG cards live at /og/<section>.png (1200x630, PNG — scrapers reject
   webp). A section with no dedicated card falls back to the site default. The
@@ -25,6 +42,7 @@ export type OgSection =
   | 'lost-pitches'
   | 'grips'
   | 'learn'
+  | 'softball'
 
 const OG_DEFAULT = `${SITE.canonicalDomain}/og-image.png`
 
@@ -35,6 +53,7 @@ const OG_CARD: Record<OgSection, string> = {
   'lost-pitches': `${SITE.canonicalDomain}/og/lost-pitches.png`,
   grips: `${SITE.canonicalDomain}/og/grips.png`,
   learn: `${SITE.canonicalDomain}/og/learn.png`,
+  softball: `${SITE.canonicalDomain}/og/softball.png`,
 }
 
 /** The 1200x630 OG/Twitter image fields for a section, ready to spread into

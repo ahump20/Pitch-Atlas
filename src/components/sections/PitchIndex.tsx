@@ -305,7 +305,7 @@ export function PitchIndex({ id }: { id?: string }) {
   return (
     <div id={id}>
       {/* Sticky controls */}
-      <div className="sticky top-16 z-20 -mx-5 mt-6 bg-background/92 px-5 py-4 backdrop-blur-md md:-mx-8 md:px-8">
+      <div className="sticky top-16 z-20 -mx-5 mt-6 bg-background/92 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
         <label className="block">
           <span className="sr-only">Search the Pitch Index</span>
           <InputGroup className="h-11 rounded-xl border-cyan/40 bg-[#1D1710] text-bone">
@@ -327,14 +327,19 @@ export function PitchIndex({ id }: { id?: string }) {
             />
           </InputGroup>
         </label>
-        <div className="mt-3 flex flex-wrap items-center gap-2">
+        {/* One control row: family filters scroll horizontally on phones (so the
+            sticky bar stays short and doesn't bury the list) with the view toggle
+            and reset pinned right. `min-w-0 flex-1` bounds the filter group so its
+            overflow scrolls INSIDE the row instead of pushing the page wide. From
+            640px up the filters wrap normally. */}
+        <div className="mt-3 flex items-center gap-2">
           <ToggleGroup
             type="single"
             value={filter}
             onValueChange={(next) => {
               if (next) morph(() => updateIndexParams({ family: next as FamilyFilter }, { announce: `${FILTERS.find((f) => f.key === next)?.label ?? 'All'} filter applied` }))
             }}
-            className="flex flex-wrap"
+            className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
             aria-label="Filter pitch family"
           >
             {FILTERS.map((f) => (
@@ -342,7 +347,7 @@ export function PitchIndex({ id }: { id?: string }) {
                 key={f.key}
                 value={f.key}
                 aria-label={f.label}
-                className="pi-toggle rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
               >
                 {f.label}
               </ToggleGroupItem>
@@ -354,7 +359,7 @@ export function PitchIndex({ id }: { id?: string }) {
             onValueChange={(next) => {
               if (next) morph(() => updateIndexParams({ view: next as IndexView }, { announce: `${next === 'binder' ? 'Binder' : 'Rows'} view selected` }))
             }}
-            className="ml-auto rounded-full border border-white/14 p-0.5"
+            className="shrink-0 rounded-full border border-white/14 p-0.5"
             aria-label="Index view"
           >
             <ToggleGroupItem value="rows" aria-label="Rows view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
@@ -372,14 +377,14 @@ export function PitchIndex({ id }: { id?: string }) {
               onClick={resetIndex}
               variant="ghost"
               size="sm"
-              className="h-9 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:text-bone"
+              className="h-9 shrink-0 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:text-bone"
             >
               <XIcon data-icon="inline-start" />
               Reset
             </Button>
           ) : null}
         </div>
-        <p aria-live="polite" className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">
+        <p aria-live="polite" className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3 md:mt-3">
           {countLabel}
         </p>
         <span role="status" aria-live="polite" data-testid="pitch-index-announcer" className="sr-only">

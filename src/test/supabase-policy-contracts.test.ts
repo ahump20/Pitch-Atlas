@@ -161,6 +161,108 @@ describe('community safety database policy contracts', () => {
     expect(migration).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
   })
 
+  it('pins admin and block helpers to empty search paths', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615200500_pin_admin_helper_search_paths.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.blocked_between\(left_user\s+uuid,\s+right_user\s+uuid\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain('from public.profiles p')
+    expect(executableSql).toContain('from public.blocked_users b')
+    expect(executableSql).toContain('grant execute on function private.is_admin() to anon, authenticated')
+    expect(executableSql).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
+    expect(executableSql).toContain('revoke all on function public.is_admin() from public')
+    expect(executableSql).toContain('grant execute on function public.is_admin() to service_role')
+    expect(executableSql).toContain('revoke execute on function public.is_admin() from anon, authenticated')
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
+  })
+
+  it('pins internal trigger helpers to empty search paths', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615203500_pin_internal_trigger_search_paths.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+    const internalHelpers = [
+      'refresh_author_rollup',
+      'on_engagement_change',
+      'on_field_note_after',
+      'handle_new_user',
+      'handle_user_claim',
+      'on_note_report_autohide',
+      'text_has_banned_term',
+      'enforce_field_note_rate_limit',
+      'enforce_field_note_content_safety',
+      'enforce_profile_content_safety',
+      'enforce_discussion_depth',
+      'enforce_discussion_content_safety',
+      'enforce_discussion_rate_limit',
+      'enforce_discussion_media_limits',
+      'on_discussion_report',
+      'enforce_discussion_block_edges',
+    ]
+
+    for (const helper of internalHelpers) {
+      expect(executableSql).toMatch(
+        new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\(`, 'i'),
+      )
+      expect(executableSql).toMatch(
+        new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${helper}\\([\\s\\S]*?\\bsecurity\\s+definer\\b[\\s\\S]*?\\bset\\s+search_path\\s*=\\s*''`, 'i'),
+      )
+      expect(executableSql).toContain(`revoke execute on function public.${helper}(`)
+    }
+
+    expect(executableSql).toContain("to_regclass('public.thread_participants')")
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?(?:public|auth)/i)
+    expect(executableSql).toContain('from public.field_notes')
+    expect(executableSql).toContain('from public.discussion_posts')
+    expect(executableSql).toContain('from public.banned_terms b')
+    expect(executableSql).toContain('private.blocked_between(new.author_id, v_parent_author)')
+  })
+
+  it('pins service-only invoker helpers to empty search paths', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615205500_pin_remaining_helper_search_paths.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain("alter function public.note_base_rank(text, boolean, integer, integer, integer)\n  set search_path = ''")
+    expect(executableSql).toContain("alter function public.on_field_note_biu()\n  set search_path = ''")
+    expect(executableSql).toContain("alter function public.set_updated_at()\n  set search_path = ''")
+    expect(executableSql).toContain('revoke execute on function public.note_base_rank(text, boolean, integer, integer, integer)\n  from public, anon, authenticated')
+    expect(executableSql).toContain('revoke execute on function public.on_field_note_biu()\n  from public, anon, authenticated')
+    expect(executableSql).toContain('revoke execute on function public.set_updated_at()\n  from public, anon, authenticated')
+    expect(executableSql).toContain('grant execute on function public.note_base_rank(text, boolean, integer, integer, integer)\n  to service_role')
+    expect(executableSql).toContain('grant execute on function public.on_field_note_biu()\n  to service_role')
+    expect(executableSql).toContain('grant execute on function public.set_updated_at()\n  to service_role')
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
+  })
+
+  it('uses initplan viewer lookup inside admin and block helpers', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615212500_initplan_admin_block_helpers.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+private\.blocked_between\(left_user\s+uuid,\s+right_user\s+uuid\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.is_admin\(\)[\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql.match(/\(select auth\.uid\(\)\) as id/gi)).toHaveLength(3)
+    expect(executableSql).not.toMatch(/\bwhere\s+p\.id\s*=\s*auth\.uid\(\)/i)
+    expect(executableSql).not.toMatch(/\bselect\s+auth\.uid\(\)\s+as\s+id\b/i)
+    expect(executableSql).toContain('grant execute on function private.is_admin() to anon, authenticated')
+    expect(executableSql).toContain('grant execute on function private.blocked_between(uuid, uuid) to anon, authenticated')
+    expect(executableSql).toContain('grant execute on function public.is_admin() to service_role')
+    expect(executableSql).toContain('revoke execute on function public.is_admin() from anon, authenticated')
+    expect(executableSql).not.toMatch(/set\s+search_path\s+(?:=|to)\s+'?public/i)
+  })
+
   it('keeps discussion reads limited to rendered thread columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
@@ -331,6 +433,34 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).toContain('grant execute on function public.has_accepted_media_terms() to authenticated')
     expect(executableSql).toContain('grant execute on function public.accept_media_terms() to authenticated')
     expect(executableSql).not.toMatch(/\bgrant\s+(select|insert)\b[\s\S]*?\bon\s+public\.discussion_media_terms\b/i)
+  })
+
+  it('runs current-user RPCs as invoker with narrow authenticated column grants', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260615193000_rpc_invoker_current_user_grants.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain('revoke select on public.note_tries from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_tries', 'authenticated')).toEqual(['note_id', 'user_id'])
+    expect(executableSql).not.toMatch(/\bgrant\s+select\s+on\s+public\.note_tries\b/i)
+
+    expect(executableSql).toContain('revoke select on public.note_helpful from anon, authenticated')
+    expect(selectGrantColumns(migration, 'note_helpful', 'authenticated')).toEqual(['note_id', 'user_id'])
+    expect(executableSql).not.toMatch(/\bgrant\s+select\s+on\s+public\.note_helpful\b/i)
+
+    expect(executableSql).toContain('revoke select, insert on public.discussion_media_terms from anon, authenticated')
+    expect(selectGrantColumns(migration, 'discussion_media_terms', 'authenticated')).toEqual(['user_id'])
+    expect(insertGrantColumns(migration, 'discussion_media_terms')).toEqual(['user_id'])
+    expect(executableSql).not.toMatch(/\bto\s+anon\b/i)
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.has_accepted_media_terms\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.accept_media_terms\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.viewer_note_engagement\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain('grant execute on function public.has_accepted_media_terms() to authenticated')
+    expect(executableSql).toContain('grant execute on function public.accept_media_terms() to authenticated')
+    expect(executableSql).toContain('grant execute on function public.viewer_note_engagement() to authenticated')
   })
 
   it('keeps block-list reads limited to the target user', () => {

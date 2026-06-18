@@ -38,6 +38,7 @@ export function PitchSpecimenCard({
   index = 0,
   maxWidth,
   foil = false,
+  priority = false,
 }: {
   entry: PitchAtlasEntry
   index?: number
@@ -45,6 +46,8 @@ export function PitchSpecimenCard({
   maxWidth?: number
   /** Mount the live WebGL foil (the hero card only). */
   foil?: boolean
+  /** Hero-of-the-page card: load its grip face eagerly for a fast LCP. */
+  priority?: boolean
 }) {
   const { canonical, motion, display } = entry
   const physics = canonical.physics
@@ -68,9 +71,9 @@ export function PitchSpecimenCard({
     : { label: 'Reference grip', color: '#CDBA8E' }
 
   const face = clip ? (
-    <GripClip clip={clip} />
+    <GripClip clip={clip} priority={priority} />
   ) : photo ? (
-    <GripFace photo={photo} />
+    <GripFace photo={photo} priority={priority} />
   ) : (
     <RefractorBall
       spinAxis={motion.spinAxis}

@@ -1,13 +1,21 @@
-import { describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DiscussionPanel } from './DiscussionPanel'
 import { useDiscussion, type UseDiscussion } from '../../hooks/useDiscussion'
+
+const toast = vi.hoisted(() => ({
+  error: vi.fn(),
+  success: vi.fn(),
+}))
 
 vi.mock('../../hooks/useDiscussion', () => ({
   useDiscussion: vi.fn(),
 }))
 
+vi.mock('sonner', () => ({
+  toast,
+}))
 
 const baseDiscussion: UseDiscussion = {
   status: 'ready',
@@ -17,13 +25,18 @@ const baseDiscussion: UseDiscussion = {
   acceptedTerms: false,
   count: 0,
   refresh: vi.fn(),
-  submit: vi.fn(),
+  // submit resolves to the SubmitResult contract: { ok, mediaError? }
+  submit: vi.fn().mockResolvedValue({ ok: true }),
   acceptTerms: vi.fn(),
   reportTarget: vi.fn(),
   remove: vi.fn(),
 }
 
 describe('DiscussionPanel', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
+
   it('stays collapsed by default and opens into an empty state', async () => {
     const user = userEvent.setup()
     vi.mocked(useDiscussion).mockReturnValue(baseDiscussion)
@@ -56,5 +69,45 @@ describe('DiscussionPanel', () => {
     expect(await screen.findByText('Could not load the discussion.', {}, { timeout: 5000 })).toBeInTheDocument()
     expect(screen.getByText('Supabase unavailable')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+  })
+
+  it('shows delete failures from the discussion data layer', async () => {
+    const user = userEvent.setup()
+    const remove = vi.fn().mockRejectedValue(
+      new Error('That post has replies from other contributors, so it cannot be deleted.'),
+    )
+    vi.mocked(useDiscussion).mockReturnValue({
+      ...baseDiscussion,
+      posts: [
+        {
+          id: 'post-1',
+          topicKey: 'pitch:four-seam',
+          authorId: 'user-1',
+          displayName: 'Austin',
+          body: 'Seam cue question.',
+          createdAt: '2026-06-15T08:00:00.000Z',
+          viewerIsAuthor: true,
+          media: [],
+          replies: [],
+        },
+      ],
+      count: 1,
+      remove,
+    })
+
+    render(<DiscussionPanel topicKey="pitch:four-seam" topicName="Four-seam fastball" />)
+    await user.click(screen.getByRole('button', { name: /discussion/i }))
+    expect(await screen.findByText('Seam cue question.', {}, { timeout: 5000 })).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /^delete$/i }))
+    const deleteActions = screen.getAllByRole('button', { name: /^delete$/i })
+    await user.click(deleteActions[deleteActions.length - 1])
+
+    await waitFor(() => {
+      expect(toast.error).toHaveBeenCalledWith(
+        'That post has replies from other contributors, so it cannot be deleted.',
+      )
+    })
+    expect(remove).toHaveBeenCalledWith('post-1')
   })
 })

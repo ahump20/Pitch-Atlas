@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd, ogImageMeta } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { WINDMILL_PHASES, FUNDAMENTAL_BLOCKS } from '../data/softball'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -23,10 +24,25 @@ export function SoftballFastpitchPage() {
     ogTitle: `Fastpitch fundamentals | ${SITE.siteName}`,
     ogDescription: 'The windmill, from the ground up. Sourced, not corrected.',
     ogUrl: canonicalUrl('/softball/fastpitch'),
+    ...ogImageMeta('softball', 'Fastpitch fundamentals — the windmill, from the ground up'),
   })
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'Article',
+          url: canonicalUrl('/softball/fastpitch'),
+          name: 'Fastpitch fundamentals: the windmill, from the ground up',
+          description:
+            'The core of fastpitch softball pitching — the four phases of the windmill delivery, where the speed actually comes from, and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
+          breadcrumb: [
+            { name: 'The Atlas', to: '/' },
+            { name: 'Softball', to: '/softball' },
+            { name: 'Fastpitch' },
+          ],
+        })}
+      />
       <SectionHero
         breadcrumb={
           <Breadcrumb

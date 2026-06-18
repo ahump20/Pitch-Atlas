@@ -709,7 +709,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           <div className="mt-16">
             <div className="mb-6 flex items-end justify-between gap-4 border-b border-ink/15 pb-4">
               <h3 className="rfx-athletic rfx-skew text-2xl text-bone md:text-3xl">Field notes for the {canonical.name.toLowerCase()}</h3>
-              <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} live` : ''}</span>
+              <span className="mono-label text-ink-3">{status === 'ready' ? `${notes.length} note${notes.length === 1 ? '' : 's'}` : ''}</span>
             </div>
 
             {status === 'loading' ? (
