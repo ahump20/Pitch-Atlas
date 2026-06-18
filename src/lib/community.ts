@@ -146,8 +146,13 @@ interface ViewerEngagementRow {
   helpful: boolean | null
 }
 
+interface ViewerMarkRow {
+  note_id: string
+}
+
 const NOTE_COLUMNS =
   'id, pitch_slug, author_id, display_name, tweak, player_level, arm_slot, velocity_band, intent, claimed_result_kind, claimed_result_note, sample_size, evidence_url, evidence_label, source_tier, note, adoption_count, helpful_count, base_rank, created_at'
+const ENGAGEMENT_LOOKUP_BATCH_SIZE = 100
 
 const paceFromDb: Record<string, VelocityBand> = {
   'under-60': 'low-effort',
@@ -217,6 +222,9 @@ const resultToDb: Record<ClaimedResultKind, string> = {
   'no-noticeable-change': 'no-noticeable-change',
 }
 
+const SESSION_START_ERROR = 'Could not start your community session just now. Try again.'
+const CLAIM_EMAIL_ERROR = 'Could not send the claim email just now. Try again.'
+
 /**
  * Turn a Postgres/PostgREST error into a sentence a contributor can act on. The
  * safety triggers raise prefixed messages ("content_blocked: ...", "rate_limit: ...");
@@ -232,6 +240,34 @@ export function friendlyDbError(error: { message?: string } | null): string {
   if (raw.includes('weak_tier_requires_note'))
     return 'A relayed or untested claim needs a short source note - say where it came from.'
   return 'Could not save that just now. Try again.'
+}
+
+/** Reads use their own fallback copy so load failures do not sound like failed writes. */
+export function friendlyReadError(error: { message?: string } | null): string {
+  const raw = error?.message ?? ''
+  if (raw.includes('content_blocked:'))
+    return raw.split('content_blocked:')[1]?.trim() || 'That note contains language we do not allow here.'
+  return 'Could not load community notes just now. Try again.'
+}
+
+async function getSessionUserForRead() {
+  try {
+    const { data, error } = await supabase.auth.getSession()
+    if (error) return null
+    return data.session?.user ?? null
+  } catch {
+    return null
+  }
+}
+
+async function getSessionUserForWrite() {
+  try {
+    const { data, error } = await supabase.auth.getSession()
+    if (error) throw error
+    return data.session?.user ?? null
+  } catch {
+    throw new Error(SESSION_START_ERROR)
+  }
 }
 
 function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, helpful: Set<string>): CommunityNote {
@@ -262,6 +298,57 @@ function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, 
   }
 }
 
+function batchesOf<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = []
+  for (let i = 0; i < items.length; i += size) batches.push(items.slice(i, i + size))
+  return batches
+}
+
+function mergeViewerMarks(noteIds: string[], tried: Set<string>, helpful: Set<string>): ViewerEngagementRow[] {
+  return noteIds
+    .filter((noteId) => tried.has(noteId) || helpful.has(noteId))
+    .map((noteId) => ({
+      note_id: noteId,
+      tried: tried.has(noteId),
+      helpful: helpful.has(noteId),
+    }))
+}
+
+async function fallbackViewerEngagement(noteIds: string[]): Promise<ViewerEngagementRow[]> {
+  const visibleNotes = new Set(noteIds)
+  const { data, error } = await supabase.rpc('viewer_note_engagement')
+  if (error) throw new Error(friendlyReadError(error))
+  return ((data ?? []) as ViewerEngagementRow[]).filter((row) => visibleNotes.has(row.note_id))
+}
+
+async function readViewerEngagement(noteIds: string[]): Promise<ViewerEngagementRow[]> {
+  const uniqueNoteIds = [...new Set(noteIds.filter(Boolean))]
+  if (uniqueNoteIds.length === 0) return []
+
+  const tried = new Set<string>()
+  const helpful = new Set<string>()
+
+  for (const batch of batchesOf(uniqueNoteIds, ENGAGEMENT_LOOKUP_BATCH_SIZE)) {
+    const [triedResult, helpfulResult] = await Promise.all([
+      supabase.from('note_tries').select('note_id').in('note_id', batch),
+      supabase.from('note_helpful').select('note_id').in('note_id', batch),
+    ])
+
+    if (triedResult.error || helpfulResult.error) {
+      return fallbackViewerEngagement(uniqueNoteIds)
+    }
+
+    for (const row of (triedResult.data ?? []) as ViewerMarkRow[]) {
+      if (row.note_id) tried.add(row.note_id)
+    }
+    for (const row of (helpfulResult.data ?? []) as ViewerMarkRow[]) {
+      if (row.note_id) helpful.add(row.note_id)
+    }
+  }
+
+  return mergeViewerMarks(uniqueNoteIds, tried, helpful)
+}
+
 /**
  * Sign in anonymously if there is no session yet, and return the user id.
  * Write-intent only — posting, reacting, reporting, accepting terms, claiming.
@@ -269,25 +356,28 @@ function mapRow(row: FieldNoteRow, viewerId: string | null, tried: Set<string>, 
  * grants, so a visitor who only ever reads never mints an account.
  */
 export async function ensureSession(): Promise<string> {
-  const { data: existing } = await supabase.auth.getSession()
-  if (existing.session?.user) return existing.session.user.id
+  const existing = await getSessionUserForWrite()
+  if (existing) return existing.id
 
-  const { data, error } = await supabase.auth.signInAnonymously()
-  if (error) throw error
-  if (!data.user) throw new Error('Anonymous sign-in returned no user.')
-  return data.user.id
+  try {
+    const { data, error } = await supabase.auth.signInAnonymously()
+    if (error) throw error
+    if (!data.user) throw new Error('Anonymous sign-in returned no user.')
+    return data.user.id
+  } catch {
+    throw new Error(SESSION_START_ERROR)
+  }
 }
 
 /** The current session's user id, or null. Never creates a session. */
 export async function getSessionUserId(): Promise<string | null> {
-  const { data } = await supabase.auth.getSession()
-  return data.session?.user?.id ?? null
+  const user = await getSessionUserForRead()
+  return user?.id ?? null
 }
 
 /** Read the current contributor's profile (handle, contribution score, claimed state). */
 export async function getIdentity(): Promise<CommunityIdentity | null> {
-  const { data: sessionData } = await supabase.auth.getSession()
-  const user = sessionData.session?.user
+  const user = await getSessionUserForRead()
   if (!user) return null
 
   const { data, error } = await supabase
@@ -295,7 +385,7 @@ export async function getIdentity(): Promise<CommunityIdentity | null> {
     .select('display_name, is_claimed, contribution_score, notes_count')
     .eq('id', user.id)
     .maybeSingle()
-  if (error) throw error
+  if (error) throw new Error(friendlyReadError(error))
 
   return {
     userId: user.id,
@@ -310,8 +400,7 @@ export async function getIdentity(): Promise<CommunityIdentity | null> {
 
 /** Persist the contributor's display name for next time. */
 export async function setDisplayName(name: string): Promise<void> {
-  const { data: sessionData } = await supabase.auth.getSession()
-  const user = sessionData.session?.user
+  const user = await getSessionUserForWrite()
   if (!user) throw new Error('Not signed in.')
   const { error } = await supabase
     .from('profiles')
@@ -338,18 +427,17 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
     .eq('pitch_slug', pitchSlug)
     .order('base_rank', { ascending: false })
     .order('created_at', { ascending: false })
-  if (error) throw error
+  if (error) throw new Error(friendlyReadError(error))
 
   let tried = new Set<string>()
   let helpful = new Set<string>()
-  if (viewerId) {
-    // Direct SELECT on note_tries/note_helpful stays closed; the RPC returns
-    // only current-session booleans for notes this viewer has touched.
-    const { data: engagementRows, error: engagementError } = await supabase.rpc('viewer_note_engagement')
-    if (engagementError) throw engagementError
-    const rows = (engagementRows ?? []) as ViewerEngagementRow[]
-    tried = new Set(rows.filter((r) => r.tried).map((r) => r.note_id))
-    helpful = new Set(rows.filter((r) => r.helpful).map((r) => r.note_id))
+  if (viewerId && (rows ?? []).length > 0) {
+    // RLS and column grants expose only this viewer's note ids. Scope the read to
+    // the notes on this page; fall back to the legacy RPC if a deployment still
+    // has older engagement grants.
+    const engagementRows = await readViewerEngagement((rows ?? []).map((row) => (row as FieldNoteRow).id))
+    tried = new Set(engagementRows.filter((r) => r.tried).map((r) => r.note_id))
+    helpful = new Set(engagementRows.filter((r) => r.helpful).map((r) => r.note_id))
   }
 
   return (rows ?? []).map((row) => mapRow(row as FieldNoteRow, viewerId, tried, helpful))
@@ -359,8 +447,11 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
 export async function submitNote(input: NewFieldNote): Promise<CommunityNote> {
   const viewerId = await ensureSession()
 
-  // Keep the handle for next time; ignore a failure here (the note still matters).
-  await supabase.from('profiles').update({ display_name: input.displayName }).eq('id', viewerId)
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({ display_name: input.displayName })
+    .eq('id', viewerId)
+  if (profileError) throw new Error(friendlyDbError(profileError))
 
   const { data, error } = await supabase
     .from('field_notes')
@@ -393,14 +484,14 @@ export async function setTried(noteId: string, on: boolean): Promise<void> {
   if (on) {
     const { error } = await supabase.from('note_tries').insert({ note_id: noteId })
     // 23505 = the one-per-account unique violation; treat as already-on.
-    if (error && error.code !== '23505') throw error
+    if (error && error.code !== '23505') throw new Error(friendlyDbError(error))
   } else {
     const { error } = await supabase
       .from('note_tries')
       .delete()
       .eq('note_id', noteId)
       .eq('user_id', viewerId)
-    if (error) throw error
+    if (error) throw new Error(friendlyDbError(error))
   }
 }
 
@@ -409,14 +500,14 @@ export async function setHelpful(noteId: string, on: boolean): Promise<void> {
   const viewerId = await ensureSession()
   if (on) {
     const { error } = await supabase.from('note_helpful').insert({ note_id: noteId })
-    if (error && error.code !== '23505') throw error
+    if (error && error.code !== '23505') throw new Error(friendlyDbError(error))
   } else {
     const { error } = await supabase
       .from('note_helpful')
       .delete()
       .eq('note_id', noteId)
       .eq('user_id', viewerId)
-    if (error) throw error
+    if (error) throw new Error(friendlyDbError(error))
   }
 }
 
@@ -439,6 +530,10 @@ export async function reportNote(noteId: string, reason: string): Promise<void> 
  */
 export async function claimWithEmail(email: string): Promise<void> {
   await ensureSession()
-  const { error } = await supabase.auth.updateUser({ email })
-  if (error) throw error
+  try {
+    const { error } = await supabase.auth.updateUser({ email })
+    if (error) throw error
+  } catch {
+    throw new Error(CLAIM_EMAIL_ERROR)
+  }
 }

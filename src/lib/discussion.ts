@@ -14,6 +14,9 @@ import { DISCUSSION_LIMITS } from '../data/discussion'
 
 const BUCKET = 'discussion-media'
 const SIGN_TTL = 3600 // seconds a media URL stays valid before a reload re-signs it
+const MEDIA_LOOKUP_BATCH_SIZE = 100
+const SIGNED_URL_BATCH_SIZE = 100
+const STORAGE_REMOVE_BATCH_SIZE = 100
 
 export type MediaKind = 'image' | 'video'
 
@@ -67,8 +70,9 @@ interface MediaPathRow {
   storage_path: string | null
 }
 
-interface PostIdRow {
+interface ReplyRow {
   id: string
+  author_id: string | null
 }
 
 const taggedErrorMessages: Record<string, string> = {
@@ -77,6 +81,12 @@ const taggedErrorMessages: Record<string, string> = {
   'media_blocked:': 'That media file is not allowed here.',
   'too_deep:': 'Replies can only go one level deep.',
   'invalid_parent:': 'That reply target is no longer available.',
+}
+
+function batchesOf<T>(items: T[], size: number): T[][] {
+  const batches: T[][] = []
+  for (let i = 0; i < items.length; i += size) batches.push(items.slice(i, i + size))
+  return batches
 }
 
 /** Turn a Postgres/PostgREST error into a sentence a contributor can act on. */
@@ -192,7 +202,9 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
     height: dims.height,
   })
   if (error) {
-    // roll back the orphaned object so a failed row never leaves bytes behind
+    // Roll back the orphaned object so a failed row never leaves bytes behind, but
+    // the insert error is the cause the contributor needs — surface it even if the
+    // best-effort cleanup also fails (a stray object can be swept separately).
     await supabase.storage.from(BUCKET).remove([path])
     throw new Error(friendlyError(error))
   }
@@ -205,10 +217,14 @@ async function signMedia(rows: MediaRow[]): Promise<Map<string, DiscussionMedia[
   if (rows.length === 0) return byPost
 
   const paths = rows.map((r) => r.storage_path)
-  const { data: signed } = await supabase.storage.from(BUCKET).createSignedUrls(paths, SIGN_TTL)
   const urlByPath = new Map<string, string>()
-  for (const s of signed ?? []) {
-    if (s.signedUrl && s.path) urlByPath.set(s.path, s.signedUrl)
+
+  for (const batch of batchesOf(paths, SIGNED_URL_BATCH_SIZE)) {
+    const { data: signed, error } = await supabase.storage.from(BUCKET).createSignedUrls(batch, SIGN_TTL)
+    if (error) throw new Error(friendlyReadError(error))
+    for (const s of signed ?? []) {
+      if (s.signedUrl && s.path) urlByPath.set(s.path, s.signedUrl)
+    }
   }
 
   for (const r of rows) {
@@ -249,12 +265,16 @@ export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
 
   let mediaByPost = new Map<string, DiscussionMedia[]>()
   if (ids.length > 0) {
-    const { data: mediaRows, error: mediaError } = await supabase
-      .from('discussion_media')
-      .select('id, post_id, storage_path, kind, width, height')
-      .in('post_id', ids)
-    if (mediaError) throw new Error(friendlyReadError(mediaError))
-    mediaByPost = await signMedia((mediaRows ?? []) as MediaRow[])
+    const mediaRows: MediaRow[] = []
+    for (const batch of batchesOf(ids, MEDIA_LOOKUP_BATCH_SIZE)) {
+      const { data, error: mediaError } = await supabase
+        .from('discussion_media')
+        .select('id, post_id, storage_path, kind, width, height')
+        .in('post_id', batch)
+      if (mediaError) throw new Error(friendlyReadError(mediaError))
+      mediaRows.push(...((data ?? []) as MediaRow[]))
+    }
+    mediaByPost = await signMedia(mediaRows)
   }
 
   const toPost = (r: PostRow): DiscussionPost => ({
@@ -290,7 +310,11 @@ export async function listThread(topicKey: string): Promise<DiscussionPost[]> {
 /** Create a post or a reply. Saves the handle to the profile for next time. */
 export async function createPost(input: NewPost): Promise<string> {
   const uid = await ensureSession()
-  await supabase.from('profiles').update({ display_name: input.displayName }).eq('id', uid)
+  const { error: profileError } = await supabase
+    .from('profiles')
+    .update({ display_name: input.displayName })
+    .eq('id', uid)
+  if (profileError) throw new Error(friendlyError(profileError))
 
   const { data, error } = await supabase
     .from('discussion_posts')
@@ -308,13 +332,21 @@ export async function createPost(input: NewPost): Promise<string> {
 
 export async function reportPost(postId: string, reason: string): Promise<void> {
   await ensureSession()
-  const { error } = await supabase.from('discussion_reports').insert({ post_id: postId, reason })
+  // An empty optional reason is stored as NULL, not '', so the moderation table
+  // distinguishes "no reason given" from a blank string.
+  const cleanReason = reason.trim() || null
+  const { error } = await supabase
+    .from('discussion_reports')
+    .insert({ post_id: postId, reason: cleanReason })
   if (error && error.code !== '23505') throw new Error(friendlyError(error))
 }
 
 export async function reportMedia(mediaId: string, reason: string): Promise<void> {
   await ensureSession()
-  const { error } = await supabase.from('discussion_reports').insert({ media_id: mediaId, reason })
+  const cleanReason = reason.trim() || null
+  const { error } = await supabase
+    .from('discussion_reports')
+    .insert({ media_id: mediaId, reason: cleanReason })
   if (error && error.code !== '23505') throw new Error(friendlyError(error))
 }
 
@@ -322,13 +354,20 @@ export async function deletePost(postId: string): Promise<void> {
   const uid = await ensureSession()
   const { data: replyRows, error: replyErr } = await supabase
     .from('discussion_posts')
-    .select('id')
+    .select('id, author_id')
     .eq('parent_id', postId)
   if (replyErr) throw new Error(friendlyError(replyErr))
 
+  const replies = (replyRows ?? []) as ReplyRow[]
+  // A null author_id is an orphaned/anonymous-cleaned reply, not a living
+  // contributor — it must not block the author from deleting their own post.
+  if (replies.some((row) => row.author_id !== null && row.author_id !== uid)) {
+    throw new Error('That post has replies from other contributors, so it cannot be deleted.')
+  }
+
   const cascadePostIds = [
     postId,
-    ...((replyRows ?? []) as PostIdRow[])
+    ...replies
       .map((row) => row.id)
       .filter((id): id is string => typeof id === 'string' && id.length > 0),
   ]
@@ -336,18 +375,32 @@ export async function deletePost(postId: string): Promise<void> {
   const { data: mediaRows, error: mediaErr } = await supabase
     .from('discussion_media')
     .select('storage_path')
-    .in('post_id', cascadePostIds)
+    .in('post_id', cascadePostIds.slice(0, MEDIA_LOOKUP_BATCH_SIZE))
   if (mediaErr) throw new Error(friendlyError(mediaErr))
 
-  const ownPaths = ((mediaRows ?? []) as MediaPathRow[])
+  const allMediaRows = [...((mediaRows ?? []) as MediaPathRow[])]
+  for (const batch of batchesOf(cascadePostIds.slice(MEDIA_LOOKUP_BATCH_SIZE), MEDIA_LOOKUP_BATCH_SIZE)) {
+    const { data, error } = await supabase
+      .from('discussion_media')
+      .select('storage_path')
+      .in('post_id', batch)
+    if (error) throw new Error(friendlyError(error))
+    allMediaRows.push(...((data ?? []) as MediaPathRow[]))
+  }
+
+  const ownPaths = allMediaRows
     .map((row) => row.storage_path)
     .filter((path): path is string => typeof path === 'string' && path.startsWith(`${uid}/`))
 
   const { error } = await supabase.from('discussion_posts').delete().eq('id', postId)
   if (error) throw new Error(friendlyError(error))
   if (ownPaths.length > 0) {
-    // The row delete is what hides the post; storage cleanup removes the now-unreferenced bytes.
-    await supabase.storage.from(BUCKET).remove(ownPaths)
+    // The row delete already hid the post — that is the user-visible outcome.
+    // Storage cleanup is best-effort: a failure here leaves orphaned bytes to be
+    // swept separately, but must not surface as a delete error the user can't act on.
+    for (const batch of batchesOf(ownPaths, STORAGE_REMOVE_BATCH_SIZE)) {
+      await supabase.storage.from(BUCKET).remove(batch)
+    }
   }
 }
 

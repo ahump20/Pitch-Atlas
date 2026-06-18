@@ -1,7 +1,8 @@
 import { useId, useMemo, useState } from 'react'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
@@ -146,6 +147,16 @@ export function SandboxPage() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/sandbox'),
+          name: 'Shape Lab: the spin-axis sandbox',
+          description:
+            'Set a pitch’s spin tilt and watch the ball and catcher’s-eye shape redraw live. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
+          breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Shape Lab' }],
+        })}
+      />
       <SectionHero
         breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Shape Lab' }]} />}
         eyebrow="The lab"

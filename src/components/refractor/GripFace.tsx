@@ -10,14 +10,17 @@ import type { VisualReference } from '../../data/types'
   ships for assistive tech. If the asset ever 404s, the dark window shows through —
   never a broken-image glyph or the word "undefined".
 */
-export function GripFace({ photo }: { photo: VisualReference }) {
+export function GripFace({ photo, priority = false }: { photo: VisualReference; priority?: boolean }) {
   return (
     <figure className="rfx-grip">
       <img
         className="rfx-grip-img"
         src={photo.src}
         alt={photo.alt}
-        loading="lazy"
+        // Hero-of-the-page faces load eagerly at high priority so the LCP grip
+        // paints fast; everywhere else stays lazy.
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : undefined}
         decoding="async"
         draggable={false}
         onError={(e) => {

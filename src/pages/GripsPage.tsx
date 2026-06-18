@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
@@ -24,6 +26,18 @@ export function GripsPage() {
     ogUrl: canonicalUrl('/grips'),
     ...ogImageMeta('grips', 'The Grip Library — real grips, in the hand'),
   })
+
+  // Deep links (e.g. the Tools menu's "Compare two grips" → /grips#grip-compare)
+  // land at the comparator, not the top of the library. The page scrolls itself
+  // to the section once it is in the DOM; with no hash it stays at the top.
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (hash !== '#grip-compare') return
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById('grip-compare')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [hash])
 
   return (
     <>
@@ -64,7 +78,7 @@ export function GripsPage() {
         </div>
       </section>
 
-      <section className="border-t border-ink/15 bg-press">
+      <section id="grip-compare" className="scroll-mt-24 border-t border-ink/15 bg-press">
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <p className="rfx-skick text-cyan">Same release, different grip</p>
           <h2 className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">Two grips, one arm slot</h2>

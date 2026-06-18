@@ -6,12 +6,17 @@ import { magnusForceRender, magnusStrength } from '../../../lib/physics'
 import type { PitchMotion } from '../../../data/types'
 
 /*
-  The measured story, fixed in world space while the ball spins beneath it:
-   - the spin axis (the ball turns about this; the defining feature of any pitch)
+  The illustrated story, fixed in world space while the ball spins beneath it:
+   - the spin axis (the ball turns about this; the defining feature of any pitch),
+     drawn as a double arrow through the poles with a thin ring around its
+     equator — the plane the seams sweep through as the cover rotates.
    - the Magnus force, computed as spin x velocity, drawn in its true direction
      and scaled by the transverse-spin fraction. A four-seam's arrow points up
      and runs full length; a gyro slider's points weakly and short, because most
-     of its spin does no Magnus work. The arrow is physics, not decoration.
+     of its spin does no Magnus work. The arrow's direction is physics; its length
+     is the honest transverse fraction, never a measured break in inches.
+  Everything here is built from the authored unit spin axis, so a small standing
+  note says exactly that: illustrative, not a measured trajectory.
   Labels are billboarded HTML so they stay legible at any camera angle.
 */
 
@@ -52,6 +57,11 @@ function Arrow({
 const LABEL =
   'pointer-events-none select-none whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.16em]'
 
+// The honesty note: quieter than the data labels by design — smaller, dimmer,
+// not uppercased — so it reads as a caption, not a measurement.
+const NOTE =
+  'pointer-events-none select-none whitespace-nowrap font-mono text-[8px] tracking-[0.08em] text-bone-2/70'
+
 export function Vectors({ motion }: { motion: PitchMotion }) {
   const spin = motion.spinAxis
 
@@ -60,6 +70,14 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
     return new THREE.Vector3(n.x, n.y, n.z)
   }, [spin])
   const axisNeg = useMemo(() => axisDir.clone().multiplyScalar(-1), [axisDir])
+
+  // The spin plane: a thin ring whose normal is the spin axis, sitting just off
+  // the leather. It reads as the band the seams sweep through as the ball turns —
+  // the seam presentation cue, static so it never fights reduced motion.
+  const ringQuat = useMemo(
+    () => new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), axisDir),
+    [axisDir],
+  )
 
   // Magnus force: direction and length both derived from the spin axis.
   const force = useMemo(() => {
@@ -93,6 +111,12 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
       <Arrow dir={axisDir} length={1.5} color="#C7BEA8" />
       <Arrow dir={axisNeg} length={1.5} color="#C7BEA8" />
 
+      {/* spin plane: the band the seams sweep through, normal to the axis */}
+      <mesh quaternion={ringQuat}>
+        <ringGeometry args={[1.18, 1.215, 96]} />
+        <meshBasicMaterial color="#C7BEA8" transparent opacity={0.32} side={THREE.DoubleSide} depthWrite={false} />
+      </mesh>
+
       <group position={force.base}>
         <Arrow dir={force.dir} length={force.length} color="#C8102E" glow radius={0.016} />
       </group>
@@ -119,6 +143,11 @@ export function Vectors({ motion }: { motion: PitchMotion }) {
           <span className={`${LABEL} text-bone mt-7 block`}>Red dot</span>
         </Html>
       ) : null}
+
+      {/* standing note, below the ball: says plainly what these vectors are */}
+      <Html position={[0, -1.62, 0]} center zIndexRange={[14, 0]} wrapperClass="pointer-events-none">
+        <span className={NOTE}>Illustrative from the authored spin axis, not a measured trajectory</span>
+      </Html>
     </group>
   )
 }
