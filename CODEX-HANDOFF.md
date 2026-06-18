@@ -30,16 +30,29 @@ npm ci && npm run build && npm run preview   # /v2 returns 200
   `prefers-reduced-motion: no-preference`) and carry NO base `opacity:0` — so
   reduced-motion / no-support / prerender default to fully visible. Verify a section
   never ships blank. Confirm `prefers-reduced-transparency` fallbacks on the glass/blur.
-- **WebGL budget.** Exactly two live R3F canvases (hero specimen card + grip-lab ball);
-  the chrome wall stays SVG. Confirm no third canvas crept in.
-- **The shared-material edit.** `Ball.tsx` + `Studio.tsx` got a realism pass that ALSO
-  affects the live `/` grip viewer (shared components). I verified it non-regressive on
-  `/`; please re-verify — that's the one place `/v2` work touches production surfaces.
+- **WebGL budget.** Two live GPU surfaces, both hard-gated: one R3F canvas (the grip-lab
+  ball, `TheRead` → `BallStage` → `BallScene`) and one raw-WebGL foil shader (`FoilLayer`
+  on the hero card, not R3F). For the featured four-seam the hero face is its grip clip (a
+  muted video), not a ball. The chrome wall stays SVG; no third context. (Corrected from an
+  earlier "two R3F canvases" miscount.)
+- **The shared-material edit.** `Ball.tsx` + `Studio.tsx` got a 20-line realism pass
+  (sharper seam/stitch clearcoat, a faint waxed-thread emissive, a lower/warmer key light).
+  The live home `/` does NOT render this 3D ball; it uses an SVG ball (`RefractorBall`), so
+  `/` is genuinely untouched. The shared 3D ball renders on `/pitch/*` and `/grips`, which
+  DO take the new look; the change is material/lighting only (no prop/API/structural
+  change), non-regressive. Worth eyeballing the ball at small scale on those two pages.
 - **No fabricated numbers.** `canonical.physics` carries qualitative shape + render-only
   spin-axis vectors, never spin-rate/velocity/break. The grip-lab "shape" read should be
   words + a dashed axis, nothing measured.
 - **Anti-slop.** No gradient text, no >1px side-stripe borders, chrome lives in materials
   never in letters. Flag any tell.
+
+**Cold-read results (run this session — 5 surfaces, every flagged violation independently re-verified):**
+- Motion honesty — holds. Every v2 reveal's `opacity:0` lives inside the double gate; reduced-motion / no-support / prerender all rest fully visible. (The one base `opacity:0`, `.dissolve-schem`, is the 2D schematic overlay on top of an always-visible ball — safe by design.)
+- Shared material — holds; the home `/` is genuinely untouched (SVG ball). See the corrected bullet above.
+- Anti-fabrication — holds. Every rendered field traces to qualitative shape prose; the spin axis is a render-only dashed line; the only numerals are card serials and directory counts.
+- WebGL budget — intent holds (two gated GL contexts, chrome wall SVG, no third); the count wording was corrected above.
+- Anti-slop — clean on the design tells. No gradient text on `/v2` (the only clipped-text is v1 `.rfx-holo` on `/repertoire`); no `/v2` side-stripe borders (the 3px `.rfx-plate` edge is v1, on the knowledge/craftsmen/lost-pitch pages); chrome stays in materials, not letterforms. I recast one `/v2` caption em-dash (`TheRead`) and squared the OG title/alt to colons for consistency with the page title — optional polish, not a defect. The em-dashes still rendered on `/v2` come from the canonical pitch teaching prose (the data, rendered site-wide including the home `/`); they are intentional voice and stay, per the project's prose rule — do NOT strip them. Separate note for the live site (not `/v2`): `/repertoire` clips foil to the word "Index", and those v1 cards carry the 3px accent border — pre-existing tells worth their own pass someday.
 
 **Deferred (out of scope, not bugs):** RefractorBall SVG specular pip; hero→bridge hairline
 border; seam-rule act-marker separator; tube radial-segment bump 14→18; an in-canvas
@@ -71,7 +84,16 @@ the two things that silently break a re-sync).
 ---
 
 ## Verification status
-- `/v2`: typecheck / lint / 546 tests / build all green at `436bf08`; clean screenshots delivered.
+- `/v2`: typecheck + lint + build green. **Test suite is timing-flaky under heavy local
+  load and did not give a clean local pass this session** — different async-sensitive tests
+  fail run to run (`routes.test.tsx` once; `DiscussionPanel`/`PitchIndex` the next), one run
+  stretched to ~19 min, which points at machine thrash plus a fragile design (`maxWorkers:1`,
+  serial files, heavy cold 3D transforms), not a logic regression. It is pre-existing and
+  main-wide: `routes.test.tsx` and `sources.ts` are byte-identical to `main`, and `/v2`
+  changed only `sitemap.test.ts` (4 lines). I tried aligning `COLD_LOAD` to `testTimeout`;
+  it didn't hold (failures just moved files), so I reverted it. **Recommendation: confirm the
+  suite on a clean machine / CI, and treat the timing-fragility as its own `fix(test)` task.**
+  This supersedes the earlier, too-optimistic "546 green at 436bf08" note.
 - Sync: 73/73 render clean; repo `typecheck` + `lint` green after adding `.design-sync` /
   `.ds-sync` / `ds-bundle` to eslint ignores.
 

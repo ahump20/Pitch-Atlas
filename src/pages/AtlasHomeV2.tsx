@@ -28,10 +28,10 @@ export function AtlasHomeV2() {
     title: `${SITE.siteName}: The Refractor Case`,
     description:
       'A bolder cut of Pitch Atlas: every pitch struck as a chrome specimen on matte stock, grip first, with a source on every claim. Sourced, not corrected.',
-    ogTitle: `${SITE.siteName} — The Refractor Case`,
+    ogTitle: `${SITE.siteName}: The Refractor Case`,
     ogDescription: 'Every pitch, struck in chrome and sourced. A prototype cut of the atlas.',
     ogUrl: canonicalUrl('/v2'),
-    ...ogImageMeta('home', `${SITE.siteName} — the Refractor Case`),
+    ...ogImageMeta('home', `${SITE.siteName}: The Refractor Case`),
   })
 
   return (

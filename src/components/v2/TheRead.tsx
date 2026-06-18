@@ -122,7 +122,7 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
               {shape.approximate ? <span className="text-bone-2/60"> · approx</span> : null}
             </p>
             <p className="mt-4 max-w-[46ch] border-l border-bone/20 pl-3 text-[12.5px] leading-relaxed text-bone-2/85">
-              The shape is read in words and a spin axis — never a spin rate, velocity, or break in
+              The shape is read in words and a spin axis. Never a spin rate, velocity, or break in
               inches we did not measure. The dashed line is the real spin axis. The figures it cannot
               source are left out, not guessed.
             </p>
