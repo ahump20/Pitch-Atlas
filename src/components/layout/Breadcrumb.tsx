@@ -34,7 +34,9 @@ export function Breadcrumb({
                 {crumb.label}
               </Link>
             ) : (
-              <span className="text-ink">{crumb.label}</span>
+              <span aria-current={last ? 'page' : undefined} className="text-ink">
+                {crumb.label}
+              </span>
             )}
             {!last ? <span aria-hidden="true">/</span> : null}
           </span>

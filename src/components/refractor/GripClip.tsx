@@ -15,7 +15,7 @@ import { AutoplayVideo } from '../media/AutoplayVideo'
   failure, so the dark window never breaks. Fills the window via the shared
   .rfx-grip / .rfx-grip-img rules, identical to GripFace.
 */
-export function GripClip({ clip }: { clip: GripClipData }) {
+export function GripClip({ clip, priority = false }: { clip: GripClipData; priority?: boolean }) {
   const reduced = useReducedMotion()
   // media settle: the window fades up on the first real frame, never snapping in
   const [settled, setSettled] = useState(false)
@@ -26,7 +26,10 @@ export function GripClip({ clip }: { clip: GripClipData }) {
       className={mediaClass}
       src={clip.poster}
       alt={clip.alt}
-      loading="lazy"
+      // Hero clips paint their poster eagerly at high priority (the LCP element);
+      // off-hero clips stay lazy. The video preload follows the same flag.
+      loading={priority ? 'eager' : 'lazy'}
+      fetchPriority={priority ? 'high' : undefined}
       decoding="async"
       draggable={false}
       // a cached poster can finish before hydration attaches onLoad — read it off the element
@@ -48,6 +51,7 @@ export function GripClip({ clip }: { clip: GripClipData }) {
         <AutoplayVideo
           clip={clip}
           className={mediaClass}
+          priority={priority}
           onSettled={() => setSettled(true)}
           render={() => poster}
         />

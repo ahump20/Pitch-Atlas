@@ -82,6 +82,33 @@ describe('uploadMedia', () => {
       }),
     )
   })
+
+  it('removes uploaded bytes and preserves the row error when media row insert fails', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
+
+    await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
+      'slow down',
+    )
+
+    const [path] = mocks.upload.mock.calls[0]
+    expect(mocks.remove).toHaveBeenCalledWith([path])
+  })
+
+  it('preserves the original row error even when storage cleanup also fails', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
+    mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
+
+    // The insert error is the cause the contributor needs; a failed best-effort
+    // cleanup must not replace it. Cleanup is still attempted.
+    await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
+      'slow down',
+    )
+
+    const [path] = mocks.upload.mock.calls[0]
+    expect(mocks.remove).toHaveBeenCalledWith([path])
+  })
 })
 
 describe('deletePost', () => {
@@ -98,7 +125,7 @@ describe('deletePost', () => {
 
     await deletePost('post-1')
 
-    expect(mocks.selectPosts).toHaveBeenCalledWith('id')
+    expect(mocks.selectPosts).toHaveBeenCalledWith('id, author_id')
     expect(mocks.postEq).toHaveBeenCalledWith('parent_id', 'post-1')
     expect(mocks.selectMedia).toHaveBeenCalledWith('storage_path')
     expect(mocks.mediaIn).toHaveBeenCalledWith('post_id', ['post-1'])
@@ -109,7 +136,7 @@ describe('deletePost', () => {
 
   it('removes owned media from replies that the post delete cascades', async () => {
     mocks.postEq.mockResolvedValue({
-      data: [{ id: 'reply-1' }, { id: 'reply-2' }],
+      data: [{ id: 'reply-1', author_id: 'user-1' }, { id: 'reply-2', author_id: 'user-1' }],
       error: null,
     })
     mocks.mediaIn.mockResolvedValue({
@@ -128,6 +155,69 @@ describe('deletePost', () => {
     expect(mocks.remove).toHaveBeenCalledWith(['user-1/parent.jpg', 'user-1/reply.jpg'])
   })
 
+  it('does not delete a post that has replies from another contributor', async () => {
+    mocks.postEq.mockResolvedValue({
+      data: [{ id: 'reply-1', author_id: 'other-user' }],
+      error: null,
+    })
+
+    await expect(deletePost('post-1')).rejects.toThrow(
+      'That post has replies from other contributors, so it cannot be deleted.',
+    )
+
+    expect(mocks.mediaIn).not.toHaveBeenCalled()
+    expect(mocks.deletePost).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+  })
+
+  it('allows deletion when a reply has a null author_id (orphaned, not a contributor)', async () => {
+    mocks.postEq.mockResolvedValue({
+      data: [{ id: 'reply-1', author_id: null }],
+      error: null,
+    })
+    mocks.mediaIn.mockResolvedValue({ data: [], error: null })
+
+    // A null author_id is an anonymous-cleaned/orphaned reply, not a living
+    // contributor — it must not block the author from deleting their own post.
+    await expect(deletePost('post-1')).resolves.toBeUndefined()
+    expect(mocks.deleteEq).toHaveBeenCalledWith('id', 'post-1')
+  })
+
+  it('batches media lookups when a deleted post has many replies', async () => {
+    const replies = Array.from({ length: 100 }, (_, index) => ({
+      id: `reply-${index + 1}`,
+      author_id: 'user-1',
+    }))
+    mocks.postEq.mockResolvedValue({ data: replies, error: null })
+    mocks.mediaIn.mockResolvedValue({ data: [], error: null })
+
+    await deletePost('post-1')
+
+    expect(mocks.mediaIn).toHaveBeenNthCalledWith(
+      1,
+      'post_id',
+      ['post-1', ...replies.slice(0, 99).map((row) => row.id)],
+    )
+    expect(mocks.mediaIn).toHaveBeenNthCalledWith(2, 'post_id', ['reply-100'])
+    expect(mocks.mediaIn).toHaveBeenCalledTimes(2)
+  })
+
+  it('batches storage removals for media-heavy deleted discussions', async () => {
+    const mediaRows = Array.from({ length: 101 }, (_, index) => ({
+      storage_path: `user-1/media-${index + 1}.jpg`,
+    }))
+    mocks.mediaIn.mockResolvedValue({ data: mediaRows, error: null })
+
+    await deletePost('post-1')
+
+    expect(mocks.remove).toHaveBeenNthCalledWith(
+      1,
+      mediaRows.slice(0, 100).map((row) => row.storage_path),
+    )
+    expect(mocks.remove).toHaveBeenNthCalledWith(2, ['user-1/media-101.jpg'])
+    expect(mocks.remove).toHaveBeenCalledTimes(2)
+  })
+
   it('does not remove storage when the database delete is rejected', async () => {
     mocks.mediaIn.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
     mocks.deleteEq.mockResolvedValue({ error: { message: 'not allowed' } })
@@ -135,6 +225,18 @@ describe('deletePost', () => {
     await expect(deletePost('post-1')).rejects.toThrow('Could not save that just now. Try again.')
 
     expect(mocks.remove).not.toHaveBeenCalled()
+  })
+
+  it('still resolves when the post is deleted but best-effort storage cleanup fails', async () => {
+    mocks.mediaIn.mockResolvedValue({ data: [{ storage_path: 'user-1/photo.jpg' }], error: null })
+    mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
+
+    // The row is gone — that is the user-visible outcome. A failed storage sweep
+    // leaves orphaned bytes for separate cleanup but must not surface a false error.
+    await expect(deletePost('post-1')).resolves.toBeUndefined()
+
+    expect(mocks.deleteEq).toHaveBeenCalledWith('id', 'post-1')
+    expect(mocks.remove).toHaveBeenCalledWith(['user-1/photo.jpg'])
   })
 })
 

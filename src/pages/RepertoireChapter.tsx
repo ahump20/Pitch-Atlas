@@ -1,10 +1,10 @@
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type { RepertoireEntry, RepertoireFamily } from '../data/types'
-import { repertoireById, BASIC_REPERTOIRE } from '../data/repertoire'
+import { repertoireById, repertoireByFamily, BASIC_REPERTOIRE } from '../data/repertoire'
 import { gripEntryFor } from '../data/grips'
 import { SITE } from '../config/site'
-import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -15,6 +15,7 @@ import { ClaimProse } from '../components/provenance/ClaimProse'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
+import { FamilyRail } from '../components/pitch/FamilyRail'
 import { NotFound } from './NotFound'
 
 /*
@@ -110,7 +111,7 @@ export function RepertoireChapter() {
     entry && !redirectSlug
       ? {
           title: `${entry.name} | The Pitch Index | ${SITE.siteName}`,
-          description: `${entry.name}: ${entry.movement.value}`.slice(0, 200),
+          description: truncateForMeta(`${entry.name}: ${entry.movement.value}`),
           ogTitle: `${entry.name} | ${SITE.siteName}`,
           ogDescription: entry.movement.value.slice(0, 160),
           ogUrl: canonicalUrl('/repertoire/' + entry.id),
@@ -124,6 +125,16 @@ export function RepertoireChapter() {
 
   const accentColor = isEdgeStatus(entry.status) ? '#C8102E' : FAMILY_ACCENT[entry.family]
   const gripEntry = gripEntryFor(entry.id)
+  // Others in this family — the cross-link the filed specimens get via
+  // PitchConnections, brought to the basic files so they don't dead-end on
+  // linear prev/next. A filed sibling routes to its specimen, a basic one to its file.
+  const familySiblings = repertoireByFamily(entry.family)
+    .filter((e) => e.id !== entry.id)
+    .map((e) => ({
+      to: e.filedSlug ? `/pitch/${e.filedSlug}` : `/repertoire/${e.id}`,
+      name: e.name,
+      accentColor: isEdgeStatus(e.status) ? '#C8102E' : FAMILY_ACCENT[e.family],
+    }))
   const subParts = [
     entry.aka && entry.aka.length > 0 ? `aka ${entry.aka.join(' · ')}` : null,
   ].filter(Boolean)
@@ -248,6 +259,11 @@ export function RepertoireChapter() {
           </p>
         </div>
       </section>
+
+      <FamilyRail
+        heading={`Others in the ${FAMILY_EYEBROW[entry.family].toLowerCase()}`}
+        items={familySiblings}
+      />
 
       {/* Per-pitch discussion. */}
       <DiscussionPanel topicKey={`repertoire:${entry.id}`} topicName={entry.name} />

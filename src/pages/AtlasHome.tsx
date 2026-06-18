@@ -166,7 +166,7 @@ const TOOLS: WaxPackTool[] = [
   { label: 'Shape Sandbox', to: '/sandbox', kind: 'dial', ink: '#1F3A5F', blurb: 'Turn the spin-axis clock and watch the shape language change: ride, drop, run, sweep.' },
   { label: 'The Shape Map', to: '/movement-map', kind: 'quadrant', ink: '#2F5D46', blurb: 'Every filed pitch on one catcher’s-eye field, grouped by direction and character.' },
   { label: 'Compare two pitches', to: '/compare', kind: 'tunnel', ink: '#6E2B35', blurb: 'Overlay any two pitches to read the shared window and late shape split.' },
-  { label: 'Compare two grips', to: '/grips', kind: 'grips', ink: '#8A6B24', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
+  { label: 'Compare two grips', to: '/grips#grip-compare', kind: 'grips', ink: '#8A6B24', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
 ]
 
 export function AtlasHome() {

@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { FlagIcon, ImagePlusIcon, MessageCircleIcon, RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { toast } from 'sonner'
-import { useDiscussion } from '../../hooks/useDiscussion'
+import { useDiscussion, type SubmitResult } from '../../hooks/useDiscussion'
 import type { DiscussionMedia, DiscussionPost } from '../../lib/discussion'
 import { sniffMediaKind } from '../../lib/discussion'
 import { DISCUSSION_LIMITS, MEDIA_ACCEPT, UPLOAD_TERMS } from '../../data/discussion'
@@ -176,7 +176,7 @@ function Composer({
   defaultName: string
   acceptedTerms: boolean
   onAcceptTerms: () => Promise<void>
-  onSubmit: (input: { displayName: string; body: string; files: File[] }) => Promise<void>
+  onSubmit: (input: { displayName: string; body: string; files: File[] }) => Promise<SubmitResult>
   onCancel?: () => void
   placeholder: string
   compact?: boolean
@@ -239,14 +239,24 @@ function Composer({
     }
     setBusy(true)
     try {
-      await onSubmit({ displayName: name.trim(), body: body.trim(), files })
+      const result = await onSubmit({ displayName: name.trim(), body: body.trim(), files })
+      // The post saved — always clear the composer so the same comment can't be
+      // submitted twice. (Before, a partial media failure threw, the clear was
+      // skipped, and the box stayed full behind an already-posted comment.)
       setBody('')
       setFiles([])
       if (fileRef.current) fileRef.current.value = ''
-      setSent(true)
-      window.clearTimeout(sentTimer.current)
-      sentTimer.current = window.setTimeout(() => setSent(false), 2000)
+      if (result.mediaError) {
+        // Non-blocking: the comment is live; only a file failed to attach. Show
+        // the notice and skip the 'Filed ✓' confirmation since it didn't all land.
+        setErr(result.mediaError)
+      } else {
+        setSent(true)
+        window.clearTimeout(sentTimer.current)
+        sentTimer.current = window.setTimeout(() => setSent(false), 2000)
+      }
     } catch (e2) {
+      // Post creation itself failed — keep the draft in the box and show the error.
       setErr(e2 instanceof Error ? e2.message : 'Could not post that.')
     } finally {
       setBusy(false)
@@ -425,6 +435,17 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
     }
   }
 
+  async function confirmDelete() {
+    if (!deleting) return
+    try {
+      await d.remove(deleting)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Post didn't delete. Try again.")
+    } finally {
+      setDeleting(null)
+    }
+  }
+
   if (d.status === 'loading' || d.status === 'idle') {
     return (
       <div className="flex flex-col gap-3" aria-busy="true">
@@ -508,8 +529,14 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
                     acceptedTerms={d.acceptedTerms}
                     onAcceptTerms={d.acceptTerms}
                     onSubmit={async (input) => {
-                      await d.submit({ ...input, parentId: post.id })
+                      const result = await d.submit({ ...input, parentId: post.id })
+                      // Collapse the reply box whenever the post saved — including a
+                      // partial media success — so it can't be resubmitted. The reply
+                      // composer unmounts here, so a media notice rides a toast instead
+                      // of an inline message that would vanish with it.
                       setReplyTo(null)
+                      if (result.mediaError) toast.error(result.mediaError)
+                      return result
                     }}
                     onCancel={() => setReplyTo(null)}
                     placeholder={`Reply to ${post.displayName}…`}
@@ -549,9 +576,7 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
             <AlertDialogAction
               variant="destructive"
               onClick={() => {
-                if (!deleting) return
-                void d.remove(deleting)
-                setDeleting(null)
+                void confirmDelete()
               }}
             >
               Delete

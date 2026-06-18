@@ -115,10 +115,41 @@ function meta(): DeleteAccountMeta {
   };
 }
 
+function provenanceHeaders(responseMeta: DeleteAccountMeta): Record<string, string> {
+  return {
+    "X-Data-Source": responseMeta.source,
+    "X-Origin-Data-Source": responseMeta.source,
+    "X-Last-Updated": responseMeta.fetched_at,
+  };
+}
+
+function preflight(req: Request): Response {
+  const responseMeta = meta();
+
+  return new Response("ok", {
+    headers: {
+      ...corsHeaders(req),
+      ...allowHeaders,
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Pragma": "no-cache",
+      "X-Content-Type-Options": "nosniff",
+      "Referrer-Policy": "no-referrer",
+      ...provenanceHeaders(responseMeta),
+    },
+  });
+}
+
 function json(req: Request, status: number, body: CleanupResult, extraHeaders: Record<string, string> = {}): Response {
-  return new Response(JSON.stringify({ ...body, meta: body.meta ?? meta() }), {
+  const responseMeta = body.meta ?? meta();
+
+  return new Response(JSON.stringify({ ...body, meta: responseMeta }), {
     status,
-    headers: { ...jsonHeaders(req), ...extraHeaders },
+    headers: {
+      ...jsonHeaders(req),
+      ...provenanceHeaders(responseMeta),
+      ...extraHeaders,
+    },
   });
 }
 
@@ -272,7 +303,7 @@ Deno.serve(async (req: Request) => {
     json(req, status, body, extraHeaders);
 
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: { ...corsHeaders(req), ...allowHeaders } });
+    return preflight(req);
   }
 
   if (req.method !== "POST" && req.method !== "DELETE") {
@@ -330,6 +361,8 @@ Deno.serve(async (req: Request) => {
     await deleteIfPresent(admin, "note_reports", "reporter_id", userId);
     await deleteIfPresent(admin, "note_tries", "user_id", userId);
     await deleteIfPresent(admin, "note_helpful", "user_id", userId);
+    await deleteIfPresent(admin, "field_notes", "author_id", userId);
+    await deleteIfPresent(admin, "discussion_posts", "author_id", userId);
     await deleteIfTableExists(admin, "messages", "sender_id", userId);
     await deleteIfTableExists(admin, "thread_participants", "user_id", userId);
     await deleteIfTableExists(admin, "threads", "created_by", userId);

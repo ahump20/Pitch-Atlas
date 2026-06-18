@@ -3,7 +3,8 @@ import { useSeoMeta } from '@unhead/react'
 import type { Claim } from '../data/types'
 import { SOFTBALL_CRAFTSMEN, softballCraftsmanBySlug, softballPitchBySlug } from '../data/softball'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd, ogImageMeta, truncateForMeta } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { ClaimNote } from '../components/provenance/SourcedValue'
@@ -54,10 +55,11 @@ export function SoftballCraftsmanChapter() {
     craftsman
       ? {
           title: `${craftsman.name}: ${craftsman.signaturePitch} | ${SITE.siteName}`,
-          description: `${craftsman.tagline} ${craftsman.intro}`.slice(0, 200),
+          description: truncateForMeta(`${craftsman.tagline} ${craftsman.intro}`),
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
           ogUrl: canonicalUrl('/softball/craftsmen/' + craftsman.slug),
+          ...ogImageMeta('softball', `${craftsman.name} — ${craftsman.signaturePitch}`),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )
@@ -66,6 +68,15 @@ export function SoftballCraftsmanChapter() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/softball/craftsmen/' + craftsman.slug),
+          name: `${craftsman.name}: ${craftsman.signaturePitch}`,
+          description: craftsman.tagline,
+          breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'Softball', to: '/softball' }, { name: craftsman.name }],
+        })}
+      />
       <section className="on-stage relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
           <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(108,172,228,0.15),transparent_42%),linear-gradient(115deg,rgba(242,236,221,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SectionHero } from '../components/layout/SectionHero'
 
@@ -101,6 +102,16 @@ export function AboutPage() {
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/about'),
+          name: 'About Pitch Atlas: Why the Grip Comes First',
+          description:
+            'Pitch Atlas is a sourced field manual for pitching grips: grip-first, provenance-labeled, and honest about what each source can prove.',
+          breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'About' }],
+        })}
+      />
       <SectionHero
         eyebrow="About Pitch Atlas"
         title={

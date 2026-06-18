@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from 'react'
+import { type CSSProperties, type ReactNode, useState } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type {
@@ -9,7 +9,7 @@ import type {
 } from '../data/types'
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
-import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
+import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { scrollToId } from '../lib/scroll'
 import { GripViewer } from '../components/grip/GripViewer'
@@ -154,9 +154,9 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           </span>
         ) : null}
         {heroClip ? (
-          <GripClip clip={heroClip} />
+          <GripClip clip={heroClip} priority />
         ) : heroPhoto ? (
-          <GripFace photo={heroPhoto} />
+          <GripFace photo={heroPhoto} priority />
         ) : (
           <div className="relative z-[1] h-full w-full p-[6%]">
             <RefractorBall spinAxis={motion.spinAxis} gyro={motion.gyro} accent={accent} id={`hero-${display.slug}`} showHalo />
@@ -186,12 +186,13 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         </p>
 
         <div
-          className="mt-[18px] rounded-2xl p-4"
+          className="rfx-readplate relative mt-[18px] rounded-2xl p-4"
           style={{
+            '--c3': accentColor,
             background: `linear-gradient(145deg, color-mix(in srgb, ${accentColor} 18%, #0B0805), #070503)`,
             border: `1px solid color-mix(in srgb, ${accentColor} 26%, transparent)`,
             boxShadow: `inset 0 1px 0 color-mix(in srgb, ${accentColor} 22%, transparent)`,
-          }}
+          } as CSSProperties}
         >
           <span className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
             Shape read
@@ -691,7 +692,9 @@ export function PitchChapter() {
     entry
       ? {
           title: `${entry.canonical.name}: grip, release, and movement | ${SITE.siteName}`,
-          description: `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files. Sourced, not corrected.`,
+          description: truncateForMeta(
+            `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files. Sourced, not corrected.`,
+          ),
           ogTitle: `${entry.canonical.name} | ${SITE.siteName}`,
           ogDescription: entry.display.heroIntro,
           ogUrl: canonicalUrl('/pitch/' + entry.display.slug),

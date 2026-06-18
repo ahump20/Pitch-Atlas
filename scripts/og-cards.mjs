@@ -39,6 +39,7 @@ const C = {
   powder: '#6CACE4', // columbia blue
   navy: '#15406E',
   teal: '#00A2A0',
+  cyan: '#37D6FF', // the softball wing's accent (the circle)
   sand: '#8A7A5E',
 }
 
@@ -86,6 +87,13 @@ const SECTIONS = [
     line: 'The craft underneath the pitch',
     sub: 'Mechanics, design, sequencing, spin, arm health.',
     accent: C.powder,
+  },
+  {
+    name: 'softball',
+    eyebrow: 'The Circle',
+    line: 'Softball enters the atlas',
+    sub: 'The underhand windmill and the riseball physics, anchored on Cat Osterman.',
+    accent: C.cyan,
   },
 ]
 

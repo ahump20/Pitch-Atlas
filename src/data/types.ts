@@ -97,7 +97,7 @@ export type Claim<T> =
   | (ClaimBase & {
       value: T
       source: Source
-      confidence: Exclude<ClaimConfidence, 'unverified'>
+      confidence: Exclude<ClaimConfidence, 'unverified' | 'secondhand-attributed'>
     })
   | (ClaimBase & {
       value: T

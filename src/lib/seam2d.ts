@@ -6,7 +6,7 @@ import { orientedSeamPolyline } from './seam'
   2D seam on the page is the same curve.
 */
 
-export interface P2 {
+interface P2 {
   x: number
   y: number
   z: number // depth retained for front/back sorting
