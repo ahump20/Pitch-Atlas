@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   CONFIDENCE_META,
   type ClaimConfidence,
@@ -32,6 +33,12 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
   const grip = canonical.grip
   const shape = canonical.physics.shape
 
+  // the contact selector lights one fingertip in the live grip lab — the reason
+  // this moment spends a WebGL context instead of falling back to the SVG wall.
+  // the non-thumb contacts are the lead fingers a pitcher actually sets on the seam.
+  const [activeContact, setActiveContact] = useState<string | undefined>()
+  const contacts = canonical.gripModel.contacts.filter((c) => c.finger !== 'thumb')
+
   return (
     <section
       className="v2-stage v2-tooth relative border-t border-bone/10"
@@ -42,16 +49,46 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
           How it's held. How it moves.
         </h2>
         <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
-          Lead with the grip a hand can actually take, then the shape it makes in the air. Drag the
-          ball to read the hold from any angle.
+          Lead with the grip a hand can take, then the shape it makes in the air. Drag the ball to
+          read the hold from any angle.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-14">
           {/* the grip — live R3F grip lab */}
-          <div>
+          <div className="v2-converge-l">
             <div className="relative mx-auto aspect-square w-full max-w-[420px]">
-              <BallStage entry={featured} grip faceGrip surface="stage" autoSpin={false} className="h-full w-full" />
+              <BallStage
+                entry={featured}
+                grip
+                faceGrip
+                surface="stage"
+                autoSpin={false}
+                activeContact={activeContact}
+                className="h-full w-full"
+              />
             </div>
+            {contacts.length > 0 ? (
+              <div className="mt-5 flex flex-wrap gap-2" role="group" aria-label="Light a contact in the grip">
+                {contacts.map((c) => {
+                  const on = activeContact === c.label
+                  return (
+                    <button
+                      key={c.label}
+                      type="button"
+                      aria-pressed={on}
+                      onPointerEnter={() => setActiveContact(c.label)}
+                      onPointerLeave={() => setActiveContact(undefined)}
+                      onFocus={() => setActiveContact(c.label)}
+                      onBlur={() => setActiveContact(undefined)}
+                      onClick={() => setActiveContact(on ? undefined : c.label)}
+                      className={`v2-flip-btn !static rounded-full px-3 py-1.5 ${on ? '!border-powder/70 text-bone' : 'text-bone-2'}`}
+                    >
+                      {c.label}
+                    </button>
+                  )
+                })}
+              </div>
+            ) : null}
             <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2">The grip</p>
             <p className="mt-2 max-w-[46ch] text-[14px] leading-relaxed text-bone">{grip.value}</p>
             {grip.source ? (
@@ -67,7 +104,7 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
           </div>
 
           {/* the shape — spin axis + words */}
-          <div>
+          <div className="v2-converge-r">
             <div className="relative mx-auto aspect-square w-full max-w-[420px]">
               <RefractorBall
                 spinAxis={motion.spinAxis}
@@ -85,9 +122,9 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
               {shape.approximate ? <span className="text-bone-2/60"> · approx</span> : null}
             </p>
             <p className="mt-4 max-w-[46ch] border-l border-bone/20 pl-3 text-[12.5px] leading-relaxed text-bone-2/85">
-              The shape is read in words and a spin axis, never a spin rate, velocity, or break in
-              inches the pitch was not measured for. The dashed line is its real axis; the numbers it
-              does not claim stay blank on purpose.
+              The shape is read in words and a spin axis — never a spin rate, velocity, or break in
+              inches we did not measure. The dashed line is the real spin axis. The figures it cannot
+              source are left out, not guessed.
             </p>
           </div>
         </div>

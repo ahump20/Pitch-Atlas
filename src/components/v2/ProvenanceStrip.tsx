@@ -3,7 +3,6 @@ import { CONFIDENCE_META, type ClaimConfidence } from '../../data/types'
 import { PITCHES } from '../../data/pitches'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
-import { SITE } from '../../config/site'
 import { ClaimCard } from '../provenance/ClaimCard'
 
 /*
@@ -43,20 +42,28 @@ export function ProvenanceStrip() {
   return (
     <section className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-12 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
-        {/* the principle + the ladder */}
-        <div className="md:col-span-7">
-          <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
-            Sourced, not corrected.
-          </h2>
-          <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
-            A pitch can be thrown a dozen credible ways. The atlas does not pick a winner. It records
-            what is known, attributes it, and grades how well the source holds, top to bottom,
-            including the two rungs the honest gaps wear.
-          </p>
+        {/* the principle + the ladder. the constitutional line is pinned while its
+            evidence — the seven rungs — scrolls past it: the standard stays put,
+            the specimens move through it. */}
+        <div className="md:col-span-7 md:self-start">
+          <div className="md:sticky md:top-24">
+            <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
+              Sourced, not corrected.
+            </h2>
+            <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
+              A pitch can be thrown a dozen credible ways. The atlas does not crown one. It records
+              what is known, attributes it, and grades how well each source holds. Two rungs at the
+              bottom name the gaps instead of hiding them.
+            </p>
+          </div>
 
           <ul className="mt-8 divide-y divide-bone/10 border-y border-bone/10">
-            {LADDER.map((tier) => (
-              <li key={tier} className="grid grid-cols-[16px_1fr] items-start gap-3 py-3.5">
+            {LADDER.map((tier, i) => (
+              <li
+                key={tier}
+                className="v2-rung grid grid-cols-[16px_1fr] items-start gap-3 py-3.5"
+                style={{ '--i': i } as React.CSSProperties}
+              >
                 <i
                   className="mt-1 inline-block h-2.5 w-2.5 rounded-full"
                   style={{ background: TIER_DOT[tier] }}
@@ -94,16 +101,13 @@ export function ProvenanceStrip() {
 
           <div className="mt-6 rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-5">
             <p className="flex items-baseline gap-2.5">
-              <b className="rfx-athletic text-[clamp(30px,3.4vw,40px)] leading-none text-bone">
+              <b className="v2-count rfx-athletic text-[clamp(30px,3.4vw,40px)] leading-none text-bone">
                 {REGISTRY_COUNT}
               </b>
               <span className="text-[13px] leading-snug text-bone-2">sources in the citation registry</span>
             </p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2/75">
+            <p className="v2-count-sub mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2/75">
               Last checked {REGISTRY_AS_OF} · not auto-refreshed
-            </p>
-            <p className="mt-3 font-mono text-[9px] uppercase tracking-[0.14em] text-bone-2/60">
-              {SITE.sourcePrinciple}
             </p>
           </div>
         </div>

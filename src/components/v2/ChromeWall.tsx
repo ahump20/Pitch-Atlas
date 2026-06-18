@@ -49,7 +49,7 @@ const FRONT_INK: Record<ClaimConfidence, string> = {
   unverified: '#6E675A',
 }
 
-function WallCard({ entry, chase }: { entry: PitchAtlasEntry; chase: boolean }) {
+function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean; i: number }) {
   const [flipped, setFlipped] = useState(false)
   const { canonical, motion, display } = entry
   const accent = accentForSlug(display.slug)
@@ -59,7 +59,7 @@ function WallCard({ entry, chase }: { entry: PitchAtlasEntry; chase: boolean }) 
   return (
     <div
       className={`v2-mount${chase ? ' is-chase' : ''}`}
-      style={{ '--c3': accent.c3 } as React.CSSProperties}
+      style={{ '--c3': accent.c3, '--i': i } as React.CSSProperties}
     >
       <div className={`v2-flip${flipped ? ' is-flipped' : ''}`}>
         <div className="v2-flip-inner">
@@ -108,7 +108,7 @@ function WallCard({ entry, chase }: { entry: PitchAtlasEntry; chase: boolean }) 
 
               <p className="mt-3 text-[12px] leading-relaxed text-bone-2">
                 <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-bone-2/70">
-                  How it's held{' '}
+                  The grip{' '}
                 </span>
                 {canonical.grip.value}
               </p>
@@ -168,19 +168,19 @@ export function ChromeWall() {
             The filed set.
           </h2>
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">
-            {filed.length} specimens · flip for the source
+            {filed.length} filed · flip any card for its source
           </p>
         </div>
 
         <p className="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-bone-2">
-          Every accepted pitch, struck as a card and mounted on matte stock. The chrome front leads
-          with the grip and the shape; flip it and the back shows the same reading with the source it
-          rests on. The full index holds {INDEX_SCOPE.shelfLabel}, one click past the wall.
+          Every accepted pitch, struck as a card on matte stock. The front leads with the grip and
+          the shape; flip it for the same reading and its source. The full index holds{' '}
+          {INDEX_SCOPE.shelfLabel}, one click past the wall.
         </p>
 
         <div className="v2-wall mt-10">
-          {filed.map((entry) => (
-            <WallCard key={entry.display.slug} entry={entry} chase={entry.display.specimenNo === '00'} />
+          {filed.map((entry, i) => (
+            <WallCard key={entry.display.slug} entry={entry} chase={entry.display.specimenNo === '00'} i={i} />
           ))}
         </div>
 

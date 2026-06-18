@@ -2098,13 +2098,16 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      isn't chrome. */
   .v2-stage {
     position: relative; isolation: isolate;
-    background: radial-gradient(125% 85% at 50% -8%, #1a1613 0%, #0c0b0a 52%, #060605 100%);
+    background:
+      linear-gradient(187deg, rgba(255, 255, 255, .012) 0%, transparent 22%),
+      radial-gradient(125% 85% at 50% -8%, #1a1613 0%, #0c0b0a 52%, #060605 100%);
     color: var(--color-bone);
   }
   .v2-tooth::after {
     content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
-    opacity: .05; mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.62'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    opacity: .065; mix-blend-mode: overlay;
   }
 
   /* ── the v2 display type ──
@@ -2129,16 +2132,24 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      shows; the moving rake runs only with motion allowed. */
   .v2-rim {
     position: absolute; inset: -12% -18%; z-index: 0; pointer-events: none;
-    background: radial-gradient(58% 54% at 62% 40%,
-      color-mix(in srgb, var(--c3, #37D6FF) 22%, transparent) 0%, transparent 70%);
+    background:
+      radial-gradient(58% 54% at 58% 34%,
+        color-mix(in srgb, var(--c3, #37D6FF) 22%, transparent) 0%, transparent 70%),
+      radial-gradient(46% 46% at 22% 80%, rgba(0, 0, 0, .32), transparent 72%);
     opacity: .5;
   }
+  /* ambient life on the matte half: the grain breathes on a 9s clock, the rim
+     pulses on a slower 14s clock, the rake rides its own 9s — three speeds so
+     the black reads as a lit surface, never one mechanical loop. All gated;
+     reduced motion keeps the static grain and the rim at its .5 floor. */
   @media (prefers-reduced-motion: no-preference) {
+    .v2-rim { animation: v2-rim-breath 14s ease-in-out infinite alternate; }
     .v2-rim::after {
       content: ""; position: absolute; inset: 0;
-      background: linear-gradient(100deg, transparent 36%, rgba(246,241,230,.12) 50%, transparent 64%);
+      background: linear-gradient(108deg, transparent 36%, rgba(246,241,230,.12) 50%, transparent 64%);
       mix-blend-mode: screen; animation: v2-rake 9s ease-in-out infinite alternate;
     }
+    .v2-tooth::after { animation: v2-grain-shift 9s ease-in-out infinite alternate; }
   }
 
   /* ── the chrome wall ──
@@ -2151,16 +2162,26 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .v2-mount {
     position: relative; border-radius: var(--radius-md);
     background: linear-gradient(180deg, #141210 0%, #0a0908 100%);
-    border: 1px solid color-mix(in srgb, var(--color-bone) 12%, transparent);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 26px -18px #000;
+    border: 1px solid rgba(0, 0, 0, .4);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .55), inset 0 -1px 0 rgba(255, 255, 255, .05), 0 10px 26px -18px #000;
     padding: 10px;
   }
-  .v2-mount.is-chase { grid-column: span 2; }
+  /* a faint paper tooth pressed into the matte mount, so the cell reads as card
+     stock the chrome card is seated on (the recessed shadow stack above is the cut). */
+  .v2-mount::before {
+    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.62'/%3E%3C/svg%3E");
+    opacity: .04; mix-blend-mode: overlay;
+  }
+  .v2-mount.is-chase {
+    grid-column: span 2;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .62), inset 0 -1px 0 rgba(255, 255, 255, .06), 0 12px 30px -18px #000;
+  }
 
   /* ── the flip: chrome front <-> matte card back ──
      A real toggle (button + aria-pressed in markup); the transform
      is the only motion and it's removed under reduced motion. */
-  .v2-flip { position: relative; perspective: 1400px; }
+  .v2-flip { position: relative; z-index: 1; perspective: 1400px; }
   .v2-flip-inner { position: relative; transform-style: preserve-3d; transition: transform .72s cubic-bezier(.2,.8,.2,1); }
   .v2-flip.is-flipped .v2-flip-inner { transform: rotateY(180deg); }
   .v2-face { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
@@ -2189,12 +2210,15 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     position: relative; height: 100%; border-radius: var(--radius-md);
     background: radial-gradient(120% 90% at 50% 0%, #15120f 0%, #0a0908 100%);
     border: 1px solid color-mix(in srgb, var(--color-bone) 10%, transparent);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
     padding: 15px; overflow: hidden;
   }
+  /* the matte back catches a WIDE dull wash, not the front's tight hot streak —
+     so the flip physically demonstrates gloss-front / paper-back. */
   .v2-back::before {
     content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
-    background: linear-gradient(101deg, transparent 0 6%, rgba(246,241,230,.10) 20%, transparent 40%);
-    mix-blend-mode: screen; opacity: .5;
+    background: linear-gradient(108deg, transparent 0 14%, rgba(246,241,230,.06) 38%, transparent 64%);
+    mix-blend-mode: screen; opacity: .35;
   }
   .v2-back > * { position: relative; z-index: 1; }
 
@@ -2207,9 +2231,19 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .v2-bridge-foil { opacity: .42; }
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .v2-bridge-svg { animation: v2-bridge-in linear both; animation-timeline: view(); animation-range: entry 4% cover 38%; }
+      /* the refraction baton: the hero card flattens upward and fades to almost
+         nothing (v2-refract-out) just as the flat seam blooms in scaled-down
+         (v2-refract-in) — one seamPoint function visibly changing media. */
+      .v2-bridge-svg { animation: v2-refract-in linear both; animation-timeline: view(); animation-range: entry -10% cover 30%; }
       .v2-bridge-foil { animation: v2-bridge-bloom linear both; animation-timeline: view(); animation-range: entry 12% cover 46%; }
-      .v2-refract { animation: v2-refract-out linear both; animation-timeline: view(); animation-range: exit 2% exit 92%; }
+      /* the hero specimen: settles into the case on entry, refracts out on exit,
+         both on its own view() timeline, on the one .v2-refract wrapper. */
+      .v2-refract {
+        transform-origin: 58% 42%;
+        animation: v2-hero-settle linear both, v2-refract-out linear both;
+        animation-timeline: view(), view();
+        animation-range: cover 0% cover 30%, exit 2% exit 92%;
+      }
     }
   }
 
@@ -2221,25 +2255,121 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     padding: 11px 20px; border-radius: 999px; font-family: var(--font-mono);
     font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
     color: #080706; background: linear-gradient(176deg, #F6F2E8 0%, #C9CFD7 52%, #EDEFF3 100%);
-    border: 1px solid rgba(0,0,0,.25); transition: transform .12s ease, box-shadow .2s ease;
-    box-shadow: 0 8px 22px -14px rgba(0,0,0,.8);
+    border: 1px solid rgba(0, 0, 0, .25); transition: transform .12s ease, box-shadow .2s ease;
+    /* struck cap: a hot top lip, a dark undercut, the drop. */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -1px 1px rgba(0, 0, 0, .4), 0 8px 22px -14px rgba(0, 0, 0, .8);
   }
   .v2-cta.is-ghost {
     color: var(--color-bone); background: color-mix(in srgb, #0a0908 55%, transparent);
     border-color: color-mix(in srgb, var(--color-bone) 40%, transparent);
+    /* matte frame: a hairline lip only, no metal cap — legible against the cap CTA beside it. */
+    box-shadow: inset 0 1px 0 rgba(246, 241, 230, .18);
   }
   .v2-cta:hover { transform: translateY(-1px); }
   .v2-cta:active { transform: scale(.98); }
   .v2-cta:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 3px; }
   .v2-cta::after {
     content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(101deg, transparent 0 8%, rgba(255,255,255,.45) 22%, transparent 42%);
+    background-image: linear-gradient(101deg, transparent 0 8%, rgba(255, 255, 255, .45) 22%, transparent 42%);
+    background-size: 160% 100%; background-position: 0% 0;
     mix-blend-mode: screen; opacity: .6;
   }
-  .v2-cta.is-ghost::after { background: linear-gradient(101deg, transparent 0 8%, rgba(246,241,230,.18) 22%, transparent 42%); }
+  .v2-cta.is-ghost::after {
+    background-image: linear-gradient(101deg, transparent 0 8%, rgba(246, 241, 230, .18) 22%, transparent 42%);
+  }
+  /* the specular travels the cap on hover / keyboard focus; the static edge is the
+     reduced-motion floor, so the cap stays struck either way. */
+  @media (prefers-reduced-motion: no-preference) {
+    .v2-cta::after { transition: opacity .2s ease, background-position .35s ease; }
+    .v2-cta:hover::after,
+    .v2-cta:focus-visible::after { opacity: .85; background-position: 60% 0; }
+  }
 }
 
 @keyframes v2-rake { from { opacity: .26; transform: translateX(-4%); } to { opacity: .5; transform: translateX(4%); } }
-@keyframes v2-bridge-in { from { opacity: 0; transform: scale(.94); } to { opacity: 1; transform: scale(1); } }
 @keyframes v2-bridge-bloom { from { opacity: 0; } to { opacity: .58; } }
-@keyframes v2-refract-out { to { transform: translateY(-3%) scale(1.04); filter: saturate(1.5) brightness(1.12); opacity: 0; } }
+
+/* the refraction baton — the hero flattens upward and fades to almost nothing as
+   the schematic blooms in. blur capped at 2px so a scrub-paused mid-frame never
+   reads broken; the mask is a static gradient (no per-frame mask recompute); no
+   hue-rotate, so the chrome stays a material in the next section. */
+@keyframes v2-refract-out {
+  to {
+    transform: translateY(-3%) scale(1.04);
+    filter: saturate(1.5) brightness(1.12) blur(2px);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 38%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 38%);
+    opacity: .06;
+  }
+}
+@keyframes v2-refract-in {
+  from { opacity: 0; transform: scale(1.1); filter: saturate(1.6) brightness(1.15); }
+  to { opacity: 1; transform: scale(1); filter: saturate(1) brightness(1); }
+}
+
+/* the hero specimen set into the case, then leveled. to-state is explicit identity
+   so it rests where no animation runs. */
+@keyframes v2-hero-settle {
+  from { transform: perspective(1400px) rotateX(7deg) rotateY(-9deg) translateY(2.5%) scale(.965); filter: brightness(.9) saturate(.92); }
+  to { transform: perspective(1400px) rotateX(0) rotateY(0) translateY(0) scale(1); filter: brightness(1) saturate(1); }
+}
+
+/* ambient matte life: grain drifts a few px, rim breathes around its .5 floor. */
+@keyframes v2-grain-shift { from { background-position: 0 0; } to { background-position: 3px 2px; } }
+@keyframes v2-rim-breath { from { opacity: .46; } to { opacity: .56; } }
+
+/* the wall dealt in card by card; the gold 1/1 raked once on arrival. */
+@keyframes v2-mount-deal { from { opacity: 0; transform: translateY(14px) rotateX(7deg); filter: brightness(.7); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes v2-chase-sweep { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
+
+/* purpose-shaped section reveals: the read's halves converge, the ladder climbs,
+   the colophon count focuses in, the close settles as one unit, the hero staggers. */
+@keyframes v2-converge-from-l { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+@keyframes v2-converge-from-r { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+@keyframes v2-rung-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
+@keyframes v2-count-rise { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+@keyframes v2-close-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes v2-enter { from { opacity: 0; transform: translateY(14px); } }
+
+/* ── v2 · motion not tied to scroll: hero stagger, mount lift, flip glyph ──
+   All gated; reduced motion drops to the static rest state of each element. */
+@media (prefers-reduced-motion: no-preference) {
+  /* the hero left column + card stagger in on load — subtle life in the corners */
+  .v2-stage .v2-enter { animation: v2-enter .62s cubic-bezier(.2, .8, .2, 1) backwards; animation-delay: calc(var(--i, 0) * 90ms); }
+  /* the mount tells you it lifts before you commit (separate from the static cut shadow) */
+  .v2-mount { transition: transform .22s ease, box-shadow .22s ease; }
+  .v2-mount:hover, .v2-mount:focus-within { transform: translateY(-3px); box-shadow: inset 0 1px 0 rgba(255, 255, 255, .06), 0 18px 34px -18px #000; }
+  /* the flip glyph pre-rotates on hover/focus — the card is about to turn */
+  .v2-flip-btn span { transition: transform .25s ease; }
+  .v2-flip-btn:hover span, .v2-flip-btn:focus-visible span { transform: rotate(-90deg); }
+}
+
+/* ── v2 · scroll-driven reveals (view-timeline) ──
+   Each element fires on its OWN entry, never gated on the section, never time-based
+   (so it can't pause on a hidden tab). Reduced-motion / no-support / prerender all
+   render the rest state, which is fully visible. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    /* the wall dealt in, one cell a beat after the last; backwards fill (not both)
+       so the settled rest state never out-ranks the hover lift above. */
+    .v2-mount { animation: v2-mount-deal linear backwards; animation-timeline: view(); animation-range: entry calc(2% + var(--i, 0) * 3%) cover 30%; }
+    .v2-mount.is-chase { overflow: hidden; animation-range: entry calc(2% + var(--i, 0) * 3%) cover 40%; }
+    /* the gold 1/1 raked once on arrival — gold in MATERIAL, never letters */
+    .v2-mount.is-chase::after {
+      content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; border-radius: inherit;
+      background-image: linear-gradient(101deg, transparent 0 30%, color-mix(in srgb, #D8A24A 55%, transparent) 50%, transparent 70%);
+      mix-blend-mode: screen; transform: translateX(-120%);
+      animation: v2-chase-sweep linear both; animation-timeline: view(); animation-range: entry 10% cover 35%;
+    }
+    /* the read's two halves converge inward — two sides of one pitch */
+    .v2-converge-l { animation: v2-converge-from-l linear both; animation-timeline: view(); animation-range: entry 5% cover 24%; }
+    .v2-converge-r { animation: v2-converge-from-r linear both; animation-timeline: view(); animation-range: entry 5% cover 24%; }
+    /* the trust ladder climbs rung by rung */
+    .v2-rung { animation: v2-rung-in linear both; animation-timeline: view(); animation-range: entry calc(4% + var(--i, 0) * 2.5%) cover 26%; }
+    /* the colophon count focuses in like an instrument read; the date a beat later */
+    .v2-count { transform-origin: left center; animation: v2-count-rise linear both; animation-timeline: view(); animation-range: entry 8% cover 30%; }
+    .v2-count-sub { transform-origin: left center; animation: v2-count-rise linear both; animation-timeline: view(); animation-range: entry 18% cover 40%; }
+    /* the close settles as one unit — the film resolving */
+    .v2-close-converge { animation: v2-close-in linear both; animation-timeline: view(); animation-range: entry 8% cover 40%; }
+  }
+}

@@ -358,27 +358,32 @@ export function Ball({
         />
       </mesh>
 
-      {/* the seam: raised waxed red thread, glossier than the matte leather lip */}
+      {/* the seam: raised waxed red thread, glossier than the matte leather lip.
+          tighter clearcoat roughness sharpens the specular line the rim light rakes. */}
       <mesh geometry={tubeGeometry}>
         <meshPhysicalMaterial
           color="#B81127"
           roughness={0.42}
           clearcoat={0.5}
-          clearcoatRoughness={0.3}
+          clearcoatRoughness={0.22}
           sheen={0.4}
           sheenColor="#E2544E"
         />
       </mesh>
 
-      {/* 216 waxed stitches: flatter, glossier on top, brighter than the seam line */}
+      {/* 216 waxed stitches: flatter, glossier on top, brighter than the seam line.
+          a low deep-red emissive reads as the waxed crown catching rim light — a
+          glint, not a glow — and the sharper clearcoat crisps the thread's specular. */}
       <instancedMesh ref={stitchRef} args={[stitchGeometry, undefined, STITCH_PAIRS * 2]}>
         <meshPhysicalMaterial
           color="#D6213B"
           roughness={0.34}
           clearcoat={0.6}
-          clearcoatRoughness={0.22}
+          clearcoatRoughness={0.16}
           sheen={0.5}
           sheenColor="#F39C92"
+          emissive="#3a0810"
+          emissiveIntensity={0.15}
         />
       </instancedMesh>
 

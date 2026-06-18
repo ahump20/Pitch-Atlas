@@ -50,8 +50,8 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
             the model and the diagram can never quietly disagree.
           </p>
           <p className="mt-4 max-w-[48ch] text-[13.5px] leading-relaxed text-bone-2/80">
-            It is a seam-informed schematic, not a measured cover. The honest label travels with it
-            everywhere it appears.
+            It is a seam-informed schematic, not a measured cover. That label stays attached to the
+            diagram wherever it appears.
           </p>
         </div>
       </div>

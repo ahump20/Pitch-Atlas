@@ -29,24 +29,33 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
         {/* the read, lower-left */}
         <div className="order-2 md:order-1 md:col-span-6 md:self-center">
           <p
-            className="rfx-stamp w-fit"
-            style={{ color: '#F2ECDD', background: 'rgba(10,9,8,.7)', borderColor: 'rgba(242,236,221,.5)' }}
+            className="rfx-stamp v2-enter w-fit"
+            style={{ color: '#F2ECDD', background: 'rgba(10,9,8,.7)', borderColor: 'rgba(242,236,221,.5)', '--i': 0 } as React.CSSProperties}
           >
-            {SITE.sourcePrinciple}
+            {SITE.brandLine}
           </p>
 
-          <h1 className="rfx-athletic v2-display mt-5 text-[clamp(40px,8.5vw,84px)] leading-[0.92]">
+          <h1
+            className="rfx-athletic v2-display v2-enter mt-5 text-[clamp(40px,8.5vw,84px)] leading-[0.92]"
+            style={{ '--i': 1 } as React.CSSProperties}
+          >
             The pitch,
             <br />
             struck as a specimen.
           </h1>
 
-          <p className="mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base">
-            Hold the grip, read the shape in plain words, check the source on every claim. The chrome
-            is decoration; the readings are not.
+          <p
+            className="v2-enter mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base"
+            style={{ '--i': 2 } as React.CSSProperties}
+          >
+            Hold the grip, read the shape in plain words, check the source on every line. The chrome
+            is decoration; the reading is not.
           </p>
 
-          <div className="mt-7 flex flex-wrap items-center gap-3">
+          <div
+            className="v2-enter mt-7 flex flex-wrap items-center gap-3"
+            style={{ '--i': 3 } as React.CSSProperties}
+          >
             <Link to="/repertoire" className="v2-cta">
               Open the set <span aria-hidden="true">→</span>
             </Link>
@@ -70,7 +79,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
         <div className="order-1 flex justify-center md:order-2 md:col-span-6 md:justify-end">
           <div className="v2-refract relative mx-auto w-full max-w-[290px] sm:max-w-[360px] md:mx-0 md:max-w-[460px]">
             <div className="v2-rim" aria-hidden="true" />
-            <div className="relative">
+            <div className="v2-enter relative" style={{ '--i': 4 } as React.CSSProperties}>
               <PitchSpecimenCard entry={featured} maxWidth={460} foil priority />
               <p
                 className="rfx-stamp pointer-events-none absolute -right-3 top-3 z-10 hidden md:inline-block"
