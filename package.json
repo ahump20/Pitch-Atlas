@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "fetch:tweet": "node scripts/fetch-tweet.mjs",
-    "test": "vitest run",
+    "test": "vitest run --reporter dot",
     "test:preview:browser": "node scripts/preview-browser-smoke.mjs",
     "test:watch": "vitest"
   },

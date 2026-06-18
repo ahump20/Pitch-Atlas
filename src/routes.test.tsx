@@ -36,7 +36,7 @@ const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random'
    the same one-time cost vite.config.ts already sizes testTimeout for. The
    first await in a file gets the same allowance; everything after rides the
    warm module graph at the default. */
-const COLD_LOAD = { timeout: 15000 }
+const COLD_LOAD = { timeout: 30000 }
 
 describe('Atlas home', () => {
   it('publishes a route canonical and non-stale site schema', async () => {
@@ -127,7 +127,7 @@ describe('Pitch chapters', () => {
 
   it('shows the 404 for an unknown specimen', async () => {
     renderRoute('/pitch/does-not-exist')
-    expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
+    expect(await screen.findByText('That file is not in the atlas.', {}, COLD_LOAD)).toBeInTheDocument()
   })
 })
 
@@ -260,7 +260,7 @@ describe('Basic pitch files', () => {
 
   it('shows the 404 for an unknown pitch id', async () => {
     renderRoute('/repertoire/not-a-real-pitch')
-    expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
+    expect(await screen.findByText('That file is not in the atlas.', {}, COLD_LOAD)).toBeInTheDocument()
   })
 })
 
@@ -288,7 +288,7 @@ describe('Lost Pitches of the Negro Leagues', () => {
 
   it('shows the 404 for an unknown lost pitch', async () => {
     renderRoute('/lost-pitches/not-a-real-pitch')
-    expect(await screen.findByText('That file is not in the atlas.')).toBeInTheDocument()
+    expect(await screen.findByText('That file is not in the atlas.', {}, COLD_LOAD)).toBeInTheDocument()
   })
 })
 
