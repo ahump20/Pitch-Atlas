@@ -58,3 +58,6 @@ claude-plugin/
 # Austin's raw grip source photos — converted to webp for the grip library, not shipped
 My Pitch Grips/
 pitch-atlas-softball/
+
+# redesign research screenshots (local only)
+.redesign-research/
