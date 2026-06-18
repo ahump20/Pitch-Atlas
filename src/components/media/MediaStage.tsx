@@ -51,8 +51,7 @@ export function MediaStage({
       alt={decorative ? '' : clip.alt}
       aria-hidden={decorative || undefined}
       loading={priority ? 'eager' : 'lazy'}
-      // @ts-expect-error React 19 passes fetchpriority through; types lag the DOM attr
-      fetchpriority={priority ? 'high' : undefined}
+      fetchPriority={priority ? 'high' : undefined}
       decoding="async"
       draggable={false}
       // a cached poster can finish before hydration attaches onLoad — read it off the element
