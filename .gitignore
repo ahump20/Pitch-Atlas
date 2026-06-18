@@ -61,3 +61,8 @@ pitch-atlas-softball/
 
 # redesign research screenshots (local only)
 .redesign-research/
+.ds-sync/
+ds-bundle/
+.design-sync/.cache/
+.design-sync/learnings/
+.design-sync/node_modules
