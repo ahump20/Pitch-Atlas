@@ -69,10 +69,10 @@ function ForceReceipts({ claims }: { claims: Claim<string>[] }) {
 
 export function WhyPitchesDie() {
   return (
-    <section className="border-t border-ink/15">
+    <section className="manual-section">
       <SeamGuide variant="tear" className="opacity-60" />
       <div className="mx-auto max-w-4xl px-5 py-16 md:px-8 md:py-20">
-        <p className="rfx-skick">The through-line</p>
+        <span className="manual-section__no">The Through-Line</span>
         <h2 className="rfx-stitle mt-2 text-3xl leading-tight md:text-4xl">Why pitches die.</h2>
         <p className="mt-4 max-w-[68ch] text-base leading-relaxed text-ink-2">
           An archive of lost pitches is really an archive of how pitches get lost. Four forces take a pitch
@@ -84,6 +84,9 @@ export function WhyPitchesDie() {
             <li key={f.heading} className="grid gap-3 border-l-2 border-seam/40 pl-5 md:grid-cols-[7rem_1fr] md:gap-6 md:pl-0 md:border-l-0">
               <div className="md:border-l-2 md:border-seam/40 md:pl-5">
                 <span className="mono-label text-seam">{f.era}</span>
+                <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">
+                  Force {String(FORCES.indexOf(f) + 1).padStart(2, '0')}
+                </span>
               </div>
               <div>
                 <h3 className="font-athletic uppercase text-xl text-ink">{f.heading}</h3>

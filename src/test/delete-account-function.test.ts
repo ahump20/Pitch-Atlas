@@ -35,15 +35,38 @@ describe('delete-account Edge Function source contract', () => {
     expect(source).toContain('const allowedMethods = "POST, DELETE, OPTIONS"')
     expect(source).toContain('"Access-Control-Allow-Methods": allowedMethods')
     expect(source).toContain('"Allow": allowedMethods')
-    expect(source).toContain('headers: { ...corsHeaders(req), ...allowHeaders }')
+    expect(source).toContain('function preflight(req: Request): Response')
+    expect(source).toContain('return preflight(req)')
     expect(source).toContain('return reply(405, { ok: false, error: "method_not_allowed" }, allowHeaders)')
   })
 
-  it('keeps a provenance meta envelope on success and error replies', () => {
+  it('keeps preflight replies no-store and browser-hardened', () => {
+    const preflightStart = source.indexOf('function preflight(req: Request): Response')
+    const jsonStart = source.indexOf('function json(req: Request')
+    const preflightSource = source.slice(preflightStart, jsonStart)
+
+    expect(preflightStart).toBeGreaterThan(-1)
+    expect(jsonStart).toBeGreaterThan(preflightStart)
+    expect(preflightSource).toContain('"Content-Type": "text/plain; charset=utf-8"')
+    expect(preflightSource).toContain('"Cache-Control": "no-store"')
+    expect(preflightSource).toContain('"Pragma": "no-cache"')
+    expect(preflightSource).toContain('"X-Content-Type-Options": "nosniff"')
+    expect(preflightSource).toContain('"Referrer-Policy": "no-referrer"')
+    expect(preflightSource).toContain('...provenanceHeaders(responseMeta)')
+  })
+
+  it('keeps provenance on JSON replies and preflight responses', () => {
     expect(source).toContain('source: "pitch-atlas-delete-account"')
     expect(source).toContain('fetched_at: new Date().toISOString()')
     expect(source).toContain('timezone: "America/Chicago"')
-    expect(source).toMatch(/JSON\.stringify\(\{ \.\.\.body, meta: body\.meta \?\? meta\(\) \}\)/)
+    expect(source).toContain('function provenanceHeaders(responseMeta: DeleteAccountMeta): Record<string, string>')
+    expect(source).toContain('const responseMeta = body.meta ?? meta()')
+    expect(source).toContain('const responseMeta = meta()')
+    expect(source).toContain('JSON.stringify({ ...body, meta: responseMeta })')
+    expect(source).toContain('"X-Data-Source": responseMeta.source')
+    expect(source).toContain('"X-Origin-Data-Source": responseMeta.source')
+    expect(source).toContain('"X-Last-Updated": responseMeta.fetched_at')
+    expect(source).toContain('...provenanceHeaders(responseMeta)')
   })
 
   it('does not return raw storage, database, or auth error text to the browser', () => {
@@ -137,6 +160,19 @@ describe('delete-account Edge Function source contract', () => {
     const authDeleteIndex = source.indexOf('admin.auth.admin.deleteUser(userId)')
     expect(messagesCleanupIndex).toBeGreaterThan(-1)
     expect(authDeleteIndex).toBeGreaterThan(messagesCleanupIndex)
+  })
+
+  it('cleans authored community rows before auth removal', () => {
+    expect(source).toContain('deleteIfPresent(admin, "field_notes", "author_id", userId)')
+    expect(source).toContain('deleteIfPresent(admin, "discussion_posts", "author_id", userId)')
+
+    const fieldNotesCleanupIndex = source.indexOf('deleteIfPresent(admin, "field_notes", "author_id", userId)')
+    const discussionPostsCleanupIndex = source.indexOf('deleteIfPresent(admin, "discussion_posts", "author_id", userId)')
+    const authDeleteIndex = source.indexOf('admin.auth.admin.deleteUser(userId)')
+
+    expect(fieldNotesCleanupIndex).toBeGreaterThan(-1)
+    expect(discussionPostsCleanupIndex).toBeGreaterThan(fieldNotesCleanupIndex)
+    expect(authDeleteIndex).toBeGreaterThan(discussionPostsCleanupIndex)
   })
 
   it('cleans block-list rows without string-built filters', () => {

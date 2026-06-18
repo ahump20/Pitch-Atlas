@@ -22,6 +22,13 @@ export interface SubmitInput {
   parentId?: string | null
 }
 
+export interface SubmitResult {
+  ok: true
+  /** Present only when the post saved but one or more files failed to attach.
+      A non-blocking notice — the comment is live and the composer may clear. */
+  mediaError?: string
+}
+
 export interface UseDiscussion {
   status: DiscussionStatus
   error: string | null
@@ -30,7 +37,7 @@ export interface UseDiscussion {
   acceptedTerms: boolean
   count: number
   refresh: () => void
-  submit: (input: SubmitInput) => Promise<void>
+  submit: (input: SubmitInput) => Promise<SubmitResult>
   acceptTerms: () => Promise<void>
   reportTarget: (target: { postId: string } | { mediaId: string }, reason: string) => Promise<void>
   remove: (postId: string) => Promise<void>
@@ -95,38 +102,39 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
   }, [open, load, reloadKey])
 
   const submit = useCallback(
-    async ({ displayName: name, body, files, parentId }: SubmitInput) => {
-      try {
-        const postId = await createPost({ topicKey, displayName: name, body, parentId })
-        setDisplayName(name)
-        // Media is additive: the post is already saved, so a failed upload never
-        // loses the comment. Collect every failure (not just the last) and surface
-        // a real, specific error — how many of how many files didn't attach, with
-        // the reason — so a media problem renders an explicit state, never a
-        // silent blank.
-        const mediaErrors: string[] = []
-        for (const file of files) {
-          try {
-            await uploadMedia(postId, topicKey, file)
-          } catch (err) {
-            mediaErrors.push(message(err))
-          }
+    async ({ displayName: name, body, files, parentId }: SubmitInput): Promise<SubmitResult> => {
+      // createPost throws on a real failure — the composer keeps the draft and
+      // shows that error. It is intentionally NOT wrapped here, so the only thing
+      // a caller's catch sees is a genuine post-creation failure.
+      const postId = await createPost({ topicKey, displayName: name, body, parentId })
+      setDisplayName(name)
+      // Media is additive: the post is already saved, so a failed upload never
+      // loses the comment. Collect every failure (not just the last) and report
+      // how many of how many files didn't attach, with the reason. A partial
+      // success RETURNS that notice instead of throwing — so the composer clears
+      // behind a saved post and never invites a double-post.
+      const mediaErrors: string[] = []
+      for (const file of files) {
+        try {
+          await uploadMedia(postId, topicKey, file)
+        } catch (err) {
+          mediaErrors.push(message(err))
         }
-        refresh()
-        if (mediaErrors.length > 0) {
-          dispatchBlazeEvent({ mood: 'concerned' })
-          const reasons = Array.from(new Set(mediaErrors)).join(' ')
-          throw new Error(
+      }
+      refresh()
+      if (mediaErrors.length > 0) {
+        dispatchBlazeEvent({ mood: 'concerned' })
+        const reasons = Array.from(new Set(mediaErrors)).join(' ')
+        return {
+          ok: true,
+          mediaError:
             files.length === 1
               ? `Your comment posted, but the file didn't attach. ${reasons}`
               : `Your comment posted, but ${mediaErrors.length} of ${files.length} files didn't attach. ${reasons}`,
-          )
         }
-        dispatchBlazeEvent({ mood: 'caught' })
-      } catch (err) {
-        dispatchBlazeEvent({ mood: 'concerned' })
-        throw err
       }
+      dispatchBlazeEvent({ mood: 'caught' })
+      return { ok: true }
     },
     [topicKey, refresh],
   )

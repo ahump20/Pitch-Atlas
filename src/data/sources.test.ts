@@ -4,6 +4,10 @@ import { fourSeam } from './pitches/four-seam'
 import { SOURCES, src, latestRetrievedAt, allSources } from './sources'
 import { CONFIDENCE_META } from './types'
 import type { Claim, PitchAtlasEntry } from './types'
+import { CRAFTSMEN } from './craftsmen'
+import { SOFTBALL_CRAFTSMEN } from './softball/craftsmen'
+import { LOST_PITCHES } from './lost-pitches'
+import { REPERTOIRE } from './repertoire'
 import { magnusForceRender, magnusStrength } from '../lib/physics'
 
 /*
@@ -140,4 +144,69 @@ describe('provenance integrity, every pitch', () => {
       expect(s.retrievedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
     }
   })
+})
+
+/*
+  The honesty contract reaches beyond the pitch specimens. The craftsmen halls,
+  the lost-pitches archive, and the repertoire index all carry sourced claims, and
+  a weak claim (unverified or secondhand) must always carry its explanatory note.
+  This walks every claim in those arrays — by structure, so no hand-listed field
+  can quietly fall out of coverage — and enforces the same invariant the pitch
+  specimens already meet. The compile-time Claim union now refuses a noteless weak
+  claim too; this is the runtime backstop for data authored via raw literals.
+*/
+const KNOWN_TIERS = new Set(VALID_CONFIDENCE)
+function harvestClaims(node: unknown, acc: Claim<unknown>[] = [], seen = new Set<object>()): Claim<unknown>[] {
+  if (node === null || typeof node !== 'object') return acc
+  if (seen.has(node as object)) return acc
+  seen.add(node as object)
+  const rec = node as Record<string, unknown>
+  if (typeof rec.confidence === 'string' && KNOWN_TIERS.has(rec.confidence)) {
+    acc.push(node as Claim<unknown>)
+  }
+  if (Array.isArray(node)) {
+    for (const item of node) harvestClaims(item, acc, seen)
+  } else {
+    for (const key of Object.keys(rec)) harvestClaims(rec[key], acc, seen)
+  }
+  return acc
+}
+
+describe('provenance note invariant, all sourced data arrays', () => {
+  const ARRAYS: Array<{ name: string; data: unknown[] }> = [
+    { name: 'CRAFTSMEN', data: CRAFTSMEN },
+    { name: 'SOFTBALL_CRAFTSMEN', data: SOFTBALL_CRAFTSMEN },
+    { name: 'LOST_PITCHES', data: LOST_PITCHES },
+    { name: 'REPERTOIRE', data: REPERTOIRE },
+  ]
+  for (const { name, data } of ARRAYS) {
+    describe(name, () => {
+      const claims = harvestClaims(data)
+
+      it('has sourced claims to check', () => {
+        expect(claims.length).toBeGreaterThan(0)
+      })
+
+      it('every claim carries a valid confidence tier', () => {
+        for (const cl of claims) expect(VALID_CONFIDENCE).toContain(cl.confidence)
+      })
+
+      it('weak claims (unverified / secondhand) carry a non-empty note', () => {
+        for (const cl of claims) {
+          if (cl.confidence === 'unverified' || cl.confidence === 'secondhand-attributed') {
+            expect(typeof cl.note === 'string' && cl.note.length > 0).toBe(true)
+          }
+        }
+      })
+
+      it('every cited source is well-formed', () => {
+        for (const cl of claims) {
+          if (cl.source) {
+            expect(cl.source.url).toMatch(/^https?:\/\//)
+            expect(cl.source.retrievedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+          }
+        }
+      })
+    })
+  }
 })

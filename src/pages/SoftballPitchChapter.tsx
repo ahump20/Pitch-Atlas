@@ -1,13 +1,15 @@
 import { useParams, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
-import { canonicalUrl } from '../lib/seo'
+import { canonicalUrl, contentJsonLd, ogImageMeta, truncateForMeta } from '../lib/seo'
+import { StructuredData } from '../components/seo/StructuredData'
 import { SOFTBALL_PITCHES, softballPitchBySlug } from '../data/softball'
 import type { SoftballPitch } from '../data/softball'
 import { accentForSlug } from '../components/refractor/accents'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { SoftballProvenanceRow } from '../components/provenance/SoftballProvenanceRow'
+import { FamilyRail } from '../components/pitch/FamilyRail'
 import { NotFound } from './NotFound'
 
 /*
@@ -65,10 +67,11 @@ export function SoftballPitchChapter() {
     pitch
       ? {
           title: `${pitch.name}: the fastpitch ${FAMILY_LABEL[pitch.family].toLowerCase()} | ${SITE.siteName}`,
-          description: `${pitch.tagline} ${pitch.intro}`.slice(0, 200),
+          description: truncateForMeta(`${pitch.tagline} ${pitch.intro}`),
           ogTitle: `${pitch.name} | ${SITE.siteName}`,
           ogDescription: pitch.tagline,
           ogUrl: canonicalUrl('/softball/pitch/' + pitch.slug),
+          ...ogImageMeta('softball', `${pitch.name} — the fastpitch circle`),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )
@@ -76,9 +79,23 @@ export function SoftballPitchChapter() {
   if (!pitch) return <NotFound />
 
   const gc = accentForSlug(pitch.slug).c3
+  // Others in this family — the same cross-link the basic Pitch Index files get,
+  // so a softball chapter explores its kin instead of dead-ending on prev/next.
+  const familySiblings = SOFTBALL_PITCHES.filter(
+    (p) => p.family === pitch.family && p.slug !== pitch.slug,
+  ).map((p) => ({ to: `/softball/pitch/${p.slug}`, name: p.name, accentColor: accentForSlug(p.slug).c3 }))
 
   return (
     <>
+      <StructuredData
+        graph={contentJsonLd({
+          type: 'CreativeWork',
+          url: canonicalUrl('/softball/pitch/' + pitch.slug),
+          name: pitch.name,
+          description: pitch.tagline,
+          breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'Softball', to: '/softball' }, { name: pitch.name }],
+        })}
+      />
       <section className="on-stage relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
           <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(108,172,228,0.15),transparent_42%),linear-gradient(115deg,rgba(242,236,221,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
@@ -155,6 +172,11 @@ export function SoftballPitchChapter() {
           and a 12&Prime; seam, the way the baseball wing files a pitch.
         </p>
       </section>
+
+      <FamilyRail
+        heading={`Others in the ${FAMILY_LABEL[pitch.family].toLowerCase()}`}
+        items={familySiblings}
+      />
 
       <ChapterNav prev={prev} next={next} />
     </>

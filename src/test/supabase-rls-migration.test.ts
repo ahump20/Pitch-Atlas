@@ -58,12 +58,24 @@ function securityDefinerFunctionStatements(sql: string) {
   ).filter((statement) => /\bsecurity\s+definer\b/i.test(statement))
 }
 
-function publicSecurityDefinerFunctionNames(sql: string) {
-  return securityDefinerFunctionStatements(sql).flatMap((statement) => {
+function publicFunctionSecurityModeEvents(sql: string) {
+  return (
+    stripSqlComments(sql).match(
+      /\bcreate\s+(?:or\s+replace\s+)?function\b[\s\S]*?\bas\s+\$[A-Za-z0-9_]*\$/gi,
+    ) ?? []
+  ).flatMap((statement) => {
     const match = statement.match(
       /\bcreate\s+(?:or\s+replace\s+)?function\s+public\.([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/i,
     )
-    return match ? [match[1].toLowerCase()] : []
+
+    if (!match) {
+      return []
+    }
+
+    return [{
+      functionName: match[1].toLowerCase(),
+      mode: /\bsecurity\s+definer\b/i.test(statement) ? 'definer' : 'invoker',
+    }]
   })
 }
 
@@ -86,11 +98,7 @@ function migrationFiles() {
     .sort()
 }
 
-const clientCallablePublicDefinerFunctions = new Set([
-  'accept_media_terms',
-  'has_accepted_media_terms',
-  'viewer_note_engagement',
-])
+const clientCallablePublicDefinerFunctions = new Set<string>()
 
 describe('Supabase RLS migration contracts', () => {
   it('enables RLS on every public table created by migrations', () => {
@@ -170,14 +178,14 @@ describe('Supabase RLS migration contracts', () => {
 
   it('keeps public security definer functions closed to direct client execute', () => {
     const files = migrationFiles()
-    const functionNames = new Set<string>()
+    const lastSecurityMode = new Map<string, string>()
     const lastExecuteEvent = new Map<string, string | undefined>()
 
     for (const file of files) {
       const sql = readFileSync(resolve(migrationsDir, file), 'utf8')
 
-      for (const functionName of publicSecurityDefinerFunctionNames(sql)) {
-        functionNames.add(functionName)
+      for (const event of publicFunctionSecurityModeEvents(sql)) {
+        lastSecurityMode.set(event.functionName, event.mode)
       }
 
       for (const event of executePrivilegeEvents(sql)) {
@@ -187,7 +195,9 @@ describe('Supabase RLS migration contracts', () => {
       }
     }
 
-    const violations = [...functionNames]
+    const violations = [...lastSecurityMode.entries()]
+      .filter(([_functionName, mode]) => mode === 'definer')
+      .map(([functionName]) => functionName)
       .filter((functionName) => !clientCallablePublicDefinerFunctions.has(functionName))
       .filter((functionName) => lastExecuteEvent.get(functionName) !== 'revoke')
       .map((functionName) => `public.${functionName} has no final client execute revoke`)

@@ -1,5 +1,4 @@
 import { lazy, Suspense, useId, useState } from 'react'
-import { Skeleton } from '../ui/skeleton'
 
 /*
   Per-topic discussion: one component, many homes (a pitch page, a basic repertoire
@@ -17,14 +16,15 @@ import { Skeleton } from '../ui/skeleton'
 const DiscussionForum = lazy(() => import('./DiscussionForum'))
 
 function ForumFallback() {
-  // The loading state for the lazy chunk: a labelled skeleton, not a bare spinner,
-  // so the four-state contract holds while the code is in flight.
+  // The loading state for the lazy chunk: skeletons shaped like the thread that
+  // is coming — a label line, then two note blocks — in the set's own material
+  // (skel-stock), not a generic gray pulse. Reduced motion holds them static.
   return (
     <div className="flex flex-col gap-3" aria-busy="true">
       <span className="mono-label text-ink-3">Loading the discussion…</span>
-      <Skeleton className="h-4 w-1/3" />
-      <Skeleton className="h-16 w-full" />
-      <Skeleton className="h-16 w-full" />
+      <span aria-hidden="true" className="skel-stock block h-4 w-1/3" />
+      <span aria-hidden="true" className="skel-stock block h-16 w-full" />
+      <span aria-hidden="true" className="skel-stock block h-16 w-full" />
     </div>
   )
 }
@@ -49,7 +49,9 @@ export function DiscussionPanel({
           aria-expanded={open}
           aria-controls={regionId}
           onClick={() => setOpen((v) => !v)}
-          className="flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left"
+          className={`overlay-frost-coal flex w-full cursor-pointer items-center justify-between gap-3 px-5 py-4 text-left ${
+            open ? 'rounded-t-[12px]' : 'rounded-[12px]'
+          }`}
         >
           <span className="flex items-center gap-3">
             <span className="rfx-skick text-cyan">Discussion</span>

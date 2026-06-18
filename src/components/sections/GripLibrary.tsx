@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
 import { AUSTIN_GRIPS, ATTACK_PLAN, CIRCLE_CHANGE_DISTINCTION, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
@@ -41,11 +41,33 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
     .filter(Boolean)
     .join(' · ')
 
-  // while the examine view is open: lock the page behind it and let Escape close it
+  const dialogRef = useRef<HTMLDivElement>(null)
+
+  // while the examine view is open: lock the page behind it, let Escape close it,
+  // trap Tab inside the dialog so keyboard focus can't wander onto the page behind
+  // it, and hand focus back to whatever opened it when it closes.
   useEffect(() => {
     if (!zoomed) return
+    const restoreFocus = document.activeElement as HTMLElement | null
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setZoomed(false)
+      if (e.key === 'Escape') {
+        setZoomed(false)
+        return
+      }
+      if (e.key !== 'Tab') return
+      const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, [tabindex]:not([tabindex="-1"])',
+      )
+      if (!focusables || focusables.length === 0) return
+      const first = focusables[0]
+      const last = focusables[focusables.length - 1]
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
     const prevOverflow = document.body.style.overflow
     document.body.style.overflow = 'hidden'
@@ -53,6 +75,7 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
     return () => {
       document.body.style.overflow = prevOverflow
       window.removeEventListener('keydown', onKey)
+      restoreFocus?.focus?.()
     }
   }, [zoomed])
 
@@ -62,7 +85,7 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
         {state === 'loading' ? (
           <div
             aria-hidden="true"
-            className="absolute inset-0 animate-pulse"
+            className="absolute inset-0 animate-pulse motion-reduce:animate-none"
             style={{
               background:
                 'linear-gradient(120deg, rgba(255,255,255,0.04), rgba(55,214,255,0.14), rgba(255,255,255,0.035))',
@@ -141,12 +164,24 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
         // backdrop or press Escape to close. No higher-resolution claim — it is the
         // filed asset, simply given room to be read.
         <div
+          ref={dialogRef}
           role="dialog"
           aria-modal="true"
           aria-label={`${photo.alt} — full size`}
           onClick={() => setZoomed(false)}
           className="grip-examine fixed inset-0 z-[120] flex items-center justify-center bg-black/92 p-4 sm:p-8"
         >
+          {/* Anchored to the viewport corner, a 44px target, so it never clips at
+              the edge of a phone screen the way a card-corner button did. */}
+          <button
+            type="button"
+            onClick={() => setZoomed(false)}
+            aria-label="Close the examine view"
+            autoFocus
+            className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-bone/30 bg-black/70 font-mono text-lg text-bone backdrop-blur-sm transition-colors hover:border-cyan hover:text-cyan sm:right-5 sm:top-5"
+          >
+            ×
+          </button>
           <div className="relative max-h-full w-auto max-w-5xl" onClick={(e) => e.stopPropagation()}>
             <img
               src={photo.src}
@@ -159,15 +194,6 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
                 {credit}
               </span>
             </p>
-            <button
-              type="button"
-              onClick={() => setZoomed(false)}
-              aria-label="Close the examine view"
-              autoFocus
-              className="absolute -right-2 -top-2 flex h-9 w-9 items-center justify-center rounded-full border border-bone/30 bg-black/70 font-mono text-lg text-bone backdrop-blur-sm transition-colors hover:border-cyan hover:text-cyan sm:-right-4 sm:-top-4"
-            >
-              ×
-            </button>
           </div>
         </div>
       ) : null}
@@ -485,7 +511,9 @@ export function GripLibrary() {
             {grip.clip || grip.photos.length > 0 ? (
               <div className="mt-7 grid grid-cols-1 gap-5 lg:grid-cols-12">
                 {grip.clip ? (
-                  <div className="lg:col-span-5">
+                  // Below lg the grid is one column; cap and center the 9:16 clip so a
+                  // tablet/large-phone doesn't get a full-width, very-tall portrait video.
+                  <div className="mx-auto w-full max-w-[360px] lg:col-span-5 lg:mx-0 lg:max-w-none">
                     <GripMotion clip={grip.clip} large />
                   </div>
                 ) : null}
