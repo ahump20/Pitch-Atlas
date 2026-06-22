@@ -12,8 +12,8 @@ import { asOfDate } from '../../lib/format'
 */
 
 /* The honesty contract: the lines the product, the data model, and the
-   community floor all hold. Editorial copy, kept byte-identical to the home
-   rule sheet (see src/pages/AtlasHome.tsx NEVER/ALWAYS). */
+   community floor all hold. Editorial copy — this is the home's canonical rule
+   sheet now; the old editorial home that mirrored it was retired on promotion. */
 const NEVER = [
   'Fake community posts',
   'Fake adoption counts',
