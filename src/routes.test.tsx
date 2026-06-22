@@ -39,43 +39,45 @@ const FAILURE_SIGNATURES = ['undefined', 'NaN', '[object Object]', 'Math.random'
 const COLD_LOAD = { timeout: 15000 }
 
 describe('Atlas home', () => {
-  it('publishes a route canonical and non-stale site schema', async () => {
+  it('publishes a route canonical and the promoted home schema graph', async () => {
     await expectCanonical('/', 'https://pitch-atlas.com/')
 
     const schema = [...document.head.querySelectorAll('script[type="application/ld+json"]')]
       .map((script) => script.textContent ?? '')
       .join('\n')
     expect(schema).toContain('SearchAction')
+    // the home CreativeWork node rode along when the Refractor Case took '/'
+    expect(schema).toContain('CreativeWork')
     expect(schema).not.toContain('five pitches')
     expect(schema).not.toContain('2026-06-04')
   })
 
-  it('leads with the hero and makes the Pitch Index the front door', async () => {
+  it('leads with the Refractor Case hero and files the whole set', async () => {
     renderRoute('/')
-    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Pitch Atlas')
-    // the binder carries the whole filed set: every specimen name is in the DOM
-    expect(screen.getByText(/Every accepted pitch by family/)).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
+      /struck as a specimen/i,
+    )
+    // the chrome wall carries the whole filed set: every specimen name is in the DOM
     for (const p of PITCHES) {
       expect(screen.getAllByText(p.display.shortName).length).toBeGreaterThan(0)
     }
-    // the hero card renders its honest DOM fallback, never a blank stage
-    expect(screen.getAllByLabelText(/Four-seam specimen/).length).toBeGreaterThan(0)
-    // the two side wings still have a door
+    // the seam bridge renders the honest four-seam schematic, never a blank stage
+    expect(screen.getAllByLabelText(/four-seam specimen/i).length).toBeGreaterThan(0)
+    // the onward doors open the two side wings
     expect(screen.getAllByText('The Craftsmen').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Lost Pitches of the Negro Leagues').length).toBeGreaterThan(0)
   })
 
-  it('keeps the card-table surfaces honest: thesis, checklist, packs, rule sheet', async () => {
+  it('opens onward into the tools, the field manual, and the rule sheet', async () => {
     renderRoute('/')
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
-    // the grading-scale card back keeps the thesis
-    expect(screen.getByText(/A grip disappears faster than a box score/)).toBeInTheDocument()
-    // the set checklist is the field manual's one surface
-    expect(screen.getByText(/complete set checklist/i)).toBeInTheDocument()
-    // all four wax packs are sealed and labeled
-    for (const label of ['Shape Sandbox', 'The Shape Map', 'Compare two pitches', 'Compare two grips']) {
+    // all four tools, named to match their destination pages and the masthead
+    for (const label of ['Shape Lab', 'The Shape Map', 'Compare pitches', 'Compare grips']) {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0)
     }
-    // the rule sheet keeps its real items through any future redesign
+    // the field manual leads into the ten sourced chapters
+    expect(screen.getByRole('heading', { name: 'The field manual.' })).toBeInTheDocument()
+    // the rule sheet keeps its real honesty items through the redesign
     expect(screen.getByText('Hardcoded freshness')).toBeInTheDocument()
     expect(screen.getByText('A source on every claim')).toBeInTheDocument()
   })

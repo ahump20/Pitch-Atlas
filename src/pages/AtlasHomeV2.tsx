@@ -13,28 +13,27 @@ import { ProvenanceStrip } from '../components/v2/ProvenanceStrip'
 import { CloseCta } from '../components/v2/CloseCta'
 
 /*
-  v2 · The Refractor Case. A bolder staging of the atlas on matte Topps-Now
+  The Refractor Case — the home. A bolder staging of the atlas on matte Topps-Now
   black: the cinematic specimen pull, the seam flattening into its 2D twin, the
-  filed set as a chrome wall that flips to sourced backs, the grip-and-shape
-  read, and the provenance model as a feature. A prototype route, additive and
-  regression-free; the live home at / is untouched. Every visible reading is the
-  real PITCHES data wearing its real source.
+  filed set as a chrome wall that flips to sourced backs, the grip-and-shape read,
+  the other wings, the tools, the field manual, and the provenance model as a
+  feature. Promoted from /v2 to / once it carried the whole atlas; the old
+  editorial home was retired in the same change. Every visible reading is the real
+  PITCHES data wearing its real source.
 */
 export function AtlasHomeV2() {
   const featured = PITCHES[0]
 
   useSeoMeta({
-    // A prototype route: prerendered and shareable by direct link, but kept out
-    // of the index (and the sitemap) until promoted, so it never competes with
-    // the live home for duplicate content.
-    robots: 'noindex, follow',
+    // The published home: indexable, canonical at / (RootLayout sets the canonical
+    // link from the pathname), and the only homepage now the editorial home is gone.
     title: `${SITE.siteName}: The Living Field Manual for Pitching Grips`,
     description: truncateForMeta(
       'Every pitch struck as a chrome specimen on matte stock — grip first, the shape in plain words, a source on every claim. Sourced, not corrected.',
     ),
     ogTitle: `${SITE.siteName}: ${SITE.brandLine}`,
     ogDescription: 'Every pitch struck in chrome and sourced — grip first, a source on every line.',
-    ogUrl: canonicalUrl('/v2'),
+    ogUrl: canonicalUrl('/'),
     ...ogImageMeta('home', `${SITE.siteName}: every pitch, gripped and sourced`),
   })
 
