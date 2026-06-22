@@ -40,7 +40,9 @@ function RouteHead() {
     script: [
       {
         type: 'application/ld+json',
-        innerHTML: JSON.stringify(siteJsonLd(pathname === '/')),
+        // The home CreativeWork node ships on '/' and on the '/v2' redesign so the
+        // prototype carries the full homepage graph and is schema-ready to promote.
+        innerHTML: JSON.stringify(siteJsonLd(pathname === '/' || pathname === '/v2')),
         // Stable key so unhead REPLACES this node on client navigation instead of
         // appending a second site-level JSON-LD script on every route change.
         key: 'site-jsonld',
