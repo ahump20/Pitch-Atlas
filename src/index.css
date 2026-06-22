@@ -2190,7 +2190,10 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 
   .v2-flip-btn {
     position: absolute; bottom: 8px; right: 8px; z-index: 6;
-    display: inline-flex; align-items: center; gap: 5px; padding: 4px 9px; border-radius: 999px;
+    /* ≥44px tap target (WCAG 2.5.5): the visible pill stays compact via mono micro-caps,
+       but min-width/height + centered content give a full-size, finger-safe hit area. */
+    display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+    min-width: 44px; min-height: 44px; padding: 7px 12px; border-radius: 999px;
     font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
     color: var(--color-bone); background: color-mix(in srgb, #0a0908 64%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-bone) 22%, transparent);
