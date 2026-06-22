@@ -20,6 +20,16 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
       className="v2-stage v2-bridge relative overflow-hidden border-t border-bone/10"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
+      {/* the descent: the hero's "watch it flatten" gesture lands here as a
+          hairline dropping into a single open seam-point — the specimen settling
+          into its 2D twin. Decorative; the section reads complete without it. */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 flex -translate-x-1/2 flex-col items-center"
+      >
+        <span className="h-10 w-px bg-gradient-to-b from-transparent via-bone/15 to-bone/30" />
+        <span className="-mt-px h-1.5 w-1.5 rotate-45 rounded-[1px] border border-bone/30" />
+      </span>
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 items-center gap-12 px-5 py-20 md:grid-cols-2 md:gap-16 md:px-8 md:py-28">
         {/* the schematic, blooming its foil as it enters */}
         <div className="order-2 flex justify-center md:order-1">

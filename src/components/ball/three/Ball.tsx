@@ -284,7 +284,9 @@ export function Ball({
   // channel baked into the maps above, so it reads proud of a groove, not glued
   // onto a flat surface.
   const tubeGeometry = useMemo(
-    () => new THREE.TubeGeometry(seamCurve, 500, 0.0135, 14, true),
+    // 18 radial segments (up from 14): a rounder cross-section so the raised
+    // waxed thread keeps its bead under the raking key light at large scale.
+    () => new THREE.TubeGeometry(seamCurve, 500, 0.0135, 18, true),
     [seamCurve],
   )
   // flatter cross-section than a round bead: a wide, low waxed stitch. The

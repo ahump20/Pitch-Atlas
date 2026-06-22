@@ -48,8 +48,8 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             className="v2-enter mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base"
             style={{ '--i': 2 } as React.CSSProperties}
           >
-            Hold the grip, read the shape in plain words, check the source on every line. The chrome
-            is decoration; the reading is not.
+            Hold the grip, read the shape in plain words, check the source on every line — sourced, not
+            corrected. The chrome is decoration; the reading is not.
           </p>
 
           <div
