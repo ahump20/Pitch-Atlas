@@ -88,7 +88,7 @@ export function BrandMark({
       </svg>
       {wordmark ? (
         <span className="rfx-athletic rfx-skew leading-none" style={{ fontSize: WORDMARK_SIZE[size] }}>
-          Pitch <span className="text-seam">Atlas</span>
+          Pitch <span className="rfx-holo">Atlas</span>
         </span>
       ) : null}
     </span>

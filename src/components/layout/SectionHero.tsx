@@ -33,7 +33,7 @@ export function SectionHero({
   children?: ReactNode
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-leather/25 bg-paper-2">
+    <section className="relative overflow-hidden border-b border-bone/12">
       <div className="absolute inset-0 opacity-[0.5]" aria-hidden="true">
         <div
           className="h-full w-full"

@@ -24,8 +24,7 @@ const LINKS: { label: string; to: string }[] = [
 export function SiteFooter() {
   return (
     <footer
-      className="scene-coal border-t border-bone/10 text-bone"
-      style={{ background: 'linear-gradient(180deg, #2A1B0E, #1C1208)' }}
+      className="relative border-t border-cyan/12 text-bone"
     >
       {/* closing the manual: the back cover's last beat before the binding.
           One line, one way back to the front door. */}

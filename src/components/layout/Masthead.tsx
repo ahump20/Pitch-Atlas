@@ -113,8 +113,8 @@ export function Masthead() {
               key={n.to}
               to={n.to}
               className={({ isActive }) =>
-                `link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-ink ${
-                  isActive ? 'text-seam' : 'text-ink-2'
+                `link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                  isActive ? 'text-cyan' : 'text-ink-2'
                 }`
               }
             >
@@ -133,8 +133,8 @@ export function Masthead() {
                   pathname,
                 }))
               }
-              className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-ink ${
-                toolsActive ? 'text-seam' : 'text-ink-2'
+              className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                toolsActive ? 'text-cyan' : 'text-ink-2'
               }`}
             >
               Tools
@@ -160,8 +160,8 @@ export function Masthead() {
                         to={t.to}
                         onClick={() => setToolsMenu({ open: false, pathname })}
                         className={({ isActive }) =>
-                          `block rounded-sm px-3 py-2.5 transition-colors hover:bg-ink/[0.04] ${
-                            isActive ? 'text-seam' : 'text-ink-2'
+                          `block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
+                            isActive ? 'text-cyan' : 'text-ink-2'
                           }`
                         }
                       >
@@ -213,8 +213,8 @@ export function Masthead() {
                   to={n.to}
                   onClick={() => setMenu({ open: false, pathname })}
                   className={({ isActive }) =>
-                    `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-ink ${
-                      isActive ? 'text-seam' : 'text-ink-2'
+                    `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                      isActive ? 'text-cyan' : 'text-ink-2'
                     }`
                   }
                 >
@@ -232,8 +232,8 @@ export function Masthead() {
                       to={t.to}
                       onClick={() => setMenu({ open: false, pathname })}
                       className={({ isActive }) =>
-                        `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-ink ${
-                          isActive ? 'text-seam' : 'text-ink-2'
+                        `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                          isActive ? 'text-cyan' : 'text-ink-2'
                         }`
                       }
                     >
