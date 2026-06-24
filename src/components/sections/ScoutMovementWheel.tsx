@@ -55,7 +55,9 @@ function pointLabel(motion: PitchMotion): string {
 export function ScoutMovementWheel({ motion, sourceTier = 'Unverified', className }: ScoutMovementWheelProps) {
   const empty = !motion
   const indeterminate = Boolean(motion?.indeterminateBreak)
-  const point = motion && !indeterminate ? pointFor(motion) : null
+  const plottedMotion = motion && !indeterminate ? motion : null
+  const point = plottedMotion ? pointFor(plottedMotion) : null
+  const pointCopy = plottedMotion ? pointLabel(plottedMotion) : ''
   const classes = ['scout-wheel', empty ? 'is-empty' : '', indeterminate ? 'is-indeterminate' : '', className ?? '']
     .filter(Boolean)
     .join(' ')
@@ -83,7 +85,7 @@ export function ScoutMovementWheel({ motion, sourceTier = 'Unverified', classNam
             <path className="scout-wheel__ray" d={`M50 50 L${point.x} ${point.y}`} />
             <circle className="scout-wheel__dot" cx={point.x} cy={point.y} r="5.5" />
             <text className="scout-wheel__label" x={point.x} y={point.y > 58 ? point.y - 9 : point.y + 13} textAnchor="middle">
-              {pointLabel(motion)}
+              {pointCopy}
             </text>
           </>
         ) : (
