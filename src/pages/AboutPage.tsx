@@ -200,29 +200,39 @@ export function AboutPage() {
           </div>
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              Austin remembers meeting Roger Clemens during Parents&apos; Weekend at Rio on West 6th in
-              Austin. He told Clemens he had modeled his game after Clemens and Nolan Ryan, from
-              mechanics to mentality. Clemens asked the difference. Austin&apos;s answer was simple:
-              Ryan was a thrower. Clemens was a pitcher.
+              Behind the Art of Pitching lies a crossroad of subtle nuance, obsessive perfectionism,
+              a possessed psychosis of self-belief, and, most crucially, the mastery of the mind.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              They bumped fists. Clemens bought Austin and his mother a round. The point was not
-              celebrity proximity or a ranking of two great arms. It was the line the atlas still
-              works: force is only part of pitch craft. The grip, the approach, and the mind under
-              pressure have to be preserved too.
+              Upon briefly meeting Roger Clemens at a W. 6th Street bar named Rio in Austin, TX, I
+              jumped at the chance I wasn’t sure I’d have again. Tossing my anxiety aside, I said,
+              “Man, I modeled my game after you and Nolan — from mechanics to mentality.”
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              The first grips filed here are photographs of the builder&apos;s own hand. Austin H.
-              worked a four-pitch mix in games: four-seam, two-seam, a three-finger changeup, and a
-              12-6 curve, with a splitter that rode along for certain spots. There is no circle
-              change in the set. His hands were too small to form one, so the file says that
-              instead of faking a textbook page.
+              Roger responded without hesitation, “What’s the difference between us?” — nearly as if
+              probing my knowledge. I jabbed back, “The Express… he was a Thrower. The Rocket… you’re
+              a Pitcher.”
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              That account seeded the source model. It is filed as a pitcher&apos;s own words, not
-              tracked data, because that is what it is. It surfaced the gap the atlas now works:
-              where the pads sat, which seam the fingers rode, why one pitch stayed in the pocket
-              and another never fit.
+              We bumped fists. He bought my mother and me a round. We both went on enjoying Parents’
+              Weekend.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
+              Pitch Atlas is built on a simple idea: the collective progression, careful
+              documentation, and perpetual preservation of how pitchers grip and approach the
+              artistry of the game — keeping the oral techniques and traditions of our forefathers
+              free and accessible for the generations to come.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
+              The first grips filed here are photographs of my own hand. I worked a four-pitch mix in
+              games: four-seam, two-seam, a three-finger changeup, and a 12-6 curve, with a splitter
+              that rode along for certain spots. There’s no circle change in the set — my hands were
+              too small to form one, so the file says that instead of faking a textbook page.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
+              I file it as a pitcher’s own words, not tracked data, because that is what it is. It
+              surfaced the gap the atlas now works: where the pads sat, which seam the fingers rode,
+              why one pitch stayed in the pocket and another never fit.
             </p>
             <p className="mt-6">
               <Link

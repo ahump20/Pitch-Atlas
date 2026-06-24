@@ -6,7 +6,7 @@ The knowledge of how a pitch works is scattered and easy to lose. The best foota
 
 ## Mission
 
-Preserve the oral craft of pitching before it disappears: thumb pressure, seam feel, mental approach, variants that fit real hands, and the source behind each claim. Pitch Atlas is not here to crown one correct grip. It is here to keep the record honest enough that the next pitcher has a sourced place to start.
+Pitch Atlas is built on a simple idea: the collective progression, careful documentation, and perpetual preservation of how pitchers grip and approach the artistry of the game — keeping the oral techniques and traditions of our forefathers free and accessible for the generations to come. Thumb pressure, seam feel, mental approach, variants that fit real hands, and the source behind each claim. It is not here to crown one correct grip. It is here to keep the record honest enough that the next pitcher has a sourced place to start.
 
 ## The model: sourced, not corrected
 

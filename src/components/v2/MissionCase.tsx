@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 const VALUES = [
   {
     label: 'The grip is the artifact',
@@ -29,14 +31,15 @@ export function MissionCase() {
             Preserve the art before it disappears.
           </h2>
           <p className="mt-6 max-w-[64ch] text-[16px] leading-relaxed text-bone-2 md:text-[17px]">
-            Behind the art of pitching sits a harder intersection: feel, repeatable craft,
-            unreasonable self-belief, and the mind under pressure. Pitch Atlas makes that tradition
-            public without turning it into fake certainty.
+            Behind the Art of Pitching lies a crossroad of subtle nuance, obsessive perfectionism, a
+            possessed psychosis of self-belief, and, most crucially, the mastery of the mind.
           </p>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-bone-2 md:text-[17px]">
-            It is Austin Humphrey&apos;s flagship baseball archive: a grip-first field manual where
-            pitchers, coaches, and curious builders can see how a pitch is held, how it is
-            described, and where the claim came from.
+            Pitch Atlas is built on a simple idea: the collective progression, careful documentation,
+            and perpetual preservation of how pitchers grip and approach the artistry of the game —
+            keeping the oral techniques and traditions of our forefathers free and accessible for the
+            generations to come. It is Austin Humphrey&apos;s flagship archive of that craft, made
+            public without turning it into fake certainty.
           </p>
 
           <div className="mt-9 grid gap-5 sm:grid-cols-3">
@@ -57,17 +60,25 @@ export function MissionCase() {
               Founding note: personal memory, not endorsement
             </p>
             <p className="display mt-5 text-[clamp(25px,3.1vw,38px)] italic leading-snug text-bone">
-              Ryan was a thrower. Clemens was a pitcher.
+              The Express… he was a Thrower. The Rocket… you’re a Pitcher.
             </p>
             <p className="mt-5 text-[14.5px] leading-relaxed text-bone-2">
-              At a Parents&apos; Weekend night at Rio on West 6th in Austin, Austin remembers telling
-              Roger Clemens he had modeled his game after Clemens and Nolan Ryan. Clemens asked the
-              difference. Austin answered with the line above.
+              At Rio, a bar on West 6th during Parents’ Weekend, I told Roger Clemens I’d modeled my
+              game after him and Nolan Ryan — mechanics to mentality. He asked the difference. I gave
+              him the line above.
             </p>
             <p className="mt-3 text-[14.5px] leading-relaxed text-bone-2">
-              They bumped fists. Clemens bought Austin and his mother a round. The weekend moved
-              on, but the distinction stuck: force is only one ingredient. Grip, approach, and
-              command of the moment have to survive too.
+              We bumped fists. He bought my mother and me a round. The weekend moved on; the
+              distinction stuck — force is only one ingredient. The grip, the approach, and command
+              of the moment have to survive too.
+            </p>
+            <p className="mt-4">
+              <Link
+                to="/about"
+                className="font-mono text-[10px] uppercase tracking-[0.14em] text-seam transition-colors hover:text-bone"
+              >
+                Read the full story <span aria-hidden="true">→</span>
+              </Link>
             </p>
             <ol className="mt-6 space-y-3">
               {GOALS.map((goal, i) => (
