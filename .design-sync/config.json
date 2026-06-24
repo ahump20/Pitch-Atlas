@@ -1,0 +1,16 @@
+{
+  "pkg": "pitch-atlas",
+  "globalName": "PitchAtlas",
+  "projectId": "aa4ea331-5881-4e4c-a982-988929d543ac",
+  "shape": "package",
+  "tsconfig": "tsconfig.json",
+  "srcDir": "src/components/ui",
+  "cssEntry": "dist/assets/index-Dtuk9Hgh.css",
+  "extraFonts": [
+    "node_modules/@fontsource/anton/latin-400.css",
+    "node_modules/@fontsource/martian-mono/latin-400.css",
+    "node_modules/@fontsource/hanken-grotesk/latin-400.css",
+    "node_modules/@fontsource/newsreader/latin-400.css"
+  ],
+  "readmeHeader": ".design-sync/conventions.md"
+}
