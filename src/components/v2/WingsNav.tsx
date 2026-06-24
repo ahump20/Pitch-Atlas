@@ -47,7 +47,7 @@ export function WingsNav() {
             className="v2-mount group block rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-7 transition-colors hover:border-bone/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
             style={{ '--i': 0 } as React.CSSProperties}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-seam">The hall · door one</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan">The hall · door one</p>
             <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">The Craftsmen</p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
               The arms that owned a pitch — and the one pitch that is a legend, not a person. Every
@@ -99,7 +99,7 @@ export function WingsNav() {
             >
               <span className="rfx-athletic text-[clamp(18px,2.4vw,22px)] text-bone">{r.label}</span>
               <span className="mt-1 text-[13px] leading-snug text-bone-2">{r.note}</span>
-              <span className="mt-3 font-mono text-[9.5px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-seam">
+              <span className="mt-3 font-mono text-[9.5px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-cyan">
                 Open <span aria-hidden="true">→</span>
               </span>
             </Link>

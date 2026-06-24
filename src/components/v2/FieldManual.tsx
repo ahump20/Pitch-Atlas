@@ -38,7 +38,7 @@ export function FieldManual() {
                 to={`/learn/${w.slug}`}
                 className="group flex items-baseline gap-3 py-3.5 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
               >
-                <span className="font-mono text-[11px] text-seam" aria-hidden="true">■</span>
+                <span className="font-mono text-[11px] text-cyan" aria-hidden="true">■</span>
                 <span className="font-mono text-[11px] tabular-nums text-bone-2/70">
                   {String(i + 1).padStart(2, '0')}
                 </span>
@@ -57,7 +57,7 @@ export function FieldManual() {
 
         <Link
           to="/learn"
-          className="mt-8 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-seam"
+          className="mt-8 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-cyan"
         >
           Open the field manual <span aria-hidden="true">→</span>
         </Link>

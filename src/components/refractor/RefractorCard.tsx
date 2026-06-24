@@ -172,8 +172,10 @@ export function RefractorCard({
           </span>
         </div>
 
-        {/* vnum + crumb live OUTSIDE the window so its arched overflow clip can't
-            slice them — they share the window's box via the unclipped wrap. */}
+        {/* vnum badge + family seal live OUTSIDE the window so its arched overflow
+            clip can't slice them — they share the window's box via the unclipped wrap.
+            The seal is the SLUGGERS center coin: the kind word stays readable for
+            screen readers; the glyph coin is decorative. */}
         <div className="rfx-windowwrap">
           <div className="rfx-window">
             <div className="rfx-halftone" aria-hidden="true" />
@@ -187,9 +189,11 @@ export function RefractorCard({
           </div>
           {vnum ? <span className="rfx-vnum">{vnum}</span> : null}
           {crumb && CrumbIcon ? (
-            <span className="rfx-crumb">
-              <CrumbIcon />
-              {crumb.label}
+            <span className="rfx-seal">
+              <span className="rfx-seal-coin" aria-hidden="true">
+                <CrumbIcon />
+              </span>
+              <span className="rfx-seal-label">{crumb.label}</span>
             </span>
           ) : null}
         </div>
