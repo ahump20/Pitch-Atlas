@@ -86,12 +86,12 @@
 
 @layer base {
   :root {
-    color-scheme: light;
+    color-scheme: dark;
     --tracking-label: 0.18em;
   }
 
   html {
-    background-color: var(--color-paper);
+    background-color: #16120D;
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
     @apply font-sans;
@@ -99,8 +99,8 @@
 
   body {
     margin: 0;
-    background-color: var(--color-paper);
-    color: var(--color-ink);
+    background-color: #16120D;
+    color: var(--color-bone);
     font-family: var(--font-prose);
     font-feature-settings: "kern" 1, "liga" 1;
     -webkit-font-smoothing: antialiased;
@@ -470,6 +470,15 @@
     position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
     background-image: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 64px);
     mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
+  }
+  .rfx-dotgrid {
+    opacity: .22;
+    background-image:
+      radial-gradient(circle at center, color-mix(in srgb, var(--color-cyan) 34%, transparent) 0 1px, transparent 1.5px),
+      radial-gradient(circle at center, rgba(246,241,230,.18) 0 1px, transparent 1.5px);
+    background-size: 38px 38px, 152px 152px;
+    background-position: 0 0, 19px 19px;
+    mask-image: radial-gradient(120% 80% at 50% 14%, #000 24%, transparent 88%);
   }
   .scene-coal {
     position: relative;
@@ -1169,58 +1178,57 @@
 }
 
 /* ============================================================
-   THE WARM FIELD  ·  feat/b2b3-collectible
-   The sitewide cream→void remap is gone. The page is the Heritage cream field
-   again — aged cream, scorebook paper, leather, seam red — and dark lives only
-   inside .scene-coal (defined above), which carries the old remap SCOPED. This
-   unlayered :root holds the light-field control tokens and the shadcn semantic
-   bridge so the source-owned primitives print in the atlas palette. */
+   THE VOID FIELD  ·  sitewide refractor promotion
+   The whole app now lives in .scene-coal from RootLayout. These root tokens are
+   the dark semantic bridge for shadcn/native controls and for pre-hydration
+   paint; the scoped .scene-coal remap above keeps legacy Heritage utilities
+   readable until every last page is explicitly rfx-native. */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
   /* page-chrome voices on the cream field */
-  --kicker: #7A4A2E;
-  --ctl-bg: #FFFDF6;
-  --ctl-text: #14161B;
-  --ctl-placeholder: #5C6473;
-  --ctl-border: rgba(122, 74, 46, 0.45);
-  --ctl-accent: #C8102E;
-  --ctl-on-accent: #FFFFFF;
+  --kicker: #37D6FF;
+  --ctl-bg: #1D1710;
+  --ctl-text: #F6F1E6;
+  --ctl-placeholder: #8A8576;
+  --ctl-border: color-mix(in srgb, #37D6FF 40%, transparent);
+  --ctl-accent: #37D6FF;
+  --ctl-on-accent: #06121B;
 
   /* shadcn semantic bridge: source-owned primitives, Pitch Atlas palette.
      Primary/ring follow the seam red. */
-  --background: #F4EEE0;
-  --foreground: #14161B;
-  --card: #EAE2D2;
-  --card-foreground: #14161B;
-  --popover: #FFFDF6;
-  --popover-foreground: #14161B;
-  --primary: #C8102E;
-  --primary-foreground: #FFFFFF;
-  --secondary: #EAE2D2;
-  --secondary-foreground: #14161B;
-  --muted: #EAE2D2;
-  --muted-foreground: #3F4654;
-  --accent: #EAE2D2;
-  --accent-foreground: #14161B;
-  --destructive: #C8102E;
-  --border: rgba(20, 22, 27, 0.14);
-  --input: rgba(20, 22, 27, 0.18);
-  --ring: #C8102E;
-  --chart-1: #C8102E;
-  --chart-2: #2E7D55;
-  --chart-3: #B07A1E;
-  --chart-4: #0C2340;
-  --chart-5: #7A4A2E;
+  --background: #16120D;
+  --foreground: #F6F1E6;
+  --card: #221B12;
+  --card-foreground: #F6F1E6;
+  --popover: #221B12;
+  --popover-foreground: #F6F1E6;
+  --primary: #37D6FF;
+  --primary-foreground: #06121B;
+  --secondary: #2B2318;
+  --secondary-foreground: #F6F1E6;
+  --muted: #2B2318;
+  --muted-foreground: #C9C2B0;
+  --accent: #221B12;
+  --accent-foreground: #F6F1E6;
+  --destructive: #FF2D44;
+  --border: rgba(246, 241, 230, 0.12);
+  --input: rgba(246, 241, 230, 0.14);
+  --ring: #37D6FF;
+  --chart-1: #37D6FF;
+  --chart-2: #34E27E;
+  --chart-3: #FFC23C;
+  --chart-4: #8A6BFF;
+  --chart-5: #FF2D44;
   --radius: 0.625rem;
-  --sidebar: #EAE2D2;
-  --sidebar-foreground: #14161B;
-  --sidebar-primary: #C8102E;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F4EEE0;
-  --sidebar-accent-foreground: #14161B;
-  --sidebar-border: rgba(20, 22, 27, 0.14);
-  --sidebar-ring: #C8102E;
+  --sidebar: #221B12;
+  --sidebar-foreground: #F6F1E6;
+  --sidebar-primary: #37D6FF;
+  --sidebar-primary-foreground: #06121B;
+  --sidebar-accent: #2B2318;
+  --sidebar-accent-foreground: #F6F1E6;
+  --sidebar-border: rgba(246, 241, 230, 0.12);
+  --sidebar-ring: #37D6FF;
 }
 
 /* native range + check controls pick up the scene accent */
