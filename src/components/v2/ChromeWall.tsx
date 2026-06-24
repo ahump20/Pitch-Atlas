@@ -118,7 +118,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Shape</span>
-                    <span className="rfx-scout-v">{shape.value}</span>
+                    <span className="rfx-scout-v rfx-scout-v--clip">{shape.value}</span>
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Grip</span>
