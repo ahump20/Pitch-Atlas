@@ -7,12 +7,10 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
-  Heritage Athletic.
-  Near-black is the field and the breathing room. Two hard-contrast accents do
-  the talking: a Battle/Cardinal red and an Oilers-Titans powder blue. Navy and
-  cream are the prestige and the warmth - navy-on-red is an old-school stamp,
-  never a text pairing. A Grizzlies-throwback teal is a rare jolt. The only
-  warm object on the page is the real leather ball: cream cover, red seams.
+  Heritage Athletic tokens (now dark-defaulted).
+  The void is the field. Two hard-contrast accents do the talking:
+  a neon cyan glow and a seam red. Navy and bone are prestige.
+  Cream lives only in .field-cream and hardcoded cream objects.
 */
 @theme {
   /* light surfaces — the cream pages. Warm but de-mudded; rhymes with the ball. */
@@ -21,7 +19,7 @@
 
   /* dark surfaces — the dominant near-black field. Cool, not brown. Gives the
      red, powder, and cream room to breathe. */
-  --color-stage: #16120D;       /* warm near-black chamber: the white ball glows */
+  --color-stage: #070509;       /* cool near-black void: the default page field */
   --color-press: #221E18;       /* raised warm charcoal: cards on the table */
 
   /* ink — text on cream surfaces. Cool near-black, matches the field. */
@@ -91,7 +89,7 @@
   }
 
   html {
-    background-color: #16120D;
+    background-color: var(--color-void);
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
     @apply font-sans;
@@ -99,7 +97,7 @@
 
   body {
     margin: 0;
-    background-color: #16120D;
+    background-color: var(--color-void);
     color: var(--color-bone);
     font-family: var(--font-prose);
     font-feature-settings: "kern" 1, "liga" 1;
@@ -111,7 +109,7 @@
 
   ::selection {
     background-color: color-mix(in srgb, var(--color-seam) 28%, transparent);
-    color: var(--color-ink);
+    color: var(--color-bone);
   }
 
   :where(a, button, [tabindex], summary, input, [role="button"]):focus-visible {
@@ -122,14 +120,14 @@
 
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--color-ink-3) var(--color-paper-2);
+    scrollbar-color: var(--color-ink-3) var(--color-void);
     @apply border-border outline-ring/50;
   }
   *::-webkit-scrollbar { width: 11px; height: 11px; }
-  *::-webkit-scrollbar-track { background: var(--color-paper-2); }
+  *::-webkit-scrollbar-track { background: var(--color-void); }
   *::-webkit-scrollbar-thumb {
     background: var(--color-ink-3);
-    border: 3px solid var(--color-paper-2);
+    border: 3px solid var(--color-void);
   }
 }
 
@@ -201,7 +199,7 @@
     z-index: 70;
     pointer-events: none;
     opacity: 0.035;
-    mix-blend-mode: multiply;
+    mix-blend-mode: screen;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
   @media (prefers-reduced-motion: reduce) {
@@ -325,17 +323,19 @@
 .react-tweet-theme {
   --tweet-container-margin: 0;
   --tweet-font-family: var(--font-prose);
-  --tweet-bg-color: var(--color-paper);
-  --tweet-bg-color-hover: var(--color-paper);
-  --tweet-color-blue-secondary: var(--color-navy);
-  --tweet-color-blue-secondary-hover: color-mix(in srgb, var(--color-navy) 8%, transparent);
-  --tweet-font-color: var(--color-ink);
-  --tweet-font-color-secondary: var(--color-ink-2);
-  --tweet-border: 1px solid var(--color-navy-line);
-  --tweet-color-red-primary: var(--color-seam);
-  --tweet-color-green-primary: var(--color-ok);
-  --tweet-twitter-icon-color: var(--color-navy);
-  --tweet-verified-blue-color: var(--color-powder-deep);
+  /* literal cream: tweets are cited-source cards that read cream-on-dark.
+     Do not resolve to :root tokens (those are dark now). */
+  --tweet-bg-color: #F4EEE0;
+  --tweet-bg-color-hover: #EAE2D2;
+  --tweet-color-blue-secondary: #0C2340;
+  --tweet-color-blue-secondary-hover: color-mix(in srgb, #0C2340 8%, transparent);
+  --tweet-font-color: #14161B;
+  --tweet-font-color-secondary: #3F4654;
+  --tweet-border: 1px solid color-mix(in srgb, #0C2340 22%, transparent);
+  --tweet-color-red-primary: #C8102E;
+  --tweet-color-green-primary: #2E7D55;
+  --tweet-twitter-icon-color: #0C2340;
+  --tweet-verified-blue-color: #4B92DB;
 }
 
 /*
@@ -401,9 +401,17 @@
 */
 @media print {
   html, body { background: #fff !important; color: #000 !important; }
-  .on-stage { background: #fff !important; color: #000 !important; }
+  :root { color-scheme: light !important;
+    --background: #fff !important; --foreground: #000 !important;
+    --card: #f5f5f5 !important; --card-foreground: #000 !important;
+    --border: rgba(0,0,0,.12) !important; --ring: #000 !important;
+    --color-paper: #fff !important; --color-paper-2: #f5f5f5 !important;
+    --color-ink: #000 !important; --color-ink-2: #333 !important; --color-ink-3: #666 !important;
+    --color-void: #fff !important; --color-bone: #000 !important; --color-bone-2: #333 !important;
+  }
+  .on-stage, .scene-coal { background: #fff !important; color: #000 !important; }
   .on-stage .text-bone, .on-stage .text-bone-2 { color: #000 !important; }
-  .grain-overlay, .stage-spot { display: none !important; }
+  .grain-overlay, .stage-spot, .field-rules { display: none !important; }
   canvas { display: none !important; }
 }
 
@@ -415,8 +423,8 @@
    Additive: Heritage tokens above stay live until each page is migrated.
    ============================================================ */
 @theme {
-  --color-void: #16120D;          /* warm black — the deep scene foil is viewed on.
-                                     Scoped to .scene-coal sections, never the page. */
+  --color-void: #070509;          /* cool black void — the deep scene foil is viewed on.
+                                     Now the global page field, not scoped. */
   --color-bone: #F6F1E6;          /* refined cream text (overrides the earlier #F2ECDD) */
   --color-bone-2: #C9C2B0;        /* warm secondary on the coal scene */
   --color-ok-bright: #34E27E;     /* official-data dot, tuned for the dark field */
@@ -459,92 +467,36 @@
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     animation: rfx-slide 7s linear infinite;
   }
-  /* ── the warm field + the coal scene (page level) ──
-     The page itself is aged-cream scorebook paper (the Heritage tokens carry it).
-     .field-rules is the fixed underlay: faint ink rules, the scorebook's columns.
-     Where dark genuinely belongs — showcase theaters, foil viewing — a section
-     opts into .scene-coal: warm black under one overhead light, with the old
-     sitewide cream→void remap now SCOPED inside it so both component languages
-     keep reading. There is no global dark remap anymore. */
+  /* ── the void field + the coal scene (page level) ──
+     The page itself is the deep void (#070509) with layered radial glows and a
+     faint dot-grid. The global :root remap makes every Heritage utility read
+     dark by default. .scene-coal adds its own backdrop where sections want a
+     distinct radial glow; .field-cream restores cream for genuinely-light
+     subtrees (embedded tweets, print). */
+  /* fixed dot-grid underlay: the prototype's faint column dots on the void */
   .field-rules {
     position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
-    background-image: repeating-linear-gradient(90deg, var(--color-ink) 0 1px, transparent 1px 64px);
-    mask-image: radial-gradient(120% 80% at 50% 16%,#000 30%,transparent 92%);
-  }
-  .rfx-dotgrid {
-    opacity: .22;
-    background-image:
-      radial-gradient(circle at center, color-mix(in srgb, var(--color-cyan) 34%, transparent) 0 1px, transparent 1.5px),
-      radial-gradient(circle at center, rgba(246,241,230,.18) 0 1px, transparent 1.5px);
-    background-size: 38px 38px, 152px 152px;
-    background-position: 0 0, 19px 19px;
-    mask-image: radial-gradient(120% 80% at 50% 14%, #000 24%, transparent 88%);
+    background-image: radial-gradient(circle, rgba(246,241,230,.45) 0 1px, transparent 1.4px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(130% 70% at 50% 10%,#000 26%,transparent 92%);
   }
   .scene-coal {
     position: relative;
     background:
-      radial-gradient(64% 50% at 50% -10%, #241B10 0%, transparent 62%),
+      radial-gradient(50% 40% at 50% -6%, #16121f 0%, transparent 60%),
+      radial-gradient(36% 36% at 8% 18%, rgba(55,214,255,.10), transparent 60%),
+      radial-gradient(36% 36% at 92% 14%, rgba(196,75,255,.09), transparent 60%),
       var(--color-void);
   }
   /* .on-stage (the Heritage dark chamber) shares the coal scene's token scope,
      so a chapter hero band re-tones its kickers, labels, and controls the same
      way a full coal page does. */
+  /* .scene-coal and .on-stage retain their backdrop gradient for pages/bands
+     that used the coal scene. Token remap is now global (in :root below), so
+     these selectors only provide the layered background. */
   .scene-coal, .on-stage {
     color-scheme: dark;
     color: var(--color-bone);
-
-    /* the scoped remap — the mapping the retired global remap used to apply,
-       re-toned for warm black. Heritage utilities (bg-paper, text-ink,
-       text-navy, .mono-label, .hairline, provenance badges) re-tone in place
-       INSIDE the scene only. */
-    --color-paper: #16120D;
-    --color-paper-2: #221B12;
-    --color-paper-3: #2B2318;
-    --color-cream: #16120D;
-    --color-panel: #221B12;
-    --color-ink: #F6F1E6;
-    --color-ink-2: #C9C2B0;
-    --color-ink-3: #969080;
-    --color-navy: #D8D1C0;
-    --color-navy-2: #EFE9DA;
-    --color-navy-line: rgba(216, 209, 192, 0.16);
-    --color-seam: #FF2D44;
-    --color-seam-deep: color-mix(in srgb, #FF2D44 78%, #2A0A10);
-    --color-ok: #34E27E;
-    --color-amber: #FFC23C;
-    --color-sand: #CDBA8E;
-    --color-powder: #7FC6FF;
-    --color-machined: rgba(216, 209, 192, 0.20);
-    --color-columbia: #5AA9E6;
-
-    /* page-chrome voices inside the scene */
-    --kicker: var(--color-cyan);
-    --ctl-bg: #1D1710;
-    --ctl-text: var(--color-bone);
-    --ctl-placeholder: #8A8576;
-    --ctl-border: color-mix(in srgb, var(--color-cyan) 40%, transparent);
-    --ctl-accent: var(--color-cyan);
-    --ctl-on-accent: #06121B;
-
-    /* shadcn semantic bridge, scene-scoped */
-    --background: #16120D;
-    --foreground: #F6F1E6;
-    --card: #221B12;
-    --card-foreground: #F6F1E6;
-    --popover: #221B12;
-    --popover-foreground: #F6F1E6;
-    --primary: #37D6FF;
-    --primary-foreground: #06121B;
-    --secondary: #2B2318;
-    --secondary-foreground: #F6F1E6;
-    --muted: #2B2318;
-    --muted-foreground: #C9C2B0;
-    --accent: #221B12;
-    --accent-foreground: #F6F1E6;
-    --destructive: #FF2D44;
-    --border: rgba(246, 241, 230, 0.12);
-    --input: rgba(246, 241, 230, 0.14);
-    --ring: #37D6FF;
   }
   /* bone pinstripes for inside a coal scene (the scene's own light raking) */
   .scene-rules {
@@ -873,7 +825,7 @@
     padding: 13px 22px; border-radius: 10px; cursor: pointer; overflow: hidden;
     background: linear-gradient(180deg, #221B12, #16120D);
     border: 1px solid color-mix(in srgb, #C8102E 55%, transparent);
-    box-shadow: 0 0 0 3px var(--color-paper, #F4EEE0), 0 0 0 4px color-mix(in srgb, #C8102E 32%, transparent),
+    box-shadow: 0 0 0 3px var(--color-bone, #F6F1E6), 0 0 0 4px color-mix(in srgb, #C8102E 32%, transparent),
       0 10px 24px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(246,241,230,.14);
     font-family: var(--font-athletic); font-size: 14px; letter-spacing: .06em;
     text-transform: uppercase; color: #F6F1E6; line-height: 1;
@@ -892,7 +844,7 @@
      the shadow tucks under so the press reads in the body, not just the label. */
   .btn-foil:active {
     transform: translateY(1px) scale(.985);
-    box-shadow: 0 0 0 3px var(--color-paper, #F4EEE0), 0 0 0 4px color-mix(in srgb, #C8102E 32%, transparent),
+    box-shadow: 0 0 0 3px var(--color-bone, #F6F1E6), 0 0 0 4px color-mix(in srgb, #C8102E 32%, transparent),
       0 3px 10px -8px rgba(0,0,0,.5), inset 0 2px 5px rgba(0,0,0,.35);
   }
   .btn-foil::after {
@@ -1178,38 +1130,62 @@
 }
 
 /* ============================================================
-   THE VOID FIELD  ·  sitewide refractor promotion
-   The whole app now lives in .scene-coal from RootLayout. These root tokens are
-   the dark semantic bridge for shadcn/native controls and for pre-hydration
-   paint; the scoped .scene-coal remap above keeps legacy Heritage utilities
-   readable until every last page is explicitly rfx-native. */
+   THE VOID FIELD  ·  redesign/refractor-dark-sitewide
+   Dark is now the global default. The void is the page field; cream lives
+   only inside .field-cream (for legacy surfaces that must stay cream) and
+   inside hardcoded cream objects (.rfx-content, .rfx-cardback, .pocket-slip,
+   .wax-pack). This :root carries the dark-field control tokens and the
+   shadcn semantic bridge. */
 :root {
   color-scheme: dark;
 
-  /* page-chrome voices on the cream field */
-  --kicker: #37D6FF;
-  --ctl-bg: #1D1710;
-  --ctl-text: #F6F1E6;
-  --ctl-placeholder: #8A8576;
-  --ctl-border: color-mix(in srgb, #37D6FF 40%, transparent);
-  --ctl-accent: #37D6FF;
+  /* scoped dark remap — Heritage utilities (bg-paper, text-ink, text-navy,
+     .mono-label, .hairline, provenance badges) resolve to dark-toned values
+     everywhere by default. */
+  --color-paper: #070509;
+  --color-paper-2: #0e0b15;
+  --color-paper-3: #16121f;
+  --color-cream: #070509;
+  --color-panel: #0e0b15;
+  --color-ink: #F6F1E6;
+  --color-ink-2: #C2C7D6;
+  --color-ink-3: #7C8294;
+  --color-navy: #D8D1C0;
+  --color-navy-2: #EFE9DA;
+  --color-navy-line: rgba(216, 209, 192, 0.16);
+  --color-seam: #FF2D44;
+  --color-seam-deep: color-mix(in srgb, #FF2D44 78%, #2A0A10);
+  --color-ok: #34E27E;
+  --color-amber: #FFC23C;
+  --color-sand: #CDBA8E;
+  --color-powder: #7FC6FF;
+  --color-machined: rgba(216, 209, 192, 0.20);
+  --color-columbia: #5AA9E6;
+
+  /* page-chrome voices on the void field */
+  --kicker: var(--color-cyan);
+  --ctl-bg: #0B0805;
+  --ctl-text: var(--color-bone);
+  --ctl-placeholder: #7C8294;
+  --ctl-border: color-mix(in srgb, var(--color-cyan) 40%, transparent);
+  --ctl-accent: var(--color-cyan);
   --ctl-on-accent: #06121B;
 
   /* shadcn semantic bridge: source-owned primitives, Pitch Atlas palette.
-     Primary/ring follow the seam red. */
-  --background: #16120D;
+     Primary/ring follow the cyan glow on the void field. */
+  --background: #070509;
   --foreground: #F6F1E6;
-  --card: #221B12;
+  --card: #0e0b15;
   --card-foreground: #F6F1E6;
-  --popover: #221B12;
+  --popover: #0e0b15;
   --popover-foreground: #F6F1E6;
   --primary: #37D6FF;
   --primary-foreground: #06121B;
-  --secondary: #2B2318;
+  --secondary: #16121f;
   --secondary-foreground: #F6F1E6;
-  --muted: #2B2318;
-  --muted-foreground: #C9C2B0;
-  --accent: #221B12;
+  --muted: #16121f;
+  --muted-foreground: #C2C7D6;
+  --accent: #0e0b15;
   --accent-foreground: #F6F1E6;
   --destructive: #FF2D44;
   --border: rgba(246, 241, 230, 0.12);
@@ -1221,14 +1197,63 @@
   --chart-4: #8A6BFF;
   --chart-5: #FF2D44;
   --radius: 0.625rem;
-  --sidebar: #221B12;
+  --sidebar: #0e0b15;
   --sidebar-foreground: #F6F1E6;
   --sidebar-primary: #37D6FF;
   --sidebar-primary-foreground: #06121B;
-  --sidebar-accent: #2B2318;
+  --sidebar-accent: #16121f;
   --sidebar-accent-foreground: #F6F1E6;
   --sidebar-border: rgba(246, 241, 230, 0.12);
   --sidebar-ring: #37D6FF;
+}
+
+/* ── .field-cream: exception scope for surfaces that must stay cream ──
+   Restores the original Heritage cream token values inside any subtree
+   that opts in. Expected near-zero usage; most cream objects already
+   hardcode their own hex. */
+.field-cream {
+  --color-paper: #F4EEE0;
+  --color-paper-2: #EAE2D2;
+  --color-paper-3: #D8CFB8;
+  --color-cream: #F4EEE0;
+  --color-panel: #EAE2D2;
+  --color-ink: #14161B;
+  --color-ink-2: #3F4654;
+  --color-ink-3: #5C6473;
+  --color-navy: #0C2340;
+  --color-navy-2: #15406E;
+  --color-navy-line: color-mix(in srgb, var(--color-navy) 22%, transparent);
+  --color-seam: #C8102E;
+  --color-seam-deep: color-mix(in srgb, var(--color-seam) 80%, #2A0A10);
+  --color-ok: #2E7D55;
+  --color-amber: #B07A1E;
+  --color-sand: #8A7A5E;
+  --color-machined: color-mix(in srgb, var(--color-ink-3) 38%, transparent);
+  --kicker: #7A4A2E;
+  --ctl-bg: #FFFDF6;
+  --ctl-text: #14161B;
+  --ctl-placeholder: #5C6473;
+  --ctl-border: rgba(122, 74, 46, 0.45);
+  --ctl-accent: #C8102E;
+  --ctl-on-accent: #FFFFFF;
+  --background: #F4EEE0;
+  --foreground: #14161B;
+  --card: #EAE2D2;
+  --card-foreground: #14161B;
+  --popover: #FFFDF6;
+  --popover-foreground: #14161B;
+  --primary: #C8102E;
+  --primary-foreground: #FFFFFF;
+  --secondary: #EAE2D2;
+  --secondary-foreground: #14161B;
+  --muted: #EAE2D2;
+  --muted-foreground: #3F4654;
+  --accent: #EAE2D2;
+  --accent-foreground: #14161B;
+  --destructive: #C8102E;
+  --border: rgba(20, 22, 27, 0.14);
+  --input: rgba(20, 22, 27, 0.18);
+  --ring: #C8102E;
 }
 
 /* native range + check controls pick up the scene accent */
@@ -1282,39 +1307,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 /*
   ---break---
 */
-.dark {
-  --background: #16120D;
-  --foreground: #F6F1E6;
-  --card: #221B12;
-  --card-foreground: #F6F1E6;
-  --popover: #221B12;
-  --popover-foreground: #F6F1E6;
-  --primary: #37D6FF;
-  --primary-foreground: #06121B;
-  --secondary: #2B2318;
-  --secondary-foreground: #F6F1E6;
-  --muted: #2B2318;
-  --muted-foreground: #C9C2B0;
-  --accent: #221B12;
-  --accent-foreground: #F6F1E6;
-  --destructive: #FF2D44;
-  --border: rgba(246, 241, 230, 0.12);
-  --input: rgba(246, 241, 230, 0.14);
-  --ring: #37D6FF;
-  --chart-1: #37D6FF;
-  --chart-2: #34E27E;
-  --chart-3: #FFC23C;
-  --chart-4: #8A6BFF;
-  --chart-5: #FF2D44;
-  --sidebar: #221B12;
-  --sidebar-foreground: #F6F1E6;
-  --sidebar-primary: #37D6FF;
-  --sidebar-primary-foreground: #06121B;
-  --sidebar-accent: #2B2318;
-  --sidebar-accent-foreground: #F6F1E6;
-  --sidebar-border: rgba(246, 241, 230, 0.12);
-  --sidebar-ring: #37D6FF;
-}
+/* .dark removed — dark is now the global :root default */
 
 /* ============================================================
    THE CARD TABLE  ·  landing rebuild (Sluggers system)
@@ -1971,7 +1964,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      translucent surface and the solid fallback. */
   .masthead-glass {
     position: relative;
-    background: color-mix(in srgb, var(--color-paper, #F4EEE0) 82%, transparent);
+    background: color-mix(in srgb, var(--color-void, #070509) 82%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(1.18);
     backdrop-filter: blur(14px) saturate(1.18);
   }
@@ -1990,12 +1983,12 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      get an opaque cream bar — same contrast, no translucency. */
   @media (prefers-reduced-transparency: reduce) {
     .masthead-glass {
-      background: var(--color-paper, #F4EEE0);
+      background: var(--color-void, #070509);
       -webkit-backdrop-filter: none; backdrop-filter: none;
     }
   }
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .masthead-glass { background: var(--color-paper, #F4EEE0); }
+    .masthead-glass { background: var(--color-void, #070509); }
   }
   /* scroll-shade deepens the depth: as the page moves under the bar, the glass
      darkens a step and the light edge sharpens. Native scroll-driven; the flat
@@ -2019,8 +2012,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      cascade for users who asked for an opaque bar. */
   @media (prefers-reduced-transparency: no-preference) {
     @keyframes masthead-deepen {
-      from { background: color-mix(in srgb, var(--color-paper, #F4EEE0) 82%, transparent); }
-      to { background: color-mix(in srgb, var(--color-paper, #F4EEE0) 90%, #16120D); }
+      from { background: color-mix(in srgb, var(--color-void, #070509) 82%, transparent); }
+      to { background: color-mix(in srgb, var(--color-void, #070509) 90%, #000); }
     }
   }
   @keyframes masthead-edge {
@@ -2108,7 +2101,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     position: relative; isolation: isolate;
     background:
       linear-gradient(187deg, rgba(255, 255, 255, .012) 0%, transparent 22%),
-      radial-gradient(125% 85% at 50% -8%, #1a1613 0%, #0c0b0a 52%, #060605 100%);
+      radial-gradient(125% 85% at 50% -8%, #0d0a14 0%, #080610 52%, #070509 100%);
     color: var(--color-bone);
   }
   .v2-tooth::after {
