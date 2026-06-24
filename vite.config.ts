@@ -199,7 +199,15 @@ export default defineConfig({
     testTimeout: 60000,
     fileParallelism: true,
     maxWorkers: 4,
-    exclude: [...configDefaults.exclude, 'pitch-atlas-softball/**'],
+    exclude: [
+      ...configDefaults.exclude,
+      '.claude/**',
+      '.codex/**',
+      '.qa-shots/**',
+      'Pitch-Atlas-iOS/**',
+      'Sluggers Hit Card Inspiration examples/**',
+      'pitch-atlas-softball/**',
+    ],
     // Inline react-tweet so Vite transforms it (and no-ops its bundled CSS module
     // imports under css:false); otherwise Node tries to load .module.css as JS.
     server: { deps: { inline: ['react-tweet'] } },

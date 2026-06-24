@@ -8,7 +8,7 @@ import { SectionHero } from '../components/layout/SectionHero'
 /*
   The privacy policy, in the same register as the rest of the manual: plain,
   factual, and scoped to what the product actually does. Every claim here is
-  checked against the code — the static site runs no analytics scripts, and the
+  checked against the code. The static site runs no analytics scripts, and the
   only data the product holds is what a contributor chooses to file through the
   community layer. The policy date below is the date this text was written, not
   a freshness claim.
@@ -58,7 +58,7 @@ export function PrivacyPage() {
   return (
     <>
       <SectionHero
-        eyebrow={`Privacy policy · ${POLICY_DATE}`}
+        eyebrow={`Privacy policy / ${POLICY_DATE}`}
         title={
           <>
             What the atlas holds, and what it <span className="text-seam">never</span> touches.
@@ -111,7 +111,7 @@ export function PrivacyPage() {
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Reading notes and threads needs no account. The first time you post, mark a note, or
-              file a report, an anonymous account is created for you — a random ID with no email
+              file a report, an anonymous account is created for you: a random ID with no email
               behind it. You can later claim that account with your email so your notes follow you
               across devices; in the iOS app you can also sign in with an emailed link or with
               Sign in with Apple.
@@ -157,9 +157,9 @@ export function PrivacyPage() {
               page where they appear.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              To delete your account entirely, use the Pitch Atlas iOS app: Account → delete
-              account. That removes your community posts, your uploaded media files, and the
-              account itself.
+              To delete your account entirely, use the Pitch Atlas iOS app. Open Account, then
+              choose delete account. That removes your community posts, your uploaded media files,
+              and the account itself.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Moderation works on reports: every note and post carries a Report action, reports go
@@ -175,7 +175,7 @@ export function PrivacyPage() {
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">Contact</p>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-            Report a problem with any note or post through its in-product Report action — that is
+            Report a problem with any note or post through its in-product Report action. That is
             the fastest route to a human review. Questions about how the manual itself is built and
             sourced are answered on the{' '}
             <Link to="/about" className="text-seam transition-colors hover:text-ink">

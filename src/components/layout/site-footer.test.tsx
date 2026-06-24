@@ -32,4 +32,14 @@ describe('SiteFooter', () => {
       expect(screen.getByRole('link', { name: label })).toBeInTheDocument()
     }
   })
+
+  it('keeps the footer copy dash-free', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <SiteFooter />
+      </MemoryRouter>,
+    )
+
+    expect(container.textContent ?? '').not.toMatch(/[\u2014\u2013]/)
+  })
 })

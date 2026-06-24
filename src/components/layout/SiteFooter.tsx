@@ -32,8 +32,7 @@ export function SiteFooter() {
         <SeamGuide variant="orbit" className="mb-4 opacity-80" />
         <p className="rfx-athletic text-[clamp(20px,2.8vw,30px)] text-bone">The manual closes here.</p>
         <p className="mono-label-stage mt-2.5 max-w-[64ch] leading-relaxed">
-          Everything above wears its source. When you want the set again, it reopens at the front
-          door —{' '}
+          Everything above wears its source. When you want the set again, it reopens at the front door:{' '}
           <Link to="/repertoire" className="text-bone underline decoration-1 underline-offset-2 transition-colors hover:decoration-seam">
             the Pitch Index
           </Link>
