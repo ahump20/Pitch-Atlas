@@ -489,6 +489,29 @@ describe('community safety database policy contracts', () => {
     expect(executableSql).not.toMatch(/\bgrant\s+select\b[\s\S]*?\bon\s+public\.blocked_users\b/i)
   })
 
+  it('routes native blocking through authenticated security-definer RPCs', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260622213000_block_user_rpcs.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    for (const fn of ['block_user', 'unblock_user']) {
+      expect(executableSql).toMatch(
+        new RegExp(`create\\s+or\\s+replace\\s+function\\s+public\\.${fn}\\(target_user\\s+uuid\\)[\\s\\S]*?security\\s+definer[\\s\\S]*?set\\s+search_path\\s*=\\s*''`, 'i'),
+      )
+      expect(executableSql).toContain(`revoke all on function public.${fn}(uuid) from public`)
+      expect(executableSql).toContain(`grant execute on function public.${fn}(uuid) to authenticated`)
+    }
+
+    expect(executableSql).toMatch(/create\s+or\s+replace\s+function\s+public\.my_blocked_users\(\)[\s\S]*?security\s+definer[\s\S]*?set\s+search_path\s*=\s*''/i)
+    expect(executableSql).toContain('grant execute on function public.my_blocked_users() to authenticated')
+    expect(executableSql).toContain('viewer uuid := (select auth.uid())')
+    expect(executableSql).toContain('if viewer = target_user then')
+    expect(executableSql).toContain('on conflict (blocker_id, blocked_id) do nothing')
+    expect(executableSql).not.toMatch(/\bgrant\s+(select|insert|delete)\b[\s\S]*?\bon\s+public\.blocked_users\b/i)
+  })
+
   it('keeps unused client deletes closed to normal roles', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615053500_close_unused_delete_grants.sql'),

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import type { RouteObject } from 'react-router-dom'
 import { routes } from '../routes'
-import { SITEMAP_ORIGIN, STATIC_PATHS, sitemapPaths, sitemapUrls, renderSitemapXml } from './sitemap'
+import { SITEMAP_ORIGIN, STATIC_PATHS, SITEMAP_EXCLUDED, sitemapPaths, sitemapUrls, renderSitemapXml } from './sitemap'
 
 /*
   The sitemap module cannot import routes.tsx (it would drag every page component
@@ -28,8 +28,9 @@ function flattenStaticPaths(routeList: RouteObject[], parent = ''): string[] {
 }
 
 describe('sitemap', () => {
-  it('STATIC_PATHS exactly mirrors the static routes in routes.tsx', () => {
-    const fromRoutes = [...new Set(flattenStaticPaths(routes))].sort()
+  it('STATIC_PATHS exactly mirrors the static routes in routes.tsx (minus deliberate exclusions)', () => {
+    const excluded = new Set<string>(SITEMAP_EXCLUDED)
+    const fromRoutes = [...new Set(flattenStaticPaths(routes))].filter((p) => !excluded.has(p)).sort()
     const fromSitemap = [...STATIC_PATHS].sort()
     expect(fromSitemap).toEqual(fromRoutes)
   })

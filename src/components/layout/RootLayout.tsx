@@ -40,6 +40,8 @@ function RouteHead() {
     script: [
       {
         type: 'application/ld+json',
+        // The home CreativeWork node ships only on '/', the published homepage; every
+        // other route carries the WebSite + Organization + SearchAction graph alone.
         innerHTML: JSON.stringify(siteJsonLd(pathname === '/')),
         // Stable key so unhead REPLACES this node on client navigation instead of
         // appending a second site-level JSON-LD script on every route change.
