@@ -200,6 +200,14 @@ export function RefractorCard({
 
         <div className="rfx-banner">{name}</div>
 
+        {(crumb || confidence) ? (
+          <div className="rfx-attrrow" aria-label="Card attributes">
+            {crumb ? <span className="rfx-attrchip">Family · {crumb.label}</span> : null}
+            {confidence ? <span className="rfx-attrchip">Source · {confidence.label}</span> : null}
+            <span className="rfx-attrchip">Edition · {gold ? '1 of 1' : 'Filed'}</span>
+          </div>
+        ) : null}
+
         <div className="rfx-content">
           {shape || cue ? (
             <div className="rfx-summary">

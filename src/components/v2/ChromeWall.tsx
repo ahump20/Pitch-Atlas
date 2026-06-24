@@ -11,6 +11,7 @@ import { INDEX_SCOPE } from '../../lib/index-scope'
 import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
 import { RefractorBall } from '../refractor/RefractorBall'
+import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { familyCrumb } from '../refractor/familyCrumb'
 import { ChapterMark } from './ChapterMark'
 
@@ -109,16 +110,16 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   <span className="rfx-scout-no">Scout file · No. {display.specimenNo}</span>
                 </div>
 
+                <ScoutMovementWheel motion={motion} accent={accent} />
+
                 <div className="rfx-scout-rows">
+                  {/* the wheel above is the shape read; the back carries family, grip,
+                      and the source tier. The full shape sentence lives on the card front. */}
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">
                       <CrumbIcon /> Family
                     </span>
                     <span className="rfx-scout-v">{crumb.label}</span>
-                  </div>
-                  <div className="rfx-scout-row">
-                    <span className="rfx-scout-k">Shape</span>
-                    <span className="rfx-scout-v rfx-scout-v--clip">{shape.value}</span>
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Grip</span>

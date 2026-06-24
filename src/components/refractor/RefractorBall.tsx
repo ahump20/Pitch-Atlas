@@ -142,6 +142,11 @@ export function RefractorBall({
           <stop offset="78%" stopColor="#DDCFB4" />
           <stop offset="100%" stopColor="#B8A582" />
         </radialGradient>
+        <radialGradient id={`sun-${id}`} cx="50%" cy="50%" r="58%">
+          <stop offset="0%" stopColor={accent.c3} stopOpacity="0.02" />
+          <stop offset="62%" stopColor={accent.c3} stopOpacity="0.14" />
+          <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
+        </radialGradient>
         <radialGradient id={`rim-${id}`} cx="70%" cy="76%" r="62%">
           <stop offset="58%" stopColor={accent.c3} stopOpacity="0" />
           <stop offset="90%" stopColor={accent.c3} stopOpacity="0.72" />
@@ -162,6 +167,9 @@ export function RefractorBall({
       </defs>
 
       <ellipse cx={cx} cy={cy + r + 8} rx={r * 0.8} ry={12} fill="#000" opacity="0.45" filter={`url(#glow-${id})`} />
+      {/* a faint accent sunburst behind the ball so it reads set INTO the dark window,
+          not floating on it (very low opacity; the dramatic halo, when on, layers over). */}
+      <circle cx={cx} cy={cy} r={r + 30} fill={`url(#sun-${id})`} />
       {showHalo ? (
         <>
           <circle cx={cx} cy={cy} r={r + 46} fill={`url(#halo-${id})`} />

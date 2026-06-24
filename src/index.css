@@ -781,22 +781,57 @@
   .pa-atmo-leather { background-image: url(/atmosphere/leather.webp); }
   .pa-atmo-seam { background-image: url(/atmosphere/seam.webp); }
 
-  /* the nameplate: an accent-tinted warm plate, bevelled top highlight + bottom
-     shadow so it reads stamped into the card. */
+  /* the nameplate: a machined-chrome banner extruded off the card face. A hard
+     specular line up top, an accent-steel body, a dark base, and a ::before
+     "side of the block" offset down-left so it reads as a 3D-stamped plate, not a
+     flat pill. Fixed width so the plate baseline never jumps with the name length.
+     Degrades to a flat accent plate where layered box-shadow is weak. */
   .rfx-banner {
-    position: relative; z-index: 9; margin: -14px auto 0; width: min(88%, 292px); text-align: center; padding: 7px 12px; border-radius: 999px;
+    position: relative; z-index: 9; margin: -14px auto 0; width: min(92%, 300px); text-align: center; padding: 8px 14px; border-radius: 999px;
     background:
-      linear-gradient(180deg, rgba(255,255,255,.14), transparent 42%),
-      color-mix(in srgb, var(--c2,#114A8C) 30%, #1B150E);
-    border: 1px solid rgba(0,0,0,.6);
-    box-shadow: 0 5px 12px -5px #000, inset 0 1px 0 var(--bevel-hi), inset 0 -2px 4px rgba(0,0,0,.55),
-      0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 30%, transparent);
-    font-family: var(--font-athletic); font-size: clamp(20px,5.1vw,29px); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: #F6F1E6;
-    -webkit-text-stroke: .5px rgba(0,0,0,.55); text-shadow: 0 1px 0 rgba(255,255,255,.18), 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-5deg);
+      linear-gradient(180deg,
+        rgba(255,255,255,.55) 0%, rgba(255,255,255,.10) 12%,
+        color-mix(in srgb, var(--c3,#37D6FF) 20%, #2b2620) 38%,
+        color-mix(in srgb, var(--c2,#114A8C) 34%, #14100b) 66%,
+        #0c0a07 100%);
+    border: 1px solid rgba(0,0,0,.7);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,.5),
+      inset 0 -3px 5px rgba(0,0,0,.55),
+      inset 0 0 0 1px rgba(255,255,255,.07),
+      0 7px 14px -6px #000,
+      0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 34%, transparent);
+    font-family: var(--font-athletic); font-size: clamp(19px,4.9vw,28px); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: #FBF7EE;
+    -webkit-text-stroke: .6px rgba(0,0,0,.6); text-shadow: 0 1px 0 rgba(255,255,255,.26), 1.5px 2px 1px rgba(0,0,0,.6); transform: skewX(-5deg);
+  }
+  .rfx-banner::before {
+    content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 999px; transform: translate(-2px, 3px);
+    background: linear-gradient(180deg, color-mix(in srgb, var(--c2,#114A8C) 28%, #06050300), #05040300);
+    box-shadow: 0 3px 6px -2px rgba(0,0,0,.7);
   }
   .rfx-card.is-gold .rfx-banner {
-    background: linear-gradient(180deg,#fff0c2,#caa14a 60%,#9c7a2f); color: #2a1d05;
-    box-shadow: 0 5px 12px -5px #000, inset 0 1px 0 rgba(255,255,255,.6), inset 0 -2px 4px rgba(120,86,20,.6);
+    background: linear-gradient(180deg, #fff6d8 0%, #ffe9a8 14%, #e8c468 42%, #b98a2f 70%, #7c5a1c 100%); color: #2a1d05;
+    -webkit-text-stroke: .5px rgba(80,52,8,.5); text-shadow: 0 1px 0 rgba(255,255,255,.55), 1px 2px 1px rgba(90,60,12,.5);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255,255,255,.75),
+      inset 0 -3px 5px rgba(120,86,20,.5),
+      0 7px 14px -6px #000,
+      0 0 0 1px rgba(202,161,74,.7);
+  }
+  .rfx-card.is-gold .rfx-banner::before { background: linear-gradient(180deg, #5a3f12, #2a1d0500); }
+  .rfx-attrrow {
+    position: relative; z-index: 9; margin-top: 9px;
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;
+  }
+  .rfx-attrchip {
+    display: inline-flex; align-items: center; min-height: 20px; padding: 4px 7px; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 34%, rgba(246,241,230,.13));
+    background: rgba(5,7,12,.62);
+    font-family: var(--font-mono); font-size: 7.5px; line-height: 1; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--color-bone-2);
+  }
+  .rfx-card.is-gold .rfx-attrchip {
+    border-color: rgba(202,161,74,.42); color: #FFE9B0; background: rgba(42,29,5,.48);
   }
 
   /* the READ plate — the read lives here, never on the patterned foil. Cream
@@ -849,6 +884,8 @@
 
   /* phones: the plate text tightens so the window keeps its portrait height */
   @media (max-width: 480px) {
+    .rfx-attrrow { margin-top: 7px; gap: 4px; }
+    .rfx-attrchip { min-height: 17px; padding: 3px 5px; font-size: 6.4px; letter-spacing: .07em; }
     .rfx-shape .rfx-v { font-size: .86rem; -webkit-line-clamp: 2; }
     .rfx-cue { -webkit-line-clamp: 1; }
     .rfx-content { margin-top: 13px; padding: 16px 11px 10px; gap: 7px; }
@@ -884,11 +921,31 @@
     line-height: 1.5; text-transform: uppercase; color: color-mix(in srgb, var(--c3,#37D6FF) 60%, var(--color-bone-2)); }
   .rfx-scout-k svg { width: 10px; height: 10px; flex: none; }
   .rfx-scout-v { font-size: 12px; line-height: 1.42; color: var(--color-bone); }
-  .rfx-scout-v--clip { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .rfx-scout-v--clip { display: block; max-height: calc(1.42em * 3); overflow: hidden; word-break: normal; overflow-wrap: normal; }
   .rfx-scout-foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
   .rfx-scout-edition { font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-bone);
     padding: 2px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, rgba(246,241,230,.16)); white-space: nowrap; }
   .is-chase .rfx-scout-edition { color: #FFE9B0; border-color: rgba(202,161,74,.6); }
+
+  /* the movement wheel — the visual shape read on the scout back. A direction
+     target built from the sourced motion enums + the render-only spin axis;
+     never a measured magnitude. Fills the dead vertical space on wider backs.
+     (ScoutMovementWheel.tsx) */
+  .rfx-wheel { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 9px 0 2px; flex: 0 0 auto; }
+  .rfx-wheel svg { width: clamp(80px, 36%, 134px); aspect-ratio: 1 / 1; display: block; }
+  .rfx-wheel figcaption { display: flex; flex-direction: column; align-items: center; gap: 1px; text-align: center; }
+  .rfx-wheel-dir { font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--c3,#37D6FF) 64%, var(--color-bone)); }
+  .rfx-wheel-note { font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-bone-2); opacity: .7; }
+  .rfx-wheel.is-empty svg { opacity: .48; filter: grayscale(.45); }
+  .rfx-wheel.is-empty .rfx-wheel-dir { color: var(--color-bone-2); opacity: .78; }
+  /* the standard grid backs are tighter than the 1/1 chase, so the wheel runs
+     smaller there to keep the sourced rows + footer inside the card's clipped edge. */
+  .v2-mount:not(.is-chase) .rfx-wheel svg { width: clamp(72px, 30%, 104px); }
+  @media (max-width: 560px) {
+    .rfx-wheel svg { width: clamp(66px, 28%, 94px); }
+    .rfx-wheel-note { display: none; }
+  }
 
   /* a foil-edged surface for non-card sections (tools, wings, content chrome) */
   .rfx-panel { position: relative; border-radius: 12px; background: var(--color-press); border: 1px solid rgba(246,241,230,.10); }
@@ -2359,8 +2416,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     display: inline-flex; align-items: center; justify-content: center; gap: 5px;
     min-width: 44px; min-height: 44px; padding: 7px 12px; border-radius: 999px;
     font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
-    color: var(--color-bone); background: color-mix(in srgb, #0a0908 64%, transparent);
-    border: 1px solid color-mix(in srgb, var(--color-bone) 22%, transparent);
+    color: var(--color-bone); background: color-mix(in srgb, #0a0908 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--c3, #37D6FF) 42%, var(--color-bone) 18%);
+    box-shadow: 0 8px 18px -12px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.12);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     cursor: pointer; transition: border-color .18s ease, transform .12s ease;
   }

@@ -70,7 +70,11 @@ vec2 houndstooth(vec2 p) {
 
 void main() {
   vec2 px = vUv * uRes;
-  float scale = max(uRes.x, 1.0) / 26.0;       // ~26 teeth across the field
+  // irregular facet density: modulate the tooth frequency with a low-frequency
+  // sine so neighbouring cells differ slightly in size — the foil reads as
+  // hand-cut faceting that catches light unevenly, not a regular print grid.
+  float facet = 24.0 + 6.0 * sin(vUv.x * 7.0 + vUv.y * 5.0);
+  float scale = max(uRes.x, 1.0) / facet;
   vec2 ht = houndstooth(px / scale);
   float tooth = ht.x;
   float parity = ht.y;
@@ -90,9 +94,11 @@ void main() {
   // a soft pointer-following glare so the foil also answers the light position
   float glare = exp(-distance(vUv, uLight) * 2.6) * 0.45;
 
-  // thin-film hue: phase rides the projection axis and the tilt
+  // thin-film hue: phase rides the projection axis and the tilt. A small per-channel
+  // phase offset splits the spectrum (chromatic refraction), so the sheen reads as cut
+  // foil dispersing light into separate hues, not one banded gradient.
   float t = mix(dirB, dirA, parity) * 1.6 + rx * 0.9 + ry * 0.45;
-  vec3 irid = palette(t);
+  vec3 irid = vec3(palette(t + 0.045).r, palette(t).g, palette(t - 0.045).b);
 
   // gold mode: collapse the spectrum toward gold-white for the 1/1
   vec3 goldTone = mix(vec3(0.85, 0.66, 0.30), vec3(1.0, 0.94, 0.76), spec);
