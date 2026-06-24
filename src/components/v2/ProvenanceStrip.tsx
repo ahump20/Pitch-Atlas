@@ -85,7 +85,7 @@ export function ProvenanceStrip() {
 
           <Link
             to="/sources"
-            className="mt-7 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-seam"
+            className="mt-7 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-cyan"
           >
             Open the source registry <span aria-hidden="true">→</span>
           </Link>

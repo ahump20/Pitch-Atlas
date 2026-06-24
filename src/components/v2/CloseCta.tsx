@@ -90,7 +90,7 @@ export function CloseCta() {
             </p>
             <Link
               to="/sources"
-              className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors hover:text-seam"
+              className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors hover:text-cyan"
             >
               Open the registry <span aria-hidden="true">→</span>
             </Link>
@@ -128,7 +128,7 @@ export function CloseCta() {
           <div className="mt-6 border-t border-bone/15 pt-3">
             <p className="font-mono text-[9px] uppercase leading-relaxed tracking-[0.06em] text-bone-2/70">
               Every claim is labeled by its source, not declared right or wrong.{' '}
-              <Link to="/sources" className="text-bone underline underline-offset-2 hover:text-seam">
+              <Link to="/sources" className="text-bone underline underline-offset-2 hover:text-cyan">
                 How a claim is filed →
               </Link>
             </p>

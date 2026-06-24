@@ -75,7 +75,7 @@ export function MissionCase() {
             <figure className="v2-note">
               <p className="font-mono text-[10px] uppercase tracking-[0.16em]">
                 <span className="text-bone-2/55">Founding note</span>{' '}
-                <span className="text-seam">·</span>{' '}
+                <span className="text-cyan">·</span>{' '}
                 <span className="text-bone-2">personal memory, not endorsement</span>
               </p>
               <span className="v2-quote-mark mt-4" aria-hidden="true">
@@ -105,7 +105,7 @@ export function MissionCase() {
               <p className="mt-5">
                 <Link
                   to="/about"
-                  className="font-mono text-[10px] uppercase tracking-[0.14em] text-seam transition-colors hover:text-bone focus-visible:text-bone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
+                  className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan transition-colors hover:text-bone focus-visible:text-bone focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
                 >
                   Read the full story <span aria-hidden="true">→</span>
                 </Link>

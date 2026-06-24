@@ -56,6 +56,8 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
   const accent = accentForSlug(display.slug)
   const shape = canonical.physics.shape
   const conf = shape.confidence
+  const crumb = familyCrumb(canonical.family)
+  const CrumbIcon = crumb.Icon
 
   return (
     <div
@@ -74,7 +76,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
               shape={shape.value}
               cue={display.heroSub}
               confidence={{ label: CONFIDENCE_META[conf].label, color: FRONT_INK[conf], approx: shape.approximate }}
-              crumb={familyCrumb(canonical.family)}
+              crumb={crumb}
               maxWidth={chase ? 520 : 360}
               face={
                 <RefractorBall
@@ -100,44 +102,64 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
 
           {/* back: the matte Topps-Now data side */}
           <div className="v2-face v2-face-back" aria-hidden={!flipped}>
-            <div className="v2-back flex h-full flex-col">
-              <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">
-                {display.shortName} · {display.specimenNo}
-              </p>
+            <div className="v2-back">
+              <div className="rfx-scout">
+                <div className="rfx-scout-head">
+                  <span className="rfx-scout-name">{display.shortName}</span>
+                  <span className="rfx-scout-no">Scout file · No. {display.specimenNo}</span>
+                </div>
 
-              <p className="mt-3 text-[13px] leading-relaxed text-bone">{shape.value}</p>
+                <div className="rfx-scout-rows">
+                  <div className="rfx-scout-row">
+                    <span className="rfx-scout-k">
+                      <CrumbIcon /> Family
+                    </span>
+                    <span className="rfx-scout-v">{crumb.label}</span>
+                  </div>
+                  <div className="rfx-scout-row">
+                    <span className="rfx-scout-k">Shape</span>
+                    <span className="rfx-scout-v">{shape.value}</span>
+                  </div>
+                  <div className="rfx-scout-row">
+                    <span className="rfx-scout-k">Grip</span>
+                    <span className="rfx-scout-v rfx-scout-v--clip">{canonical.grip.value}</span>
+                  </div>
+                  <div className="rfx-scout-row">
+                    <span className="rfx-scout-k">Source</span>
+                    <span className="rfx-scout-v inline-flex flex-wrap items-center gap-1.5">
+                      <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: TIER_DOT[conf] }} />
+                      {CONFIDENCE_META[conf].label}
+                      {shape.approximate ? <span className="text-bone-2/60">· approx</span> : null}
+                    </span>
+                  </div>
+                </div>
 
-              <p className="mt-3 text-[12px] leading-relaxed text-bone-2">
-                <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-bone-2/70">
-                  The grip{' '}
-                </span>
-                {canonical.grip.value}
-              </p>
-
-              <div className="mt-auto pt-4">
-                <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-bone">
-                  <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: TIER_DOT[conf] }} />
-                  {CONFIDENCE_META[conf].label}
-                  {shape.approximate ? <span className="text-bone-2/60"> · approx</span> : null}
-                </span>
-                {shape.source ? (
-                  <a
-                    href={shape.source.url}
-                    target="_blank"
-                    rel="noreferrer noopener"
+                <div className="rfx-scout-foot">
+                  {shape.source ? (
+                    <a
+                      href={shape.source.url}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      tabIndex={flipped ? 0 : -1}
+                      className="block max-w-full truncate font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone"
+                    >
+                      {shape.source.label} <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : null}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-bone-2/70">
+                      pitch-atlas.com · sourced, not corrected
+                    </span>
+                    <span className="rfx-scout-edition">{chase ? '1 of 1' : 'Filed'}</span>
+                  </div>
+                  <Link
+                    to={`/pitch/${display.slug}`}
                     tabIndex={flipped ? 0 : -1}
-                    className="mt-2 block max-w-full truncate font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone"
+                    className="inline-block max-w-[calc(100%-3rem)] font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-cyan"
                   >
-                    {shape.source.label} <span aria-hidden="true">↗</span>
-                  </a>
-                ) : null}
-                <Link
-                  to={`/pitch/${display.slug}`}
-                  tabIndex={flipped ? 0 : -1}
-                  className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-seam"
-                >
-                  Open the full file <span aria-hidden="true">→</span>
-                </Link>
+                    Open the full file <span aria-hidden="true">→</span>
+                  </Link>
+                </div>
               </div>
 
               <button

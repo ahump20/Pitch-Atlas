@@ -1,9 +1,10 @@
 /*
   v2 · The chapter mark. One filed index line at the head of every section, so
   the landing reads as a curated, ordered archive instead of ten loose slabs:
-  a seam tick, the plate number, a hairline, the chapter name. Mono micro-caps
+  a chapter tick, the plate number, a hairline, the chapter name. Mono micro-caps
   in the dossier language the field-manual checklist already speaks, with the
-  seam red as the one recurring accent down the page. Decorative and additive —
+  refractor cyan as the one recurring accent down the page, matching the cards.
+  Decorative and additive —
   every section reads complete without it.
 */
 export function ChapterMark({
@@ -17,7 +18,7 @@ export function ChapterMark({
 }) {
   return (
     <p className={`flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-[0.2em] ${className}`}>
-      <span className="text-seam" aria-hidden="true">
+      <span className="text-cyan" aria-hidden="true">
         ■
       </span>
       <span className="tabular-nums text-bone-2/70">{n}</span>

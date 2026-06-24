@@ -271,7 +271,7 @@
   .chip-settle > :nth-child(4) { animation-delay: 180ms; }
   .rfx-srcbadge { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 60ms backwards; }
   .rfx-gripchip { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 100ms backwards; }
-  .rfx-crumb   { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 140ms backwards; }
+  .rfx-seal    { animation: chip-settle 0.22s cubic-bezier(0.22, 1, 0.36, 1) 140ms backwards; }
 
   /* known/unknown/open disclosures: one quiet 180ms reveal on open */
   details[open] > .disclose-body { animation: disclose 0.18s ease-out; }
@@ -524,11 +524,20 @@
      a handled set, not a printed sheet. */
   .rfx-card {
     --mx: 50%; --my: 32%;
-    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 5px;
+    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 6px;
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     rotate: calc(sin((var(--i, 0) + 1) * 2.1) * 0.45deg);
     transition: transform .4s cubic-bezier(.2,.8,.2,1); will-change: transform;
-    background: var(--foil); background-size: 300% 300%; background-position: var(--mx) var(--my);
+    /* prismatic frame: a fine cracked-ice hatch (bright over, dark multiply) baked
+       into the rainbow foil. It only shows in the 6px border the field doesn't
+       cover, so the rim reads like real refractor chrome at no cost to the face. */
+    background:
+      repeating-linear-gradient(57deg, rgba(255,255,255,.20) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(-57deg, rgba(0,0,0,.16) 0 1px, transparent 1px 8px),
+      var(--foil);
+    background-size: 9px 9px, 11px 11px, 300% 300%;
+    background-position: 0 0, 0 0, var(--mx) var(--my);
+    background-blend-mode: overlay, multiply, normal;
     box-shadow:
       0 30px 56px -26px rgba(0,0,0,.6),
       0 0 0 1px rgba(0,0,0,.55),
@@ -545,19 +554,32 @@
   .rfx-card::before {
     content: ""; position: absolute; inset: 0; z-index: 0; border-radius: 20px; pointer-events: none;
     background: radial-gradient(340px circle at var(--mx) var(--my), rgba(255,255,255,.5), transparent 62%);
-    opacity: .6; mix-blend-mode: screen;
+    opacity: .72; mix-blend-mode: screen;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude; padding: 5px;
+    -webkit-mask-composite: xor; mask-composite: exclude; padding: 6px;
   }
   .rfx-card.is-gold {
-    background: var(--gold); background-size: 240% 240%; background-position: var(--mx) var(--my);
+    background:
+      repeating-linear-gradient(57deg, rgba(255,255,255,.24) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(-57deg, rgba(0,0,0,.22) 0 1px, transparent 1px 8px),
+      var(--gold);
+    background-size: 9px 9px, 11px 11px, 240% 240%;
+    background-position: 0 0, 0 0, var(--mx) var(--my);
+    background-blend-mode: overlay, multiply, normal;
     box-shadow: 0 30px 56px -26px rgba(0,0,0,.7), 0 0 0 1px rgba(0,0,0,.6),
       inset 0 1px 0 rgba(255,240,194,.7), inset 0 -2px 5px rgba(0,0,0,.6), 0 0 54px -12px rgba(212,170,90,.6);
   }
   .rfx-field {
     position: relative; height: 100%; border-radius: 16px; overflow: hidden; padding: 11px 11px 9px;
     display: flex; flex-direction: column;
+    /* the chrome bezel: a dark hairline, a bright accent ring, then a dark separator.
+       box-shadow paints outside the clipped box, so it draws into the foil frame and
+       the field reads set into the rim — the "encased" look of a graded slab. */
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.72),
+      0 0 0 2.5px color-mix(in srgb, var(--c3,#37D6FF) 36%, rgba(246,241,230,.55)),
+      0 0 0 3.5px rgba(0,0,0,.5);
     /* worn matte: a turbulence pass blended over the warm-black field so the
        card stock reads handled, not printed this morning. CSS-only. */
     background:
@@ -570,6 +592,11 @@
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
       linear-gradient(170deg,#1a1305,#0d0a04 60%,#070500);
     background-blend-mode: overlay, normal;
+    /* gold 1/1 wears a gold chrome bezel, not the cyan accent ring */
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.72),
+      0 0 0 2.5px color-mix(in srgb, #f4d98a 64%, #8a6a22),
+      0 0 0 3.5px rgba(0,0,0,.5);
   }
   /* the woven check in the negative space — bone-warm threads with a whisper of
      the pitch accent so the per-pitch triad still breathes through. */
@@ -631,22 +658,49 @@
   /* the varsity number — the reference card's big block 33 is the model: large,
      gold-shadowed, structural rather than a floating chip. */
   .rfx-vnum {
-    position: absolute; top: 5px; left: 10px; z-index: 3; font-family: var(--font-athletic); font-size: 44px; line-height: .8;
-    color: #F6F1E6; -webkit-text-stroke: 2px #000;
-    text-shadow: 3px 3px 0 color-mix(in srgb, var(--c3,#37D6FF) 72%, #000); transform: skewX(-6deg);
+    position: absolute; top: 4px; left: 6px; z-index: 5;
+    display: grid; place-items: center; min-width: 38px; height: 40px; padding: 0 7px;
+    border-radius: 10px;
+    background: linear-gradient(160deg, color-mix(in srgb, var(--c3,#37D6FF) 42%, #0C1016) 0%, #0A0D12 72%);
+    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 48%, rgba(0,0,0,.6));
+    box-shadow:
+      0 3px 8px -3px rgba(0,0,0,.72),
+      inset 0 1px 0 rgba(246,241,230,.3),
+      inset 0 -2px 4px rgba(0,0,0,.5);
+    font-family: var(--font-athletic); font-size: 30px; line-height: 1;
+    color: #F6F1E6; -webkit-text-stroke: 1.2px #000;
+    text-shadow: 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-6deg);
   }
-  .rfx-card.is-gold .rfx-vnum { text-shadow: 3px 3px 0 color-mix(in srgb, #caa14a 85%, #000); }
-  /* family crumb (top-right of the window): what KIND of pitch this is. Its own dark
-     pill so it never sits on the patterned foil. A different job from the source dot. */
-  .rfx-crumb {
-    position: absolute; top: 8px; right: 9px; z-index: 4;
-    display: inline-flex; align-items: center; gap: 5px; padding: 3px 7px 3px 6px; border-radius: 999px;
-    background: rgba(5,7,12,.74); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
-    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 30%, rgba(255,255,255,.12));
-    font-family: var(--font-mono); font-size: 8px; line-height: 1; letter-spacing: .14em;
-    text-transform: uppercase; color: var(--color-bone);
+  .rfx-card.is-gold .rfx-vnum {
+    background: linear-gradient(160deg,#fff0c2,#caa14a 55%,#7a571f);
+    border-color: rgba(0,0,0,.5); color: #2a1d05; -webkit-text-stroke: 0;
+    text-shadow: 0 1px 0 rgba(255,255,255,.4);
   }
-  .rfx-crumb svg { width: 11px; height: 11px; display: block; color: color-mix(in srgb, var(--c3,#37D6FF) 82%, var(--color-bone)); }
+  /* the family seal: a struck coin at the crown of the arched window naming WHAT KIND
+     of pitch this is (the SLUGGERS center-medallion device). Replaces the old corner
+     crumb pill — one centered seal reads as the set's mark, a different job from the
+     source dot. The kind word stays readable; the coin glyph is decorative. */
+  .rfx-seal {
+    position: absolute; top: -6px; left: 50%; transform: translateX(-50%); z-index: 6;
+    display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none;
+  }
+  .rfx-seal-coin {
+    display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    background: radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--c3,#37D6FF) 32%, #0D1117) 0%, #060809 78%);
+    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 52%, rgba(0,0,0,.6));
+    box-shadow: 0 2px 7px -2px rgba(0,0,0,.72), inset 0 1px 0 rgba(246,241,230,.32), inset 0 -2px 4px rgba(0,0,0,.55);
+    color: color-mix(in srgb, var(--c3,#37D6FF) 86%, var(--color-bone));
+  }
+  .rfx-seal-coin svg { width: 16px; height: 16px; display: block; }
+  .rfx-seal-label {
+    font-family: var(--font-mono); font-size: 7px; line-height: 1; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--color-bone); padding: 2px 6px; border-radius: 999px; background: rgba(5,7,12,.74);
+    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,.1);
+  }
+  .rfx-card.is-gold .rfx-seal-coin {
+    background: radial-gradient(circle at 50% 28%, #fff0c2, #caa14a 60%, #7a571f);
+    border-color: rgba(0,0,0,.5); color: #2a1d05;
+  }
   /* grip-source chip (bottom-left): WHOSE grip the face shows — Austin's, or a reference. */
   .rfx-gripchip {
     position: absolute; left: 9px; bottom: 20px; z-index: 4;
@@ -756,6 +810,32 @@
   /* bottom strip — always on the dark card face, so its ink is literal */
   .rfx-strip { z-index: 9; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
     font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
+
+  /* ── the card back, struck as a scout file ──
+     The SLUGGERS stats-table back, but every row is a sourced or categorical fact —
+     family, the shape read, the grip, the source tier — never an invented figure.
+     Lives inside .v2-back (the matte stock); the front carries the foil. */
+  .rfx-scout { display: flex; flex-direction: column; height: 100%; }
+  .rfx-scout-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding-bottom: 7px;
+    border-bottom: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, rgba(246,241,230,.12));
+  }
+  .rfx-scout-name { font-family: var(--font-athletic); font-size: clamp(18px,4.6vw,24px); line-height: .95; letter-spacing: .01em;
+    text-transform: uppercase; color: var(--color-bone); transform: skewX(-5deg); }
+  .rfx-scout-no { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-bone-2); white-space: nowrap; }
+  .rfx-scout-rows { display: flex; flex-direction: column; margin-top: 9px; border-radius: 7px; overflow: hidden; border: 1px solid rgba(246,241,230,.08); }
+  .rfx-scout-row { display: grid; grid-template-columns: 56px 1fr; gap: 9px; padding: 7px 9px; align-items: start; }
+  .rfx-scout-row:nth-child(even) { background: color-mix(in srgb, var(--c3,#37D6FF) 8%, transparent); }
+  .rfx-scout-row + .rfx-scout-row { border-top: 1px solid rgba(246,241,230,.06); }
+  .rfx-scout-k { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em;
+    line-height: 1.5; text-transform: uppercase; color: color-mix(in srgb, var(--c3,#37D6FF) 60%, var(--color-bone-2)); }
+  .rfx-scout-k svg { width: 10px; height: 10px; flex: none; }
+  .rfx-scout-v { font-size: 12px; line-height: 1.42; color: var(--color-bone); }
+  .rfx-scout-v--clip { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .rfx-scout-foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .rfx-scout-edition { font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-bone);
+    padding: 2px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, rgba(246,241,230,.16)); white-space: nowrap; }
+  .is-chase .rfx-scout-edition { color: #FFE9B0; border-color: rgba(202,161,74,.6); }
 
   /* a foil-edged surface for non-card sections (tools, wings, content chrome) */
   .rfx-panel { position: relative; border-radius: 12px; background: var(--color-press); border: 1px solid rgba(246,241,230,.10); }
