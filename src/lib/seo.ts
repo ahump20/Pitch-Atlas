@@ -99,7 +99,7 @@ export function siteJsonLd(home: boolean = true) {
       name: SITE.siteName,
       url: `${SITE.canonicalDomain}/`,
       description:
-        'A grip-first field manual for pitching grips, variants, craftsmen, and sourced community notes.',
+        'A grip-first field manual for pitch craft, variants, craftsmen, and sourced community notes.',
       inLanguage: 'en',
       publisher: { '@id': `${SITE.canonicalDomain}/#org` },
       potentialAction: {
@@ -114,7 +114,7 @@ export function siteJsonLd(home: boolean = true) {
     graph.push({
       '@type': 'CreativeWork',
       '@id': `${SITE.canonicalDomain}/#field-manual`,
-      name: `${SITE.siteName}: The Living Field Manual for Pitching Grips`,
+      name: `${SITE.siteName}: The Living Field Manual for Pitch Craft`,
       url: `${SITE.canonicalDomain}/`,
       headline: 'How pitchers grip and shape the baseball, labeled by source.',
       abstract:

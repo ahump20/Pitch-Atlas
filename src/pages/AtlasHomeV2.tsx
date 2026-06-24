@@ -3,6 +3,7 @@ import { PITCHES } from '../data/pitches'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, truncateForMeta } from '../lib/seo'
 import { HeroCase } from '../components/v2/HeroCase'
+import { MissionCase } from '../components/v2/MissionCase'
 import { RefractionBridge } from '../components/v2/RefractionBridge'
 import { ChromeWall } from '../components/v2/ChromeWall'
 import { TheRead } from '../components/v2/TheRead'
@@ -27,9 +28,9 @@ export function AtlasHomeV2() {
   useSeoMeta({
     // The published home: indexable, canonical at / (RootLayout sets the canonical
     // link from the pathname), and the only homepage now the editorial home is gone.
-    title: `${SITE.siteName}: The Living Field Manual for Pitching Grips`,
+    title: `${SITE.siteName}: The Living Field Manual for Pitch Craft`,
     description: truncateForMeta(
-      'Every pitch struck as a chrome specimen on matte stock — grip first, the shape in plain words, a source on every claim. Sourced, not corrected.',
+      'A grip-first field manual for pitch craft: how pitchers hold, describe, preserve, and pass down the art. Every claim labeled by its source.',
     ),
     ogTitle: `${SITE.siteName}: ${SITE.brandLine}`,
     ogDescription: 'Every pitch struck in chrome and sourced — grip first, a source on every line.',
@@ -40,6 +41,7 @@ export function AtlasHomeV2() {
   return (
     <>
       <HeroCase featured={featured} />
+      <MissionCase />
       <RefractionBridge featured={featured} />
       <ChromeWall />
       <TheRead featured={featured} />
