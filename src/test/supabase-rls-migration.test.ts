@@ -98,7 +98,11 @@ function migrationFiles() {
     .sort()
 }
 
-const clientCallablePublicDefinerFunctions = new Set<string>()
+const clientCallablePublicDefinerFunctions = new Set<string>([
+  'block_user',
+  'unblock_user',
+  'my_blocked_users',
+])
 
 describe('Supabase RLS migration contracts', () => {
   it('enables RLS on every public table created by migrations', () => {

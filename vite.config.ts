@@ -6,7 +6,7 @@ import reactSsg from 'vite-plugin-react-ssg'
 import { VitePWA } from 'vite-plugin-pwa'
 import { fileURLToPath, URL } from 'node:url'
 import path from 'node:path'
-import { copyFile, writeFile } from 'node:fs/promises'
+import { copyFile, writeFile, readFile, readdir } from 'node:fs/promises'
 import { renderSitemapXml } from './src/lib/sitemap'
 
 /*
@@ -34,6 +34,37 @@ function postBuildArtifacts(): Plugin {
       const outDir = path.resolve(resolved.root, resolved.build.outDir)
       await writeFile(path.join(outDir, 'sitemap.xml'), renderSitemapXml())
       await copyFile(path.join(outDir, '404', 'index.html'), path.join(outDir, '404.html'))
+
+      // Strip the 3D-vendor modulepreload hints from every prerendered page.
+      // Rolldown bakes <link rel="modulepreload"> for the three-core / react-three
+      // chunks into the entry <head>, and the SSG prerender copies that head onto
+      // all ~106 routes — so text routes (sources, about, privacy, learn) eagerly
+      // fetch ~1.1 MB of 3D vendor they never execute. Those chunks are lazy
+      // (BallScene's dynamic import), gated by WebGL + in-view, already dropped from
+      // the SW precache, and HTTP-cached a year by _headers; on the ball routes they
+      // now load on demand a beat later, with no effect on first paint (the ball is
+      // never the LCP). Net: text routes stop downloading the 3D bundle. rolldown-
+      // runtime and per-route chunk preloads are untouched.
+      const stripThreePreload = (html: string) =>
+        html.replace(/<link\b[^>]*\bmodulepreload\b[^>]*>/g, (tag) =>
+          /(?:three-core|react-three|three-support)-[\w-]*\.js/.test(tag) ? '' : tag,
+        )
+      const walkHtml = async (dir: string): Promise<string[]> => {
+        const entries = await readdir(dir, { withFileTypes: true })
+        const nested = await Promise.all(
+          entries.map((e) => {
+            const full = path.join(dir, e.name)
+            if (e.isDirectory()) return walkHtml(full)
+            return Promise.resolve(e.name.endsWith('.html') ? [full] : [])
+          }),
+        )
+        return nested.flat()
+      }
+      for (const file of await walkHtml(outDir)) {
+        const html = await readFile(file, 'utf8')
+        const next = stripThreePreload(html)
+        if (next !== html) await writeFile(file, next)
+      }
     },
   }
 }
@@ -159,12 +190,15 @@ export default defineConfig({
     globals: true,
     css: false,
     restoreMocks: true,
-    // jsdom + the 3D imports make the first full-page render pay a heavy one-time
-    // transform cost in the parallel suite. Keep the timeout aligned with the
-    // current route/form tests instead of failing on cold-start work.
+    // The dominant cost is jsdom environment creation (~31s across the suite), paid
+    // once per file — so it parallelizes cleanly across workers. The 3D/R3F code does
+    // NOT load in tests: BallStage falls back to the 2D seam schematic when jsdom
+    // reports no WebGL, so the lazy BallScene (the sole importer of three/@react-three)
+    // is never imported. Run files in parallel with headroom on the 8-core machine;
+    // the generous timeout stays as a safety net for async-heavy route/form tests.
     testTimeout: 60000,
-    fileParallelism: false,
-    maxWorkers: 1,
+    fileParallelism: true,
+    maxWorkers: 4,
     exclude: [...configDefaults.exclude, 'pitch-atlas-softball/**'],
     // Inline react-tweet so Vite transforms it (and no-ops its bundled CSS module
     // imports under css:false); otherwise Node tries to load .module.css as JS.
