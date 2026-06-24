@@ -51,16 +51,21 @@ const VALUE_ROWS = [
   },
   {
     stamp: '2',
+    label: 'The mind has weight',
+    text: 'A pitcher\'s approach, conviction, and feel can belong in the record when the source can carry it. Mentality is craft, not a replacement for evidence.',
+  },
+  {
+    stamp: '3',
     label: 'The source is visible',
     text: 'A claim does not get smoothed into authority. Official data, pitcher words, coach observation, analysis, secondhand record, and community notes all wear different labels.',
   },
   {
-    stamp: '3',
+    stamp: '4',
     label: 'Variants are allowed to disagree',
     text: 'The atlas does not crown one correct grip. It lets credible versions sit side by side, because pitchers do not all have the same hand, release, or feel cue.',
   },
   {
-    stamp: '4',
+    stamp: '5',
     label: 'Missingness stays visible',
     text: 'If the grip record is thin, the page says so. A blank file with honest edges is better than a full card padded with fake certainty.',
   },
@@ -69,7 +74,7 @@ const VALUE_ROWS = [
 const TRUTH_ROWS = [
   {
     label: 'Known',
-    text: 'Pitch Atlas is a static, sourced field manual for grips, pitch variants, craftsmen, lost pitches, and shape language. Its live pages carry source and confidence labels.',
+    text: 'Pitch Atlas is a sourced field manual for grips, pitch variants, craftsmen, lost pitches, and shape language. The pitch records are static, and the live pages carry source and confidence labels.',
   },
   {
     label: 'Unknown',
@@ -93,7 +98,7 @@ export function AboutPage() {
   useSeoMeta({
     title: `About ${SITE.siteName}: Why the Grip Comes First`,
     description:
-      'Pitch Atlas is a sourced field manual for pitching grips: grip-first, provenance-labeled, and honest about what each source can prove.',
+      'Pitch Atlas is a sourced field manual for pitch craft: grip-first, provenance-labeled, and honest about what each source can prove.',
     ogTitle: `About ${SITE.siteName}: why the grip comes first`,
     ogDescription: 'The grip-first field manual for pitch craft. Sourced, not corrected.',
     ogUrl: canonicalUrl('/about'),
@@ -108,7 +113,7 @@ export function AboutPage() {
           url: canonicalUrl('/about'),
           name: 'About Pitch Atlas: Why the Grip Comes First',
           description:
-            'Pitch Atlas is a sourced field manual for pitching grips: grip-first, provenance-labeled, and honest about what each source can prove.',
+            'Pitch Atlas is a sourced field manual for pitch craft: grip-first, provenance-labeled, and honest about what each source can prove.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'About' }],
         })}
       />
@@ -122,8 +127,8 @@ export function AboutPage() {
         sub={
           <p>
             Pitch Atlas is a sourced field manual for pitch craft. It starts with the grip, then files
-            the shape, the person, and the source label that tells you how much weight the claim can
-            carry.
+            the shape, the person, the approach, and the source label that tells you how much weight
+            the claim can carry.
           </p>
         }
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'About' }]} />}
@@ -190,11 +195,23 @@ export function AboutPage() {
           <div className="md:col-span-5">
             <p className="rfx-skick">Where it came from</p>
             <h2 className="rfx-stitle mt-3 max-w-[14ch] text-[clamp(28px,5vw,52px)]">
-              It started as one hand on one ball.
+              The line between thrower and pitcher.
             </h2>
           </div>
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
+              Austin remembers meeting Roger Clemens during Parents&apos; Weekend at Rio on West 6th in
+              Austin. He told Clemens he had modeled his game after Clemens and Nolan Ryan, from
+              mechanics to mentality. Clemens asked the difference. Austin&apos;s answer was simple:
+              Ryan was a thrower. Clemens was a pitcher.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
+              They bumped fists. Clemens bought Austin and his mother a round. The point was not
+              celebrity proximity or a ranking of two great arms. It was the line the atlas still
+              works: force is only part of pitch craft. The grip, the approach, and the mind under
+              pressure have to be preserved too.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The first grips filed here are photographs of the builder&apos;s own hand. Austin H.
               worked a four-pitch mix in games: four-seam, two-seam, a three-finger changeup, and a
               12-6 curve, with a splitter that rode along for certain spots. There is no circle
@@ -202,11 +219,10 @@ export function AboutPage() {
               instead of faking a textbook page.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              That account seeded the whole source model. It is filed as a pitcher&apos;s own words,
-              not tracked data, because that is what it is. And it surfaced the gap the atlas now
-              works: where the pads sat, which seam the fingers rode, why one pitch stayed in the
-              pocket and another never fit. That knowledge lived in exactly one place, the hand
-              that learned it, and nobody was writing it down.
+              That account seeded the source model. It is filed as a pitcher&apos;s own words, not
+              tracked data, because that is what it is. It surfaced the gap the atlas now works:
+              where the pads sat, which seam the fingers rode, why one pitch stayed in the pocket
+              and another never fit.
             </p>
             <p className="mt-6">
               <Link

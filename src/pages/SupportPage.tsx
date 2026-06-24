@@ -32,7 +32,7 @@ export function SupportPage() {
   useSeoMeta({
     title: `Support | ${SITE.siteName}`,
     description:
-      'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitching grips.',
+      'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitch craft.',
     ogTitle: `Support | ${SITE.siteName}`,
     ogDescription: 'Report a problem, delete your account, or question a claim in the field manual.',
     ogUrl: canonicalUrl('/support'),
@@ -47,7 +47,7 @@ export function SupportPage() {
           url: canonicalUrl('/support'),
           name: 'Support',
           description:
-            'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitching grips.',
+            'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitch craft.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'Support' }],
         })}
       />

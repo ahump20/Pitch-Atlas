@@ -13,7 +13,7 @@ export const SITE = {
   /** Short category line under the wordmark. */
   moduleName: 'Field manual',
   /** The product promise, used in the hero and meta. */
-  positioning: 'The living field manual for pitching grips.',
+  positioning: 'The living field manual for pitch craft.',
   canonicalDomain: 'https://pitch-atlas.com',
   previewDomain: 'https://pitch-atlas.pages.dev',
   tagline: 'The pitch, in your hand.',

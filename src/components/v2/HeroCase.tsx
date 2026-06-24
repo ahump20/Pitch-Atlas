@@ -48,8 +48,9 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             className="v2-enter mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base"
             style={{ '--i': 2 } as React.CSSProperties}
           >
-            Hold the grip, read the shape in plain words, check the source on every line — sourced, not
-            corrected. The chrome is decoration; the reading is not.
+            Hold the grip, read the shape in plain words, check the source on every line. Pitch
+            Atlas preserves the art before it disappears: grip first, claim labeled, no invented
+            certainty.
           </p>
 
           <div
@@ -57,10 +58,10 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             style={{ '--i': 3 } as React.CSSProperties}
           >
             <Link to="/repertoire" className="v2-cta">
-              Open the set <span aria-hidden="true">→</span>
+              Open the Pitch Index <span aria-hidden="true">→</span>
             </Link>
-            <Link to={`/pitch/${featured.display.slug}`} className="v2-cta is-ghost">
-              Read a specimen <span aria-hidden="true">→</span>
+            <Link to="/about" className="v2-cta is-ghost">
+              Read the mission <span aria-hidden="true">→</span>
             </Link>
           </div>
 
