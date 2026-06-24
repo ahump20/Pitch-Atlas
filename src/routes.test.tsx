@@ -87,9 +87,15 @@ describe('Atlas home', () => {
   it('shows one clear primary nav, not the old per-pitch strip', async () => {
     renderRoute('/')
     const nav = await screen.findByRole('navigation', { name: 'Primary' }, COLD_LOAD)
-    for (const label of ['Pitch Index', 'Craftsmen', 'Sources']) {
+    // the simplified bar leads with the four content pillars
+    for (const label of ['Pitch Index', 'Grips', 'Softball', 'Learn']) {
       expect(within(nav).getByText(label)).toBeInTheDocument()
     }
+    // the rest of the atlas is one click away under a single "More" disclosure
+    expect(within(nav).getByRole('button', { name: /More/ })).toBeInTheDocument()
+    // demoted destinations stay reachable without JS — rendered as plain footer links
+    expect(screen.getAllByText('Sources').length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Lost Pitches').length).toBeGreaterThan(0)
     // the redundant per-pitch specimen strip is gone
     expect(screen.queryByRole('navigation', { name: 'Specimen index' })).not.toBeInTheDocument()
   })

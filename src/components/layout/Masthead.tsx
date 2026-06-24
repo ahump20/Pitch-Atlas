@@ -4,31 +4,36 @@ import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
 
 /*
-  The masthead on the warm field: scorebook paper with a leather rule under it,
-  the diamond + wordmark lockup in ink, one clear primary nav, the source
-  principle on the far right. The active page reads in seam red; the rest sit in
-  slate ink. The mobile menu drops on the deeper cream with ink hairlines.
+  The masthead on the void field: the diamond + wordmark lockup, ONE clear
+  primary nav of four content pillars, and a single "More" disclosure holding the
+  rest of the atlas (Craftsmen, Lost Pitches, Sources, About) plus the interactive
+  Tools. The active page reads in refractor cyan; the rest sit in slate ink. The
+  "Sourced, not corrected" principle is no longer parked in the action zone — it
+  lives in the footer and on the specimen UI — so navigation owns the bar.
 */
 
-// The primary bar holds content destinations only — every wing of the manual,
-// including Lost Pitches (previously reachable on desktop only through body
-// links). The interactive tools live one click away in the Tools disclosure.
+// The primary bar: the four content pillars, ordered by visitor value. The front
+// door (Pitch Index) leads; everything else lives one click away under "More".
 const NAV: { label: string; to: string }[] = [
   { label: 'Pitch Index', to: '/repertoire' },
+  { label: 'Grips', to: '/grips' },
   { label: 'Softball', to: '/softball' },
   { label: 'Learn', to: '/learn' },
-  { label: 'Grips', to: '/grips' },
-  { label: 'Craftsmen', to: '/craftsmen' },
-  { label: 'Lost Pitches', to: '/lost-pitches' },
-  { label: 'Sources', to: '/sources' },
+]
+
+// "More" — the rest of the atlas, grouped. Content destinations first, then the
+// interactive tools. Demoted from the bar to cut sprawl; every one is still a
+// plain <a> in the prerendered footer, so reachability never depends on JS.
+const MORE_CONTENT: { label: string; to: string; note: string }[] = [
+  { label: 'Craftsmen', to: '/craftsmen', note: 'The arms that named the pitches' },
+  { label: 'Lost Pitches', to: '/lost-pitches', note: 'The banned and faded wing' },
+  { label: 'Sources', to: '/sources', note: 'Every citation, in one ledger' },
+  { label: 'About', to: '/about', note: 'What the atlas is, and is not' },
 ]
 
 // The interactive tools — reachable from the body of pages, but easy to miss.
-// Grouped behind one "Tools" disclosure on the desktop bar and a labelled
-// section in the mobile sheet so the shape lab, the shape map, and the
-// comparators are always one click from anywhere. Shape Lab is a sandbox tool,
-// so it lives here with its kin rather than crowding the content bar. "Compare
-// two grips" deep-links to the comparator itself, not the top of the library.
+// Grouped under the "More" disclosure with the content destinations. "Compare two
+// grips" deep-links to the comparator itself, not the top of the library.
 const TOOLS: { label: string; to: string; note: string }[] = [
   { label: 'Shape Lab', to: '/sandbox', note: 'Dial a grip and watch the shape' },
   { label: 'Shape map', to: '/movement-map', note: 'Every pitch, plotted by direction' },
@@ -36,16 +41,8 @@ const TOOLS: { label: string; to: string; note: string }[] = [
   { label: 'Compare two grips', to: '/grips#grip-compare', note: 'Two grips in the hand at once' },
 ]
 
-const MOBILE_NAV: { label: string; to: string }[] = [
-  { label: 'Pitch Index', to: '/repertoire' },
-  { label: 'Softball', to: '/softball' },
-  { label: 'Learn', to: '/learn' },
-  { label: 'Grips', to: '/grips' },
-  { label: 'Craftsmen', to: '/craftsmen' },
-  { label: 'Lost Pitches', to: '/lost-pitches' },
-  { label: 'Sources', to: '/sources' },
-  { label: 'About', to: '/about' },
-]
+// everything reachable through the "More" trigger — drives active-state + mobile
+const MORE_ALL = [...MORE_CONTENT, ...TOOLS]
 
 export function Masthead() {
   const { pathname } = useLocation()
@@ -55,20 +52,20 @@ export function Masthead() {
   const navRef = useRef<HTMLElement>(null)
   const wasOpen = useRef(false)
 
-  // Desktop "Tools" disclosure. Closes on route change, on Escape, and on a
-  // click outside the group so it never strands focus or floats over the page.
-  const [toolsMenu, setToolsMenu] = useState({ open: false, pathname })
-  const toolsOpen = toolsMenu.open && toolsMenu.pathname === pathname
-  const toolsRef = useRef<HTMLDivElement>(null)
-  const toolsActive = TOOLS.some((t) => t.to === pathname)
+  // Desktop "More" disclosure. Closes on route change, on Escape, and on a click
+  // outside the group so it never strands focus or floats over the page.
+  const [moreMenu, setMoreMenu] = useState({ open: false, pathname })
+  const moreOpen = moreMenu.open && moreMenu.pathname === pathname
+  const moreRef = useRef<HTMLDivElement>(null)
+  const moreActive = MORE_ALL.some((t) => t.to === pathname)
 
   useEffect(() => {
-    if (!toolsOpen) return
+    if (!moreOpen) return
     const onPointerDown = (event: MouseEvent) => {
-      if (!toolsRef.current?.contains(event.target as Node)) setToolsMenu({ open: false, pathname })
+      if (!moreRef.current?.contains(event.target as Node)) setMoreMenu({ open: false, pathname })
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setToolsMenu({ open: false, pathname })
+      if (event.key === 'Escape') setMoreMenu({ open: false, pathname })
     }
     document.addEventListener('mousedown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -76,7 +73,7 @@ export function Masthead() {
       document.removeEventListener('mousedown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [toolsOpen, pathname])
+  }, [moreOpen, pathname])
 
   useEffect(() => {
     if (!open) return
@@ -107,7 +104,7 @@ export function Masthead() {
           <BrandMark size="sm" />
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-6 md:flex lg:gap-8">
+        <nav aria-label="Primary" className="hidden items-center gap-7 md:flex lg:gap-9">
           {NAV.map((n) => (
             <NavLink
               key={n.to}
@@ -122,43 +119,63 @@ export function Masthead() {
             </NavLink>
           ))}
 
-          <div ref={toolsRef} className="relative">
+          <div ref={moreRef} className="relative">
             <button
               type="button"
-              aria-expanded={toolsOpen}
-              aria-controls="tools-menu"
+              aria-expanded={moreOpen}
+              aria-controls="more-menu"
               onClick={() =>
-                setToolsMenu((state) => ({
+                setMoreMenu((state) => ({
                   open: !(state.open && state.pathname === pathname),
                   pathname,
                 }))
               }
               className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
-                toolsActive ? 'text-cyan' : 'text-ink-2'
+                moreActive ? 'text-cyan' : 'text-ink-2'
               }`}
             >
-              Tools
+              More
               <svg
                 width="10"
                 height="10"
                 viewBox="0 0 10 10"
                 aria-hidden="true"
-                className={`transition-transform ${toolsOpen ? 'rotate-180' : ''}`}
+                className={`transition-transform ${moreOpen ? 'rotate-180' : ''}`}
               >
                 <path d="M2 3.5 L5 6.5 L8 3.5" stroke="currentColor" strokeWidth="1.2" fill="none" strokeLinecap="round" />
               </svg>
             </button>
-            {toolsOpen ? (
+            {moreOpen ? (
               <div
-                id="tools-menu"
-                className="overlay-frost-cream overlay-settle absolute right-0 top-[calc(100%+0.75rem)] z-40 w-64 rounded-sm border border-ink/15 p-1.5 shadow-lg"
+                id="more-menu"
+                className="overlay-frost-cream overlay-settle absolute right-0 top-[calc(100%+0.75rem)] z-40 w-72 rounded-sm border border-ink/15 p-1.5 shadow-lg"
               >
+                <p className="mono-label px-3 pb-1.5 pt-2 text-ink-3">The rest of the atlas</p>
+                <ul className="flex flex-col">
+                  {MORE_CONTENT.map((t) => (
+                    <li key={`${t.to}-${t.label}`}>
+                      <NavLink
+                        to={t.to}
+                        onClick={() => setMoreMenu({ open: false, pathname })}
+                        className={({ isActive }) =>
+                          `block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
+                            isActive ? 'text-cyan' : 'text-ink-2'
+                          }`
+                        }
+                      >
+                        <span className="block font-mono text-xs uppercase tracking-[0.1em]">{t.label}</span>
+                        <span className="mt-0.5 block text-[0.78rem] leading-snug text-ink-3">{t.note}</span>
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mono-label mt-1 border-t border-ink/10 px-3 pb-1.5 pt-3 text-ink-3">Tools</p>
                 <ul className="flex flex-col">
                   {TOOLS.map((t) => (
                     <li key={`${t.to}-${t.label}`}>
                       <NavLink
                         to={t.to}
-                        onClick={() => setToolsMenu({ open: false, pathname })}
+                        onClick={() => setMoreMenu({ open: false, pathname })}
                         className={({ isActive }) =>
                           `block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
                             isActive ? 'text-cyan' : 'text-ink-2'
@@ -177,7 +194,6 @@ export function Masthead() {
         </nav>
 
         <div className="flex items-center gap-4">
-          <span className="mono-label hidden xl:inline">{SITE.sourcePrinciple}</span>
           <button
             ref={toggleRef}
             type="button"
@@ -207,7 +223,7 @@ export function Masthead() {
           className="overlay-frost-cream overlay-settle border-t border-ink/12 outline-none md:hidden"
         >
           <ul className="mx-auto flex max-w-[1320px] flex-col px-5 py-2">
-            {MOBILE_NAV.map((n) => (
+            {NAV.map((n) => (
               <li key={n.to}>
                 <NavLink
                   to={n.to}
@@ -222,6 +238,27 @@ export function Masthead() {
                 </NavLink>
               </li>
             ))}
+
+            <li className="pt-4">
+              <h2 className="mono-label text-ink-3">The rest of the atlas</h2>
+              <ul className="mt-1 flex flex-col">
+                {MORE_CONTENT.map((t) => (
+                  <li key={`${t.to}-${t.label}`}>
+                    <NavLink
+                      to={t.to}
+                      onClick={() => setMenu({ open: false, pathname })}
+                      className={({ isActive }) =>
+                        `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                          isActive ? 'text-cyan' : 'text-ink-2'
+                        }`
+                      }
+                    >
+                      {t.label}
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            </li>
 
             <li className="pt-4">
               <h2 className="mono-label text-ink-3">Tools</h2>
