@@ -4,6 +4,7 @@ import { PITCHES } from '../../data/pitches'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
 import { ClaimCard } from '../provenance/ClaimCard'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · Sourced, not corrected. The principle as the feature, not a footnote.
@@ -47,7 +48,8 @@ export function ProvenanceStrip() {
             the specimens move through it. */}
         <div className="md:col-span-7 md:self-start">
           <div className="md:sticky md:top-24">
-            <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
+            <ChapterMark n="08" name="The Model" />
+            <h2 className="rfx-athletic v2-display mt-4 max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
               Sourced, not corrected.
             </h2>
             <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">

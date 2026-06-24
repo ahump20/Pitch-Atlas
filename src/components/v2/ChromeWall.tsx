@@ -12,6 +12,7 @@ import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
 import { RefractorBall } from '../refractor/RefractorBall'
 import { familyCrumb } from '../refractor/familyCrumb'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The Filed Set, as a chrome wall. Each pitch is a matte Topps-Now mount
@@ -163,7 +164,8 @@ export function ChromeWall() {
   return (
     <section id="set" className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+        <ChapterMark n="03" name="The Filed Set" />
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <h2 className="rfx-athletic v2-display text-[clamp(28px,5vw,52px)] leading-[0.94]">
             The filed set.
           </h2>

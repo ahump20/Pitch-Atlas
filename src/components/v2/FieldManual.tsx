@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { WINGS } from '../../data/knowledge'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The field manual. Not just what each pitch is — how the craft works
@@ -12,7 +13,8 @@ export function FieldManual() {
   return (
     <section className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-3">
+        <ChapterMark n="07" name="The Field Manual" />
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
           <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
             The field manual.
           </h2>

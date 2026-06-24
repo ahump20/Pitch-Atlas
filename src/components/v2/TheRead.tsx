@@ -7,6 +7,7 @@ import {
 import { accentForSlug } from '../refractor/accents'
 import { BallStage } from '../ball/BallStage'
 import { RefractorBall } from '../refractor/RefractorBall'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The Read. The two halves of a pitch, side by side: how it's held and how
@@ -45,7 +46,8 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <h2 className="rfx-athletic v2-display max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
+        <ChapterMark n="04" name="The Read" />
+        <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
           How it's held. How it moves.
         </h2>
         <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
