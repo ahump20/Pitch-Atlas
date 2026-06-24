@@ -65,8 +65,8 @@ export function ComparePage() {
             .
           </p>
           <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
-            The measured tunnel — release points, separation in inches, the tracked record — lives with
-            the record-keepers:{' '}
+            The tracked tunnel data (release points, separation in inches, the record) lives with the
+            record-keepers. Pitch Atlas does not estimate it here:{' '}
             <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
               Baseball Savant &#8599;
             </a>{' '}

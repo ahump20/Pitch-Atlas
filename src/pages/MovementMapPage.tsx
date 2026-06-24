@@ -60,8 +60,8 @@ export function MovementMapPage() {
             .
           </p>
           <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
-            Want the measured version — induced break, spin rates, the tracked numbers this page tells in
-            shape language? That craft has its own keepers:{' '}
+            Want the tracked version: induced break, spin rates, the numbers this page refuses to fake?
+            That craft has its own keepers:{' '}
             <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
               Baseball Savant ↗
             </a>{' '}

@@ -16,6 +16,7 @@ export default tseslint.config(
       '.claude',
       '.codex',
       '.qa-shots',
+      '.remember',
       '.gemini',
       '.github/skills',
       'Pitch-Atlas-iOS',
