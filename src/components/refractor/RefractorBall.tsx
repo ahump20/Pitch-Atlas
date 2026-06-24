@@ -147,6 +147,11 @@ export function RefractorBall({
           <stop offset="90%" stopColor={accent.c3} stopOpacity="0.72" />
           <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
         </radialGradient>
+        <radialGradient id={`sun-${id}`} cx="50%" cy="48%" r="56%">
+          <stop offset="0%" stopColor={accent.c3} stopOpacity="0.18" />
+          <stop offset="56%" stopColor={accent.c3} stopOpacity="0.06" />
+          <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
+        </radialGradient>
         <radialGradient id={`halo-${id}`} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor={accent.c3} stopOpacity="0.66" />
           <stop offset="60%" stopColor={accent.c3} stopOpacity="0.14" />
@@ -161,6 +166,22 @@ export function RefractorBall({
         </filter>
       </defs>
 
+      <circle cx={cx} cy={cy} r={r + 50} fill={`url(#sun-${id})`} />
+      <g className="rfx-ball-sunburst" aria-hidden="true">
+        {rays.map((ry, i) => (
+          <line
+            key={`sun${i}`}
+            x1={ry.x1.toFixed(1)}
+            y1={ry.y1.toFixed(1)}
+            x2={ry.x2.toFixed(1)}
+            y2={ry.y2.toFixed(1)}
+            stroke={accent.c3}
+            strokeWidth={(ry.w * 0.48).toFixed(2)}
+            strokeLinecap="round"
+            opacity={(ry.o * 0.22).toFixed(2)}
+          />
+        ))}
+      </g>
       <ellipse cx={cx} cy={cy + r + 8} rx={r * 0.8} ry={12} fill="#000" opacity="0.45" filter={`url(#glow-${id})`} />
       {showHalo ? (
         <>
