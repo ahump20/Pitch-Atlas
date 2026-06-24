@@ -1,4 +1,5 @@
 import { WaxPack, WaxPackIdleStyles, type WaxPackTool } from '../sections/WaxPack'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The tools, sealed. The craft map made playable — the four interactive
@@ -18,7 +19,8 @@ export function ToolsLab() {
   return (
     <section className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <div className="flex flex-wrap items-end justify-between gap-3">
+        <ChapterMark n="06" name="The Tools" />
+        <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
           <h2 className="rfx-athletic v2-display max-w-[14ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
             The tools.
           </h2>

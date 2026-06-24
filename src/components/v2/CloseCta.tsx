@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The close. One centered call back into the atlas, then the honesty
@@ -37,7 +38,8 @@ export function CloseCta() {
     <section className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="mx-auto max-w-[760px] px-5 pt-24 text-center md:px-8 md:pt-32">
         <div className="v2-close-converge">
-          <h2 className="rfx-athletic v2-display text-[clamp(32px,6vw,64px)] leading-[0.92]">
+          <ChapterMark n="09" name="The Atlas" className="justify-center" />
+          <h2 className="rfx-athletic v2-display mt-5 text-[clamp(32px,6vw,64px)] leading-[0.92]">
             Open the whole atlas.
           </h2>
           <p className="mx-auto mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-bone-2">

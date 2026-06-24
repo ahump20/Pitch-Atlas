@@ -1,6 +1,7 @@
 import type { PitchAtlasEntry } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
 import { SeamSchematic } from '../fallback/SeamSchematic'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The Refraction. The honest bridge from the cinematic ball to the filed
@@ -51,7 +52,8 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
 
         {/* the read */}
         <div className="order-1 md:order-2">
-          <h2 className="rfx-athletic v2-display text-[clamp(28px,4.6vw,46px)] leading-[0.96]">
+          <ChapterMark n="02" name="The Refraction" />
+          <h2 className="rfx-athletic v2-display mt-4 text-[clamp(28px,4.6vw,46px)] leading-[0.96]">
             One seam. Two media.
           </h2>
           <p className="mt-5 max-w-[48ch] text-[15px] leading-relaxed text-bone-2">

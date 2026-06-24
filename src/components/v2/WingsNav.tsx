@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { CRAFTSMEN } from '../../data/craftsmen'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { DOCUMENTATION_META, type DocumentationTier } from '../../data/types'
+import { ChapterMark } from './ChapterMark'
 
 /*
   v2 · The other doors. The hero pulls one specimen and the wall files the set;
@@ -30,7 +31,8 @@ export function WingsNav() {
   return (
     <section className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <h2 className="rfx-athletic v2-display max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
+        <ChapterMark n="05" name="The Wings" />
+        <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
           The other doors.
         </h2>
         <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
