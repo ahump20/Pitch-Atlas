@@ -26,6 +26,7 @@ import '@fontsource/anton/400.css'
 import 'react-tweet/theme.css'
 
 import './index.css'
+import './return-wave.css'
 import { routes } from './routes'
 import { ReloadPrompt } from './components/pwa/ReloadPrompt'
 
