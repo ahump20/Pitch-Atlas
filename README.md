@@ -1,8 +1,12 @@
 # Pitch Atlas
 
-A persistent, sourced, interactive reference for how pitches are gripped and thrown.
+Austin Humphrey's grip-first field manual for pitch craft: how pitchers hold, describe, preserve, and pass down the art.
 
-The knowledge of how a pitch works is scattered and ephemeral. The best footage has no structure; every grip reference is a flat photo or a PDF. Pitch Atlas is the layer underneath that footage: a structured archive where each pitch carries an original interactive specimen and every claim wears the label of where it came from.
+The knowledge of how a pitch works is scattered and easy to lose. The best footage has no structure. A grip reference is often a flat photo, a PDF, a clip, or a coach's memory. Pitch Atlas is the layer underneath that footage: a structured archive where each pitch carries an original interactive specimen and every claim wears the label of where it came from.
+
+## Mission
+
+Pitch Atlas is built on a simple idea: the collective progression, careful documentation, and perpetual preservation of how pitchers grip and approach the artistry of the game — keeping the oral techniques and traditions of our forefathers free and accessible for the generations to come. Thumb pressure, seam feel, mental approach, variants that fit real hands, and the source behind each claim. It is not here to crown one correct grip. It is here to keep the record honest enough that the next pitcher has a sourced place to start.
 
 ## The model: sourced, not corrected
 
