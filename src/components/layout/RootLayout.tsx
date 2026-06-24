@@ -9,12 +9,12 @@ import { Toaster } from '../ui/sonner'
 import { TooltipProvider } from '../ui/tooltip'
 
 /*
-  The shell every route renders inside. The site sits on the warm field — aged
-  cream scorebook paper with faint ink rules — and dark lives only inside the
-  scoped .scene-coal sections (the foil-viewing theaters). The masthead and the
-  leather footer persist, and the Outlet is the chapter. A route change resets
-  scroll to the top; a hash (a deep link into a section) scrolls there once it
-  is laid out.
+  The shell every route renders inside. The site now sits on the dark refractor
+  void end-to-end: RootLayout scopes every route inside .scene-coal so legacy
+  Heritage utilities are remapped to bone-on-coal while migrated pages keep their
+  rfx chrome. The masthead and footer persist, and the Outlet is the chapter. A
+  route change resets scroll to the top; a hash (a deep link into a section)
+  scrolls there once it is laid out.
 */
 
 function ScrollManager() {
@@ -40,6 +40,8 @@ function RouteHead() {
     script: [
       {
         type: 'application/ld+json',
+        // The home CreativeWork node ships only on '/', the published homepage; every
+        // other route carries the WebSite + Organization + SearchAction graph alone.
         innerHTML: JSON.stringify(siteJsonLd(pathname === '/')),
         // Stable key so unhead REPLACES this node on client navigation instead of
         // appending a second site-level JSON-LD script on every route change.
@@ -53,8 +55,8 @@ function RouteHead() {
 
 export function RootLayout() {
   return (
-    <div className="min-h-screen bg-paper text-ink">
-      <div className="field-rules" aria-hidden="true" />
+    <div className="scene-coal min-h-screen bg-paper text-ink">
+      <div className="field-rules rfx-dotgrid" aria-hidden="true" />
       {/* the film pass: one fixed multiply layer of grain over the whole page,
           breathing slowly at rest (the CSS gates it behind reduced-motion) */}
       <div className="grain-overlay" aria-hidden="true" />

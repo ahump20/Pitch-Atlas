@@ -72,7 +72,7 @@ function makeGradientTexture(): THREE.CanvasTexture {
   const g = ctx.createLinearGradient(0, 0, 0, h)
   g.addColorStop(0, '#3a3128') // warm dusk overhead
   g.addColorStop(0.42, '#6a5f50')
-  g.addColorStop(0.52, '#9b8d78') // bright horizon band -> believable leather rim light
+  g.addColorStop(0.52, '#a89478') // bright horizon band -> believable leather rim light
   g.addColorStop(0.62, '#5a5448')
   g.addColorStop(1, '#0c0d12') // cool stage underfoot
   ctx.fillStyle = g
@@ -108,8 +108,9 @@ export function Studio() {
   return (
     <>
       <Environment map={envRT.texture} background={false} />
-      {/* warm key: crisp specular roll-off from upper-front-right */}
-      <directionalLight color="#FFF1DD" intensity={2.7} position={[3.4, 4.6, 4.2]} />
+      {/* warm key: crisp specular roll-off, lower and more frontal so the pebble
+          grain and the raised seam read with depth, not catalog-flat */}
+      <directionalLight color="#FFF1DD" intensity={2.9} position={[2.6, 3.2, 5.2]} />
       {/* cool fill: low and to the left, lifts the shade side without flattening */}
       <directionalLight color="#C8DAF2" intensity={0.55} position={[-4.2, -1.4, 2.2]} />
       {/* tight rim: behind and low, raking across the seam to glint the waxed thread */}

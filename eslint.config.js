@@ -15,6 +15,11 @@ export default tseslint.config(
       'pybaseball',
       '.gemini',
       '.github/skills',
+      // design-sync infra: previews import the package via a compile-time shim
+      // ('pitch-atlas'), generated bundle + staged converter aren't app source.
+      '.design-sync',
+      '.ds-sync',
+      'ds-bundle',
     ],
   },
   {

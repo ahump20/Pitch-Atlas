@@ -13,6 +13,10 @@
 /shape-lab/    /sandbox 301
 /lost-pitches/smokey-joe-williams-velocity /lost-pitches/smokey-joe-williams-fastball 301
 /lost-pitches/smokey-joe-williams-velocity/ /lost-pitches/smokey-joe-williams-fastball 301
+# The /v2 "Refractor Case" prototype was promoted to the home at /. Anyone holding
+# the old prototype link lands on the live home instead of the 404.
+/v2  / 301
+/v2/ / 301
 
 # No SPA catch-all. Every real route is prerendered to its own HTML file and is
 # served directly; anything else falls through to 404.html (the prerendered
