@@ -128,6 +128,8 @@ export function RefractorCard({
   } as CSSProperties
 
   const CrumbIcon = crumb?.Icon
+  const sourceChip = confidence ? `${confidence.label}${confidence.approx ? ' · approx' : ''}` : null
+  const editionChip = vnum ? (gold ? '1 of 1' : `No. ${vnum}`) : null
 
   /* the live foil mounts only when it can actually run AND is near the
      viewport; everyone else keeps the CSS card untouched (it is the
@@ -199,6 +201,29 @@ export function RefractorCard({
         </div>
 
         <div className="rfx-banner">{name}</div>
+
+        {crumb || sourceChip || editionChip ? (
+          <dl className="rfx-attrchips" aria-label="Specimen attributes">
+            {crumb ? (
+              <div>
+                <dt>Family</dt>
+                <dd>{crumb.label}</dd>
+              </div>
+            ) : null}
+            {sourceChip ? (
+              <div>
+                <dt>Source tier</dt>
+                <dd>{sourceChip}</dd>
+              </div>
+            ) : null}
+            {editionChip ? (
+              <div>
+                <dt>Edition</dt>
+                <dd>{editionChip}</dd>
+              </div>
+            ) : null}
+          </dl>
+        ) : null}
 
         <div className="rfx-content">
           {shape || cue ? (
