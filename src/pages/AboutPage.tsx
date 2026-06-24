@@ -359,7 +359,7 @@ export function AboutPage() {
               >
                 <p
                   className="font-mono text-[10px] uppercase tracking-[0.16em]"
-                  style={{ color: i === 1 ? '#C8102E' : '#7A4A2E' }}
+                  style={{ color: i === 1 ? 'var(--color-seam)' : 'var(--kicker)' }}
                 >
                   {row.label}
                 </p>

@@ -114,7 +114,7 @@ export function LostPitchChapter() {
       />
       <section className="on-stage relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.1]" aria-hidden="true">
-          <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(200,16,46,0.15),transparent_42%),linear-gradient(115deg,rgba(242,236,221,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
+          <div className="h-full w-full bg-[radial-gradient(circle_at_72%_34%,rgba(200,16,46,0.15),transparent_42%),linear-gradient(115deg,rgba(255,255,255,0.06)_0_1px,transparent_1px_100%)] bg-[size:auto,34px_34px]" />
         </div>
         <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
           <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
