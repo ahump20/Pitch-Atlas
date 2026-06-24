@@ -8,6 +8,7 @@ import {
 } from '../../data/types'
 import { PITCHES } from '../../data/pitches'
 import { INDEX_SCOPE } from '../../lib/index-scope'
+import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
 import { RefractorBall } from '../refractor/RefractorBall'
@@ -108,6 +109,8 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   <span className="rfx-scout-name">{display.shortName}</span>
                   <span className="rfx-scout-no">Scout file · No. {display.specimenNo}</span>
                 </div>
+
+                <ScoutMovementWheel motion={motion} sourceTier={CONFIDENCE_META[conf].label} />
 
                 <div className="rfx-scout-rows">
                   <div className="rfx-scout-row">
