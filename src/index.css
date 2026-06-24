@@ -601,12 +601,25 @@
   /* the woven check in the negative space — bone-warm threads with a whisper of
      the pitch accent so the per-pitch triad still breathes through. */
   .rfx-field::before {
-    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .2; mix-blend-mode: screen;
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .28; mix-blend-mode: screen;
     background:
       repeating-linear-gradient(45deg, rgba(214,205,186,.55) 0 2px, transparent 2px 11px),
       repeating-linear-gradient(-45deg, rgba(214,205,186,.4) 0 2px, transparent 2px 11px),
       repeating-linear-gradient(45deg, rgba(214,205,186,.22) 0 1px, transparent 1px 5.5px),
-      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 45%, transparent) 0 1px, transparent 1px 22px);
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 45%, transparent) 0 1px, transparent 1px 22px),
+      var(--foil);
+    background-size: auto, auto, auto, auto, 220% 220%;
+    background-position: 0 0, 0 0, 0 0, 0 0, var(--mx) var(--my);
+  }
+  /* the gold 1/1 shimmers gold in its negative space, never rainbow */
+  .rfx-card.is-gold .rfx-field::before {
+    opacity: .2;
+    background:
+      repeating-linear-gradient(45deg, rgba(255,240,194,.4) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(-45deg, rgba(255,240,194,.3) 0 2px, transparent 2px 11px),
+      var(--gold);
+    background-size: auto, auto, 220% 220%;
+    background-position: 0 0, 0 0, var(--mx) var(--my);
   }
   /* the light raking the card face at the pointer — micro-scratches catch first */
   .rfx-field::after {
@@ -658,7 +671,7 @@
   /* the varsity number — the reference card's big block 33 is the model: large,
      gold-shadowed, structural rather than a floating chip. */
   .rfx-vnum {
-    position: absolute; top: 4px; left: 6px; z-index: 5;
+    position: absolute; top: 4px; right: 6px; z-index: 5;
     display: grid; place-items: center; min-width: 38px; height: 40px; padding: 0 7px;
     border-radius: 10px;
     background: linear-gradient(160deg, color-mix(in srgb, var(--c3,#37D6FF) 42%, #0C1016) 0%, #0A0D12 72%);
@@ -672,8 +685,10 @@
     text-shadow: 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-6deg);
   }
   .rfx-card.is-gold .rfx-vnum {
-    background: linear-gradient(160deg,#fff0c2,#caa14a 55%,#7a571f);
-    border-color: rgba(0,0,0,.5); color: #2a1d05; -webkit-text-stroke: 0;
+    /* gradient pinned light (ends at #caa14a, ~6.8:1 under the dark digits) + a
+       hairline dark stroke, so the digits clear WCAG AA across the whole badge. */
+    background: linear-gradient(160deg,#fff0c2,#e8c773 52%,#caa14a);
+    border-color: rgba(0,0,0,.5); color: #2a1d05; -webkit-text-stroke: 0.6px rgba(0,0,0,.45);
     text-shadow: 0 1px 0 rgba(255,255,255,.4);
   }
   /* the family seal: a struck coin at the crown of the arched window naming WHAT KIND
@@ -825,7 +840,7 @@
   .rfx-scout-no { font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase; color: var(--color-bone-2); white-space: nowrap; }
   .rfx-scout-rows { display: flex; flex-direction: column; margin-top: 9px; border-radius: 7px; overflow: hidden; border: 1px solid rgba(246,241,230,.08); }
   .rfx-scout-row { display: grid; grid-template-columns: 56px 1fr; gap: 9px; padding: 7px 9px; align-items: start; }
-  .rfx-scout-row:nth-child(even) { background: color-mix(in srgb, var(--c3,#37D6FF) 8%, transparent); }
+  .rfx-scout-row:nth-child(even) { background: color-mix(in srgb, var(--c3,#37D6FF) 14%, transparent); }
   .rfx-scout-row + .rfx-scout-row { border-top: 1px solid rgba(246,241,230,.06); }
   .rfx-scout-k { display: inline-flex; align-items: center; gap: 4px; font-family: var(--font-mono); font-size: 8px; letter-spacing: .12em;
     line-height: 1.5; text-transform: uppercase; color: color-mix(in srgb, var(--c3,#37D6FF) 60%, var(--color-bone-2)); }
