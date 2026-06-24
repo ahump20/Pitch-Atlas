@@ -13,8 +13,13 @@ export default tseslint.config(
       'pitch-atlas-softball',
       'Physijs',
       'pybaseball',
+      '.claude',
+      '.codex',
+      '.qa-shots',
       '.gemini',
       '.github/skills',
+      'Pitch-Atlas-iOS',
+      'Sluggers Hit Card Inspiration examples',
       // design-sync infra: previews import the package via a compile-time shim
       // ('pitch-atlas'), generated bundle + staged converter aren't app source.
       '.design-sync',

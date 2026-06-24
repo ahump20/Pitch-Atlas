@@ -200,7 +200,7 @@ describe('Privacy and support', () => {
     expect(screen.getByText('No sale of data')).toBeInTheDocument()
     expect(screen.getAllByText(/delete\s*account/).length).toBeGreaterThan(0)
     // the policy is dated, once, in the hero eyebrow
-    expect(screen.getByText(/Privacy policy · \d{4}-\d{2}-\d{2}/)).toBeInTheDocument()
+    expect(screen.getByText(/Privacy policy \/ \d{4}-\d{2}-\d{2}/)).toBeInTheDocument()
   })
 
   it('renders the support page with report, deletion, and contact routes', async () => {
@@ -211,6 +211,15 @@ describe('Privacy and support', () => {
     expect(screen.getAllByText(/in-product Report flow/).length).toBeGreaterThan(0)
     // no fabricated contact details
     expect(screen.queryByText(/@pitch-atlas\.com/)).not.toBeInTheDocument()
+  })
+
+  it.each(['/privacy', '/support'])('keeps %s copy plain and dash-free', async (path) => {
+    const { container } = renderRoute(path)
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+
+    const text = container.textContent ?? ''
+    expect(text).not.toMatch(/[\u2014\u2013]/)
+    expect(text).not.toMatch(/@pitch-atlas\.com/)
   })
 })
 

@@ -9,7 +9,7 @@ import { SectionHero } from '../components/layout/SectionHero'
 /*
   The support page the iOS app's Account screen links to. Short and factual:
   what the product is, how to flag a problem, how to delete an account. The
-  contact route is the in-product Report flow — no invented email, phone, or
+  contact route is the in-product Report flow. No invented email, phone, or
   address appears here.
 */
 
@@ -24,7 +24,7 @@ const HELP_ROWS = [
   },
   {
     label: 'Question a claim in the manual',
-    text: 'Every figure on a specimen page is labeled with where it came from. Start at the source registry — if a claim looks wrong, the source link is one click away, and the label tells you how much weight it was ever meant to carry.',
+    text: 'Every figure on a specimen page is labeled with where it came from. Start at the source registry. If a claim looks wrong, the source link is one click away, and the label tells you how much weight it was ever meant to carry.',
   },
 ]
 
@@ -32,7 +32,7 @@ export function SupportPage() {
   useSeoMeta({
     title: `Support | ${SITE.siteName}`,
     description:
-      'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitch craft.',
+      'How to report a problem, delete your account, or question a claim in Pitch Atlas, the sourced field manual for pitch craft.',
     ogTitle: `Support | ${SITE.siteName}`,
     ogDescription: 'Report a problem, delete your account, or question a claim in the field manual.',
     ogUrl: canonicalUrl('/support'),
@@ -47,7 +47,7 @@ export function SupportPage() {
           url: canonicalUrl('/support'),
           name: 'Support',
           description:
-            'How to report a problem, delete your account, or question a claim in Pitch Atlas — the sourced field manual for pitch craft.',
+            'How to report a problem, delete your account, or question a claim in Pitch Atlas, the sourced field manual for pitch craft.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'Support' }],
         })}
       />
@@ -60,9 +60,9 @@ export function SupportPage() {
         }
         sub={
           <p>
-            Pitch Atlas is a sourced field manual for how pitchers grip and shape a baseball — a
-            reference site and an iOS app, with an optional community layer for field notes and
-            discussion. This page covers the three things people need help with.
+            Pitch Atlas is a sourced field manual for how pitchers grip and shape a baseball. It is
+            a reference site and an iOS app, with an optional community layer for field notes and
+            discussion. This page covers the three help routes people need most.
           </p>
         }
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'Support' }]} />}
@@ -95,7 +95,7 @@ export function SupportPage() {
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">Contact</p>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-            Report issues through the in-product Report flow on any note or post — every report is
+            Report issues through the in-product Report flow on any note or post. Every report is
             reviewed. For how the manual handles your data, read the{' '}
             <Link to="/privacy" className="text-seam transition-colors hover:text-ink">
               privacy policy
