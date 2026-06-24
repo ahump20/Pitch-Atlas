@@ -43,6 +43,11 @@ pnpm-debug.log*
 artifacts/
 .playwright-mcp/
 pitch-atlas-*.png
+# visual-QA scratch: raw captures, crops, and annotation overlays — local only
+playwright-*.png
+jimp-crop-*.png
+mk-*.html
+.qa-shots/
 
 # private reference (copyrighted) + design-handoff leftovers — never commit
 Pitching-Grips-101.pdf
