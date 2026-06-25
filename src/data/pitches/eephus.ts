@@ -124,10 +124,10 @@ export const eephus: PitchAtlasEntry = {
     specimenNo: '12',
     heroSub: 'The rainbow.',
     heroIntro:
-      'Lob it. The eephus floats in on a high arc at a fraction of fastball pace, peaking well above the batter before dropping into the zone — a pitch whose only weapon is time. The easiest pitch in baseball to hit, and one of the hardest to time.',
-    foundationCaption: 'It carries normal backspin, but thrown this slow, gravity — not spin — shapes the giant arc the plot cannot draw.',
+      'Lob it. The eephus floats in on a high arc at a fraction of fastball pace, peaking well above the batter before dropping into the zone. Its only weapon is time. The easiest pitch in baseball to hit, and one of the hardest to time.',
+    foundationCaption: 'It carries normal backspin, but thrown this slow, gravity shapes the giant arc the plot cannot draw. Spin barely figures in.',
     mastersIntro:
-      'Two eephus throwers, eighty years apart: the man who invented it and the modern artist who still dares it. The visual is our own seam schematic; what sets each version apart is in the read, not a gauge.',
+      'Two eephus throwers, eighty years apart: the man who invented it, and the modern artist who still dares it. The visual is our own seam schematic. What sets each version apart lives in the read, not a gauge.',
   },
 
   masterVariants: [
@@ -175,7 +175,7 @@ export const eephus: PitchAtlasEntry = {
 
   guide: {
     family: 'The lob',
-    tagline: 'A high, slow rainbow at a crawl — its only weapon is throwing off a hitter\'s timing.',
+    tagline: 'A high, slow rainbow at a crawl. Its only weapon is throwing off a hitter\'s timing.',
     feel: 'Lob it on a high arc with way less arm speed than a fastball. Aim to peak above the batter and drop it into the top of the zone.',
     steps: [
       'Take any ordinary grip — a fastball or curve hold is fine.',
@@ -186,7 +186,7 @@ export const eephus: PitchAtlasEntry = {
     does: {
       headline: 'It floats in so slowly that timing falls apart.',
       plain:
-        'An eephus is a giant, slow rainbow — lobbed in at a fraction of fastball pace. It does not dart or dive; it just hangs in the air much longer than a hitter expects, then drops into the zone. A batter geared up for heat has to wait, and waiting is the hardest thing to do at the plate.',
+        'An eephus is a giant, slow rainbow, lobbed in at a fraction of fastball pace. It does not dart or dive. It just hangs in the air much longer than a hitter expects, then drops into the zone. A batter geared up for heat has to wait, and waiting is the hardest thing to do at the plate.',
     },
   },
 

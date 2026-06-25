@@ -236,7 +236,7 @@ export const forkball: PitchAtlasEntry = {
     does: {
       headline: 'It leaves with no spin, so it just falls.',
       plain:
-        'A forkball is squeezed so deep between the fingers that it comes out almost without spinning. With no spin there is nothing holding it up, so it tumbles down late and hard, like the floor dropped out. It fools hitters who are geared up for a fastball — but the snap that makes it work is tough on the arm.',
+        'A forkball is squeezed so deep between the fingers that it comes out almost without spinning. With no spin there is nothing holding it up, so it tumbles down late and hard, like the floor dropped out. It fools hitters who are geared up for a fastball. The snap that makes it work is tough on the arm.',
     },
   },
 

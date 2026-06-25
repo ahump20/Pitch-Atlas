@@ -168,10 +168,10 @@ export const sweeper: PitchAtlasEntry = {
     specimenNo: '08',
     heroSub: 'A frisbee, sideways.',
     heroIntro:
-      'Take a slider grip and get further around the side of the ball. The axis tilts toward pure sidespin, and the same force that lifts a fastball now pushes the ball sideways — a wide, glove-side sweep with little drop. The defining pitch of the last few seasons.',
-    foundationCaption: 'Sidespin, not bullet spin: the Magnus force points sideways, so it sweeps wide and flat instead of biting late like a gyro slider.',
+      'Take a slider grip and get further around the side of the ball. The axis tilts toward pure sidespin, and the same force that lifts a fastball now pushes it sideways: a wide, glove-side sweep with little drop. The defining pitch of the last few seasons.',
+    foundationCaption: 'Sidespin, not bullet spin. The Magnus force points sideways, so it sweeps wide and flat instead of biting late like a gyro slider.',
     mastersIntro:
-      'Three reference sweepers, three ways to win with the side-spin sweep. The visual is our own seam schematic. What sets each version apart is in the read — how the arm shapes the sweep — not a gauge.',
+      'Three reference sweepers, three ways to win with the side-spin sweep. The visual is our own seam schematic. What sets each version apart lives in the read, how the arm shapes the sweep, not a gauge.',
   },
 
   masterVariants: [
@@ -237,7 +237,7 @@ export const sweeper: PitchAtlasEntry = {
     does: {
       headline: 'It spins on its side, so the air pushes it sideways.',
       plain:
-        'A sweeper spins almost like a frisbee — its axis lying on its side instead of pointing at the catcher. That turns the same air force that lifts a fastball into a sideways push, so the ball sweeps a long way to the glove side and barely drops. It looks like a fastball, then runs off the plate well before it gets there.',
+        'A sweeper spins on its side, axis lying flat across the ball instead of pointing at the catcher. That turns the same air force that lifts a fastball into a sideways push, so the ball sweeps a long way to the glove side and barely drops. It looks like a fastball, then runs off the plate well before it gets there.',
     },
   },
 

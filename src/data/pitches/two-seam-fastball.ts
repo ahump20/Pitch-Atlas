@@ -168,10 +168,10 @@ export const twoSeam: PitchAtlasEntry = {
     specimenNo: '01',
     heroSub: 'The four-seam, tilted.',
     heroIntro:
-      'Same arm, the axis rolled toward the hand. Ride becomes run, and the ball finishes at the knees. Taken to its extreme — the most movement, the least ride — this is the pitch the pros call a sinker.',
+      'Same arm, the axis rolled toward the hand. Ride becomes run, and the ball finishes at the knees. Taken to its extreme, the most movement and the least ride, this is the pitch the pros call a sinker.',
     foundationCaption: 'It rides far less than a four-seam and runs toward the arm. Thrown low, it produces ground balls.',
     mastersIntro:
-      'Three documented sinkers — the two-seam taken to its extreme, three ways down. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
+      'Three documented sinkers: the two-seam taken to its extreme, three ways down. The visual is our own seam schematic. What sets each version apart lives in the read, not a gauge.',
   },
 
   masterVariants: [

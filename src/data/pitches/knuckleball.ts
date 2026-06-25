@@ -216,7 +216,7 @@ export const knuckleball: PitchAtlasEntry = {
 
   guide: {
     family: 'The flutter',
-    tagline: "Pushed with no spin so the seams catch the air and the ball wanders late — almost as hard to catch as to hit.",
+    tagline: "Pushed with no spin so the seams catch the air and the ball wanders late. The catcher reads it about as well as the hitter does, which is to say barely.",
     feel: 'Hold the ball off your palm on your fingernails. Push it flat toward the plate, no wrist, no spin. Stay smooth and slow.',
     steps: [
       'Dig your index and middle fingernails into the leather, thumb underneath for balance.',
@@ -227,7 +227,7 @@ export const knuckleball: PitchAtlasEntry = {
     does: {
       headline: 'It barely spins, so the stitches steer it.',
       plain:
-        'A knuckleball is thrown to not spin at all. Without spin there is nothing holding its path steady, so the raised stitches catch the moving air and nudge the ball one way, then another, late and unpredictably. Nobody — not the hitter, not the catcher, not even the pitcher — knows exactly where it will end up.',
+        'A knuckleball is thrown to not spin at all. Without spin there is nothing holding its path steady, so the raised stitches catch the moving air and nudge the ball one way, then another, late and unpredictably. Where it ends up is a mystery to everyone: the hitter, the catcher, even the pitcher who let it go.',
     },
   },
 

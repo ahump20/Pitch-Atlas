@@ -187,7 +187,7 @@ export const circleChange: PitchAtlasEntry = {
     specimenNo: '02',
     heroSub: 'Fastball arm, a beat late.',
     heroIntro:
-      'The same arm action, the ball deeper in the hand. It arrives late, fading toward the arm and tumbling under the barrel. This is how the pitch fools timing.',
+      'The same arm action, the ball deeper in the hand. It arrives late, fading toward the arm and tumbling under the barrel while the swing is already gone.',
     foundationCaption: 'It fades toward the arm and drops under a fastball-timed swing, all on identical arm speed.',
     mastersIntro:
       'Four documented changeups, four answers. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
