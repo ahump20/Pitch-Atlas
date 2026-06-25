@@ -29,7 +29,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
         {/* the read, lower-left */}
         <div className="order-2 md:order-1 md:col-span-6 md:self-center">
           <p
-            className="rfx-stamp v2-enter w-fit"
+            className="rfx-stamp v2-enter w-fit [text-wrap:balance]"
             style={{ color: '#F2ECDD', background: 'rgba(10,9,8,.7)', borderColor: 'rgba(242,236,221,.5)', '--i': 0 } as React.CSSProperties}
           >
             {SITE.brandLine}
