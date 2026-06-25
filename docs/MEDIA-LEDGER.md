@@ -127,18 +127,22 @@ research only, never bundled. The hard floor holds: nothing in `public/` or the 
 
 | # | Post | Pitch / who | Creator | Caption framing | Broadcast-rights risk | Treatment |
 |---|---|---|---|---|---|---|
-| T1 | tiktok.com/@bsf_pitchingperformance/video/7544907808555240735 | Nolan Ryan demonstrating grips (fastball/curve/change) | @bsf_pitchingperformance | Creator frames it "4-seam vs 2-seam"; **footage is fastball/curveball/changeup**, and Ryan was a 4-seam+curveball pitcher (late sinker only) — the 4s/2s framing is unverified, surfaced as the creator's, not asserted | High — interview/broadcast footage, Ryan publicity rights; no rights-clear official upload found | **Embed via TikTok player + outbound link.** Card states the provenance gap out loud |
+| T1 | tiktok.com/@bsf_pitchingperformance/video/7544907808555240735 | Nolan Ryan explaining his four-seam vs two-seam fastball | @bsf_pitchingperformance | Ryan in his own words: the four-seam (rides up, stays true) vs the two-seam (runs arm-side, in on a righty / away from a lefty). Creator caption, post title, and Austin's own review of the clip all agree — **pitcher's-own-words**, not secondhand. (An earlier draft over-hedged this as "the creator's framing, not Ryan's record," conflating his game usage with what the interview teaches; corrected 2026-06-25.) | High — interview footage, Ryan publicity rights; no rights-clear official upload found | **Embed via TikTok player + outbound link** |
 | T2 | tiktok.com/@pitchingninja/video/6958820538441600262 | Tyler Rogers' "rising" submarine breaker | @pitchingninja | "Rising Curveball" — Rogers calls it "a slider, but almost a curveball"; label drifts slider/curve across sources, preserved both ways | High — MLB broadcast footage (see Pitching Ninja rows above) | **Embed via TikTok player + outbound link** |
 | T3 | tiktok.com/@ncaabsb/video/7245789529104239915 | College aces' grips (Dollander, Skenes, Caglianone, Lowder) | @ncaabsb (NCAA Baseball) | "Take a look at these aces' pitch grips" | Medium — NCAA's own posted footage, but identifiable players + NCAA marks | **Embed via TikTok player + outbound link** |
 
 **Implementation (web only):** `src/data/media/tiktok.ts` holds the post references; `TikTokEmbed` +
-the `pip` provider render a credited facade card that loads **nothing third-party until the reader
-clicks Watch** — the TikTok player iframe mounts only then, in a dismissible picture-in-picture so
-the reader keeps scrolling. Prerender and first paint stay clean. The data file is deliberately
-**not** one of the modules `tools/generate-content` reads, so the iOS bundle stays link-only and
-carries no TikTok URLs (ledger iOS posture preserved). Each card carries the "Watch on TikTok ↗"
-outbound link as the always-available link tier. Clips surface on filed-specimen pages by slug:
-four-seam + two-seam (Ryan, honestly framed), slider (Rogers), changeup/circle-change (NCAA aces).
+the `pip` provider embed **TikTok's own player inline in the card, at full size** (the video is
+present, not a click-to-summon clip), lazy-loaded so the frame only fetches as it scrolls into
+view. A "pop out" control lifts the player into a dismissible picture-in-picture so the reader keeps
+scrolling; popping out unmounts the inline frame so the same clip never plays twice. The frame is
+always TikTok's player — no MP4 is committed. Posture note: this is a deliberate trade from the
+first build, which loaded nothing third-party until a click — the player now loads inline when the
+reader reaches it, the cost of having the real video on the page (one embed per pitch page). The data
+file is deliberately **not** one of the modules `tools/generate-content` reads, so the iOS bundle
+stays link-only and carries no TikTok URLs (ledger iOS posture preserved). Each card keeps the
+"Watch on TikTok ↗" outbound link. Clips surface on filed-specimen pages by slug: four-seam +
+two-seam (Ryan), slider (Rogers), changeup/circle-change (NCAA aces).
 
 ## Sources
 

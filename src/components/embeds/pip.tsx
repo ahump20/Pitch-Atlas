@@ -1,13 +1,14 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react'
+import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 
 /*
-  Picture-in-picture player. A teaching-clip card opens the original post in this
-  floating, dismissible window so the reader keeps scrolling the chapter while it
-  plays — embed-or-link, never rehost (docs/MEDIA-LEDGER.md). Nothing third-party
-  loads until the reader opens a clip: at prerender and on first paint this renders
-  null, so the static HTML and the privacy posture stay clean. The frame is
-  TikTok's own player iframe (the platform serves the media, fully credited),
-  never a downloaded file.
+  Picture-in-picture player. The teaching clip plays inline in its card by default
+  (see TikTokEmbed); this floating window is the opt-in "keep scrolling while it
+  plays" mode. When a card pops out, its inline frame unmounts and this becomes the
+  only live player, so the same clip never plays twice. Closing here calls back into
+  the card (onClose) to restore the inline frame. Embed-or-link, never rehost
+  (docs/MEDIA-LEDGER.md): the frame is TikTok's own player iframe, fully credited,
+  never a downloaded file. At prerender and first paint no clip is open, so this
+  renders null and the static HTML stays clean.
 */
 
 export interface PipClip {
@@ -19,7 +20,8 @@ export interface PipClip {
 }
 
 interface PipContextValue {
-  open: (clip: PipClip) => void
+  /** Open the floating player. onClose fires when the reader dismisses it, so the caller can restore its inline view. */
+  open: (clip: PipClip, onClose?: () => void) => void
   close: () => void
 }
 
@@ -33,8 +35,20 @@ export function usePip(): PipContextValue {
 
 export function PipProvider({ children }: { children: ReactNode }) {
   const [clip, setClip] = useState<PipClip | null>(null)
-  const open = useCallback((next: PipClip) => setClip(next), [])
-  const close = useCallback(() => setClip(null), [])
+  const onCloseRef = useRef<(() => void) | undefined>(undefined)
+
+  const open = useCallback((next: PipClip, onClose?: () => void) => {
+    onCloseRef.current = onClose
+    setClip(next)
+  }, [])
+
+  const close = useCallback(() => {
+    setClip(null)
+    const cb = onCloseRef.current
+    onCloseRef.current = undefined
+    cb?.()
+  }, [])
+
   const value = useMemo(() => ({ open, close }), [open, close])
 
   return (
@@ -75,7 +89,7 @@ function PipPlayer({ clip, onClose }: { clip: PipClip | null; onClose: () => voi
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close player"
+            aria-label="Close player and return it to the page"
             className="grid h-7 w-7 place-items-center rounded-sm border border-bone/20 text-bone-2 transition-colors hover:border-seam/60 hover:text-bone"
           >
             <span aria-hidden="true" className="text-base leading-none">×</span>
@@ -85,12 +99,11 @@ function PipPlayer({ clip, onClose }: { clip: PipClip | null; onClose: () => voi
       <div className="relative w-full bg-black" style={{ aspectRatio: '9 / 16' }}>
         <iframe
           key={clip.videoId}
-          src={`https://www.tiktok.com/player/v1/${clip.videoId}?rel=0&description=0&music_info=0`}
+          src={`https://www.tiktok.com/player/v1/${clip.videoId}?rel=0&description=0&music_info=0&autoplay=1`}
           title={clip.title}
           className="absolute inset-0 h-full w-full"
           allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
           referrerPolicy="strict-origin-when-cross-origin"
-          loading="lazy"
         />
       </div>
     </div>

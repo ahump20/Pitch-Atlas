@@ -46,9 +46,9 @@ export const TEACHING_CLIPS: TeachingClip[] = [
     url: 'https://www.tiktok.com/@bsf_pitchingperformance/video/7544907808555240735',
     caption:
       "Nolan Ryan didn't just throw gas — he understood movement. His breakdown of why the 4-seam plays up, and why the 2-seam is deadly running in on a right-handed hitter / away from a lefty.",
-    title: 'Nolan Ryan demonstrates his grips',
+    title: 'Nolan Ryan on his four-seam and two-seam',
     lede:
-      'Ryan showing how he held the ball. The post frames it as a four-seam-vs-two-seam breakdown — worth a label: Ryan was a four-seam-and-curveball pitcher who only added a sinker late in his career, so read the two-seam angle as the creator\'s framing, not his documented record.',
+      "Ryan in his own words on the two fastballs. The four-seam stays true and rides up on the hitter; the two-seam runs in on a righty and away from a lefty. It's the exact four/two split these specimen pages are built on, taught by the man who threw it.",
     slugs: ['four-seam', 'two-seam'],
     retrievedAt: '2026-06-25',
   },
