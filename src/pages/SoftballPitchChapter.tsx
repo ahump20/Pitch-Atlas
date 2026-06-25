@@ -106,7 +106,7 @@ export function SoftballPitchChapter() {
             <span aria-hidden="true">/</span>
             <Link to="/softball" className="transition-colors hover:text-bone">Softball</Link>
             <span aria-hidden="true">/</span>
-            <span className="text-bone-2">{pitch.specimenNo}</span>
+            <span className="text-bone-2">{pitch.name}</span>
           </nav>
           <p className="rfx-skick" style={{ color: gc }}>
             {FAMILY_LABEL[pitch.family]}{pitch.flagship ? ' · Flagship' : ''}

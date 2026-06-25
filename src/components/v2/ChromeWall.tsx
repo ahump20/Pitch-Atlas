@@ -9,9 +9,11 @@ import {
 import { PITCHES } from '../../data/pitches'
 import { INDEX_SCOPE } from '../../lib/index-scope'
 import { accentForSlug } from '../refractor/accents'
+import { FAMILY_ACCENT } from '../sections/family-accent'
 import { RefractorCard } from '../refractor/RefractorCard'
 import { specimenGradeFor } from '../../data/specimen-grade'
 import { RefractorBall } from '../refractor/RefractorBall'
+import { SeamSchematic } from '../fallback/SeamSchematic'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { familyCrumb } from '../refractor/familyCrumb'
 import { ChapterMark } from './ChapterMark'
@@ -27,6 +29,14 @@ import { ChapterMark } from './ChapterMark'
 */
 
 const FAMILY_ORDER: PitchFamily[] = ['fastball', 'breaking', 'offspeed']
+
+/* shelf headers for the filed set. Plain-English family names (the cards carry
+   the terse HARD/BREAK/SLOW seal); this is the readable directory label. */
+const FAMILY_LABEL: Record<PitchFamily, string> = {
+  fastball: 'Fastballs',
+  breaking: 'Breaking balls',
+  offspeed: 'Offspeed',
+}
 
 /* card-back tier dots, tuned to read bright on the matte black register (the
    front's badge inks are tuned for the cream plate and would sink here). */
@@ -127,7 +137,21 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Grip</span>
-                    <span className="rfx-scout-v rfx-scout-v--clip">{canonical.grip.value}</span>
+                    <span className="rfx-scout-v rfx-scout-v--clip">
+                      {canonical.gripModel.status === 'filed' ? (
+                        <span className="rfx-grip-twin" aria-hidden="true">
+                          <SeamSchematic
+                            grip={canonical.gripModel.contacts}
+                            handedness="right"
+                            surface="stage"
+                            showAxis={false}
+                            showStitches={false}
+                            title=""
+                          />
+                        </span>
+                      ) : null}
+                      {canonical.grip.value}
+                    </span>
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Source</span>
@@ -186,7 +210,15 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
 }
 
 export function ChromeWall() {
-  const filed = FAMILY_ORDER.flatMap((fam) => PITCHES.filter((p) => p.canonical.family === fam))
+  // Group the filed set by family so the taxonomy reads at a glance — the
+  // Pokédex-shelf beat. Each card keeps a running deal-stagger index ACROSS
+  // shelves (computed purely from the shelf order, no in-render mutation), so
+  // the entrance still cascades the whole wall, not per-shelf.
+  const shelves = FAMILY_ORDER.map((family) => ({
+    family,
+    pitches: PITCHES.filter((p) => p.canonical.family === family),
+  })).filter((shelf) => shelf.pitches.length > 0)
+  const total = shelves.reduce((sum, shelf) => sum + shelf.pitches.length, 0)
 
   return (
     <section id="set" className="v2-stage v2-tooth relative border-t border-bone/10">
@@ -197,21 +229,48 @@ export function ChromeWall() {
             The filed set.
           </h2>
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">
-            {filed.length} filed · flip any card for its source
+            {total} filed · flip any card for its source
           </p>
         </div>
 
         <p className="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-bone-2">
           Every filed pitch is struck as an artifact: chrome face, matte back, grip first, source
-          attached. They are archived objects you can actually handle. The full index holds{' '}
-          {INDEX_SCOPE.shelfLabel}, including basic files that stay honest until a fuller specimen is
-          earned by evidence.
+          attached. They are archived objects you can actually handle, shelved by family. The full
+          index holds {INDEX_SCOPE.shelfLabel}, including basic files that stay honest until a fuller
+          specimen is earned by evidence.
         </p>
 
-        <div className="v2-wall mt-10">
-          {filed.map((entry, i) => (
-            <WallCard key={entry.display.slug} entry={entry} chase={entry.display.specimenNo === '00'} i={i} />
-          ))}
+        <div className="mt-10 flex flex-col gap-12">
+          {shelves.map(({ family, pitches }, si) => {
+            const base = shelves.slice(0, si).reduce((sum, s) => sum + s.pitches.length, 0)
+            const crumb = familyCrumb(family)
+            const FamIcon = crumb.Icon
+            return (
+              <div
+                key={family}
+                className="v2-family-group"
+                style={{ '--fam': FAMILY_ACCENT[family] } as React.CSSProperties}
+              >
+                <div className="v2-family-head">
+                  <span className="v2-family-glyph" aria-hidden="true">
+                    <FamIcon />
+                  </span>
+                  <span className="v2-family-label">{FAMILY_LABEL[family]}</span>
+                  <span className="v2-family-count">{pitches.length} filed</span>
+                </div>
+                <div className="v2-wall mt-5">
+                  {pitches.map((entry, j) => (
+                    <WallCard
+                      key={entry.display.slug}
+                      entry={entry}
+                      chase={entry.display.specimenNo === '00'}
+                      i={base + j}
+                    />
+                  ))}
+                </div>
+              </div>
+            )
+          })}
         </div>
 
         <div className="mt-10">

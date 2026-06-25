@@ -573,8 +573,17 @@
     background-size: 9px 9px, 11px 11px, 240% 240%;
     background-position: 0 0, 0 0, var(--mx) var(--my);
     background-blend-mode: overlay, multiply, normal;
-    box-shadow: 0 30px 56px -26px rgba(0,0,0,.7), 0 0 0 1px rgba(0,0,0,.6),
-      inset 0 1px 0 rgba(255,240,194,.7), inset 0 -2px 5px rgba(0,0,0,.6), 0 0 54px -12px rgba(212,170,90,.6);
+    /* the grail aura: the standard card's accent ring, struck in gold, plus a
+       wide warm bloom so the 1/1 visibly outshines the run on a dark field.
+       Static — the casino metallic sweep is retired; this is steady radiance. */
+    box-shadow:
+      0 30px 56px -26px rgba(0,0,0,.7),
+      0 0 0 1px rgba(0,0,0,.6),
+      0 0 0 6px color-mix(in srgb, #caa14a 15%, transparent),
+      inset 0 1px 0 rgba(255,240,194,.7),
+      inset 0 -2px 5px rgba(0,0,0,.6),
+      0 0 60px -14px rgba(212,170,90,.62),
+      0 0 104px -24px rgba(244,217,138,.4);
   }
   .rfx-field {
     position: relative; height: 100%; border-radius: 16px; overflow: hidden; padding: 11px 11px 9px;
@@ -932,6 +941,13 @@
   .rfx-scout-k svg { width: 10px; height: 10px; flex: none; }
   .rfx-scout-v { font-size: 12px; line-height: 1.42; color: var(--color-bone); }
   .rfx-scout-v--clip { display: block; max-height: calc(1.42em * 3); overflow: hidden; word-break: normal; overflow-wrap: normal; }
+  /* the sourced grip itself, surfaced on the scout back: the same solved seam
+     schematic the no-WebGL path draws, shrunk to a thumbnail that leads the Grip
+     row so the hold is shown, not only described. Filed grips only (gated in
+     ChromeWall on gripModel.status); decorative, so it is aria-hidden. The grip
+     text wraps to its right — no new row, the four-row clip still holds. */
+  .rfx-grip-twin { float: left; width: clamp(38px, 22%, 44px); aspect-ratio: 1 / 1; margin: 0 9px 2px 0; }
+  .rfx-grip-twin svg { display: block; width: 100%; height: 100%; }
   .rfx-scout-foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
   .rfx-scout-edition { font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-bone);
     padding: 2px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, rgba(246,241,230,.16)); white-space: nowrap; }
@@ -2398,6 +2414,26 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   /* One card per row on phones: at 2-col widths a 147px card cramps the nameplate
      and the absolute SOURCE button overruns the grade stamp + READ tab. 2-col only
      returns once each card clears ~290px (the width the desktop cards prove clean). */
+  /* family shelf header — the Pokédex taxonomy made legible: a hairline rule,
+     the family glyph, and a mono label tinted with the muted collegiate family
+     accent (navy / forest / burgundy), NOT the neon card triad. One quiet signal
+     per shelf; the cards keep the color. */
+  .v2-family-group { display: flex; flex-direction: column; }
+  .v2-family-head {
+    display: flex; align-items: center; gap: 9px; padding-top: 13px;
+    border-top: 1px solid color-mix(in srgb, var(--fam, #5C84B8) 30%, rgba(246,241,230,.1));
+  }
+  .v2-family-glyph { display: inline-flex; color: var(--fam, #5C84B8); }
+  .v2-family-glyph svg { width: 15px; height: 15px; }
+  .v2-family-label {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: .17em; text-transform: uppercase;
+    color: color-mix(in srgb, var(--fam, #5C84B8) 52%, var(--color-bone));
+  }
+  .v2-family-count {
+    margin-left: auto; font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--color-bone-2);
+  }
+
   .v2-wall { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
   @media (min-width: 640px) { .v2-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (min-width: 768px) { .v2-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; } }
@@ -2417,7 +2453,16 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   }
   .v2-mount.is-chase {
     grid-column: span 2;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .62), inset 0 -1px 0 rgba(255, 255, 255, .06), 0 12px 30px -18px #000;
+    /* the grail cell reads gold before any flip: a warm edge, a thin gold inner
+       ring, and a soft gold glow. The glow is the mount's own box-shadow, so it
+       survives the chase mount's scroll-timeline overflow:hidden. */
+    border-color: color-mix(in srgb, #caa14a 34%, rgba(0, 0, 0, .4));
+    box-shadow:
+      inset 0 1px 2px rgba(0, 0, 0, .62),
+      inset 0 -1px 0 rgba(255, 255, 255, .06),
+      inset 0 0 0 1px color-mix(in srgb, #f4d98a 20%, transparent),
+      0 12px 30px -18px #000,
+      0 0 40px -22px rgba(212, 170, 90, .5);
   }
 
   /* ── the flip: chrome front <-> matte card back ──
@@ -2467,6 +2512,22 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     mix-blend-mode: screen; opacity: .35;
   }
   .v2-back > * { position: relative; z-index: 1; }
+  /* the gold 1/1 wears foil on BOTH faces: its flipped scout back gets a gold
+     frame and a faintly warmed plate, while the data rows keep their dark stock
+     for contrast. Standard backs stay matte — only the 1-of-1 is foil front and
+     back. The wash is a thin gold sweep, not a field behind the text. */
+  .v2-mount.is-chase .v2-back {
+    background: radial-gradient(120% 90% at 50% 0%, #1d160b 0%, #0a0908 62%);
+    border-color: color-mix(in srgb, #f4d98a 46%, #8a6a22);
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, #f4d98a 34%, transparent),
+      inset 0 1px 0 rgba(255, 240, 194, .16),
+      0 0 34px -18px rgba(212, 170, 90, .55);
+  }
+  .v2-mount.is-chase .v2-back::before {
+    background: linear-gradient(108deg, transparent 0 14%, color-mix(in srgb, #f4d98a 30%, transparent) 40%, transparent 66%);
+    opacity: .4;
+  }
 
   /* ── the 2D refraction bridge ──
      The seam flattened: the same seamPoint geometry the 3D ball

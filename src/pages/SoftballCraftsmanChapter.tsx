@@ -87,7 +87,7 @@ export function SoftballCraftsmanChapter() {
             <span aria-hidden="true">/</span>
             <Link to="/softball" className="transition-colors hover:text-bone">Softball</Link>
             <span aria-hidden="true">/</span>
-            <span className="text-bone-2">{craftsman.specimenNo}</span>
+            <span className="text-bone-2">{craftsman.name}</span>
           </nav>
           <p className="rfx-skick">
             Master · {craftsman.era}
