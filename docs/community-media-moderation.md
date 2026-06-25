@@ -1,7 +1,7 @@
 # Discussion forum: moderation + media safety
 
 The per-topic discussion forum (`discussion_posts` / `discussion_media` /
-`discussion_reports`, migration `supabase/migrations/20260606090000_discussion_forum.sql`)
+`discussion_reports`, migration `supabase/migrations/20260606005149_discussion_forum.sql`)
 allows native image and video uploads. This is the operational runbook for keeping
 it safe, and the honest list of what is deferred.
 

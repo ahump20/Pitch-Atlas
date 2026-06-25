@@ -174,7 +174,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
       {/* meta */}
       <div>
         <p className="rfx-athletic rfx-skew text-[18px]" style={{ color: accentColor }}>
-          Specimen No. {display.specimenNo}
+          Archive file · Specimen No. {display.specimenNo}
         </p>
         <h1
           className="rfx-athletic rfx-skew rfx-stroke mt-2 text-bone leading-[0.95] [text-wrap:balance]"
@@ -184,6 +184,10 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         </h1>
         <p className="rfx-athletic rfx-skew mt-2.5 text-[clamp(15px,2vw,19px)] leading-[1.18] [text-wrap:balance]" style={{ color: accentColor }}>
           {guide?.tagline ?? display.heroSub}
+        </p>
+        <p className="mt-4 max-w-[50ch] border-l-2 pl-4 text-[13.5px] leading-relaxed text-bone-2" style={{ borderColor: `color-mix(in srgb, ${accentColor} 46%, transparent)` }}>
+          Open this like an archive drawer: grip first, source attached, shape in words, no invented
+          spin or movement numbers. The file exists so the hold can keep moving forward.
         </p>
 
         <div
@@ -241,7 +245,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
             className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
             style={{ background: accentColor, boxShadow: `0 6px 20px -8px ${accentColor}` }}
           >
-            Open the Grip Lab <span aria-hidden="true">↓</span>
+            Open the grip file <span aria-hidden="true">↓</span>
           </a>
           <Link
             to="/repertoire"
@@ -287,14 +291,14 @@ function GripLabSection({ entry, accentColor }: { entry: PitchAtlasEntry; accent
   return (
     <section id="grip-lab" className="scroll-mt-20 border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
       <SectionHead
-        kicker="Grip Lab"
-        title={unfiled ? 'No one hold owns this pitch' : 'Hold it like this'}
+        kicker="Archive Drawer / Grip Lab"
+        title={unfiled ? 'No one hold owns this pitch' : 'The artifact in the hand'}
         accentColor={accentColor}
       >
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           {unfiled
             ? 'This pitch has no canonical grip to draw. The panel shows what the sources actually support, and nothing more.'
-            : 'Lead with the hand. The fingers on the ball below are the sourced contacts, solved onto the seam — drag the ball, or use the view buttons.'}
+            : 'Lead with the hand. The fingers on the ball below are the sourced contacts, solved onto the seam. Drag the ball, or use the view buttons.'}
         </p>
       </SectionHead>
 

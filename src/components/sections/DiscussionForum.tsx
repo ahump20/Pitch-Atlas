@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { FlagIcon, ImagePlusIcon, MessageCircleIcon, RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDiscussion, type SubmitResult } from '../../hooks/useDiscussion'
@@ -51,46 +51,129 @@ function timeAgo(iso: string): string {
   return `${Math.floor(s / 86400)}d ago`
 }
 
-function MediaItem({ m }: { m: DiscussionMedia }) {
+const SPECIMEN_ACCENTS = ['#37D6FF', '#FF2D44', '#D8A24A', '#34E27E', '#8A6BFF'] as const
+
+function hashString(input: string): number {
+  let hash = 0
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash * 31 + input.charCodeAt(i)) >>> 0
+  }
+  return hash
+}
+
+function specimenAccent(id: string): string {
+  return SPECIMEN_ACCENTS[hashString(id) % SPECIMEN_ACCENTS.length]
+}
+
+function specimenSerial(topicName: string, filedAt: string, id: string): string {
+  const prefix = topicName.replace(/[^a-z0-9]/gi, '').slice(0, 4).toUpperCase() || 'PITC'
+  const date = filedAt.slice(0, 10).replaceAll('-', '')
+  const cleanId = id.replace(/[^a-z0-9]/gi, '').toUpperCase()
+  return `PA-${prefix}-${date}-${cleanId.slice(0, 6)}`
+}
+
+function filedDate(iso: string): string {
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'America/Chicago',
+  }).format(new Date(iso))
+}
+
+function MediaItem({
+  m,
+  topicName,
+  displayName,
+  filedAt,
+}: {
+  m: DiscussionMedia
+  topicName: string
+  displayName: string
+  filedAt: string
+}) {
+  const accent = specimenAccent(m.id)
+  const serial = specimenSerial(topicName, filedAt, m.id)
+  const kindLabel = m.kind === 'video' ? 'Motion specimen' : 'Image specimen'
+
   if (!m.url) {
     return (
-      <Empty className="aspect-video border border-dashed border-white/12 bg-card/70">
+      <Empty className="community-specimen aspect-video border border-dashed border-white/12 bg-card/70">
         <EmptyHeader>
           <EmptyMedia variant="icon" className="bg-muted text-muted-foreground">
             <ImagePlusIcon aria-hidden="true" />
           </EmptyMedia>
-          <EmptyTitle className="mono-label text-ink-3">Media under review</EmptyTitle>
+          <EmptyTitle className="mono-label text-ink-3">Specimen under review</EmptyTitle>
         </EmptyHeader>
       </Empty>
     )
   }
-  if (m.kind === 'image') {
-    return (
+
+  const media =
+    m.kind === 'image' ? (
       <img
         src={m.url}
         loading="lazy"
         decoding="async"
         width={m.width ?? undefined}
         height={m.height ?? undefined}
-        alt="Contributor upload"
-        className="w-full rounded-sm border border-ink/15 object-contain"
+        alt={`${topicName} specimen uploaded by ${displayName}`}
+        className="community-specimen-media"
+      />
+    ) : (
+      <video
+        src={m.url}
+        controls
+        preload="metadata"
+        className="community-specimen-media"
+        aria-label={`${topicName} motion specimen uploaded by ${displayName}`}
       />
     )
+
+  if (m.kind === 'image') {
+    return (
+      <figure
+        className="community-specimen"
+        style={{ '--spec-accent': accent } as CSSProperties}
+      >
+        <div className="community-specimen-stage">{media}</div>
+        <figcaption className="community-specimen-caption">
+          <span>{kindLabel}</span>
+          <b>{topicName}</b>
+          <span>{serial}</span>
+          <span>Filed by {displayName} · {filedDate(filedAt)}</span>
+        </figcaption>
+      </figure>
+    )
   }
+
   return (
-    <video src={m.url} controls preload="metadata" className="w-full rounded-sm border border-ink/15" />
+    <figure
+      className="community-specimen is-motion"
+      style={{ '--spec-accent': accent } as CSSProperties}
+    >
+      <div className="community-specimen-stage">{media}</div>
+      <figcaption className="community-specimen-caption">
+        <span>{kindLabel}</span>
+        <b>{topicName}</b>
+        <span>{serial}</span>
+        <span>Filed by {displayName} · {filedDate(filedAt)}</span>
+      </figcaption>
+    </figure>
   )
 }
 
 function PostBody({
   post,
   depth,
+  topicName,
   onReply,
   onReport,
   onDelete,
 }: {
   post: DiscussionPost
   depth: number
+  topicName: string
   onReply: (postId: string) => void
   onReport: (target: { postId: string } | { mediaId: string }) => void
   onDelete: (postId: string) => void
@@ -112,7 +195,7 @@ function PostBody({
         <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {post.media.map((m) => (
             <div key={m.id} className="flex flex-col gap-1">
-              <MediaItem m={m} />
+              <MediaItem m={m} topicName={topicName} displayName={post.displayName} filedAt={post.createdAt} />
               <button
                 type="button"
                 onClick={() => onReport({ mediaId: m.id })}
@@ -221,7 +304,7 @@ function Composer({
 
     const notes: string[] = [...rejected]
     if (valid.length > DISCUSSION_LIMITS.maxFilesPerPost) {
-      notes.push(`Up to ${DISCUSSION_LIMITS.maxFilesPerPost} files per post — kept the first ${DISCUSSION_LIMITS.maxFilesPerPost}.`)
+      notes.push(`Up to ${DISCUSSION_LIMITS.maxFilesPerPost} media files per note. Kept the first ${DISCUSSION_LIMITS.maxFilesPerPost}.`)
     }
     setErr(notes.length > 0 ? notes.join(' ') : null)
   }
@@ -240,14 +323,13 @@ function Composer({
     setBusy(true)
     try {
       const result = await onSubmit({ displayName: name.trim(), body: body.trim(), files })
-      // The post saved — always clear the composer so the same comment can't be
-      // submitted twice. (Before, a partial media failure threw, the clear was
-      // skipped, and the box stayed full behind an already-posted comment.)
+      // The note saved. Always clear the composer so the same file can't be
+      // submitted twice.
       setBody('')
       setFiles([])
       if (fileRef.current) fileRef.current.value = ''
       if (result.mediaError) {
-        // Non-blocking: the comment is live; only a file failed to attach. Show
+        // Non-blocking: the note is live; only a file failed to attach. Show
         // the notice and skip the 'Filed ✓' confirmation since it didn't all land.
         setErr(result.mediaError)
       } else {
@@ -257,7 +339,7 @@ function Composer({
       }
     } catch (e2) {
       // Post creation itself failed — keep the draft in the box and show the error.
-      setErr(e2 instanceof Error ? e2.message : 'Could not post that.')
+      setErr(e2 instanceof Error ? e2.message : 'Could not file that.')
     } finally {
       setBusy(false)
     }
@@ -364,7 +446,7 @@ function Composer({
           disabled={busy}
           className={`font-mono text-xs uppercase tracking-[0.1em]${busy ? ' is-busy' : ''}`}
         >
-          {busy ? 'Posting…' : 'Post'}
+          {busy ? 'Filing…' : compact ? 'Reply' : 'File'}
         </Button>
         {sent ? (
           <span role="status" className="quiet-status font-mono text-[10px] uppercase tracking-[0.14em] text-ink-3">
@@ -416,7 +498,15 @@ function ReportForm({ onConfirm, onCancel }: { onConfirm: (reason: string) => vo
   )
 }
 
-export default function DiscussionForum({ topicKey, open }: { topicKey: string; open: boolean }) {
+export default function DiscussionForum({
+  topicKey,
+  topicName,
+  open,
+}: {
+  topicKey: string
+  topicName: string
+  open: boolean
+}) {
   const d = useDiscussion(topicKey, open)
   const [replyTo, setReplyTo] = useState<string | null>(null)
   const [reporting, setReporting] = useState<{ postId: string } | { mediaId: string } | null>(null)
@@ -476,13 +566,13 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
         acceptedTerms={d.acceptedTerms}
         onAcceptTerms={d.acceptTerms}
         onSubmit={(input) => d.submit({ ...input })}
-        placeholder="Share a breakdown, a grip tweak, a clip — keep it about the pitch."
+        placeholder="File a grip cue, breakdown, image, or clip. Keep it about the pitch."
       />
 
       <Separator />
       <p className="text-xs leading-relaxed text-ink-3">
-        Shared as experience and technique, not personal medical advice — nothing here replaces a coach or
-        physician. Reports from a few accounts auto-hide a post or a clip for review.
+        Filed as experience and technique, not personal medical advice. Nothing here replaces a coach
+        or physician. Reports from a few accounts auto-hide a post or a clip for review.
       </p>
 
       {d.posts.length === 0 ? (
@@ -491,8 +581,10 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
             <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
               <MessageCircleIcon aria-hidden="true" />
             </EmptyMedia>
-            <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">No comments yet</EmptyTitle>
-            <EmptyDescription>Start the thread with a grip cue, a clip, or a breakdown.</EmptyDescription>
+            <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">
+              No specimens filed yet
+            </EmptyTitle>
+            <EmptyDescription>Start the file with a grip cue, clip, image, or breakdown.</EmptyDescription>
           </EmptyHeader>
         </Empty>
       ) : (
@@ -502,6 +594,7 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
               <PostBody
                 post={post}
                 depth={0}
+                topicName={topicName}
                 onReply={setReplyTo}
                 onReport={setReporting}
                 onDelete={setDeleting}
@@ -513,6 +606,7 @@ export default function DiscussionForum({ topicKey, open }: { topicKey: string; 
                       <PostBody
                         post={reply}
                         depth={1}
+                        topicName={topicName}
                         onReply={setReplyTo}
                         onReport={setReporting}
                         onDelete={setDeleting}

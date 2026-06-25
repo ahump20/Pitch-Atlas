@@ -43,8 +43,8 @@ export function CloseCta() {
             Open the whole atlas.
           </h2>
           <p className="mx-auto mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-bone-2">
-            Every accepted pitch by family, the lost grips history dropped, and a source on every line.
-            Start at the index and pull whatever you want to hold.
+            Every accepted pitch by family, every lost-pitches edge that can be responsibly filed, and
+            a source on every claim. Start at the index and carry a piece of the craft forward.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -69,7 +69,7 @@ export function CloseCta() {
               What we will <span className="text-seam">never fake</span>.
             </h3>
             <p className="mt-3 max-w-[58ch] text-[14px] leading-relaxed text-bone-2">
-              The chrome is decoration. The provenance is the point. These lines are load-bearing — in
+              The chrome is decoration. The provenance is the point. These lines are load-bearing in
               the product, the data model, and the community floor in equal measure.
             </p>
           </div>

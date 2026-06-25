@@ -107,7 +107,7 @@ function IdentityStrip({
         <span className="font-mono text-xs tabular-nums text-bone-2">{score} pts</span>
       </div>
       <p className="mt-2 text-sm leading-relaxed text-bone-2">
-        Posting as <span className="text-bone">{name ? name : 'an unclaimed contributor'}</span>
+        Filing as <span className="text-bone">{name ? name : 'an unclaimed contributor'}</span>
         {claimed ? ' · claimed ✓' : ' · anonymous'}.
       </p>
 
@@ -445,7 +445,7 @@ function SubmitForm({
       window.clearTimeout(doneTimer.current)
       doneTimer.current = window.setTimeout(() => setDone(false), 2000)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not post the note. Try again.')
+      setError(err instanceof Error ? err.message : 'Could not file the note. Try again.')
     } finally {
       setBusy(false)
     }
@@ -597,9 +597,9 @@ function SubmitForm({
               disabled={!valid || busy}
               className={`font-mono text-sm tracking-wide${busy ? ' is-busy' : ''}`}
             >
-              {busy ? 'Posting…' : 'Post field note'} <span aria-hidden="true">→</span>
+              {busy ? 'Filing…' : 'File field note'} <span aria-hidden="true">→</span>
             </Button>
-            <span className="text-xs leading-snug text-bone-2">Posts under your handle. You can take part anonymously.</span>
+            <span className="text-xs leading-snug text-bone-2">Filed under your handle. You can take part anonymously.</span>
           </div>
         </FieldGroup>
       </div>
@@ -631,7 +631,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
           {/* bone, not bone-2: this line sits on the workbench footage behind the scrim */}
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed text-bone">
             Every pitcher fiddles. A thumb creeps lower, a seam catches more leather, a cue from a coach
-            suddenly makes the pitch move. Pitch Atlas keeps those experiments visible, labeled, and debated,
+            suddenly makes the pitch move. Pitch Atlas files those experiments as specimens with context,
             so the small discoveries stop disappearing into group chats and comment sections.
           </p>
         </div>
@@ -696,8 +696,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                 <p className="rfx-skick text-cyan">The living layer</p>
                 <h3 className="rfx-athletic rfx-skew mt-3 text-xl text-bone md:text-2xl">Field notes open soon.</h3>
                 <p className="mt-3 text-sm leading-relaxed text-bone-2">
-                  Soon you will log your own grip tweak, mark the ones you have tried, and flag anything off,
-                  anonymously or under a handle you keep. {community.safetyNote}
+                  Soon you will file your own grip tweak, mark the ones you have tried, and flag anything
+                  off, anonymously or under a handle you keep. {community.safetyNote}
                 </p>
               </div>
             )}
@@ -735,9 +735,9 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                   <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
                     <TrophyIcon aria-hidden="true" />
                   </EmptyMedia>
-                  <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">No field notes yet</EmptyTitle>
+                  <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">No field notes filed yet</EmptyTitle>
                   <EmptyDescription>
-                    No field notes yet for this pitch. The first one shapes the bar. Add how you throw it above.
+                    No field notes filed yet for this pitch. The first one starts the drawer. Add how you throw it above.
                   </EmptyDescription>
                 </EmptyHeader>
               </Empty>

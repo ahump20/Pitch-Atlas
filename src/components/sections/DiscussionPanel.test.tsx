@@ -53,8 +53,8 @@ describe('DiscussionPanel', () => {
     // The forum is code-split (React.lazy): a labelled skeleton holds while the
     // chunk loads, then the empty state lands. Flush the lazy import's microtask
     // so the suspended boundary resolves before we assert.
-    expect(await screen.findByText('No comments yet', {}, LAZY_FORUM)).toBeInTheDocument()
-    expect(screen.getByText(/Start the thread with a grip cue/)).toBeInTheDocument()
+    expect(await screen.findByText('No specimens filed yet', {}, LAZY_FORUM)).toBeInTheDocument()
+    expect(screen.getByText(/Start the file with a grip cue/)).toBeInTheDocument()
   })
 
   it('renders the error state with a retry action', async () => {
@@ -111,5 +111,46 @@ describe('DiscussionPanel', () => {
       )
     })
     expect(remove).toHaveBeenCalledWith('post-1')
+  })
+
+  it('renders uploaded media as a filed specimen card', async () => {
+    const user = userEvent.setup()
+    vi.mocked(useDiscussion).mockReturnValue({
+      ...baseDiscussion,
+      posts: [
+        {
+          id: 'post-1',
+          topicKey: 'pitch:four-seam',
+          authorId: 'user-1',
+          displayName: 'Austin',
+          body: 'Index finger pressure felt cleaner here.',
+          createdAt: '2026-06-15T08:00:00.000Z',
+          viewerIsAuthor: false,
+          media: [
+            {
+              id: 'media-abc123',
+              kind: 'image',
+              url: 'https://media.example/four-seam.jpg',
+              width: 640,
+              height: 480,
+            },
+          ],
+          replies: [],
+        },
+      ],
+      count: 1,
+    })
+
+    render(<DiscussionPanel topicKey="pitch:four-seam" topicName="Four-seam fastball" />)
+    await user.click(screen.getByRole('button', { name: /discussion/i }))
+
+    expect(await screen.findByText('Image specimen', {}, LAZY_FORUM)).toBeInTheDocument()
+    expect(screen.getByText('Four-seam fastball')).toBeInTheDocument()
+    expect(screen.getByText(/PA-FOUR-20260615-MEDIAA/)).toBeInTheDocument()
+    expect(screen.getByText(/Filed by Austin/)).toBeInTheDocument()
+    expect(screen.getByAltText('Four-seam fastball specimen uploaded by Austin')).toHaveAttribute(
+      'src',
+      'https://media.example/four-seam.jpg',
+    )
   })
 })

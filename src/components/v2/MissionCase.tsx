@@ -1,25 +1,51 @@
 import { Link } from 'react-router-dom'
+import type { CSSProperties } from 'react'
 import { ChapterMark } from './ChapterMark'
 
 const VALUES = [
   {
     label: 'The grip is the artifact',
-    text: 'Thumb pressure, seam contact, finger spread, and feel cues get filed before they vanish into memory.',
+    text: 'Thumb pressure, seam contact, finger spread, and feel cues are the object in the drawer, not decoration around it.',
   },
   {
-    label: 'The mind has weight',
-    text: 'Approach and self-belief matter, but they do not replace evidence. They sit beside the grip as firsthand account, quote, or coaching note.',
+    label: 'The pitch is the culture',
+    text: 'A grip matters because it carries the pitcher, the era, the hitter problem, and the reason the shape survived.',
   },
   {
-    label: 'Evidence beats polish',
-    text: 'A clean unknown is better than padded certainty. Every claim gets a source, a confidence label, or a visible gap.',
+    label: 'The unknown stays visible',
+    text: 'A clean gap is better than padded certainty. Every claim gets a source, a confidence label, or a visible unknown.',
   },
 ]
 
 const GOALS = [
-  'Build the public field manual for pitch craft.',
-  'Preserve oral technique without flattening it into one correct answer.',
-  'Give the next pitcher a sourced place to start, not a fake number to trust.',
+  'Build the living museum of pitching craft.',
+  'Carry pitching forward without losing where it came from.',
+  'Give the next pitcher a sourced file to open, not a fake number to trust.',
+]
+
+const LAYERS = ['Baseball', 'Pitching', 'Pitch craft', 'Grip', 'Individual specimen']
+
+const PROGRESSION = [
+  {
+    label: 'Discover',
+    text: 'Find the pitch in the taxonomy and see where it sits beside its family and aliases.',
+  },
+  {
+    label: 'Study',
+    text: 'Read the grip, shape, cue, and source before copying the movement.',
+  },
+  {
+    label: 'Throw',
+    text: 'Take the idea to the bullpen or catch session and make it physical.',
+  },
+  {
+    label: 'Document',
+    text: 'Add the clip, image, grip tweak, or note with rights and context attached.',
+  },
+  {
+    label: 'Carry forward',
+    text: 'Leave a one-of-one specimen in the record so the next pitcher is not starting from rumor.',
+  },
 ]
 
 export function MissionCase() {
@@ -29,23 +55,38 @@ export function MissionCase() {
         <div className="md:col-span-7">
           <ChapterMark n="01" name="The Mission" />
           <h2 className="rfx-athletic v2-display mt-5 max-w-[14ch] text-[clamp(34px,6vw,68px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
-            Preserve the art before it disappears.
+            Carry pitching forward without losing where it came from.
           </h2>
 
           {/* the thesis, lifted out of body copy into the founder's serif register —
               the most distinctive sentence on the page, finally staged like one. */}
           <p className="v2-lede mt-7 max-w-[40ch]">
-            Behind the Art of Pitching lies a crossroad of subtle nuance, obsessive perfectionism, a
-            possessed psychosis of self-belief, and, most crucially, the mastery of the mind.
+            The grip is the artifact. The pitch is the culture.
           </p>
 
           <p className="mt-7 max-w-[60ch] text-[15.5px] leading-relaxed text-bone-2 md:text-[16.5px]">
-            Pitch Atlas is built on a simple idea: the collective progression, careful documentation,
-            and perpetual preservation of how pitchers grip and approach the artistry of the game —
-            keeping the oral techniques and traditions of our forefathers free and accessible for the
-            generations to come. It is Austin Humphrey&apos;s flagship archive of that craft, made
-            public without turning it into fake certainty.
+            Pitch Atlas is a living museum where the museum object is still useful in the bullpen.
+            Every accepted pitch gets a canonical entry. Every grip can carry history. Every
+            contributor upload can become a personal one-of-one specimen, filed without turning
+            lived feel into fake certainty.
           </p>
+
+          <ol className="mt-8 grid gap-2 sm:grid-cols-5" aria-label="Pitch Atlas archive hierarchy">
+            {LAYERS.map((layer, i) => (
+              <li
+                key={layer}
+                className="border-t border-bone/15 pt-3"
+                style={{ '--i': i } as CSSProperties}
+              >
+                <span className="font-mono text-[9px] uppercase tracking-[0.14em] tabular-nums text-bone-2/70">
+                  L{String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-bone">
+                  {layer}
+                </span>
+              </li>
+            ))}
+          </ol>
 
           {/* the values, struck as filed index cards. one seam tick per section lives
               on the chapter mark; these carry the plain index number so the accent
@@ -62,6 +103,21 @@ export function MissionCase() {
                 <p className="mt-3 text-[13.5px] leading-relaxed text-bone-2">{value.text}</p>
               </div>
             ))}
+          </div>
+
+          <div className="v2-progression mt-10" aria-label="Archival progression">
+            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2/75">
+              Archival progression, not gamification
+            </p>
+            <ol className="mt-4 grid gap-3 sm:grid-cols-5">
+              {PROGRESSION.map((step, i) => (
+                <li key={step.label} className="v2-progress-step" style={{ '--i': i } as CSSProperties}>
+                  <span className="v2-progress-no">{String(i + 1).padStart(2, '0')}</span>
+                  <h3 className="rfx-athletic mt-3 text-[20px] leading-none text-bone">{step.label}</h3>
+                  <p className="mt-2 text-[12.5px] leading-snug text-bone-2">{step.text}</p>
+                </li>
+              ))}
+            </ol>
           </div>
         </div>
 

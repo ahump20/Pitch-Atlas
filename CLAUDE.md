@@ -49,7 +49,7 @@ caps, banned-term filter, per-account rate limits, report-driven auto-hide that
 stops serving a hidden item the instant its row flips). The runbook + the honest
 list of deferred limits live in `docs/community-media-moderation.md`. Tables:
 `discussion_posts` / `discussion_media` / `discussion_reports` (migration
-`supabase/migrations/20260606090000_discussion_forum.sql`); the structured
+`supabase/migrations/20260606005149_discussion_forum.sql`); the structured
 `field_notes` grip-tweak engine stays alongside it, dormant.
 
 Still excluded on purpose (these have NOT changed):

@@ -57,7 +57,8 @@ describe('Atlas home', () => {
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
       /struck as a specimen/i,
     )
-    expect(screen.getByText('Preserve the art before it disappears.')).toBeInTheDocument()
+    expect(screen.getAllByText('Carry pitching forward without losing where it came from.').length).toBeGreaterThan(0)
+    expect(screen.getByText('The grip is the artifact. The pitch is the culture.')).toBeInTheDocument()
     expect(screen.getByText(/Founding note/)).toBeInTheDocument()
     // the chrome wall carries the whole filed set: every specimen name is in the DOM
     for (const p of PITCHES) {
@@ -186,7 +187,9 @@ describe('Sources', () => {
 describe('About', () => {
   it('explains the grip-first thesis and competitor field', async () => {
     renderRoute('/about')
-    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('The pitch, in your hand.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
+      'Baseball memory, held in the hand.',
+    )
     expect(screen.getByText('What it is')).toBeInTheDocument()
     expect(screen.getByText('Measurement dashboards')).toBeInTheDocument()
     expect(screen.getByText('Useful imperfection')).toBeInTheDocument()

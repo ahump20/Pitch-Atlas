@@ -23,7 +23,7 @@ const FIELD_ROWS = [
       { label: 'CleanFuego', href: 'https://www.cleanfuego.com/' },
     ],
     answer: 'What feedback can a pitcher get from a rep?',
-    gap: 'They connect feel to data or visual feedback. They do not try to preserve a public archive of sourced grip variants.',
+    gap: 'They connect feel to data or visual feedback. They do not try to carry forward a public archive of sourced grip variants.',
   },
   {
     label: 'Coaching and pitch design',
@@ -46,35 +46,42 @@ const FIELD_ROWS = [
 const VALUE_ROWS = [
   {
     stamp: '1',
-    label: 'The grip leads',
-    text: 'A pitch starts as something a hand can actually hold. Shape, physics, and biography come after that, not before it.',
+    label: 'The grip is the artifact',
+    text: 'A pitch starts as something a hand can actually hold. Thumb, seam, pressure, and feel are the object on file.',
   },
   {
     stamp: '2',
+    label: 'The pitch is the culture',
+    text: 'The grip carries a player, era, hitter problem, and reason for existing. That memory is the larger record.',
+  },
+  {
+    stamp: '3',
     label: 'The mind has weight',
     text: 'A pitcher\'s approach, conviction, and feel can belong in the record when the source can carry it. Mentality is craft, not a replacement for evidence.',
   },
   {
-    stamp: '3',
+    stamp: '4',
     label: 'The source is visible',
     text: 'A claim does not get smoothed into authority. Official data, pitcher words, coach observation, analysis, secondhand record, and community notes all wear different labels.',
   },
   {
-    stamp: '4',
+    stamp: '5',
     label: 'Variants are allowed to disagree',
     text: 'The atlas does not crown one correct grip. It lets credible versions sit side by side, because pitchers do not all have the same hand, release, or feel cue.',
   },
   {
-    stamp: '5',
+    stamp: '6',
     label: 'Missingness stays visible',
     text: 'If the grip record is thin, the page says so. A blank file with honest edges is better than a full card padded with fake certainty.',
   },
 ]
 
+const LAYER_ROWS = ['Baseball', 'Pitching', 'Pitch craft', 'Grip', 'Individual specimen']
+
 const TRUTH_ROWS = [
   {
     label: 'Known',
-    text: 'Pitch Atlas is a sourced field manual for grips, pitch variants, craftsmen, lost pitches, and shape language. The pitch records are static, and the live pages carry source and confidence labels.',
+    text: 'Pitch Atlas is a sourced field manual and living museum for grips, pitch variants, craftsmen, lost pitches, and shape language. The live pages carry source and confidence labels.',
   },
   {
     label: 'Unknown',
@@ -96,11 +103,11 @@ function ExternalLink({ href, children }: { href: string; children: string }) {
 
 export function AboutPage() {
   useSeoMeta({
-    title: `About ${SITE.siteName}: Why the Grip Comes First`,
+    title: `About ${SITE.siteName}: Baseball Memory, Held in the Hand`,
     description:
-      'Pitch Atlas is a sourced field manual for pitch craft: grip-first, provenance-labeled, and honest about what each source can prove.',
-    ogTitle: `About ${SITE.siteName}: why the grip comes first`,
-    ogDescription: 'The grip-first field manual for pitch craft. Sourced, not corrected.',
+      'Pitch Atlas is a sourced field manual and living museum for pitch craft: grip-first, provenance-labeled, and built to carry pitching forward.',
+    ogTitle: `About ${SITE.siteName}: baseball memory, held in the hand`,
+    ogDescription: 'The grip-first archive for carrying pitch craft forward. Sourced, not corrected.',
     ogUrl: canonicalUrl('/about'),
     twitterCard: 'summary_large_image',
   })
@@ -111,9 +118,9 @@ export function AboutPage() {
         graph={contentJsonLd({
           type: 'CreativeWork',
           url: canonicalUrl('/about'),
-          name: 'About Pitch Atlas: Why the Grip Comes First',
+          name: 'About Pitch Atlas: Baseball Memory, Held in the Hand',
           description:
-            'Pitch Atlas is a sourced field manual for pitch craft: grip-first, provenance-labeled, and honest about what each source can prove.',
+            'Pitch Atlas is a sourced field manual and living museum for pitch craft: grip-first, provenance-labeled, and built to carry pitching forward.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'About' }],
         })}
       />
@@ -121,14 +128,14 @@ export function AboutPage() {
         eyebrow="About Pitch Atlas"
         title={
           <>
-            The pitch, in your <span className="text-seam">hand</span>.
+            Baseball memory, held in the <span className="text-seam">hand</span>.
           </>
         }
         sub={
           <p>
-            Pitch Atlas is a sourced field manual for pitch craft. It starts with the grip, then files
-            the shape, the person, the approach, and the source label that tells you how much weight
-            the claim can carry.
+            Pitch Atlas is a sourced field manual and living museum for pitch craft. It starts with
+            the grip, then files the shape, the person, the approach, and the source label that tells
+            you how much weight the claim can carry.
           </p>
         }
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'About' }]} />}
@@ -162,9 +169,25 @@ export function AboutPage() {
               That is the gap. Pitch Atlas treats the grip as the specimen and the source label as
               part of the interface.
             </p>
+            <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-ink-2">
+              The grip is the artifact. The pitch is the culture. The job is to carry pitching
+              forward without losing where it came from.
+            </p>
           </div>
 
           <div className="md:col-span-7">
+            <ol className="mb-8 grid gap-2 sm:grid-cols-5" aria-label="Pitch Atlas archive hierarchy">
+              {LAYER_ROWS.map((layer, i) => (
+                <li key={layer} className="border-t border-ink/15 pt-3">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] tabular-nums text-ink-3">
+                    L{String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-ink">
+                    {layer}
+                  </span>
+                </li>
+              ))}
+            </ol>
             <div className="border-t border-ink/15">
               {VALUE_ROWS.map((row, i) => (
                 <div
@@ -200,8 +223,8 @@ export function AboutPage() {
           </div>
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              Behind the Art of Pitching lies a crossroad of subtle nuance, obsessive perfectionism,
-              a possessed psychosis of self-belief, and, most crucially, the mastery of the mind.
+              Behind the Art of Pitching is feel, obsession, self-belief, and command of the mind.
+              The hand is only the first clue.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Upon briefly meeting Roger Clemens at a W. 6th Street bar named Rio in Austin, TX, I
@@ -219,9 +242,9 @@ export function AboutPage() {
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Pitch Atlas is built on a simple idea: the collective progression, careful
-              documentation, and perpetual preservation of how pitchers grip and approach the
-              artistry of the game — keeping the oral techniques and traditions of our forefathers
-              free and accessible for the generations to come.
+              documentation, and carrying forward of how pitchers grip and approach the artistry of
+              the game, keeping the oral techniques and traditions of our forefathers free and
+              accessible for the generations to come.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The first grips filed here are photographs of my own hand. I worked a four-pitch mix in
@@ -332,8 +355,8 @@ export function AboutPage() {
               Nobody built this before because nobody had to own it. Coaching sells the next
               adjustment. Media sells what the ball just did. Trackers sell the measurement. An
               archive of sourced grips pays off years later, when someone wants to know how a
-              pitch was actually held. Preservation is the job nobody claims until the thing is
-              already gone.
+              pitch was actually held. Carrying it forward is the job nobody claims until the thing
+              is already gone.
             </p>
             <p className="mt-6">
               <Link

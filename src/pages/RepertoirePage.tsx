@@ -19,7 +19,7 @@ export function RepertoirePage() {
   useSeoMeta({
     title: `The Pitch Index: every pitch, by family | ${SITE.siteName}`,
     description:
-      'A searchable index of every accepted pitch a coach, a pitcher, or the tracking taxonomy would name — plus the lost pitches of the Negro Leagues. Each one a sourced one-liner, labeled by confidence. Open any file.',
+      'A searchable taxonomy of every accepted pitch a coach, a pitcher, or the tracking language would name. Each file keeps its source, confidence label, and honest edge.',
     ogTitle: `The Pitch Index | ${SITE.siteName}`,
     ogDescription: 'Every accepted pitch, by family. Sourced, not corrected.',
     ogUrl: canonicalUrl('/repertoire'),
@@ -34,7 +34,7 @@ export function RepertoirePage() {
           url: canonicalUrl('/repertoire'),
           name: 'The Pitch Index: every pitch, by family',
           description:
-            'A searchable index of every accepted pitch a coach, a pitcher, or the tracking taxonomy would name — plus the lost pitches of the Negro Leagues. Each one a sourced one-liner, labeled by confidence.',
+            'A searchable taxonomy of every accepted pitch a coach, a pitcher, or the tracking language would name. Each file keeps its source, confidence label, and honest edge.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'The Pitch Index' }],
         })}
       />
@@ -52,11 +52,11 @@ export function RepertoirePage() {
             The Pitch <span className="rfx-holo">Index</span>
           </h1>
           <p className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-            Every accepted pitch, by family, plus the honest edges: an alias, an illusion, a colloquialism
-            that is not a pitch, and the banned doctored balls. A filed pitch opens its full specimen; an
-            unfiled one opens a basic file with its sourced one-liners. Nothing fabricates geometry for a
-            pitch the atlas has not measured. The shelf holds {INDEX_SCOPE.shelfLabel}, plus{' '}
-            {INDEX_SCOPE.lostNote} in the lost-pitches wing, one click away.
+            This is the atlas shelf: every accepted pitch by family, plus the honest edges, aliases,
+            illusions, colloquialisms, and banned doctored balls. A filed pitch opens its full
+            specimen. A basic file keeps the entry findable without inventing geometry the atlas has
+            not measured. The shelf holds {INDEX_SCOPE.shelfLabel}, plus {INDEX_SCOPE.lostNote} in
+            the lost-pitches wing, one click away.
           </p>
         </div>
         <IndexLedger />

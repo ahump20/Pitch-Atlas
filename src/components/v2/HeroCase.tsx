@@ -48,9 +48,9 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             className="v2-enter mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base"
             style={{ '--i': 2 } as React.CSSProperties}
           >
-            Hold the grip, read the shape in plain words, check the source on every line. Pitch
-            Atlas preserves the art before it disappears: grip first, claim labeled, no invented
-            certainty.
+            Every pitch has a file. Every grip has a history. Every variant carries provenance.
+            Open the atlas, study the hold, then carry forward what the next pitcher should not
+            have to rediscover from scratch.
           </p>
 
           <div

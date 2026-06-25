@@ -40,8 +40,12 @@ export function ReloadPrompt() {
     <div
       role="status"
       aria-live="polite"
-      data-blaze-reserved-bottom=""
-      className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
+      data-blaze-reserved-bottom={needRefresh ? '' : undefined}
+      className={`fixed z-50 flex ${
+        needRefresh
+          ? 'inset-x-0 bottom-0 justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]'
+          : 'left-0 right-0 top-16 justify-center px-4 pt-3 md:left-auto md:right-4 md:top-20 md:w-[min(24rem,calc(100vw-2rem))] md:px-0'
+      }`}
     >
       <Alert className="flex w-full max-w-sm items-center gap-3 border-cyan/30 bg-popover px-4 py-3 text-popover-foreground shadow-2xl shadow-black/60">
         <div className="min-w-0 flex-1">

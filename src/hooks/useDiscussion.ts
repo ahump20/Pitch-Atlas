@@ -108,11 +108,11 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
       // a caller's catch sees is a genuine post-creation failure.
       const postId = await createPost({ topicKey, displayName: name, body, parentId })
       setDisplayName(name)
-      // Media is additive: the post is already saved, so a failed upload never
-      // loses the comment. Collect every failure (not just the last) and report
+      // Media is additive: the file is already saved, so a failed upload never
+      // loses the note. Collect every failure (not just the last) and report
       // how many of how many files didn't attach, with the reason. A partial
-      // success RETURNS that notice instead of throwing — so the composer clears
-      // behind a saved post and never invites a double-post.
+      // success RETURNS that notice instead of throwing, so the composer clears
+      // behind a saved file and never invites a double-submit.
       const mediaErrors: string[] = []
       for (const file of files) {
         try {
@@ -129,8 +129,8 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
           ok: true,
           mediaError:
             files.length === 1
-              ? `Your comment posted, but the file didn't attach. ${reasons}`
-              : `Your comment posted, but ${mediaErrors.length} of ${files.length} files didn't attach. ${reasons}`,
+              ? `Your note filed, but the media did not attach. ${reasons}`
+              : `Your note filed, but ${mediaErrors.length} of ${files.length} media files did not attach. ${reasons}`,
         }
       }
       dispatchBlazeEvent({ mood: 'caught' })

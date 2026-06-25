@@ -66,7 +66,7 @@ export function DiscussionPanel({
         {open ? (
           <div id={regionId} className="border-t border-ink/15 px-5 py-6">
             <Suspense fallback={<ForumFallback />}>
-              <DiscussionForum topicKey={topicKey} open={open} />
+              <DiscussionForum topicKey={topicKey} topicName={topicName} open={open} />
             </Suspense>
           </div>
         ) : null}

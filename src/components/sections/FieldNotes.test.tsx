@@ -41,6 +41,6 @@ describe('FieldNotes', () => {
     fireEvent.click(await screen.findByRole('option', { name: /a hunch - untested/i }))
 
     expect(screen.getByLabelText(/context \(required\)/i)).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /post field note/i })).toBeDisabled()
+    expect(screen.getByRole('button', { name: /file field note/i })).toBeDisabled()
   })
 })
