@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { ReloadPrompt } from './ReloadPrompt'
 
@@ -21,8 +21,13 @@ vi.mock('virtual:pwa-register/react', () => ({
 describe('ReloadPrompt', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    vi.useRealTimers()
     sw.offlineReady = false
     sw.needRefresh = true
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
   })
 
   it('renders accessible reload and dismiss actions when an update is ready', () => {
@@ -35,14 +40,14 @@ describe('ReloadPrompt', () => {
     expect(screen.getByRole('status')).toHaveClass('bottom-0')
   })
 
-  it('keeps the saved-offline notice away from bottom content', () => {
+  it('clears the saved-offline event without rendering a blocking notice', () => {
     sw.offlineReady = true
     sw.needRefresh = false
 
     render(<ReloadPrompt />)
 
-    expect(screen.getByText('Saved offline')).toBeInTheDocument()
-    expect(screen.getByRole('status')).toHaveClass('top-16')
-    expect(screen.getByRole('status')).not.toHaveAttribute('data-blaze-reserved-bottom')
+    expect(screen.queryByText('Saved offline')).not.toBeInTheDocument()
+    expect(screen.queryByRole('status')).not.toBeInTheDocument()
+    expect(sw.setOfflineReady).toHaveBeenCalledWith(false)
   })
 })
