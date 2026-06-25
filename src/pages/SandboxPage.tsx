@@ -174,7 +174,7 @@ export function SandboxPage() {
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-2 md:px-8 md:py-20">
           {/* Controls */}
           <div>
-            <p className="rfx-skick">Starting points</p>
+            <p className="rfx-skick">Stock tilts</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {PRESETS.map((p) => {
                 const active =

@@ -11,7 +11,7 @@ export function NotFound() {
 
   return (
     <section className="mx-auto flex min-h-[60vh] max-w-3xl flex-col items-start justify-center gap-6 px-5 py-24 md:px-8">
-      <p className="rfx-skick">404 / off the page</p>
+      <p className="rfx-skick">404 / no such specimen</p>
       <h1 className="rfx-stitle text-4xl leading-tight md:text-5xl">
         That file is not in the atlas.
       </h1>
