@@ -212,15 +212,13 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
 export function ChromeWall() {
   // Group the filed set by family so the taxonomy reads at a glance — the
   // Pokédex-shelf beat. Each card keeps a running deal-stagger index ACROSS
-  // groups, so the entrance still cascades the whole wall, not per-shelf.
-  let dealt = 0
-  const groups = FAMILY_ORDER.map((family) => {
-    const pitches = PITCHES.filter((p) => p.canonical.family === family)
-    const base = dealt
-    dealt += pitches.length
-    return { family, pitches, base }
-  }).filter((g) => g.pitches.length > 0)
-  const total = dealt
+  // shelves (computed purely from the shelf order, no in-render mutation), so
+  // the entrance still cascades the whole wall, not per-shelf.
+  const shelves = FAMILY_ORDER.map((family) => ({
+    family,
+    pitches: PITCHES.filter((p) => p.canonical.family === family),
+  })).filter((shelf) => shelf.pitches.length > 0)
+  const total = shelves.reduce((sum, shelf) => sum + shelf.pitches.length, 0)
 
   return (
     <section id="set" className="v2-stage v2-tooth relative border-t border-bone/10">
@@ -243,7 +241,8 @@ export function ChromeWall() {
         </p>
 
         <div className="mt-10 flex flex-col gap-12">
-          {groups.map(({ family, pitches, base }) => {
+          {shelves.map(({ family, pitches }, si) => {
+            const base = shelves.slice(0, si).reduce((sum, s) => sum + s.pitches.length, 0)
             const crumb = familyCrumb(family)
             const FamIcon = crumb.Icon
             return (
