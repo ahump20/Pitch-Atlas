@@ -111,7 +111,7 @@ export function TikTokEmbed({ clip, accentColor }: { clip: TeachingClip; accentC
               Watch on TikTok <span aria-hidden="true">↗</span>
             </a>
           </div>
-          <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2/55">
+          <p className="mt-3 max-w-[58ch] font-mono text-[11px] uppercase leading-snug tracking-[0.08em] text-bone-2/80">
             Original post, embedded from TikTok and credited — not rehosted.
           </p>
         </div>

@@ -106,6 +106,9 @@ function PipPlayer({ clip, onClose }: { clip: PipClip | null; onClose: () => voi
           referrerPolicy="strict-origin-when-cross-origin"
         />
       </div>
+      <p className="border-t border-bone/12 px-3 py-2 font-mono text-[10px] uppercase leading-snug tracking-[0.08em] text-bone-2/80">
+        Original post, embedded from TikTok and credited — not rehosted.
+      </p>
     </div>
   )
 }
