@@ -4,7 +4,7 @@ import { SITE } from '../config/site'
 
 /*
   An honest 404. No fabricated content, no redirect trickery: name the miss and
-  point back into the three wings of the manual.
+  point back into the archive.
 */
 export function NotFound() {
   useSeoMeta({ title: `Page not found | ${SITE.siteName}`, robots: 'noindex, follow' })
@@ -17,7 +17,7 @@ export function NotFound() {
       </h1>
       <p className="max-w-[56ch] text-lg leading-relaxed text-ink-2">
         The page you asked for is not filed here. Nothing is invented to cover the gap. Head back to
-        the home field, open the Pitch Index, or read the craftsmen who defined the craft.
+        the archive, open the Pitch Index, or read the craftsmen who defined the craft.
       </p>
       <div className="flex flex-wrap gap-3">
         <Link to="/" className="btn-foil">

@@ -46,18 +46,18 @@ const FIELD_ROWS = [
 const VALUE_ROWS = [
   {
     stamp: '1',
-    label: 'The grip is the artifact',
-    text: 'A pitch starts as something a hand can actually hold. Thumb, seam, pressure, and feel are the object on file.',
+    label: 'Every pitch has history',
+    text: 'A pitch starts as something a hand can actually hold. Thumb, seam, pressure, feel, lineage, and the reason it survived are the record.',
   },
   {
     stamp: '2',
-    label: 'The pitch is the culture',
-    text: 'The grip carries a player, era, hitter problem, and reason for existing. That memory is the larger record.',
+    label: 'Every grip is evidence',
+    text: 'The grip is not decoration around the pitch. It is evidence of how the pitch was taught, adjusted, argued over, and made physical.',
   },
   {
     stamp: '3',
-    label: 'The mind has weight',
-    text: 'A pitcher\'s approach, conviction, and feel can belong in the record when the source can carry it. Mentality is craft, not a replacement for evidence.',
+    label: 'Every upload can matter',
+    text: 'A contributor note can become a personal one-of-one specimen when rights, context, and source labels travel with it.',
   },
   {
     stamp: '4',
@@ -81,7 +81,7 @@ const LAYER_ROWS = ['Baseball', 'Pitching', 'Pitch craft', 'Grip', 'Individual s
 const TRUTH_ROWS = [
   {
     label: 'Known',
-    text: 'Pitch Atlas is a sourced field manual and living museum for grips, pitch variants, craftsmen, lost pitches, and shape language. The live pages carry source and confidence labels.',
+    text: 'Pitch Atlas is a living archive for grips, pitch variants, craftsmen, lost pitches, and shape language. The live pages carry source and confidence labels.',
   },
   {
     label: 'Unknown',
@@ -103,11 +103,11 @@ function ExternalLink({ href, children }: { href: string; children: string }) {
 
 export function AboutPage() {
   useSeoMeta({
-    title: `About ${SITE.siteName}: Baseball Memory, Held in the Hand`,
+    title: `About ${SITE.siteName}: The Living Archive of Pitching Craft`,
     description:
-      'Pitch Atlas is a sourced field manual and living museum for pitch craft: grip-first, provenance-labeled, and built to carry pitching forward.',
-    ogTitle: `About ${SITE.siteName}: baseball memory, held in the hand`,
-    ogDescription: 'The grip-first archive for carrying pitch craft forward. Sourced, not corrected.',
+      'Pitch Atlas preserves and progresses the art of the pitch by cataloging grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
+    ogTitle: `About ${SITE.siteName}: preserve and progress the art of the pitch`,
+    ogDescription: 'The living archive of pitching craft. Sourced, not corrected.',
     ogUrl: canonicalUrl('/about'),
     twitterCard: 'summary_large_image',
   })
@@ -118,9 +118,9 @@ export function AboutPage() {
         graph={contentJsonLd({
           type: 'CreativeWork',
           url: canonicalUrl('/about'),
-          name: 'About Pitch Atlas: Baseball Memory, Held in the Hand',
+          name: 'About Pitch Atlas: The Living Archive of Pitching Craft',
           description:
-            'Pitch Atlas is a sourced field manual and living museum for pitch craft: grip-first, provenance-labeled, and built to carry pitching forward.',
+            'Pitch Atlas preserves and progresses the art of the pitch by cataloging grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'About' }],
         })}
       />
@@ -128,14 +128,14 @@ export function AboutPage() {
         eyebrow="About Pitch Atlas"
         title={
           <>
-            Baseball memory, held in the <span className="text-seam">hand</span>.
+            Preserve and progress the <span className="text-seam">art of the pitch</span>.
           </>
         }
         sub={
           <p>
-            Pitch Atlas is a sourced field manual and living museum for pitch craft. It starts with
-            the grip, then files the shape, the person, the approach, and the source label that tells
-            you how much weight the claim can carry.
+            Pitch Atlas canonizes, catalogs, and contextualizes baseball&apos;s craft knowledge:
+            the grips, variants, feel cues, forgotten experiments, master examples, and field notes
+            that too often disappear when nobody files them.
           </p>
         }
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'About' }]} />}
@@ -170,8 +170,8 @@ export function AboutPage() {
               part of the interface.
             </p>
             <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-ink-2">
-              The grip is the artifact. The pitch is the culture. The job is to carry pitching
-              forward without losing where it came from.
+              The goal is not nostalgia. It is continuity: keep the art from vanishing quietly and
+              give the next generation something to study, challenge, refine, and carry forward.
             </p>
           </div>
 
@@ -241,10 +241,9 @@ export function AboutPage() {
               Weekend.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              Pitch Atlas is built on a simple idea: the collective progression, careful
-              documentation, and carrying forward of how pitchers grip and approach the artistry of
-              the game, keeping the oral techniques and traditions of our forefathers free and
-              accessible for the generations to come.
+              Pitch Atlas exists to preserve and progress the art of the pitch. It keeps the oral
+              techniques and traditions of the game free and accessible, without freezing the craft
+              in place or pretending one grip ends the conversation.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The first grips filed here are photographs of my own hand. I worked a four-pitch mix in
@@ -347,16 +346,17 @@ export function AboutPage() {
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The lost-pitches wing shows the price. Holds that won real games survive as
               fragments because nobody filed them while the arm was still around to ask. Pitch
-              Atlas exists to file the hold while it can still be asked about. Sourced, because
-              memory earns trust through provenance. Uncorrected, because the variant a textbook
-              would flag is sometimes the one that fit a real hand.
+              Atlas exists to file the hold while it can still be asked about. It preserves the
+              lineage while leaving room for mutation. Sourced, because memory earns trust through
+              provenance. Uncorrected, because the variant a textbook would flag is sometimes the
+              one that fit a real hand.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Nobody built this before because nobody had to own it. Coaching sells the next
               adjustment. Media sells what the ball just did. Trackers sell the measurement. An
               archive of sourced grips pays off years later, when someone wants to know how a
-              pitch was actually held. Carrying it forward is the job nobody claims until the thing
-              is already gone.
+              pitch was actually held. Preserve the pitches baseball almost forgot. Progress the
+              craft for the pitchers still searching.
             </p>
             <p className="mt-6">
               <Link

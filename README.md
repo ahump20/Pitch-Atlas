@@ -1,12 +1,20 @@
 # Pitch Atlas
 
-Austin Humphrey's grip-first field manual for pitch craft: how pitchers hold, describe, preserve, and pass down the art.
+Austin Humphrey's living archive of pitching craft: how pitchers hold, describe, preserve, and carry forward the art.
 
 The knowledge of how a pitch works is scattered and easy to lose. The best footage has no structure. A grip reference is often a flat photo, a PDF, a clip, or a coach's memory. Pitch Atlas is the layer underneath that footage: a structured archive where each pitch carries an original interactive specimen and every claim wears the label of where it came from.
 
 ## Mission
 
-Pitch Atlas is built on a simple idea: the collective progression, careful documentation, and perpetual preservation of how pitchers grip and approach the artistry of the game — keeping the oral techniques and traditions of our forefathers free and accessible for the generations to come. Thumb pressure, seam feel, mental approach, variants that fit real hands, and the source behind each claim. It is not here to crown one correct grip. It is here to keep the record honest enough that the next pitcher has a sourced place to start.
+Pitch Atlas exists to preserve and progress the art of the pitch.
+
+It canonizes, catalogs, and contextualizes the craft knowledge of baseball: the grips, variants, feel cues, forgotten experiments, master examples, and field notes that too often disappear when a player ages out, a coach retires, or a pitch falls out of fashion.
+
+Every pitch is treated as a specimen with history. Every grip is preserved as evidence. Every upload can become part of a living archive.
+
+The goal is not nostalgia. It is continuity.
+
+Pitch Atlas keeps the art from vanishing quietly into memory, rumor, and half-told stories, then gives the next generation something to study, challenge, refine, and carry forward. Preserve the pitches baseball almost forgot. Progress the craft for the pitchers still searching.
 
 ## The model: sourced, not corrected
 
@@ -41,9 +49,9 @@ The front door is the **Pitch Index**: a searchable directory of every accepted 
 
 The seam geometry, equation, constants, coordinate system, and stitch-count assumption are documented in [`docs/seam-calibration.md`](docs/seam-calibration.md), including what is exact and what is schematic. The public copy states the honest level of precision. If a permitted reference cannot pin the geometry, the copy says "seam-informed schematic" rather than claiming measured precision.
 
-## Health, youth, and safety
+## Safety boundary
 
-Pitch Atlas covers arm health, workload, and youth development as sourced, educational reference — every claim cited and confidence-tagged, drawn from published authorities (ASMI, MLB's Pitch Smart, peer-reviewed work). It is education, not medical care: nothing here is a diagnosis or a prescription, and anyone changing a throwing program should run it past a qualified coach or physician first.
+Pitch Atlas cites training-safety literature only as educational context and source boundary. It does not diagnose, prescribe, make injury-prevention guarantees, or tell a young pitcher what to throw at what age. Pain, workload, rehab, and age-specific decisions belong with a qualified coach, parent or guardian, and medical professional.
 
 The discussion layer keeps its safety floor: a standing note that posts are shared experience and technique, not personal medical advice; source labels; anonymous sign-in; and report-driven auto-hide. Native uploads ride a one-time terms acceptance (own-the-rights, no copyrighted footage, no minors), magic-byte type validation, per-kind size caps, and report-driven takedown that stops serving a hidden item the instant its row flips. The full runbook and the honest list of deferred limitations (no automated content scanning, no bot protection yet) live in [`docs/community-media-moderation.md`](docs/community-media-moderation.md).
 

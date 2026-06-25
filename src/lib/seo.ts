@@ -88,7 +88,7 @@ export function organizationJsonLd(): JsonLdNode {
 }
 
 /** The site-level graph. WebSite + Organization are stable identity and belong
-    on every route; the home field-manual CreativeWork only describes '/', so it
+    on every route; the home archive CreativeWork only describes '/', so it
     is included on the home page alone (pass `home: false` on inner routes to
     drop it and avoid repeating a home-scoped node site-wide). */
 export function siteJsonLd(home: boolean = true) {
@@ -99,7 +99,7 @@ export function siteJsonLd(home: boolean = true) {
       name: SITE.siteName,
       url: `${SITE.canonicalDomain}/`,
       description:
-        'A grip-first field manual for pitch craft, variants, craftsmen, and sourced community notes.',
+        'A grip-first archive for pitch craft, variants, craftsmen, lost pitches, and sourced community notes.',
       inLanguage: 'en',
       publisher: { '@id': `${SITE.canonicalDomain}/#org` },
       potentialAction: {
@@ -113,12 +113,12 @@ export function siteJsonLd(home: boolean = true) {
   if (home) {
     graph.push({
       '@type': 'CreativeWork',
-      '@id': `${SITE.canonicalDomain}/#field-manual`,
-      name: `${SITE.siteName}: The Living Field Manual for Pitch Craft`,
+      '@id': `${SITE.canonicalDomain}/#living-archive`,
+      name: `${SITE.siteName}: The Living Archive of Pitching Craft`,
       url: `${SITE.canonicalDomain}/`,
-      headline: 'How pitchers grip and shape the baseball, labeled by source.',
+      headline: 'Preserve and progress the art of the pitch.',
       abstract:
-        'Grip-first reference for pitch specimens, variants, craftsmen, lost pitches, and community field notes. Sourced, not corrected.',
+        'Grip-first archive for pitch specimens, variants, craftsmen, lost pitches, and community field notes. Sourced, not corrected.',
       isAccessibleForFree: true,
       inLanguage: 'en',
       creator: { '@id': `${SITE.canonicalDomain}/#org` },

@@ -44,18 +44,22 @@ and the data model is a half-finished change.
 
 ## The Northstar
 
-One line, the way the field manual already says it:
+One line:
 
-> Baseball Savant for grip craft. Baseball Reference for pitch variants. A field
-> notebook for every pitcher who ever thought "what if I move my thumb here?"
+> Pitch Atlas exists to preserve and progress the art of the pitch.
 
-The longer read: the knowledge of how a pitch actually works is scattered and it
-doesn't last. The best footage has no structure. Every grip reference is a flat
-photo or a PDF that rots in a group chat. Coaching cues get passed mouth to mouth
-and mutate on the way. Pitch Atlas is the durable layer underneath all of that. A
-structured archive where each pitch carries an original interactive specimen, every
-claim wears the label of where it came from, and a real pitcher can add what they
-found and have it sit next to the textbook without pretending to be the textbook.
+The moral spine: preserve and progress the art before baseball's craft knowledge
+disappears into memory, rumor, and half-told stories.
+
+Pitch Atlas canonizes, catalogs, and contextualizes the craft knowledge of baseball:
+the grips, variants, feel cues, forgotten experiments, master examples, and field
+notes that too often disappear when a player ages out, a coach retires, or a pitch
+falls out of fashion. Every pitch is treated as a specimen with history. Every grip
+is preserved as evidence. Every upload can become part of a living archive.
+
+The goal is not nostalgia. It is continuity. Pitch Atlas keeps the art from
+vanishing quietly into the dim light, then gives the next generation something to
+study, challenge, refine, and carry forward.
 
 The win condition isn't traffic. It's the pitcher who opens it in the bullpen,
 checks a grip, tries the tweak, comes back, and writes down what happened. Verified
@@ -265,14 +269,27 @@ This is the mechanism that lets the product change without losing itself.
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
 
+### 2026-06-25: Preserve and progress becomes the canonical why
+
+**Decision.** Pitch Atlas now frames its public why as preserving and progressing
+the art of the pitch. It canonizes, catalogs, and contextualizes craft knowledge
+without freezing the craft in boxes.
+**Why.** The collectible-card language, archive finish, and discovery loop are
+visual grammar. The deeper reason is continuity: keeping grips, variants, feel
+cues, forgotten experiments, master examples, and field notes from disappearing
+into memory, rumor, and half-told stories.
+**Touches.** README, this charter, home page, About, footer, sources/support/privacy
+copy, SEO metadata, and route tests.
+**Respects.** Sourced, not corrected. Grip-first. Real, never faked.
+
 ### 2026-06-09: Craft-over-numbers doctrine replaces pitch-behavior gauges
 
 **Decision.** Pitch behavior is rendered as shape language, not as velocity,
 spin-rate, or break-in-inches figures. Sourced biography figures still belong when
 they are real. The old analytics routes are retired or reframed around craft.
 **Why.** Austin's own pitches were not tracked, and treating invented precision as
-structure made the product less honest and less useful. The field manual needs the
-hand, the seam, the release, and the claim boundary first.
+structure made the product less honest and less useful. The archive needs the hand,
+the seam, the release, and the claim boundary first.
 **Touches.** README, agent operating docs, data model language, route framing,
 cards, and the tool surfaces.
 **Respects.** Sourced, not corrected. Grip-first. Real, never faked.

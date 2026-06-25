@@ -21,7 +21,7 @@ export const pitchDesignWing: KnowledgeWing = {
       paragraphs: [
         "Pitch design is the iterative process of reading a pitch's current shape, identifying the missing lane in the arsenal, changing one mechanical variable, and validating against live bats. Unlike the old bullpen-only approach, it gives the pitcher a clear feedback loop: grip, throw, watch the shape, adjust.",
         "The sequence starts with a plain-language goal. Does the pitch need later ride, heavier arm-side run, sharper glove-side bite, softer fade, or more deadened tumble? Once the goal is named, the pitcher and coach test one thing at a time: grip depth, finger pressure, seam orientation, axis intent, or release feel.",
-        "The change is surgical. A grip cue either moves the pitch toward the intended shape or it does not. Video and tracking can help, but the field-manual question remains the same: can the pitcher feel it, repeat it, and make a hitter respond to it?",
+        "The change is surgical. A grip cue either moves the pitch toward the intended shape or it does not. Video and tracking can help, but the archive question remains the same: can the pitcher feel it, repeat it, and make a hitter respond to it?",
       ],
       claims: [
         kc("Edgertronic high-speed cameras record at 1,000 frames per second to reveal seam orientation and release point details", "official-data", { label: "SI.com: From Trackman to Edgertronic to Rapsodo, the Tech Boom Is Fundamentally Altering Baseball", url: "https://www.si.com/mlb/2019/03/29/technology-revolution-baseball-trackman-edgertronic-rapsodo" }),

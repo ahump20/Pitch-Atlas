@@ -17,7 +17,7 @@ import { CloseCta } from '../components/v2/CloseCta'
   The Refractor Case — the home. A bolder staging of the atlas on matte Topps-Now
   black: the cinematic specimen pull, the seam flattening into its 2D twin, the
   filed set as a chrome wall that flips to sourced backs, the grip-and-shape read,
-  the other wings, the tools, the field manual, and the provenance model as a
+  the other wings, the tools, the craft record, and the provenance model as a
   feature. Promoted from /v2 to / once it carried the whole atlas; the old
   editorial home was retired in the same change. Every visible reading is the real
   PITCHES data wearing its real source.
@@ -28,12 +28,12 @@ export function AtlasHomeV2() {
   useSeoMeta({
     // The published home: indexable, canonical at / (RootLayout sets the canonical
     // link from the pathname), and the only homepage now the editorial home is gone.
-    title: `${SITE.siteName}: The Living Field Manual for Pitch Craft`,
+    title: `${SITE.siteName}: The Living Archive of Pitching Craft`,
     description: truncateForMeta(
-      'A grip-first field manual for pitch craft: how pitchers hold, describe, preserve, and pass down the art. Every claim labeled by its source.',
+      'A grip-first archive for preserving and progressing pitch craft: grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
     ),
     ogTitle: `${SITE.siteName}: ${SITE.brandLine}`,
-    ogDescription: 'Every pitch struck in chrome and sourced — grip first, a source on every line.',
+    ogDescription: 'Every pitch struck as a sourced specimen: grip first, lineage intact, no invented certainty.',
     ogUrl: canonicalUrl('/'),
     ...ogImageMeta('home', `${SITE.siteName}: every pitch, gripped and sourced`),
   })

@@ -24,7 +24,7 @@ const ARCHIVE_TIERS = TIER_ORDER.map((tier) => ({
 const RAIL = [
   { to: '/softball', label: 'Softball', note: 'The fastpitch & slowpitch wing' },
   { to: '/grips', label: 'The Grip Library', note: 'Every grip, in the hand' },
-  { to: '/about', label: 'Why it exists', note: 'The case for a sourced field manual' },
+  { to: '/about', label: 'Why it exists', note: 'The case for a living archive' },
 ]
 
 export function WingsNav() {

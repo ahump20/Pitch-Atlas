@@ -69,10 +69,10 @@ function ForceReceipts({ claims }: { claims: Claim<string>[] }) {
 
 export function WhyPitchesDie() {
   return (
-    <section className="manual-section">
+    <section className="archive-section">
       <SeamGuide variant="tear" className="opacity-60" />
       <div className="mx-auto max-w-4xl px-5 py-16 md:px-8 md:py-20">
-        <span className="manual-section__no">The Through-Line</span>
+        <span className="archive-section__no">The Through-Line</span>
         <h2 className="rfx-stitle mt-2 text-3xl leading-tight md:text-4xl">Why pitches die.</h2>
         <p className="mt-4 max-w-[68ch] text-base leading-relaxed text-ink-2">
           An archive of lost pitches is really an archive of how pitches get lost. Four forces take a pitch

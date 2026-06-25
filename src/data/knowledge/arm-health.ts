@@ -8,11 +8,11 @@ import { kc } from './claim'
 */
 export const armHealthWing: KnowledgeWing = {
   slug: "arm-health",
-  navLabel: "Arm Health & Workload",
-  eyebrow: "The modifiable risks",
-  title: "Arm Health and Workload Management in Baseball Pitchers",
-  summary: "Rising UCL injury epidemic driven by overuse and fatigue; evidence-based prevention through workload limits, rest, and monitoring",
-  sub: "The ulnar collateral ligament has become baseball's injury flashpoint. Most Tommy John surgeries now occur in teenagers—a reversal from two decades ago when the procedure was rare outside the majors. The science is clear: the threshold between development and damage is workload and fatigue.",
+  navLabel: "Safety Source Record",
+  eyebrow: "The source boundary",
+  title: "Safety Source Record for Pitchers",
+  summary: "Published source context on fatigue, workload, UCL research, and the limits of what Pitch Atlas can responsibly claim.",
+  sub: "This wing files safety literature as source context only. It does not diagnose pain, prescribe rehab, set workload, or guarantee injury prevention.",
   accent: "seam",
   educational: true,
   sections: [

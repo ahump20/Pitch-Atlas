@@ -57,8 +57,8 @@ describe('Atlas home', () => {
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
       /struck as a specimen/i,
     )
-    expect(screen.getAllByText('Carry pitching forward without losing where it came from.').length).toBeGreaterThan(0)
-    expect(screen.getByText('The grip is the artifact. The pitch is the culture.')).toBeInTheDocument()
+    expect(screen.getAllByText('Preserve and progress the art of the pitch.').length).toBeGreaterThan(0)
+    expect(screen.getByText('The goal is not nostalgia. It is continuity.')).toBeInTheDocument()
     expect(screen.getByText(/Founding note/)).toBeInTheDocument()
     // the chrome wall carries the whole filed set: every specimen name is in the DOM
     for (const p of PITCHES) {
@@ -71,15 +71,16 @@ describe('Atlas home', () => {
     expect(screen.getAllByText('Lost Pitches of the Negro Leagues').length).toBeGreaterThan(0)
   })
 
-  it('opens onward into the tools, the field manual, and the rule sheet', async () => {
+  it('opens onward into the tools, the craft record, and the rule sheet', async () => {
     renderRoute('/')
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     // all four tools, named to match their destination pages and the masthead
     for (const label of ['Shape Lab', 'The Shape Map', 'Compare pitches', 'Compare grips']) {
       expect(screen.getAllByText(label).length).toBeGreaterThan(0)
     }
-    // the field manual leads into the ten sourced chapters
-    expect(screen.getByRole('heading', { name: 'The field manual.' })).toBeInTheDocument()
+    // the craft record leads into the ten sourced chapters
+    expect(screen.getByRole('heading', { name: 'The craft record.' })).toBeInTheDocument()
+    expect(screen.getAllByText(/Preserve the pitches baseball almost forgot/).length).toBeGreaterThan(0)
     // the rule sheet keeps its real honesty items through the redesign
     expect(screen.getByText('Hardcoded freshness')).toBeInTheDocument()
     expect(screen.getByText('A source on every claim')).toBeInTheDocument()
@@ -188,7 +189,7 @@ describe('About', () => {
   it('explains the grip-first thesis and competitor field', async () => {
     renderRoute('/about')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
-      'Baseball memory, held in the hand.',
+      'Preserve and progress the art of the pitch.',
     )
     expect(screen.getByText('What it is')).toBeInTheDocument()
     expect(screen.getByText('Measurement dashboards')).toBeInTheDocument()

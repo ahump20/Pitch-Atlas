@@ -18,7 +18,7 @@ export const handednessWing: KnowledgeWing = {
       paragraphs: [
         'The platoon advantage is the edge a pitcher gains when the ball is harder for the hitter to see and the pitch shape works away from the barrel. Same-handed matchups usually give breaking balls a cleaner lane: the slider or sweeper moves away from the hitter instead of back into the bat path.',
         'That is why a right-handed slider can feel like a weapon against a right-handed hitter and a risk against a left-handed hitter. The shape did not change. The matchup did.',
-        'For a field manual, the rule is simple: ask where the shape finishes relative to that hitter’s barrel, not just what the pitch is called.',
+        'For the archive, the rule is simple: ask where the shape finishes relative to that hitter’s barrel, not just what the pitch is called.',
       ],
       claims: [
         kc(

@@ -156,7 +156,7 @@ async function checkHomeMobileMenu(page) {
     await page.locator('main').waitFor({ state: 'attached' })
   })
 
-  assert.equal(await page.title(), 'Pitch Atlas: The Living Field Manual for Pitch Craft')
+  assert.equal(await page.title(), 'Pitch Atlas: The Living Archive of Pitching Craft')
   const body = await pageText(page)
   record(includesText(body, /pitch atlas/i), 'Home body did not render')
   record(messages.length === 0, `Home mobile console warnings/errors: ${messages.join(' | ')}`)

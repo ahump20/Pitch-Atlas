@@ -23,7 +23,7 @@ const HELP_ROWS = [
     text: 'In the Pitch Atlas iOS app, open the Account screen and choose delete account. That removes your community posts, your uploaded media, and the account itself. On the web you can delete your own discussion posts from the page where they appear.',
   },
   {
-    label: 'Question a claim in the manual',
+    label: 'Question a claim in the archive',
     text: 'Every figure on a specimen page is labeled with where it came from. Start at the source registry. If a claim looks wrong, the source link is one click away, and the label tells you how much weight it was ever meant to carry.',
   },
 ]
@@ -32,9 +32,9 @@ export function SupportPage() {
   useSeoMeta({
     title: `Support | ${SITE.siteName}`,
     description:
-      'How to report a problem, delete your account, or question a claim in Pitch Atlas, the sourced field manual for pitch craft.',
+      'How to report a problem, delete your account, or question a claim in Pitch Atlas, the sourced archive of pitch craft.',
     ogTitle: `Support | ${SITE.siteName}`,
-    ogDescription: 'Report a problem, delete your account, or question a claim in the field manual.',
+    ogDescription: 'Report a problem, delete your account, or question a claim in the archive.',
     ogUrl: canonicalUrl('/support'),
     twitterCard: 'summary_large_image',
   })
@@ -47,7 +47,7 @@ export function SupportPage() {
           url: canonicalUrl('/support'),
           name: 'Support',
           description:
-            'How to report a problem, delete your account, or question a claim in Pitch Atlas, the sourced field manual for pitch craft.',
+            'How to report a problem, delete your account, or question a claim in Pitch Atlas, the sourced archive of pitch craft.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'Support' }],
         })}
       />
@@ -60,7 +60,7 @@ export function SupportPage() {
         }
         sub={
           <p>
-            Pitch Atlas is a sourced field manual for how pitchers grip and shape a baseball. It is
+            Pitch Atlas is a sourced archive for how pitchers grip and shape a baseball. It is
             a reference site and an iOS app, with an optional community layer for field notes and
             discussion. This page covers the three help routes people need most.
           </p>
@@ -96,11 +96,11 @@ export function SupportPage() {
           <p className="rfx-skick">Contact</p>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
             Report issues through the in-product Report flow on any note or post. Every report is
-            reviewed. For how the manual handles your data, read the{' '}
+            reviewed. For how the archive handles your data, read the{' '}
             <Link to="/privacy" className="text-seam transition-colors hover:text-ink">
               privacy policy
             </Link>
-            ; for how its claims are sourced, read the{' '}
+            ; for how archive claims are sourced, read the{' '}
             <Link to="/sources" className="text-seam transition-colors hover:text-ink">
               source registry
             </Link>

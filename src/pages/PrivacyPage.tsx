@@ -6,7 +6,7 @@ import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SectionHero } from '../components/layout/SectionHero'
 
 /*
-  The privacy policy, in the same register as the rest of the manual: plain,
+  The privacy policy, in the same register as the rest of the archive: plain,
   factual, and scoped to what the product actually does. Every claim here is
   checked against the code. The static site runs no analytics scripts, and the
   only data the product holds is what a contributor chooses to file through the
@@ -35,7 +35,7 @@ const NOT_COLLECTED_ROWS = [
   { label: 'No ads', text: 'There are no ad networks and no ad identifiers anywhere in the product.' },
   {
     label: 'No tracking',
-    text: 'The site runs no analytics scripts and sets no tracking cookies. Reading the manual sends nothing about you to us.',
+    text: 'The site runs no analytics scripts and sets no tracking cookies. Reading the archive sends nothing about you to us.',
   },
   { label: 'No sale of data', text: 'Nothing you file is sold, rented, or shared with data brokers. Ever.' },
   {
@@ -77,19 +77,19 @@ export function PrivacyPage() {
       <section className="border-t border-ink/15">
         <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-16 md:grid-cols-12 md:gap-12 md:px-8 md:py-20">
           <div className="md:col-span-5">
-            <p className="rfx-skick">Reading the manual</p>
+            <p className="rfx-skick">Reading the archive</p>
             <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,52px)]">
               Browsing is anonymous.
             </h2>
           </div>
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              The manual is a set of static pages. No analytics scripts run, no advertising loads,
+              The archive is a set of static pages. No analytics scripts run, no advertising loads,
               and no tracking cookies are set. The pages you open may be cached on your own device
               so they read offline; that cache lives on your device and is never reported back.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              The same is true in the Pitch Atlas iOS app: the reference manual works fully logged
+              The same is true in the Pitch Atlas iOS app: the reference archive works fully logged
               out, with no advertising identifiers and no tracking.
             </p>
           </div>
@@ -176,7 +176,7 @@ export function PrivacyPage() {
           <p className="rfx-skick">Contact</p>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
             Report a problem with any note or post through its in-product Report action. That is
-            the fastest route to a human review. Questions about how the manual itself is built and
+            the fastest route to a human review. Questions about how the archive itself is built and
             sourced are answered on the{' '}
             <Link to="/about" className="text-seam transition-colors hover:text-ink">
               About page

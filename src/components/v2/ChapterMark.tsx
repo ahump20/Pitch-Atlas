@@ -2,7 +2,7 @@
   v2 · The chapter mark. One filed index line at the head of every section, so
   the landing reads as a curated, ordered archive instead of ten loose slabs:
   a chapter tick, the plate number, a hairline, the chapter name. Mono micro-caps
-  in the dossier language the field-manual checklist already speaks, with the
+  in the dossier language the archive already speaks, with the
   refractor cyan as the one recurring accent down the page, matching the cards.
   Decorative and additive —
   every section reads complete without it.

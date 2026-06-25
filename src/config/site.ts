@@ -13,9 +13,9 @@
 export const SITE = {
   siteName: 'Pitch Atlas',
   /** Short category line under the wordmark. */
-  moduleName: 'Field manual',
+  moduleName: 'Living archive',
   /** The product promise, used in the hero and meta. */
-  positioning: 'The living field manual for pitch craft.',
+  positioning: 'The living archive of pitching craft.',
   canonicalDomain: 'https://pitch-atlas.com',
   previewDomain: 'https://pitch-atlas.pages.dev',
   tagline: 'The pitch, in your hand.',
