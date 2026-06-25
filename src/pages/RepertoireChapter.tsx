@@ -67,7 +67,7 @@ function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireE
           {prev ? (
             <Link
               to={`/repertoire/${prev.id}`}
-              className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-seam/40 px-4 py-3 transition-colors hover:border-l-seam"
+              className="group flex flex-col gap-1 rounded-sm border border-ink/15 px-4 py-3 transition-colors hover:border-seam"
             >
               <span className="mono-label text-ink-3">← Previous</span>
               <span className="font-athletic text-lg uppercase text-ink">{prev.name}</span>
@@ -85,7 +85,7 @@ function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireE
           {next ? (
             <Link
               to={`/repertoire/${next.id}`}
-              className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-seam/40 px-4 py-3 text-right transition-colors hover:border-r-seam"
+              className="group flex flex-col gap-1 rounded-sm border border-ink/15 px-4 py-3 text-right transition-colors hover:border-seam"
             >
               <span className="mono-label text-ink-3">Next →</span>
               <span className="font-athletic text-lg uppercase text-ink">{next.name}</span>
@@ -250,7 +250,7 @@ export function RepertoireChapter() {
 
       {/* The honest marker: this is a basic file, not a measured specimen. */}
       <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
-        <div className="rounded-sm border border-dashed border-seam/45 bg-paper-2 px-6 py-5">
+        <div className="rounded-sm border border-seam/30 bg-paper-2 px-6 py-5">
           <p className="mono-label mb-2 text-seam">Basic file</p>
           <p className="max-w-[72ch] text-sm leading-relaxed text-ink-2">
             This pitch has a sourced one-line grip and movement and an honest explanation — not yet a filed
