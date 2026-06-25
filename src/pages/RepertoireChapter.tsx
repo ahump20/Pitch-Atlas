@@ -190,7 +190,7 @@ export function RepertoireChapter() {
             )}
           </div>
           <figure className="md:col-span-4">
-            <div className="mx-auto w-40 md:w-full md:max-w-[200px]">
+            <div className="mx-auto w-52 md:w-full md:max-w-[240px]">
               <SeamSchematic
                 className="h-full w-full"
                 showAxis={false}

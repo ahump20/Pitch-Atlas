@@ -984,8 +984,15 @@
   /* athletic section title — upright, scoreboard-style. Rides the scene's ink:
      near-black on the cream field, bone inside a coal scene. */
   .rfx-stitle {
-    font-family: var(--font-athletic); text-transform: uppercase; line-height: .92;
+    font-family: var(--font-athletic); text-transform: uppercase; line-height: .98;
     color: var(--color-ink);
+    text-wrap: balance;
+  }
+  /* phones wrap these condensed titles to 2–3 lines; 0.98 keeps the lines from
+     jamming. The dramatic tight setting is for the big single/double-line desktop
+     headline, so it only kicks in from md up. */
+  @media (min-width: 768px) {
+    .rfx-stitle { line-height: .92; }
   }
 
   /* ── scorebook section head: the double-ruled header line of a score sheet —

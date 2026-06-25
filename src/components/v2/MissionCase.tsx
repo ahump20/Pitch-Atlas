@@ -28,7 +28,7 @@ export function MissionCase() {
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-20 md:grid-cols-12 md:gap-12 md:px-8 md:py-28">
         <div className="md:col-span-7">
           <ChapterMark n="01" name="The Mission" />
-          <h2 className="rfx-athletic v2-display mt-5 max-w-[14ch] text-[clamp(34px,6vw,68px)] leading-[0.92]">
+          <h2 className="rfx-athletic v2-display mt-5 max-w-[14ch] text-[clamp(34px,6vw,68px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
             Preserve the art before it disappears.
           </h2>
 

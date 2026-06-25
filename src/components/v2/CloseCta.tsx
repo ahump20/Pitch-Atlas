@@ -39,7 +39,7 @@ export function CloseCta() {
       <div className="mx-auto max-w-[760px] px-5 pt-24 text-center md:px-8 md:pt-32">
         <div className="v2-close-converge">
           <ChapterMark n="09" name="The Atlas" className="justify-center" />
-          <h2 className="rfx-athletic v2-display mt-5 text-[clamp(32px,6vw,64px)] leading-[0.92]">
+          <h2 className="rfx-athletic v2-display mt-5 text-[clamp(32px,6vw,64px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
             Open the whole atlas.
           </h2>
           <p className="mx-auto mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-bone-2">

@@ -46,10 +46,10 @@ export function SectionHero({
         {breadcrumb}
         <p className="rfx-skick">{eyebrow}</p>
         {badge ? <div className="mt-4">{badge}</div> : null}
-        <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[2.8rem] leading-[0.92] md:text-[4.8rem]">
+        <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[clamp(2.2rem,8.5vw,4.8rem)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
           {title}
         </h1>
-        <SeamGuide variant="underline" className="mt-5" />
+        <SeamGuide variant="underline" className="mt-6" />
         {sub ? (
           <div className="display mt-6 max-w-[60ch] text-lg italic leading-relaxed text-ink-2">{sub}</div>
         ) : null}
