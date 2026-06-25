@@ -13,22 +13,26 @@ import { forkball } from './forkball'
 import { eephus } from './eephus'
 
 /*
-  The atlas index. Order is the documented build order: four-seam first, then the
-  pitches that contrast with it, then the two newest hybrids. The switcher and the
-  routing read this list, so adding a specimen is one import and one array entry.
+  The atlas index, and the reading order. Austin's own pitches lead — the four-seam,
+  two-seam, and 12-6 he actually threw and has grip data on (the four-seam stays at
+  [0] as the homepage hero, his self-described bread and butter). Then the
+  fundamentals every arsenal is built from, and the rarer/specialty pitches last —
+  the eephus and the near-extinct arms bring up the rear, never the front. The
+  switcher and the routing read this list, so adding a specimen is one import and one
+  array entry.
 */
 export const PITCHES: PitchAtlasEntry[] = [
   fourSeam,
   twoSeam,
-  circleChange,
   twelveSix,
-  slider,
+  circleChange,
   splitter,
-  splinker,
-  sweeper,
   cutter,
-  knuckleball,
+  slider,
+  sweeper,
+  splinker,
   forkball,
+  knuckleball,
   eephus,
 ]
 

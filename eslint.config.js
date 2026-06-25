@@ -13,6 +13,8 @@ export default tseslint.config(
       'pitch-atlas-softball',
       'Physijs',
       'pybaseball',
+      // nested git worktrees + tool scratch keep full repo copies (their own
+      // tsconfig); linting them double-roots typescript-eslint.
       '.claude',
       '.codex',
       '.qa-shots',

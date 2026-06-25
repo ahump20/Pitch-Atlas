@@ -827,11 +827,11 @@ export const SOURCES = {
     url: "https://en.wikipedia.org/wiki/Palmball",
     retrievedAt: RETRIEVED_3,
   },
-  "palmball-football-change-naming": {
-    id: "palmball-football-change-naming",
-    label: "Wikipedia Palmball (used as the reachable anchor for the palmball pitch; the 'football change' informal alias is recorded as unverified community naming since no reachable authoritative source states it)",
-    url: "https://en.wikipedia.org/wiki/Palmball",
-    retrievedAt: RETRIEVED_3,
+  "austin-grips": {
+    id: "austin-grips",
+    label: "Austin H. — first-party grip library (his own pitches, photographed 2026-06-06, in his own first-person account)",
+    url: "https://pitch-atlas.com/grips",
+    retrievedAt: RETRIEVED_5,
   },
   "wiki-vulcan-changeup": {
     id: "wiki-vulcan-changeup",

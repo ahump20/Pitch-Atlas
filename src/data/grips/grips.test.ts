@@ -93,7 +93,10 @@ describe('grip library data', () => {
 })
 
 describe('filed specimens expose their real grip photos', () => {
-  const FILED = ['four-seam', 'two-seam', 'twelve-six', 'splitter']
+  // Austin's own filed pitches. The generic splitter specimen is intentionally NOT
+  // here: his split-finger fastball is filed as his own pitch (repertoire
+  // 'split-finger-fastball' / grips 'split-finger'), never on the offspeed "Splitter".
+  const FILED = ['four-seam', 'two-seam', 'twelve-six']
   for (const slug of FILED) {
     it(`${slug} resolves grip photos and wires canonical.gripImages`, () => {
       expect(gripPhotosFor(slug).length, `${slug} has no grip photos`).toBeGreaterThan(0)

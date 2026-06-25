@@ -265,11 +265,17 @@ describe('Basic pitch files', () => {
     expect(screen.getAllByText('Discussion').length).toBeGreaterThan(0)
   })
 
-  it('opens the football-change grip evidence on the palmball file', async () => {
+  it("opens the football-change grip evidence on Austin's own football changeup file", async () => {
+    renderRoute('/repertoire/football-changeup')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Football Changeup')
+    expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
+    expect(screen.getAllByAltText(/football changeup grip/i).length).toBeGreaterThan(0)
+  })
+
+  it('keeps the generic Palmball file clean — no Austin grip photo on it', async () => {
     renderRoute('/repertoire/palmball')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Palmball')
-    expect(screen.getByText('Grip Evidence')).toBeInTheDocument()
-    expect(screen.getByAltText(/football change or palmball grip/i)).toBeInTheDocument()
+    expect(screen.queryByText('Grip Evidence')).not.toBeInTheDocument()
   })
 
   it('redirects a filed pitch id straight to its full specimen', async () => {

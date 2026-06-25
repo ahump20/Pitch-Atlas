@@ -1,6 +1,5 @@
 import type { GripModel, PitchAtlasEntry, SeamAnchoredPoint } from '../types'
 import { claim } from '../sources'
-import { gripPhotosFor } from '../grips'
 import { sharedSeam } from './_shared-seam'
 
 /*
@@ -149,7 +148,11 @@ export const splitter: PitchAtlasEntry = {
       ),
     },
     rights: 'original',
-    gripImages: gripPhotosFor('splitter'),
+    // The league-taxonomy splitter specimen carries no first-party grip photo:
+    // Austin's split-finger fastball is HIS pitch, filed under its own name and the
+    // fastball family (see repertoire 'split-finger-fastball' + grips 'split-finger').
+    // His hand never wears the generic offspeed "Splitter" label. Do not re-attach it.
+    gripImages: [],
   },
 
   motion: {

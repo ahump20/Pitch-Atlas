@@ -1,5 +1,5 @@
 import type { RepertoireEntry, RepertoireFamily } from '../types'
-import { claim, secondhand, unverified } from '../sources'
+import { claim, secondhand } from '../sources'
 
 /*
   The Repertoire: a field-wide catalog of every accepted pitch, grouped by family.
@@ -60,6 +60,31 @@ export const REPERTOIRE: RepertoireEntry[] = [
     ),
     notableThrowers: "A staple of contact-and-ground-ball pitchers who win with run, sink, and location.",
     filedSlug: "two-seam",
+  },
+  {
+    id: "split-finger-fastball",
+    name: "Split-Finger Fastball",
+    family: "fastball",
+    status: "niche",
+    aka: ["split-finger", "splitfinger fastball"],
+    grip: claim(
+      "Gripped almost exactly like the two-seam, except the fingers spread out wider — just outside the laces instead of right on them. With short, stubby fingers like mine you can barely see the difference. Those same short fingers are the reason I have never been able to throw a circle change.",
+      "austin-grips",
+      "pitcher-own-words",
+    ),
+    movement: claim(
+      "I threw this some as a harder version of the changeup — it let me stay at full arm speed and feel more like a fastball than a traditional change at release, then drop. The fastball-tilt change, not a soft one.",
+      "austin-grips",
+      "pitcher-own-words",
+    ),
+    relationship: claim(
+      "The split-finger fastball and the offspeed 'splitter' share a grip family; MLB pitch tracking files the split-finger under the offspeed splitter code, while this atlas files Austin's as a fastball — the way he gripped, threw, and classed it.",
+      "wiki-splitter",
+      "reputable-analysis",
+      { note: "Sourced, not corrected: Austin throws this as a fastball (pitcher's own words). The offspeed 'splitter' label is MLB's tracking taxonomy, filed separately under the Splitter specimen. Both framings are kept; neither overrides the other." },
+    ),
+    notableThrowers: "Austin H. — a situational pitch in his mix, the harder, fastball-tilt version of his changeup.",
+    plain: "My split-finger fastball. I grip it almost like my two-seam, just spread the fingers a touch wider, outside the laces. It comes out at full fastball arm speed and drops late — a fastball that acts like a change, not a soft one.",
   },
   {
     id: "sinker",
@@ -210,6 +235,25 @@ export const REPERTOIRE: RepertoireEntry[] = [
     plain: "The simplest changeup, and usually the first one a young pitcher learns. Lay three close fingers over the ball, seat it back toward the palm, and the same fastball arm motion comes out slower. The hitter swings early because he can't tell it's slow until it's nearly on him.",
   },
   {
+    id: "football-changeup",
+    name: "Football Changeup",
+    family: "offspeed",
+    status: "niche",
+    aka: ["football change"],
+    grip: claim(
+      "My football change. The giveaway is the hand together, all four fingers touching the ball. The more fingers you put on it, the more it slows down coming out — instead of getting slingshotted off the fingertips and snapped with the wrist, the whole hand drags the speed off it while the arm still looks like a fastball.",
+      "austin-grips",
+      "pitcher-own-words",
+    ),
+    movement: claim(
+      "I only threw this much for about one summer. It sat between my curve and my three-finger change: the same release slot as the 12-6 — palm pointed back toward me instead of out at the batter — but a break in between the two.",
+      "austin-grips",
+      "pitcher-own-words",
+    ),
+    notableThrowers: "Austin H. — a situational pitch he carried for a summer, sitting between his curve and his three-finger change.",
+    plain: "My football changeup. The giveaway is the hand together, all four fingers on the ball. Instead of getting slingshotted off the fingertips and snapped with the wrist, the whole hand drags the speed off it while the arm still looks like a fastball. I threw it from my curveball slot, and it broke somewhere between my curve and my three-finger change.",
+  },
+  {
     id: "circle-changeup",
     name: "Circle Changeup",
     family: "offspeed",
@@ -233,30 +277,6 @@ export const REPERTOIRE: RepertoireEntry[] = [
     notableThrowers: "Pedro Martinez (who relied on it as a signature out pitch); the most common changeup grip in the modern game.",
     filedSlug: "circle-change",
     plain: "A circle change needs a visible thumb-index circle on the side of the ball. If the hand cannot comfortably make that circle, do not force the label; a three-finger or football/palm change may be the cleaner fit.",
-  },
-  {
-    id: "palmball",
-    name: "Palmball",
-    family: "offspeed",
-    status: "niche",
-    aka: ["palm ball", "football change", "football changeup"],
-    grip: claim(
-      "Cradle the ball deep in the palm, wrapping the fingers around it in a C-shape (much like palming a football) with the closed end of the horseshoe seam against the palm. Squeezing the ball with the whole hand is what kills the speed; the deeper and tighter the grip, the slower the pitch.",
-      "efastball-palmball",
-      "reputable-analysis",
-    ),
-    movement: claim(
-      "Thrown with identical fastball arm action so it mimics a fastball out of the hand, but the deep palm pressure strips speed through hand pressure rather than spin, arriving noticeably soft with a late, gentle sink. The deception comes from the matching arm action, not the movement.",
-      "efastball-palmball",
-      "reputable-analysis",
-    ),
-    relationship: unverified(
-      "Old-timers' name for what some coaches and players today call a 'football change' or 'football changeup,' because the deep C-shaped grip resembles palming a football. The 'football change' label is informal coaching/community vocabulary rather than an officially tracked pitch name.",
-      "The palmball=football-change equivalence appears in coaching forums and instructional blogs but is not corroborated by any reachable authoritative source (the most direct forum statement returned HTTP 403 and could not be cited); recorded as community naming, not verified taxonomy. The palmball pitch itself and Hoffman's use of it are well-sourced via Wikipedia and efastball.",
-      "palmball-football-change-naming",
-    ),
-    notableThrowers: "Trevor Hoffman, whose palmball-grip changeup is the modern gold standard and his career out pitch; earlier practitioners include Roy Halladay.",
-    plain: "An old-school slow ball. You bury the ball deep in your palm, almost like palming a football, and squeeze. In a live grip photo, four fingers together on the ball is the giveaway. The whole hand drains the speed while the arm still looks like a fastball, so it arrives soft and late with a little sink.",
   },
   {
     id: "vulcan-changeup",
@@ -332,11 +352,35 @@ export const REPERTOIRE: RepertoireEntry[] = [
     plain: "A recent twist on the changeup that spread fast around the league. You spike a knuckle onto a seam and 'kick' the ball's spin at release, which buys splitter-like drop from a firmer changeup look. It's the trendy modern version of an old idea.",
   },
   {
+    id: "palmball",
+    name: "Palmball",
+    family: "offspeed",
+    status: "niche",
+    aka: ["palm ball"],
+    grip: claim(
+      "Cradle the ball deep in the palm, wrapping the fingers around it in a C-shape with the closed end of the horseshoe seam against the palm. Squeezing the ball with the whole hand is what kills the speed; the deeper and tighter the grip, the slower the pitch.",
+      "efastball-palmball",
+      "reputable-analysis",
+    ),
+    movement: claim(
+      "Thrown with identical fastball arm action so it mimics a fastball out of the hand, but the deep palm pressure strips speed through hand pressure rather than spin, arriving noticeably soft with a late, gentle sink. The deception comes from the matching arm action, not the movement.",
+      "efastball-palmball",
+      "reputable-analysis",
+    ),
+    relationship: claim(
+      "An old-school changeup that deadens speed through deep hand pressure rather than finger snap or spin; it sits in the changeup family alongside the circle and three-finger changes. Trevor Hoffman's palmball-grip changeup is the modern reference.",
+      "wiki-palmball",
+      "reputable-analysis",
+    ),
+    notableThrowers: "Trevor Hoffman, whose palmball-grip changeup is the modern gold standard and his career out pitch; earlier practitioners include Roy Halladay.",
+    plain: "An old-school slow ball. You bury the ball deep in your palm and squeeze — the whole hand drains the speed while the arm still looks like a fastball, so it arrives soft and late with a little sink. Trevor Hoffman built a Hall-of-Fame career on his.",
+  },
+  {
     id: "splitter",
-    name: "Splitter (Split-Finger Fastball)",
+    name: "Splitter",
     family: "offspeed",
     status: "standard",
-    aka: ["split-finger fastball", "split-finger", "splitfinger"],
+    aka: ["splitfinger", "split"],
     grip: claim(
       "Split the index and middle fingers onto different sides of the ball, wider than a normal fastball grip but not jammed as deep or wide as a forkball. Visually, it can look close to a two-seam on smaller hands; the tell is that the fingers sit outside the seam tracks instead of riding them.",
       "wiki-splitter",
@@ -351,7 +395,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       "A less extreme descendant of the forkball — the forkball is held farther back and wider between the fingers. Despite being gripped like a fastball and thrown with fastball arm action, MLB files the splitter as an offspeed pitch.",
       "wiki-splitter",
       "reputable-analysis",
-      { note: "Classification note: the splitter is gripped and delivered like a fastball but is categorized as offspeed by MLB pitch tracking." },
+      { note: "Classification note: the splitter is gripped and delivered like a fastball but is categorized as offspeed by MLB pitch tracking. MLB often uses 'split-finger fastball' as a synonym for this offspeed splitter; this atlas files Austin's split-finger fastball separately, in the fastball family, the way he threw it — sourced, not corrected." },
     ),
     notableThrowers: "Bruce Sutter (whose splitter defined his career); a standard secondary pitch across the modern game.",
     filedSlug: "splitter",

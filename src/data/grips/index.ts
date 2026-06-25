@@ -208,10 +208,10 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
     ],
   },
   {
-    id: 'splitter',
+    id: 'split-finger',
     label: 'Split-finger fastball',
-    family: 'offspeed',
-    specimenSlug: 'splitter',
+    family: 'fastball',
+    repertoireId: 'split-finger-fastball',
     shortCue: 'Fingers outside the lace tracks',
     visibleCue:
       "The tell is subtle: it can look close to a two-seam in Austin's hand, but the cue is the fingers spreading outside the lace tracks instead of sitting on them.",
@@ -223,33 +223,33 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       'I threw this some as a harder version of the changeup — it let me stay at full arm speed and feel more like a fastball than a traditional change at release, then drop. The fastball-tilt change, not a soft one.',
     photos: [
       shot(
-        'splitter-7175.webp',
+        'split-finger-7175.webp',
         'top',
         'Index and middle split wide, sitting just outside the seams rather than on them.',
-        'A hand gripping a baseball splitter style, index and middle fingers spread wide just outside the seams.',
+        'A hand gripping a baseball split-finger style, index and middle fingers spread wide just outside the seams.',
       ),
       shot(
-        'splitter-7177.webp',
+        'split-finger-7177.webp',
         'top',
         'Top-down: the gap between the two fingers is the whole pitch.',
-        'A top view of a split-finger grip, two fingers spread apart over the ball.',
+        'A top view of a split-finger fastball grip, two fingers spread apart over the ball.',
       ),
       shot(
-        'splitter-7176.webp',
+        'split-finger-7176.webp',
         'side',
         'From the side, the fingers straddle the seams with the ball set back in the hand.',
-        'A side view of a splitter grip, the fingers straddling the seams.',
+        'A side view of a split-finger fastball grip, the fingers straddling the seams.',
       ),
     ],
   },
   {
-    id: 'palmball',
-    label: 'Football change (palmball)',
+    id: 'football-change',
+    label: 'Football changeup',
     family: 'offspeed',
-    repertoireId: 'palmball',
+    repertoireId: 'football-changeup',
     shortCue: 'Four fingers and more hand surface',
     visibleCue:
-      'The fingers sit close together with more hand surface on the ball, matching the football-change or palmball family cue.',
+      'The fingers sit close together with more hand surface on the ball — the football-change smother, all four fingers on the ball.',
     claimTier: CLAIM_TIER,
     proofLimit: GRIP_PHOTO_PROOF_LIMIT,
     note:
@@ -258,16 +258,16 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       'I only threw this much for about one summer, here and there. It sat between my curve and my three-finger change: the same release slot as the 12-6 — palm pointed back toward me instead of out at the batter — but a break in between the two.',
     photos: [
       shot(
-        'palmball-7179.webp',
+        'football-change-7179.webp',
         'top',
         'Four fingers laid together across the top of the ball, seated deep toward the palm. The football-change smother.',
-        'A hand gripping a baseball with all four fingers together across the top, the football change or palmball grip.',
+        'A hand gripping a baseball with all four fingers together across the top, the football changeup grip.',
       ),
       shot(
-        'palmball-7178.webp',
+        'football-change-7178.webp',
         'side',
         'From the side, the ball buried deep in the hand under all four fingers.',
-        'A side view of a football-change grip with the ball set deep in the palm under four fingers.',
+        'A side view of a football changeup grip with the ball set deep in the hand under four fingers.',
       ),
     ],
   },
