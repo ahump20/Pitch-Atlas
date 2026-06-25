@@ -72,7 +72,7 @@ export const trendsWing: KnowledgeWing = {
       paragraphs: [
         'The screwball is nearly gone because the teaching line broke. Christy Mathewson, Carl Hubbell, Fernando Valenzuela, and John Franco kept the pitch visible in earlier eras, but modern development systems rarely teach it.',
         'The injury fear is real as culture, but the evidence is thinner than the fear. Coaches repeat the warning, fewer pitchers learn the pitch, and fewer coaches remain who can teach it safely. That loop turns a rare pitch into a museum piece.',
-        'A future revival would need more than nostalgia. It would need a credible coach, careful progression, and honest injury research. Until then, the screwball belongs in the lost-pitches wing with a clear uncertainty label.',
+        'A future revival would need credible coaching, careful progression, and honest source boundaries. Until then, the screwball belongs in the lost-pitches wing with a clear uncertainty label.',
       ],
       claims: [
         kc('The screwball’s decline is commonly attributed to perceived injury risk and a loss of teaching expertise.', 'reputable-analysis', {
@@ -90,7 +90,7 @@ export const trendsWing: KnowledgeWing = {
       paragraphs: [
         'Seam-shifted wake gave coaches a better language for something pitchers had felt for a long time: seam presentation can make a ball move differently than spin alone would suggest.',
         'That idea connects the sinker, kick-change, and some modern changeups. It puts the grip back at the center. Where the seams sit, which finger leaves last, and how the ball exits the hand can change the shape a hitter sees.',
-        'This is the strongest modern argument for Pitch Atlas as a field manual. The future of pitch design is not just better dashboards. It is better grip language tied to honest source labels.',
+        'This is the strongest modern argument for Pitch Atlas as a living archive. The future of pitch design is not just better dashboards. It is better grip language tied to honest source labels.',
       ],
       claims: [
         kc('Seam-shifted wake describes movement created by asymmetric airflow around the baseball’s seams, beyond a simple spin-only explanation.', 'reputable-analysis', {

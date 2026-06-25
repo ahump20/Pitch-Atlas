@@ -49,8 +49,8 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             style={{ '--i': 2 } as React.CSSProperties}
           >
             Every pitch has a file. Every grip has a history. Every variant carries provenance.
-            Open the atlas, study the hold, then carry forward what the next pitcher should not
-            have to rediscover from scratch.
+            Open the atlas, study the hold, and carry forward what the next pitcher should not
+            have to piece together from memory, rumor, and half-told stories.
           </p>
 
           <div

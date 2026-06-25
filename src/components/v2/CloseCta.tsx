@@ -40,11 +40,11 @@ export function CloseCta() {
         <div className="v2-close-converge">
           <ChapterMark n="09" name="The Atlas" className="justify-center" />
           <h2 className="rfx-athletic v2-display mt-5 text-[clamp(32px,6vw,64px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
-            Open the whole atlas.
+            Preserve the pitches baseball almost forgot.
           </h2>
           <p className="mx-auto mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-bone-2">
-            Every accepted pitch by family, every lost-pitches edge that can be responsibly filed, and
-            a source on every claim. Start at the index and carry a piece of the craft forward.
+            Progress the craft for the pitchers still searching. Start at the Pitch Index, open a
+            specimen, and carry a piece of the record forward.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -141,6 +141,9 @@ export function CloseCta() {
         <p className="mx-auto max-w-[52ch] font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-bone-2/65">
           No fabricated spin, velocity, or break. No scraped imagery. No copied prose.{' '}
           {SITE.sourcePrinciple}.
+        </p>
+        <p className="v2-wall-line mx-auto mt-6 max-w-[62ch]">
+          Preserve the pitches baseball almost forgot. Progress the craft for the pitchers still searching.
         </p>
         <p className="mx-auto mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-bone-2">
           {SITE.brandLine}

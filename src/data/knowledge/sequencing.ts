@@ -96,7 +96,7 @@ export const sequencingWing: KnowledgeWing = {
       paragraphs: [
         'The bullpen version is controlled: film the release, overlay the fastball against the breaking ball, and make both pitches pass through the same early look. The game version is messier. Counts, hitter swings, fatigue, and command decide whether that pair is still the right call.',
         'That is why tunneling is a tool, not a religion. A near-perfect tunnel is useless if it puts the pitch in the wrong place for the count. A less elegant pair can be perfect if it gets the hitter to protect the wrong lane.',
-        'The field-manual rule: build the tunnel in practice, then sequence like a pitcher. Watch the hitter. Keep the first look honest. Let the late shape tell the lie.',
+        'The archive rule: build the tunnel in practice, then sequence like a pitcher. Watch the hitter. Keep the first look honest. Let the late shape tell the lie.',
       ],
       claims: [
         kc(

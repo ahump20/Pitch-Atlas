@@ -1,10 +1,10 @@
 import { EDUCATIONAL_DISCLAIMER } from '../../data/knowledge'
 
 /*
-  The educational-use disclaimer for the health and youth wings. It replaces the
-  old "no medical/injury/youth-training prescription" policy: the atlas now teaches
-  this material as sourced reference, openly, but says plainly that reference is not
-  care. Seam-red rule so it reads as the one caution on an otherwise calm page.
+  The educational-use disclaimer for safety-limit wings. It keeps source-backed
+  literature in the archive without turning it into diagnosis, workload advice,
+  rehab guidance, or age-specific pitching instructions. Seam-red rule so it
+  reads as the one caution on an otherwise calm page.
 */
 export function EducationalDisclaimer({ className = '' }: { className?: string }) {
   return (

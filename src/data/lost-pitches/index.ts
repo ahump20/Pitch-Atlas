@@ -504,7 +504,7 @@ export const LOST_PITCHES: LostPitch[] = [
           "A museum profile credits him with a moving fastball, a good curve and change, a slider, and excellent control.",
           "nl-bell-emuseum",
           "reputable-analysis",
-          { note: "Pitch-type labels like 'slider' are applied retrospectively by the museum profile; for a 1920s pitcher these are descriptive categorizations, not contemporary measured definitions.", approximate: true },
+          { note: "Pitch-type labels like 'slider' are applied retrospectively by the museum profile; for a 1920s pitcher these are descriptive catalog labels, not contemporary measured definitions.", approximate: true },
         ),
       },
       {

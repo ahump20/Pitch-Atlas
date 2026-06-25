@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A sourced, interactive reference for how pitches are gripped and thrown. Sourced, not corrected.",
+  "description": "A sourced living archive for how pitches are gripped, preserved, and carried forward. Sourced, not corrected.",
   "engines": {
     "node": ">=20.19"
   },

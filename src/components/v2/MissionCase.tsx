@@ -18,17 +18,17 @@ const VALUES = [
 ]
 
 const GOALS = [
-  'Build the living museum of pitching craft.',
-  'Carry pitching forward without losing where it came from.',
-  'Give the next pitcher a sourced file to open, not a fake number to trust.',
+  'Preserve the pitches baseball almost forgot.',
+  'Progress the craft for the pitchers still searching.',
+  'Catalog the lineage without trapping the art in boxes.',
 ]
 
-const LAYERS = ['Baseball', 'Pitching', 'Pitch craft', 'Grip', 'Individual specimen']
+const LAYERS = ['Canonize', 'Catalog', 'Contextualize', 'Document', 'Carry forward']
 
 const PROGRESSION = [
   {
     label: 'Discover',
-    text: 'Find the pitch in the taxonomy and see where it sits beside its family and aliases.',
+    text: 'Find the pitch in the catalog and see where it sits beside its family and aliases.',
   },
   {
     label: 'Study',
@@ -43,7 +43,7 @@ const PROGRESSION = [
     text: 'Add the clip, image, grip tweak, or note with rights and context attached.',
   },
   {
-    label: 'Carry forward',
+    label: 'Preserve',
     text: 'Leave a one-of-one specimen in the record so the next pitcher is not starting from rumor.',
   },
 ]
@@ -55,19 +55,25 @@ export function MissionCase() {
         <div className="md:col-span-7">
           <ChapterMark n="01" name="The Mission" />
           <h2 className="rfx-athletic v2-display mt-5 max-w-[14ch] text-[clamp(34px,6vw,68px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
-            Carry pitching forward without losing where it came from.
+            Preserve and progress the art of the pitch.
           </h2>
 
           {/* the thesis, lifted out of body copy into the founder's serif register —
               the most distinctive sentence on the page, finally staged like one. */}
           <p className="v2-lede mt-7 max-w-[40ch]">
-            The grip is the artifact. The pitch is the culture.
+            The goal is not nostalgia. It is continuity.
           </p>
 
           <p className="mt-7 max-w-[60ch] text-[15.5px] leading-relaxed text-bone-2 md:text-[16.5px]">
-            Pitch Atlas is a living museum where the museum object is still useful in the bullpen.
-            Every accepted pitch gets a canonical entry. Every grip can carry history. Every
-            contributor upload can become a personal one-of-one specimen, filed without turning
+            Pitch Atlas exists to canonize, catalog, and contextualize baseball&apos;s craft
+            knowledge: the grips, variants, feel cues, forgotten experiments, master examples,
+            and field notes that disappear when a player ages out, a coach retires, or a pitch
+            falls out of fashion.
+          </p>
+
+          <p className="mt-5 max-w-[60ch] text-[15.5px] leading-relaxed text-bone-2 md:text-[16.5px]">
+            Every pitch is treated as a specimen with history. Every grip is preserved as
+            evidence. Every upload can become part of a living archive, filed without turning
             lived feel into fake certainty.
           </p>
 
@@ -107,7 +113,7 @@ export function MissionCase() {
 
           <div className="v2-progression mt-10" aria-label="Archival progression">
             <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2/75">
-              Archival progression, not gamification
+              Discover / Study / Throw / Document / Preserve
             </p>
             <ol className="mt-4 grid gap-3 sm:grid-cols-5">
               {PROGRESSION.map((step, i) => (

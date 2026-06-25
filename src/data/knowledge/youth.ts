@@ -8,11 +8,11 @@ import { kc } from './claim'
 */
 export const youthWing: KnowledgeWing = {
   slug: "youth",
-  navLabel: "Youth Development",
-  eyebrow: "The pathway",
-  title: "Youth Development Pathway",
-  summary: "Age-appropriate progression from fastball through change-up, pitch count limits by age, and the injury risks of early specialization.",
-  sub: "Young pitchers thrive when they build mechanics on a fastball foundation, master an off-speed pitch safely, and rest deliberately. Specialization and year-round throwing damage arms that are still growing.",
+  navLabel: "Youth Safety Sources",
+  eyebrow: "The source boundary",
+  title: "Youth Safety Source Record",
+  summary: "What published youth-pitching authorities say about pitch counts, rest, specialization, and the limits of a website's advice.",
+  sub: "This wing files published safety guidance as source context only. It does not choose pitches, set workloads, diagnose pain, or prescribe a throwing plan.",
   accent: "seam",
   educational: true,
   sections: [

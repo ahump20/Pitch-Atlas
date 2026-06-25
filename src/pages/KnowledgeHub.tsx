@@ -10,17 +10,17 @@ import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 
 /*
-  The Learn hub: the front door to the teaching layer. The specimen pages answer
+  The Learn hub: the front door to the craft-record layer. The specimen pages answer
   "what is this pitch"; these wings answer the craft underneath — how the body
   creates timing, how a pitch is built, how pitches work together,
-  and how to keep an arm healthy. Two shelves: the craft, and health & development
+  and where the source boundary sits. Two shelves: the craft, and safety limits
   (the wings that carry the educational-use note). Cards match the index plates so
   the whole atlas reads as one system.
 */
 
 /** The wing's place in the ten, read once off the canonical teaching order. The
-    numbers ascend within each shelf; the gaps (a health wing filed on the second
-    shelf) are the truth, not a glitch — this is chapter N of the whole manual. */
+    numbers ascend within each shelf; the gaps (a safety wing filed on the second
+    shelf) are the truth, not a glitch: this is chapter N of the whole archive. */
 const READING_NO = new Map(WINGS.map((w, i) => [w.slug, i + 1]))
 const pad = (n: number | undefined) => (n ? String(n).padStart(2, '0') : '')
 
@@ -109,7 +109,7 @@ export function KnowledgeHub() {
   useSeoMeta({
     title: `Learn: the craft underneath the pitch | ${SITE.siteName}`,
     description:
-      'The teaching layer of Pitch Atlas — mechanics, pitch design, sequencing and tunneling, spin literacy, arm health, and youth development. Every claim sourced and labeled by confidence.',
+      'The craft-record layer of Pitch Atlas: mechanics, pitch design, sequencing, tunneling, spin literacy, source boundaries, and safety limits. Every claim sourced and labeled by confidence.',
     ogTitle: `Learn | ${SITE.siteName}`,
     ogDescription: 'The craft underneath the pitch. Sourced, not corrected.',
     ogUrl: canonicalUrl('/learn'),
@@ -124,19 +124,19 @@ export function KnowledgeHub() {
           url: canonicalUrl('/learn'),
           name: 'Learn: the craft underneath the pitch',
           description:
-            'The teaching layer of Pitch Atlas — mechanics, pitch design, sequencing and tunneling, spin literacy, arm health, and youth development. Every claim sourced and labeled by confidence.',
+            'The craft-record layer of Pitch Atlas: mechanics, pitch design, sequencing, tunneling, spin literacy, source boundaries, and safety limits. Every claim sourced and labeled by confidence.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Learn' }],
         })}
       />
       <SectionHero
         breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Learn' }]} />}
-        eyebrow="The field manual"
+        eyebrow="The craft record"
         title="The craft underneath the pitch."
         sub={
           <>
             The specimens say what each pitch is. These wings say how the craft works — how the body
-            creates timing, how a pitch gets built, how pitches work together, and how to keep an arm
-            healthy. Every claim sourced and labeled by confidence.
+            creates timing, how a pitch gets built, how pitches work together, and where the source
+            boundary is. Every claim sourced and labeled by confidence.
           </>
         }
       />
@@ -150,7 +150,7 @@ export function KnowledgeHub() {
           ) : (
             <>
               <Shelf label="The craft" wings={craft} />
-              <Shelf label="Health &amp; development" wings={health} />
+              <Shelf label="Safety &amp; limits" wings={health} />
             </>
           )}
         </div>

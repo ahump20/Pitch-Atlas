@@ -30,7 +30,7 @@ import { routes } from './routes'
 import { ReloadPrompt } from './components/pwa/ReloadPrompt'
 
 /*
-  The client entry. The manual is a multi-page site now: a data router holds the
+  The client entry. The archive is a multi-page site now: a data router holds the
   routes, an Unhead provider manages per-page titles and meta, and the build-time
   prerender writes a real HTML file per route. We render (rather than hydrate)
   over the prerendered markup so the client-only 3D upgrades cleanly without a

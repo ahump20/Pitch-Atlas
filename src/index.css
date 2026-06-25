@@ -254,7 +254,7 @@
 }
 
 /*
-  Field-manual microinteractions. Motion teaches provenance and structure, never
+  Archive microinteractions. Motion teaches provenance and structure, never
   measurement: chips settle once on load, disclosures reveal in under a quarter
   second, the specimen cards answer a hand with a single seam stitch — no glow.
   Everything here is inert under prefers-reduced-motion.
@@ -317,9 +317,9 @@
 }
 
 /*
-  Embedded tweet, brought onto the field manual's surface. react-tweet ships a
+  Embedded tweet, brought onto the archive's surface. react-tweet ships a
   blue-link Twitter look; these overrides reseat it on the cream inset card with
-  the manual's prose font and a parchment hairline, so it reads as a cited
+  the archive's prose font and a parchment hairline, so it reads as a cited
   source, not a social widget.
 */
 .react-tweet-theme {
@@ -398,7 +398,7 @@
 }
 
 /*
-  Print: a field manual gets printed. Drop the dark stage to white ink-on-paper,
+  Print: an archive page gets printed. Drop the dark stage to white ink-on-paper,
   remove the grain wash and spotlight pools, and never waste toner on the canvas.
 */
 @media print {
@@ -1077,19 +1077,19 @@
     outline-offset: 4px;
   }
 
-  /* field-manual section header — a hairline rule + mono section label, like a printed manual */
-  .manual-section {
+  /* archive section header: a hairline rule plus mono section label */
+  .archive-section {
     position: relative;
     padding-top: clamp(2.5rem, 5vw, 4rem);
   }
-  .manual-section::before {
+  .archive-section::before {
     content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
     background: linear-gradient(to right,
       color-mix(in srgb, var(--color-ink-3) 38%, transparent) 0%,
       color-mix(in srgb, var(--color-ink-3) 38%, transparent) 64%,
       transparent 100%);
   }
-  .manual-section__no {
+  .archive-section__no {
     font-family: var(--font-mono); font-size: 0.625rem;
     letter-spacing: 0.18em; text-transform: uppercase;
     color: var(--color-ink-3); display: block; margin-bottom: 0.5rem;
@@ -2624,6 +2624,14 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     letter-spacing: .12em;
     color: var(--color-bone-2);
     background: rgba(0,0,0,.28);
+  }
+  .v2-wall-line {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 3.2vw, 36px);
+    line-height: 1.05;
+    color: var(--color-bone);
+    text-wrap: balance;
+    text-shadow: 0 16px 40px rgba(0,0,0,.45);
   }
 
   .community-specimen {

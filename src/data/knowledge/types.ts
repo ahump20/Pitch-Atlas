@@ -1,7 +1,7 @@
 import type { Claim } from '../types'
 
 /*
-  The knowledge wings: the field manual's teaching layer. Each wing is a sourced
+  The knowledge wings: the archive's craft-record layer. Each wing is a sourced
   essay rendered by one template (components/sections/KnowledgePage). A section is
   prose plus the confidence-tagged claims that back its teaching points — the same
   Claim model the specimen pages use, so a teaching page can never make an
@@ -32,7 +32,7 @@ export interface KnowledgeWing {
   sections: KnowledgeSection[]
   /** Footer line explaining how this wing was sourced. */
   confidenceNote: string
-  /** Health/youth wings show the educational-use disclaimer. */
+  /** Safety-limit wings show the educational-use disclaimer. */
   educational?: boolean
   /** Cross-links to related wings, pitches, or tools. */
   related?: { label: string; to: string }[]

@@ -3,7 +3,7 @@ import type { KnowledgeWing } from '../../data/knowledge/types'
 
 /*
   The reading path's spine. A wing used to end at the discussion floor — a dead
-  end in a manual that is meant to be read in order. This is the page-turn:
+  end in an archive that is meant to be read in order. This is the page-turn:
   where you are in the ten, the wing before, the wing after, and the way back to
   the contents. Mirrors the Craftsmen chapter walk so the whole atlas turns pages
   the same way. On the warm Learn field — ink hairlines, a cyan turn.
@@ -43,7 +43,7 @@ export function WingNav({
           <span className="mono-label text-cyan">
             Wing {pad(position)} of {pad(total)}
           </span>
-          <span className="text-sm leading-snug text-ink-2">Back to the field manual →</span>
+          <span className="text-sm leading-snug text-ink-2">Back to the craft record →</span>
         </Link>
         <div className="md:justify-self-end">
           {next ? (

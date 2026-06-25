@@ -15,7 +15,7 @@ import { StageTierMarker } from '../components/layout/StageTierMarker'
 
 /*
   Sources, promoted from a page footer to its own page. The provenance legend and
-  the full citation registry are the credential of the whole manual, so they get
+  the full citation registry are the credential of the whole archive, so they get
   room to read. The "as of" line computes from the most recent retrievedAt across
   the registry, never a hardcoded freshness string. The seam-accuracy note reads
   from the shared seam reference any pitch carries.
@@ -43,9 +43,9 @@ export function SourcesPage() {
   useSeoMeta({
     title: `Sources and provenance | ${SITE.siteName}`,
     description:
-      'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the manual. Sourced, not corrected.',
+      'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the archive. Sourced, not corrected.',
     ogTitle: `Sources and provenance | ${SITE.siteName}`,
-    ogDescription: 'Every claim labeled by its source. The full citation registry behind the manual.',
+    ogDescription: 'Every claim labeled by its source. The full citation registry behind the archive.',
     ogUrl: canonicalUrl('/sources'),
   })
 
@@ -57,7 +57,7 @@ export function SourcesPage() {
           url: canonicalUrl('/sources'),
           name: 'Sources and provenance',
           description:
-            'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the manual. Sourced, not corrected.',
+            'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the archive. Sourced, not corrected.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Sources' }],
         })}
       />

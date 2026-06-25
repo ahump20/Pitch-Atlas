@@ -64,10 +64,10 @@ export function kc(
 }
 
 /**
- * The educational-use framing shown on every health/youth wing. Replaces the old
- * no-prescription policy: the atlas now teaches arm health and youth development as
- * sourced reference, but it is education, not medical care.
+ * The educational-use framing shown on every safety-limit wing. The atlas can
+ * cite source positions without turning them into medical care, workload advice,
+ * rehab guidance, or an age-specific pitching prescription.
  */
 export const EDUCATIONAL_DISCLAIMER =
-  'Sourced educational reference, not medical care. Nothing here is a diagnosis or a prescription. ' +
-  'Anyone changing a throwing program — especially for a young pitcher — should run it past a qualified coach or physician first.'
+  'Sourced safety reference, not medical care. Nothing here diagnoses, prescribes, sets workload, or chooses pitches for a young athlete. ' +
+  'Use the cited sources with a qualified coach, parent or guardian, and medical professional.'

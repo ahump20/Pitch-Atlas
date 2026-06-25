@@ -201,7 +201,7 @@ export function ChromeWall() {
 
         <p className="mt-4 max-w-[60ch] text-[15px] leading-relaxed text-bone-2">
           Every filed pitch is struck as an artifact: chrome face, matte back, grip first, source
-          attached. They are museum objects you can actually handle. The full index holds{' '}
+          attached. They are archived objects you can actually handle. The full index holds{' '}
           {INDEX_SCOPE.shelfLabel}, including basic files that stay honest until a fuller specimen is
           earned by evidence.
         </p>
