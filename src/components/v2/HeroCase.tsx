@@ -17,7 +17,6 @@ import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
 */
 export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
   const accent = accentForSlug(featured.display.slug)
-  const isChase = featured.display.specimenNo === '00'
 
   return (
     <section
@@ -88,7 +87,6 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
                 style={{ color: '#F6F1E6', background: 'rgba(10,9,8,.72)', transform: 'rotate(3deg)' }}
               >
                 Specimen {featured.display.specimenNo}
-                {isChase ? ' · gold 1/1' : null}
               </p>
             </div>
           </div>

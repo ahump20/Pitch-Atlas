@@ -440,7 +440,7 @@ export function PitchIndex({ id }: { id?: string }) {
               </span>
             ))}
           </div>
-          <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-ink-3">
+          <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-bone-2">
             How rare the pitch is in the game today, common to rare. Banned, alias, illusion, and not-a-pitch
             entries are filed as honest edges — labeled for what they are, never dressed up as a chase.
           </p>
