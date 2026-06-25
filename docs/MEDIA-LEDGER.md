@@ -115,6 +115,31 @@ for prominent embedded-tweet usage with attribution, which costs nothing and bui
 relationship, or (b) a real MLB footage license, which is a business decision, not a
 repo task.
 
+## TikTok teaching clips (added 2026-06-25)
+
+Three teaching clips Austin supplied as TikTok links. Same fixed policy as everything above:
+**embed via the platform's own player or link out, never rehost.** None of these posters owns
+the underlying footage (MLB broadcast / interview footage + player publicity rights; the NCAA
+row is the NCAA's own account but still third-party to us), and no license text exists for any
+of them, so **commercial App Store reuse: no**, attribution (the credited post) required, and
+the raw MP4s Austin sent are **not** committed — they were transcribed/frame-checked as private
+research only, never bundled. The hard floor holds: nothing in `public/` or the iOS bundle.
+
+| # | Post | Pitch / who | Creator | Caption framing | Broadcast-rights risk | Treatment |
+|---|---|---|---|---|---|---|
+| T1 | tiktok.com/@bsf_pitchingperformance/video/7544907808555240735 | Nolan Ryan demonstrating grips (fastball/curve/change) | @bsf_pitchingperformance | Creator frames it "4-seam vs 2-seam"; **footage is fastball/curveball/changeup**, and Ryan was a 4-seam+curveball pitcher (late sinker only) — the 4s/2s framing is unverified, surfaced as the creator's, not asserted | High — interview/broadcast footage, Ryan publicity rights; no rights-clear official upload found | **Embed via TikTok player + outbound link.** Card states the provenance gap out loud |
+| T2 | tiktok.com/@pitchingninja/video/6958820538441600262 | Tyler Rogers' "rising" submarine breaker | @pitchingninja | "Rising Curveball" — Rogers calls it "a slider, but almost a curveball"; label drifts slider/curve across sources, preserved both ways | High — MLB broadcast footage (see Pitching Ninja rows above) | **Embed via TikTok player + outbound link** |
+| T3 | tiktok.com/@ncaabsb/video/7245789529104239915 | College aces' grips (Dollander, Skenes, Caglianone, Lowder) | @ncaabsb (NCAA Baseball) | "Take a look at these aces' pitch grips" | Medium — NCAA's own posted footage, but identifiable players + NCAA marks | **Embed via TikTok player + outbound link** |
+
+**Implementation (web only):** `src/data/media/tiktok.ts` holds the post references; `TikTokEmbed` +
+the `pip` provider render a credited facade card that loads **nothing third-party until the reader
+clicks Watch** — the TikTok player iframe mounts only then, in a dismissible picture-in-picture so
+the reader keeps scrolling. Prerender and first paint stay clean. The data file is deliberately
+**not** one of the modules `tools/generate-content` reads, so the iOS bundle stays link-only and
+carries no TikTok URLs (ledger iOS posture preserved). Each card carries the "Watch on TikTok ↗"
+outbound link as the always-available link tier. Clips surface on filed-specimen pages by slug:
+four-seam + two-seam (Ryan, honestly framed), slider (Rogers), changeup/circle-change (NCAA aces).
+
 ## Sources
 
 - [Rob Friedman (baseball analyst) — Wikipedia](https://en.wikipedia.org/wiki/Rob_Friedman_(baseball_analyst)) — bio, 2018 suspension and reinstatement, MLB analyst roles, "sword" Statcast adoption. No archive-permission language anywhere in the article.

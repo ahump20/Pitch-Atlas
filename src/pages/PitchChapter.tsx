@@ -26,6 +26,7 @@ import { FieldNotes } from '../components/sections/FieldNotes'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { SpecimenGrips } from '../components/sections/GripLibrary'
 import { PitchConnections } from '../components/pitch/PitchConnections'
+import { TeachingClipSection } from '../components/embeds/TikTokEmbed'
 import { NotFound } from './NotFound'
 
 /*
@@ -744,6 +745,7 @@ export function PitchChapter() {
       <SpecimenGrips entry={gripEntry} accentColor={accentColor} />
       <ReleaseSection entry={entry} accentColor={accentColor} />
       <MovementSection entry={entry} accentColor={accentColor} />
+      <TeachingClipSection slug={entry.display.slug} accentColor={accentColor} />
       <MasterFilesSection entry={entry} accentColor={accentColor} />
       <ColophonSection entry={entry} accentColor={accentColor} />
       <PitchConnections

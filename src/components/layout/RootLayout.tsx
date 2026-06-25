@@ -7,6 +7,7 @@ import { scrollToId } from '../../lib/scroll'
 import { canonicalUrl, siteJsonLd } from '../../lib/seo'
 import { Toaster } from '../ui/sonner'
 import { TooltipProvider } from '../ui/tooltip'
+import { PipProvider } from '../embeds/pip'
 
 /*
   The shell every route renders inside. The site sits on the warm field — aged
@@ -61,6 +62,7 @@ export function RootLayout() {
           breathing slowly at rest (the CSS gates it behind reduced-motion) */}
       <div className="grain-overlay" aria-hidden="true" />
       <TooltipProvider delayDuration={150}>
+        <PipProvider>
         <div className="relative z-10">
           <a
             href="#main"
@@ -77,6 +79,7 @@ export function RootLayout() {
           <SiteFooter />
           <Toaster position="bottom-center" />
         </div>
+        </PipProvider>
       </TooltipProvider>
     </div>
   )
