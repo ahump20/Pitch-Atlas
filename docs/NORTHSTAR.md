@@ -269,6 +269,41 @@ This is the mechanism that lets the product change without losing itself.
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
 
+### 2026-06-25: Deepen the specimen artifact (grade kept, grip on the card, family shelves, gold grail)
+
+**Decision.** The collectible cards are pushed the last distance toward grail-grade
+without adding game mechanics. The specimen grade stays as the read of how richly
+each pitch is preserved (gold 1-of-1, first-party motion, first-party grip,
+reference); it is provenance depth, not a reward ladder, and it replaced a chip row
+that duplicated the family seal and the source badge. On top of it: the sourced
+grip silhouette is surfaced on the card back itself (the same seam schematic the
+no-WebGL path and the 3D ball draw, filed grips only); the chrome wall groups
+specimens by family so the taxonomy reads at a glance; the gold four-seam gains
+real radiance and a foil back so the 1-of-1 reads like the grail; the seam dissolve
+keeps its plain-words teaching, pinned by a test. Residual utility copy (the Shape
+Lab control label, the 404 eyebrow, the softball breadcrumb terminal) is brought
+into the archive voice. No pitch-behavior numbers are introduced.
+
+**Why.** After the preserve-and-progress refresh the product was roughly 85 to 90
+percent living its own frame, but the gold 1/1 did not feel like the grail, the
+wall did not read by family, and the sourced grip hid inside a tool instead of
+riding the card. This is table-stakes polish, necessary so the artifact can carry
+archival weight, not the mission move. The mission (real pitchers contributing real
+grips, the art preserved and progressed together) is a separate, larger track and
+stays scoped, wired to real community data, never invented numbers.
+
+**Touches.** src/index.css; src/components/v2/{ChromeWall,RefractionBridge}.tsx and
+their tests; src/components/fallback/fallback.test.tsx; src/pages/{SandboxPage,
+NotFound,KnowledgeHub,SoftballPitchChapter,SoftballCraftsmanChapter}.tsx. The
+specimen grade (specimen-grade.ts) is kept and pinned by a guard test.
+
+**Respects.** Sourced, not corrected (the method stays in the data, the /sources
+headline, and the four-seam body, never coined as a card or meta tagline). Real,
+never faked (no invented movement numbers, no fabricated edition counts, the
+colophon "as of" stays computed). Grip-first (the hold is surfaced on the card,
+schematic and sourced). Four states or it is not done (the 404 stays an honest,
+named empty state).
+
 ### 2026-06-25: Preserve and progress becomes the canonical why
 
 **Decision.** Pitch Atlas now frames its public why as preserving and progressing
