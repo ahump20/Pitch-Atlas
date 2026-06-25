@@ -111,7 +111,7 @@ export function KnowledgeHub() {
     description:
       'The craft-record layer of Pitch Atlas: mechanics, pitch design, sequencing, tunneling, spin literacy, source boundaries, and safety limits. Every claim sourced and labeled by confidence.',
     ogTitle: `Learn | ${SITE.siteName}`,
-    ogDescription: 'The craft underneath the pitch. Sourced, not corrected.',
+    ogDescription: 'The craft underneath the pitch.',
     ogUrl: canonicalUrl('/learn'),
     ...ogImageMeta('learn', 'Learn — the craft underneath the pitch'),
   })

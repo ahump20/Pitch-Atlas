@@ -698,7 +698,7 @@ export function PitchChapter() {
       ? {
           title: `${entry.canonical.name}: grip, release, and movement | ${SITE.siteName}`,
           description: truncateForMeta(
-            `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files. Sourced, not corrected.`,
+            `${entry.display.heroIntro} ${entry.masterVariants.length} sourced master files.`,
           ),
           ogTitle: `${entry.canonical.name} | ${SITE.siteName}`,
           ogDescription: entry.display.heroIntro,

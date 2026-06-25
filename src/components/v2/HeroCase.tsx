@@ -36,11 +36,12 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
           </p>
 
           <h1
-            className="rfx-athletic v2-display v2-enter mt-5 text-[clamp(40px,8.5vw,84px)] leading-[0.98] md:leading-[0.92]"
+            className="rfx-athletic v2-display v2-enter mt-5 text-[clamp(40px,8.5vw,84px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]"
             style={{ '--i': 1 } as React.CSSProperties}
           >
             The pitch,
-            <br />
+            <br className="hidden md:inline" />
+            {' '}
             struck as a specimen.
           </h1>
 

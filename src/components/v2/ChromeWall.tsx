@@ -10,6 +10,7 @@ import { PITCHES } from '../../data/pitches'
 import { INDEX_SCOPE } from '../../lib/index-scope'
 import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
+import { specimenGradeFor } from '../../data/specimen-grade'
 import { RefractorBall } from '../refractor/RefractorBall'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { familyCrumb } from '../refractor/familyCrumb'
@@ -72,6 +73,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
             <RefractorCard
               accent={accent}
               gold={display.specimenNo === '00'}
+              grade={specimenGradeFor(entry)}
               vnum={display.specimenNo}
               name={display.shortName}
               shape={shape.value}
@@ -151,7 +153,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   ) : null}
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-[8px] uppercase tracking-[0.14em] text-bone-2/70">
-                      pitch-atlas.com · sourced, not corrected
+                      pitch-atlas.com · scout file
                     </span>
                     <span className="rfx-scout-edition">{chase ? '1 of 1' : 'Filed'}</span>
                   </div>

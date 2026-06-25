@@ -161,7 +161,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
     >
       <Badge
         variant="outline"
-        className="absolute right-3.5 top-3.5 border-current bg-transparent font-mono text-[8px] uppercase tracking-[0.08em]"
+        className="absolute right-3.5 top-3.5 border-current bg-transparent font-mono text-[9.5px] uppercase tracking-[0.08em]"
         style={{ color: status.color }}
       >
         {status.label}
@@ -420,6 +420,31 @@ export function PitchIndex({ id }: { id?: string }) {
             </Button>
           </EmptyHeader>
         </Empty>
+      ) : null}
+
+      {/* The collection legend: the per-row status tier is a real scarcity read —
+          how rare the pitch is in the game today — not an invented chase ladder. The
+          honest edges (banned/alias/illusion/not-a-pitch) stay edges, never a tier to
+          covet. Read straight off the STATUS map; nothing here is fabricated. */}
+      {total > 0 ? (
+        <div className="mt-6 rounded-[10px] border border-white/10 bg-card/50 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Field rarity</span>
+            {(['standard', 'niche', 'rare', 'near-extinct'] as RepertoireStatus[]).map((s) => (
+              <span
+                key={s}
+                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2"
+              >
+                <i className="h-1.5 w-1.5 flex-none rounded-full" style={{ background: STATUS[s].color }} aria-hidden="true" />
+                {STATUS[s].label}
+              </span>
+            ))}
+          </div>
+          <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-ink-3">
+            How rare the pitch is in the game today, common to rare. Banned, alias, illusion, and not-a-pitch
+            entries are filed as honest edges — labeled for what they are, never dressed up as a chase.
+          </p>
+        </div>
       ) : null}
 
       {/* Family groups */}

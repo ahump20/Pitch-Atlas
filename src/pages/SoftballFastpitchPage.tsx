@@ -22,7 +22,7 @@ export function SoftballFastpitchPage() {
     description:
       'The core of fastpitch softball pitching — the four phases of the windmill delivery, where the speed actually comes from (the lower half, not the arm circle), and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
     ogTitle: `Fastpitch fundamentals | ${SITE.siteName}`,
-    ogDescription: 'The windmill, from the ground up. Sourced, not corrected.',
+    ogDescription: 'The windmill, from the ground up.',
     ogUrl: canonicalUrl('/softball/fastpitch'),
     ...ogImageMeta('softball', 'Fastpitch fundamentals — the windmill, from the ground up'),
   })

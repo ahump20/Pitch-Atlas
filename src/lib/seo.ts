@@ -118,7 +118,7 @@ export function siteJsonLd(home: boolean = true) {
       url: `${SITE.canonicalDomain}/`,
       headline: 'Preserve and progress the art of the pitch.',
       abstract:
-        'Grip-first archive for pitch specimens, variants, craftsmen, lost pitches, and community field notes. Sourced, not corrected.',
+        'Grip-first archive for pitch specimens, variants, craftsmen, lost pitches, and community field notes.',
       isAccessibleForFree: true,
       inLanguage: 'en',
       creator: { '@id': `${SITE.canonicalDomain}/#org` },

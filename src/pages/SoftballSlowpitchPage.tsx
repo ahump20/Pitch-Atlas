@@ -19,9 +19,9 @@ export function SoftballSlowpitchPage() {
   useSeoMeta({
     title: `Slowpitch: arc and touch | ${SITE.siteName}`,
     description:
-      'Slowpitch softball pitching, filed honestly — the legal arc (and why the number differs by sanctioning body), the real craft of arc, deadening spin, and placement, and how men’s and coed differ. Sourced, not corrected.',
+      'Slowpitch softball pitching, filed honestly — the legal arc (and why the number differs by sanctioning body), the real craft of arc, deadening spin, and placement, and how men’s and coed differ.',
     ogTitle: `Slowpitch | ${SITE.siteName}`,
-    ogDescription: 'Arc, spin, and placement. Sourced, not corrected.',
+    ogDescription: 'Arc, spin, and placement.',
     ogUrl: canonicalUrl('/softball/slowpitch'),
     ...ogImageMeta('softball', 'Slowpitch — arc, spin, and placement'),
   })
