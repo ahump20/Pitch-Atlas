@@ -7,6 +7,7 @@ import { GripFace } from './GripFace'
 import { GripClip } from './GripClip'
 import { familyCrumb } from './familyCrumb'
 import { gripEntryFor } from '../../data/grips'
+import { specimenGradeFor } from '../../data/specimen-grade'
 
 /*
   One filed pitch, struck as a holographic specimen card. The single source of "how a
@@ -53,6 +54,7 @@ export function PitchSpecimenCard({
   const physics = canonical.physics
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
+  const grade = specimenGradeFor(entry)
   const shapeClaim = physics.shape
   const conf = {
     label: CONFIDENCE_META[shapeClaim.confidence].label,
@@ -99,6 +101,7 @@ export function PitchSpecimenCard({
       confidence={{ label: conf.label, color: conf.color, approx: shapeClaim.approximate }}
       crumb={familyCrumb(canonical.family)}
       gripSource={gripSource}
+      grade={grade}
       foil={foil}
     />
   )

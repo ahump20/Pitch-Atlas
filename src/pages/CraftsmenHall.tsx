@@ -28,7 +28,7 @@ export function CraftsmenHall() {
     description:
       'A sourced hall of the pitchers who defined a pitch, Gibson to Skenes, plus the gyroball legend. The mental edge, the signature pitch, and the record, each labeled by source.',
     ogTitle: `The Craftsmen | ${SITE.siteName}`,
-    ogDescription: 'The arms that defined the pitches, and the mental edge behind them. Sourced, not corrected.',
+    ogDescription: 'The arms that defined the pitches, and the mental edge behind them.',
     ogUrl: canonicalUrl('/craftsmen'),
     ...ogImageMeta('craftsmen', 'The Craftsmen — the arms that defined the pitches'),
   })

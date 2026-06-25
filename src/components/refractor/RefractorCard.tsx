@@ -59,6 +59,8 @@ export interface RefractorCardProps {
   crumb?: FamilyCrumb
   /** Whose grip the face shows: Austin's first-party grip, or a reference schematic. */
   gripSource?: { label: string; color: string }
+  /** The honest collectible grade — how richly this specimen is preserved (specimen-grade.ts). */
+  grade?: { key: string; label: string }
   /** Top-right micro-tab. Defaults to "SPECIMEN". */
   wmTab?: string
   /** Override the outer max width (px). Defaults to 360; the hero uses a larger card. */
@@ -81,6 +83,7 @@ export function RefractorCard({
   confidence,
   crumb,
   gripSource,
+  grade,
   wmTab = 'SPECIMEN',
   maxWidth = 360,
   foil = false,
@@ -200,12 +203,12 @@ export function RefractorCard({
 
         <div className="rfx-banner">{name}</div>
 
-        {(crumb || confidence) ? (
-          <div className="rfx-attrrow" aria-label="Card attributes">
-            {crumb ? <span className="rfx-attrchip">Family · {crumb.label}</span> : null}
-            {confidence ? <span className="rfx-attrchip">Source · {confidence.label}</span> : null}
-            <span className="rfx-attrchip">Edition · {gold ? '1 of 1' : 'Filed'}</span>
-          </div>
+        {grade ? (
+          <p className="rfx-grade" data-grade={grade.key}>
+            <span className="rfx-grade-dot" aria-hidden="true" />
+            <span className="sr-only">Specimen grade: </span>
+            {grade.label}
+          </p>
         ) : null}
 
         <div className="rfx-content">

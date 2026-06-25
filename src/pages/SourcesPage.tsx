@@ -43,7 +43,7 @@ export function SourcesPage() {
   useSeoMeta({
     title: `Sources and provenance | ${SITE.siteName}`,
     description:
-      'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the archive. Sourced, not corrected.',
+      'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the archive.',
     ogTitle: `Sources and provenance | ${SITE.siteName}`,
     ogDescription: 'Every claim labeled by its source. The full citation registry behind the archive.',
     ogUrl: canonicalUrl('/sources'),
@@ -57,7 +57,7 @@ export function SourcesPage() {
           url: canonicalUrl('/sources'),
           name: 'Sources and provenance',
           description:
-            'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the archive. Sourced, not corrected.',
+            'How Pitch Atlas labels every claim by source and confidence, and the full citation registry behind the archive.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Sources' }],
         })}
       />

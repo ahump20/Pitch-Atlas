@@ -20,9 +20,9 @@ export function GripsPage() {
   useSeoMeta({
     title: `The Grip Library: real grips, in the hand | ${SITE.siteName}`,
     description:
-      'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright, sourced not corrected. Plus the same-release, different-grip comparison tool.',
+      'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright. Plus the same-release, different-grip comparison tool.',
     ogTitle: `The Grip Library | ${SITE.siteName}`,
-    ogDescription: 'Real grips, in the hand. The part a hitter never gets to see. Sourced, not corrected.',
+    ogDescription: 'Real grips, in the hand. The part a hitter never gets to see.',
     ogUrl: canonicalUrl('/grips'),
     ...ogImageMeta('grips', 'The Grip Library — real grips, in the hand'),
   })
@@ -47,7 +47,7 @@ export function GripsPage() {
           url: canonicalUrl('/grips'),
           name: 'The Grip Library: real grips, in the hand',
           description:
-            'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright, sourced not corrected.',
+            'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Grip Library' }],
         })}
       />
@@ -59,7 +59,7 @@ export function GripsPage() {
           <>
             The grip is the one thing a hitter never gets to see. These are the real ones — photographed in
             one pitcher&rsquo;s hand, on his own ball, owned outright and captioned in his own words. Not the
-            textbook&rsquo;s idea of correct; one arm&rsquo;s actual hold. Sourced, not corrected.
+            textbook&rsquo;s idea of correct; one arm&rsquo;s actual hold.
           </>
         }
       />

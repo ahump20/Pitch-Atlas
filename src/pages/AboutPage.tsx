@@ -107,7 +107,7 @@ export function AboutPage() {
     description:
       'Pitch Atlas preserves and progresses the art of the pitch by cataloging grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
     ogTitle: `About ${SITE.siteName}: preserve and progress the art of the pitch`,
-    ogDescription: 'The living archive of pitching craft. Sourced, not corrected.',
+    ogDescription: 'The living archive of pitching craft.',
     ogUrl: canonicalUrl('/about'),
     twitterCard: 'summary_large_image',
   })

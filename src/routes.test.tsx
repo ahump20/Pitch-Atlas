@@ -185,6 +185,53 @@ describe('Sources', () => {
   })
 })
 
+describe('Meta copy discipline', () => {
+  /*
+    "Sourced, not corrected" is the internal sourcing METHOD, never a public
+    tagline. Its sanctioned homes are the data model, the /sources H1, the home
+    "The Model" section, and the close — never a trailing sign-off on a
+    social-card or search-result description, where it reads as the brand motto.
+    This pins that boundary so the sign-off can't creep back into page meta.
+  */
+  const SLOGAN = /sourced,? not corrected/i
+  const META_ROUTES = [
+    '/',
+    '/repertoire',
+    '/compare',
+    '/movement-map',
+    '/learn',
+    '/craftsmen',
+    '/lost-pitches',
+    '/about',
+    '/grips',
+    '/softball',
+    '/softball/fastpitch',
+    '/softball/slowpitch',
+  ]
+
+  it.each(META_ROUTES)('keeps the sourcing principle out of the %s social/search description', async (path) => {
+    renderRoute(path)
+    await screen.findByRole('navigation', { name: 'Primary' }, COLD_LOAD)
+    await waitFor(() => {
+      const desc = document.head.querySelector('meta[name="description"]')?.getAttribute('content') ?? ''
+      const og = document.head.querySelector('meta[property="og:description"]')?.getAttribute('content') ?? ''
+      expect(desc).not.toMatch(SLOGAN)
+      expect(og).not.toMatch(SLOGAN)
+    }, COLD_LOAD)
+  })
+
+  it('keeps the sourcing principle out of the home schema graph abstract', async () => {
+    renderRoute('/')
+    await screen.findByRole('navigation', { name: 'Primary' }, COLD_LOAD)
+    await waitFor(() => {
+      const schema = [...document.head.querySelectorAll('script[type="application/ld+json"]')]
+        .map((script) => script.textContent ?? '')
+        .join('\n')
+      expect(schema).not.toMatch(SLOGAN)
+    }, COLD_LOAD)
+  })
+})
+
 describe('About', () => {
   it('explains the grip-first thesis and competitor field', async () => {
     renderRoute('/about')

@@ -725,7 +725,7 @@
   }
   .rfx-seal-coin svg { width: 16px; height: 16px; display: block; }
   .rfx-seal-label {
-    font-family: var(--font-mono); font-size: 7px; line-height: 1; letter-spacing: .16em; text-transform: uppercase;
+    font-family: var(--font-mono); font-size: 8px; line-height: 1; letter-spacing: .16em; text-transform: uppercase;
     color: var(--color-bone); padding: 2px 6px; border-radius: 999px; background: rgba(5,7,12,.74);
     backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,.1);
   }
@@ -739,7 +739,7 @@
     display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px;
     background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,.12);
-    font-family: var(--font-mono); font-size: 7.5px; line-height: 1; letter-spacing: .1em;
+    font-family: var(--font-mono); font-size: 8px; line-height: 1; letter-spacing: .1em;
     text-transform: uppercase; color: var(--color-bone-2);
   }
   /* the Austin grip photo, filling the arched window (the seam ball is used otherwise) */
@@ -819,20 +819,30 @@
       0 0 0 1px rgba(202,161,74,.7);
   }
   .rfx-card.is-gold .rfx-banner::before { background: linear-gradient(180deg, #5a3f12, #2a1d0500); }
-  .rfx-attrrow {
-    position: relative; z-index: 9; margin-top: 9px;
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 5px;
+  /* the specimen grade — one honest rarity stamp under the nameplate. Replaces the
+     old three-chip attr row: family already reads in the seal coin and source in the
+     plate badge, so this carries the one thing they didn't — how richly the specimen
+     is preserved (specimen-grade.ts). The gold 1/1 tier wears the chrome. */
+  .rfx-grade {
+    position: relative; z-index: 9; margin: 9px auto 0; width: fit-content; max-width: 94%;
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 4px 12px; border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, rgba(246,241,230,.16));
+    background: linear-gradient(180deg, rgba(246,241,230,.07), rgba(5,7,12,.66));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 2px 8px -4px rgba(0,0,0,.7);
+    font-family: var(--font-mono); font-size: 8.5px; line-height: 1; letter-spacing: .13em;
+    text-transform: uppercase; font-weight: 600; color: var(--color-bone); white-space: nowrap;
   }
-  .rfx-attrchip {
-    display: inline-flex; align-items: center; min-height: 20px; padding: 4px 7px; border-radius: 999px;
-    border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 34%, rgba(246,241,230,.13));
-    background: rgba(5,7,12,.62);
-    font-family: var(--font-mono); font-size: 7.5px; line-height: 1; letter-spacing: .1em; text-transform: uppercase;
-    color: var(--color-bone-2);
+  .rfx-grade-dot {
+    width: 6px; height: 6px; border-radius: 1.5px; transform: rotate(45deg); flex: none;
+    background: var(--c3,#37D6FF); box-shadow: 0 0 8px -1px var(--c3,#37D6FF);
   }
-  .rfx-card.is-gold .rfx-attrchip {
-    border-color: rgba(202,161,74,.42); color: #FFE9B0; background: rgba(42,29,5,.48);
+  .rfx-card.is-gold .rfx-grade {
+    border-color: rgba(202,161,74,.5); color: #FFE9B0;
+    background: linear-gradient(180deg, rgba(255,240,194,.15), rgba(42,29,5,.5));
+    box-shadow: inset 0 1px 0 rgba(255,240,194,.3), 0 2px 8px -4px rgba(0,0,0,.7);
   }
+  .rfx-card.is-gold .rfx-grade-dot { background: #FFD98A; box-shadow: 0 0 8px -1px #FFD98A; }
 
   /* the READ plate — the read lives here, never on the patterned foil. Cream
      card stock printed in ink, the way the physical card carries its readings:
@@ -884,8 +894,8 @@
 
   /* phones: the plate text tightens so the window keeps its portrait height */
   @media (max-width: 480px) {
-    .rfx-attrrow { margin-top: 7px; gap: 4px; }
-    .rfx-attrchip { min-height: 17px; padding: 3px 5px; font-size: 6.4px; letter-spacing: .07em; }
+    .rfx-grade { margin-top: 7px; padding: 3px 10px; font-size: 8px; gap: 5px; letter-spacing: .1em; }
+    .rfx-grade-dot { width: 5px; height: 5px; }
     .rfx-shape .rfx-v { font-size: .86rem; -webkit-line-clamp: 2; }
     .rfx-cue { -webkit-line-clamp: 1; }
     .rfx-content { margin-top: 13px; padding: 16px 11px 10px; gap: 7px; }
@@ -899,7 +909,7 @@
 
   /* bottom strip — always on the dark card face, so its ink is literal */
   .rfx-strip { z-index: 9; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
+    font-family: var(--font-mono); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
 
   /* ── the card back, struck as a scout file ──
      The SLUGGERS stats-table back, but every row is a sourced or categorical fact —
@@ -2385,7 +2395,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      is the matte black border; the card inside is the chrome. Two
      up on phones, four up at md; the gold 1/1 takes the one wide
      cell as the wall's single accent. */
-  .v2-wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  /* One card per row on phones: at 2-col widths a 147px card cramps the nameplate
+     and the absolute SOURCE button overruns the grade stamp + READ tab. 2-col only
+     returns once each card clears ~290px (the width the desktop cards prove clean). */
+  .v2-wall { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  @media (min-width: 640px) { .v2-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (min-width: 768px) { .v2-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; } }
   .v2-mount {
     position: relative; border-radius: var(--radius-md);

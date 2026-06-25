@@ -121,7 +121,7 @@ export function SoftballHub() {
   useSeoMeta({
     title: `Softball: the circle enters the atlas | ${SITE.siteName}`,
     description:
-      'The softball wing of Pitch Atlas — the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched. Sourced, not corrected.',
+      'The softball wing of Pitch Atlas — the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched.',
     ogTitle: `Softball | ${SITE.siteName}`,
     ogDescription: 'The underhand craft, filed honestly. Fastpitch first, anchored on Cat Osterman.',
     ogUrl: canonicalUrl('/softball'),
@@ -149,7 +149,7 @@ export function SoftballHub() {
             A different craft from the baseball game: the underhand windmill, a kinetic chain driven from the
             ground up, and pitches with no baseball cousin — the rise, the drop, the screw. We are building
             fastpitch first and deepest, with the riseball’s honest physics at the center, and Cat Osterman as
-            the anchor. Slowpitch is filed honestly and lighter. Early innings — sourced, not corrected.
+            the anchor. Slowpitch is filed honestly and lighter. Early innings.
           </>
         }
       />

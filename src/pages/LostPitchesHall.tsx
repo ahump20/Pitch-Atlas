@@ -23,9 +23,9 @@ export function LostPitchesHall() {
   useSeoMeta({
     title: `Lost Pitches of the Negro Leagues | ${SITE.siteName}`,
     description:
-      'The pitches and the arms the box scores cannot hold: Satchel Paige’s banned hesitation pitch, Hilton Smith’s documented curve, the doctored-ball craft that diverged from the segregated majors. Filed by how solid the record is. Sourced, not corrected.',
+      'The pitches and the arms the box scores cannot hold: Satchel Paige’s banned hesitation pitch, Hilton Smith’s documented curve, the doctored-ball craft that diverged from the segregated majors. Filed by how solid the record is.',
     ogTitle: `Lost Pitches of the Negro Leagues | ${SITE.siteName}`,
-    ogDescription: 'The pitches the record cannot hold, filed by how well they survive. Sourced, not corrected.',
+    ogDescription: 'The pitches the record cannot hold, filed by how well they survive.',
     ogUrl: canonicalUrl('/lost-pitches'),
     ...ogImageMeta('lost-pitches', 'Lost Pitches of the Negro Leagues'),
   })

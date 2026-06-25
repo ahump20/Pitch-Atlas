@@ -17,7 +17,6 @@ import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
 */
 export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
   const accent = accentForSlug(featured.display.slug)
-  const isChase = featured.display.specimenNo === '00'
 
   return (
     <section
@@ -36,11 +35,12 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
           </p>
 
           <h1
-            className="rfx-athletic v2-display v2-enter mt-5 text-[clamp(40px,8.5vw,84px)] leading-[0.98] md:leading-[0.92]"
+            className="rfx-athletic v2-display v2-enter mt-5 text-[clamp(40px,8.5vw,84px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]"
             style={{ '--i': 1 } as React.CSSProperties}
           >
             The pitch,
-            <br />
+            <br className="hidden md:inline" />
+            {' '}
             struck as a specimen.
           </h1>
 
@@ -87,7 +87,6 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
                 style={{ color: '#F6F1E6', background: 'rgba(10,9,8,.72)', transform: 'rotate(3deg)' }}
               >
                 Specimen {featured.display.specimenNo}
-                {isChase ? ' · gold 1/1' : null}
               </p>
             </div>
           </div>

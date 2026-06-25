@@ -16,7 +16,7 @@ export function ComparePage() {
     description:
       'Pick any two filed pitches and see how they share a release tunnel and split late. The comparison reads direction and character, not measured separation.',
     ogTitle: `Compare two pitches | ${SITE.siteName}`,
-    ogDescription: 'The tunnel and the late shape split, on one frame. Sourced, not corrected.',
+    ogDescription: 'The tunnel and the late shape split, on one frame.',
     ogUrl: canonicalUrl('/compare'),
   })
 

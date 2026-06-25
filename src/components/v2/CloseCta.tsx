@@ -143,7 +143,7 @@ export function CloseCta() {
           {SITE.sourcePrinciple}.
         </p>
         <p className="v2-wall-line mx-auto mt-6 max-w-[62ch]">
-          Preserve the pitches baseball almost forgot. Progress the craft for the pitchers still searching.
+          Every grip filed before the arm forgets it. Every claim still wearing its source.
         </p>
         <p className="mx-auto mt-5 font-mono text-[10px] uppercase tracking-[0.18em] text-bone-2">
           {SITE.brandLine}

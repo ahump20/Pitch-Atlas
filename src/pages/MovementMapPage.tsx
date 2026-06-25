@@ -16,7 +16,7 @@ export function MovementMapPage() {
     description:
       "Every filed pitch on one catcher's-eye field by shape language: ride, drop, arm-side run, and glove-side sweep.",
     ogTitle: `The shape map | ${SITE.siteName}`,
-    ogDescription: 'Every filed pitch by direction and character. Sourced, not corrected.',
+    ogDescription: 'Every filed pitch by direction and character.',
     ogUrl: canonicalUrl('/movement-map'),
   })
 

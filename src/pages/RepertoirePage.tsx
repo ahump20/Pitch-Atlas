@@ -21,7 +21,7 @@ export function RepertoirePage() {
     description:
       'A searchable taxonomy of every accepted pitch a coach, a pitcher, or the tracking language would name. Each file keeps its source, confidence label, and honest edge.',
     ogTitle: `The Pitch Index | ${SITE.siteName}`,
-    ogDescription: 'Every accepted pitch, by family. Sourced, not corrected.',
+    ogDescription: 'Every accepted pitch, by family.',
     ogUrl: canonicalUrl('/repertoire'),
     ...ogImageMeta('repertoire', 'The Pitch Index — every accepted pitch, by family'),
   })
