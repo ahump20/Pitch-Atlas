@@ -12,6 +12,7 @@ import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
 import { specimenGradeFor } from '../../data/specimen-grade'
 import { RefractorBall } from '../refractor/RefractorBall'
+import { SeamSchematic } from '../fallback/SeamSchematic'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { familyCrumb } from '../refractor/familyCrumb'
 import { ChapterMark } from './ChapterMark'
@@ -127,7 +128,21 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Grip</span>
-                    <span className="rfx-scout-v rfx-scout-v--clip">{canonical.grip.value}</span>
+                    <span className="rfx-scout-v rfx-scout-v--clip">
+                      {canonical.gripModel.status === 'filed' ? (
+                        <span className="rfx-grip-twin" aria-hidden="true">
+                          <SeamSchematic
+                            grip={canonical.gripModel.contacts}
+                            handedness="right"
+                            surface="stage"
+                            showAxis={false}
+                            showStitches={false}
+                            title=""
+                          />
+                        </span>
+                      ) : null}
+                      {canonical.grip.value}
+                    </span>
                   </div>
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Source</span>

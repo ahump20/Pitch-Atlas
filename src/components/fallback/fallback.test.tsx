@@ -5,6 +5,7 @@ import { CarryDiagram } from './CarryDiagram'
 import { MovementPlot } from './MovementPlot'
 import { slider } from '../../data/pitches/slider'
 import { twelveSix } from '../../data/pitches/twelve-six-curveball'
+import { PITCHES } from '../../data/pitches'
 
 describe('SeamSchematic (the no-WebGL visual)', () => {
   it('renders an accessible svg built from the seam curve', () => {
@@ -38,5 +39,33 @@ describe('MovementPlot (the catcher-eye break plot)', () => {
     expect(svg).toBeTruthy()
     expect(svg?.getAttribute('aria-label')).toMatch(/sweeps glove-side/)
     expect(svg?.getAttribute('aria-label')).not.toMatch(/inches/)
+  })
+})
+
+describe('SeamSchematic grip silhouette (the sourced-grip honesty gate)', () => {
+  const filed = PITCHES.find(
+    (p) => p.canonical.gripModel.status === 'filed' && p.canonical.gripModel.contacts.length > 0,
+  )
+
+  it('draws labeled finger spines for a filed grip', () => {
+    expect(filed).toBeTruthy()
+    const { container } = render(
+      <SeamSchematic
+        grip={filed!.canonical.gripModel.contacts}
+        handedness="right"
+        surface="stage"
+        showAxis={false}
+        showStitches={false}
+        title=""
+      />,
+    )
+    expect(container.querySelectorAll('[data-grip-finger]').length).toBeGreaterThan(0)
+  })
+
+  it('draws no grip spines when the grip is empty (the unfiled state stays honest)', () => {
+    const { container } = render(
+      <SeamSchematic grip={[]} handedness="right" surface="stage" title="" />,
+    )
+    expect(container.querySelectorAll('[data-grip-finger]').length).toBe(0)
   })
 })
