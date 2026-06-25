@@ -6,9 +6,11 @@
   publicity rights), so the ONLY sanctioned treatment is the platform's own
   embed or an outbound link to the original post, fully credited, with no raw
   media file ever downloaded into the repo. This file holds the post references
-  the web pages embed; it is deliberately NOT one of the data modules the iOS
-  generator reads (tools/generate-content reads pitches/repertoire/grips/etc.),
-  so the iOS bundle stays link-only and carries no third-party clip URLs.
+  BOTH surfaces use: the web pages embed the player inline, and (as of 2026-06-25,
+  at the owner's direction) the iOS content generator reads this module too and
+  emits teaching-clips.json, so the app embeds the same official TikTok player —
+  credited, outbound link always present. Still embed-or-link on both: no clip URL
+  resolves to a file we host, and no MP4 ships in either bundle.
 
   The clip is a Source, not a measurement: nothing here asserts a spin/velo/break
   figure. The `lede` is a sourced, plain-language pointer to what the post shows.

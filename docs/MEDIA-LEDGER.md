@@ -33,10 +33,17 @@ broadcast footage. No raw GIF/MP4/WebM from third parties in `public/` or in the
 bundle — the only motion files shipped are Austin's own grip videos (`public/grips/*`,
 first-party, fully owned).
 
-**iOS posture:** outbound links or citations only. Embedded X webviews add X-TOS and App
-Review surface for zero v1 benefit. The iOS content JSONs contain no Pitching Ninja or
-X/Twitter URLs today (verified 2026-06-09) — keep it that way unless a row here is
+**iOS posture (X / Twitter):** outbound links or citations only. Embedded X webviews add
+X-TOS and App Review surface for zero benefit, and the iOS content JSONs contain no Pitching
+Ninja or X/Twitter URLs today (verified 2026-06-09) — keep it that way unless a row here is
 promoted deliberately.
+
+**Deliberately promoted (2026-06-25):** the three TikTok teaching clips below (T1–T3) now
+embed on **both** web and iOS via TikTok's own official player, at the owner's direction.
+This is scoped to those three rows; every other row above stays link/citation-only. It stays
+embed-never-rehost — TikTok serves the media in both places, no MP4 ships in either bundle —
+and each surface keeps the credited outbound link. (T2 is a Pitching Ninja TikTok, so this is
+the deliberate exception to the X-posture line above; it does not reopen X webviews.)
 
 ## Repo state at HEAD (verified 2026-06-09)
 
@@ -131,18 +138,24 @@ research only, never bundled. The hard floor holds: nothing in `public/` or the 
 | T2 | tiktok.com/@pitchingninja/video/6958820538441600262 | Tyler Rogers' "rising" submarine breaker | @pitchingninja | "Rising Curveball" — Rogers calls it "a slider, but almost a curveball"; label drifts slider/curve across sources, preserved both ways | High — MLB broadcast footage (see Pitching Ninja rows above) | **Embed via TikTok player + outbound link** |
 | T3 | tiktok.com/@ncaabsb/video/7245789529104239915 | College aces' grips (Dollander, Skenes, Caglianone, Lowder) | @ncaabsb (NCAA Baseball) | "Take a look at these aces' pitch grips" | Medium — NCAA's own posted footage, but identifiable players + NCAA marks | **Embed via TikTok player + outbound link** |
 
-**Implementation (web only):** `src/data/media/tiktok.ts` holds the post references; `TikTokEmbed` +
-the `pip` provider embed **TikTok's own player inline in the card, at full size** (the video is
-present, not a click-to-summon clip), lazy-loaded so the frame only fetches as it scrolls into
-view. A "pop out" control lifts the player into a dismissible picture-in-picture so the reader keeps
-scrolling; popping out unmounts the inline frame so the same clip never plays twice. The frame is
-always TikTok's player — no MP4 is committed. Posture note: this is a deliberate trade from the
-first build, which loaded nothing third-party until a click — the player now loads inline when the
-reader reaches it, the cost of having the real video on the page (one embed per pitch page). The data
-file is deliberately **not** one of the modules `tools/generate-content` reads, so the iOS bundle
-stays link-only and carries no TikTok URLs (ledger iOS posture preserved). Each card keeps the
-"Watch on TikTok ↗" outbound link. Clips surface on filed-specimen pages by slug: four-seam +
-two-seam (Ryan), slider (Rogers), changeup/circle-change (NCAA aces).
+**Implementation (web + iOS):** `src/data/media/tiktok.ts` holds the post references both surfaces use.
+
+*Web:* `TikTokEmbed` + the `pip` provider embed **TikTok's own player inline in the card, at full
+size** (the video is present, not a click-to-summon clip), lazy-loaded so the frame only fetches as it
+scrolls into view. A "pop out" control lifts the player into a dismissible picture-in-picture so the
+reader keeps scrolling; popping out unmounts the inline frame so the same clip never plays twice.
+Posture note: a deliberate trade from the first build, which loaded nothing third-party until a click —
+the player now loads inline when the reader reaches it, the cost of having the real video on the page.
+
+*iOS (added 2026-06-25):* `tools/generate-content` now reads this module and emits
+`teaching-clips.json` into the app bundle; `TeachingClipCard` embeds the same official TikTok player in
+a `WKWebView` on the filed-specimen screen, with the credited "Watch on TikTok ↗" outbound link beside
+it. No autoplay (user taps play), no MP4 in the bundle — embed-never-rehost, identical to web. App
+Review transparency note added in `docs/APP-REVIEW-NOTES.md` (iOS repo).
+
+Both surfaces: the frame is always TikTok's player, no MP4 is committed, and the outbound link is
+always present. Clips surface on filed-specimen pages by slug: four-seam + two-seam (Ryan), slider
+(Rogers), changeup/circle-change (NCAA aces).
 
 ## Sources
 
