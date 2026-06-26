@@ -1,4 +1,8 @@
 import { v, seamPoint, SEAM_VIEW_TILT, type Vec3 } from '../../lib/seam'
+// The 2D seam projection helpers live in one place (lib/seam2d) so the hero ball
+// and the schematic draw the same curve and can never silently diverge. The ball's
+// tuned constants ride as explicit call-site arguments below (seg=300, stitch 6/10).
+import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
 import type { SeamAnchoredPoint } from '../../data/types'
 
 /*
@@ -13,55 +17,6 @@ import type { SeamAnchoredPoint } from '../../data/types'
   No player, ever — the ball is the subject. A seam-informed schematic, never a
   measured cover geometry.
 */
-
-type P = { x: number; y: number; z: number }
-
-function projectSeam(cx: number, cy: number, r: number, seg = 300): P[] {
-  const out: P[] = []
-  for (let i = 0; i <= seg; i++) {
-    const p = v.rotateAxis(seamPoint((i / seg) * Math.PI * 2, 1), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
-    out.push({ x: cx + p.x * r, y: cy - p.y * r, z: p.z })
-  }
-  return out
-}
-function pathOf(run: P[]) {
-  return run.map((p, i) => `${i ? 'L' : 'M'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ')
-}
-function splitRuns(points: P[]) {
-  const runs: { front: boolean; d: string }[] = []
-  let cur: P[] = []
-  let cf: boolean | null = null
-  for (const p of points) {
-    const f = p.z >= 0
-    if (cf === null) {
-      cf = f
-      cur = [p]
-    } else if (f === cf) {
-      cur.push(p)
-    } else {
-      cur.push(p)
-      runs.push({ front: cf, d: pathOf(cur) })
-      cf = f
-      cur = [p]
-    }
-  }
-  if (cur.length > 1) runs.push({ front: cf ?? true, d: pathOf(cur) })
-  return runs
-}
-function buildStitches(points: P[], every = 6, len = 9) {
-  const out: { x1: number; y1: number; x2: number; y2: number; front: boolean }[] = []
-  for (let i = 0; i < points.length - 1; i += every) {
-    const a = points[i]
-    const b = points[i + 1]
-    const dx = b.x - a.x
-    const dy = b.y - a.y
-    const L = Math.hypot(dx, dy) || 1
-    const nx = -dy / L
-    const ny = dx / L
-    out.push({ x1: a.x - (nx * len) / 2, y1: a.y - (ny * len) / 2, x2: a.x + (nx * len) / 2, y2: a.y + (ny * len) / 2, front: a.z >= 0 })
-  }
-  return out
-}
 
 export function RefractorBall({
   spinAxis,
