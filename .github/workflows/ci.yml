@@ -95,7 +95,8 @@ jobs:
           trap 'kill "$preview_pid" 2>/dev/null || true; cat /tmp/pitch-atlas-preview.log' EXIT
 
           for _ in {1..30}; do
-            if curl --fail --silent --show-error http://127.0.0.1:4173/ > /tmp/pitch-atlas-preview-home.html; then
+            if curl --fail --silent --show-error --connect-timeout 2 --max-time 5 \
+              http://127.0.0.1:4173/ > /tmp/pitch-atlas-preview-home.html; then
               break
             fi
             sleep 1
