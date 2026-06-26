@@ -51,11 +51,24 @@ function pickUrl(...values) {
   return values.find(isHostedPreviewUrl)
 }
 
+function readyDeploymentStatus(status) {
+  return status?.state === 'success'
+}
+
+function readyCommitStatus(status) {
+  return status?.state === 'success'
+}
+
+function readyCheckRun(run) {
+  return run?.status === 'completed' && run?.conclusion === 'success'
+}
+
 async function fromDeployments() {
   const deployments = await github(`/repos/${repo}/deployments?sha=${sha}&per_page=20`)
   for (const deployment of deployments) {
     const statuses = await github(deployment.statuses_url)
     for (const status of statuses) {
+      if (!readyDeploymentStatus(status)) continue
       const url = pickUrl(status.environment_url, status.target_url, status.log_url)
       if (url) return url
     }
@@ -66,6 +79,7 @@ async function fromDeployments() {
 async function fromCommitStatuses() {
   const statuses = await github(`/repos/${repo}/commits/${sha}/statuses?per_page=100`)
   for (const status of statuses) {
+    if (!readyCommitStatus(status)) continue
     const url = pickUrl(status.target_url)
     if (url) return url
   }
@@ -75,7 +89,9 @@ async function fromCommitStatuses() {
 async function fromCheckRuns() {
   const result = await github(`/repos/${repo}/commits/${sha}/check-runs?per_page=100`)
   for (const run of result.check_runs ?? []) {
-    const summaryUrl = typeof run.output?.summary === 'string' ? run.output.summary.match(/https:\/\/[^\s<>)"]+/)?.[0] : undefined
+    if (!readyCheckRun(run)) continue
+    const summaryUrl =
+      typeof run.output?.summary === 'string' ? run.output.summary.match(/https:\/\/[^\s<>)"]+/)?.[0] : undefined
     const url = pickUrl(run.details_url, summaryUrl)
     if (url) return url
   }

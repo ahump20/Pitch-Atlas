@@ -118,4 +118,6 @@ jobs:
 
       - name: Browser smoke test hosted deploy preview
         if: steps.hosted_preview.outputs.url != ''
-        run: npm run test:preview:browser -- "${{ steps.hosted_preview.outputs.url }}"
+        env:
+          PREVIEW_URL: ${{ steps.hosted_preview.outputs.url }}
+        run: npm run test:preview:browser -- "$PREVIEW_URL"
