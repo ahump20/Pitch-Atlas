@@ -12,6 +12,8 @@ import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
 import { ClaimNote } from '../components/provenance/SourcedValue'
+import { LostPitchArchivePlate } from '../components/lost-pitches/ArchiveImageRail'
+import { archiveImageForLostPitch } from '../data/media/archive-images'
 import { NotFound } from './NotFound'
 
 /*
@@ -96,6 +98,7 @@ export function LostPitchChapter() {
 
   const tierMeta = DOCUMENTATION_META[pitch.tier]
   const isLegend = pitch.tier === 'legend'
+  const archiveImage = archiveImageForLostPitch(pitch.slug)
 
   return (
     <>
@@ -143,6 +146,8 @@ export function LostPitchChapter() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.75rem]">{pitch.intro}</p>
       </section>
+
+      {archiveImage ? <LostPitchArchivePlate image={archiveImage} /> : null}
 
       <section>
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">

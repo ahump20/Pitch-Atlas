@@ -34,6 +34,8 @@ export interface TeachingClip {
   lede: string
   /** Which filed-specimen slugs surface this clip. */
   slugs: string[]
+  /** Which Craftsmen chapters surface this clip. Optional, because some clips teach a pitch but not a filed master. */
+  craftsmanSlugs?: string[]
   /** Real retrieval date — drives the card's "added" line, never hardcoded copy. */
   retrievedAt: string
 }
@@ -52,6 +54,7 @@ export const TEACHING_CLIPS: TeachingClip[] = [
     lede:
       "Ryan in his own words on the two fastballs. The four-seam stays true and rides up on the hitter; the two-seam runs in on a righty and away from a lefty. It's the exact four/two split these specimen pages are built on, taught by the man who threw it.",
     slugs: ['four-seam', 'two-seam'],
+    craftsmanSlugs: ['nolan-ryan'],
     retrievedAt: '2026-06-25',
   },
   {
@@ -80,6 +83,7 @@ export const TEACHING_CLIPS: TeachingClip[] = [
     lede:
       'NCAA Baseball’s grip tour — Chase Dollander, Paul Skenes, Jac Caglianone and Rhett Lowder showing how they actually hold the ball.',
     slugs: ['circle-change'],
+    craftsmanSlugs: ['paul-skenes'],
     retrievedAt: '2026-06-25',
   },
 ]
@@ -87,4 +91,9 @@ export const TEACHING_CLIPS: TeachingClip[] = [
 /** The clip filed against a specimen slug, if any. One clip may serve several slugs. */
 export function teachingClipForSlug(slug: string): TeachingClip | undefined {
   return TEACHING_CLIPS.find((c) => c.slugs.includes(slug))
+}
+
+/** All clips filed against a Craftsman chapter. */
+export function teachingClipsForCraftsman(slug: string): TeachingClip[] {
+  return TEACHING_CLIPS.filter((c) => c.craftsmanSlugs?.includes(slug))
 }

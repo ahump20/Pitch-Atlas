@@ -6,6 +6,7 @@ import { accentForSlug } from '../refractor/accents'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { parseEra } from '../../lib/era'
 import { EraBand } from './EraBand'
+import { craftsmanMediaCount } from '../../data/media/craftsmen'
 
 /*
   A craftsman, filed as a refractor plate (Tier-B `.rfx-plate`). The master wears his
@@ -25,6 +26,7 @@ export function CraftsmanCard({ craftsman }: { craftsman: Craftsman }) {
   // a master sits on the timeline by his real era; the legend is a design, not a
   // career, so it carries no span band — only the masters chart against history
   const span = isLegend ? null : parseEra(craftsman.era)
+  const mediaCount = craftsmanMediaCount(craftsman.slug)
 
   return (
     <Link
@@ -69,6 +71,12 @@ export function CraftsmanCard({ craftsman }: { craftsman: Craftsman }) {
 
       <div className="mt-auto flex items-center gap-x-3 border-t border-white/10 pt-3">
         <span className="mono-label text-cyan transition-colors group-hover:text-bone">Open the file →</span>
+        {mediaCount > 0 ? (
+          <>
+            <span aria-hidden="true" className="text-ink-3">·</span>
+            <span className="mono-label text-bone-2">Film filed</span>
+          </>
+        ) : null}
         {craftsman.hand ? (
           <>
             <span aria-hidden="true" className="text-ink-3">·</span>

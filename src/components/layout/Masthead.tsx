@@ -25,8 +25,8 @@ const NAV: { label: string; to: string }[] = [
 // interactive tools. Demoted from the bar to cut sprawl; every one is still a
 // plain <a> in the prerendered footer, so reachability never depends on JS.
 const MORE_CONTENT: { label: string; to: string; note: string }[] = [
-  { label: 'Craftsmen', to: '/craftsmen', note: 'The arms that named the pitches' },
-  { label: 'Lost Pitches', to: '/lost-pitches', note: 'The banned and faded wing' },
+  { label: 'Craftsmen', to: '/craftsmen', note: 'The arms, quotes, and filed clips' },
+  { label: 'Lost Pitches', to: '/lost-pitches', note: 'The banned wing, with image plates' },
   { label: 'Sources', to: '/sources', note: 'Every citation, in one ledger' },
   { label: 'About', to: '/about', note: 'What the atlas is, and is not' },
 ]

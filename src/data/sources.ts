@@ -33,6 +33,10 @@ const RETRIEVED_6 = '2026-06-07'
 // were curl-verified in the 2026-06-10 craft-over-numbers pass.
 const RETRIEVED_7 = '2026-06-10'
 
+// Public-domain archive images added for the Lost Pitches visual layer. Kept
+// separate because these are rights/source checks, not prose research checks.
+const RETRIEVED_8 = '2026-06-26'
+
 export const SOURCES = {
   'mlb-active-spin': {
     id: 'mlb-active-spin',
@@ -1810,6 +1814,27 @@ export const SOURCES = {
     label: 'Baseball-Reference, Cole Hamels — the full record',
     url: 'https://www.baseball-reference.com/players/h/hamelco01.shtml',
     retrievedAt: RETRIEVED_7,
+  },
+  'commons-satchel-paige-1942': {
+    id: 'commons-satchel-paige-1942',
+    label: 'Wikimedia Commons, Satchel Paige 1942',
+    url: 'https://commons.wikimedia.org/wiki/File:Satchel_Paige_1942_(cropped).jpg',
+    retrievedAt: RETRIEVED_8,
+    season: 'public domain image source',
+  },
+  'commons-rube-foster-1924': {
+    id: 'commons-rube-foster-1924',
+    label: 'Wikimedia Commons, Rube Foster 1924',
+    url: 'https://commons.wikimedia.org/wiki/File:Rube_Foster_1924.jpg',
+    retrievedAt: RETRIEVED_8,
+    season: 'public domain image source',
+  },
+  'commons-negro-league-all-star-1936': {
+    id: 'commons-negro-league-all-star-1936',
+    label: 'Wikimedia Commons, 1936 Negro League All-Star Game',
+    url: 'https://commons.wikimedia.org/wiki/File:1936_Negro_League_All-Star_Game.jpg',
+    retrievedAt: RETRIEVED_8,
+    season: 'public domain image source',
   },
 } satisfies Record<string, Source>
 

@@ -8,6 +8,7 @@ import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { WhyPitchesDie } from '../components/sections/WhyPitchesDie'
+import { LostPitchArchiveRail } from '../components/lost-pitches/ArchiveImageRail'
 
 /*
   Lost Pitches of the Negro Leagues. A wing built on one honest asymmetry: the
@@ -58,6 +59,8 @@ export function LostPitchesHall() {
       />
 
       <WhyPitchesDie />
+
+      <LostPitchArchiveRail />
 
       {count === 0 ? (
         <section className="mx-auto max-w-6xl px-5 py-20 md:px-8">

@@ -5,6 +5,7 @@ import { StructuredData } from '../components/seo/StructuredData'
 import { CRAFTSMEN, CRAFTSMEN_BY_ERA } from '../data/craftsmen'
 import { parseEra } from '../lib/era'
 import { CraftsmanCard } from '../components/craftsmen/CraftsmanCard'
+import { CraftsmenMediaShelf } from '../components/craftsmen/CraftsmanMedia'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -55,6 +56,8 @@ export function CraftsmenHall() {
           <>The arms that owned a pitch — and the one pitch that is a legend, not a person. Every quote sourced.</>
         }
       />
+
+      <CraftsmenMediaShelf />
 
       <section className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-24">
         <div className="pa-atmo pa-atmo-leather opacity-[0.06]" aria-hidden="true" />

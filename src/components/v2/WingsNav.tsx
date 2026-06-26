@@ -3,6 +3,8 @@ import { CRAFTSMEN } from '../../data/craftsmen'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { DOCUMENTATION_META, type DocumentationTier } from '../../data/types'
 import { ChapterMark } from './ChapterMark'
+import { featuredCraftsmanMedia } from '../../data/media/craftsmen'
+import { LOST_PITCH_ARCHIVE_IMAGES } from '../../data/media/archive-images'
 
 /*
   v2 · The other doors. The hero pulls one specimen and the wall files the set;
@@ -13,6 +15,7 @@ import { ChapterMark } from './ChapterMark'
 */
 
 const HALL_NAMES = CRAFTSMEN.filter((c) => c.kind === 'craftsman').map((c) => c.name)
+const FEATURED_MEDIA = featuredCraftsmanMedia()
 
 const TIER_ORDER: DocumentationTier[] = ['documented', 'partial', 'legend']
 const ARCHIVE_TIERS = TIER_ORDER.map((tier) => ({
@@ -56,6 +59,11 @@ export function WingsNav() {
             <p className="mt-4 font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.1em] text-bone-2/70">
               {HALL_NAMES.join(' · ')}
             </p>
+            {FEATURED_MEDIA.length > 0 ? (
+              <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-cyan">
+                {FEATURED_MEDIA.length} source-owned clips filed to people
+              </p>
+            ) : null}
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Step into the hall <span aria-hidden="true">→</span>
             </span>
@@ -81,6 +89,9 @@ export function WingsNav() {
                   {t.count} {t.label.toLowerCase()}
                 </span>
               ))}
+            </p>
+            <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-bone-2/80">
+              {LOST_PITCH_ARCHIVE_IMAGES.length} public-domain image plates
             </p>
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Enter the archive <span aria-hidden="true">→</span>

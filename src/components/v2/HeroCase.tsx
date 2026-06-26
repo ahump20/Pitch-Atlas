@@ -4,6 +4,7 @@ import { SITE } from '../../config/site'
 import { scrollToId } from '../../lib/scroll'
 import { accentForSlug } from '../refractor/accents'
 import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
+import { featuredCraftsmanMedia } from '../../data/media/craftsmen'
 
 /*
   v2 · The Case. The pull, restaged off-axis on matte Topps-Now black: the
@@ -17,6 +18,7 @@ import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
 */
 export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
   const accent = accentForSlug(featured.display.slug)
+  const mediaLead = featuredCraftsmanMedia()[0]
 
   return (
     <section
@@ -64,6 +66,29 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
               Read the mission <span aria-hidden="true">→</span>
             </Link>
           </div>
+
+          {mediaLead ? (
+            <Link
+              to={`/craftsmen/${mediaLead.craftsmanSlug}`}
+              className="v2-enter mt-6 grid max-w-[34rem] grid-cols-[auto_1fr] gap-3 rounded-sm border border-bone/15 bg-[rgba(11,10,9,0.82)] p-4 text-left transition-colors hover:border-cyan/45"
+              style={{ '--i': 4 } as React.CSSProperties}
+            >
+              <span className="grid h-11 w-11 place-items-center rounded-sm border border-cyan/35 bg-cyan/10 font-mono text-[10px] uppercase tracking-[0.1em] text-cyan">
+                Play
+              </span>
+              <span className="min-w-0">
+                <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2/80">
+                  Film filed to {mediaLead.craftsmanName}
+                </span>
+                <span className="mt-1 block font-athletic text-[20px] uppercase leading-none text-bone">
+                  {mediaLead.title}
+                </span>
+                <span className="mt-1.5 block text-[13px] leading-snug text-bone-2">
+                  Source-owned embed. Opens in the Craftsman file.
+                </span>
+              </span>
+            </Link>
+          ) : null}
 
           <button
             type="button"
