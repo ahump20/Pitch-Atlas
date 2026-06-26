@@ -4,6 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { createHead, UnheadProvider } from '@unhead/react/client'
 import { routes } from './routes'
 import { PITCHES } from './data/pitches'
+import { specimenGradeFor } from './data/specimen-grade'
 
 /*
   Multi-page smoke tests. jsdom has no WebGL, so every page renders through its
@@ -100,6 +101,35 @@ describe('Atlas home', () => {
     expect(screen.getAllByText('Lost Pitches').length).toBeGreaterThan(0)
     // the redundant per-pitch specimen strip is gone
     expect(screen.queryByRole('navigation', { name: 'Specimen index' })).not.toBeInTheDocument()
+  })
+})
+
+describe('Specimen grade', () => {
+  /*
+    The honest collectible grade renders on the home specimen wall (ChromeWall),
+    where every filed pitch is struck as a card. The gold 1/1 is keyed on data —
+    whichever pitch carries specimenNo '00' — never a hardcoded slug, so this
+    survives the gold moving to another specimen. A non-gold pitch must wear its
+    own computed documentation grade, proving the grade is a real switch on the
+    record and not one decorative badge.
+  */
+  it('stamps the data-keyed 1/1 gold and a dynamic grade on the home wall', async () => {
+    const goldEntry = PITCHES.find((p) => p.display.specimenNo === '00')
+    expect(goldEntry, 'a filed pitch must be struck at specimen 00 (the gold 1/1)').toBeDefined()
+    expect(specimenGradeFor(goldEntry!).label).toBe('Gold · 1 of 1')
+
+    renderRoute('/')
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+
+    // the gold stamp — the only digits the grade system is allowed to print
+    expect(screen.getAllByText('Gold · 1 of 1').length).toBeGreaterThan(0)
+
+    // a non-gold filed pitch wears its computed depth grade, not the gold label
+    const other = PITCHES.find((p) => p.display.specimenNo !== '00')
+    expect(other, 'the atlas files more than the single gold specimen').toBeDefined()
+    const grade = specimenGradeFor(other!)
+    expect(grade.label).not.toBe('Gold · 1 of 1')
+    expect(screen.getAllByText(grade.label).length).toBeGreaterThan(0)
   })
 })
 
