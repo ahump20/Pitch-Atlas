@@ -1,5 +1,6 @@
 import type { Claim, ClaimConfidence, Source } from '../../data/types'
 import { CONFIDENCE_META } from '../../data/types'
+import { CONFIDENCE_COLOR } from './refractorClaimMeta'
 
 /*
   The provenance line, struck for the dark void. The cream-page primitives
@@ -9,16 +10,6 @@ import { CONFIDENCE_META } from '../../data/types'
   "sourced, not corrected" — just tuned to bone-on-void. Foil is decoration; the
   readings are sourced.
 */
-
-export const CONFIDENCE_COLOR: Record<ClaimConfidence, string> = {
-  'official-data': 'var(--color-ok-bright)',
-  'pitcher-own-words': 'var(--color-cyan)',
-  'coach-observed': 'var(--color-teal-glow)',
-  'reputable-analysis': 'var(--color-amber-bright)',
-  'secondhand-attributed': 'var(--color-sand-bright)',
-  'community-firsthand': 'var(--color-sand-bright)',
-  unverified: 'var(--color-seam-bright)',
-}
 
 export function ConfidenceDot({
   confidence,

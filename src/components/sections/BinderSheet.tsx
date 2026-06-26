@@ -5,7 +5,7 @@ import { ACCENT, FALLBACK_ACCENT } from '../refractor/accents'
 import { RefractorBall } from '../refractor/RefractorBall'
 import { gripEntryFor, gripEntryForRepertoire } from '../../data/grips'
 import { pitchBySlug } from '../../data/pitches'
-import { STATUS_LABEL, isEdgeStatus } from '../index/StatusBadge'
+import { STATUS_LABEL, isEdgeStatus } from '../index/statusBadgeMeta'
 
 /*
   The nine-pocket binder sheet — the plastic collector page every card kid knows.

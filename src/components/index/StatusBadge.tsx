@@ -1,4 +1,5 @@
 import type { RepertoireStatus } from '../../data/types'
+import { isEdgeStatus, STATUS_LABEL } from './statusBadgeMeta'
 
 /*
   The repertoire status badge, shared by the index cards and the basic detail page
@@ -6,23 +7,6 @@ import type { RepertoireStatus } from '../../data/types'
   edge cases take the seam jolt, the live pitches read navy. Extracted from
   RepertoireEntryCard so the catalog and the chapter never drift.
 */
-export const SEAM_STATUSES: RepertoireStatus[] = ['banned', 'alias', 'illusion', 'not-a-pitch']
-
-export const STATUS_LABEL: Record<RepertoireStatus, string> = {
-  standard: 'Standard',
-  niche: 'Niche',
-  rare: 'Rare',
-  'near-extinct': 'Near-extinct',
-  banned: 'Banned',
-  alias: 'Alias',
-  illusion: 'Illusion',
-  'not-a-pitch': 'Not a pitch',
-}
-
-export function isEdgeStatus(status: RepertoireStatus): boolean {
-  return SEAM_STATUSES.includes(status)
-}
-
 export function StatusBadge({ status }: { status: RepertoireStatus }) {
   const flagged = isEdgeStatus(status)
   return (

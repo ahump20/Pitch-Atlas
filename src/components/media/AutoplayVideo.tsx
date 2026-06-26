@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react'
 import type { GripClip } from '../../data/grips'
 import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
+import { autoplayDecision } from './autoplayDecision'
 
 /*
   The viewport-gated <video> shared by GripClip (card window) and MediaStage
@@ -28,19 +29,6 @@ import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
     - `blocked` (autoplay refused, e.g. iOS Low Power Mode) bubbles up via the
       render callback so the parent can swap to its poster fallback.
 */
-/**
- * The pure viewport-gating decision: an entry that's intersecting plays, one
- * that isn't pauses. Extracted so the play/pause logic is testable under jsdom
- * (which ships no IntersectionObserver) without mocking the observer itself.
- */
-export function autoplayDecision(
-  entries: Pick<IntersectionObserverEntry, 'isIntersecting'>[],
-): 'play' | 'pause' | 'none' {
-  if (entries.length === 0) return 'none'
-  // any visible slice keeps the clip running; only pause when nothing is on screen
-  return entries.some((entry) => entry.isIntersecting) ? 'play' : 'pause'
-}
-
 export function AutoplayVideo({
   clip,
   className,

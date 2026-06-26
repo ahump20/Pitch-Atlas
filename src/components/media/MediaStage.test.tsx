@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MediaStage } from './MediaStage'
-import { autoplayDecision } from './AutoplayVideo'
+import { autoplayDecision } from './autoplayDecision'
 import { gripEntryFor } from '../../data/grips'
 import * as reducedMotion from '../../hooks/useReducedMotion'
 
@@ -59,9 +59,18 @@ describe('autoplayDecision (viewport gating)', () => {
     expect(autoplayDecision([{ isIntersecting: true }])).toBe('play')
   })
 
-  it('plays when any slice is visible across batched entries', () => {
+  it('uses the newest timed entry across batched observer updates', () => {
     expect(
-      autoplayDecision([{ isIntersecting: false }, { isIntersecting: true }]),
+      autoplayDecision([
+        { isIntersecting: true, time: 1 },
+        { isIntersecting: false, time: 2 },
+      ]),
+    ).toBe('pause')
+    expect(
+      autoplayDecision([
+        { isIntersecting: false, time: 3 },
+        { isIntersecting: true, time: 4 },
+      ]),
     ).toBe('play')
   })
 

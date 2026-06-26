@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { usePip } from './pip'
+import { usePip } from './pipContext'
 import { teachingClipForSlug, type TeachingClip } from '../../data/media/tiktok'
 
 /*

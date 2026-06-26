@@ -1,4 +1,5 @@
-import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
+import { useCallback, useMemo, useRef, useState, type ReactNode } from 'react'
+import { PipContext, type PipClip } from './pipContext'
 
 /*
   Picture-in-picture player. The teaching clip plays inline in its card by default
@@ -10,28 +11,6 @@ import { createContext, useCallback, useContext, useMemo, useRef, useState, type
   never a downloaded file. At prerender and first paint no clip is open, so this
   renders null and the static HTML stays clean.
 */
-
-export interface PipClip {
-  videoId: string
-  title: string
-  author: string
-  authorUrl: string
-  url: string
-}
-
-interface PipContextValue {
-  /** Open the floating player. onClose fires when the reader dismisses it, so the caller can restore its inline view. */
-  open: (clip: PipClip, onClose?: () => void) => void
-  close: () => void
-}
-
-const PipContext = createContext<PipContextValue | null>(null)
-
-export function usePip(): PipContextValue {
-  const ctx = useContext(PipContext)
-  if (!ctx) throw new Error('usePip must be used within <PipProvider>')
-  return ctx
-}
 
 export function PipProvider({ children }: { children: ReactNode }) {
   const [clip, setClip] = useState<PipClip | null>(null)
