@@ -79,3 +79,27 @@ jobs:
       - name: Build
         if: steps.node_app.outputs.present == 'true'
         run: npm run build
+
+      - name: Install Playwright Chromium
+        if: steps.node_app.outputs.present == 'true'
+        run: npx playwright install --with-deps --only-shell chromium
+
+      - name: Browser smoke test local preview
+        if: steps.node_app.outputs.present == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          npm run preview -- --host 127.0.0.1 > /tmp/pitch-atlas-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid" 2>/dev/null || true; cat /tmp/pitch-atlas-preview.log' EXIT
+
+          for _ in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:4173/ > /tmp/pitch-atlas-preview-home.html; then
+              break
+            fi
+            sleep 1
+          done
+
+          test -s /tmp/pitch-atlas-preview-home.html || (echo "Local preview did not serve /" && exit 1)
+          npm run test:preview:browser -- http://127.0.0.1:4173

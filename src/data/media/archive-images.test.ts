@@ -26,6 +26,12 @@ describe('archive image rights guard', () => {
     expect(LOST_PITCH_ARCHIVE_IMAGES.length).toBeGreaterThan(0)
   })
 
+  it('allows first-party original plates without an external Source', () => {
+    const originals = LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.rights === 'original')
+    expect(originals.length).toBeGreaterThan(0)
+    expect(originals.every((image) => !image.source)).toBe(true)
+  })
+
   for (const image of LOST_PITCH_ARCHIVE_IMAGES) {
     describe(`archive image: ${image.id}`, () => {
       it('never ships a restricted/linked-only image as a hosted file', () => {

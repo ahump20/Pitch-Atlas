@@ -2,9 +2,10 @@ import type { RightsStatus, Source } from '../types'
 import { src } from '../sources'
 
 /*
-  Public-domain historical image plates for the Lost Pitches wing.
-  These are derivative crops from the linked source files, cut to avoid using
-  team marks as the visual subject. The source pages remain linked on the card.
+  Historical and original image plates for the Lost Pitches wing.
+  Public-domain plates are derivative crops from the linked source files, cut to
+  avoid using team marks as the visual subject. Original plates are first-party
+  atlas studies and intentionally carry no external source link.
 */
 
 export interface ArchiveImage {
@@ -59,6 +60,16 @@ export const LOST_PITCH_ARCHIVE_IMAGES: ArchiveImage[] = [
     rights: 'public-domain',
     relatedSlug: 'doctored-ball-divergence-and-recovery',
     relatedLabel: 'The Doctored-Ball Divergence and the Recovery',
+  },
+  {
+    id: 'pitch-atlas-original-seam-study',
+    title: 'Pitch Atlas seam study',
+    label: 'Original study',
+    imageSrc: '/archive/lost-pitches/pitch-atlas-original-seam-study.svg',
+    alt: 'Original Pitch Atlas schematic plate showing a seam curve study on dark paper.',
+    caption:
+      'A first-party schematic plate proves the archive can file original visuals without inventing an external source.',
+    rights: 'original',
   },
 ]
 

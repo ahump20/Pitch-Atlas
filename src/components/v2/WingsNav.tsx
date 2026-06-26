@@ -24,6 +24,17 @@ const ARCHIVE_TIERS = TIER_ORDER.map((tier) => ({
   count: LOST_PITCHES.filter((p) => p.tier === tier).length,
 })).filter((t) => t.count > 0)
 
+const ARCHIVE_IMAGE_COUNTS = [
+  {
+    label: 'public-domain plates',
+    count: LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.rights === 'public-domain').length,
+  },
+  {
+    label: 'original study',
+    count: LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.rights === 'original').length,
+  },
+].filter((entry) => entry.count > 0)
+
 const RAIL = [
   { to: '/softball', label: 'Softball', note: 'The fastpitch & slowpitch wing' },
   { to: '/grips', label: 'The Grip Library', note: 'Every grip, in the hand' },
@@ -91,7 +102,7 @@ export function WingsNav() {
               ))}
             </p>
             <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-bone-2/80">
-              {LOST_PITCH_ARCHIVE_IMAGES.length} public-domain image plates
+              {ARCHIVE_IMAGE_COUNTS.map((entry) => `${entry.count} ${entry.label}`).join(' · ')}
             </p>
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Enter the archive <span aria-hidden="true">→</span>
