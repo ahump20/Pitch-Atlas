@@ -168,11 +168,55 @@ async function readImageDims(file: File): Promise<{ width: number | null; height
   })
 }
 
+// Still-image formats we re-encode through a canvas to strip EXIF/GPS metadata
+// before upload. GIF is excluded: it carries no EXIF and a re-encode would flatten
+// its animation. Video container metadata is out of scope here (image-only scrub).
+const SCRUBBABLE_IMAGE_MIME = new Set(['image/jpeg', 'image/png', 'image/webp'])
+
+interface ScrubbedImage {
+  blob: Blob
+  width: number | null
+  height: number | null
+}
+
+/**
+ * Re-encode an image through a canvas so camera and location metadata (EXIF, GPS)
+ * is dropped before the bytes ever leave the device. Returns the stripped blob and
+ * its pixel size, or null if the image cannot be decoded so the caller can fall
+ * back to the original file rather than block the upload.
+ */
+async function scrubImageMetadata(file: File, mime: string): Promise<ScrubbedImage | null> {
+  const url = URL.createObjectURL(file)
+  try {
+    const img = await new Promise<HTMLImageElement | null>((resolve) => {
+      const el = new Image()
+      el.onload = () => resolve(el)
+      el.onerror = () => resolve(null)
+      el.src = url
+    })
+    if (!img || !img.naturalWidth || !img.naturalHeight) return null
+    const canvas = document.createElement('canvas')
+    canvas.width = img.naturalWidth
+    canvas.height = img.naturalHeight
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return null
+    ctx.drawImage(img, 0, 0)
+    const blob = await new Promise<Blob | null>((resolve) => {
+      canvas.toBlob((b) => resolve(b), mime, mime === 'image/jpeg' ? 0.92 : undefined)
+    })
+    if (!blob || blob.size === 0) return null
+    return { blob, width: img.naturalWidth, height: img.naturalHeight }
+  } finally {
+    URL.revokeObjectURL(url)
+  }
+}
+
 /**
  * Validate a file against the same rules the DB enforces, then upload to the
  * owner's folder and record the row. Order matters: the storage object lands
  * first, then the row points at it; if the row insert fails, the object is
- * removed so nothing is orphaned.
+ * removed so nothing is orphaned. Still images are re-encoded first to drop
+ * EXIF/GPS metadata before any bytes leave the device.
  */
 export async function uploadMedia(postId: string, topicKey: string, file: File): Promise<void> {
   const uid = await ensureSession()
@@ -180,24 +224,46 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
   if (!mediaType) throw new Error('That file is not an allowed image or video.')
   const { kind, mime, extension } = mediaType
   const cap = kind === 'image' ? DISCUSSION_LIMITS.imageMaxBytes : DISCUSSION_LIMITS.videoMaxBytes
+  // Guard on the original first so an oversized file is never decoded into a canvas.
   if (file.size > cap) {
+    throw new Error(kind === 'image' ? 'Images must be under 8 MB.' : 'Videos must be under 50 MB.')
+  }
+
+  // Strip EXIF/GPS from still images by re-encoding; GIF and video pass through.
+  // If an image cannot be decoded, fall back to the original bytes + dimension read.
+  let payload: Blob = file
+  let dims: { width: number | null; height: number | null } = { width: null, height: null }
+  if (kind === 'image' && SCRUBBABLE_IMAGE_MIME.has(mime)) {
+    const scrubbed = await scrubImageMetadata(file, mime)
+    if (scrubbed) {
+      payload = scrubbed.blob
+      dims = { width: scrubbed.width, height: scrubbed.height }
+    } else {
+      dims = await readImageDims(file)
+    }
+  } else if (kind === 'image') {
+    dims = await readImageDims(file)
+  }
+
+  // A re-encode can, rarely, grow the file; the upload must still fit the cap
+  // (the DB trigger re-checks byte_size regardless).
+  if (payload.size > cap) {
     throw new Error(kind === 'image' ? 'Images must be under 8 MB.' : 'Videos must be under 50 MB.')
   }
 
   const path = `${uid}/${crypto.randomUUID()}.${extension}`
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
-    .upload(path, file, { contentType: mime, upsert: false })
+    .upload(path, payload, { contentType: mime, upsert: false })
   if (upErr) throw new Error(friendlyError(upErr))
 
-  const dims = kind === 'image' ? await readImageDims(file) : { width: null, height: null }
   const { error } = await supabase.from('discussion_media').insert({
     post_id: postId,
     topic_key: topicKey,
     storage_path: path,
     mime_type: mime,
     kind,
-    byte_size: file.size,
+    byte_size: payload.size,
     width: dims.width,
     height: dims.height,
   })
