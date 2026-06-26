@@ -7,6 +7,8 @@ import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
+import { pitchBySlug } from '../../data/pitches'
+import { specimenGradeFor, type SpecimenGradeKey } from '../../data/specimen-grade'
 import { projectSeam, splitRuns } from '../../lib/seam2d'
 import { accentForSlug } from '../refractor/accents'
 import { FAMILY_ACCENT } from './family-accent'
@@ -70,6 +72,51 @@ function searchFilter(value: string | null): FamilyFilter {
 
 function searchView(value: string | null): IndexView {
   return VIEW_KEYS.has(value as IndexView) ? (value as IndexView) : 'rows'
+}
+
+/* Sort orders the cards WITHIN each family (the index stays grouped by family,
+   so the headers and the binder spread never dissolve). 'default' keeps the
+   curated data order. Every key reads a field already on the record — no new
+   data, no generator/Swift change; iOS gets this as a native Picker later. */
+type IndexSort = 'default' | 'az' | 'grade' | 'filed'
+const SORTS: { key: IndexSort; label: string; aria: string }[] = [
+  { key: 'default', label: 'Family', aria: 'Sort by family order' },
+  { key: 'az', label: 'A-Z', aria: 'Sort A to Z by name' },
+  { key: 'grade', label: 'Documentation', aria: 'Sort by documentation depth' },
+  { key: 'filed', label: 'Filed first', aria: 'Sort filed specimens first' },
+]
+const SORT_KEYS = new Set<IndexSort>(SORTS.map((s) => s.key))
+
+function searchSort(value: string | null): IndexSort {
+  return SORT_KEYS.has(value as IndexSort) ? (value as IndexSort) : 'default'
+}
+
+/* Documentation depth: how richly THIS atlas has preserved the pitch (a filmed
+   grip beats a still beats a schematic), read off specimenGradeFor — the same
+   source the cards stamp, never a fabricated ladder. It is the preservation
+   axis, distinct from field rarity (RepertoireStatus). Basic files and
+   unresolved slugs rank last. */
+const GRADE_RANK: Record<SpecimenGradeKey, number> = {
+  gold: 0,
+  'in-motion': 1,
+  'first-party': 2,
+  reference: 3,
+}
+function documentationRank(entry: RepertoireEntry): number {
+  if (!entry.filedSlug) return 4
+  const pitch = pitchBySlug(entry.filedSlug)
+  return pitch ? GRADE_RANK[specimenGradeFor(pitch).key] : 4
+}
+
+/* Sort a copy, never the source array; ties keep the curated data order
+   (Array.sort is stable), so a sort never scrambles equal-rank rows. */
+function sortEntries(entries: RepertoireEntry[], sort: IndexSort): RepertoireEntry[] {
+  if (sort === 'default') return entries
+  const next = [...entries]
+  if (sort === 'az') next.sort((a, b) => a.name.localeCompare(b.name))
+  else if (sort === 'filed') next.sort((a, b) => Number(Boolean(b.filedSlug)) - Number(Boolean(a.filedSlug)))
+  else if (sort === 'grade') next.sort((a, b) => documentationRank(a) - documentationRank(b))
+  return next
 }
 
 /* the one true seam, projected once at module scope and shared by every mark.
@@ -219,6 +266,7 @@ export function PitchIndex({ id }: { id?: string }) {
   const query = searchParams.get('q') ?? ''
   const filter = searchFilter(searchParams.get('family'))
   const view = searchView(searchParams.get('view'))
+  const sort = searchSort(searchParams.get('sort'))
   const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
 
@@ -235,7 +283,7 @@ export function PitchIndex({ id }: { id?: string }) {
   }
 
   function updateIndexParams(
-    patch: { q?: string | null; family?: FamilyFilter | null; view?: IndexView | null },
+    patch: { q?: string | null; family?: FamilyFilter | null; view?: IndexView | null; sort?: IndexSort | null },
     options: { replace?: boolean; announce?: string } = {},
   ) {
     setSearchParams(
@@ -254,6 +302,10 @@ export function PitchIndex({ id }: { id?: string }) {
           if (patch.view && patch.view !== 'rows') next.set('view', patch.view)
           else next.delete('view')
         }
+        if ('sort' in patch) {
+          if (patch.sort && patch.sort !== 'default') next.set('sort', patch.sort)
+          else next.delete('sort')
+        }
         return next
       },
       { replace: options.replace ?? false, preventScrollReset: true, flushSync: true },
@@ -263,7 +315,7 @@ export function PitchIndex({ id }: { id?: string }) {
 
   function resetIndex() {
     updateIndexParams(
-      { q: null, family: null, view: null },
+      { q: null, family: null, view: null, sort: null },
       { replace: true, announce: 'Index reset' },
     )
   }
@@ -292,12 +344,12 @@ export function PitchIndex({ id }: { id?: string }) {
         [e.name, ...(e.aka ?? []), e.family].join(' ').toLowerCase().includes(q),
       )
     }
-    return { fam, entries }
+    return { fam, entries: sortEntries(entries, sort) }
   }).filter((g) => g.entries.length > 0)
 
   const total = groups.reduce((n, g) => n + g.entries.length, 0)
   const activeFilterLabel = FILTERS.find((f) => f.key === filter)?.label ?? 'All'
-  const hasActiveState = q.length > 0 || filter !== 'all' || view !== 'rows'
+  const hasActiveState = q.length > 0 || filter !== 'all' || view !== 'rows' || sort !== 'default'
   const countLabel = `${total} ${total === 1 ? 'pitch' : 'pitches'}${
     filter === 'all' ? '' : filter === 'filed' ? ' · filed specimens' : ` · ${filter}`
   }${q ? ` · matching "${query.trim()}"` : ''}`
@@ -383,6 +435,37 @@ export function PitchIndex({ id }: { id?: string }) {
               Reset
             </Button>
           ) : null}
+        </div>
+        {/* Sort orders cards within each family. Its own compact row so the filter
+            bar stays short on phones; scrolls horizontally if it must. */}
+        <div className="mt-2.5 flex items-center gap-2">
+          <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Sort</span>
+          <ToggleGroup
+            type="single"
+            value={sort}
+            onValueChange={(next) => {
+              if (next)
+                morph(() =>
+                  updateIndexParams(
+                    { sort: next as IndexSort },
+                    { announce: `Sorted: ${SORTS.find((s) => s.key === next)?.label ?? 'Family'}` },
+                  ),
+                )
+            }}
+            className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
+            aria-label="Sort the index within each family"
+          >
+            {SORTS.map((s) => (
+              <ToggleGroupItem
+                key={s.key}
+                value={s.key}
+                aria-label={s.aria}
+                className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                {s.label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
         </div>
         <p aria-live="polite" className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3 md:mt-3">
           {countLabel}

@@ -56,8 +56,8 @@ export function LostPitchArchiveRail() {
             </h2>
             <p className="mt-4 max-w-[48ch] text-sm leading-relaxed text-bone-2">
               The lost-pitches wing can carry historical material without pretending the grip survived.
-              These are public-domain plates, cropped and credited. The technical claims stay in the
-              sourced record.
+              These are public-domain plates and first-party studies, cropped, credited, or marked
+              original. The technical claims stay in the sourced record.
             </p>
           </div>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">

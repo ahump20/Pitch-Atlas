@@ -1,5 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
 import { RootLayout } from './components/layout/RootLayout'
+import { RouteHydrateFallback } from './components/layout/RouteHydrateFallback'
 
 /*
   The route map. One layout (masthead + footer + grain) wraps every page and
@@ -15,6 +16,7 @@ export const routes: RouteObject[] = [
   {
     path: '/',
     Component: RootLayout,
+    HydrateFallback: RouteHydrateFallback,
     children: [
       { index: true, lazy: () => import('./pages/AtlasHomeV2').then((m) => ({ Component: m.AtlasHomeV2 })) },
       { path: 'pitch/:slug', lazy: () => import('./pages/PitchChapter').then((m) => ({ Component: m.PitchChapter })) },

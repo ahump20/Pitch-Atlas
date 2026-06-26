@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
@@ -48,7 +48,9 @@ describe('PitchIndex controls', () => {
     await user.keyboard('{Escape}')
 
     expect(search).toHaveValue('')
-    expect(screen.getByTestId('pitch-index-announcer')).toHaveTextContent('Search cleared')
+    await waitFor(() =>
+      expect(screen.getByTestId('pitch-index-announcer')).toHaveTextContent('Search cleared'),
+    )
     expect(screen.getByTestId('location-search')).toHaveTextContent('')
   })
 
@@ -88,6 +90,38 @@ describe('PitchIndex controls', () => {
     expect(screen.getByRole('radio', { name: /^all$/i })).toHaveAttribute('data-state', 'on')
     expect(screen.getByRole('radio', { name: /rows view/i })).toHaveAttribute('data-state', 'on')
     expect(screen.getByTestId('location-search')).toHaveTextContent('')
+  })
+
+  it('orders cards within a family by the chosen sort and carries it in the URL', async () => {
+    const user = userEvent.setup()
+    renderIndex()
+
+    await user.click(screen.getByRole('radio', { name: /sort a to z by name/i }))
+    expect(screen.getByTestId('location-search')).toHaveTextContent('sort=az')
+    await waitFor(() =>
+      expect(screen.getByTestId('pitch-index-announcer')).toHaveTextContent('Sorted: A-Z'),
+    )
+
+    // within the fastball family, the rendered cards now read alphabetically —
+    // expectation derived from the data, matched by unique href (never substring)
+    const azEntries = [...repertoireByFamily('fastball')].sort((a, b) => a.name.localeCompare(b.name))
+    const expectedHrefs = azEntries.map((e) => (e.filedSlug ? `/pitch/${e.filedSlug}` : `/repertoire/${e.id}`))
+    const section = screen.getByRole('heading', { name: 'Fastballs', level: 2 }).closest('section') as HTMLElement
+    const renderedHrefs = [...section.querySelectorAll('a.rfx-entry')].map((a) => a.getAttribute('href'))
+    expect(renderedHrefs).toEqual(expectedHrefs)
+  })
+
+  it('restores the sort from the URL and reset clears it', async () => {
+    const user = userEvent.setup()
+    renderIndex('/repertoire?sort=grade')
+
+    expect(screen.getByRole('radio', { name: /sort by documentation depth/i })).toHaveAttribute(
+      'data-state',
+      'on',
+    )
+
+    await user.click(screen.getByRole('button', { name: /^reset$/i }))
+    expect(screen.getByTestId('location-search')).not.toHaveTextContent('sort')
   })
 })
 

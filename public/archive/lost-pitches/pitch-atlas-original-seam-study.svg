@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">Pitch Atlas original seam study</title>
+  <desc id="desc">A first-party schematic plate with a baseball seam study on dark paper.</desc>
+  <rect width="960" height="720" fill="#080706"/>
+  <rect x="62" y="58" width="836" height="604" rx="10" fill="#11100e" stroke="#d8cfb8" stroke-opacity=".18" stroke-width="2"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="480" cy="354" r="214" stroke="#d8cfb8" stroke-opacity=".26" stroke-width="3"/>
+    <ellipse cx="480" cy="354" rx="86" ry="214" stroke="#37d6ff" stroke-opacity=".32" stroke-width="2"/>
+    <ellipse cx="480" cy="354" rx="174" ry="214" stroke="#37d6ff" stroke-opacity=".18" stroke-width="2"/>
+    <path d="M318 216 C432 268 430 440 318 494" stroke="#ff2433" stroke-width="10"/>
+    <path d="M642 216 C528 268 530 440 642 494" stroke="#ff2433" stroke-width="10"/>
+    <g stroke="#ff2433" stroke-opacity=".86" stroke-width="4">
+      <path d="M345 246 l38 -16"/>
+      <path d="M332 294 l42 -12"/>
+      <path d="M328 344 l44 -4"/>
+      <path d="M332 394 l42 12"/>
+      <path d="M345 442 l38 16"/>
+      <path d="M615 246 l-38 -16"/>
+      <path d="M628 294 l-42 -12"/>
+      <path d="M632 344 l-44 -4"/>
+      <path d="M628 394 l-42 12"/>
+      <path d="M615 442 l-38 16"/>
+    </g>
+    <path d="M248 592 H712" stroke="#d8cfb8" stroke-opacity=".22" stroke-width="2"/>
+  </g>
+  <g fill="#d8cfb8">
+    <text x="94" y="112" font-family="monospace" font-size="24" letter-spacing="5">PITCH ATLAS</text>
+    <text x="94" y="146" font-family="monospace" font-size="14" letter-spacing="3" opacity=".62">ORIGINAL STUDY / SEAM-INFORMED SCHEMATIC</text>
+    <text x="94" y="620" font-family="monospace" font-size="15" letter-spacing="3" opacity=".72">RIGHTS: ORIGINAL / SOURCE: FIRST-PARTY GEOMETRY</text>
+  </g>
+</svg>
