@@ -13,7 +13,7 @@ import { SourceBadge } from '../components/provenance/SourceBadge'
 import { ClaimNote } from '../components/provenance/SourcedValue'
 import { RecordLinks } from '../components/provenance/RecordLinks'
 import { CraftsmanMediaSection } from '../components/craftsmen/CraftsmanMedia'
-import { SeamSchematic } from '../components/fallback/SeamSchematic'
+import { PitchSpecimenCard } from '../components/refractor/PitchSpecimenCard'
 import { NotFound } from './NotFound'
 
 /*
@@ -162,15 +162,12 @@ export function CraftsmanChapter() {
             </div>
             {pitch ? (
               <div className="md:col-span-5">
-                <div className="rfx-panel relative mx-auto aspect-square w-full max-w-[300px] rounded-sm border border-ink/15 p-6">
-                  <SeamSchematic
-                    className="h-full w-full"
-                    spinAxis={pitch.motion.spinAxis}
-                    gyro={pitch.motion.gyro}
-                    title={`The ${pitch.canonical.name} seam, oriented to its spin axis.`}
-                  />
+                {/* The arm's signature pitch, struck as the same collectible specimen
+                    card it wears across the atlas. The whole card routes to its file,
+                    so a craftsman opens straight into the studied pitch. */}
+                <div className="mx-auto max-w-[360px]">
+                  <PitchSpecimenCard entry={pitch} />
                 </div>
-                <p className="mono-label mt-3 text-center">The {pitch.canonical.name.toLowerCase()} seam, our own schematic</p>
               </div>
             ) : null}
           </div>

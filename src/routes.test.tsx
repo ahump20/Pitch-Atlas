@@ -198,6 +198,10 @@ describe('The Craftsmen', () => {
     expect(screen.getByText(/Eighteen seasons, one uniform/)).toBeInTheDocument()
     expect(screen.queryByText('2,202')).not.toBeInTheDocument()
     expect(screen.getByText(/Study the 12-6 curveball/)).toBeInTheDocument()
+    // the signature pitch now rides the atlas's collectible specimen card, and the
+    // whole card is the route into the filed pitch — a craftsman opens its specimen
+    const card = screen.getByRole('link', { name: /12-6 curve specimen/i })
+    expect(card).toHaveAttribute('href', '/pitch/twelve-six')
   })
 
   it('files the gyroball as a legend with a myth-versus-physics block', async () => {
