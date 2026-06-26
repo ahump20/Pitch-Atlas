@@ -11,10 +11,10 @@ import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualRef
   His words are the primary source; we restate, we do not invent.
 
   Sourced, not corrected: this is one pitcher's hand, not the canonical "right"
-  grip. Where his grip diverges from the textbook (short fingers on the splitter,
+  grip. Where his grip diverges from the textbook (short fingers on the split-finger,
   no circle change at all), the note says so plainly. The library teaches the
   *tells* a flat schematic can't — fingertips crossing a seam vs. riding it, the
-  splitter sitting just outside the laces, the four-finger smother of a football
+  split-finger sitting just outside the laces, the four-finger smother of a football
   change. The specimen pages reuse these same references through `gripImages`.
 */
 
@@ -346,7 +346,7 @@ export const GRIP_LIBRARY_INTRO =
 
 /** Austin's actual in-game arsenal — the mix he leaned on versus the ones he carried. */
 export const GRIP_LIBRARY_ARSENAL =
-  'In games I worked a four-pitch mix: the four-seam and two-seam fastballs, the three-finger changeup, and the 12-6 curve. The splitter and the football change were situational — pitches I carried and threw here and there, not ones I leaned on. What follows is a pitcher’s own account of his own pitches, not tracked data.'
+  'In games I worked a four-pitch mix: the four-seam and two-seam fastballs, the three-finger changeup, and the 12-6 curve. The split-finger fastball and the football change were situational — pitches I carried and threw here and there, not ones I leaned on. What follows is a pitcher’s own account of his own pitches, not tracked data.'
 
 /** His own note on command and the arm slot — why the variation cost him nothing. */
 export const GRIP_LIBRARY_COMMAND_NOTE =
