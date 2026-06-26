@@ -23,6 +23,15 @@ it safe, and the honest list of what is deferred.
 - **Rate limits.** 15 posts/hour and 20 media/hour per account.
 - **Banned terms.** Post body and display name run through the shared
   `text_has_banned_term()` matcher on insert and on edit.
+- **EXIF / GPS scrub.** Still images (JPEG/PNG/WebP) are re-encoded through a
+  canvas in the client before upload, so camera and location metadata is dropped
+  before any bytes leave the device (`src/lib/discussion.ts` `scrubImageMetadata`).
+  GIF passes through (it carries no EXIF, and a re-encode would flatten the
+  animation); video container metadata is still out of scope (see deferred).
+- **Orphan-object sweep.** An hourly in-DB cron
+  (`private.gc_orphan_discussion_media()`, migration `20260626003027`) reclaims any
+  `discussion-media` object older than an hour that no visible row points at — the
+  backstop for a client that dies between the storage upload and the row insert.
 
 ## Admin review (service role / Supabase dashboard)
 
@@ -63,11 +72,8 @@ remove bytes); do both for a hard takedown.
 2. **No bot protection (Turnstile).** Anonymous accounts are cheap, so the rate
    limits are priced in accounts, not humans. Turnstile is the next hardening step.
 3. **No in-app moderator role/UI.** Review is service-role / dashboard only.
-4. **No orphan-object GC.** If a storage upload succeeds but the `discussion_media`
-   insert fails, the client removes the object; a scheduled sweep is still worth
-   adding as a backstop. An unreferenced object is unreadable anyway (the read
-   policy requires a visible row).
-5. **No EXIF / geolocation scrub** on uploaded images.
-6. **Medical-claim detection is by form, not by filter.** The banned-term filter
+4. **No video container-metadata scrub.** Still-image EXIF/GPS is stripped on
+   upload (see the automatic floor); video container metadata is not yet scrubbed.
+5. **Medical-claim detection is by form, not by filter.** The banned-term filter
    catches words, not a medical *claim*; the standing safety note and the lack of
    any medical field are what hold that line.

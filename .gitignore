@@ -71,3 +71,14 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# agent session + handoff scratch (local only — never commit)
+.claude/
+.codex/
+BRAIN HANDOFF.md
+pitch-atlas-founding-conversation.md
+
+# loose scratch captures + design-reference research (local only — never commit)
+scratchpad_*.png
+*strike zone visualization example*
+Sluggers Hit Card Inspiration examples/

@@ -293,6 +293,19 @@ export function Ball({
   // instance transform below scales it thin in the radial axis after orienting.
   const stitchGeometry = useMemo(() => new THREE.CapsuleGeometry(0.0125, 0.05, 5, 10), [])
 
+  // Free the imperatively-built seam geometries on unmount. R3F auto-disposes
+  // JSX-declared geometries, but these two are made with useMemo and handed in by
+  // ref, so they leak GPU memory across pitch-to-pitch navigations unless freed
+  // here — the same cleanup the leather maps get above and the finger tubes get
+  // in Hand.tsx.
+  useEffect(
+    () => () => {
+      tubeGeometry.dispose()
+      stitchGeometry.dispose()
+    },
+    [tubeGeometry, stitchGeometry],
+  )
+
   // 216 stitches: 108 pairs straddling the seam, each slanted into the herringbone
   // V and flattened against the leather so it reads as waxed thread, not a bead.
   useLayoutEffect(() => {

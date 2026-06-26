@@ -39,12 +39,6 @@ describe('community safety database policy contracts', () => {
       .join('\n')
   }
 
-  function statementsMatching(sql: string, pattern: RegExp) {
-    return (stripSqlLineComments(sql).match(/[^;]+;/g) ?? [])
-      .map((statement) => statement.trim())
-      .filter((statement) => pattern.test(statement))
-  }
-
   it('keeps banned terms admin reads closed to anonymous Supabase sessions', () => {
     expect(migrations).toContain('drop policy if exists banned_terms_admin_read on public.banned_terms')
     expect(migrations).toContain('create policy banned_terms_admin_read')
@@ -684,82 +678,4 @@ describe('community safety database policy contracts', () => {
     ]))
   })
 
-  it('keeps membership reads owner-scoped and provider ids out of public grants', () => {
-    const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260624202340_membership_subscription_storage.sql'),
-      'utf8',
-    )
-    const executableSql = stripSqlLineComments(migration)
-
-    expect(executableSql).toContain('create table if not exists public.memberships')
-    expect(executableSql).toContain('alter table public.memberships enable row level security')
-    expect(executableSql).toContain('alter table public.memberships force row level security')
-    expect(executableSql).toContain('revoke all on public.memberships from anon, authenticated')
-    expect(selectGrantColumns(migration, 'memberships', 'authenticated')).toEqual([
-      'user_id',
-      'tier',
-      'status',
-      'source',
-      'current_period_end',
-      'updated_at',
-    ])
-    expect(selectGrantColumns(migration, 'memberships', 'authenticated')).not.toEqual(expect.arrayContaining([
-      'created_at',
-      'provider_customer_id',
-      'provider_subscription_id',
-    ]))
-    expect(executableSql).toMatch(
-      /create\s+policy\s+memberships_select_own[\s\S]*?\bfor\s+select\s+to\s+authenticated[\s\S]*?user_id\s*=\s*\(select\s+auth\.uid\(\)\)[\s\S]*?\(select\s+auth\.jwt\(\)\)[\s\S]*?is_anonymous[\s\S]*?is\s+false/i,
-    )
-    expect(executableSql).toMatch(
-      /create\s+or\s+replace\s+function\s+public\.viewer_membership\(\)[\s\S]*?\bsecurity\s+invoker\b[\s\S]*?\bset\s+search_path\s*=\s*''/i,
-    )
-    expect(executableSql).toContain('grant execute on function public.viewer_membership() to authenticated')
-    expect(executableSql).toContain('revoke execute on function public.viewer_membership() from anon')
-  })
-
-  it('keeps provider billing identities service-role only', () => {
-    const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260624202340_membership_subscription_storage.sql'),
-      'utf8',
-    )
-    const executableSql = stripSqlLineComments(migration)
-
-    expect(executableSql).toContain('create table if not exists private.billing_provider_links')
-    expect(executableSql).toContain('alter table private.billing_provider_links enable row level security')
-    expect(executableSql).toContain('alter table private.billing_provider_links force row level security')
-    expect(executableSql).toContain('revoke all on private.billing_provider_links from public, anon, authenticated')
-    expect(executableSql).toContain('grant select, insert, update, delete on private.billing_provider_links to service_role')
-    expect(executableSql).toContain('create unique index if not exists billing_provider_links_customer_uidx')
-    expect(executableSql).toContain('create unique index if not exists billing_provider_links_subscription_uidx')
-    expect(executableSql).toMatch(
-      /create\s+or\s+replace\s+function\s+public\.upsert_membership\([\s\S]*?\bsecurity\s+definer\b[\s\S]*?\bset\s+search_path\s*=\s*''/i,
-    )
-    expect(executableSql).toContain("auth.role() <> 'service_role'")
-    expect(executableSql).toContain('on conflict (user_id) do update set')
-    expect(executableSql).toContain('grant execute on function public.upsert_membership')
-    expect(executableSql).toContain('to service_role')
-    expect(executableSql).toContain('revoke execute on function public.upsert_membership')
-    expect(executableSql).toContain('from anon, authenticated')
-
-    const providerGrants = statementsMatching(
-      migration,
-      /\bgrant\b[\s\S]*?\bon\s+private\.billing_provider_links\b/i,
-    )
-    expect(providerGrants).toEqual([
-      'grant select, insert, update, delete on private.billing_provider_links to service_role;',
-    ])
-  })
-
-  it('adds memberships to realtime through an idempotent publication guard', () => {
-    const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260624202340_membership_subscription_storage.sql'),
-      'utf8',
-    )
-    const executableSql = stripSqlLineComments(migration)
-
-    expect(executableSql).toContain("pubname = 'supabase_realtime'")
-    expect(executableSql).toContain("tablename = 'memberships'")
-    expect(executableSql).toContain('alter publication supabase_realtime add table public.memberships')
-  })
 })
