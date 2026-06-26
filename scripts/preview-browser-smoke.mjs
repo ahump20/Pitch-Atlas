@@ -172,6 +172,7 @@ async function checkHomeMobileMenu(page) {
   await page.setViewportSize({ width: 390, height: 844 })
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
+    await page.waitForLoadState('load')
     await page.locator('main').waitFor({ state: 'attached' })
   })
 
@@ -184,6 +185,12 @@ async function checkHomeMobileMenu(page) {
   await assertNoHorizontalOverflow(page, 'Home mobile')
 
   const menuButton = page.locator('button[aria-controls="mobile-nav"]')
+  try {
+    await menuButton.waitFor({ state: 'attached', timeout: 10_000 })
+  } catch {
+    record(false, 'Home mobile menu button was not attached')
+    return
+  }
   if (!(await waitForLayoutBox(page, 'button[aria-controls="mobile-nav"]', 'Home mobile menu button'))) return
 
   let menuOpened = false
@@ -208,11 +215,17 @@ async function checkHomeMobileMenu(page) {
   )
   record(labels.includes('Pitch Index'), 'Mobile menu is missing Pitch Index')
   record(labels.includes('Softball'), 'Mobile menu is missing Softball')
-  record((await menuButton.getAttribute('aria-expanded')) === 'true', 'Mobile menu did not mark itself expanded')
+  const expandedAfterOpen = await page.evaluate(() =>
+    document.querySelector('button[aria-controls="mobile-nav"]')?.getAttribute('aria-expanded'),
+  )
+  record(expandedAfterOpen === 'true', 'Mobile menu did not mark itself expanded')
 
   await page.keyboard.press('Escape')
   await page.locator('#mobile-nav').waitFor({ state: 'detached' })
-  record((await menuButton.getAttribute('aria-expanded')) === 'false', 'Mobile menu did not close on Escape')
+  const expandedAfterEscape = await page.evaluate(() =>
+    document.querySelector('button[aria-controls="mobile-nav"]')?.getAttribute('aria-expanded'),
+  )
+  record(expandedAfterEscape === 'false', 'Mobile menu did not close on Escape')
 }
 
 async function checkFourSeam(page) {
