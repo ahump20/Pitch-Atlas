@@ -14,7 +14,7 @@ export interface ArchiveImage {
   imageSrc: string
   alt: string
   caption: string
-  source: Source
+  source?: Source
   rights: RightsStatus
   relatedSlug?: string
   relatedLabel?: string

@@ -23,8 +23,12 @@ function ArchiveImageCard({ image, compact = false }: { image: ArchiveImage; com
         <p className="mt-2 text-sm leading-relaxed text-bone-2">{image.caption}</p>
         <div className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1">
           <span className="mono-label text-cyan">{image.rights}</span>
-          <span aria-hidden="true" className="text-ink-3">/</span>
-          <RefractorSource source={image.source} />
+          {image.source ? (
+            <>
+              <span aria-hidden="true" className="text-ink-3">/</span>
+              <RefractorSource source={image.source} />
+            </>
+          ) : null}
         </div>
       </div>
       {image.relatedSlug ? (

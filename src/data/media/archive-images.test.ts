@@ -37,13 +37,20 @@ describe('archive image rights guard', () => {
         expect(image.imageSrc).not.toContain('..')
       })
 
-      it('resolves its rights to a registered provenance Source', () => {
-        expect(image.source).toBeTruthy()
-        expect(SOURCES[image.source.id as keyof typeof SOURCES]).toBeTruthy()
-        expect(image.source.url).toMatch(/^https?:\/\//)
+      it('resolves sourced rights to the registered provenance Source', () => {
+        if (!image.source) {
+          expect(RIGHTS_NEEDING_SOURCE).not.toContain(image.rights)
+          return
+        }
+
+        const registeredSource = SOURCES[image.source.id as keyof typeof SOURCES]
+        expect(registeredSource).toBeTruthy()
+        expect(image.source).toMatchObject(registeredSource)
+
         if (RIGHTS_NEEDING_SOURCE.includes(image.rights)) {
           // a public-domain / licensed image must carry the verifiable origin link
-          expect(image.source.url.length).toBeGreaterThan(0)
+          expect(registeredSource.url).toMatch(/^https?:\/\//)
+          expect(registeredSource.url.length).toBeGreaterThan(0)
         }
       })
 

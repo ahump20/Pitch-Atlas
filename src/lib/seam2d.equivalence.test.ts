@@ -48,11 +48,32 @@ describe('seam2d projectSeam matches the RefractorBall hero-ball projection', ()
     const stitches = buildStitches(projectSeam(CX, CY, R, SEG), 6, 10)
     // every=6 across 300 segments → i = 0,6,…,294 → 50 stitches
     expect(stitches.length).toBe(50)
+    for (const stitch of stitches) {
+      expect(Math.hypot(stitch.x2 - stitch.x1, stitch.y2 - stitch.y1)).toBeCloseTo(10, 10)
+    }
+    expect(stitches[0]).toMatchObject({
+      front: true,
+      x1: expect.closeTo(197.1028726857, 10),
+      y1: expect.closeTo(114.5109442263, 10),
+      x2: expect.closeTo(199.9178572845, 10),
+      y2: expect.closeTo(124.106561023, 10),
+    })
   })
 
   it('splits into front/back runs, each a real path starting at M', () => {
     const runs = splitRuns(projectSeam(CX, CY, R, SEG))
-    expect(runs.length).toBeGreaterThan(0)
+    expect(runs).toHaveLength(5)
+    expect(runs.map((run) => run.front)).toEqual([true, false, true, false, true])
     expect(runs.every((run) => run.d.startsWith('M'))).toBe(true)
+    expect(runs.map((run) => (run.d.match(/(?:^| )L /g)?.length ?? 0) + 1)).toEqual([
+      31, 98, 69, 56, 51,
+    ])
+    expect(runs.map((run) => run.d.split(' L ')[0])).toEqual([
+      'M 198.51 119.31',
+      'M 216.68 68.24',
+      'M 244.29 191.83',
+      'M 90.08 232.98',
+      'M 62.92 91.18',
+    ])
   })
 })

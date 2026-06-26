@@ -1,5 +1,5 @@
 import { readdirSync, statSync } from 'node:fs'
-import { join, relative } from 'node:path'
+import { join, relative, sep } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 /*
@@ -40,12 +40,16 @@ function dirExists(dir: string): boolean {
   }
 }
 
+function posixPath(path: string): string {
+  return path.split(sep).join('/')
+}
+
 describe('motion-floor guard: only first-party grip videos ship', () => {
   it('public/ holds no motion files outside public/grips/', () => {
     const root = join(process.cwd(), 'public')
     const offenders = motionFilesUnder(root)
-      .map((file) => relative(root, file))
-      .filter((rel) => !rel.startsWith(`grips${'/'}`))
+      .map((file) => posixPath(relative(root, file)))
+      .filter((rel) => !rel.startsWith('grips/'))
     expect(offenders).toEqual([])
   })
 
@@ -54,8 +58,8 @@ describe('motion-floor guard: only first-party grip videos ship', () => {
     // A web-only checkout has no iOS tree; the floor still holds where it exists.
     if (!dirExists(root)) return
     const offenders = motionFilesUnder(root)
-      .map((file) => relative(root, file))
-      .filter((rel) => !rel.startsWith(`grips${'/'}`))
+      .map((file) => posixPath(relative(root, file)))
+      .filter((rel) => !rel.startsWith('grips/'))
     expect(offenders).toEqual([])
   })
 })
