@@ -35,7 +35,10 @@ jobs:
 
       - name: Lint GitHub Actions workflows
         shell: bash
-        run: ${{ steps.get_actionlint.outputs.executable }} -color
+        env:
+          ACTIONLINT: ${{ steps.get_actionlint.outputs.executable }}
+        run: |
+          "$ACTIONLINT" -color
 
       - name: Check for Node app
         id: node_app
