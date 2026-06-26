@@ -94,6 +94,25 @@ async function assertVisible(page, selector, label) {
   record(box.x < viewport.width && box.y < viewport.height, `${label} starts outside the first viewport`)
 }
 
+async function waitForLayoutBox(page, selector, label) {
+  try {
+    await page.waitForFunction(
+      (target) => {
+        const el = document.querySelector(target)
+        if (!el) return false
+        const rect = el.getBoundingClientRect()
+        return rect.width > 0 && rect.height > 0
+      },
+      selector,
+      { timeout: 10_000 },
+    )
+    return true
+  } catch {
+    record(false, `${label} never received a clickable layout box`)
+    return false
+  }
+}
+
 async function checkRepertoire(page, viewport) {
   await page.setViewportSize(viewport)
   const messages = await collectConsole(page, async () => {
@@ -165,6 +184,8 @@ async function checkHomeMobileMenu(page) {
   await assertNoHorizontalOverflow(page, 'Home mobile')
 
   const menuButton = page.locator('button[aria-controls="mobile-nav"]')
+  if (!(await waitForLayoutBox(page, 'button[aria-controls="mobile-nav"]', 'Home mobile menu button'))) return
+
   let menuOpened = false
   for (let attempt = 0; attempt < 5; attempt += 1) {
     await menuButton.click()
