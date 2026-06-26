@@ -10,7 +10,11 @@ on:
   workflow_dispatch:
 
 permissions:
+  checks: read
   contents: read
+  deployments: read
+  pull-requests: read
+  statuses: read
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -107,3 +111,16 @@ jobs:
 
           test -s /tmp/pitch-atlas-preview-home.html || (echo "Local preview did not serve /" && exit 1)
           npm run test:preview:browser -- http://127.0.0.1:4173
+
+      - name: Resolve hosted deploy preview
+        id: hosted_preview
+        if: steps.node_app.outputs.present == 'true' && github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/resolve-pr-preview-url.mjs
+
+      - name: Browser smoke test hosted deploy preview
+        if: steps.hosted_preview.outputs.url != ''
+        env:
+          PREVIEW_URL: ${{ steps.hosted_preview.outputs.url }}
+        run: npm run test:preview:browser -- "$PREVIEW_URL"
