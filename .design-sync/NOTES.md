@@ -10,7 +10,9 @@ no `package.json` `main`/`module`/`exports`. The converter therefore runs in
 locatable at `node_modules/<pkg>`:
 
 - **Symlink required (gitignored, recreate per clone):**
-  `ln -sfn /Users/AustinHumphrey/code/Pitch-Atlas node_modules/pitch-atlas`
+  `ln -sfn /Users/AustinHumphrey/Pitch-Atlas node_modules/pitch-atlas`
+  (the path is the canonical checkout — earlier notes said `~/code/Pitch-Atlas`,
+  which is stale; this repo lives at `~/Pitch-Atlas`.)
   Without it the build dies with `ENOENT node_modules/pitch-atlas/package.json`.
 
 ## Scope is deliberately the reusable primitives only
@@ -67,3 +69,24 @@ standalone with plain rows (its real use is inside an open SelectContent).
   floor). Fine for the converter; the app build target is still 24.
 - **`Impact` font** — if the compiled CSS stops referencing it the warn vanishes;
   if a real brand font goes missing instead, that IS new — investigate.
+
+## HELD re-sync 2026-06-25 — dark-void rebrand changes every card surface
+A re-sync ran clean mechanically (73 components `unchanged`, 0 `bad`, 0 `thin`;
+upload delta = bundle + styling + aux + 27 render-churned components, no deletes)
+but the **canary spot-checks were held, not uploaded**. Cause: the cream→dark-void
+rebrand landed AFTER the Jun 24 sync. The compiled CSS now sets `--background:#070509`
+and the previews render each small primitive (Label, Separator, Skeleton, Alert)
+floating above a large near-black panel — the Jun 24 grades were earned on the old
+CREAM surface, so the look genuinely changed. Two artifacts to resolve before a
+clean push:
+  1. **Card surface** — decide the DS card treatment for the dark brand (a framed
+     dark surface like the live site, vs. the raw `--background` void the preview
+     container currently shows). This is a brand call, not mechanical.
+  2. **Atmosphere webps 404** — the CSS references `url(/atmosphere/leather.webp)`
+     and `url(/atmosphere/seam.webp)` (absolute paths the converter can't ship);
+     in the preview sandbox they fall back to the void color. Either add them to a
+     copied-assets path the bundle can serve, or scope those rules out of the DS
+     styles. Until then, any preview that hits them shows a black fallback.
+The upload was NOT performed; the project still holds the Jun 24 (cream) cards. The
+built bundle is at `ds-bundle/` and the verdict at `ds-bundle/.resync-verdict.json`
+if resuming. `cssEntry` was re-pointed to `index-diVqhKo8.css` for this build.
