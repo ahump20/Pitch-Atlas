@@ -31,7 +31,7 @@ export function ArchiveBand() {
           </p>
 
           <h2 className="rfx-athletic v2-display mt-5 max-w-[14ch] text-[clamp(30px,5vw,58px)] leading-[0.96]">
-            The oldest file in the atlas.
+            The oldest file in the atlas
           </h2>
 
           <p className="mt-6 max-w-[52ch] text-[15.5px] leading-relaxed text-bone-2 md:text-[16px]">

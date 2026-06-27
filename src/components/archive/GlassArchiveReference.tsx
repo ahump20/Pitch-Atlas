@@ -31,14 +31,14 @@ interface ToneScale {
 // rail's detail card.
 const TONE: Record<'band' | 'plate', ToneScale> = {
   band: {
-    title: 'text-[clamp(24px,3.4vw,40px)]',
-    placardPad: 'px-5 py-4 md:px-6 md:py-5',
+    title: 'text-[clamp(20px,3.4vw,40px)]',
+    placardPad: 'px-5 py-2 md:px-6 md:py-3',
     caption: 'text-[15px] leading-relaxed',
     meta: 'mt-5',
   },
   plate: {
     title: 'text-2xl',
-    placardPad: 'px-4 py-3.5',
+    placardPad: 'px-4 py-2.5',
     caption: 'text-sm leading-relaxed',
     meta: 'mt-4',
   },
@@ -59,7 +59,7 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
   // aria-hidden and pointer-transparent.
   const gradeWash: CSSProperties = {
     background:
-      'linear-gradient(158deg, rgba(122,74,46,0.26) 0%, rgba(122,74,46,0) 42%, rgba(7,5,9,0.34) 100%)',
+      'linear-gradient(158deg, rgba(122,74,46,0.22) 0%, rgba(122,74,46,0) 44%, rgba(7,5,9,0.2) 100%)',
     mixBlendMode: 'soft-light',
   }
   const scrim: CSSProperties = {
@@ -72,7 +72,7 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
   }
   const frameShadow: CSSProperties = {
     boxShadow:
-      'inset 0 1px 0 rgba(246,241,230,0.06), inset 0 0 0 1px rgba(0,0,0,0.5), 0 30px 60px -32px rgba(0,0,0,0.85)',
+      'inset 0 1px 0 rgba(246,241,230,0.06), inset 0 0 0 1px rgba(0,0,0,0.32), 0 30px 60px -32px rgba(0,0,0,0.85)',
   }
 
   return (
@@ -112,8 +112,8 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
           className={`absolute inset-x-0 bottom-0 border-t border-bone/12 bg-[#0b0a12]/45 backdrop-blur-md ${t.placardPad}`}
         >
           <span className="mono-label-stage">{kindLabel} plate</span>
-          <p className={`font-athletic mt-1.5 uppercase leading-[0.95] text-bone ${t.title}`}>{image.title}</p>
-          <span className="mono-label-stage mt-2 inline-block text-cyan">{rightsLabel}</span>
+          <p className={`font-athletic mt-1 uppercase leading-[0.92] text-bone ${t.title}`}>{image.title}</p>
+          <span className="mono-label-stage mt-1.5 inline-block text-cyan">{rightsLabel}</span>
         </figcaption>
       </div>
 
