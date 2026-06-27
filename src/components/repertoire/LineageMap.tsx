@@ -36,7 +36,7 @@ function Node({ entry, accent }: { entry: RepertoireEntry; accent: string }) {
   return (
     <Link
       to={to}
-      title={`${entry.name} — ${STATUS_LABEL[entry.status]}${entry.filedSlug ? ' (filed specimen)' : ''}`}
+      title={`${entry.name} · ${STATUS_LABEL[entry.status]}${entry.filedSlug ? ' (filed specimen)' : ''}`}
       aria-label={`${entry.name}, ${STATUS_LABEL[entry.status]}${entry.filedSlug ? ', filed specimen' : ', basic file'}`}
       className={`group inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] leading-none transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/70 ${
         edge
