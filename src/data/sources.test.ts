@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest'
+import { existsSync } from 'node:fs'
+import { join } from 'node:path'
 import { PITCHES, pitchBySlug } from './pitches'
 import { fourSeam } from './pitches/four-seam'
 import { SOURCES, src, latestRetrievedAt, allSources } from './sources'
@@ -7,6 +9,7 @@ import type { Claim, PitchAtlasEntry } from './types'
 import { CRAFTSMEN } from './craftsmen'
 import { SOFTBALL_CRAFTSMEN } from './softball/craftsmen'
 import { LOST_PITCHES } from './lost-pitches'
+import { LOST_PITCH_ARCHIVE_IMAGES, archiveImageForLostPitch } from './media/archive-images'
 import { REPERTOIRE } from './repertoire'
 import { magnusForceRender, magnusStrength } from '../lib/physics'
 
@@ -142,6 +145,20 @@ describe('provenance integrity, every pitch', () => {
       expect(s.url).toMatch(/^https?:\/\//)
       expect(s.label.length).toBeGreaterThan(0)
       expect(s.retrievedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    }
+  })
+
+  it('stocks every lost pitch with one rights-labeled archive plate', () => {
+    expect(LOST_PITCH_ARCHIVE_IMAGES).toHaveLength(LOST_PITCHES.length)
+    for (const pitch of LOST_PITCHES) {
+      const image = archiveImageForLostPitch(pitch.slug)
+      expect(image?.relatedSlug).toBe(pitch.slug)
+      expect(image?.imageSrc).toMatch(/^\/archive\/lost-pitches\/.+\.(jpg|png|webp|svg)$/)
+      expect(existsSync(join(process.cwd(), 'public', image?.imageSrc ?? ''))).toBe(true)
+      expect(image?.alt.length).toBeGreaterThan(20)
+      expect(image?.qualityNote.length).toBeGreaterThan(20)
+      if (image?.rights === 'public-domain') expect(image.source).toBeTruthy()
+      if (image?.rights === 'original') expect(image.source).toBeUndefined()
     }
   })
 })
