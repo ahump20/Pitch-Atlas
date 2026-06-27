@@ -8,7 +8,7 @@ import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { pitchBySlug } from '../../data/pitches'
-import { specimenGradeFor, type SpecimenGradeKey } from '../../data/specimen-grade'
+import { specimenGradeFor, SPECIMEN_GRADES, type SpecimenGradeKey } from '../../data/specimen-grade'
 import { projectSeam, splitRuns } from '../../lib/seam2d'
 import { accentForSlug } from '../refractor/accents'
 import { FAMILY_ACCENT } from './family-accent'
@@ -505,12 +505,50 @@ export function PitchIndex({ id }: { id?: string }) {
         </Empty>
       ) : null}
 
+      {/* The documentation-depth legend: how richly THIS atlas has preserved the pitch,
+          a filmed grip over a still over a schematic. Read straight off specimen-grade.ts's
+          ordered label map (SPECIMEN_GRADES) so the key and the card stamps can never word a
+          grade differently. The only digits anywhere are the real 1/1 gold; this is
+          preservation depth, never a chase ladder — that scarcity read is Field rarity below,
+          and the two axes are never folded into one. */}
+      {total > 0 ? (
+        <div className="mt-6 rounded-[10px] border border-white/10 bg-card/50 px-4 py-3">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Documentation depth</span>
+            {SPECIMEN_GRADES.map((g) => {
+              const isGold = g.key === 'gold'
+              return (
+                <span
+                  key={g.key}
+                  className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] ${isGold ? 'text-[#FFE9B0]' : 'text-bone-2'}`}
+                >
+                  <i
+                    className="h-1.5 w-1.5 flex-none rotate-45"
+                    style={{
+                      background: isGold ? '#FFD98A' : 'var(--c3,#37D6FF)',
+                      boxShadow: isGold ? '0 0 8px -1px #FFD98A' : '0 0 8px -1px var(--c3,#37D6FF)',
+                    }}
+                    aria-hidden="true"
+                  />
+                  {g.label}
+                </span>
+              )
+            })}
+          </div>
+          <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-bone-2">
+            How richly the atlas has preserved the grip, richest first: filmed in the pitcher's
+            own hand, then a first-party still, then a filed reference. The lone gold 1 of 1 is the
+            four-seam struck as specimen 00, the only number here.
+          </p>
+        </div>
+      ) : null}
+
       {/* The collection legend: the per-row status tier is a real scarcity read —
           how rare the pitch is in the game today — not an invented chase ladder. The
           honest edges (banned/alias/illusion/not-a-pitch) stay edges, never a tier to
           covet. Read straight off the STATUS map; nothing here is fabricated. */}
       {total > 0 ? (
-        <div className="mt-6 rounded-[10px] border border-white/10 bg-card/50 px-4 py-3">
+        <div className="mt-3 rounded-[10px] border border-white/10 bg-card/50 px-4 py-3">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Field rarity</span>
             {(['standard', 'niche', 'rare', 'near-extinct'] as RepertoireStatus[]).map((s) => (
@@ -525,7 +563,7 @@ export function PitchIndex({ id }: { id?: string }) {
           </div>
           <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-bone-2">
             How rare the pitch is in the game today, common to rare. Banned, alias, illusion, and not-a-pitch
-            entries are filed as honest edges — labeled for what they are, never dressed up as a chase.
+            entries are filed as honest edges, labeled for what they are, never dressed up as a chase.
           </p>
         </div>
       ) : null}

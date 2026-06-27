@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
+import { SPECIMEN_GRADES } from '../../data/specimen-grade'
 import { IndexLedger } from './IndexLedger'
 import { PitchIndex } from './PitchIndex'
 
@@ -122,6 +123,19 @@ describe('PitchIndex controls', () => {
 
     await user.click(screen.getByRole('button', { name: /^reset$/i }))
     expect(screen.getByTestId('location-search')).not.toHaveTextContent('sort')
+  })
+
+  it('decodes the specimen grade in a legend, worded from the grade source, beside field rarity', () => {
+    renderIndex()
+    // both axes are present and kept distinct — documentation depth vs field rarity
+    // ("Documentation depth" is the legend; "Documentation" alone is the sort control)
+    expect(screen.getByText('Documentation depth')).toBeInTheDocument()
+    expect(screen.getByText('Field rarity')).toBeInTheDocument()
+    // every grade the source defines is decoded on the page; labels come straight
+    // from SPECIMEN_GRADES, so this fails if the legend ever hardcodes its own copy
+    for (const g of SPECIMEN_GRADES) {
+      expect(screen.getAllByText(g.label).length).toBeGreaterThan(0)
+    }
   })
 })
 
