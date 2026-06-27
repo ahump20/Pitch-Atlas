@@ -31,6 +31,19 @@ const LABEL: Record<SpecimenGradeKey, string> = {
   reference: 'Reference specimen',
 }
 
+/*
+  The grades in documentation-depth order, richest first. The Pitch Index legend
+  reads this exact array, so the key a visitor decodes and the stamp on a card can
+  never disagree on wording or rank. Documentation depth only — field rarity is a
+  separate axis (RepertoireStatus) and the two are never folded into one score.
+*/
+export const SPECIMEN_GRADES: readonly SpecimenGrade[] = [
+  { key: 'gold', label: LABEL.gold },
+  { key: 'in-motion', label: LABEL['in-motion'] },
+  { key: 'first-party', label: LABEL['first-party'] },
+  { key: 'reference', label: LABEL.reference },
+]
+
 export function specimenGradeFor(entry: PitchAtlasEntry): SpecimenGrade {
   const key = gradeKey(entry)
   return { key, label: LABEL[key] }

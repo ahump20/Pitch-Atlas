@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { specimenGradeFor } from './specimen-grade'
+import { specimenGradeFor, SPECIMEN_GRADES } from './specimen-grade'
 import { PITCHES } from './pitches'
 
 /*
@@ -43,6 +43,28 @@ describe('specimenGradeFor', () => {
       expect(label).not.toMatch(/left|mint|limited|edition of|only \d/i)
       // no invented number on any tier except the real one-of-one gold chase
       if (key !== 'gold') expect(label).not.toMatch(/\d/)
+    }
+  })
+})
+
+describe('SPECIMEN_GRADES (the index legend source)', () => {
+  it('lists all four grades in documentation-depth order, richest first', () => {
+    expect(SPECIMEN_GRADES.map((g) => g.key)).toEqual([
+      'gold',
+      'in-motion',
+      'first-party',
+      'reference',
+    ])
+  })
+
+  it('words every grade exactly as the card stamp does — one source of truth', () => {
+    // For every grade that actually lands on a filed pitch, the legend entry the
+    // visitor decodes must be byte-identical to the stamp on the card. A drift in
+    // either direction (label edited in one place only) fails here.
+    const byKey = new Map(SPECIMEN_GRADES.map((g) => [g.key, g]))
+    for (const p of PITCHES) {
+      const stamp = specimenGradeFor(p)
+      expect(byKey.get(stamp.key)).toEqual(stamp)
     }
   })
 })
