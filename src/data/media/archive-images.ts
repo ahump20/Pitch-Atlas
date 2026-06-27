@@ -169,7 +169,7 @@ export const LOST_PITCH_ARCHIVE_IMAGES: ArchiveImage[] = [
     rights: 'public-domain',
     width: 960,
     height: 720,
-    qualityNote: 'Good source at 960 by 689 pixels, presented as team context rather than individual portrait proof.',
+    qualityNote: 'Good source at 960 by 720 pixels, presented as team context rather than individual portrait proof.',
     relatedSlug: 'cannonball-dick-redding',
     relatedLabel: 'Cannonball Dick Redding',
   },

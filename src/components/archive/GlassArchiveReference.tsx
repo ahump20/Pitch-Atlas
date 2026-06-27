@@ -64,7 +64,7 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
   }
   const scrim: CSSProperties = {
     background:
-      'radial-gradient(125% 96% at 50% 26%, transparent 40%, rgba(5,4,8,0.62) 100%), linear-gradient(to top, rgba(5,4,8,0.94) 0%, rgba(5,4,8,0.28) 32%, transparent 58%)',
+      'radial-gradient(135% 104% at 50% 32%, transparent 52%, rgba(5,4,8,0.46) 100%), linear-gradient(to top, rgba(5,4,8,0.94) 0%, rgba(5,4,8,0.28) 32%, transparent 58%)',
   }
   const sheen: CSSProperties = {
     background: 'linear-gradient(116deg, transparent 30%, rgba(246,241,230,0.10) 46%, transparent 58%)',
@@ -120,7 +120,9 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
       {/* provenance, always rendered beneath the frame */}
       <div className={t.meta}>
         <p className={`max-w-[60ch] text-bone-2 ${t.caption}`}>{image.caption}</p>
-        <p className="mt-2 max-w-[60ch] text-xs leading-relaxed text-bone-2/70">{image.qualityNote}</p>
+        {tone === 'plate' ? (
+          <p className="mt-2 max-w-[60ch] text-xs leading-relaxed text-bone-2/70">{image.qualityNote}</p>
+        ) : null}
 
         {image.source ? (
           <p className="mt-3">
@@ -128,7 +130,7 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
               href={image.source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan"
+              className="inline-flex items-center gap-1.5 py-2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan"
             >
               View the source <span aria-hidden="true">↗</span>
             </a>

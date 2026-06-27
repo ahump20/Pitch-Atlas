@@ -43,15 +43,15 @@ export function ArchiveBand() {
           <div className="mt-8 flex flex-col gap-4">
             <Link
               to="/lost-pitches"
-              className="inline-flex w-fit items-center gap-2 rounded-sm border border-bone/25 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-cyan/60"
+              className="inline-flex w-fit items-center gap-2 rounded-sm border border-bone/45 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-cyan/70 hover:bg-bone/[0.05]"
             >
               Enter the Lost Pitches archive <span aria-hidden="true">→</span>
             </Link>
             <Link
               to={`/lost-pitches/${image.relatedSlug}`}
-              className="inline-flex w-fit items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2/80 transition-colors hover:text-bone"
+              className="inline-flex w-fit items-center gap-2 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2/80 transition-colors hover:text-bone"
             >
-              Filed under {image.relatedLabel} <span aria-hidden="true">→</span>
+              Filed under {image.relatedLabel}
             </Link>
           </div>
         </div>
