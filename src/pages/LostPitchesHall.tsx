@@ -9,6 +9,8 @@ import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { WhyPitchesDie } from '../components/sections/WhyPitchesDie'
 import { LostPitchArchiveRail } from '../components/lost-pitches/ArchiveImageRail'
+import { EraTimeline } from '../components/lost-pitches/EraTimeline'
+import { EggButton } from '../components/eggs/EggButton'
 
 /*
   Lost Pitches of the Negro Leagues. A wing built on one honest asymmetry: the
@@ -60,6 +62,8 @@ export function LostPitchesHall() {
 
       <WhyPitchesDie />
 
+      <EraTimeline />
+
       <LostPitchArchiveRail />
 
       {count === 0 ? (
@@ -87,7 +91,13 @@ export function LostPitchesHall() {
           })}
 
           <div className="mt-16 rounded-sm border border-dashed border-seam/30 p-6">
-            <p className="mono-label text-seam">Why the tiers</p>
+            <EggButton
+              tidbitId="first-night-game"
+              label="Reveal a hidden note about the first night game in baseball history"
+              className="mono-label text-seam"
+            >
+              Why the tiers
+            </EggButton>
             <p className="mt-2 max-w-[68ch] text-sm leading-relaxed text-ink-2">
               Segregated record-keeping, almost no surviving film, barnstorming with no institutional
               archive, doctored pitches that were permitted in Black baseball and banned in the white

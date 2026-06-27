@@ -1877,6 +1877,73 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
   },
+
+  // --- Rotating quotes pool (baseball + life-philosophy lines) ---
+  'garrido-life-yours-to-win': {
+    id: 'garrido-life-yours-to-win',
+    label: 'Augie Garrido, Life Is Yours to Win (Simon & Schuster, 2011), quotations confirmed via the SimmonsField book review',
+    url: 'http://simmonsfield.blogspot.com/2011/08/augie-garridos-life-is-yours-to-win.html',
+    retrievedAt: RETRIEVED_9,
+    season: '2011 book',
+  },
+  'saban-process-std': {
+    id: 'saban-process-std',
+    label: "Nick Saban's \"the Process\", as relayed in process-thinking leadership writing",
+    url: 'https://www.samuelthomasdavies.com/nick-saban-process/',
+    retrievedAt: RETRIEVED_9,
+  },
+
+  // --- Tidbits (the in-context easter-egg facts) ---
+  // (108-stitch fact reuses the existing 'wiki-baseball-ball' source above.)
+  'wiki-doubleday-myth': {
+    id: 'wiki-doubleday-myth',
+    label: 'Wikipedia, Doubleday myth',
+    url: 'https://en.wikipedia.org/wiki/Doubleday_myth',
+    retrievedAt: RETRIEVED_9,
+  },
+  'mlb-mound-distance': {
+    id: 'mlb-mound-distance',
+    label: 'MLB.com, Why is the mound 60 feet, 6 inches away?',
+    url: 'https://www.mlb.com/news/why-is-the-mound-60-ft-6-inches-away',
+    retrievedAt: RETRIEVED_9,
+  },
+  'britannica-k-strikeout': {
+    id: 'britannica-k-strikeout',
+    label: 'Britannica, Why Does “K” Stand for a Strikeout in Baseball?',
+    url: 'https://www.britannica.com/story/why-does-k-stand-for-a-strikeout-in-baseball',
+    retrievedAt: RETRIEVED_9,
+  },
+  'sabr-spitball-deadball': {
+    id: 'sabr-spitball-deadball',
+    label: 'SABR, The Spitball and the End of the Deadball Era',
+    url: 'https://sabr.org/journal/article/the-spitball-and-the-end-of-the-deadball-era/',
+    retrievedAt: RETRIEVED_9,
+  },
+  'tht-eephus-sewell': {
+    id: 'tht-eephus-sewell',
+    label: 'The Hardball Times, Rip Sewell, the eephus and the All-Star Game',
+    url: 'https://tht.fangraphs.com/rip-sewell-the-eephus-and-the-all-star-game/',
+    retrievedAt: RETRIEVED_9,
+  },
+  'hof-rubbing-mud': {
+    id: 'hof-rubbing-mud',
+    label: 'Baseball Hall of Fame, Lena Blackburne rubbing mud a secret of the game',
+    url: 'https://baseballhall.org/discover/lena-blackburne-rubbing-mud-a-secret-of-the-game',
+    retrievedAt: RETRIEVED_9,
+  },
+  // (knuckleball-spin fact reuses the existing 'wiki-knuckleball' source above.)
+  'sabr-first-night-game': {
+    id: 'sabr-first-night-game',
+    label: 'SABR, May 24, 1935: Reds fans see the lights in first night game in MLB history',
+    url: 'https://sabr.org/gamesproj/game/may-24-1935-reds-fans-see-the-lights-in-first-night-game-in-mlb-history/',
+    retrievedAt: RETRIEVED_9,
+  },
+  'wiki-candy-cummings': {
+    id: 'wiki-candy-cummings',
+    label: 'Wikipedia, Candy Cummings',
+    url: 'https://en.wikipedia.org/wiki/Candy_Cummings',
+    retrievedAt: RETRIEVED_9,
+  },
 } satisfies Record<string, Source>
 
 export type SourceId = keyof typeof SOURCES

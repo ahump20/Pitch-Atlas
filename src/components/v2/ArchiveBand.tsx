@@ -17,7 +17,7 @@ export function ArchiveBand() {
   return (
     <section className="v2-stage v2-tooth relative border-t border-bone/10">
       <div className="pa-atmo pa-atmo-leather opacity-[0.05]" aria-hidden="true" />
-      <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
+      <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-start gap-10 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
         <div className="md:col-span-5">
           {/* the featured-artifact marker: ChapterMark's visual language, without
               claiming a number in the 01..09 chapter sequence this band sits inside. */}

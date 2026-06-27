@@ -4,6 +4,7 @@ import { SITE } from '../config/site'
 import { canonicalUrl, contentJsonLd } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
+import { EggButton } from '../components/eggs/EggButton'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { MovementPlot } from '../components/fallback/MovementPlot'
@@ -244,7 +245,13 @@ export function SandboxPage() {
         {/* The honest line: what is physics, what is a teaching scale. */}
         <div className="mx-auto max-w-6xl px-5 pb-20 md:px-8">
           <div className="rfx-panel border-l-2 border-l-ink/15 px-5 py-4">
-            <p className="mono-label text-bone-2">Teaching model</p>
+            <EggButton
+              tidbitId="stitches"
+              label="Reveal a hidden note about how a baseball is stitched"
+              className="mono-label text-bone-2"
+            >
+              Teaching model
+            </EggButton>
             <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-ink-2">{ANCHOR_NOTE}</p>
             <p className="mt-2 max-w-[70ch] text-sm leading-relaxed text-ink-2">
               The plot&rsquo;s arm and glove sides are named from the ball&rsquo;s point of view; which physical

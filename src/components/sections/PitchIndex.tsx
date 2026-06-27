@@ -18,6 +18,7 @@ import { Button } from '../ui/button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
+import { EggButton } from '../eggs/EggButton'
 
 type IndexView = 'rows' | 'binder'
 
@@ -541,6 +542,18 @@ export function PitchIndex({ id }: { id?: string }) {
         <p aria-live="polite" className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3 md:mt-3">
           {countLabel}
         </p>
+        {/* search the strangest pitch by name and a hidden note surfaces, quietly */}
+        {q === 'eephus' ? (
+          <p className="mt-2">
+            <EggButton
+              tidbitId="eephus"
+              label="Reveal a hidden note about the eephus pitch"
+              className="font-mono text-[10px] uppercase tracking-[0.1em] text-cyan"
+            >
+              A hidden note on the eephus <span aria-hidden="true">→</span>
+            </EggButton>
+          </p>
+        ) : null}
         <span role="status" aria-live="polite" data-testid="pitch-index-announcer" className="sr-only">
           {announce}
         </span>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
+import { RotatingQuote } from '../components/quotes/RotatingQuote'
 
 /*
   An honest 404. No fabricated content, no redirect trickery: name the miss and
@@ -30,6 +31,9 @@ export function NotFound() {
           The Craftsmen
         </Link>
       </div>
+
+      {/* a quiet line to sit with while you find your way back */}
+      <RotatingQuote variant="panel" className="mt-10 max-w-[60ch] border-t border-bone/10 pt-6" />
     </section>
   )
 }

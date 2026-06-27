@@ -6,6 +6,7 @@ import { INDEX_SCOPE } from '../lib/index-scope'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { IndexLedger } from '../components/sections/IndexLedger'
 import { PitchIndex } from '../components/sections/PitchIndex'
+import { LineageMap } from '../components/repertoire/LineageMap'
 
 /*
   The Pitch Index: the front door, struck in the refractor language. The whole
@@ -64,6 +65,9 @@ export function RepertoirePage() {
 
       <PitchIndex />
       </div>
+
+      {/* the whole accepted catalog as one map, a complement to the searchable rows */}
+      <LineageMap />
     </div>
   )
 }

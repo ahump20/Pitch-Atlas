@@ -113,28 +113,30 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
         >
           <span className="mono-label-stage">{kindLabel} plate</span>
           <p className={`font-athletic mt-1 uppercase leading-[0.92] text-bone ${t.title}`}>{image.title}</p>
-          <span className="mono-label-stage mt-1.5 inline-block text-cyan">{rightsLabel}</span>
-        </figcaption>
-      </div>
-
-      {/* provenance, always rendered beneath the frame */}
-      <div className={t.meta}>
-        <p className={`max-w-[60ch] text-bone-2 ${t.caption}`}>{image.caption}</p>
-        {tone === 'plate' ? (
-          <p className="mt-2 max-w-[60ch] text-xs leading-relaxed text-bone-2/70">{image.qualityNote}</p>
-        ) : null}
-
-        {image.source ? (
-          <p className="mt-3">
+          {/* the rights determination and the proof it rests on read as one unit:
+              the chip itself links to the source that backs the claim. */}
+          {image.source ? (
             <a
               href={image.source.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 py-2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan"
+              aria-label={`${rightsLabel} — view the source for this image`}
+              className="mono-label-stage mt-1.5 inline-flex items-center gap-1.5 text-cyan underline decoration-cyan/40 underline-offset-2 transition-colors hover:decoration-cyan"
             >
-              View the source <span aria-hidden="true">↗</span>
+              {rightsLabel} <span aria-hidden="true">↗</span>
             </a>
-          </p>
+          ) : (
+            <span className="mono-label-stage mt-1.5 inline-block text-cyan">{rightsLabel}</span>
+          )}
+        </figcaption>
+      </div>
+
+      {/* provenance, always rendered beneath the frame. The source link lives on
+          the rights chip above, so claim and proof read as one unit. */}
+      <div className={t.meta}>
+        <p className={`max-w-[60ch] text-bone-2 ${t.caption}`}>{image.caption}</p>
+        {tone === 'plate' ? (
+          <p className="mt-2 max-w-[60ch] text-xs leading-relaxed text-bone-2/70">{image.qualityNote}</p>
         ) : null}
       </div>
     </figure>

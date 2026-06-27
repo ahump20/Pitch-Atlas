@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { SiteFooter } from './SiteFooter'
+import { EggProvider } from '../eggs/EggProvider'
 
 /*
   Gate: the no-JavaScript line. The claim is true by construction (every content
@@ -12,7 +13,9 @@ describe('SiteFooter', () => {
   it('carries the exact JavaScript line', () => {
     render(
       <MemoryRouter>
-        <SiteFooter />
+        <EggProvider>
+          <SiteFooter />
+        </EggProvider>
       </MemoryRouter>,
     )
     expect(
@@ -25,7 +28,9 @@ describe('SiteFooter', () => {
   it('keeps the wing index intact', () => {
     render(
       <MemoryRouter>
-        <SiteFooter />
+        <EggProvider>
+          <SiteFooter />
+        </EggProvider>
       </MemoryRouter>,
     )
     for (const label of ['The Pitch Index', 'Softball', 'The Craftsmen', 'Lost Pitches', 'Sources']) {
@@ -36,7 +41,9 @@ describe('SiteFooter', () => {
   it('keeps the footer copy dash-free', () => {
     const { container } = render(
       <MemoryRouter>
-        <SiteFooter />
+        <EggProvider>
+          <SiteFooter />
+        </EggProvider>
       </MemoryRouter>,
     )
 

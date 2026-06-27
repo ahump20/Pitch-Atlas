@@ -12,6 +12,7 @@ import { asOfDate } from '../lib/format'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
+import { EggButton } from '../components/eggs/EggButton'
 
 /*
   Sources, promoted from a page footer to its own page. The provenance legend and
@@ -72,7 +73,17 @@ export function SourcesPage() {
           Many ways can work. Nothing here is marked right or wrong; every claim is labeled by where it
           came from and how confident the source is. The reader judges. The atlas only sources.
         </p>
-        <p className="mono-label mt-6">As of {asOf}. Sources last checked, not auto-refreshed.</p>
+        <p className="mono-label mt-6">
+          As of{' '}
+          <EggButton
+            tidbitId="the-k"
+            label="Reveal a hidden note about how baseball record-keeping began"
+            className="text-bone"
+          >
+            {asOf}
+          </EggButton>
+          . Sources last checked, not auto-refreshed.
+        </p>
 
         <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-12 md:grid-cols-12">
           <div className="md:col-span-5">

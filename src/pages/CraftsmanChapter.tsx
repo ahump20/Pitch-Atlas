@@ -14,6 +14,7 @@ import { ClaimNote } from '../components/provenance/SourcedValue'
 import { RecordLinks } from '../components/provenance/RecordLinks'
 import { CraftsmanMediaSection } from '../components/craftsmen/CraftsmanMedia'
 import { PitchSpecimenCard } from '../components/refractor/PitchSpecimenCard'
+import { EggButton } from '../components/eggs/EggButton'
 import { NotFound } from './NotFound'
 
 /*
@@ -123,7 +124,13 @@ export function CraftsmanChapter() {
             <span aria-hidden="true">/</span>
             <Link to="/craftsmen" className="transition-colors hover:text-bone">The Craftsmen</Link>
             <span aria-hidden="true">/</span>
-            <span className="text-bone-2">{craftsman.specimenNo}</span>
+            <EggButton
+              tidbitId="curveball-claim"
+              label="Reveal a hidden note about who really invented the curveball"
+              className="text-bone-2"
+            >
+              {craftsman.specimenNo}
+            </EggButton>
           </nav>
           <p className="rfx-skick">
             {isLegend ? 'Legend' : 'Master'} · {craftsman.era}

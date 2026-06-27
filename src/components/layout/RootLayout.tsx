@@ -8,6 +8,9 @@ import { canonicalUrl, siteJsonLd } from '../../lib/seo'
 import { Toaster } from '../ui/sonner'
 import { TooltipProvider } from '../ui/tooltip'
 import { PipProvider } from '../embeds/pip'
+import { EggProvider } from '../eggs/EggProvider'
+import { TidbitReveal } from '../eggs/TidbitReveal'
+import { FoundIndex } from '../eggs/FoundIndex'
 
 /*
   The shell every route renders inside. The site sits on the warm field — aged
@@ -63,6 +66,7 @@ export function RootLayout() {
       <div className="grain-overlay" aria-hidden="true" />
       <TooltipProvider delayDuration={150}>
         <PipProvider>
+        <EggProvider>
         <div className="relative z-10">
           <a
             href="#main"
@@ -78,7 +82,11 @@ export function RootLayout() {
           </main>
           <SiteFooter />
           <Toaster position="bottom-center" />
+          {/* the hidden-tidbit layer: the reveal and the found-index, rendered once */}
+          <TidbitReveal />
+          <FoundIndex />
         </div>
+        </EggProvider>
         </PipProvider>
       </TooltipProvider>
     </div>

@@ -11,6 +11,8 @@ import { SOFTBALL_CRAFTSMEN } from './softball/craftsmen'
 import { LOST_PITCHES } from './lost-pitches'
 import { LOST_PITCH_ARCHIVE_IMAGES, archiveImageForLostPitch } from './media/archive-images'
 import { REPERTOIRE } from './repertoire'
+import { QUOTES, quotePool } from './quotes'
+import { TIDBITS, TIDBIT_COUNT } from './tidbits'
 import { magnusForceRender, magnusStrength } from '../lib/physics'
 
 /*
@@ -195,6 +197,8 @@ describe('provenance note invariant, all sourced data arrays', () => {
     { name: 'SOFTBALL_CRAFTSMEN', data: SOFTBALL_CRAFTSMEN },
     { name: 'LOST_PITCHES', data: LOST_PITCHES },
     { name: 'REPERTOIRE', data: REPERTOIRE },
+    { name: 'QUOTES', data: QUOTES },
+    { name: 'TIDBITS', data: TIDBITS },
   ]
   for (const { name, data } of ARRAYS) {
     describe(name, () => {
@@ -226,4 +230,37 @@ describe('provenance note invariant, all sourced data arrays', () => {
       })
     })
   }
+})
+
+/*
+  The hidden tidbits and the rotating quotes are content like everything else:
+  sourced, not invented. Ten tidbits exactly (the ten easter eggs), every id
+  unique, and a quote pool deep enough to feel alive without recycling.
+*/
+describe('tidbits and quotes', () => {
+  it('files exactly ten tidbits', () => {
+    expect(TIDBITS).toHaveLength(10)
+    expect(TIDBIT_COUNT).toBe(10)
+  })
+
+  it('every tidbit id is unique', () => {
+    const ids = TIDBITS.map((t) => t.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
+
+  it('every tidbit carries a real source (no unsourced trivia)', () => {
+    for (const t of TIDBITS) {
+      expect(t.claim.source).toBeTruthy()
+      expect(t.title.length).toBeGreaterThan(0)
+      expect(t.eggLocation.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('rotates over a deep quote pool, reusing the gated craftsmen quotes', () => {
+    expect(QUOTES.length).toBeGreaterThanOrEqual(6)
+    // curated lines + every craftsman with a real quote
+    expect(quotePool().length).toBeGreaterThan(QUOTES.length + 8)
+    const ids = quotePool().map((q) => q.id)
+    expect(new Set(ids).size).toBe(ids.length)
+  })
 })

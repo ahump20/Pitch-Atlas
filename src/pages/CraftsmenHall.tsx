@@ -9,6 +9,7 @@ import { CraftsmenMediaShelf } from '../components/craftsmen/CraftsmanMedia'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
+import { EggButton } from '../components/eggs/EggButton'
 
 /*
   The Craftsmen wing: a curated hall of arms who defined a pitch, plus the one
@@ -84,7 +85,13 @@ export function CraftsmenHall() {
                 <CraftsmanCard key={c.slug} craftsman={c} />
               ))}
               <div className="flex h-full flex-col justify-center gap-2 rounded-sm border border-dashed border-ink/15 p-6 md:col-span-2">
-                <p className="mono-label text-ink-2">Why a legend, not a master</p>
+                <EggButton
+                  tidbitId="knuckleball"
+                  label="Reveal a hidden note about how little a knuckleball spins"
+                  className="mono-label text-ink-2"
+                >
+                  Why a legend, not a master
+                </EggButton>
                 <p className="max-w-[52ch] text-sm leading-relaxed text-ink-2">
                   The gyroball is filed apart on purpose. It is a real pitch, but most of what is said
                   about it is myth. We keep it to show the difference between a sourced record and a

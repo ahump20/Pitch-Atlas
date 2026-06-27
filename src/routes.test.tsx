@@ -215,7 +215,14 @@ describe('Sources', () => {
   it('states the provenance model and a computed as-of date', async () => {
     renderRoute('/sources')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Sourced, not corrected.')
-    expect(screen.getByText(/As of .*\d{4}\./)).toBeInTheDocument()
+    // the as-of date now nests an easter-egg trigger, so the year sits in a child
+    // element; assert on the whole line's text content, not a single text node.
+    expect(
+      screen.getByText(
+        (_content, el) =>
+          el?.tagName === 'P' && /As of\s+.*\d{4}\.\s*Sources last checked/.test(el.textContent ?? ''),
+      ),
+    ).toBeInTheDocument()
   })
 })
 

@@ -14,6 +14,7 @@ import { SourceBadge } from '../components/provenance/SourceBadge'
 import { ClaimNote } from '../components/provenance/SourcedValue'
 import { LostPitchArchivePlate } from '../components/lost-pitches/ArchiveImageRail'
 import { archiveImageForLostPitch } from '../data/media/archive-images'
+import { EggButton } from '../components/eggs/EggButton'
 import { NotFound } from './NotFound'
 
 /*
@@ -125,7 +126,13 @@ export function LostPitchChapter() {
             <span aria-hidden="true">/</span>
             <Link to="/lost-pitches" className="transition-colors hover:text-bone">Lost Pitches</Link>
             <span aria-hidden="true">/</span>
-            <span className="text-bone-2">{pitch.specimenNo}</span>
+            <EggButton
+              tidbitId="spitball-ban"
+              label="Reveal a hidden note about the banned spitball and its grandfathered pitchers"
+              className="text-bone-2"
+            >
+              {pitch.specimenNo}
+            </EggButton>
           </nav>
           <p className="rfx-skick">{pitch.era}</p>
           <h1 className="rfx-stitle mt-4 max-w-[16ch] text-[2.7rem] leading-[0.98] text-bone md:text-[4.6rem]">

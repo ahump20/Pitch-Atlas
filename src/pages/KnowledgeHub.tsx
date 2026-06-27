@@ -8,6 +8,7 @@ import { WINGS } from '../data/knowledge'
 import type { KnowledgeWing } from '../data/knowledge/types'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
+import { EggButton } from '../components/eggs/EggButton'
 
 /*
   The Learn hub: the front door to the craft-record layer. The specimen pages answer
@@ -153,6 +154,16 @@ export function KnowledgeHub() {
               <Shelf label="Safety &amp; limits" wings={health} />
             </>
           )}
+          {/* a cryptic filing mark: the famous distance, hiding a note about why */}
+          <p className="mt-12 text-right">
+            <EggButton
+              tidbitId="sixty-six"
+              label="Reveal a hidden note about why the pitching rubber sits 60 feet 6 inches away"
+              className="mono-label text-ink-3/55"
+            >
+              60&prime;&thinsp;6&Prime;
+            </EggButton>
+          </p>
         </div>
       </section>
     </>
