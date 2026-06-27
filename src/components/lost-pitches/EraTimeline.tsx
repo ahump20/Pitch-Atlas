@@ -13,10 +13,10 @@ import type { DocumentationTier, LostPitch } from '../../data/types'
   their labels, so it reads with a keyboard and a screen reader, not just a mouse.
 */
 
-const AXIS = { start: 1898, end: 1955 }
+const AXIS = { start: 1898, end: 1960 }
 const DECADES = [1900, 1910, 1920, 1930, 1940, 1950]
-const ROW_H = 30 // px per stacked row within a tier lane
-const GAP = 6 // min % between two markers sharing a row
+const ROW_H = 34 // px per stacked row within a tier lane
+const GAP = 14 // min % between two markers sharing a row (clears the code label at any width)
 
 // Tier dot colors, matching the provenance badge dots tuned for the dark field.
 const TIER_COLOR: Record<DocumentationTier, string> = {
@@ -74,39 +74,32 @@ function Lane({ tier, label }: { tier: DocumentationTier; label: string }) {
           aria-hidden="true"
         />
         <span className="mono-label-stage text-bone-2">
-          {label} <span className="text-bone-2/50">&middot; {entries.length}</span>
+          {label} <span className="text-bone-2/75">&middot; {entries.length}</span>
         </span>
       </div>
 
       <div className="relative mt-2" style={{ height: rows * ROW_H }}>
-        {placed.map(({ pitch, year, left, row }) => {
-          const rightHalf = left > 64
-          return (
-            <Link
-              key={pitch.slug}
-              to={`/lost-pitches/${pitch.slug}`}
-              title={`${pitch.name} (${pitch.era})`}
-              aria-label={`${pitch.name}, ${label.toLowerCase()}, ${pitch.era}`}
-              className="group absolute flex items-center gap-1.5 focus:outline-none"
-              style={{
-                top: row * ROW_H,
-                ...(rightHalf ? { right: `${100 - left}%`, flexDirection: 'row-reverse' } : { left: `${left}%` }),
-              }}
-            >
-              <span
-                className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-transparent transition-[box-shadow] group-hover:ring-white/20 group-focus-visible:ring-cyan/70"
-                style={{ background: color }}
-              />
-              {/* labels collide on narrow screens, so on mobile the markers are
-                  dots only (still to-scale, still tap-to-open); the code + year
-                  return once there is room. */}
-              <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2/70 transition-colors group-hover:text-bone group-focus-visible:text-bone sm:inline">
-                {pitch.specimenNo}
-                <span className="hidden text-bone-2/45 md:inline"> {year}</span>
-              </span>
-            </Link>
-          )
-        })}
+        {placed.map(({ pitch, year, left, row }) => (
+          <Link
+            key={pitch.slug}
+            to={`/lost-pitches/${pitch.slug}`}
+            title={`${pitch.name} (${pitch.era})`}
+            aria-label={`${pitch.name}, ${label.toLowerCase()}, ${pitch.era}`}
+            className="group absolute flex items-center gap-1.5 rounded-sm py-2 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan/80"
+            style={{ top: row * ROW_H, left: `${left}%` }}
+          >
+            <span
+              className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-transparent transition-[box-shadow] group-hover:ring-white/25"
+              style={{ background: color }}
+            />
+            {/* the code stays visible at every width (it carries the data); the
+                year joins it once there is room. Spacing clears the code label. */}
+            <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2/75 transition-colors group-hover:text-bone group-focus-visible:text-bone">
+              {pitch.specimenNo}
+              <span className="hidden text-bone-2/70 md:inline"> {year}</span>
+            </span>
+          </Link>
+        ))}
       </div>
     </div>
   )
@@ -114,7 +107,7 @@ function Lane({ tier, label }: { tier: DocumentationTier; label: string }) {
 
 export function EraTimeline() {
   return (
-    <section className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20" aria-labelledby="era-timeline-title">
+    <section className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-16 md:px-8 md:py-20" aria-labelledby="era-timeline-title">
       <p className="mono-label text-seam">The record, in time</p>
       <h2 id="era-timeline-title" className="rfx-stitle mt-3 max-w-[20ch] text-[clamp(24px,3.6vw,40px)] leading-[1.04]">
         When the lost pitches cluster.
@@ -131,7 +124,7 @@ export function EraTimeline() {
           {DECADES.map((d) => (
             <span
               key={d}
-              className="absolute -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2/50"
+              className="absolute -translate-x-1/2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2/75"
               style={{ left: `${pos(d)}%` }}
             >
               {d}s

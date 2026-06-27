@@ -1163,7 +1163,7 @@ export const REPERTOIRE_FAMILIES: { family: RepertoireFamily; label: string; blu
   {
     family: 'banned',
     label: 'Banned & doctored',
-    blurb: 'Outlawed in 1920, but never gone from the lore. A scuff, a smear, a shine — movement bought by breaking a rule.',
+    blurb: 'Outlawed in 1920, but never gone from the lore. A scuff, a smear, a shine: movement bought by breaking a rule.',
   },
 ]
 

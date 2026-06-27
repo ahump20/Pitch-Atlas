@@ -62,7 +62,7 @@ function Node({ entry, accent }: { entry: RepertoireEntry; accent: string }) {
 
 export function LineageMap() {
   return (
-    <section className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20" aria-labelledby="lineage-map-title">
+    <section className="relative mx-auto max-w-6xl scroll-mt-24 px-5 py-16 md:px-8 md:py-20" aria-labelledby="lineage-map-title">
       <p className="mono-label text-cyan">The whole repertoire</p>
       <h2 id="lineage-map-title" className="rfx-stitle mt-3 max-w-[22ch] text-[clamp(24px,3.6vw,40px)] leading-[1.04]">
         Every pitch, by family.
@@ -74,7 +74,7 @@ export function LineageMap() {
       </p>
 
       {/* legend */}
-      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2/60">
+      <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2/75">
         <span className="inline-flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-bone" aria-hidden="true" /> Filed specimen
         </span>
@@ -98,7 +98,7 @@ export function LineageMap() {
               <div className="flex items-baseline gap-2.5 border-b border-bone/12 pb-2">
                 <span className="h-3 w-1 rounded-full" style={{ background: accent }} aria-hidden="true" />
                 <h3 className="rfx-athletic text-lg uppercase text-bone">{fam.label}</h3>
-                <span className="mono-label-stage text-bone-2/50">{entries.length}</span>
+                <span className="mono-label-stage text-bone-2/75">{entries.length}</span>
               </div>
               <p className="mt-2.5 max-w-[52ch] text-[13.5px] leading-relaxed text-bone-2/80">{fam.blurb}</p>
               <div className="mt-4 flex flex-wrap gap-2">
