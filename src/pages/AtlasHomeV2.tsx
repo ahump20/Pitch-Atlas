@@ -4,6 +4,7 @@ import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, truncateForMeta } from '../lib/seo'
 import { HeroCase } from '../components/v2/HeroCase'
 import { MissionCase } from '../components/v2/MissionCase'
+import { ArchiveBand } from '../components/v2/ArchiveBand'
 import { RefractionBridge } from '../components/v2/RefractionBridge'
 import { ChromeWall } from '../components/v2/ChromeWall'
 import { TheRead } from '../components/v2/TheRead'
@@ -42,6 +43,7 @@ export function AtlasHomeV2() {
     <>
       <HeroCase featured={featured} />
       <MissionCase />
+      <ArchiveBand />
       <RefractionBridge featured={featured} />
       <ChromeWall />
       <TheRead featured={featured} />

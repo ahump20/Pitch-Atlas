@@ -58,6 +58,9 @@ Brand Image Assets/
 Pitcher Analysis Assets/
 # stray nested repo (unrelated agent-skills clone, carries its own .git) — never commit
 agent-skills/
+# the iOS app is its own repo (ahump20/Pitch-Atlas-iOS, own .git); a local working
+# copy may sit here but must never be committed into the web repo - never commit
+Pitch-Atlas-iOS/
 # packaged skill/plugin artifacts (built elsewhere, not product source) — never commit
 claude-plugin/
 # Austin's raw grip source photos — converted to webp for the grip library, not shipped
@@ -80,5 +83,7 @@ pitch-atlas-founding-conversation.md
 
 # loose scratch captures + design-reference research (local only — never commit)
 scratchpad_*.png
+# stray BlazeCraft render frames (belong to the BlazeCraft project, not Pitch Atlas)
+blazecraft-*.png
 *strike zone visualization example*
 Sluggers Hit Card Inspiration examples/
