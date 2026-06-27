@@ -33,9 +33,8 @@ const RETRIEVED_6 = '2026-06-07'
 // were curl-verified in the 2026-06-10 craft-over-numbers pass.
 const RETRIEVED_7 = '2026-06-10'
 
-// Public-domain archive images added for the Lost Pitches visual layer. Kept
-// separate because these are rights/source checks, not prose research checks.
-const RETRIEVED_8 = '2026-06-26'
+// Expanded Lost Pitches plates added after a dedicated media-rights audit.
+const RETRIEVED_9 = '2026-06-27'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1819,21 +1818,63 @@ export const SOURCES = {
     id: 'commons-satchel-paige-1942',
     label: 'Wikimedia Commons, Satchel Paige 1942',
     url: 'https://commons.wikimedia.org/wiki/File:Satchel_Paige_1942_(cropped).jpg',
-    retrievedAt: RETRIEVED_8,
+    retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
   },
   'commons-rube-foster-1924': {
     id: 'commons-rube-foster-1924',
     label: 'Wikimedia Commons, Rube Foster 1924',
     url: 'https://commons.wikimedia.org/wiki/File:Rube_Foster_1924.jpg',
-    retrievedAt: RETRIEVED_8,
+    retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
   },
   'commons-negro-league-all-star-1936': {
     id: 'commons-negro-league-all-star-1936',
     label: 'Wikimedia Commons, 1936 Negro League All-Star Game',
     url: 'https://commons.wikimedia.org/wiki/File:1936_Negro_League_All-Star_Game.jpg',
-    retrievedAt: RETRIEVED_8,
+    retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-bullet-joe-rogan-1924': {
+    id: 'commons-bullet-joe-rogan-1924',
+    label: 'Wikimedia Commons, Bullet Joe Rogan 1924',
+    url: 'https://commons.wikimedia.org/wiki/File:Bullet_Joe_Rogan_1924.jpg',
+    retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-smokey-joe-williams': {
+    id: 'commons-smokey-joe-williams',
+    label: 'Wikimedia Commons, Cyclone Joe Williams',
+    url: 'https://commons.wikimedia.org/wiki/File:Williams_Cyclone_Joe.jpg',
+    retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-phil-cockrell-1924': {
+    id: 'commons-phil-cockrell-1924',
+    label: 'Wikimedia Commons, Phil Cockrell 1924',
+    url: 'https://commons.wikimedia.org/wiki/File:Phil_Cockrell_1924.jpg',
+    retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-william-bell-1924': {
+    id: 'commons-william-bell-1924',
+    label: 'Wikimedia Commons, William Bell 1924',
+    url: 'https://commons.wikimedia.org/wiki/File:William_Bell_1924.jpg',
+    retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-dave-brown-1923': {
+    id: 'commons-dave-brown-1923',
+    label: 'Wikimedia Commons, 1923 Tomas Gutierrez Dave Brown card',
+    url: 'https://commons.wikimedia.org/wiki/File:1923_Tomas_Gutierrez_Dave_Brown.jpg',
+    retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-lincoln-giants-1912': {
+    id: 'commons-lincoln-giants-1912',
+    label: 'Wikimedia Commons, 1912 Lincoln Giants team photograph',
+    url: 'https://commons.wikimedia.org/wiki/File:1912_Lincoln_Giants.jpg',
+    retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
   },
 } satisfies Record<string, Source>
