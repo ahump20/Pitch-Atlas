@@ -91,6 +91,24 @@ function searchSort(value: string | null): IndexSort {
   return SORT_KEYS.has(value as IndexSort) ? (value as IndexSort) : 'default'
 }
 
+/* The status facet: narrow the index to a single field-rarity / honest-edge tier
+   (RepertoireStatus). A real field on every entry and the same axis the Field
+   rarity legend explains — distinct from family (the pitch family) and from
+   documentation depth (the specimen grade); never folded into one score. Composes
+   with family + search + sort; only tiers actually present in the data render, so
+   there is never an empty toggle. Reads the STATUS map for label + dot color. */
+type StatusFilter = RepertoireStatus | 'all'
+const STATUS_ORDER: RepertoireStatus[] = [
+  'standard', 'niche', 'rare', 'near-extinct', 'banned', 'alias', 'illusion', 'not-a-pitch',
+]
+const PRESENT_STATUSES: RepertoireStatus[] = STATUS_ORDER.filter((s) =>
+  REPERTOIRE.some((e) => e.status === s),
+)
+const STATUS_KEYS = new Set<StatusFilter>([...PRESENT_STATUSES, 'all'])
+function searchStatus(value: string | null): StatusFilter {
+  return STATUS_KEYS.has(value as StatusFilter) ? (value as StatusFilter) : 'all'
+}
+
 /* Documentation depth: how richly THIS atlas has preserved the pitch (a filmed
    grip beats a still beats a schematic), read off specimenGradeFor — the same
    source the cards stamp, never a fabricated ladder. It is the preservation
@@ -267,6 +285,7 @@ export function PitchIndex({ id }: { id?: string }) {
   const filter = searchFilter(searchParams.get('family'))
   const view = searchView(searchParams.get('view'))
   const sort = searchSort(searchParams.get('sort'))
+  const status = searchStatus(searchParams.get('status'))
   const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
 
@@ -283,7 +302,7 @@ export function PitchIndex({ id }: { id?: string }) {
   }
 
   function updateIndexParams(
-    patch: { q?: string | null; family?: FamilyFilter | null; view?: IndexView | null; sort?: IndexSort | null },
+    patch: { q?: string | null; family?: FamilyFilter | null; view?: IndexView | null; sort?: IndexSort | null; status?: StatusFilter | null },
     options: { replace?: boolean; announce?: string } = {},
   ) {
     setSearchParams(
@@ -306,6 +325,10 @@ export function PitchIndex({ id }: { id?: string }) {
           if (patch.sort && patch.sort !== 'default') next.set('sort', patch.sort)
           else next.delete('sort')
         }
+        if ('status' in patch) {
+          if (patch.status && patch.status !== 'all') next.set('status', patch.status)
+          else next.delete('status')
+        }
         return next
       },
       { replace: options.replace ?? false, preventScrollReset: true, flushSync: true },
@@ -315,7 +338,7 @@ export function PitchIndex({ id }: { id?: string }) {
 
   function resetIndex() {
     updateIndexParams(
-      { q: null, family: null, view: null, sort: null },
+      { q: null, family: null, view: null, sort: null, status: null },
       { replace: true, announce: 'Index reset' },
     )
   }
@@ -339,6 +362,7 @@ export function PitchIndex({ id }: { id?: string }) {
     let entries = repertoireByFamily(fam.family)
     if (filter === 'filed') entries = entries.filter((e) => e.filedSlug)
     else if (filter !== 'all') entries = entries.filter(() => fam.family === filter)
+    if (status !== 'all') entries = entries.filter((e) => e.status === status)
     if (q) {
       entries = entries.filter((e) =>
         [e.name, ...(e.aka ?? []), e.family].join(' ').toLowerCase().includes(q),
@@ -348,8 +372,7 @@ export function PitchIndex({ id }: { id?: string }) {
   }).filter((g) => g.entries.length > 0)
 
   const total = groups.reduce((n, g) => n + g.entries.length, 0)
-  const activeFilterLabel = FILTERS.find((f) => f.key === filter)?.label ?? 'All'
-  const hasActiveState = q.length > 0 || filter !== 'all' || view !== 'rows' || sort !== 'default'
+  const hasActiveState = q.length > 0 || filter !== 'all' || view !== 'rows' || sort !== 'default' || status !== 'all'
   const countLabel = `${total} ${total === 1 ? 'pitch' : 'pitches'}${
     filter === 'all' ? '' : filter === 'filed' ? ' · filed specimens' : ` · ${filter}`
   }${q ? ` · matching "${query.trim()}"` : ''}`
@@ -467,6 +490,54 @@ export function PitchIndex({ id }: { id?: string }) {
             ))}
           </ToggleGroup>
         </div>
+        {/* Status facet: filter to one field-rarity / honest-edge tier. Its own
+            compact row so the bar stays short on phones; scrolls horizontally if it
+            must. Dot color + label both show (never hue-only), read off the same
+            STATUS map the Field rarity legend uses. Only tiers in the data render. */}
+        {PRESENT_STATUSES.length > 1 ? (
+          <div className="mt-2.5 flex items-center gap-2">
+            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Status</span>
+            <ToggleGroup
+              type="single"
+              value={status}
+              onValueChange={(next) => {
+                if (next)
+                  morph(() =>
+                    updateIndexParams(
+                      { status: next as StatusFilter },
+                      {
+                        announce:
+                          next === 'all'
+                            ? 'All statuses shown'
+                            : `Status: ${STATUS[next as RepertoireStatus].label}`,
+                      },
+                    ),
+                  )
+              }}
+              className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
+              aria-label="Filter by pitch status"
+            >
+              <ToggleGroupItem
+                value="all"
+                aria-label="All statuses"
+                className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+              >
+                All
+              </ToggleGroupItem>
+              {PRESENT_STATUSES.map((s) => (
+                <ToggleGroupItem
+                  key={s}
+                  value={s}
+                  aria-label={STATUS[s].label}
+                  className="pi-toggle inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  <i className="h-1.5 w-1.5 flex-none rounded-full" style={{ background: STATUS[s].color }} aria-hidden="true" />
+                  {STATUS[s].label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+        ) : null}
         <p aria-live="polite" className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3 md:mt-3">
           {countLabel}
         </p>
@@ -488,9 +559,9 @@ export function PitchIndex({ id }: { id?: string }) {
             <EmptyDescription className="text-[13px] text-ink-3">
               {q
                 ? `"${query.trim()}" is not in the ${REPERTOIRE.length} indexed entries. Try a family or an alias${
-                    filter === 'all' ? '' : `, or clear the ${activeFilterLabel} filter`
+                    filter === 'all' && status === 'all' ? '' : ', or clear the active filters'
                   }. The index only shows what the atlas has actually filed.`
-                : `Every entry is excluded by the ${activeFilterLabel} filter. Clear it to see the full index.`}
+                : `No entry matches the active filters. Reset to see all ${REPERTOIRE.length} entries.`}
             </EmptyDescription>
             <Button
               type="button"
