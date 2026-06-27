@@ -289,16 +289,16 @@ export function PitchIndex({ id }: { id?: string }) {
   const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
 
-  // the announcer: a hidden live region for events the screen can't show
-  // (Escape clearing the search). The message clears itself so a repeat
-  // of the same event re-announces.
+  // the announcer: a hidden live region for events the screen can't show.
+  // Repeat announcements briefly reset the node, then keep the last message so
+  // overloaded test/browser queues cannot miss it after a cleanup timer fires.
   const [announce, setAnnounce] = useState('')
   const announceTimer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(announceTimer.current), [])
   function say(msg: string) {
-    setAnnounce(msg)
     window.clearTimeout(announceTimer.current)
-    announceTimer.current = window.setTimeout(() => setAnnounce(''), 1600)
+    setAnnounce('')
+    announceTimer.current = window.setTimeout(() => setAnnounce(msg), 0)
   }
 
   function updateIndexParams(
