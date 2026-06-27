@@ -528,6 +528,23 @@ export interface RepertoireEntry {
    * and still shows the "fuller breakdown coming" marker.
    */
   plain?: string
+  /**
+   * Study hook: the slug of a filed specimen (/pitch/<slug>) to study first —
+   * the filed family anchor or closest filed cousin that teaches this pitch's
+   * mechanic with full grip geometry. Pure navigation, like the family rail: it
+   * carries no behavioral claim of its own, and is validated at build to resolve
+   * to a real filed pitch so a broken hook can never ship. Absent -> the basic
+   * page simply omits the study block.
+   */
+  studyFirstSlug?: string
+  /**
+   * Optional sourced one-line bridge that explains why that filed specimen is
+   * worth studying for this pitch. A real Claim (Source + confidence), authored
+   * only where a registered source genuinely supports the connection; omitted
+   * where the link is left to speak for itself rather than asserting an unsourced
+   * inference. Never a measured figure.
+   */
+  contextNote?: Claim<string>
 }
 
 /*

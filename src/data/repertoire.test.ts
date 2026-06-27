@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { REPERTOIRE } from './repertoire'
+import { BASIC_REPERTOIRE, REPERTOIRE } from './repertoire'
+import { PITCHES, pitchBySlug } from './pitches'
 import { AUSTIN_GRIPS, gripEntryFor, gripPhotosFor } from './grips'
 
 function entry(id: string) {
@@ -75,5 +76,67 @@ describe("Austin's pitches stay in his terms (never remapped to league taxonomy)
       /\/(palmball|splitter)-/.test(p.src),
     )
     expect(stale).toHaveLength(0)
+  })
+})
+
+/*
+  Feature #11 — basic-file study hooks. A basic file is the page an unfiled pitch
+  lands on; the study hook is the one bridge it gets to a filed specimen that
+  teaches its mechanic. These guards keep the hook honest: it must resolve to a
+  real filed pitch (never a typo or a basic id), every context note is a real
+  sourced claim, and the banned doctored pitches stay hook-free because none has a
+  legal pitch to "study first."
+*/
+describe('basic-file study hooks', () => {
+  const FILED = new Set(PITCHES.map((p) => p.display.slug))
+
+  it('points every study hook at a real filed specimen, never a basic id or a typo', () => {
+    for (const e of BASIC_REPERTOIRE) {
+      if (!e.studyFirstSlug) continue
+      expect(FILED.has(e.studyFirstSlug), `${e.id} -> ${e.studyFirstSlug}`).toBe(true)
+      expect(pitchBySlug(e.studyFirstSlug)).toBeDefined()
+    }
+  })
+
+  it('gives every non-banned basic file a study hook so none silently dead-ends', () => {
+    const orphans = BASIC_REPERTOIRE.filter(
+      (e) => e.family !== 'banned' && !e.studyFirstSlug,
+    ).map((e) => e.id)
+    expect(orphans).toEqual([])
+  })
+
+  it('keeps the banned doctored pitches hook-free — no legal pitch to study first', () => {
+    const banned = BASIC_REPERTOIRE.filter((e) => e.family === 'banned')
+    expect(banned.length).toBeGreaterThan(0)
+    expect(banned.every((e) => e.studyFirstSlug === undefined)).toBe(true)
+    expect(banned.every((e) => e.contextNote === undefined)).toBe(true)
+  })
+
+  it('makes every context note a real sourced claim with clean visible copy', () => {
+    for (const e of BASIC_REPERTOIRE) {
+      if (!e.contextNote) continue
+      const c = e.contextNote
+      expect(c.value.length, `${e.id} note empty`).toBeGreaterThan(0)
+      const weak = c.confidence === 'unverified' || c.confidence === 'secondhand-attributed'
+      // a confident note carries a source; a weak one must carry its explanatory note
+      if (weak) expect(c.note && c.note.length > 0, `${e.id} weak note needs a note`).toBe(true)
+      else expect(c.source, `${e.id} note needs a source`).toBeDefined()
+      // no em/en dash leaks into the study copy I authored (Austin's own ledes are exempt)
+      expect(c.value, `${e.id} note has a long dash`).not.toMatch(/[—–]/)
+    }
+  })
+
+  it("keeps Austin's pitch hooks in his terms and the screwball bridge honest", () => {
+    const sf = BASIC_REPERTOIRE.find((e) => e.id === 'split-finger-fastball')!
+    expect(sf.studyFirstSlug).toBe('splitter')
+    expect(sf.contextNote?.confidence).toBe('pitcher-own-words')
+
+    const fc = BASIC_REPERTOIRE.find((e) => e.id === 'football-changeup')!
+    expect(fc.contextNote?.confidence).toBe('pitcher-own-words')
+    expect(fc.contextNote?.value.toLowerCase()).toContain('not a palmball')
+
+    // the circle change is the sourced modern stand-in for the screwball's arm-side fade
+    const screw = BASIC_REPERTOIRE.find((e) => e.id === 'screwball')!
+    expect(screw.studyFirstSlug).toBe('circle-change')
   })
 })

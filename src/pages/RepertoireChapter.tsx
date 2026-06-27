@@ -1,7 +1,8 @@
 import { useParams, Navigate, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
-import type { RepertoireEntry, RepertoireFamily } from '../data/types'
+import type { Claim, RepertoireEntry, RepertoireFamily } from '../data/types'
 import { repertoireById, repertoireByFamily, BASIC_REPERTOIRE } from '../data/repertoire'
+import { pitchBySlug } from '../data/pitches'
 import { gripEntryFor } from '../data/grips'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
@@ -94,6 +95,46 @@ function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireE
         </div>
       </div>
     </nav>
+  )
+}
+
+/*
+  The study hook: a basic file is a dead-end without a way forward, so it points
+  to the one filed specimen that teaches its mechanic with full grip geometry.
+  The link is pure navigation (the target name is read from the filed record, never
+  authored here); the optional contextNote is the sourced one-line bridge, rendered
+  with its provenance like every other claim. Absent studyFirstSlug -> nothing
+  renders, which is the honest state for a pitch with no filed cousin (the banned
+  doctored ball has no legal one to study).
+*/
+function StudyFirst({ slug, note }: { slug: string; note?: Claim<string> }) {
+  const target = pitchBySlug(slug)
+  if (!target) return null
+  return (
+    <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
+      <div className="rounded-sm border border-ink/20 bg-paper-2 px-6 py-6">
+        <p className="mono-label mb-3 text-seam">Study this first</p>
+        {note ? (
+          <ClaimProse
+            claim={note}
+            className="mb-5"
+            proseClassName="max-w-[64ch] text-lg leading-relaxed text-ink"
+          />
+        ) : null}
+        <Link
+          to={`/pitch/${target.display.slug}`}
+          className="group inline-flex items-center gap-3 rounded-sm border border-ink/20 bg-paper px-5 py-3 transition-colors hover:border-seam"
+        >
+          <span className="mono-label text-ink-3">Filed specimen</span>
+          <span className="font-athletic text-lg uppercase text-ink transition-colors group-hover:text-seam">
+            {target.canonical.name}
+          </span>
+          <span aria-hidden="true" className="text-seam">
+            →
+          </span>
+        </Link>
+      </div>
+    </section>
   )
 }
 
@@ -246,6 +287,11 @@ export function RepertoireChapter() {
             {entry.notableThrowers}
           </p>
         </section>
+      ) : null}
+
+      {/* The study hook: where to go next to learn this pitch's mechanic for real. */}
+      {entry.studyFirstSlug ? (
+        <StudyFirst slug={entry.studyFirstSlug} note={entry.contextNote} />
       ) : null}
 
       {/* The honest marker: this is a basic file, not a measured specimen. */}
