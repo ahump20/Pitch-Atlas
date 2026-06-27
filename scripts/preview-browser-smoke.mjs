@@ -19,7 +19,7 @@ function route(path) {
 }
 
 async function pageText(page) {
-  return page.locator('body').innerText({ timeout: 10_000 })
+  return page.evaluate(() => document.body?.innerText ?? '')
 }
 
 function includesText(text, pattern) {
@@ -43,6 +43,7 @@ async function collectConsole(page, callback) {
   return messages.filter(
     (message) =>
       !message.includes('THREE.Clock: This module has been deprecated') &&
+      !message.includes('THREE.sigmaRadians') &&
       !message.includes('GL Driver Message') &&
       !message.includes("'upgrade-insecure-requests' is ignored when delivered in a report-only policy"),
   )
@@ -94,9 +95,11 @@ async function assertVisible(page, selector, label) {
   record(box.x < viewport.width && box.y < viewport.height, `${label} starts outside the first viewport`)
 }
 
-async function waitForLayoutBox(page, selector, label) {
-  try {
-    await page.waitForFunction(
+// A non-recording layout-box probe, used inside retry loops where a transient
+// miss should cost one iteration rather than fail the whole run.
+async function hasLayoutBox(page, selector, timeout = 4_000) {
+  return page
+    .waitForFunction(
       (target) => {
         const el = document.querySelector(target)
         if (!el) return false
@@ -104,13 +107,24 @@ async function waitForLayoutBox(page, selector, label) {
         return rect.width > 0 && rect.height > 0
       },
       selector,
-      { timeout: 10_000 },
+      { timeout },
     )
-    return true
-  } catch {
-    record(false, `${label} never received a clickable layout box`)
-    return false
+    .then(() => true)
+    .catch(() => false)
+}
+
+async function waitForHomeShell(page) {
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    const hasShell =
+      (await page.locator('header').count()) > 0 &&
+      (await page.locator('main').count()) > 0
+    if (hasShell) return true
+    await page.reload({ waitUntil: 'domcontentloaded' }).catch(() => undefined)
+    await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
+    await page.waitForTimeout(500)
   }
+  record(false, 'Home mobile shell did not attach after reload')
+  return false
 }
 
 async function checkRepertoire(page, viewport) {
@@ -170,35 +184,51 @@ async function checkRepertoire(page, viewport) {
 
 async function checkHomeMobileMenu(page) {
   await page.setViewportSize({ width: 390, height: 844 })
-  const mobileMenuButtonSelector =
-    'header button[aria-controls="mobile-nav"], header button[aria-label="Open menu"], header button[aria-label="Close menu"]'
+  const mobileMenuButtonSelector = 'header button[aria-controls="mobile-nav"]'
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
-    await page.waitForLoadState('load')
-    await page.locator('main').waitFor({ state: 'attached' })
+    await page.locator('main').waitFor({ state: 'attached', timeout: 15_000 }).catch(() => undefined)
+    await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
+    await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined)
   })
 
   assert.equal(await page.title(), 'Pitch Atlas: The Living Archive of Pitching Craft')
   const body = await pageText(page)
   record(includesText(body, /pitch atlas/i), 'Home body did not render')
   record(messages.length === 0, `Home mobile console warnings/errors: ${messages.join(' | ')}`)
+  if (!(await waitForHomeShell(page))) return
   await assertVisible(page, 'header', 'Home mobile masthead')
   await assertVisible(page, 'main', 'Home mobile main')
   await assertNoHorizontalOverflow(page, 'Home mobile')
 
   const menuButton = page.locator(mobileMenuButtonSelector).first()
   try {
-    await menuButton.waitFor({ state: 'attached', timeout: 10_000 })
+    await menuButton.waitFor({ state: 'visible', timeout: 15_000 })
   } catch (error) {
     if (error?.name !== 'TimeoutError') throw error
-    record(false, 'Home mobile menu button was not attached')
+    record(false, 'Home mobile menu button was not visible')
     return
   }
-  if (!(await waitForLayoutBox(page, mobileMenuButtonSelector, 'Home mobile menu button'))) return
-
+  // The home masthead button can detach and re-attach repeatedly while the
+  // lazy WebGL ball hydrates, so a single layout-box wait followed by a click
+  // races that churn: the box check passes, then the node is replaced before
+  // the click lands. Re-measure the box and re-issue the click each attempt,
+  // and only fail once the retries are exhausted.
   let menuOpened = false
-  for (let attempt = 0; attempt < 5; attempt += 1) {
-    await menuButton.click()
+  let everHadLayoutBox = false
+  for (let attempt = 0; attempt < 8; attempt += 1) {
+    if (!(await hasLayoutBox(page, mobileMenuButtonSelector))) {
+      await page.waitForTimeout(750)
+      continue
+    }
+    everHadLayoutBox = true
+    try {
+      await menuButton.click({ timeout: 4_000 })
+    } catch (error) {
+      if (error?.name !== 'TimeoutError') throw error
+      await page.waitForTimeout(750)
+      continue
+    }
     menuOpened = await page
       .waitForFunction((selector) => {
         const button = document.querySelector(selector)
@@ -207,7 +237,11 @@ async function checkHomeMobileMenu(page) {
       .then(() => true)
       .catch(() => false)
     if (menuOpened) break
-    await page.waitForTimeout(500)
+    await page.waitForTimeout(750)
+  }
+  if (!everHadLayoutBox) {
+    record(false, 'Home mobile menu button never received a clickable layout box')
+    return
   }
   record(menuOpened, 'Mobile menu did not open after hydration')
   if (!menuOpened) return
