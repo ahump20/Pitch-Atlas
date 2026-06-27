@@ -97,9 +97,12 @@ function Lane({ tier, label }: { tier: DocumentationTier; label: string }) {
                 className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-transparent transition-[box-shadow] group-hover:ring-white/20 group-focus-visible:ring-cyan/70"
                 style={{ background: color }}
               />
-              <span className="whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2/70 transition-colors group-hover:text-bone group-focus-visible:text-bone">
+              {/* labels collide on narrow screens, so on mobile the markers are
+                  dots only (still to-scale, still tap-to-open); the code + year
+                  return once there is room. */}
+              <span className="hidden whitespace-nowrap font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2/70 transition-colors group-hover:text-bone group-focus-visible:text-bone sm:inline">
                 {pitch.specimenNo}
-                <span className="hidden text-bone-2/45 sm:inline"> {year}</span>
+                <span className="hidden text-bone-2/45 md:inline"> {year}</span>
               </span>
             </Link>
           )
