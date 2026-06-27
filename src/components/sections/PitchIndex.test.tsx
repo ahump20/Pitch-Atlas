@@ -137,6 +137,27 @@ describe('PitchIndex controls', () => {
       expect(screen.getAllByText(g.label).length).toBeGreaterThan(0)
     }
   })
+
+  it('facets the index by status and carries it in the URL', async () => {
+    const user = userEvent.setup()
+    const { container } = renderIndex()
+    const allRows = container.querySelectorAll('a.rfx-entry').length
+
+    // 'Near-extinct' is a status with no colliding family-filter label, and only
+    // some entries carry it — so the facet must genuinely narrow the list.
+    await user.click(screen.getByRole('radio', { name: /^near-extinct$/i }))
+    expect(screen.getByTestId('location-search')).toHaveTextContent('status=near-extinct')
+
+    const narrowed = container.querySelectorAll('a.rfx-entry').length
+    const expected = REPERTOIRE.filter((e) => e.status === 'near-extinct').length
+    expect(expected).toBeGreaterThan(0)
+    expect(narrowed).toBe(expected) // count derived from the data, never typed in
+    expect(narrowed).toBeLessThan(allRows)
+
+    await user.click(screen.getByRole('button', { name: /^reset$/i }))
+    expect(screen.getByTestId('location-search')).not.toHaveTextContent('status')
+    expect(container.querySelectorAll('a.rfx-entry').length).toBe(allRows)
+  })
 })
 
 describe('PitchIndex row marks', () => {
