@@ -4,6 +4,7 @@ import type { ClaimConfidence } from '../data/types'
 import { PITCHES } from '../data/pitches'
 import {
   Button,
+  type ButtonVariant,
   SearchField,
   SourceBadge,
   type SourceTier,
@@ -51,6 +52,15 @@ function Section({ eyebrow, title, children }: { eyebrow: string; title: string;
   )
 }
 
+function ButtonSpec({ variant, arrow, children }: { variant: ButtonVariant; arrow?: boolean; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-start gap-2">
+      <Button variant={variant} arrow={arrow}>{children}</Button>
+      <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-bone-3">variant=&quot;{variant}&quot;</span>
+    </div>
+  )
+}
+
 export function DesignSystemShowcase() {
   useSeoMeta({
     title: 'Design System · Pitch Atlas',
@@ -85,12 +95,16 @@ export function DesignSystemShowcase() {
       </Section>
 
       <Section eyebrow="Action" title="Button">
-        <div className="flex flex-wrap items-center gap-4">
-          <Button variant="chrome" arrow>Open the Pitch Index</Button>
-          <Button variant="ghost" arrow>Read the mission</Button>
-          <Button variant="foil">Open the atlas</Button>
-          <Button variant="ink">On cream</Button>
-          <Button variant="link" arrow>Watch it flatten</Button>
+        <div className="flex flex-wrap items-start gap-x-6 gap-y-5">
+          <ButtonSpec variant="chrome" arrow>Open the Pitch Index</ButtonSpec>
+          <ButtonSpec variant="ghost" arrow>Read the mission</ButtonSpec>
+          <ButtonSpec variant="foil">Open the atlas</ButtonSpec>
+          <ButtonSpec variant="link" arrow>Watch it flatten</ButtonSpec>
+        </div>
+        {/* the ink variant is the cream-register treatment — shown on a cream swatch where it belongs */}
+        <div className="field-cream mt-6 inline-flex flex-wrap items-center gap-3 rounded-lg bg-paper px-5 py-4">
+          <Button variant="ink" arrow>On cream</Button>
+          <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-3">variant=&quot;ink&quot; · cream register</span>
         </div>
       </Section>
 
