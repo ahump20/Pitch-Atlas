@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Button } from '../ds/Button'
 import {
   CONFIDENCE_META,
   type ClaimConfidence,
@@ -263,9 +264,9 @@ export function ChromeWall() {
         </div>
 
         <div className="mt-10">
-          <Link to="/repertoire" className="v2-cta">
-            Open the full Pitch Index <span aria-hidden="true">→</span>
-          </Link>
+          <Button as={Link} to="/repertoire" variant="chrome" arrow>
+            Open the full Pitch Index
+          </Button>
         </div>
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Button } from '../ds/Button'
 import type { PitchAtlasEntry } from '../../data/types'
 import { SITE } from '../../config/site'
 import { scrollToId } from '../../lib/scroll'
@@ -59,12 +60,12 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             className="v2-enter mt-7 flex flex-wrap items-center gap-3"
             style={{ '--i': 3 } as React.CSSProperties}
           >
-            <Link to="/repertoire" className="v2-cta">
-              Open the Pitch Index <span aria-hidden="true">→</span>
-            </Link>
-            <Link to="/about" className="v2-cta is-ghost">
-              Read the mission <span aria-hidden="true">→</span>
-            </Link>
+            <Button as={Link} to="/repertoire" variant="chrome" arrow>
+              Open the Pitch Index
+            </Button>
+            <Button as={Link} to="/about" variant="ghost" arrow>
+              Read the mission
+            </Button>
           </div>
 
           {mediaLead ? (

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Button } from '../ds/Button'
 import { SITE } from '../../config/site'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
@@ -48,12 +49,12 @@ export function CloseCta() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link to="/repertoire" className="v2-cta">
-              Open the Pitch Index <span aria-hidden="true">→</span>
-            </Link>
-            <Link to="/lost-pitches" className="v2-cta is-ghost">
-              The lost pitches <span aria-hidden="true">→</span>
-            </Link>
+            <Button as={Link} to="/repertoire" variant="chrome" arrow>
+              Open the Pitch Index
+            </Button>
+            <Button as={Link} to="/lost-pitches" variant="ghost" arrow>
+              The lost pitches
+            </Button>
           </div>
         </div>
       </div>
