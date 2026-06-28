@@ -5,6 +5,7 @@ import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
 import { ClaimCard } from '../provenance/ClaimCard'
 import { ChapterMark } from './ChapterMark'
+import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 /*
   v2 · Sourced, not corrected. The principle as the feature, not a footnote.
@@ -14,16 +15,6 @@ import { ChapterMark } from './ChapterMark'
   instead of asserting. The colophon figures are derived from the registry at
   build, never a typed freshness string.
 */
-
-const TIER_DOT: Record<ClaimConfidence, string> = {
-  'official-data': '#4FB286',
-  'pitcher-own-words': '#6CACE4',
-  'coach-observed': '#6CACE4',
-  'reputable-analysis': '#D8A24A',
-  'secondhand-attributed': '#C7B98F',
-  'community-firsthand': '#C7B98F',
-  unverified: '#FF4D5E',
-}
 
 const LADDER: ClaimConfidence[] = [
   'official-data',
@@ -68,7 +59,7 @@ export function ProvenanceStrip() {
               >
                 <i
                   className="mt-1 inline-block h-2.5 w-2.5 rounded-full"
-                  style={{ background: TIER_DOT[tier] }}
+                  style={{ background: STAGE_TIER_DOT[tier] }}
                   aria-hidden="true"
                 />
                 <span>

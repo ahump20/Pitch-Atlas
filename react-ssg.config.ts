@@ -1,7 +1,7 @@
 import type { RouteObject } from 'react-router-dom'
 import { defineReactSsgConfig } from 'vite-plugin-react-ssg'
 import { routes } from './src/routes'
-import { sitemapPaths } from './src/lib/sitemap'
+import { sitemapPaths, SITEMAP_EXCLUDED } from './src/lib/sitemap'
 
 /*
   Build-time prerender targets, derived — never hand-listed. sitemapPaths()
@@ -44,5 +44,5 @@ export default defineReactSsgConfig({
   history: 'browser',
   origin: 'https://pitch-atlas.com',
   routes: await resolveLazyRoutes(routes),
-  paths: ['/404', ...sitemapPaths()],
+  paths: ['/404', ...sitemapPaths(), ...SITEMAP_EXCLUDED],
 })

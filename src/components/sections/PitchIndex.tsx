@@ -16,7 +16,7 @@ import { BinderSheet, RepertoirePocket } from './BinderSheet'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
-import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
+import { SearchField } from '../ds/SearchField'
 import { ToggleGroup, ToggleGroupItem } from '../ui/toggle-group'
 import { EggButton } from '../eggs/EggButton'
 
@@ -384,24 +384,12 @@ export function PitchIndex({ id }: { id?: string }) {
       <div className="sticky top-16 z-20 -mx-5 mt-6 bg-background/92 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
         <label className="block">
           <span className="sr-only">Search the Pitch Index</span>
-          <InputGroup className="h-11 rounded-xl border-cyan/40 bg-[#1D1710] text-bone">
-            <InputGroupAddon>
-              <SearchIcon aria-hidden="true" />
-            </InputGroupAddon>
-            <InputGroupInput
-              type="search"
-              value={query}
-              onChange={(e) => updateIndexParams({ q: e.target.value }, { replace: true })}
-              onKeyDown={(e) => {
-                // Escape wipes the search clean and says so
-                if (e.key === 'Escape' && query) {
-                  updateIndexParams({ q: null }, { replace: true, announce: 'Search cleared' })
-                }
-              }}
-              placeholder="Search a pitch, an alias, a family…"
-              className="h-full text-[15px] placeholder:text-ink-3"
-            />
-          </InputGroup>
+          <SearchField
+            value={query}
+            onChange={(e) => updateIndexParams({ q: e.target.value }, { replace: true })}
+            onClear={() => updateIndexParams({ q: null }, { replace: true, announce: 'Search cleared' })}
+            placeholder="Search a pitch, an alias, a family…"
+          />
         </label>
         {/* One control row: family filters scroll horizontally on phones (so the
             sticky bar stays short and doesn't bury the list) with the view toggle

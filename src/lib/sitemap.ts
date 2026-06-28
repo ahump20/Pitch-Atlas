@@ -46,8 +46,10 @@ export const STATIC_PATHS = [
    sitemap (and carry a noindex) until promoted. The sitemap test subtracts these
    before its parity check, so the drift alarm still fires for every real static
    route. Currently empty: the /v2 "Refractor Case" prototype was promoted to / and
-   its standalone route retired, so nothing is held back from the index. */
-export const SITEMAP_EXCLUDED = [] as const
+   its standalone route retired. /design-system is the internal component gallery:
+   it prerenders for a clean hard-load and carries noindex, but stays out of the
+   public sitemap. */
+export const SITEMAP_EXCLUDED = ['/design-system'] as const
 
 /** Every published path, static + data-derived, without origin or trailing slash. */
 export function sitemapPaths(): string[] {

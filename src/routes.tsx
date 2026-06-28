@@ -41,6 +41,7 @@ export const routes: RouteObject[] = [
       { path: 'about', lazy: () => import('./pages/AboutPage').then((m) => ({ Component: m.AboutPage })) },
       { path: 'privacy', lazy: () => import('./pages/PrivacyPage').then((m) => ({ Component: m.PrivacyPage })) },
       { path: 'support', lazy: () => import('./pages/SupportPage').then((m) => ({ Component: m.SupportPage })) },
+      { path: 'design-system', lazy: () => import('./pages/DesignSystemShowcase').then((m) => ({ Component: m.DesignSystemShowcase })) },
       { path: '*', lazy: () => import('./pages/NotFound').then((m) => ({ Component: m.NotFound })) },
     ],
   },

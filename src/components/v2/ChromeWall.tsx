@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Button } from '../ds/Button'
 import {
   CONFIDENCE_META,
   type ClaimConfidence,
@@ -17,6 +18,7 @@ import { SeamSchematic } from '../fallback/SeamSchematic'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { familyCrumb } from '../refractor/familyCrumb'
 import { ChapterMark } from './ChapterMark'
+import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 /*
   v2 · The Filed Set, as a chrome wall. Each pitch is a matte Topps-Now mount
@@ -36,18 +38,6 @@ const FAMILY_LABEL: Record<PitchFamily, string> = {
   fastball: 'Fastballs',
   breaking: 'Breaking balls',
   offspeed: 'Offspeed',
-}
-
-/* card-back tier dots, tuned to read bright on the matte black register (the
-   front's badge inks are tuned for the cream plate and would sink here). */
-const TIER_DOT: Record<ClaimConfidence, string> = {
-  'official-data': '#4FB286',
-  'pitcher-own-words': '#6CACE4',
-  'coach-observed': '#6CACE4',
-  'reputable-analysis': '#D8A24A',
-  'secondhand-attributed': '#C7B98F',
-  'community-firsthand': '#C7B98F',
-  unverified: '#FF4D5E',
 }
 
 /* the front badge inks, matched to PitchSpecimenCard so a pitch reads the same
@@ -156,7 +146,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                   <div className="rfx-scout-row">
                     <span className="rfx-scout-k">Source</span>
                     <span className="rfx-scout-v inline-flex flex-wrap items-center gap-1.5">
-                      <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: TIER_DOT[conf] }} />
+                      <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: STAGE_TIER_DOT[conf] }} />
                       {CONFIDENCE_META[conf].label}
                       {shape.approximate ? <span className="text-bone-2/60">· approx</span> : null}
                     </span>
@@ -274,9 +264,9 @@ export function ChromeWall() {
         </div>
 
         <div className="mt-10">
-          <Link to="/repertoire" className="v2-cta">
-            Open the full Pitch Index <span aria-hidden="true">→</span>
-          </Link>
+          <Button as={Link} to="/repertoire" variant="chrome" arrow>
+            Open the full Pitch Index
+          </Button>
         </div>
       </div>
     </section>
