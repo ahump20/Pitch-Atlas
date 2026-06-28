@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import {
   CONFIDENCE_META,
-  type ClaimConfidence,
   type PitchAtlasEntry,
 } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
 import { BallStage } from '../ball/BallStage'
 import { RefractorBall } from '../refractor/RefractorBall'
 import { ChapterMark } from './ChapterMark'
+import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 /*
   v2 · The Read. The two halves of a pitch, side by side: how it's held and how
@@ -17,16 +17,6 @@ import { ChapterMark } from './ChapterMark'
   matters most sits under the shape: the read is qualitative and sourced, never a
   fabricated figure. That is the charter, made literal in the layout.
 */
-
-const TIER_DOT: Record<ClaimConfidence, string> = {
-  'official-data': '#4FB286',
-  'pitcher-own-words': '#6CACE4',
-  'coach-observed': '#6CACE4',
-  'reputable-analysis': '#D8A24A',
-  'secondhand-attributed': '#C7B98F',
-  'community-firsthand': '#C7B98F',
-  unverified: '#FF4D5E',
-}
 
 export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
   const { canonical, motion, display } = featured
@@ -119,7 +109,7 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
             <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2">The shape</p>
             <p className="mt-2 max-w-[46ch] text-[14px] leading-relaxed text-bone">{shape.value}</p>
             <p className="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-bone">
-              <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: TIER_DOT[shape.confidence] }} />
+              <i className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: STAGE_TIER_DOT[shape.confidence] }} />
               {CONFIDENCE_META[shape.confidence].label}
               {shape.approximate ? <span className="text-bone-2/60"> · approx</span> : null}
             </p>
