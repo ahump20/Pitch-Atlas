@@ -2654,6 +2654,18 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     .v2-cta:focus-visible::after { opacity: .85; background-position: 60% 0; }
   }
 
+  /* ── ds/<Button> 'link' variant — a quiet mono text link. The chrome/ghost/
+     foil/ink variants reuse the existing .v2-cta / .btn-foil treatments; only
+     the link look had no existing class, so this is the single small addition. */
+  .ds-btn-link {
+    display: inline-flex; align-items: center; gap: 6px; padding: 4px 0;
+    background: none; border: none; cursor: pointer; text-decoration: none;
+    font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+    letter-spacing: .14em; text-transform: uppercase; line-height: 1;
+    color: var(--color-bone-2); transition: color .2s ease;
+  }
+  .ds-btn-link:hover { color: var(--color-bone); }
+
   /* ── the founder's register on the matte stage ──
      Where the atlas speaks in its institutional athletic voice (Anton), the
      founder speaks in the editorial serif (Newsreader). These three classes
