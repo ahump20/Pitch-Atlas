@@ -27,9 +27,9 @@
   --color-ink-2: #3F4654;       /* secondary ink: cool slate */
   --color-ink-3: #5C6473;       /* tertiary ink, hairlines (AA on cream) */
 
-  /* bone — cream text on the near-black field */
-  --color-bone: #F2ECDD;        /* primary text on the stage */
-  --color-bone-2: #C7BEA8;      /* secondary text on the stage; also sits on navy */
+  /* bone — cream text on the near-black field. Defined canonically in the
+     Refractor @theme below (#F6F1E6 / #C9C2B0); the earlier duplicate that sat
+     here was always shadowed by that block, so it has been removed. */
 
   /* accent #1: the red. Houston Oilers / Titans Battle Red, reads as Cardinal
      red. Seams, CTAs, active states, source emphasis, the force vector. Large /
@@ -1460,6 +1460,57 @@
   --sidebar-ring: #37D6FF;
 }
 
+/* ── design-system semantic vocabulary (additive) ───────────────────────
+   One named vocabulary over the existing base tokens. Aliases resolve on the
+   void by default and flip inside .field-cream where the meaning inverts.
+   Nothing is renamed; these only add names. New base values: --color-press-2
+   (foil-panel interior), --color-bone-3 (tertiary ink on the void). */
+:root {
+  --color-press-2: #16130F;
+  --color-bone-3: #969080;
+
+  /* surfaces */
+  --surface-page: var(--color-void);
+  --surface-stage: var(--color-stage);
+  --surface-card: var(--color-press);
+  --surface-card-2: var(--color-press-2);
+  --surface-cream: #F4EEE0;
+  --surface-cream-2: #EAE2D2;
+
+  /* text on the void (--text-fg*, not bare --text-*, to avoid Tailwind's
+     generated text-size utilities) */
+  --text-fg: var(--color-bone);
+  --text-fg-2: var(--color-bone-2);
+  --text-fg-muted: var(--color-bone-3);
+
+  /* call-to-action + focus (seam red; --color-seam already flips per scope) */
+  --cta-bg: var(--color-seam);
+  --cta-bg-hover: var(--color-seam-deep);
+  --cta-text: var(--color-cta-text);
+  --focus-ring: var(--color-seam);
+
+  /* provenance, semantic — the bright void tints */
+  --confidence-official: var(--color-ok-bright);
+  --confidence-reputable: var(--color-amber-bright);
+  --confidence-secondhand: var(--color-sand-bright);
+  --confidence-unverified: var(--color-bone-3);
+
+  /* lines */
+  --border-card: rgba(246, 241, 230, 0.10);
+  --hairline-void: rgba(246, 241, 230, 0.12);
+  --hairline-cream: rgba(12, 35, 64, 0.18);
+
+  /* motion (alias the existing --pa-* easings; add the durations) */
+  --ease-settle: var(--pa-ease-settle);
+  --ease-spring: var(--pa-ease-spring);
+  --dur-quick: 0.18s;
+  --dur-settle: 0.22s;
+  --dur-reveal: 0.7s;
+
+  /* radii the component layer needs (the app had only xs/sm/md) */
+  --radius-pill: 999px;
+}
+
 /* ── .field-cream: exception scope for surfaces that must stay cream ──
    Restores the original Heritage cream token values inside any subtree
    that opts in. Expected near-zero usage; most cream objects already
@@ -1507,6 +1558,17 @@
   --border: rgba(20, 22, 27, 0.14);
   --input: rgba(20, 22, 27, 0.18);
   --ring: #C8102E;
+
+  /* design-system vocabulary — cream-context overrides (only the aliases whose
+     meaning inverts on cream; --cta-bg/-hover auto-flip via --color-seam) */
+  --surface-card: var(--color-paper-2);
+  --text-fg: var(--color-ink);
+  --text-fg-2: var(--color-ink-2);
+  --text-fg-muted: var(--color-ink-3);
+  --confidence-official: var(--color-ok);
+  --confidence-reputable: var(--color-amber);
+  --confidence-secondhand: var(--color-sand);
+  --border-card: rgba(12, 35, 64, 0.14);
 }
 
 /* native range + check controls pick up the scene accent */
