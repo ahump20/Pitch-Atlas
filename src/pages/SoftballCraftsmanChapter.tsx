@@ -59,7 +59,7 @@ export function SoftballCraftsmanChapter() {
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
           ogUrl: canonicalUrl('/softball/craftsmen/' + craftsman.slug),
-          ...ogImageMeta('softball', `${craftsman.name} — ${craftsman.signaturePitch}`),
+          ...ogImageMeta('softball', `${craftsman.name}: ${craftsman.signaturePitch}`),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )

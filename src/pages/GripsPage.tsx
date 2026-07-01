@@ -21,11 +21,11 @@ export function GripsPage() {
   useSeoMeta({
     title: `The Grip Library: real grips, in the hand | ${SITE.siteName}`,
     description:
-      'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright. Plus the same-release, different-grip comparison tool.',
+      'Real photographs of every grip in one pitcher’s hand (four-seam, two-seam, 12-6 curve, splitter, and two changeups), captioned in his own words. Owned outright. Plus the same-release, different-grip comparison tool.',
     ogTitle: `The Grip Library | ${SITE.siteName}`,
     ogDescription: 'Real grips, in the hand. The part a hitter never gets to see.',
     ogUrl: canonicalUrl('/grips'),
-    ...ogImageMeta('grips', 'The Grip Library — real grips, in the hand'),
+    ...ogImageMeta('grips', 'The Grip Library: real grips, in the hand'),
   })
 
   // Deep links (e.g. the Tools menu's "Compare two grips" → /grips#grip-compare)
@@ -48,7 +48,7 @@ export function GripsPage() {
           url: canonicalUrl('/grips'),
           name: 'The Grip Library: real grips, in the hand',
           description:
-            'Real photographs of every grip in one pitcher’s hand — four-seam, two-seam, 12-6 curve, splitter, and two changeups — captioned in his own words. Owned outright.',
+            'Real photographs of every grip in one pitcher’s hand (four-seam, two-seam, 12-6 curve, splitter, and two changeups), captioned in his own words. Owned outright.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Grip Library' }],
         })}
       />
@@ -58,7 +58,7 @@ export function GripsPage() {
         title="Grips, from the hand."
         sub={
           <>
-            The grip is the one thing a hitter never gets to see. These are the real ones — photographed in
+            The grip is the one thing a hitter never gets to see. These are the real ones, photographed in
             one pitcher&rsquo;s hand, on his own ball, owned outright and captioned in his own words. Not the
             textbook&rsquo;s idea of correct; one arm&rsquo;s actual hold.
           </>
@@ -92,8 +92,8 @@ export function GripsPage() {
           <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
             A hitter reads the delivery, not the hand. Put two grips side by side under one shared arm slot and
             the trick becomes obvious: the part they can see is identical, and the part that decides the pitch is
-            the part they can&rsquo;t. These balls are our own seam geometry, oriented to the grip — schematic,
-            not a hand — and with no WebGL they fall back to the 2D seam diagram, so the grip still reads.
+            the part they can&rsquo;t. These balls are our own seam geometry, oriented to the grip (schematic,
+            not a hand), and with no WebGL they fall back to the 2D seam diagram, so the grip still reads.
           </p>
           <div className="mt-9">
             <GripCompare />

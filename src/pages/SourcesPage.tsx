@@ -124,7 +124,7 @@ export function SourcesPage() {
         </div>
 
         <p className="mt-14 max-w-[72ch] border-t border-ink/15 pt-8 text-sm leading-relaxed text-ink-2">
-          Original geometry, diagrams, and words. Real grip photos ship only from clean sources — our own
+          Original geometry, diagrams, and words. Real grip photos ship only from clean sources: our own
           photography, community own-grip uploads, and verified Creative Commons or public-domain images
           with attribution; never an unlicensed agency photo, a team or league mark, or broadcast footage.
           Instructional text is paraphrased and cited, never copied. No runtime API calls: every figure

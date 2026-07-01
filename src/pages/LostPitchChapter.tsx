@@ -90,7 +90,7 @@ export function LostPitchChapter() {
           ogTitle: `${pitch.name} | ${SITE.siteName}`,
           ogDescription: pitch.tagline,
           ogUrl: canonicalUrl('/lost-pitches/' + pitch.slug),
-          ...ogImageMeta('lost-pitches', `${pitch.name} — Lost Pitches of the Negro Leagues`),
+          ...ogImageMeta('lost-pitches', `${pitch.name}: Lost Pitches of the Negro Leagues`),
         }
       : { title: `Lost pitch not found | ${SITE.siteName}` },
   )

@@ -904,7 +904,7 @@ export const SOURCES = {
   },
   "wiki-twelve-six-curveball": {
     id: "wiki-twelve-six-curveball",
-    label: "12–6 curveball — Wikipedia",
+    label: "12-6 curveball — Wikipedia",
     url: "https://en.wikipedia.org/wiki/12%E2%80%936_curveball",
     retrievedAt: RETRIEVED_3,
   },

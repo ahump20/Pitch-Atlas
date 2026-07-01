@@ -50,7 +50,7 @@ export function WingsNav() {
           The other doors.
         </h2>
         <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
-          Four wings open off the same atlas — the arms that owned a pitch, the grips history dropped,
+          Four wings open off the same atlas: the arms that owned a pitch, the grips history dropped,
           the softball set, and the grip library. Each is a different angle on the one craft.
         </p>
 
@@ -61,14 +61,14 @@ export function WingsNav() {
             className="v2-mount group block rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-7 transition-colors hover:border-bone/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
             style={{ '--i': 0 } as React.CSSProperties}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan">The hall · door one</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan">The hall</p>
             <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">The Craftsmen</p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
-              The arms that owned a pitch — and the one pitch that is a legend, not a person. Every
+              The arms that owned a pitch, and the one pitch that is a legend, not a person. Every
               quote in here is real and carries its source.
             </p>
             <p className="mt-4 font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.1em] text-bone-2/70">
-              {HALL_NAMES.join(' · ')}
+              {HALL_NAMES.join(', ')}
             </p>
             {FEATURED_MEDIA.length > 0 ? (
               <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-cyan">
@@ -86,13 +86,13 @@ export function WingsNav() {
             className="v2-mount group block rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-7 transition-colors hover:border-bone/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
             style={{ '--i': 1 } as React.CSSProperties}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bone-2/80">The archive · door two</p>
+            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bone-2/80">The archive</p>
             <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">
               Lost Pitches of the Negro Leagues
             </p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
               The statistics are being recovered; the technique mostly never will be. Every entry wears
-              the tier its record can actually support — nothing smoothed into legend or out of it.
+              the tier its record can actually support. Nothing smoothed into legend, or out of it.
             </p>
             <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2/80">
               {ARCHIVE_TIERS.map((t) => (

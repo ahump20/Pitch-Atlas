@@ -61,7 +61,7 @@ const OG_CARD: Record<OgSection, string> = {
     Uses unhead's object form so og:image:width/height/alt/type all emit. */
 export function ogImageMeta(section?: OgSection, alt?: string) {
   const url = section ? OG_CARD[section] : OG_DEFAULT
-  const imageAlt = alt ?? `${SITE.siteName} — ${SITE.positioning}`
+  const imageAlt = alt ?? `${SITE.siteName}: ${SITE.positioning}`
   const image = { url, width: 1200, height: 630, alt: imageAlt, type: 'image/png' } as const
   return {
     ogImage: image,

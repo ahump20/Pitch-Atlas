@@ -691,7 +691,7 @@ export function PitchIndex({ id }: { id?: string }) {
         </h3>
         <p className="mt-3 max-w-[62ch] text-[14px] leading-relaxed text-bone-2">
           The statistics are being recovered; the technique mostly never will be. A box score survives; a
-          grip does not. So every entry wears a documentation tier — Documented, Partial, or Legend — instead
+          grip does not. So every entry wears a documentation tier (Documented, Partial, or Legend) instead
           of faking a precision the record cannot support. The tier is the feature.
         </p>
         <span className="mt-4 inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone">

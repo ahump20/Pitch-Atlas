@@ -114,7 +114,7 @@ export function KnowledgeHub() {
     ogTitle: `Learn | ${SITE.siteName}`,
     ogDescription: 'The craft underneath the pitch.',
     ogUrl: canonicalUrl('/learn'),
-    ...ogImageMeta('learn', 'Learn — the craft underneath the pitch'),
+    ...ogImageMeta('learn', 'Learn: the craft underneath the pitch'),
   })
 
   return (
@@ -135,7 +135,7 @@ export function KnowledgeHub() {
         title="The craft underneath the pitch."
         sub={
           <>
-            The specimens say what each pitch is. These wings say how the craft works — how the body
+            The specimens say what each pitch is. These wings say how the craft works: how the body
             creates timing, how a pitch gets built, how pitches work together, and where the source
             boundary is. Every claim sourced and labeled by confidence.
           </>

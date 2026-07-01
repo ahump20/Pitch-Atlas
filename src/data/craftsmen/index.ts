@@ -367,7 +367,7 @@ const niekro: Craftsman = {
   signaturePitch: 'Knuckleball',
   signaturePitchSlug: 'knuckleball',
   specimenNo: 'C-08',
-  tagline: 'The only knuckleballer to win 300 games — a Hall of Fame career built on the one pitch nobody, himself included, could fully explain.',
+  tagline: 'The only knuckleballer to win 300 games: a Hall of Fame career built on the one pitch nobody, himself included, could fully explain.',
   intro:
     'They called him Knucksie. On a floating knuckleball his father taught him, Phil Niekro pitched more innings than any pitcher who started in the live-ball era and threw deep into his late 40s, long after a fastball would have left him. The knuckleball is usually a last resort; for Niekro it was a 300-win, Hall of Fame career.',
   signature: claim(
@@ -412,7 +412,7 @@ const hubbell: Craftsman = {
   hand: 'left',
   signaturePitch: 'Screwball',
   specimenNo: 'C-09',
-  tagline: 'The screwball master who struck out five Hall of Famers in a row — and deformed his own arm doing it.',
+  tagline: 'The screwball master who struck out five Hall of Famers in a row and deformed his own arm doing it.',
   intro:
     'They called him King Carl and the Meal Ticket. Carl Hubbell threw the screwball, a pitch that breaks the wrong way, so well that in the 1934 All-Star Game he struck out Babe Ruth, Lou Gehrig, Jimmie Foxx, Al Simmons, and Joe Cronin in succession. The pitch fed him for a decade and left his throwing arm permanently turned, his palm facing outward at rest.',
   signature: claim(
@@ -461,7 +461,7 @@ const rivera: Craftsman = {
   signaturePitch: 'Cutter',
   signaturePitchSlug: 'cutter',
   specimenNo: 'C-10',
-  tagline: 'The greatest closer ever, built on one pitch he discovered by accident — and the first player voted into the Hall of Fame unanimously.',
+  tagline: 'The greatest closer ever, built on one pitch he discovered by accident. The first player voted into the Hall of Fame unanimously.',
   intro:
     'Mariano Rivera is the rarest thing in the game: a pitcher everyone knew was throwing one pitch, who threw it anyway, for nineteen years, better than anyone has thrown anything. The cutter arrived by accident in 1997, playing catch. He never really changed it, and it carried him to the all-time saves record and a unanimous Hall of Fame call.',
   signature: claim(
@@ -516,7 +516,7 @@ const hamels: Craftsman = {
   signaturePitch: 'Circle changeup',
   signaturePitchSlug: 'circle-change',
   specimenNo: 'C-11',
-  tagline: 'A left-handed changeup artist whose out-pitch carried him to a World Series MVP — the southpaw answer to Santana.',
+  tagline: 'A left-handed changeup artist whose out-pitch carried him to a World Series MVP: the southpaw answer to Santana.',
   intro:
     'Cole Hamels threw a changeup good enough to start a championship. A power lefty with an ordinary-looking fastball, he made his living on a circle change he could throw in any count, and in October 2008 he rode it to both the NLCS and World Series MVP. Where Johan Santana was the right-handed model of the disguised changeup, Hamels was its left-handed counterpart.',
   signature: claim(

@@ -20,7 +20,7 @@ export function CarryDiagram({ className = '' }: CarryDiagramProps) {
   const gradId = `leather-carry-${uid}`
 
   const realSeam = useMemo(() => splitRuns(projectSeam(REAL.x, REAL.y, REAL.r, 200)), [])
-  const title = `Carry. A spinless ball falls on gravity alone while the four-seam holds flatter. The gap at the plate is the carry — it rides; it never literally rises.`
+  const title = `Carry. A spinless ball falls on gravity alone while the four-seam holds flatter. The gap at the plate is the carry: it rides; it never literally rises.`
 
   return (
     <svg
