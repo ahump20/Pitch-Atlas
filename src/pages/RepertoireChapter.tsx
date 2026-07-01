@@ -156,7 +156,7 @@ export function RepertoireChapter() {
           ogTitle: `${entry.name} | ${SITE.siteName}`,
           ogDescription: entry.movement.value.slice(0, 160),
           ogUrl: canonicalUrl('/repertoire/' + entry.id),
-          ...ogImageMeta('repertoire', `${entry.name} — the Pitch Index`),
+          ...ogImageMeta('repertoire', `${entry.name}, in the Pitch Index`),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )
@@ -240,7 +240,7 @@ export function RepertoireChapter() {
               />
             </div>
             <figcaption className="mt-3 max-w-[34ch] text-center text-xs leading-snug text-ink-3 md:text-left">
-              Schematic baseball cover. This pitch has no filed seam geometry yet — the grip and shape
+              Schematic baseball cover. This pitch has no filed seam geometry yet; the grip and shape
               below are sourced in words, not measured here.
             </figcaption>
           </figure>
@@ -299,7 +299,7 @@ export function RepertoireChapter() {
         <div className="rounded-sm border border-seam/30 bg-paper-2 px-6 py-5">
           <p className="mono-label mb-2 text-seam">Basic file</p>
           <p className="max-w-[72ch] text-sm leading-relaxed text-ink-2">
-            This pitch has a sourced one-line grip and movement and an honest explanation — not yet a filed
+            This pitch has a sourced one-line grip and movement and an honest explanation, not yet a filed
             specimen with authored grip geometry and a full craft chapter. A fuller breakdown is coming. Sourced, not
             corrected.
           </p>

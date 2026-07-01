@@ -24,7 +24,7 @@ export function RepertoirePage() {
     ogTitle: `The Pitch Index | ${SITE.siteName}`,
     ogDescription: 'Every accepted pitch, by family.',
     ogUrl: canonicalUrl('/repertoire'),
-    ...ogImageMeta('repertoire', 'The Pitch Index — every accepted pitch, by family'),
+    ...ogImageMeta('repertoire', 'The Pitch Index: every accepted pitch, by family'),
   })
 
   return (

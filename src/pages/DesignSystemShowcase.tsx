@@ -64,7 +64,7 @@ function ButtonSpec({ variant, arrow, children }: { variant: ButtonVariant; arro
 export function DesignSystemShowcase() {
   useSeoMeta({
     title: 'Design System · Pitch Atlas',
-    description: 'The Pitch Atlas component layer — buttons, provenance, forms, and the specimen card — rendered from the real branded styles.',
+    description: 'The Pitch Atlas component layer (buttons, provenance, forms, and the specimen card) rendered from the real branded styles.',
     robots: 'noindex, nofollow',
   })
 
@@ -77,11 +77,11 @@ export function DesignSystemShowcase() {
     <main className="mx-auto max-w-[1100px] px-5 py-12 md:px-8">
       <Stamp style={{ color: 'var(--color-bone)' }}>Internal reference</Stamp>
       <h1 className="mt-4 font-display text-[clamp(34px,6vw,60px)] leading-[0.95] text-bone">
-        Pitch Atlas — <em>Design System</em>
+        Pitch Atlas: <em>Design System</em>
       </h1>
       <p className="mt-4 max-w-[60ch] text-[15.5px] leading-relaxed text-bone-2">
         The component layer that ships the product. Each primitive renders the same branded CSS as the live
-        site — this gallery is the system as built, not a mock. Sourced, not corrected.
+        site; this gallery is the system as built, not a mock. Sourced, not corrected.
       </p>
 
       <Section eyebrow="Brand" title="The marks">
@@ -161,7 +161,7 @@ export function DesignSystemShowcase() {
           <div className="rfx-scout max-w-[640px]">
             <ScoutRow label="Family">Fastball</ScoutRow>
             <ScoutRow label="Grip" tier="reputable">Index and middle across the wide horseshoe seam</ScoutRow>
-            <ScoutRow label="Shape" tier="official">Rides — carry at the top of the zone</ScoutRow>
+            <ScoutRow label="Shape" tier="official">Rides: carry at the top of the zone</ScoutRow>
             <ScoutRow label="Tunnel" tier="secondhand">Pairs off the same slot as the change</ScoutRow>
           </div>
         </div>
@@ -172,13 +172,13 @@ export function DesignSystemShowcase() {
           <Card className="p-5">
             <p className="font-display text-[19px] text-bone">A lifted panel</p>
             <p className="mt-2 text-[14px] leading-relaxed text-bone-2">
-              The press surface on the void, marked by a single bone hairline — leather, never a flat box.
+              The press surface on the void, marked by a single bone hairline. Leather, never a flat box.
             </p>
           </Card>
           <Card foil className="p-5">
             <p className="font-display text-[19px] text-bone">A foil-edged panel</p>
             <p className="mt-2 text-[14px] leading-relaxed text-bone-2">
-              The rainbow refractor frame — the only metallic, the jewelry of the set.
+              The rainbow refractor frame: the only metallic, the jewelry of the set.
             </p>
           </Card>
         </div>

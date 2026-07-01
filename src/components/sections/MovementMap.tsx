@@ -95,7 +95,7 @@ export function MovementMap() {
         viewBox={`0 0 ${W} ${H}`}
         className="w-full"
         role="img"
-        aria-label={`Shape map of the filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch sits in the direction it breaks — ride up top, drop below, arm-side and glove-side across — against a spinless ball at center. A map of direction, not a measured magnitude.`}
+        aria-label={`Shape map of the filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch sits in the direction it breaks (ride up top, drop below, arm-side and glove-side across) against a spinless ball at center. A map of direction, not a measured magnitude.`}
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* axis guides */}

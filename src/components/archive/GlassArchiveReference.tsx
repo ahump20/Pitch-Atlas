@@ -120,7 +120,7 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
               href={image.source.url}
               target="_blank"
               rel="noopener noreferrer"
-              aria-label={`${rightsLabel} — view the source for this image`}
+              aria-label={`${rightsLabel}: view the source for this image`}
               className="mono-label-stage mt-1.5 inline-flex items-center gap-1.5 text-cyan underline decoration-cyan/40 underline-offset-2 transition-colors hover:decoration-cyan"
             >
               {rightsLabel} <span aria-hidden="true">↗</span>

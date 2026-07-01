@@ -19,7 +19,7 @@ export function FieldManual() {
             The craft record.
           </h2>
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2/75">
-            {WINGS.length} of {WINGS.length} filed
+            {WINGS.length} chapters, all sourced
           </span>
         </div>
         <p className="mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">

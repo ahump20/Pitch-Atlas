@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom'
 import { CONFIDENCE_META, type ClaimConfidence } from '../../data/types'
 import { PITCHES } from '../../data/pitches'
-import { allSources, latestRetrievedAt } from '../../data/sources'
-import { asOfDate } from '../../lib/format'
 import { ClaimCard } from '../provenance/ClaimCard'
 import { ChapterMark } from './ChapterMark'
 import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
@@ -12,8 +10,8 @@ import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
   The full seven-tier confidence ladder (read straight from CONFIDENCE_META, so
   the page can never drift from the model) on the matte stage, beside one real
   filed claim wearing its real badge on cream stock: the model showing itself
-  instead of asserting. The colophon figures are derived from the registry at
-  build, never a typed freshness string.
+  instead of asserting. The registry colophon lives once on this page, in the
+  close, beside the rule sheet it evidences.
 */
 
 const LADDER: ClaimConfidence[] = [
@@ -26,8 +24,6 @@ const LADDER: ClaimConfidence[] = [
   'unverified',
 ]
 
-const REGISTRY_COUNT = allSources().length
-const REGISTRY_AS_OF = asOfDate(latestRetrievedAt(allSources()))
 const EXAMPLE = PITCHES[0]
 
 export function ProvenanceStrip() {
@@ -91,18 +87,6 @@ export function ProvenanceStrip() {
             to={`/pitch/${EXAMPLE.display.slug}`}
             claim={EXAMPLE.canonical.grip}
           />
-
-          <div className="mt-6 rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-5">
-            <p className="flex items-baseline gap-2.5">
-              <b className="v2-count rfx-athletic text-[clamp(30px,3.4vw,40px)] leading-none text-bone">
-                {REGISTRY_COUNT}
-              </b>
-              <span className="text-[13px] leading-snug text-bone-2">sources in the citation registry</span>
-            </p>
-            <p className="v2-count-sub mt-1 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2/75">
-              Last checked {REGISTRY_AS_OF} · not auto-refreshed
-            </p>
-          </div>
         </div>
       </div>
     </section>

@@ -20,11 +20,11 @@ export function SoftballFastpitchPage() {
   useSeoMeta({
     title: `Fastpitch fundamentals: the windmill, from the ground up | ${SITE.siteName}`,
     description:
-      'The core of fastpitch softball pitching — the four phases of the windmill delivery, where the speed actually comes from (the lower half, not the arm circle), and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
+      'The core of fastpitch softball pitching: the four phases of the windmill delivery, where the speed actually comes from (the lower half, not the arm circle), and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
     ogTitle: `Fastpitch fundamentals | ${SITE.siteName}`,
     ogDescription: 'The windmill, from the ground up.',
     ogUrl: canonicalUrl('/softball/fastpitch'),
-    ...ogImageMeta('softball', 'Fastpitch fundamentals — the windmill, from the ground up'),
+    ...ogImageMeta('softball', 'Fastpitch fundamentals: the windmill, from the ground up'),
   })
 
   return (
@@ -35,7 +35,7 @@ export function SoftballFastpitchPage() {
           url: canonicalUrl('/softball/fastpitch'),
           name: 'Fastpitch fundamentals: the windmill, from the ground up',
           description:
-            'The core of fastpitch softball pitching — the four phases of the windmill delivery, where the speed actually comes from, and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
+            'The core of fastpitch softball pitching: the four phases of the windmill delivery, where the speed actually comes from, and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
           breadcrumb: [
             { name: 'The Atlas', to: '/' },
             { name: 'Softball', to: '/softball' },
@@ -55,7 +55,7 @@ export function SoftballFastpitchPage() {
           <>
             The underhand windmill looks like an arm pitch and is not. Here is the delivery in four phases,
             where the speed is really made, and the arm-health truth the "underhand is natural and safe" myth
-            gets wrong — sourced to peer-reviewed biomechanics, not coaching lore. Education and documentation
+            gets wrong, sourced to peer-reviewed biomechanics rather than coaching lore. Education and documentation
             only; this is not medical advice.
           </>
         }
@@ -64,7 +64,7 @@ export function SoftballFastpitchPage() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="The windmill, in four phases" />
         <p className="mb-10 max-w-[64ch] text-base leading-relaxed text-ink-2">
-          Biomechanics splits the delivery into four phases — the wind-up, the stride, the acceleration, and
+          Biomechanics splits the delivery into four phases: the wind-up, the stride, the acceleration, and
           the follow-through. Each hands energy to the next.
         </p>
         <div className="grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-2">
@@ -101,7 +101,7 @@ export function SoftballFastpitchPage() {
       <section className="mx-auto max-w-6xl px-5 pb-20 md:px-8">
         <div className="rfx-panel flex flex-col gap-4 rounded-sm border border-ink/15 p-8 md:flex-row md:items-center md:justify-between">
           <p className="max-w-[52ch] text-base leading-relaxed text-bone-2">
-            Next: the arsenal that lives on this delivery — the rise, the drop, and the rest.
+            Next: the arsenal that lives on this delivery. The rise, the drop, and the rest.
           </p>
           <Link
             to="/softball"

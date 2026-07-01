@@ -92,7 +92,7 @@ export function CraftsmanChapter() {
           ogTitle: `${craftsman.name} | ${SITE.siteName}`,
           ogDescription: craftsman.tagline,
           ogUrl: canonicalUrl('/craftsmen/' + craftsman.slug),
-          ...ogImageMeta('craftsmen', `${craftsman.name} — ${craftsman.signaturePitch}`),
+          ...ogImageMeta('craftsmen', `${craftsman.name}: ${craftsman.signaturePitch}`),
         }
       : { title: `Craftsman not found | ${SITE.siteName}` },
   )

@@ -102,9 +102,9 @@ export function GripCompare() {
       </div>
 
       <p className="rfx-panel rounded-sm border-l-2 border-l-ink/15 px-5 py-4 text-sm leading-relaxed text-ink-2">
-        Same arm slot, same release — switch the view and both balls turn together, because the delivery is
+        Same arm slot, same release: switch the view and both balls turn together, because the delivery is
         the part the hitter <em>can</em> read. The grip is the part they can&rsquo;t. Once these two leave the
-        hand looking identical, the only question left is what each one does on the way to the plate — see the{' '}
+        hand looking identical, the only question left is what each one does on the way to the plate. See the{' '}
         <Link to="/compare" className="text-cyan underline-offset-2 hover:underline">
           movement tunnel
         </Link>

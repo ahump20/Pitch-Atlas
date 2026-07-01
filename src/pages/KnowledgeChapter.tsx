@@ -24,7 +24,7 @@ export function KnowledgeChapter() {
           ogTitle: `${wing.navLabel || wing.title} | ${SITE.siteName}`,
           ogDescription: wing.summary,
           ogUrl: canonicalUrl('/learn/' + wing.slug),
-          ...ogImageMeta('learn', `${wing.title} — Learn`),
+          ...ogImageMeta('learn', `Learn: ${wing.title}`),
         }
       : { title: `Wing not found | ${SITE.siteName}` },
   )

@@ -167,7 +167,7 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
           ref={dialogRef}
           role="dialog"
           aria-modal="true"
-          aria-label={`${photo.alt} — full size`}
+          aria-label={`${photo.alt}, full size`}
           onClick={() => setZoomed(false)}
           className="grip-examine fixed inset-0 z-[120] flex items-center justify-center bg-black/92 p-4 sm:p-8"
         >

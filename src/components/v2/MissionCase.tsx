@@ -23,8 +23,6 @@ const GOALS = [
   'Catalog the lineage without trapping the art in boxes.',
 ]
 
-const LAYERS = ['Canonize', 'Catalog', 'Contextualize', 'Document', 'Carry forward']
-
 const PROGRESSION = [
   {
     label: 'Discover',
@@ -77,23 +75,6 @@ export function MissionCase() {
             lived feel into fake certainty.
           </p>
 
-          <ol className="mt-8 grid gap-2 sm:grid-cols-5" aria-label="Pitch Atlas archive hierarchy">
-            {LAYERS.map((layer, i) => (
-              <li
-                key={layer}
-                className="border-t border-bone/15 pt-3"
-                style={{ '--i': i } as CSSProperties}
-              >
-                <span className="font-mono text-[9px] uppercase tracking-[0.14em] tabular-nums text-bone-2/70">
-                  L{String(i + 1).padStart(2, '0')}
-                </span>
-                <span className="mt-1 block font-mono text-[10px] uppercase tracking-[0.08em] text-bone">
-                  {layer}
-                </span>
-              </li>
-            ))}
-          </ol>
-
           {/* the values, struck as filed index cards. one seam tick per section lives
               on the chapter mark; these carry the plain index number so the accent
               reads as signal, not repeated ornament. */}
@@ -112,9 +93,6 @@ export function MissionCase() {
           </div>
 
           <div className="v2-progression mt-10" aria-label="Archival progression">
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2/75">
-              Discover / Study / Throw / Document / Preserve
-            </p>
             <ol className="mt-4 grid gap-3 sm:grid-cols-5">
               {PROGRESSION.map((step, i) => (
                 <li key={step.label} className="v2-progress-step" style={{ '--i': i } as CSSProperties}>
@@ -151,7 +129,7 @@ export function MissionCase() {
                 <span className="block font-mono text-[9.5px] uppercase tracking-[0.12em] text-bone-2/70">
                   To Roger Clemens · Parents&rsquo; Weekend · Austin, TX
                 </span>
-                <span className="display mt-2 block text-[17px] text-bone/90">&mdash; Austin Humphrey</span>
+                <span className="display mt-2 block text-[17px] text-bone/90">Austin Humphrey</span>
               </figcaption>
 
               <p className="mt-5 text-[13.5px] leading-relaxed text-bone-2">

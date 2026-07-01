@@ -32,7 +32,7 @@ export function CraftsmenHall() {
     ogTitle: `The Craftsmen | ${SITE.siteName}`,
     ogDescription: 'The arms that defined the pitches, and the mental edge behind them.',
     ogUrl: canonicalUrl('/craftsmen'),
-    ...ogImageMeta('craftsmen', 'The Craftsmen — the arms that defined the pitches'),
+    ...ogImageMeta('craftsmen', 'The Craftsmen: the arms that defined the pitches'),
   })
 
   return (
@@ -54,7 +54,7 @@ export function CraftsmenHall() {
         eyebrow="The hall"
         title="The arms that defined the pitches."
         sub={
-          <>The arms that owned a pitch — and the one pitch that is a legend, not a person. Every quote sourced.</>
+          <>The arms that owned a pitch, and the one pitch that is a legend, not a person. Every quote sourced.</>
         }
       />
 
@@ -66,7 +66,7 @@ export function CraftsmenHall() {
         <StageTierMarker index="C" label="The masters" />
         {firstYear && lastName ? (
           <p className="-mt-2 mb-7 max-w-[60ch] font-mono text-[11px] uppercase tracking-[0.13em] text-ink-3">
-            {masters.length} arms, filed in the order their eras began — {firstYear} to {lastName}.
+            {masters.length} arms, filed in the order their eras began: {firstYear} to {lastName}.
             Each card's band is the career laid against the same century; the longer the bar, the
             longer the arm lasted.
           </p>

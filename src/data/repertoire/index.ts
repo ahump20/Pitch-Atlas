@@ -1005,7 +1005,7 @@ export const REPERTOIRE: RepertoireEntry[] = [
       'exp-wikipedia-shuuto',
       'reputable-analysis',
     ),
-    notableThrowers: "Masaji Hiramatsu (Taiyo Whales, 1967–1984), the definitive practitioner — his version earned the \"razor\" nickname; he reached the Japanese Baseball Hall of Fame.",
+    notableThrowers: "Masaji Hiramatsu (Taiyo Whales, 1967-1984), the definitive practitioner — his version earned the \"razor\" nickname; he reached the Japanese Baseball Hall of Fame.",
     plain: "Think of it as the shuuto with a sharper edge — Hiramatsu's famous pitch jammed righties so hard and broke so late that people said it looked like it cut the air instead of tumbling.",
     studyFirstSlug: "two-seam",
     contextNote: claim(

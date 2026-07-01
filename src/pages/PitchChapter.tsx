@@ -703,7 +703,7 @@ export function PitchChapter() {
           ogTitle: `${entry.canonical.name} | ${SITE.siteName}`,
           ogDescription: entry.display.heroIntro,
           ogUrl: canonicalUrl('/pitch/' + entry.display.slug),
-          ...ogImageMeta('repertoire', `${entry.canonical.name} — grip, release, and movement`),
+          ...ogImageMeta('repertoire', `${entry.canonical.name}: grip, release, and movement`),
         }
       : { title: `Pitch not found | ${SITE.siteName}` },
   )

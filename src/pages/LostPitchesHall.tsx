@@ -55,7 +55,7 @@ export function LostPitchesHall() {
         sub={
           <>
             The statistics are being recovered; the technique mostly never will be. Filed by how solid the
-            record is — documented anchors first, legend flagged.
+            record is: documented anchors first, legend flagged.
           </>
         }
       />

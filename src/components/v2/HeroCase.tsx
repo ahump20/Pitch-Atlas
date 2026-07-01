@@ -51,9 +51,8 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             className="v2-enter mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base"
             style={{ '--i': 2 } as React.CSSProperties}
           >
-            Every pitch has a file. Every grip has a history. Every variant carries provenance.
-            Open the atlas, study the hold, and carry forward what the next pitcher should not
-            have to piece together from memory, rumor, and half-told stories.
+            Every pitch has a file. Every grip has a history. Open the atlas, study the hold,
+            and carry forward what the next pitcher shouldn't have to rebuild from rumor.
           </p>
 
           <div
@@ -75,7 +74,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
               style={{ '--i': 4 } as React.CSSProperties}
             >
               <span className="grid h-11 w-11 place-items-center rounded-sm border border-cyan/35 bg-cyan/10 font-mono text-[10px] uppercase tracking-[0.1em] text-cyan">
-                Play
+                Film
               </span>
               <span className="min-w-0">
                 <span className="block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2/80">
@@ -107,13 +106,8 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
           <div className="v2-refract relative mx-auto w-full max-w-[290px] sm:max-w-[360px] md:mx-0 md:max-w-[460px]">
             <div className="v2-rim" aria-hidden="true" />
             <div className="v2-enter relative" style={{ '--i': 4 } as React.CSSProperties}>
+              {/* the card carries its own specimen plate; no second stamp over it */}
               <PitchSpecimenCard entry={featured} maxWidth={460} foil priority />
-              <p
-                className="rfx-stamp pointer-events-none absolute -right-3 top-3 z-10 hidden md:inline-block"
-                style={{ color: '#F6F1E6', background: 'rgba(10,9,8,.72)', transform: 'rotate(3deg)' }}
-              >
-                Specimen {featured.display.specimenNo}
-              </p>
             </div>
           </div>
         </div>

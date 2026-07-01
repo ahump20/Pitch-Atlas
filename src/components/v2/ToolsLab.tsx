@@ -12,7 +12,7 @@ const TOOLS: WaxPackTool[] = [
   { label: 'Shape Lab', to: '/sandbox', kind: 'dial', ink: '#1F3A5F', blurb: 'Turn the spin-axis clock and watch the shape language change: ride, drop, run, sweep.' },
   { label: 'The Shape Map', to: '/movement-map', kind: 'quadrant', ink: '#2F5D46', blurb: 'Every filed pitch on one catcher’s-eye field, grouped by direction and character.' },
   { label: 'Compare pitches', to: '/compare', kind: 'tunnel', ink: '#6E2B35', blurb: 'Overlay any two pitches to read the shared window and the late shape split.' },
-  { label: 'Compare grips', to: '/grips#grip-compare', kind: 'grips', ink: '#8A6B24', blurb: 'Two grips under one arm slot — the deception of same release, different grip.' },
+  { label: 'Compare grips', to: '/grips#grip-compare', kind: 'grips', ink: '#8A6B24', blurb: 'Two grips under one arm slot: same release, different grip, and the hitter never sees it.' },
 ]
 
 export function ToolsLab() {
@@ -29,7 +29,7 @@ export function ToolsLab() {
           </span>
         </div>
         <p className="mt-4 max-w-[52ch] text-[15px] leading-relaxed text-bone-2">
-          The craft map, made playable. Tear one open — every pack is one click from here.
+          The craft map, made playable. Tear one open. Every pack is one click from here.
         </p>
         <WaxPackIdleStyles />
         <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-6 md:gap-x-6 lg:grid-cols-4">

@@ -121,11 +121,11 @@ export function SoftballHub() {
   useSeoMeta({
     title: `Softball: the circle enters the atlas | ${SITE.siteName}`,
     description:
-      'The softball wing of Pitch Atlas — the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched.',
+      'The softball wing of Pitch Atlas: the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched.',
     ogTitle: `Softball | ${SITE.siteName}`,
     ogDescription: 'The underhand craft, filed honestly. Fastpitch first, anchored on Cat Osterman.',
     ogUrl: canonicalUrl('/softball'),
-    ...ogImageMeta('softball', 'Softball — the circle enters the atlas'),
+    ...ogImageMeta('softball', 'Softball: the circle enters the atlas'),
   })
 
   return (
@@ -136,7 +136,7 @@ export function SoftballHub() {
           url: canonicalUrl('/softball'),
           name: 'Softball: the circle enters the atlas',
           description:
-            'The softball wing of Pitch Atlas — the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched.',
+            'The softball wing of Pitch Atlas: the underhand windmill craft, the fastpitch arsenal led by the riseball, the honest physics behind the rise, and Cat Osterman as the anchor. Fastpitch first; slowpitch sketched.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Softball' }],
         })}
       />
@@ -147,7 +147,7 @@ export function SoftballHub() {
         sub={
           <>
             A different craft from the baseball game: the underhand windmill, a kinetic chain driven from the
-            ground up, and pitches with no baseball cousin — the rise, the drop, the screw. We are building
+            ground up, and pitches with no baseball cousin: the rise, the drop, the screw. We are building
             fastpitch first and deepest, with the riseball’s honest physics at the center, and Cat Osterman as
             the anchor. Slowpitch is filed honestly and lighter. Early innings.
           </>
@@ -168,7 +168,7 @@ export function SoftballHub() {
             to="/softball/slowpitch"
             eyebrow="Slowpitch · arc and touch"
             title="Arc, spin, and placement"
-            blurb="No windmill and no riseball shape — but a real craft of arc height, deadening spin, and placement to the mat. Filed honestly and lighter."
+            blurb="No windmill and no riseball shape, but a real craft of arc height, deadening spin, and placement to the mat. Filed honestly and lighter."
             gc="var(--color-seam-bright)"
           />
         </div>
@@ -177,7 +177,7 @@ export function SoftballHub() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="The fastpitch arsenal" />
         <p className="mb-8 max-w-[64ch] text-base leading-relaxed text-ink-2">
-          The pitches of the circle, filed light for the launch — the riseball leads, carrying the
+          The pitches of the circle, filed light for the launch. The riseball leads, carrying the
           atlas’s honest answer to whether it actually rises.
         </p>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
