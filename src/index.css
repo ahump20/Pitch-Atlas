@@ -449,6 +449,12 @@
 
 @layer base {
   :root {
+    /* the card-width unit's resting value: 1% of the 360px reference card. Lives on
+       :root (not .rfx-card) because a few rfx atoms — the confidence dot, the approx
+       pill — also print on plain pages outside any card; there the unit stays this
+       fixed 3.6px and the atom renders the reference print. Inside .rfx-card the
+       @supports rule (components layer) re-binds it to 1cqw of .rfx-holder. */
+    --rfxu: 3.6px;
     --foil: linear-gradient(115deg,#ff2d6e,#ff8a3c,#ffe14d,#46ff9c,#33e0ff,#6b7bff,#c44bff,#ff2d6e);
     --gold: linear-gradient(150deg,#5a3d12,#caa14a 22%,#fff0c2 38%,#b8893a 54%,#f4d98a 70%,#7a571f 90%);
 
@@ -518,6 +524,22 @@
   .rfx-diamond.is-gold { background: var(--gold); border-color: rgba(0,0,0,.5); }
   .rfx-diamond.is-gold > * { color: #2a1d05; }
 
+  /* ── the card-width unit ──
+     Everything printed INSIDE the card is sized in --rfxu: 1% of the card's own
+     width, so the 290px phone card and the 520px chase card are the same print
+     at different scales — type, plates, and chips can never outgrow a smaller
+     run or rattle small inside a larger one. The fallback is 3.6px (the 360px
+     reference card the original px values were tuned on), so a browser without
+     container units renders that print at every size. Material stays literal on
+     purpose: hairlines, bevels, foil hatch, and halftone frequencies don't
+     scale — a smaller card is a smaller print on the same stock. Micro type
+     keeps a 7px legibility floor via max(); those chips are absolutely
+     positioned or one-line flex, so the floor can never push the column. */
+  .rfx-holder { container-type: inline-size; }
+  @supports (width: 1cqw) {
+    .rfx-card { --rfxu: 1cqw; }
+  }
+
   /* ── refractor card (component sets --c1/--c2/--c3 + --i index) ──
      The frame is the rainbow holo on the standard run — the refractor identity,
      catching the pointer's light. The 1/1 chase alone wears the gold, so the
@@ -586,7 +608,8 @@
       0 0 104px -24px rgba(244,217,138,.4);
   }
   .rfx-field {
-    position: relative; height: 100%; border-radius: 16px; overflow: hidden; padding: 11px 11px 9px;
+    position: relative; height: 100%; border-radius: 16px; overflow: hidden;
+    padding: calc(var(--rfxu) * 3.06) calc(var(--rfxu) * 3.06) calc(var(--rfxu) * 2.5);
     display: flex; flex-direction: column;
     /* the chrome bezel: a dark hairline, a bright accent ring, then a dark separator.
        box-shadow paints outside the clipped box, so it draws into the foil frame and
@@ -658,8 +681,8 @@
 
   /* card top wordmark bar — the brand arches across the top of the card in gold,
      the way the reference card's script arches over its field. */
-  .rfx-cardtop { display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; padding: 2px 0 4px; }
-  .rfx-wmarc { display: block; width: min(58%, 168px); height: auto; overflow: visible; }
+  .rfx-cardtop { display: flex; align-items: center; justify-content: center; gap: calc(var(--rfxu) * 2.22); position: relative; padding: calc(var(--rfxu) * 0.56) 0 calc(var(--rfxu) * 1.11); }
+  .rfx-wmarc { display: block; width: min(58%, calc(var(--rfxu) * 46.67)); height: auto; overflow: visible; }
   .rfx-wmarc text {
     font-family: var(--font-athletic); font-size: 26px; letter-spacing: .06em; text-transform: uppercase;
     fill: color-mix(in srgb, var(--c3,#37D6FF) 26%, #F6F1E6);
@@ -670,16 +693,18 @@
   /* unclipped twin of the window's box: holds the vnum + family crumb so the
      arch's overflow:hidden can't slice them at the rounded corners. The min-height
      keeps the portrait window from going squat when the plate text is long — the
-     grip is the card; it never collapses to a letterboxed sliver. 44% (down from
-     46%) is the ceiling that still fits a full hero plate: at 46% the column
-     overflowed the 5/7 box and sliced the bottom strip's baseline. */
-  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 44%; display: flex; }
+     grip is the card; it never collapses to a letterboxed sliver. 42% is the
+     ceiling that fits the full card-unit print (3-line shape read + cue + badge +
+     strip) inside the 5/7 box at EVERY card width — the old 44% was measured
+     against the undersized fixed-px plate and slices the strip once the print
+     scales true. Verified by measurement at 290/360/460/520. */
+  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 42%; display: flex; }
   .rfx-windowwrap > .rfx-window { flex: 1 1 auto; min-height: 0; }
 
   /* arched portrait window over a halftone field */
   .rfx-window {
     position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden;
-    border-radius: 78px 78px 14px 14px / 92px 92px 14px 14px;
+    border-radius: calc(var(--rfxu) * 21.67) calc(var(--rfxu) * 21.67) calc(var(--rfxu) * 3.89) calc(var(--rfxu) * 3.89) / calc(var(--rfxu) * 25.56) calc(var(--rfxu) * 25.56) calc(var(--rfxu) * 3.89) calc(var(--rfxu) * 3.89);
     background: radial-gradient(120% 90% at 50% 24%, color-mix(in srgb, var(--c2,#114A8C) 48%, #000) 0%, #060403 78%);
     border: 2px solid rgba(0,0,0,.92);
     outline: 2px solid color-mix(in srgb, var(--c3,#37D6FF) 24%, rgba(246,241,230,.62));
@@ -699,16 +724,16 @@
   /* the varsity number — the reference card's big block 33 is the model: large,
      gold-shadowed, structural rather than a floating chip. */
   .rfx-vnum {
-    position: absolute; top: 4px; right: 6px; z-index: 5;
-    display: grid; place-items: center; min-width: 38px; height: 40px; padding: 0 7px;
-    border-radius: 10px;
+    position: absolute; top: calc(var(--rfxu) * 1.11); right: calc(var(--rfxu) * 1.67); z-index: 5;
+    display: grid; place-items: center; min-width: calc(var(--rfxu) * 10.56); height: calc(var(--rfxu) * 11.11); padding: 0 calc(var(--rfxu) * 1.94);
+    border-radius: calc(var(--rfxu) * 2.78);
     background: linear-gradient(160deg, color-mix(in srgb, var(--c3,#37D6FF) 42%, #0C1016) 0%, #0A0D12 72%);
     border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 48%, rgba(0,0,0,.6));
     box-shadow:
       0 3px 8px -3px rgba(0,0,0,.72),
       inset 0 1px 0 rgba(246,241,230,.3),
       inset 0 -2px 4px rgba(0,0,0,.5);
-    font-family: var(--font-athletic); font-size: 30px; line-height: 1;
+    font-family: var(--font-athletic); font-size: calc(var(--rfxu) * 8.33); line-height: 1;
     color: #F6F1E6; -webkit-text-stroke: 1.2px #000;
     text-shadow: 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-6deg);
   }
@@ -724,20 +749,20 @@
      crumb pill — one centered seal reads as the set's mark, a different job from the
      source dot. The kind word stays readable; the coin glyph is decorative. */
   .rfx-seal {
-    position: absolute; top: -6px; left: 50%; transform: translateX(-50%); z-index: 6;
-    display: flex; flex-direction: column; align-items: center; gap: 3px; pointer-events: none;
+    position: absolute; top: calc(var(--rfxu) * -1.67); left: 50%; transform: translateX(-50%); z-index: 6;
+    display: flex; flex-direction: column; align-items: center; gap: calc(var(--rfxu) * 0.83); pointer-events: none;
   }
   .rfx-seal-coin {
-    display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%;
+    display: grid; place-items: center; width: calc(var(--rfxu) * 8.89); height: calc(var(--rfxu) * 8.89); border-radius: 50%;
     background: radial-gradient(circle at 50% 28%, color-mix(in srgb, var(--c3,#37D6FF) 32%, #0D1117) 0%, #060809 78%);
     border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 52%, rgba(0,0,0,.6));
     box-shadow: 0 2px 7px -2px rgba(0,0,0,.72), inset 0 1px 0 rgba(246,241,230,.32), inset 0 -2px 4px rgba(0,0,0,.55);
     color: color-mix(in srgb, var(--c3,#37D6FF) 86%, var(--color-bone));
   }
-  .rfx-seal-coin svg { width: 16px; height: 16px; display: block; }
+  .rfx-seal-coin svg { width: calc(var(--rfxu) * 4.44); height: calc(var(--rfxu) * 4.44); display: block; }
   .rfx-seal-label {
-    font-family: var(--font-mono); font-size: 8px; line-height: 1; letter-spacing: .16em; text-transform: uppercase;
-    color: var(--color-bone); padding: 2px 6px; border-radius: 999px; background: rgba(5,7,12,.74);
+    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); line-height: 1; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--color-bone); padding: calc(var(--rfxu) * 0.56) calc(var(--rfxu) * 1.67); border-radius: 999px; background: rgba(5,7,12,.74);
     backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,.1);
   }
   .rfx-card.is-gold .rfx-seal-coin {
@@ -746,11 +771,11 @@
   }
   /* grip-source chip (bottom-left): WHOSE grip the face shows — Austin's, or a reference. */
   .rfx-gripchip {
-    position: absolute; left: 9px; bottom: 20px; z-index: 4;
-    display: inline-flex; align-items: center; gap: 5px; padding: 3px 8px; border-radius: 999px;
+    position: absolute; left: calc(var(--rfxu) * 2.5); bottom: calc(var(--rfxu) * 5.56); z-index: 4;
+    display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.39); padding: calc(var(--rfxu) * 0.83) calc(var(--rfxu) * 2.22); border-radius: 999px;
     background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,.12);
-    font-family: var(--font-mono); font-size: 8px; line-height: 1; letter-spacing: .1em;
+    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); line-height: 1; letter-spacing: .1em;
     text-transform: uppercase; color: var(--color-bone-2);
   }
   /* the Austin grip photo, filling the arched window (the seam ball is used otherwise) */
@@ -798,7 +823,7 @@
      flat pill. Fixed width so the plate baseline never jumps with the name length.
      Degrades to a flat accent plate where layered box-shadow is weak. */
   .rfx-banner {
-    position: relative; z-index: 9; margin: -14px auto 0; width: min(92%, 300px); text-align: center; padding: 8px 14px; border-radius: 999px;
+    position: relative; z-index: 9; margin: calc(var(--rfxu) * -3.89) auto 0; width: min(92%, calc(var(--rfxu) * 83.33)); text-align: center; padding: calc(var(--rfxu) * 1.94) calc(var(--rfxu) * 3.89); border-radius: 999px;
     background:
       linear-gradient(180deg,
         rgba(255,255,255,.55) 0%, rgba(255,255,255,.10) 12%,
@@ -812,7 +837,10 @@
       inset 0 0 0 1px rgba(255,255,255,.07),
       0 7px 14px -6px #000,
       0 0 0 1px color-mix(in srgb, var(--c3,#37D6FF) 34%, transparent);
-    font-family: var(--font-athletic); font-size: clamp(19px,4.9vw,28px); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: #FBF7EE;
+    /* was clamp(19px,4.9vw,28px) — but vw tracks the browser window, not the card,
+       so a 360 grid card and the 460 hero wore the same 28px name. The card unit
+       IS the right clamp: the name is always the same fraction of its own card. */
+    font-family: var(--font-athletic); font-size: calc(var(--rfxu) * 7.78); line-height: .92; letter-spacing: .01em; text-transform: uppercase; color: #FBF7EE;
     -webkit-text-stroke: .6px rgba(0,0,0,.6); text-shadow: 0 1px 0 rgba(255,255,255,.26), 1.5px 2px 1px rgba(0,0,0,.6); transform: skewX(-5deg);
   }
   .rfx-banner::before {
@@ -835,17 +863,17 @@
      plate badge, so this carries the one thing they didn't — how richly the specimen
      is preserved (specimen-grade.ts). The gold 1/1 tier wears the chrome. */
   .rfx-grade {
-    position: relative; z-index: 9; margin: 9px auto 0; width: fit-content; max-width: 94%;
-    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-    padding: 4px 12px; border-radius: 999px;
+    position: relative; z-index: 9; margin: calc(var(--rfxu) * 1.94) auto 0; width: fit-content; max-width: 94%;
+    display: inline-flex; align-items: center; justify-content: center; gap: calc(var(--rfxu) * 1.67);
+    padding: calc(var(--rfxu) * 1.11) calc(var(--rfxu) * 3.33); border-radius: 999px;
     border: 1px solid color-mix(in srgb, var(--c3,#37D6FF) 40%, rgba(246,241,230,.16));
     background: linear-gradient(180deg, rgba(246,241,230,.07), rgba(5,7,12,.66));
     box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 2px 8px -4px rgba(0,0,0,.7);
-    font-family: var(--font-mono); font-size: 8.5px; line-height: 1; letter-spacing: .13em;
+    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.36)); line-height: 1; letter-spacing: .13em;
     text-transform: uppercase; font-weight: 600; color: var(--color-bone); white-space: nowrap;
   }
   .rfx-grade-dot {
-    width: 6px; height: 6px; border-radius: 1.5px; transform: rotate(45deg); flex: none;
+    width: calc(var(--rfxu) * 1.67); height: calc(var(--rfxu) * 1.67); border-radius: 1.5px; transform: rotate(45deg); flex: none;
     background: var(--c3,#37D6FF); box-shadow: 0 0 8px -1px var(--c3,#37D6FF);
   }
   .rfx-card.is-gold .rfx-grade {
@@ -860,8 +888,8 @@
      paper let into the dark face. The readings stay sourced words, never a
      fabricated figure. */
   .rfx-content {
-    position: relative; z-index: 9; margin-top: 15px; border-radius: 8px; padding: 17px 12px 12px;
-    display: flex; flex-direction: column; gap: 9px;
+    position: relative; z-index: 9; margin-top: calc(var(--rfxu) * 3.33); border-radius: calc(var(--rfxu) * 2.22); padding: calc(var(--rfxu) * 4.44) calc(var(--rfxu) * 3.33) calc(var(--rfxu) * 2.78);
+    display: flex; flex-direction: column; gap: calc(var(--rfxu) * 1.94);
     background:
       radial-gradient(120% 100% at 50% 0%, rgba(255,252,242,.55), transparent 60%),
       #EFE6D0;
@@ -873,56 +901,49 @@
   }
   .rfx-content::before {
     content: "READ";
-    position: absolute; left: 10px; top: -13px; z-index: 2;
-    border-radius: 7px 7px 0 0; padding: 4px 12px 5px;
+    position: absolute; left: calc(var(--rfxu) * 2.78); top: calc(var(--rfxu) * -3.61); z-index: 2;
+    border-radius: calc(var(--rfxu) * 1.94) calc(var(--rfxu) * 1.94) 0 0; padding: calc(var(--rfxu) * 1.11) calc(var(--rfxu) * 3.33) calc(var(--rfxu) * 1.39);
     background:
       linear-gradient(180deg, rgba(255,255,255,.16), transparent 52%),
       color-mix(in srgb, var(--c1,#C8102E) 74%, #0B0805);
     border: 1px solid rgba(0,0,0,.65); border-bottom: 0;
     box-shadow: 0 -1px 0 rgba(255,255,255,.18) inset, 0 4px 10px -8px #000;
-    font-family: var(--font-athletic); font-size: 15px; line-height: 1; letter-spacing: .05em;
+    font-family: var(--font-athletic); font-size: calc(var(--rfxu) * 4.17); line-height: 1; letter-spacing: .05em;
     color: #F6F1E6; -webkit-text-stroke: .4px rgba(0,0,0,.5);
   }
   .rfx-content::after {
     content: "";
-    position: absolute; left: 12px; right: 12px; top: 11px; height: 1px;
+    position: absolute; left: calc(var(--rfxu) * 3.33); right: calc(var(--rfxu) * 3.33); top: calc(var(--rfxu) * 3.06); height: 1px;
     background: color-mix(in srgb, var(--c1,#C8102E) 36%, rgba(33,29,23,.24));
   }
-  /* shape (the lead read) + cue. The shape key is a stamped mono label; the read is prose. */
-  .rfx-summary { display: flex; flex-direction: column; gap: 7px; }
-  .rfx-shape { display: flex; flex-direction: column; gap: 3px; }
-  .rfx-shape .rfx-k { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .16em; line-height: 1.1;
+  /* shape (the lead read) + cue. The shape key is a stamped mono label; the read is prose.
+     No phone media block anymore: the card unit shrinks the plate with the card, so a
+     290px card keeps the full 3-line shape read and the whole cue instead of clamping
+     the sentence mid-clause the way the old viewport override did. */
+  .rfx-summary { display: flex; flex-direction: column; gap: calc(var(--rfxu) * 1.94); }
+  .rfx-shape { display: flex; flex-direction: column; gap: calc(var(--rfxu) * 0.83); }
+  .rfx-shape .rfx-k { font-family: var(--font-mono); font-size: calc(var(--rfxu) * 2.58); letter-spacing: .16em; line-height: 1.1;
     text-transform: uppercase; color: color-mix(in srgb, var(--c2,#114A8C) 60%, #211D17); }
-  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: .96rem; line-height: 1.34; color: #211D17;
+  .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: calc(var(--rfxu) * 4.27); line-height: 1.34; color: #211D17;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   /* the cue reads in the editorial serif — a coach's margin note on the plate */
-  .rfx-cue { font-family: var(--font-display); font-style: italic; font-size: .84rem; line-height: 1.4; color: #4A443A; margin: 0;
-    padding-top: 7px; border-top: 1px solid rgba(33,29,23,.18);
+  .rfx-cue { font-family: var(--font-display); font-style: italic; font-size: calc(var(--rfxu) * 3.73); line-height: 1.4; color: #4A443A; margin: 0;
+    padding-top: calc(var(--rfxu) * 1.94); border-top: 1px solid rgba(33,29,23,.18);
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   /* source badge: mono — a tag, not prose. How much to trust the reading. */
-  .rfx-srcbadge { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-mono); font-size: .66rem;
+  .rfx-srcbadge { display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.67); font-family: var(--font-mono); font-size: calc(var(--rfxu) * 2.93);
     letter-spacing: .06em; line-height: 1; text-transform: uppercase; color: #4A443A; }
-
-  /* phones: the plate text tightens so the window keeps its portrait height */
-  @media (max-width: 480px) {
-    .rfx-grade { margin-top: 7px; padding: 3px 10px; font-size: 8px; gap: 5px; letter-spacing: .1em; }
-    .rfx-grade-dot { width: 5px; height: 5px; }
-    .rfx-shape .rfx-v { font-size: .86rem; -webkit-line-clamp: 2; }
-    .rfx-cue { -webkit-line-clamp: 1; }
-    .rfx-content { margin-top: 13px; padding: 16px 11px 10px; gap: 7px; }
-    .rfx-content::before { top: -12px; padding: 4px 10px; font-size: 13px; }
-  }
   .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid #6E5E3A; color: #6E5E3A;
-    padding: 1px 6px; font-size: .58rem; letter-spacing: .04em; }
+    padding: 1px calc(var(--rfxu) * 1.67); font-size: max(7px, calc(var(--rfxu) * 2.58)); letter-spacing: .04em; }
 
   /* confidence dot (sourced, not corrected) */
-  .rfx-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
+  .rfx-dot { width: calc(var(--rfxu) * 2.22); height: calc(var(--rfxu) * 2.22); border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
 
   /* bottom strip — always on the dark card face, so its ink is literal.
      flex:none so a content-tall card can never crush or slice its one line;
      the window's min-height floor is what gives instead. */
-  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
-    font-family: var(--font-mono); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
+  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: calc(var(--rfxu) * 1.67); display: flex; align-items: center; justify-content: space-between; gap: calc(var(--rfxu) * 2.22);
+    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
 
   /* ── the card back, struck as a scout file ──
      The SLUGGERS stats-table back, but every row is a sourced or categorical fact —
