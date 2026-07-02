@@ -152,9 +152,16 @@ export function RefractorCard({
           <span
             className="rfx-diamond"
             aria-hidden="true"
-            style={{ width: 24, height: 24, borderRadius: 5, position: 'absolute', left: 2, top: 0 }}
+            style={{
+              width: 'calc(var(--rfxu) * 6.67)',
+              height: 'calc(var(--rfxu) * 6.67)',
+              borderRadius: 'calc(var(--rfxu) * 1.39)',
+              position: 'absolute',
+              left: 2,
+              top: 0,
+            }}
           >
-            <b style={{ fontSize: 7 }}>PA</b>
+            <b style={{ fontSize: 'max(6px, calc(var(--rfxu) * 1.94))' }}>PA</b>
           </span>
           {/* the brand arches over the field, like the reference card's script */}
           <svg className="rfx-wmarc" viewBox="0 0 200 34" aria-hidden="true">
@@ -169,7 +176,7 @@ export function RefractorCard({
           </svg>
           <span
             className="absolute right-1 top-[5px] font-mono text-bone-2"
-            style={{ fontSize: '7.5px', letterSpacing: '0.22em' }}
+            style={{ fontSize: 'max(7px, calc(var(--rfxu) * 2.08))', letterSpacing: '0.22em' }}
           >
             {wmTab}
           </span>
@@ -236,7 +243,7 @@ export function RefractorCard({
         <div className="rfx-strip">
           <span className="inline-flex items-center gap-1">
             pitch-atlas.com
-            <span className="mx-1 inline-block h-[11px] w-[11px] rotate-45 rounded-[3px] align-middle rfx-diamond" aria-hidden="true" />
+            <span className="mx-1 inline-block h-[calc(var(--rfxu)*3.06)] w-[calc(var(--rfxu)*3.06)] rotate-45 rounded-[calc(var(--rfxu)*0.83)] align-middle rfx-diamond" aria-hidden="true" />
             {to ? 'OPEN SPECIMEN' : 'SOURCED SPECIMEN'}
           </span>
         </div>
@@ -247,7 +254,9 @@ export function RefractorCard({
   const cardClass = `rfx-card${gold ? ' is-gold' : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
 
   return (
-    <div ref={viewRef} style={{ perspective: '1500px', width: '100%', maxWidth }}>
+    // rfx-holder is the size container the card unit (--rfxu, 1% of card width)
+    // reads from — the card's print scales with THIS box, never the viewport
+    <div ref={viewRef} className="rfx-holder" style={{ perspective: '1500px', width: '100%', maxWidth }}>
       {to ? (
         <Link
           to={to}
