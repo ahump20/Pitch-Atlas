@@ -51,6 +51,17 @@ export function AutoplayVideo({
   const { ref, blocked, play, pause } = useAutoplayGuard<HTMLVideoElement>()
   const observerRef = useRef<IntersectionObserver | null>(null)
 
+  // Open on the composed in-point. The grip clips start on the raise (ball low
+  // or out of frame); seeking to clip.start before the first visible frame means
+  // the window opens on the seated grip. One seek at load only — the loop still
+  // passes through the raise naturally mid-cycle.
+  const seekToStart = useCallback(
+    (el: HTMLVideoElement) => {
+      if (clip.start && el.currentTime < clip.start) el.currentTime = clip.start
+    },
+    [clip.start],
+  )
+
   // Attach the observer to the <video> element itself the moment it mounts, and
   // keep the hook's ref pointed at it too. Driven by a callback ref so there's no
   // wrapper box — the video stays a direct child and the layout never changes.
@@ -60,6 +71,8 @@ export function AutoplayVideo({
       observerRef.current?.disconnect()
       observerRef.current = null
       if (!el) return
+      // a cached file can arrive with metadata already parsed — seek right away
+      if (el.readyState >= 1) seekToStart(el)
       if (typeof IntersectionObserver === 'undefined') {
         // No observer (jsdom/SSR): a single play attempt so the clip still
         // autoplays rather than sitting paused.
@@ -78,7 +91,7 @@ export function AutoplayVideo({
       observer.observe(el)
       observerRef.current = observer
     },
-    [ref, play, pause],
+    [ref, play, pause, seekToStart],
   )
 
   // Tear the observer down on unmount.
@@ -97,6 +110,7 @@ export function AutoplayVideo({
       preload={priority ? 'auto' : 'metadata'}
       aria-label={decorative ? undefined : clip.alt}
       aria-hidden={decorative || undefined}
+      onLoadedMetadata={(e) => seekToStart(e.currentTarget)}
       onLoadedData={onSettled}
       // a decode failure reveals the poster instead of holding the stage dark
       onError={onSettled}
