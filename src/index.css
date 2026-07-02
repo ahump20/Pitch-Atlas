@@ -670,8 +670,10 @@
   /* unclipped twin of the window's box: holds the vnum + family crumb so the
      arch's overflow:hidden can't slice them at the rounded corners. The min-height
      keeps the portrait window from going squat when the plate text is long — the
-     grip is the card; it never collapses to a letterboxed sliver. */
-  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 46%; display: flex; }
+     grip is the card; it never collapses to a letterboxed sliver. 44% (down from
+     46%) is the ceiling that still fits a full hero plate: at 46% the column
+     overflowed the 5/7 box and sliced the bottom strip's baseline. */
+  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 44%; display: flex; }
   .rfx-windowwrap > .rfx-window { flex: 1 1 auto; min-height: 0; }
 
   /* arched portrait window over a halftone field */
@@ -916,8 +918,10 @@
   /* confidence dot (sourced, not corrected) */
   .rfx-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
 
-  /* bottom strip — always on the dark card face, so its ink is literal */
-  .rfx-strip { z-index: 9; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  /* bottom strip — always on the dark card face, so its ink is literal.
+     flex:none so a content-tall card can never crush or slice its one line;
+     the window's min-height floor is what gives instead. */
+  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
     font-family: var(--font-mono); font-size: 8px; letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
 
   /* ── the card back, struck as a scout file ──

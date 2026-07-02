@@ -27,7 +27,9 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
       className="v2-stage v2-tooth relative overflow-hidden"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
-      <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-10 px-5 pb-16 pt-10 md:min-h-[calc(100dvh-4.5rem)] md:grid-cols-12 md:gap-6 md:px-8 md:pb-24 md:pt-12">
+      {/* phone spacing runs tighter (gap-7 / pt-6) so the specimen-first order
+          still lands the headline AND the primary CTA inside the first screen */}
+      <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-7 px-5 pb-16 pt-6 md:min-h-[calc(100dvh-4.5rem)] md:grid-cols-12 md:gap-6 md:px-8 md:pb-24 md:pt-12">
         {/* the read, lower-left */}
         <div className="order-2 md:order-1 md:col-span-6 md:self-center">
           <p
@@ -48,7 +50,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
           </h1>
 
           <p
-            className="v2-enter mt-5 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:text-base"
+            className="v2-enter mt-4 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:mt-5 md:text-base"
             style={{ '--i': 2 } as React.CSSProperties}
           >
             Every pitch has a file. Every grip has a history. Open the atlas, study the hold,
@@ -56,7 +58,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
           </p>
 
           <div
-            className="v2-enter mt-7 flex flex-wrap items-center gap-3"
+            className="v2-enter mt-5 flex flex-wrap items-center gap-3 md:mt-7"
             style={{ '--i': 3 } as React.CSSProperties}
           >
             <Button as={Link} to="/repertoire" variant="chrome" arrow>
