@@ -1,0 +1,21 @@
+-- The discussion_media read policy re-checks the parent post with the
+-- CALLER's privileges:
+--
+--   exists (select 1 from discussion_posts dp
+--           where dp.id = discussion_media.post_id
+--             and dp.is_hidden = false
+--             and not private.blocked_between(auth.uid(), dp.author_id))
+--
+-- Postgres evaluates that subquery as the querying role, so the role needs
+-- SELECT on every discussion_posts column the subquery touches: id and
+-- author_id are in the column-scoped grant, is_hidden never was. The gap
+-- stayed invisible while every thread was empty (the media lookup only runs
+-- for a non-empty thread); the first real post made every media lookup fail
+-- with 42501 "permission denied for table discussion_posts" on web and iOS
+-- alike, taking the whole thread read down. Found by the iOS build-11
+-- release gate, 2026-07-03.
+--
+-- Granting the one missing column repairs the read and leaks nothing: the
+-- discussion_posts read policy already filters client rows to
+-- is_hidden = false, so the value a client can ever see is constant.
+grant select (is_hidden) on public.discussion_posts to anon, authenticated;
