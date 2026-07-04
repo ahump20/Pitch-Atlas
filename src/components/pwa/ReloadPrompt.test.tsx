@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { ReloadPrompt } from './ReloadPrompt'
 
 const sw = vi.hoisted(() => ({
@@ -98,7 +98,7 @@ describe('ReloadPrompt', () => {
 
   it('persists a Later dismissal for the session so it stays gone', () => {
     const { unmount } = render(<ReloadPrompt />)
-    screen.getByRole('button', { name: /dismiss update prompt/i }).click()
+    fireEvent.click(screen.getByRole('button', { name: /dismiss update prompt/i }))
     expect(sessionStorage.getItem('pa-sw-update-dismissed')).toBe('1')
     unmount()
 
