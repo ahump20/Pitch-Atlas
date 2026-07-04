@@ -2333,6 +2333,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes depth-drift-b { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-2%, -2.5%, 0); } }
 @keyframes field-recede { from { transform: translateY(0); } to { transform: translateY(-120px); } }
 @keyframes cm-rule-in { from { transform: scaleX(0); } }
+@keyframes descent-drop { to { clip-path: inset(-8px); } }
 @keyframes ambient-drift { from { background-position: 28% 0; } to { background-position: 72% 0; } }
 @keyframes rake-breathe { from { opacity: 0.26; } to { opacity: 0.36; } }
 @keyframes shake-settle {
