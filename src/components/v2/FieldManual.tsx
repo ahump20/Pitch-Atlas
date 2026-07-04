@@ -10,12 +10,15 @@ import { Descent } from '../motion/Descent'
   and each links into its wing. The dark inset register echoes the provenance
   colophon, the v2 counterpoint to the home's cream card back.
 */
+/* the chapter's accent: published to the far stratum and worn by the chapter tick */
+const SCENE_TINT = '#4B92DB'
+
 export function FieldManual() {
   return (
-    <section data-scene-tint="#4B92DB" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <ChapterMark n="07" name="The Craft Record" />
+        <ChapterMark n="07" name="The Craft Record" accent={SCENE_TINT} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
           <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
             The craft record.

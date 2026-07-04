@@ -39,7 +39,7 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
     >
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <ChapterMark n="04" name="The Read" />
+        <ChapterMark n="04" name="The Read" accent={accent.c3} />
         <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
           How it's held. How it moves.
         </h2>

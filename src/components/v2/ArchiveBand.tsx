@@ -11,12 +11,15 @@ import { Descent } from '../motion/Descent'
   into the wing; the source link (inside the reference) and the quiet "filed under"
   line are provenance, not second CTAs.
 */
+/* the band's accent: published to the far stratum and worn by the artifact marker */
+const SCENE_TINT = '#CDBA8E'
+
 export function ArchiveBand() {
   const image = LOST_PITCH_ARCHIVE_IMAGES.find((i) => i.id === 'cannonball-redding-1912-plate')
   if (!image) return null
 
   return (
-    <section data-scene-tint="#CDBA8E" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
       <div className="pa-atmo pa-atmo-leather opacity-[0.05]" aria-hidden="true" />
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-start gap-10 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
@@ -24,7 +27,7 @@ export function ArchiveBand() {
           {/* the featured-artifact marker: ChapterMark's visual language, without
               claiming a number in the 01..09 chapter sequence this band sits inside. */}
           <p className="flex items-center gap-2.5 font-mono text-[10px] uppercase tracking-[0.2em]">
-            <span className="text-cyan" aria-hidden="true">
+            <span style={{ color: SCENE_TINT }} aria-hidden="true">
               ■
             </span>
             <span className="text-bone-2/70">Featured artifact</span>

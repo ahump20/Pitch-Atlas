@@ -20,7 +20,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
     <section
       id="refraction"
       data-scene-tint={accent.c3}
-      className="v2-stage v2-bridge relative overflow-hidden border-t border-bone/10"
+      className="v2-stage v2-bridge relative border-t border-bone/10"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
       {/* the descent: the hero's "watch it flatten" gesture lands here as the
@@ -48,7 +48,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
 
         {/* the read */}
         <div className="order-1 md:order-2">
-          <ChapterMark n="02" name="The Refraction" />
+          <ChapterMark n="02" name="The Refraction" accent={accent.c3} />
           <h2 className="rfx-athletic v2-display mt-4 text-[clamp(28px,4.6vw,46px)] leading-[0.96]">
             One seam. Two media.
           </h2>
