@@ -4,6 +4,7 @@ import {
   type PitchAtlasEntry,
 } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
+import { Descent } from '../motion/Descent'
 import { BallStage } from '../ball/BallStage'
 import { RefractorBall } from '../refractor/RefractorBall'
 import { ChapterMark } from './ChapterMark'
@@ -32,9 +33,11 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
 
   return (
     <section
+      data-scene-tint={accent.c3}
       className="v2-stage v2-tooth relative border-t border-bone/10"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
+      <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="04" name="The Read" />
         <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">

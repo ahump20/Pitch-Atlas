@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { LOST_PITCH_ARCHIVE_IMAGES } from '../../data/media/archive-images'
 import { GlassArchiveReference } from '../archive/GlassArchiveReference'
+import { Descent } from '../motion/Descent'
 
 /*
   The Archive band. A featured-artifact interlude on the home: the oldest filed
@@ -15,7 +16,8 @@ export function ArchiveBand() {
   if (!image) return null
 
   return (
-    <section className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint="#CDBA8E" className="v2-stage v2-tooth relative border-t border-bone/10">
+      <Descent />
       <div className="pa-atmo pa-atmo-leather opacity-[0.05]" aria-hidden="true" />
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-start gap-10 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
         <div className="md:col-span-5">

@@ -4,6 +4,7 @@ import { SITE } from '../../config/site'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
 import { ChapterMark } from './ChapterMark'
+import { Descent } from '../motion/Descent'
 
 /*
   v2 · The close. One centered call back into the atlas, then the honesty
@@ -36,7 +37,8 @@ const REGISTRY_AS_OF = asOfDate(latestRetrievedAt(allSources()))
 
 export function CloseCta() {
   return (
-    <section className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint="#FFD24D" className="v2-stage v2-tooth relative border-t border-bone/10">
+      <Descent />
       <div className="mx-auto max-w-[760px] px-5 pt-24 text-center md:px-8 md:pt-32">
         <div className="v2-close-converge">
           <ChapterMark n="09" name="The Atlas" className="justify-center" />

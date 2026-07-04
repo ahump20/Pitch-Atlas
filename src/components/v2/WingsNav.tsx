@@ -3,6 +3,7 @@ import { CRAFTSMEN } from '../../data/craftsmen'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { DOCUMENTATION_META, type DocumentationTier } from '../../data/types'
 import { ChapterMark } from './ChapterMark'
+import { Descent } from '../motion/Descent'
 import { featuredCraftsmanMedia } from '../../data/media/craftsmen'
 import { LOST_PITCH_ARCHIVE_IMAGES } from '../../data/media/archive-images'
 
@@ -43,7 +44,8 @@ const RAIL = [
 
 export function WingsNav() {
   return (
-    <section className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint="#6CACE4" className="v2-stage v2-tooth relative border-t border-bone/10">
+      <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="05" name="The Wings" />
         <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">

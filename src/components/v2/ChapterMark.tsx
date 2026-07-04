@@ -22,7 +22,7 @@ export function ChapterMark({
         ■
       </span>
       <span className="tabular-nums text-bone-2/70">{n}</span>
-      <span className="h-px w-5 bg-bone/25" aria-hidden="true" />
+      <span className="cm-rule h-px w-5 bg-bone/25" aria-hidden="true" />
       <span className="text-bone-2">{name}</span>
     </p>
   )
