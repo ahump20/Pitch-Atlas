@@ -1,33 +1,89 @@
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 import { RefreshCwIcon } from 'lucide-react'
-import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Button } from '../ui/button'
 
-/*
-  The PWA update prompt. Mounted client-only from main.tsx, so the service-worker
-  hook never runs during the build-time prerender. The live build always wins
-  online (NetworkFirst navigation); this toast only appears when a new version is
-  waiting, and that version installs only when the pitcher taps Reload — no
-  stale-build trap, no auto-reload in the middle of reading a grip.
+/** The minimal slice of the data router this needs: navigations + current path. */
+type RouterLike = {
+  subscribe: (fn: (state: { location: { pathname: string } }) => void) => () => void
+  state: { location: { pathname: string } }
+}
 
-  The saved-offline event is silent. It is useful plumbing, not a visitor choice,
-  and it should not cover pitch copy. Only the update prompt waits for a tap.
+const DISMISS_KEY = 'pa-sw-update-dismissed'
+
+function sessionDismissed(): boolean {
+  try {
+    return sessionStorage.getItem(DISMISS_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+function persistDismissed(): void {
+  try {
+    sessionStorage.setItem(DISMISS_KEY, '1')
+  } catch {
+    /* private mode / storage off — dismissal is best-effort */
+  }
+}
+
+/*
+  The PWA update handoff. Mounted client-only from main.tsx (the service-worker
+  hook never runs during the build-time prerender). The whole point is to stop
+  nagging:
+
+  - First install is silent — that path fires offlineReady, never needRefresh, so
+    no prompt on a fresh first visit.
+  - When a new build is waiting, it activates itself on the visitor's NEXT route
+    navigation — a natural break — and the page lands fresh on the route they
+    asked for. No reload mid-grip, and no bottom-center bar sitting over the
+    spin-tilt explainer, the compare labels, or the mobile search it used to cover.
+  - If they linger on one page, a single slim TOP banner offers the reload once per
+    session; "Later" is remembered for the session, and the next navigation still
+    applies the update silently. Offline caching (NetworkFirst navigation) is
+    unchanged — this only changes WHEN the waiting worker is activated, never THAT
+    the immutable bundles are precached.
 */
-export function ReloadPrompt() {
+export function ReloadPrompt({ router }: { router?: RouterLike }) {
   const {
     offlineReady: [offlineReady, setOfflineReady],
     needRefresh: [needRefresh, setNeedRefresh],
     updateServiceWorker,
   } = useRegisterSW()
 
+  const [dismissed, setDismissed] = useState(sessionDismissed)
+
+  // The saved-offline event is silent plumbing, not a visitor choice.
   useEffect(() => {
     if (offlineReady && !needRefresh) setOfflineReady(false)
   }, [offlineReady, needRefresh, setOfflineReady])
 
-  if (!needRefresh) return null
+  // Auto-activate a waiting build on the next route navigation. The waiting flag
+  // lives in a ref so the single subscription always reads the latest value
+  // without resubscribing, and an activation guard makes the reload fire once.
+  const waitingRef = useRef(needRefresh)
+  useEffect(() => {
+    waitingRef.current = needRefresh
+  }, [needRefresh])
+  const activatedRef = useRef(false)
+  useEffect(() => {
+    if (!router) return
+    let last = router.state.location.pathname
+    return router.subscribe((state) => {
+      const next = state.location.pathname
+      if (next === last) return
+      last = next
+      if (waitingRef.current && !activatedRef.current) {
+        activatedRef.current = true
+        updateServiceWorker(true)
+      }
+    })
+  }, [router, updateServiceWorker])
+
+  if (!needRefresh || dismissed) return null
 
   const dismiss = () => {
+    persistDismissed()
+    setDismissed(true)
     setOfflineReady(false)
     setNeedRefresh(false)
   }
@@ -36,39 +92,31 @@ export function ReloadPrompt() {
     <div
       role="status"
       aria-live="polite"
-      data-blaze-reserved-bottom=""
-      className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-4 pb-[calc(env(safe-area-inset-bottom)+1rem)]"
+      data-blaze-reserved-top=""
+      className="fixed inset-x-0 top-0 z-[60] flex items-center justify-center gap-3 border-b border-cyan/25 bg-popover/95 px-4 py-2 pt-[calc(env(safe-area-inset-top)+0.5rem)] text-popover-foreground shadow-lg shadow-black/40 backdrop-blur"
     >
-      <Alert className="flex w-full max-w-sm items-center gap-3 border-cyan/30 bg-popover px-4 py-3 text-popover-foreground shadow-2xl shadow-black/60">
-        <div className="min-w-0 flex-1">
-          <AlertTitle className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-cyan">
-            Update ready
-          </AlertTitle>
-          <AlertDescription className="mt-0.5 text-sm text-bone-2">
-            A new version of Pitch Atlas is ready.
-          </AlertDescription>
-        </div>
-        <Button
-          type="button"
-          onClick={() => updateServiceWorker(true)}
-          size="sm"
-          className="shrink-0 font-mono text-[0.7rem] uppercase tracking-[0.12em]"
-        >
-          <RefreshCwIcon data-icon="inline-start" />
-          Reload
-        </Button>
-        <Button
-          type="button"
-          onClick={dismiss}
-          aria-label="Dismiss update prompt"
-          variant="ghost"
-          size="sm"
-          className="shrink-0 text-bone-2 hover:text-bone"
-        >
-          <span className="font-mono text-[0.7rem] uppercase tracking-[0.12em]">Later</span>
-          <span className="sr-only">Dismiss update prompt</span>
-        </Button>
-      </Alert>
+      <span className="font-mono text-[0.62rem] uppercase tracking-[0.18em] text-cyan">Update ready</span>
+      <span className="hidden text-xs text-bone-2 sm:inline">A new version of Pitch Atlas is ready.</span>
+      <Button
+        type="button"
+        onClick={() => updateServiceWorker(true)}
+        size="sm"
+        className="h-7 shrink-0 font-mono text-[0.66rem] uppercase tracking-[0.12em]"
+      >
+        <RefreshCwIcon data-icon="inline-start" />
+        Reload
+      </Button>
+      <Button
+        type="button"
+        onClick={dismiss}
+        aria-label="Dismiss update prompt"
+        variant="ghost"
+        size="sm"
+        className="h-7 shrink-0 text-bone-2 hover:text-bone"
+      >
+        <span className="font-mono text-[0.66rem] uppercase tracking-[0.12em]">Later</span>
+        <span className="sr-only">Dismiss update prompt</span>
+      </Button>
     </div>
   )
 }

@@ -68,12 +68,14 @@ describe('seam2d projectSeam matches the RefractorBall hero-ball projection', ()
     expect(runs.map((run) => (run.d.match(/(?:^| )L /g)?.length ?? 0) + 1)).toEqual([
       31, 98, 69, 56, 51,
     ])
+    // Path coordinates are inlined at toFixed(1) — sub-pixel precision, trimmed
+    // for payload. The run structure and start points are what this asserts.
     expect(runs.map((run) => run.d.split(' L ')[0])).toEqual([
-      'M 198.51 119.31',
-      'M 216.68 68.24',
-      'M 244.29 191.83',
-      'M 90.08 232.98',
-      'M 62.92 91.18',
+      'M 198.5 119.3',
+      'M 216.7 68.2',
+      'M 244.3 191.8',
+      'M 90.1 233.0',
+      'M 62.9 91.2',
     ])
   })
 })

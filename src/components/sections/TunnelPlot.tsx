@@ -188,7 +188,7 @@ export function TunnelPlot() {
           </select>
         </label>
         <div className="block">
-          <span className="mono-label text-ink-3">Handedness</span>
+          <span className="mono-label block text-ink-3">Handedness</span>
           <div className="mt-1.5 inline-flex overflow-hidden rounded-lg border border-ink/25">
             {(['RHP', 'LHP'] as const).map((h) => (
               <button
@@ -285,6 +285,9 @@ export function TunnelPlot() {
               x={(sa.x + sb.x) / 2 + 8}
               y={(sa.y + sb.y) / 2 - 6}
               fill="var(--color-seam)"
+              stroke="var(--color-paper)"
+              strokeWidth="5"
+              paintOrder="stroke"
               fontFamily="var(--font-mono)"
               fontSize="9"
               letterSpacing="1.5"
@@ -300,7 +303,7 @@ export function TunnelPlot() {
                 <g key={s.entry.display.slug}>
                   <circle cx={s.x} cy={s.y} r="8" fill={c} fillOpacity="0.92" />
                   <circle cx={s.x} cy={s.y} r="8" fill="none" stroke="var(--color-void)" strokeWidth="1.2" />
-                  <text x={s.x} y={s.y + (s.y > CY ? 22 : -14)} fill="var(--color-ink)" fontFamily="var(--font-mono)" fontSize="10" textAnchor="middle">
+                  <text x={s.x} y={s.y + (s.y > CY ? 22 : -14)} fill="var(--color-ink)" stroke="var(--color-paper)" strokeWidth="5" paintOrder="stroke" fontFamily="var(--font-mono)" fontSize="10" textAnchor="middle">
                     {s.entry.display.shortName}
                   </text>
                 </g>

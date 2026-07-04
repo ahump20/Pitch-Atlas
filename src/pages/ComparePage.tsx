@@ -33,6 +33,7 @@ export function ComparePage() {
         })}
       />
       <SectionHero
+        dense
         breadcrumb={
           <Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Compare' }]} />
         }
@@ -49,7 +50,7 @@ export function ComparePage() {
       />
 
       <section>
-        <div className="mx-auto max-w-4xl px-5 py-14 md:px-8 md:py-16">
+        <div className="mx-auto max-w-4xl px-5 pb-14 pt-8 md:px-8 md:pb-16 md:pt-10">
           <TunnelPlot />
           <p className="mt-10 max-w-[72ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
             The endpoints are each pitch's sourced shape direction, taken from the specimen records. Both

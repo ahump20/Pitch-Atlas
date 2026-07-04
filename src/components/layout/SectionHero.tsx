@@ -23,6 +23,7 @@ export function SectionHero({
   breadcrumb,
   accent = 'powder',
   atmoClassName,
+  dense = false,
   children,
 }: {
   eyebrow: string
@@ -32,6 +33,9 @@ export function SectionHero({
   breadcrumb?: ReactNode
   accent?: 'powder' | 'seam'
   atmoClassName?: string
+  /* Compact header for a tool page whose interactive body should reach the fold
+     (the Compare tunnel). Off by default so every hall header stays pixel-identical. */
+  dense?: boolean
   children?: ReactNode
 }) {
   return (
@@ -45,16 +49,22 @@ export function SectionHero({
         />
       </div>
       {atmoClassName ? <div className={`pa-atmo ${atmoClassName}`} aria-hidden="true" /> : null}
-      <div className="relative z-[1] mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+      <div className={`relative z-[1] mx-auto max-w-6xl px-5 md:px-8 ${dense ? 'py-10 md:py-14' : 'py-20 md:py-28'}`}>
         {breadcrumb}
         <p className="rfx-skick">{eyebrow}</p>
         {badge ? <div className="mt-4">{badge}</div> : null}
-        <h1 className="rfx-stitle mt-5 max-w-[18ch] text-[clamp(2.2rem,8.5vw,4.8rem)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
+        <h1
+          className={`rfx-stitle mt-5 leading-[0.98] [text-wrap:balance] md:leading-[0.92] ${
+            dense ? 'max-w-[24ch] text-[clamp(2rem,4.5vw,3.2rem)]' : 'max-w-[18ch] text-[clamp(2.2rem,8.5vw,4.8rem)]'
+          }`}
+        >
           {title}
         </h1>
         <SeamGuide variant="underline" className="mt-6" />
         {sub ? (
-          <div className="display mt-6 max-w-[60ch] text-lg italic leading-relaxed text-ink-2">{sub}</div>
+          <div className={`display mt-6 max-w-[60ch] italic leading-relaxed text-ink-2 ${dense ? 'text-base' : 'text-lg'}`}>
+            {sub}
+          </div>
         ) : null}
         {children}
       </div>

@@ -397,15 +397,16 @@ export function PitchIndex({ id }: { id?: string }) {
             sticky bar stays short and doesn't bury the list) with the view toggle
             and reset pinned right. `min-w-0 flex-1` bounds the filter group so its
             overflow scrolls INSIDE the row instead of pushing the page wide. From
-            640px up the filters wrap normally. */}
-        <div className="mt-3 flex items-center gap-2">
+            640px up the filters wrap normally. The seam here is gap-2.5 so the
+            family rail's right-edge fade clears the pinned view toggle. */}
+        <div className="mt-3 flex items-center gap-2.5">
           <ToggleGroup
             type="single"
             value={filter}
             onValueChange={(next) => {
               if (next) morph(() => updateIndexParams({ family: next as FamilyFilter }, { announce: `${FILTERS.find((f) => f.key === next)?.label ?? 'All'} filter applied` }))
             }}
-            className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
+            className="chip-rail flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
             aria-label="Filter pitch family"
           >
             {FILTERS.map((f) => (
@@ -466,7 +467,7 @@ export function PitchIndex({ id }: { id?: string }) {
                   ),
                 )
             }}
-            className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
+            className="chip-rail flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
             aria-label="Sort the index within each family"
           >
             {SORTS.map((s) => (
@@ -505,7 +506,7 @@ export function PitchIndex({ id }: { id?: string }) {
                     ),
                   )
               }}
-              className="flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
+              className="chip-rail flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
               aria-label="Filter by pitch status"
             >
               <ToggleGroupItem

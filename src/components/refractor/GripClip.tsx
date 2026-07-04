@@ -17,13 +17,17 @@ import { AutoplayVideo } from '../media/AutoplayVideo'
 */
 export function GripClip({ clip, priority = false }: { clip: GripClipData; priority?: boolean }) {
   const reduced = useReducedMotion()
-  // media settle: the window fades up on the first real frame, never snapping in
+  // Two independent fades. The poster is the always-present first layer: the real
+  // first frame, painted the instant its bytes arrive so the window is never blank
+  // while the heavier clip decodes. It fades up on its own onLoad. The video, when
+  // motion is allowed, crossfades ABOVE it once its first frame settles — both
+  // layers stacked in the same grid cell (.rfx-grip is display:grid).
+  const [posterLoaded, setPosterLoaded] = useState(false)
   const [settled, setSettled] = useState(false)
-  const mediaClass = `rfx-grip-img media-fade${settled ? ' is-loaded' : ''}`
 
   const poster = (
     <img
-      className={mediaClass}
+      className={`rfx-grip-img rfx-grip-poster media-fade${posterLoaded ? ' is-loaded' : ''}`}
       src={clip.poster}
       alt={clip.alt}
       // Hero clips paint their poster eagerly at high priority (the LCP element);
@@ -34,26 +38,26 @@ export function GripClip({ clip, priority = false }: { clip: GripClipData; prior
       draggable={false}
       // a cached poster can finish before hydration attaches onLoad — read it off the element
       ref={(el) => {
-        if (el?.complete && el.naturalWidth > 0) setSettled(true)
+        if (el?.complete && el.naturalWidth > 0) setPosterLoaded(true)
       }}
-      onLoad={() => setSettled(true)}
+      onLoad={() => setPosterLoaded(true)}
     />
   )
 
-  // Reduced motion holds the poster. Otherwise the loop is viewport-gated: it
-  // plays when the card is on screen, pauses when it scrolls away, and falls back
-  // to the poster if the platform refuses autoplay (iOS Low Power Mode).
+  // Reduced motion holds the poster alone. Otherwise the loop is viewport-gated: it
+  // plays when the card is on screen, pauses when it scrolls away, and — if the
+  // platform refuses autoplay (iOS Low Power Mode) — renders nothing, leaving the
+  // always-present poster beneath as the fallback instead of stacking a second copy.
   return (
     <figure className="rfx-grip">
-      {reduced ? (
-        poster
-      ) : (
+      {poster}
+      {reduced ? null : (
         <AutoplayVideo
           clip={clip}
-          className={mediaClass}
+          className={`rfx-grip-img media-fade${settled ? ' is-loaded' : ''}`}
           priority={priority}
           onSettled={() => setSettled(true)}
-          render={() => poster}
+          render={() => null}
         />
       )}
     </figure>
