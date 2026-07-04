@@ -53,7 +53,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
             One seam. Two media.
           </h2>
           <p className="mt-5 max-w-[48ch] text-[15px] leading-relaxed text-bone-2">
-            The ball you just tilted and this flat diagram are drawn by a single function. The 3D
+            This flat diagram and the tilting 3D specimen are two draws of a single function. The 3D
             specimen, the 2D schematic, and the no-WebGL fallback all read the same seam geometry, so
             the model and the diagram can never quietly disagree.
           </p>
