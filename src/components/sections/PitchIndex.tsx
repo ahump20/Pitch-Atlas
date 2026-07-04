@@ -381,7 +381,9 @@ export function PitchIndex({ id }: { id?: string }) {
   return (
     <div id={id}>
       {/* Sticky controls */}
-      <div className="sticky top-16 z-20 -mx-5 mt-6 bg-background/92 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
+      <div className="sticky top-16 z-20 -mx-5 mt-6 overflow-hidden bg-background/92 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
+        <div className="pa-atmo pa-atmo-index-shelf opacity-[0.1] md:opacity-[0.14]" aria-hidden="true" />
+        <div className="relative z-[1]">
         <label className="block">
           <span className="sr-only">Search the Pitch Index</span>
           <SearchField
@@ -545,6 +547,7 @@ export function PitchIndex({ id }: { id?: string }) {
         <span role="status" aria-live="polite" data-testid="pitch-index-announcer" className="sr-only">
           {announce}
         </span>
+        </div>
       </div>
 
       {/* Empty state — says which lever to pull: the search term or the filter */}

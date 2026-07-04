@@ -861,6 +861,10 @@
   }
   .pa-atmo-leather { background-image: url(/atmosphere/leather.webp); }
   .pa-atmo-seam { background-image: url(/atmosphere/seam.webp); }
+  .pa-atmo-specimen-stage { background-image: url(/atmosphere/specimen-stage.webp); }
+  .pa-atmo-index-shelf { background-image: url(/atmosphere/index-shelf.webp); }
+  .pa-atmo-seam-macro { background-image: url(/atmosphere/seam-macro.webp); }
+  .pa-atmo-archive-paper { background-image: url(/atmosphere/archive-paper.webp); }
 
   /* the nameplate: a machined-chrome banner extruded off the card face. A hard
      specular line up top, an accent-steel body, a dark base, and a ::before

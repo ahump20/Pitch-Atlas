@@ -21,7 +21,7 @@ export function ArchiveBand() {
   return (
     <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
-      <div className="pa-atmo pa-atmo-leather opacity-[0.05]" aria-hidden="true" />
+      <div className="pa-atmo pa-atmo-archive-paper opacity-[0.07]" aria-hidden="true" />
       {/* the band's own left pool: the global far-stratum pool lights the right
           half of this stretch of page, so the copy column mirrors it at a
           whisper — the pause before the artifact reads lit, not vacant. */}

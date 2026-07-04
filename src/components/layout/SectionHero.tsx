@@ -22,6 +22,7 @@ export function SectionHero({
   badge,
   breadcrumb,
   accent = 'powder',
+  atmoClassName,
   children,
 }: {
   eyebrow: string
@@ -30,6 +31,7 @@ export function SectionHero({
   badge?: ReactNode
   breadcrumb?: ReactNode
   accent?: 'powder' | 'seam'
+  atmoClassName?: string
   children?: ReactNode
 }) {
   return (
@@ -42,7 +44,8 @@ export function SectionHero({
           }}
         />
       </div>
-      <div className="relative mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
+      {atmoClassName ? <div className={`pa-atmo ${atmoClassName}`} aria-hidden="true" /> : null}
+      <div className="relative z-[1] mx-auto max-w-6xl px-5 py-20 md:px-8 md:py-28">
         {breadcrumb}
         <p className="rfx-skick">{eyebrow}</p>
         {badge ? <div className="mt-4">{badge}</div> : null}

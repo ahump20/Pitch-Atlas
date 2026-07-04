@@ -38,7 +38,8 @@ export function TheRead({ featured }: { featured: PitchAtlasEntry }) {
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
       <Descent />
-      <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
+      <div className="pa-atmo pa-atmo-seam-macro opacity-[0.07] md:opacity-[0.1]" style={{ backgroundPosition: '62% 48%' }} aria-hidden="true" />
+      <div className="relative z-[1] mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="04" name="The Read" accent={accent.c3} />
         <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
           How it's held. How it moves.
