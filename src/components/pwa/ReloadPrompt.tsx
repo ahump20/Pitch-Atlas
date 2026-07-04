@@ -61,7 +61,9 @@ export function ReloadPrompt({ router }: { router?: RouterLike }) {
   // lives in a ref so the single subscription always reads the latest value
   // without resubscribing, and an activation guard makes the reload fire once.
   const waitingRef = useRef(needRefresh)
-  waitingRef.current = needRefresh
+  useEffect(() => {
+    waitingRef.current = needRefresh
+  }, [needRefresh])
   const activatedRef = useRef(false)
   useEffect(() => {
     if (!router) return

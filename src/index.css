@@ -120,6 +120,15 @@
     border-radius: var(--radius-sm);
   }
 
+  /* Movement-map markers: interactive SVG links. Browser outline on an SVG <g> is
+     inconsistent, so replace it with an explicit seam ring circle (same 2px seam
+     as the global focus treatment) that is guaranteed to render on focus-visible. */
+  .mm-dot { cursor: pointer; }
+  .mm-dot:focus,
+  .mm-dot:focus-visible { outline: none; }
+  .mm-focus-ring { opacity: 0; }
+  .mm-dot:focus-visible .mm-focus-ring { opacity: 1; }
+
   * {
     scrollbar-width: thin;
     scrollbar-color: var(--color-ink-3) var(--color-void);

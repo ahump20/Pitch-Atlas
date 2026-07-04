@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
 import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
 
@@ -45,8 +45,24 @@ const LABELS: Record<string, { dx: number; dy: number; anchor: 'start' | 'middle
   eephus: { dx: 14, dy: 6, anchor: 'start' },
 }
 
+/* Shape words from the pitch's own sourced motion fields — no measured magnitude,
+   the same read the tunnel plot uses. Feeds the marker tooltip and its aria-label. */
+function shapeWords(entry: PitchAtlasEntry): string {
+  const m = entry.motion
+  const v = m.verticalShape === 'ride' ? 'rides' : m.verticalShape === 'drop' ? 'drops' : 'holds flat'
+  const h =
+    m.horizontalDir === 'arm-side'
+      ? 'runs arm-side'
+      : m.horizontalDir === 'glove-side'
+        ? 'sweeps glove-side'
+        : 'stays true'
+  return `${v}, ${h}`
+}
+
 export function MovementMap() {
   const [hand, setHand] = useState<'RHP' | 'LHP'>('RHP')
+  const [active, setActive] = useState<string | null>(null)
+  const navigate = useNavigate()
   const handFactor = hand === 'RHP' ? 1 : -1
 
   const plotted = useMemo<Plotted[]>(() => {
@@ -111,32 +127,83 @@ export function MovementMap() {
         {/* spinless reference */}
         <circle cx={CX} cy={CY} r="6" fill="none" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
 
-        {/* the pitches */}
+        {/* the pitches — each marker is a real link to its specimen: pointer + keyboard
+            (role=link, tabbable, Enter/Space), with a hover/focus tooltip. The connector
+            to the origin stays decorative; the text-link row below is the no-JS fallback. */}
         {plotted.map(({ entry, x, y, family }) => {
           const c = FAMILY_META[family].color
           const label = LABELS[entry.display.slug] ?? { dx: 0, dy: -14, anchor: 'middle' as const }
+          const slug = entry.display.slug
+          const open = () => navigate(`/pitch/${slug}`)
           return (
-            <g key={entry.display.slug}>
+            <g key={slug}>
               <line x1={CX} y1={CY} x2={x} y2={y} stroke={c} strokeWidth="0.8" strokeDasharray="2 3" opacity="0.32" />
-              <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
-              <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />
-              <text
-                x={x + label.dx}
-                y={y + label.dy}
-                fill="var(--color-ink)"
-                fontFamily="var(--font-mono)"
-                fontSize="10"
-                textAnchor={label.anchor}
-                dominantBaseline="middle"
-                paintOrder="stroke"
-                stroke="var(--color-void)"
-                strokeWidth="3"
+              <g
+                className="mm-dot"
+                role="link"
+                tabIndex={0}
+                aria-label={`${entry.canonical.name}. ${FAMILY_META[family].label}, ${shapeWords(entry)}. Open specimen.`}
+                onClick={open}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    open()
+                  }
+                }}
+                onMouseEnter={() => setActive(slug)}
+                onMouseLeave={() => setActive((s) => (s === slug ? null : s))}
+                onFocus={() => setActive(slug)}
+                onBlur={() => setActive((s) => (s === slug ? null : s))}
               >
-                {entry.display.shortName}
-              </text>
+                {/* a comfortable, invisible hit + touch target around the 7px dot */}
+                <circle cx={x} cy={y} r="16" fill="transparent" />
+                <circle className="mm-focus-ring" cx={x} cy={y} r="12" fill="none" stroke="var(--color-seam)" strokeWidth="2" />
+                <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
+                <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />
+                <text
+                  x={x + label.dx}
+                  y={y + label.dy}
+                  fill="var(--color-ink)"
+                  fontFamily="var(--font-mono)"
+                  fontSize="10"
+                  textAnchor={label.anchor}
+                  dominantBaseline="middle"
+                  paintOrder="stroke"
+                  stroke="var(--color-void)"
+                  strokeWidth="3"
+                >
+                  {entry.display.shortName}
+                </text>
+              </g>
             </g>
           )
         })}
+
+        {/* the hover/focus tooltip, drawn last so it sits above every marker. Its copy
+            is the pitch's own name, family, and sourced shape words — never a number. */}
+        {(() => {
+          const p = plotted.find((q) => q.entry.display.slug === active)
+          if (!p) return null
+          const name = p.entry.canonical.name
+          const meta = `${FAMILY_META[p.family].label} · ${shapeWords(p.entry)}`
+          const padX = 10
+          const w = Math.max(name.length * 6.4, meta.length * 5.4) + padX * 2
+          const h = 36
+          const above = p.y - 14 - h > 4
+          const ty = above ? p.y - 14 - h : p.y + 16
+          const tx = Math.min(Math.max(p.x - w / 2, 4), W - w - 4)
+          return (
+            <g pointerEvents="none" aria-hidden="true">
+              <rect x={tx} y={ty} width={w} height={h} rx="7" fill="#14120C" stroke={FAMILY_META[p.family].color} strokeOpacity="0.5" />
+              <text x={tx + padX} y={ty + 15} fill="var(--color-bone)" fontFamily="var(--font-mono)" fontSize="11">
+                {name}
+              </text>
+              <text x={tx + padX} y={ty + 28} fill="var(--color-bone-2)" fontFamily="var(--font-mono)" fontSize="9.5">
+                {meta}
+              </text>
+            </g>
+          )
+        })()}
       </svg>
 
       {/* legend + links to each filed pitch */}
