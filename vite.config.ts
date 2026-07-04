@@ -8,6 +8,7 @@ import { fileURLToPath, URL } from 'node:url'
 import path from 'node:path'
 import { copyFile, writeFile, readFile, readdir } from 'node:fs/promises'
 import { renderSitemapXml } from './src/lib/sitemap'
+import { pitchAliasRedirects } from './src/lib/pitch-aliases'
 
 /*
   Post-prerender artifacts. Runs after vite-plugin-react-ssg's closeBundle (plugin
@@ -34,6 +35,23 @@ function postBuildArtifacts(): Plugin {
       const outDir = path.resolve(resolved.root, resolved.build.outDir)
       await writeFile(path.join(outDir, 'sitemap.xml'), renderSitemapXml())
       await copyFile(path.join(outDir, '404', 'index.html'), path.join(outDir, '404.html'))
+
+      // Append the data-derived name aliases to the copied _redirects. A filed
+      // pitch reached by its full name or a common alias (/pitch/four-seam-fastball)
+      // 301s to its canonical specimen (/pitch/four-seam) instead of the 404. The
+      // block is generated from REPERTOIRE, so it can never drift from the data; a
+      // 301 can only live in _redirects, never in a prerendered stub (which would
+      // serve 200 and break the prerender-integrity contract).
+      const redirectsPath = path.join(outDir, '_redirects')
+      const base = await readFile(redirectsPath, 'utf8')
+      const block = pitchAliasRedirects()
+      if (block) {
+        const trimmed = base.replace(/\s+$/, '')
+        await writeFile(
+          redirectsPath,
+          `${trimmed}\n\n# Name-based /pitch aliases (generated from REPERTOIRE — do not hand-edit).\n${block}\n`,
+        )
+      }
 
       // Strip the 3D-vendor modulepreload hints from every prerendered page.
       // Rolldown bakes <link rel="modulepreload"> for the three-core / react-three
