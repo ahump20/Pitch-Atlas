@@ -24,10 +24,10 @@ export function NotFound() {
         <Link to="/" className="btn-foil">
           The Atlas <span aria-hidden="true">→</span>
         </Link>
-        <Link to="/repertoire" className="btn-foil is-ink">
+        <Link to="/repertoire" className="btn-foil is-ghost">
           The Pitch Index
         </Link>
-        <Link to="/craftsmen" className="btn-foil is-ink">
+        <Link to="/craftsmen" className="btn-foil is-ghost">
           The Craftsmen
         </Link>
       </div>
