@@ -141,11 +141,16 @@ export function WaxPack({ tool }: { tool: WaxPackTool }) {
       <span className="block text-[12.5px] leading-snug" style={{ color: 'rgba(33,29,23,.78)' }}>
         {tool.blurb}
       </span>
-      <span
-        className="mt-auto block font-mono text-[9px] font-bold uppercase tracking-[0.16em]"
-        style={{ color: 'rgba(33,29,23,.55)' }}
-      >
-        Open the pack →
+      {/* pointing at the pack firms the print and eases the arrow toward the
+          tear — the same invitation the flap already makes, at the CTA's scale */}
+      <span className="mt-auto block font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[rgba(33,29,23,0.55)] group-hover:text-[rgba(33,29,23,0.85)] group-focus-visible:text-[rgba(33,29,23,0.85)] motion-safe:transition-colors motion-safe:duration-300">
+        Open the pack
+        <span
+          aria-hidden="true"
+          className="ml-1 inline-block group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out"
+        >
+          →
+        </span>
       </span>
     </Link>
   )

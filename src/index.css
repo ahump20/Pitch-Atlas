@@ -515,7 +515,7 @@
   .field-depth::before,
   .field-depth::after {
     content: ""; position: absolute; inset: -12%;
-    transition: --scene-tint 1.2s ease;
+    transition: --scene-tint 0.8s ease;
   }
   .field-depth::before {
     background: radial-gradient(46% 38% at 20% 24%,
@@ -527,6 +527,11 @@
   @media (prefers-reduced-motion: no-preference) {
     .field-depth::before { animation: depth-drift-a 17s ease-in-out infinite alternate; }
     .field-depth::after { animation: depth-drift-b 13s ease-in-out infinite alternate; }
+  }
+  /* phones: the leading pool sits near the hero wordmark at narrow widths —
+     pull it back to a murmur so the tint never brushes the chrome type. */
+  @media (max-width: 480px) {
+    .field-depth::before { opacity: .55; }
   }
   .scene-coal {
     position: relative;
@@ -1879,10 +1884,23 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      reduced motion. ── */
   .descent { color: color-mix(in srgb, var(--color-seam) 62%, transparent); }
   .descent .descent-ticks { display: block; }
+  /* the puncture: a short run of stage black painted over the section's top
+     hairline, fading at both ends, so the thread passes THROUGH the boundary
+     instead of being crossed out by it. Reveals with the drop. */
+  .descent::before {
+    content: ""; position: absolute; top: -1px; left: 50%; translate: -50%;
+    width: 96px; height: 1px;
+    background: linear-gradient(90deg, transparent, #0d0a14 30%, #0d0a14 70%, transparent);
+  }
+  /* wide desks: the thread reads undersized at 1440px — take it up a fifth,
+     anchored at the boundary crossing. */
+  @media (min-width: 1280px) {
+    .descent { scale: 1.18; transform-origin: top center; }
+  }
   @media (prefers-reduced-motion: no-preference) {
     @supports (animation-timeline: view()) {
       .descent {
-        clip-path: inset(0 -8px 100% -8px);
+        clip-path: inset(0 -48px 100% -48px);
         animation: descent-drop 1s cubic-bezier(0.22, 1, 0.36, 1) both;
         animation-timeline: view();
         animation-range: entry 0% entry 90%;
@@ -1890,10 +1908,10 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     }
     @supports not (animation-timeline: view()) {
       .descent {
-        clip-path: inset(0 -8px 100% -8px);
+        clip-path: inset(0 -48px 100% -48px);
         transition: clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1);
       }
-      .descent.is-landed { clip-path: inset(-8px); }
+      .descent.is-landed { clip-path: inset(-8px -48px); }
     }
   }
 
@@ -2333,7 +2351,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes depth-drift-b { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-2%, -2.5%, 0); } }
 @keyframes field-recede { from { transform: translateY(0); } to { transform: translateY(-120px); } }
 @keyframes cm-rule-in { from { transform: scaleX(0); } }
-@keyframes descent-drop { to { clip-path: inset(-8px); } }
+@keyframes descent-drop { to { clip-path: inset(-8px -48px); } }
 @keyframes ambient-drift { from { background-position: 28% 0; } to { background-position: 72% 0; } }
 @keyframes rake-breathe { from { opacity: 0.26; } to { opacity: 0.36; } }
 @keyframes shake-settle {

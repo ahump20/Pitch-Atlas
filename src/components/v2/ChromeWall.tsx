@@ -200,6 +200,9 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
   )
 }
 
+/* the chapter's accent: published to the far stratum and worn by the chapter tick */
+const SCENE_TINT = '#8A93AB'
+
 export function ChromeWall() {
   // Group the filed set by family so the taxonomy reads at a glance — the
   // Pokédex-shelf beat. Each card keeps a running deal-stagger index ACROSS
@@ -212,10 +215,10 @@ export function ChromeWall() {
   const total = shelves.reduce((sum, shelf) => sum + shelf.pitches.length, 0)
 
   return (
-    <section id="set" data-scene-tint="#8A93AB" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section id="set" data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <ChapterMark n="03" name="The Filed Set" />
+        <ChapterMark n="03" name="The Filed Set" accent={SCENE_TINT} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
           <h2 className="rfx-athletic v2-display text-[clamp(28px,5vw,52px)] leading-[0.94]">
             The filed set.

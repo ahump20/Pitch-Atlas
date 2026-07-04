@@ -42,12 +42,15 @@ const RAIL = [
   { to: '/about', label: 'Why it exists', note: 'The case for a living archive' },
 ]
 
+/* the chapter's accent: published to the far stratum and worn by the chapter tick */
+const SCENE_TINT = '#6CACE4'
+
 export function WingsNav() {
   return (
-    <section data-scene-tint="#6CACE4" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <ChapterMark n="05" name="The Wings" />
+        <ChapterMark n="05" name="The Wings" accent={SCENE_TINT} />
         <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
           The other doors.
         </h2>

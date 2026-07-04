@@ -27,9 +27,12 @@ const LADDER: ClaimConfidence[] = [
 
 const EXAMPLE = PITCHES[0]
 
+/* the chapter's accent: published to the far stratum and worn by the chapter tick */
+const SCENE_TINT = '#34E27E'
+
 export function ProvenanceStrip() {
   return (
-    <section data-scene-tint="#34E27E" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
       <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-12 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
         {/* the principle + the ladder. the constitutional line is pinned while its
@@ -37,7 +40,7 @@ export function ProvenanceStrip() {
             the specimens move through it. */}
         <div className="md:col-span-7 md:self-start">
           <div className="md:sticky md:top-24">
-            <ChapterMark n="08" name="The Model" />
+            <ChapterMark n="08" name="The Model" accent={SCENE_TINT} />
             <h2 className="rfx-athletic v2-display mt-4 max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
               Sourced, not corrected.
             </h2>
