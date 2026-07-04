@@ -1890,7 +1890,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .descent::before {
     content: ""; position: absolute; top: -1px; left: 50%; translate: -50%;
     width: 96px; height: 1px;
-    background: linear-gradient(90deg, transparent, #0d0a14 30%, #0d0a14 70%, transparent);
+    /* #100d17 = the stage's top-center ink WITH its 1.2% white lift baked in,
+       so the notch disappears into the section instead of reading a hair cooler. */
+    background: linear-gradient(90deg, transparent, #100d17 30%, #100d17 70%, transparent);
   }
   /* wide desks: the thread reads undersized at 1440px — take it up a fifth,
      anchored at the boundary crossing. The scaled thread earns a touch more
@@ -2562,10 +2564,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     /* the section hairline breathes out at the page gutters instead of dying
        into the viewport edge — the same courtesy the center puncture pays the
        thread. Only paints where a border-width exists (the border-t sections);
-       the bone/10 body tint matches the utility it replaces. */
+       the bone/10 body tint matches the utility it replaces. The fade length
+       rides the viewport so ultrawide desks keep the same proportion. */
     border-image: linear-gradient(90deg,
-      transparent, rgba(246, 241, 230, 0.1) 64px,
-      rgba(246, 241, 230, 0.1) calc(100% - 64px), transparent) 1;
+      transparent, rgba(246, 241, 230, 0.1) max(64px, 4vw),
+      rgba(246, 241, 230, 0.1) calc(100% - max(64px, 4vw)), transparent) 1;
   }
   .v2-tooth::after {
     content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;

@@ -20,7 +20,7 @@ export function FieldManual() {
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="07" name="The Craft Record" accent={SCENE_TINT} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
-          <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
+          <h2 className="rfx-athletic v2-display max-w-[16ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
             The craft record.
           </h2>
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2/75">
