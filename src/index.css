@@ -316,6 +316,18 @@
   .disclosure-row { min-height: 44px; }
 }
 
+/* Phone chip rails: the Pitch Index filter/sort/status rows scroll horizontally
+   below 640px. A right-edge fade signals there is more to scroll (so a chip never
+   looks clipped by accident), and the trailing padding lets the last chip clear
+   the fade at full scroll. Above 640px the rows wrap and the mask is dropped. */
+@media (max-width: 639px) {
+  .chip-rail {
+    padding-right: 1.75rem;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.75rem), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 1.75rem), transparent);
+  }
+}
+
 /*
   Embedded tweet, brought onto the archive's surface. react-tweet ships a
   blue-link Twitter look; these overrides reseat it on the cream inset card with
