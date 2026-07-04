@@ -22,8 +22,12 @@ export function projectSeam(cx: number, cy: number, r: number, segments = 280): 
 }
 
 export function pathOf(run: P2[]): string {
+  // One decimal is sub-pixel at every render size the seam draws at, and this path
+  // string is inlined into ~100 SVGs on every prerendered page — the extra decimal
+  // is pure payload. Trimming to toFixed(1) is the safe precision win (the seam
+  // geometry itself, compared point-for-point elsewhere, is untouched).
   return run
-    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`)
+    .map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`)
     .join(' ')
 }
 
