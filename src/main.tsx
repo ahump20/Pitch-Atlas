@@ -50,7 +50,7 @@ function mount() {
     <StrictMode>
       <UnheadProvider head={head}>
         <RouterProvider router={router} />
-        <ReloadPrompt />
+        <ReloadPrompt router={router} />
       </UnheadProvider>
     </StrictMode>,
   )

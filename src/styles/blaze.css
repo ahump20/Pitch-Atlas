@@ -30,10 +30,6 @@
     height: 86px;
   }
 
-  body:has([data-blaze-reserved-bottom]) .blaze-companion {
-    display: none;
-  }
-
   .blaze-track {
     position: absolute;
     right: 0;
