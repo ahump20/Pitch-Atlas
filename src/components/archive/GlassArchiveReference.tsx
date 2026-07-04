@@ -44,7 +44,17 @@ const TONE: Record<'band' | 'plate', ToneScale> = {
   },
 }
 
-export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; tone: 'band' | 'plate' }) {
+export function GlassArchiveReference({
+  image,
+  tone,
+  accent,
+}: {
+  image: ArchiveImage
+  tone: 'band' | 'plate'
+  /** the hosting band's scene tint; the rights chip wears it so the mark and
+      the room agree (same doctrine as ChapterMark). Cyan without it. */
+  accent?: string
+}) {
   const t = TONE[tone]
   const [broken, setBroken] = useState(false)
   const { ref, shown } = useReveal<HTMLElement>('0px 0px -8% 0px')
@@ -121,12 +131,18 @@ export function GlassArchiveReference({ image, tone }: { image: ArchiveImage; to
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`${rightsLabel}: view the source for this image`}
-              className="mono-label-stage mt-1.5 inline-flex items-center gap-1.5 text-cyan underline decoration-cyan/40 underline-offset-2 transition-colors hover:decoration-cyan"
+              className={`mono-label-stage mt-1.5 inline-flex items-center gap-1.5 underline decoration-current/40 underline-offset-2 transition-colors hover:decoration-current ${accent ? '' : 'text-cyan'}`}
+              style={accent ? { color: accent } : undefined}
             >
               {rightsLabel} <span aria-hidden="true">↗</span>
             </a>
           ) : (
-            <span className="mono-label-stage mt-1.5 inline-block text-cyan">{rightsLabel}</span>
+            <span
+              className={`mono-label-stage mt-1.5 inline-block ${accent ? '' : 'text-cyan'}`}
+              style={accent ? { color: accent } : undefined}
+            >
+              {rightsLabel}
+            </span>
           )}
         </figcaption>
       </div>

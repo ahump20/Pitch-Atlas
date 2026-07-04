@@ -142,12 +142,13 @@ export function WaxPack({ tool }: { tool: WaxPackTool }) {
         {tool.blurb}
       </span>
       {/* pointing at the pack firms the print and eases the arrow toward the
-          tear — the same invitation the flap already makes, at the CTA's scale */}
-      <span className="mt-auto block font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[rgba(33,29,23,0.55)] group-hover:text-[rgba(33,29,23,0.85)] group-focus-visible:text-[rgba(33,29,23,0.85)] motion-safe:transition-colors motion-safe:duration-300">
+          tear — the same invitation the flap already makes, at the CTA's scale.
+          A press answers the same way, so touch isn't locked out of the cue. */}
+      <span className="mt-auto block font-mono text-[9px] font-bold uppercase tracking-[0.16em] text-[rgba(33,29,23,0.55)] group-hover:text-[rgba(33,29,23,0.85)] group-focus-visible:text-[rgba(33,29,23,0.85)] group-active:text-[rgba(33,29,23,0.85)] motion-safe:transition-colors motion-safe:duration-300">
         Open the pack
         <span
           aria-hidden="true"
-          className="ml-1 inline-block motion-safe:group-hover:translate-x-1 motion-safe:group-focus-visible:translate-x-1 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out"
+          className="ml-1 inline-block motion-safe:group-hover:translate-x-1 motion-safe:group-focus-visible:translate-x-1 motion-safe:group-active:translate-x-1 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out"
         >
           →
         </span>

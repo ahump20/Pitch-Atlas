@@ -25,7 +25,9 @@ export function ToolsLab() {
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="06" name="The Tools" accent={SCENE_TINT} />
-        <div className="mt-4 flex flex-wrap items-end justify-between gap-3">
+        {/* the count stacks under the heading on phones (no near-collision at
+            390px) and sits on the heading's own baseline from sm up. */}
+        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-3">
           <h2 className="rfx-athletic v2-display max-w-[14ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
             The tools.
           </h2>
@@ -37,7 +39,7 @@ export function ToolsLab() {
           The craft map, made playable. Tear one open. Every pack is one click from here.
         </p>
         <WaxPackIdleStyles />
-        <div className="mt-10 grid grid-cols-2 gap-x-4 gap-y-6 md:gap-x-6 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-x-5 gap-y-6 md:gap-x-6 lg:grid-cols-4">
           {TOOLS.map((t) => (
             <WaxPack key={t.to} tool={t} />
           ))}
