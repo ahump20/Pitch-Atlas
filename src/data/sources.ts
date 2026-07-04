@@ -35,6 +35,8 @@ const RETRIEVED_7 = '2026-06-10'
 
 // Expanded Lost Pitches plates added after a dedicated media-rights audit.
 const RETRIEVED_9 = '2026-06-27'
+// Archival-film links for the Lost Pitches wing were re-checked in a 2026-07-04 pass.
+const RETRIEVED_10 = '2026-07-04'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1876,6 +1878,20 @@ export const SOURCES = {
     url: 'https://commons.wikimedia.org/wiki/File:1912_Lincoln_Giants.jpg',
     retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
+  },
+  'loc-baseball-films-collection': {
+    id: 'loc-baseball-films-collection',
+    label: 'Library of Congress, Baseball Films collection (1898 to 1960)',
+    url: 'https://www.loc.gov/collections/baseball-films/about-this-collection/',
+    retrievedAt: RETRIEVED_10,
+    season: 'public domain moving-image collection',
+  },
+  'loc-baseball-films-newsreels': {
+    id: 'loc-baseball-films-newsreels',
+    label: 'Library of Congress, Baseball Films collection filtered to newsreels',
+    url: 'https://www.loc.gov/collections/baseball-films/?fa=subject:newsreels',
+    retrievedAt: RETRIEVED_10,
+    season: 'public domain moving-image collection',
   },
 
   // --- Rotating quotes pool (baseball + life-philosophy lines) ---

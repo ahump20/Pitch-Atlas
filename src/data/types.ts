@@ -106,6 +106,26 @@ export type Claim<T> =
       source?: Source
     })
 
+/** A claim shape that must include a concrete source credit. */
+export type CreditedClaim<T> = Claim<T> & { source: Source }
+
+/**
+ * Linked-only archival film metadata (lost-pitches era footage references).
+ * The clip is never bundled; surfaces either embed the archive player or link out.
+ */
+export interface ArchiveFilm {
+  /** Canonical archive landing page for the footage reference. */
+  url: string
+  /** Platform-safe embed URL for archive playback surfaces. */
+  embedUrl: string
+  /** What the film shows, sourced and confidence-labeled. */
+  caption: CreditedClaim<string>
+  /** Archival film references are always link-only (no shipped bytes). */
+  rights: 'linked-only'
+  /** Optional bundled still used only when a public-domain preview is available. */
+  previewSrc?: string
+}
+
 /** A grip contact anchored to the seam curve by parameter, used to place 3D markers. */
 export interface SeamAnchoredPoint {
   /** 0..1 along the closed seam curve. */

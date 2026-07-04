@@ -26,6 +26,11 @@ describe('archive image rights guard', () => {
     expect(LOST_PITCH_ARCHIVE_IMAGES.length).toBeGreaterThan(0)
   })
 
+  it('files at least one linked-only archival film record', () => {
+    const filmCount = LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.video).length
+    expect(filmCount).toBeGreaterThan(0)
+  })
+
   it('allows first-party original plates without an external Source', () => {
     const originals = LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.rights === 'original')
     expect(originals.length).toBeGreaterThan(0)
@@ -66,6 +71,25 @@ describe('archive image rights guard', () => {
 
       it('carries non-empty alt text (zero-WebGL accessibility floor)', () => {
         expect(image.alt.trim().length).toBeGreaterThan(0)
+      })
+
+      it('keeps archival film references linked-only, credited, and never bundled', () => {
+        if (!image.video) return
+
+        expect(image.video.rights).toBe('linked-only')
+        expect(image.video.url).toMatch(/^https?:\/\//)
+        expect(image.video.embedUrl).toMatch(/^https?:\/\//)
+        expect(image.video.caption.source).toBeTruthy()
+        const registeredSource = SOURCES[image.video.caption.source.id as keyof typeof SOURCES]
+        expect(registeredSource).toBeTruthy()
+        expect(image.video.caption.source).toMatchObject(registeredSource)
+
+        if (image.video.previewSrc) {
+          expect(image.rights).toBe('public-domain')
+          expect(image.video.previewSrc.startsWith('/archive/')).toBe(true)
+          expect(image.video.previewSrc).not.toContain('..')
+          expect(existsSync(join(process.cwd(), 'public', image.video.previewSrc))).toBe(true)
+        }
       })
     })
   }

@@ -1,5 +1,5 @@
-import type { RightsStatus, Source } from '../types'
-import { src } from '../sources'
+import type { ArchiveFilm, RightsStatus, Source } from '../types'
+import { claim, src } from '../sources'
 
 /*
   Historical and original image plates for the Lost Pitches wing.
@@ -25,6 +25,7 @@ export interface ArchiveImage {
   qualityNote: string
   relatedSlug: string
   relatedLabel: string
+  video?: ArchiveFilm
 }
 
 export const LOST_PITCH_ARCHIVE_IMAGES: ArchiveImage[] = [
@@ -43,6 +44,17 @@ export const LOST_PITCH_ARCHIVE_IMAGES: ArchiveImage[] = [
     qualityNote: 'High enough for a full plate; original source is 861 by 1545 pixels.',
     relatedSlug: 'satchel-paige-hesitation-pitch',
     relatedLabel: "Satchel Paige's Hesitation Pitch",
+    video: {
+      url: 'https://www.loc.gov/collections/baseball-films/about-this-collection/',
+      embedUrl: 'https://www.loc.gov/collections/baseball-films/?fa=subject:newsreels',
+      caption: claim(
+        "Library of Congress baseball-film newsreels are filed here as Paige-era pitching context; they do not isolate one authenticated hesitation-pitch release.",
+        'loc-baseball-films-newsreels',
+        'reputable-analysis',
+      ),
+      rights: 'linked-only',
+      previewSrc: '/archive/lost-pitches/satchel-paige-1942-plate.jpg',
+    },
   },
   {
     id: 'hilton-smith-curveball-study',
@@ -139,6 +151,17 @@ export const LOST_PITCH_ARCHIVE_IMAGES: ArchiveImage[] = [
     qualityNote: 'Small source crop at 230 by 329 pixels, held inside a matte.',
     relatedSlug: 'phil-cockrell-spitball',
     relatedLabel: "Phil Cockrell's Spitball",
+    video: {
+      url: 'https://www.loc.gov/collections/baseball-films/about-this-collection/',
+      embedUrl: 'https://www.loc.gov/collections/baseball-films/?fa=subject:newsreels',
+      caption: claim(
+        'The linked Library of Congress newsreel pool is used as deadball-era spitball context footage, not as direct frame proof of Cockrell throwing a named pitch.',
+        'loc-baseball-films-collection',
+        'reputable-analysis',
+      ),
+      rights: 'linked-only',
+      previewSrc: '/archive/lost-pitches/phil-cockrell-1924-plate.jpg',
+    },
   },
   {
     id: 'negro-league-all-star-1936-plate',
