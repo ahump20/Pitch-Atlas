@@ -22,6 +22,16 @@ export function ArchiveBand() {
     <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
       <div className="pa-atmo pa-atmo-leather opacity-[0.05]" aria-hidden="true" />
+      {/* the band's own left pool: the global far-stratum pool lights the right
+          half of this stretch of page, so the copy column mirrors it at a
+          whisper — the pause before the artifact reads lit, not vacant. */}
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 w-[46%]"
+        style={{
+          background: `radial-gradient(78% 58% at 16% 46%, color-mix(in srgb, ${SCENE_TINT} 5%, transparent) 0%, transparent 72%)`,
+        }}
+        aria-hidden="true"
+      />
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-start gap-10 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
         <div className="md:col-span-5">
           {/* the featured-artifact marker: ChapterMark's visual language, without
@@ -31,7 +41,7 @@ export function ArchiveBand() {
               ■
             </span>
             <span className="text-bone-2/70">Featured artifact</span>
-            <span className="h-px w-5 bg-bone/25" aria-hidden="true" />
+            <span className="h-px w-5 bg-bone/25 xl:w-8" aria-hidden="true" />
             <span className="text-bone-2">The Archive</span>
           </p>
 
@@ -45,12 +55,20 @@ export function ArchiveBand() {
             artifact, not a reconstruction.
           </p>
 
-          <div className="mt-8 flex flex-col gap-4">
+          <div className="mt-8 flex flex-col gap-6">
+            {/* the arrow speaks the same invitation grammar the wax packs do:
+                pointing at the door eases the arrow through it. */}
             <Link
               to="/lost-pitches"
-              className="inline-flex w-fit items-center gap-2 rounded-sm border border-bone/45 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-cyan/70 hover:bg-bone/[0.05]"
+              className="group inline-flex w-fit items-center gap-2 rounded-sm border border-bone/45 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-cyan/70 hover:bg-bone/[0.05]"
             >
-              Enter the Lost Pitches archive <span aria-hidden="true">→</span>
+              Enter the Lost Pitches archive{' '}
+              <span
+                aria-hidden="true"
+                className="inline-block motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out motion-safe:group-hover:translate-x-1 motion-safe:group-focus-visible:translate-x-1"
+              >
+                →
+              </span>
             </Link>
             <Link
               to={`/lost-pitches/${image.relatedSlug}`}
@@ -62,7 +80,7 @@ export function ArchiveBand() {
         </div>
 
         <div className="md:col-span-7">
-          <GlassArchiveReference image={image} tone="band" />
+          <GlassArchiveReference image={image} tone="band" accent={SCENE_TINT} />
         </div>
       </div>
     </section>
