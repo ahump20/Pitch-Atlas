@@ -147,7 +147,7 @@ export function WaxPack({ tool }: { tool: WaxPackTool }) {
         Open the pack
         <span
           aria-hidden="true"
-          className="ml-1 inline-block group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out"
+          className="ml-1 inline-block motion-safe:group-hover:translate-x-1 motion-safe:group-focus-visible:translate-x-1 motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out"
         >
           →
         </span>

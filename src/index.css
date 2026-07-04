@@ -2725,7 +2725,18 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
      draws, as a 2D schematic that scales + blooms its foil on
      scroll-in. The honest "one function, two media" beat. Without
      view-timeline (or under reduced motion) it simply shows. */
-  .v2-bridge { position: relative; }
+  /* clip, not hidden: hidden made the bridge a scroll container, which stole
+     its view() timelines (descent thread and foil bloom resolved against a box
+     that never scrolls, landing frozen) and swallowed the boundary puncture.
+     clip contains the decorative overflow without becoming a scroll container;
+     the 2px margin lets the -1px puncture row paint. Engines without clip fall
+     back to hidden and keep the old, contained behavior. */
+  .v2-bridge {
+    position: relative;
+    overflow: hidden;
+    overflow: clip;
+    overflow-clip-margin: 2px;
+  }
   .v2-bridge-foil { opacity: .42; }
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {

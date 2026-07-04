@@ -20,7 +20,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
     <section
       id="refraction"
       data-scene-tint={accent.c3}
-      className="v2-stage v2-bridge relative overflow-hidden border-t border-bone/10"
+      className="v2-stage v2-bridge relative border-t border-bone/10"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
       {/* the descent: the hero's "watch it flatten" gesture lands here as the
