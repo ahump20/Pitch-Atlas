@@ -1,4 +1,4 @@
-import type { Claim, ClaimConfidence, Source } from './types'
+import type { Claim, ClaimConfidence, CreditedClaim, Source } from './types'
 
 /*
   The citation registry. Every figure on the page links to one of these.
@@ -1979,7 +1979,7 @@ export function claim<T>(
   id: SourceId,
   confidence: Exclude<ClaimConfidence, 'unverified' | 'secondhand-attributed'>,
   opts: { note?: string; approximate?: boolean } = {},
-): Claim<T> {
+): CreditedClaim<T> {
   return { value, source: src(id), confidence, ...opts }
 }
 
