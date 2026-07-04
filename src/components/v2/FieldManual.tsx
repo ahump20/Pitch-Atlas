@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { WINGS } from '../../data/knowledge'
 import { ChapterMark } from './ChapterMark'
+import { Descent } from '../motion/Descent'
 
 /*
   v2 · The craft record. Not just what each pitch is — how the craft works
@@ -11,7 +12,8 @@ import { ChapterMark } from './ChapterMark'
 */
 export function FieldManual() {
   return (
-    <section className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint="#4B92DB" className="v2-stage v2-tooth relative border-t border-bone/10">
+      <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="07" name="The Craft Record" />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-3">

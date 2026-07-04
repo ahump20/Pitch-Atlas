@@ -24,6 +24,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
   return (
     <section
       id="case"
+      data-scene-tint={accent.c3}
       className="v2-stage v2-tooth relative overflow-hidden"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >

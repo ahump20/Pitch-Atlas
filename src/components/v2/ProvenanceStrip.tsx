@@ -3,6 +3,7 @@ import { CONFIDENCE_META, type ClaimConfidence } from '../../data/types'
 import { PITCHES } from '../../data/pitches'
 import { ClaimCard } from '../provenance/ClaimCard'
 import { ChapterMark } from './ChapterMark'
+import { Descent } from '../motion/Descent'
 import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 /*
@@ -28,7 +29,8 @@ const EXAMPLE = PITCHES[0]
 
 export function ProvenanceStrip() {
   return (
-    <section className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section data-scene-tint="#34E27E" className="v2-stage v2-tooth relative border-t border-bone/10">
+      <Descent />
       <div className="mx-auto grid max-w-[1320px] grid-cols-1 gap-12 px-5 py-20 md:grid-cols-12 md:gap-14 md:px-8 md:py-28">
         {/* the principle + the ladder. the constitutional line is pinned while its
             evidence — the seven rungs — scrolls past it: the standard stays put,

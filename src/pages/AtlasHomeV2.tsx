@@ -1,5 +1,6 @@
 import { useSeoMeta } from '@unhead/react'
 import { PITCHES } from '../data/pitches'
+import { useSceneTint } from '../hooks/useSceneTint'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, truncateForMeta } from '../lib/seo'
 import { HeroCase } from '../components/v2/HeroCase'
@@ -25,6 +26,10 @@ import { CloseCta } from '../components/v2/CloseCta'
 */
 export function AtlasHomeV2() {
   const featured = PITCHES[0]
+
+  // the room follows the chapter: each section below tags its accent with
+  // data-scene-tint; this publishes the active one to the far stratum.
+  useSceneTint()
 
   useSeoMeta({
     // The published home: indexable, canonical at / (RootLayout sets the canonical

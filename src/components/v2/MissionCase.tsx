@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import type { CSSProperties } from 'react'
 import { ChapterMark } from './ChapterMark'
+import { Descent } from '../motion/Descent'
 
 const VALUES = [
   {
@@ -48,7 +49,12 @@ const PROGRESSION = [
 
 export function MissionCase() {
   return (
-    <section id="mission" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section
+      id="mission"
+      data-scene-tint="#6CACE4"
+      className="v2-stage v2-tooth relative border-t border-bone/10"
+    >
+      <Descent />
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 gap-10 px-5 py-20 md:grid-cols-12 md:gap-12 md:px-8 md:py-28">
         <div className="md:col-span-7">
           <ChapterMark n="01" name="The Mission" />

@@ -18,6 +18,7 @@ import { SeamSchematic } from '../fallback/SeamSchematic'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { familyCrumb } from '../refractor/familyCrumb'
 import { ChapterMark } from './ChapterMark'
+import { Descent } from '../motion/Descent'
 import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 /*
@@ -211,7 +212,8 @@ export function ChromeWall() {
   const total = shelves.reduce((sum, shelf) => sum + shelf.pitches.length, 0)
 
   return (
-    <section id="set" className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section id="set" data-scene-tint="#8A93AB" className="v2-stage v2-tooth relative border-t border-bone/10">
+      <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="03" name="The Filed Set" />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">
