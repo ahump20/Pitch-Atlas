@@ -835,12 +835,16 @@
     font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); line-height: 1; letter-spacing: .1em;
     text-transform: uppercase; color: var(--color-bone-2);
   }
-  /* the Austin grip photo, filling the arched window (the seam ball is used otherwise) */
-  .rfx-grip { position: absolute; inset: 0; z-index: 1; margin: 0; }
-  .rfx-grip-img { width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; transition: opacity .3s; }
+  /* the Austin grip photo, filling the arched window (the seam ball is used otherwise).
+     display:grid so the clip's poster and its video stack in one cell (grid-area 1/1)
+     and crossfade; a single-child GripFace figure is unaffected. */
+  .rfx-grip { position: absolute; inset: 0; z-index: 1; margin: 0; display: grid; }
+  .rfx-grip-img { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; transition: opacity .3s; }
   /* the grip clips are shot portrait with the ball low in frame — crop lower so the
-     hand and ball fill the window instead of the torso above them. */
-  video.rfx-grip-img { object-position: center 60%; }
+     hand and ball fill the window instead of the torso above them. The clip's poster
+     (its own first frame) matches the video's crop so the crossfade never shifts. */
+  video.rfx-grip-img,
+  .rfx-grip-poster { object-position: center 60%; }
 
   /* ── the media stage: real footage at page scale (MediaStage.tsx) ──
      'bleed' fills its positioned parent and crops to cover; 'portrait' keeps the
