@@ -60,6 +60,9 @@ function RouteHead() {
 export function RootLayout() {
   return (
     <div className="min-h-screen bg-void text-bone">
+      {/* the depth strata: the far pools (scene-tinted) under the near dot
+          grid, both fixed, both still under reduced motion */}
+      <div className="field-depth" aria-hidden="true" />
       <div className="field-rules" aria-hidden="true" />
       {/* the film pass: one fixed multiply layer of grain over the whole page,
           breathing slowly at rest (the CSS gates it behind reduced-motion) */}

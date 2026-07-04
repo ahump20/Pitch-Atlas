@@ -481,12 +481,52 @@
      dark by default. .scene-coal adds its own backdrop where sections want a
      distinct radial glow; .field-cream restores cream for genuinely-light
      subtrees (embedded tweets, print). */
-  /* fixed dot-grid underlay: the prototype's faint column dots on the void */
+  /* fixed dot-grid underlay: the prototype's faint column dots on the void.
+     Behind scroll() support the grid recedes a short distance across the full
+     document — the near stratum visibly sitting behind the page. */
   .field-rules {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05;
+    position: fixed; inset: 0 0 -120px 0; z-index: 0; pointer-events: none; opacity: .05;
     background-image: radial-gradient(circle, rgba(246,241,230,.45) 0 1px, transparent 1.4px);
     background-size: 22px 22px;
     mask-image: radial-gradient(130% 70% at 50% 10%,#000 26%,transparent 92%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .field-rules {
+        animation: field-recede linear both;
+        animation-timeline: scroll(root);
+      }
+    }
+  }
+
+  /* the scene tint: the active chapter's accent, bled into the far stratum at
+     single-digit opacity. Registered as a real <color> so the tint itself
+     cross-fades between chapters instead of snapping. */
+  @property --scene-tint {
+    syntax: '<color>';
+    inherits: true;
+    initial-value: #6CACE4;
+  }
+  /* the far stratum: two soft pools behind the dot grid on offset clocks, so
+     the void reads as a lit room, never a flat fill. The leading pool wears
+     the scene tint; the trailing pool stays bone. Both are whisper-quiet —
+     if a visitor notices the pool before the content, it is too loud. */
+  .field-depth { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .field-depth::before,
+  .field-depth::after {
+    content: ""; position: absolute; inset: -12%;
+    transition: --scene-tint 1.2s ease;
+  }
+  .field-depth::before {
+    background: radial-gradient(46% 38% at 20% 24%,
+      color-mix(in srgb, var(--scene-tint, #6CACE4) 6%, transparent) 0%, transparent 70%);
+  }
+  .field-depth::after {
+    background: radial-gradient(42% 36% at 82% 72%, rgba(246, 241, 230, 0.035) 0%, transparent 72%);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .field-depth::before { animation: depth-drift-a 17s ease-in-out infinite alternate; }
+    .field-depth::after { animation: depth-drift-b 13s ease-in-out infinite alternate; }
   }
   .scene-coal {
     position: relative;
@@ -2286,6 +2326,13 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 }
 
 @keyframes grain-breathe { from { opacity: 0.03; } to { opacity: 0.042; } }
+/* the strata clocks: the tinted pool and the bone pool drift on offset periods
+   (17s / 13s) so the room never settles into one mechanical loop; the dot grid
+   recedes with the document on the scroll timeline. */
+@keyframes depth-drift-a { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(2.5%, 3%, 0); } }
+@keyframes depth-drift-b { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-2%, -2.5%, 0); } }
+@keyframes field-recede { from { transform: translateY(0); } to { transform: translateY(-120px); } }
+@keyframes cm-rule-in { from { transform: scaleX(0); } }
 @keyframes ambient-drift { from { background-position: 28% 0; } to { background-position: 72% 0; } }
 @keyframes rake-breathe { from { opacity: 0.26; } to { opacity: 0.36; } }
 @keyframes shake-settle {
