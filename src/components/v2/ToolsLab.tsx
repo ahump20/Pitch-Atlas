@@ -27,8 +27,8 @@ export function ToolsLab() {
         <ChapterMark n="06" name="The Tools" accent={SCENE_TINT} />
         {/* the count stacks under the heading on phones (no near-collision at
             390px) and sits on the heading's own baseline from sm up. */}
-        <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-3">
-          <h2 className="rfx-athletic v2-display max-w-[14ch] text-[clamp(28px,5vw,52px)] leading-[0.94]">
+        <div className="mt-4 flex flex-col gap-1.5 sm:flex-row sm:flex-wrap sm:items-baseline sm:justify-between sm:gap-3">
+          <h2 className="rfx-athletic v2-display max-w-[14ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
             The tools.
           </h2>
           <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-2/75">

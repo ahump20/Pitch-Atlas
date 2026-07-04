@@ -40,7 +40,7 @@ export function ArchiveBand() {
             <span style={{ color: SCENE_TINT }} aria-hidden="true">
               ■
             </span>
-            <span className="text-bone-2/70">Featured artifact</span>
+            <span className="text-bone-2/85">Featured artifact</span>
             <span className="h-px w-5 bg-bone/25 xl:w-8" aria-hidden="true" />
             <span className="text-bone-2">The Archive</span>
           </p>
@@ -60,7 +60,7 @@ export function ArchiveBand() {
                 pointing at the door eases the arrow through it. */}
             <Link
               to="/lost-pitches"
-              className="group inline-flex w-fit items-center gap-2 rounded-sm border border-bone/45 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-cyan/70 hover:bg-bone/[0.05]"
+              className="group inline-flex w-fit items-center gap-2 rounded-sm border border-bone/45 px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-bone transition-colors hover:border-[#CDBA8E]/70 hover:bg-bone/[0.05]"
             >
               Enter the Lost Pitches archive{' '}
               <span
@@ -74,6 +74,10 @@ export function ArchiveBand() {
               to={`/lost-pitches/${image.relatedSlug}`}
               className="inline-flex w-fit items-center gap-2 py-2 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2/80 transition-colors hover:text-bone"
             >
+              {/* the tick ties the provenance line to the marker grammar above */}
+              <span aria-hidden="true" className="text-[8px]" style={{ color: SCENE_TINT }}>
+                ■
+              </span>
               Filed under {image.relatedLabel}
             </Link>
           </div>
