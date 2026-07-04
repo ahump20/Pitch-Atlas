@@ -1831,6 +1831,44 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     }
   }
 
+  /* ── the descent thread (Descent.tsx): the chapter boundary as the seam
+     dropping to the next file — hairline, three stitch ticks, the open
+     seam-point it lands on. Ticks ride the seam voice at low alpha; the drop
+     is a top-down clip wipe with the SeamGuide gating exactly: view() timeline
+     where supported, a one-shot IO class where not, simply present under
+     reduced motion. ── */
+  .descent { color: color-mix(in srgb, var(--color-seam) 62%, transparent); }
+  .descent .descent-ticks { display: block; }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .descent {
+        clip-path: inset(0 -8px 100% -8px);
+        animation: descent-drop 1s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 90%;
+      }
+    }
+    @supports not (animation-timeline: view()) {
+      .descent {
+        clip-path: inset(0 -8px 100% -8px);
+        transition: clip-path 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .descent.is-landed { clip-path: inset(-8px); }
+    }
+  }
+
+  /* the chapter rule draws itself as the mark enters — filed, not printed. */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .cm-rule {
+        transform-origin: left center;
+        animation: cm-rule-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-timeline: view();
+        animation-range: entry 0% entry 60%;
+      }
+    }
+  }
+
   /* ── the claim card (ClaimCard.tsx): a claim filed as a physical index card.
      Scene-token driven, so one card reads on cream and re-tones inside coal.
      The top edge carries a punched file notch so it reads as a filed record. ── */
