@@ -735,6 +735,12 @@
   .rfx-card:hover .rfx-field::after { opacity: .44; }
   .rfx-card.is-gold .rfx-field::after { opacity: .16; }
   .rfx-inner { position: relative; z-index: 8; display: flex; flex-direction: column; height: 100%; }
+  /* The window is the ONLY row that flexes (the design's stated intent: the grip
+     is the card, so the portrait absorbs the slack). Pin the print rows so a long
+     READ plate can never shrink the footer past the field's clipped bottom edge
+     and slice "OPEN SPECIMEN" to "OPEN SPE". The window's min-height is the safety
+     valve — it only yields under a genuine crush, unchanged when the print is short. */
+  .rfx-cardtop, .rfx-banner, .rfx-grade, .rfx-content { flex-shrink: 0; }
 
   /* card top wordmark bar — the brand arches across the top of the card in gold,
      the way the reference card's script arches over its field. */
@@ -750,12 +756,12 @@
   /* unclipped twin of the window's box: holds the vnum + family crumb so the
      arch's overflow:hidden can't slice them at the rounded corners. The min-height
      keeps the portrait window from going squat when the plate text is long — the
-     grip is the card; it never collapses to a letterboxed sliver. 42% is the
-     ceiling that fits the full card-unit print (3-line shape read + cue + badge +
-     strip) inside the 5/7 box at EVERY card width — the old 44% was measured
-     against the undersized fixed-px plate and slices the strip once the print
-     scales true. Verified by measurement at 290/360/460/520. */
-  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 42%; display: flex; }
+     grip is the card; it never collapses to a letterboxed sliver. The window is the
+     sole flexible row now (the print rows are pinned flex-shrink:0 above), so this
+     36% is the floor the window yields to only under a genuine crush — giving the
+     full card-unit print (3-line shape read + cue + badge + strip) room inside the
+     5/7 box at every card width without slicing the strip to "OPEN SPE". */
+  .rfx-windowwrap { position: relative; flex: 1 1 auto; min-height: 36%; display: flex; }
   .rfx-windowwrap > .rfx-window { flex: 1 1 auto; min-height: 0; }
 
   /* arched portrait window over a halftone field */
