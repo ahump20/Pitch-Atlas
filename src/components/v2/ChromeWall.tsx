@@ -217,7 +217,7 @@ export function ChromeWall() {
   return (
     <section id="set" data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
       <Descent />
-      <div className="pa-atmo pa-atmo-index-shelf opacity-[0.055] md:opacity-[0.075]" aria-hidden="true" />
+      <div className="pa-atmo pa-atmo-index-shelf opacity-[0.16] md:opacity-[0.22]" aria-hidden="true" />
       <div className="relative z-[1] mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="03" name="The Filed Set" accent={SCENE_TINT} />
         <div className="mt-4 flex flex-wrap items-end justify-between gap-4">

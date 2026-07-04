@@ -381,8 +381,8 @@ export function PitchIndex({ id }: { id?: string }) {
   return (
     <div id={id}>
       {/* Sticky controls */}
-      <div className="sticky top-16 z-20 -mx-5 mt-6 overflow-hidden bg-background/92 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
-        <div className="pa-atmo pa-atmo-index-shelf opacity-[0.1] md:opacity-[0.14]" aria-hidden="true" />
+      <div className="sticky top-16 z-20 -mx-5 mt-6 overflow-hidden bg-background/86 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
+        <div className="pa-atmo pa-atmo-index-shelf opacity-[0.22] md:opacity-[0.28]" aria-hidden="true" />
         <div className="relative z-[1]">
         <label className="block">
           <span className="sr-only">Search the Pitch Index</span>

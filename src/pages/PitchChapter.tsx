@@ -119,7 +119,11 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
 
   return (
     <section className="relative grid grid-cols-1 items-center gap-[clamp(24px,4vw,52px)] overflow-hidden pt-3 pb-[clamp(34px,5vw,56px)] md:grid-cols-[0.92fr_1.08fr]">
-      <div className="pa-atmo pa-atmo-specimen-stage opacity-[0.1] md:opacity-[0.16]" aria-hidden="true" />
+      <div
+        className="pa-atmo pa-atmo-specimen-stage opacity-[0.18] md:opacity-[0.24]"
+        style={{ backgroundPosition: '58% 46%' }}
+        aria-hidden="true"
+      />
       {/* framed stage */}
       <div
         className="relative z-[1] mx-auto aspect-square w-full max-w-[480px] overflow-hidden rounded-[24px]"

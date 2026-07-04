@@ -28,7 +28,11 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
       className="v2-stage v2-tooth relative overflow-hidden"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
-      <div className="pa-atmo pa-atmo-specimen-stage opacity-[0.16] md:opacity-[0.22]" aria-hidden="true" />
+      <div
+        className="pa-atmo pa-atmo-specimen-stage opacity-[0.28] md:opacity-[0.36]"
+        style={{ backgroundPosition: '58% 46%' }}
+        aria-hidden="true"
+      />
       {/* phone spacing runs tighter (gap-7 / pt-6) so the specimen-first order
           still lands the headline AND the primary CTA inside the first screen */}
       <div className="relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-7 px-5 pb-16 pt-6 md:min-h-[calc(100dvh-4.5rem)] md:grid-cols-12 md:gap-6 md:px-8 md:pb-24 md:pt-12">

@@ -139,7 +139,7 @@ export function AboutPage() {
           </p>
         }
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'About' }]} />}
-        atmoClassName="pa-atmo-archive-paper opacity-[0.12] md:opacity-[0.16]"
+        atmoClassName="pa-atmo-archive-paper opacity-[0.2] md:opacity-[0.28]"
       >
         <div className="mt-8 flex flex-wrap gap-3">
           <Link to="/repertoire" className="btn-foil">
