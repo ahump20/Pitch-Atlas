@@ -1,4 +1,4 @@
-import type { Claim, ClaimConfidence, Source } from './types'
+import type { Claim, ClaimConfidence, CreditedClaim, Source } from './types'
 
 /*
   The citation registry. Every figure on the page links to one of these.
@@ -35,11 +35,13 @@ const RETRIEVED_7 = '2026-06-10'
 
 // Expanded Lost Pitches plates added after a dedicated media-rights audit.
 const RETRIEVED_9 = '2026-06-27'
+// Archival-film links for the Lost Pitches wing were re-checked in a 2026-07-04 pass.
+const RETRIEVED_10 = '2026-07-04'
 
 // The Jurrangelo Cijntje craftsman entry (the living switch-pitcher) was sourced
 // and adversarially re-verified in a 2026-07-05 research pass; its own constant
 // keeps the colophon "as of" line honest without backdating the older wings.
-const RETRIEVED_10 = '2026-07-05'
+const RETRIEVED_11 = '2026-07-05'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1882,6 +1884,20 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
   },
+  'loc-baseball-films-collection': {
+    id: 'loc-baseball-films-collection',
+    label: 'Library of Congress, Baseball Films collection (1898 to 1960)',
+    url: 'https://www.loc.gov/collections/baseball-films/about-this-collection/',
+    retrievedAt: RETRIEVED_10,
+    season: 'public domain moving-image collection',
+  },
+  'loc-baseball-films-newsreels': {
+    id: 'loc-baseball-films-newsreels',
+    label: 'Library of Congress, Baseball Films collection filtered to newsreels',
+    url: 'https://www.loc.gov/collections/baseball-films/?fa=subject:newsreels',
+    retrievedAt: RETRIEVED_10,
+    season: 'public domain moving-image collection',
+  },
 
   // --- Rotating quotes pool (baseball + life-philosophy lines) ---
   'garrido-life-yours-to-win': {
@@ -1954,46 +1970,46 @@ export const SOURCES = {
     id: 'cijntje-wiki',
     label: 'Wikipedia, Jurrangelo Cijntje',
     url: 'https://en.wikipedia.org/wiki/Jurrangelo_Cijntje',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
   },
   'cijntje-bref': {
     id: 'cijntje-bref',
     label: 'Baseball-Reference, Jurrangelo Cijntje (college & minor-league register)',
     url: 'https://www.baseball-reference.com/register/player.fcgi?id=cijntj000jur',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
   },
   'cijntje-sis': {
     id: 'cijntje-sis',
     label: 'Sports Info Solutions, MLB Draft Scouting Report: Jurrangelo Cijntje',
     url: 'https://www.sportsinfosolutions.com/2024/07/17/mlb-draft-scouting-report-jurrangelo-cijntje-mariners/',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
     season: '2024 pre-draft',
   },
   'cijntje-ba': {
     id: 'cijntje-ba',
     label: 'Baseball America, Jurrangelo Cijntje player page',
     url: 'https://www.baseballamerica.com/players/19980-jurrangelo-cijntje/',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
   },
   'cijntje-hollander': {
     id: 'cijntje-hollander',
     label: 'Yahoo Sports, Seattle Mariners executive expands plan for Jurrangelo Cijntje',
     url: 'https://sports.yahoo.com/articles/seattle-mariners-executive-expands-plan-213001288.html',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
     season: '2026',
   },
   'cijntje-cardinals': {
     id: 'cijntje-cardinals',
     label: "Sports Illustrated, Cardinals address switch-pitcher Jurrangelo Cijntje's role",
     url: 'https://www.si.com/mlb/cardinals/onsi/st-louis-cardinals-news/cardinals-address-switch-pitcher-jurrangelo-cijntje-s-role-in-st-louis-pat3',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
     season: '2026',
   },
   'cijntje-draft-quote': {
     id: 'cijntje-draft-quote',
     label: "Yahoo Sports, What Mississippi State's Jurrangelo Cijntje said on pitching with both arms",
     url: 'https://sports.yahoo.com/mississippi-state-baseballs-jurrangelo-cijntje-225548074.html',
-    retrievedAt: RETRIEVED_10,
+    retrievedAt: RETRIEVED_11,
     season: '2024 draft day',
   },
 } satisfies Record<string, Source>
@@ -2015,7 +2031,7 @@ export function claim<T>(
   id: SourceId,
   confidence: Exclude<ClaimConfidence, 'unverified' | 'secondhand-attributed'>,
   opts: { note?: string; approximate?: boolean } = {},
-): Claim<T> {
+): CreditedClaim<T> {
   return { value, source: src(id), confidence, ...opts }
 }
 
