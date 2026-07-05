@@ -1,4 +1,4 @@
-import type { Claim, ClaimConfidence, Source } from './types'
+import type { Claim, ClaimConfidence, CreditedClaim, Source } from './types'
 
 /*
   The citation registry. Every figure on the page links to one of these.
@@ -35,6 +35,8 @@ const RETRIEVED_7 = '2026-06-10'
 
 // Expanded Lost Pitches plates added after a dedicated media-rights audit.
 const RETRIEVED_9 = '2026-06-27'
+// Archival-film links for the Lost Pitches wing were re-checked in a 2026-07-04 pass.
+const RETRIEVED_10 = '2026-07-04'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1877,6 +1879,20 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_9,
     season: 'public domain image source',
   },
+  'loc-baseball-films-collection': {
+    id: 'loc-baseball-films-collection',
+    label: 'Library of Congress, Baseball Films collection (1898 to 1960)',
+    url: 'https://www.loc.gov/collections/baseball-films/about-this-collection/',
+    retrievedAt: RETRIEVED_10,
+    season: 'public domain moving-image collection',
+  },
+  'loc-baseball-films-newsreels': {
+    id: 'loc-baseball-films-newsreels',
+    label: 'Library of Congress, Baseball Films collection filtered to newsreels',
+    url: 'https://www.loc.gov/collections/baseball-films/?fa=subject:newsreels',
+    retrievedAt: RETRIEVED_10,
+    season: 'public domain moving-image collection',
+  },
 
   // --- Rotating quotes pool (baseball + life-philosophy lines) ---
   'garrido-life-yours-to-win': {
@@ -1963,7 +1979,7 @@ export function claim<T>(
   id: SourceId,
   confidence: Exclude<ClaimConfidence, 'unverified' | 'secondhand-attributed'>,
   opts: { note?: string; approximate?: boolean } = {},
-): Claim<T> {
+): CreditedClaim<T> {
   return { value, source: src(id), confidence, ...opts }
 }
 
