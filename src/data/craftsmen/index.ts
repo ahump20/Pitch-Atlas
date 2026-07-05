@@ -558,11 +558,86 @@ const hamels: Craftsman = {
 }
 
 /*
+  The living switch-pitcher. He is the one craftsman whose signature is not a
+  pitch but a way of pitching — two arms, two deliveries, one body. The model
+  carries a single `hand`; his omission is the honest reading, because he throws
+  from both, and the prose carries what the field cannot. No velocity or spin
+  digits ride in the copy (house voice, same as the rest of the hall); the numbers
+  live with Baseball-Reference and the sourced brief. Every claim below survived an
+  adversarial re-verify pass: the platoon thesis is framed as a weapon currently
+  holstered, because as of 2026 both his clubs develop him right-handed only.
+*/
+const cijntje: Craftsman = {
+  slug: 'jurrangelo-cijntje',
+  name: 'Jurrangelo Cijntje',
+  kind: 'craftsman',
+  era: '2024-present',
+  // `hand` omitted on purpose: a switch-pitcher has no single throwing hand. The
+  // chapter renders the "· R-handed" tag only when the field is set, so leaving it
+  // off reads correctly rather than forcing a false primary side.
+  signaturePitch: 'Switch-pitching',
+  // No signaturePitchSlug: switch-pitching is a delivery, not a filed pitch. A
+  // cross-link would misname the craft, so none is asserted.
+  specimenNo: 'C-12',
+  tagline:
+    'The best two-armed arm the game has produced — an ace from the right side, a specialist from the left, carried in one body.',
+  intro:
+    'Cijntje is a natural lefthander who taught his right arm to throw as a boy, mimicking his father, until the built arm became the louder one. He does not mirror a single motion; he keeps two, from two slots, and can choose which hand a hitter sees. That choice is the whole craft: shown the matching hand, a hitter loses the platoon advantage he came to the box expecting. As of 2026 his clubs hold the second arm in reserve and build him as a right-handed starter, so this is a study of a real weapon that is, for now, holstered.',
+  signature: claim(
+    'Two deliveries, not one mirrored. From the right he works a traditional three-quarter slot with big hip-shoulder separation and a cross-body landing — the crisp side, a genuine power fastball with a downer curveball under it. From the left he drops to a lower, cross-fire slot and leans on a sweeping slider, a clear step down in stuff that he saves for left-handed hitters rather than showing to everyone. The two arms will likely never be equal: they are two separate motions learned years apart, and the newer-but-less-drilled left lags in the skill hardest to train, command.',
+    'cijntje-sis',
+    'reputable-analysis',
+    { note: 'Sports Info Solutions draft report on the two slots and the left-vs-lefty usage; the natural-lefty inversion is repeated across scouting write-ups. The "never equal" read is our inference from the sourced two-delivery fact, not a measured claim.' },
+  ),
+  mentalEdge: claim(
+    'His edge is the matchup itself. Because he can present either hand, he can meet a hitter same-handed and take away the platoon advantage — the exact thing a normal staff spends a second reliever to manufacture — and he aims the lesser left arm at left-handed hitters, the group that gives up the most when the platoon edge is denied. Two honest limits keep it truthful: a switch-hitter, choosing his box after the pitcher declares, can hand the edge back; and against everyone the left side is a lesser pitcher than the right.',
+    'cijntje-sis',
+    'reputable-analysis',
+    { note: 'The left-only-vs-lefties usage is the Sports Info Solutions scouting design. The platoon-neutralization value and the switch-hitter caveat are our reasoned reading of the handedness math, not a cited outcome; his real professional platoon splits by arm are not published.' },
+  ),
+  quote: claim(
+    "I'm pretty excited to keep doing both. At the end of the day, if a team wants me only on the right side, I'm happy to do it because at the end of the day I just want to win games. But I think (pitching) from both sides is what I really want to do.",
+    'cijntje-draft-quote',
+    'pitcher-own-words',
+    { note: 'His own words on 2024 draft day, printed by the Yahoo/Mississippi State write-up of the ESPN broadcast interview. Verbatim-confirmed against the page.' },
+  ),
+  record: [
+    claim(
+      'Drafted fifteenth overall in 2024 out of Mississippi State, where he carried a full starter’s load and struck out close to a third of the hitters he faced — the highest a switch-pitcher had ever been taken.',
+      'cijntje-wiki',
+      'official-data',
+      { note: 'Draft slot and the college strikeout picture; the full college line lives on the Baseball-Reference register linked below.' },
+    ),
+    claim(
+      'His first professional season, in 2025, split between High-A and Double-A, told the truth about the two arms: he pitched well as a right-handed starter and got promoted on that arm, while a short trial as a left-handed reliever went badly — nine runs in three innings across three outings.',
+      'cijntje-wiki',
+      'reputable-analysis',
+      { note: 'The minor-league line is aggregated by Wikipedia from the game logs / Baseball-Reference; not the official record of issue, hence reputable-analysis rather than official-data.' },
+    ),
+    claim(
+      'Traded to the St. Louis Cardinals in February 2026, in a three-team deal built around his right-handed upside; he is a Cardinals prospect now, not a Mariner.',
+      'cijntje-wiki',
+      'reputable-analysis',
+      { note: 'The transaction as recorded; stale reporting still places him in Seattle, so the org change is stated plainly.' },
+    ),
+    claim(
+      'Two organizations reached the same verdict — Seattle before the trade, St. Louis after: build him as a right-handed starter and keep the left arm alive in the bullpen, a break-glass option rather than an every-game weapon. The stated reason was the physical toll of the two-sided workload, not a failure of nerve.',
+      'cijntje-cardinals',
+      'coach-observed',
+      { note: 'Cardinals front office (Bloom) and manager (Marmol) on the plan; Seattle GM Justin Hollander gave the same verdict and the workload reason before the trade.' },
+    ),
+  ],
+  recordLinks: [src('cijntje-bref')],
+  rights: 'original',
+}
+
+/*
   The hall, in reading order: the established craftsmen oldest to newest, the
   roundout (a knuckleballer, a screwball master, a one-pitch closer, a changeup
-  lefty), then the legend. Adding an arm is one const and one array entry.
+  lefty), the living switch-pitcher, then the legend. Adding an arm is one const
+  and one array entry.
 */
-export const CRAFTSMEN: Craftsman[] = [gibson, ryan, clemens, maddux, santana, wainwright, skenes, niekro, hubbell, rivera, hamels, gyroball]
+export const CRAFTSMEN: Craftsman[] = [gibson, ryan, clemens, maddux, santana, wainwright, skenes, niekro, hubbell, rivera, hamels, cijntje, gyroball]
 
 const BY_SLUG: Record<string, Craftsman> = Object.fromEntries(
   CRAFTSMEN.map((c) => [c.slug, c]),
