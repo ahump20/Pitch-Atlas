@@ -42,16 +42,16 @@ export const canonWing: KnowledgeWing = {
       ],
     },
     {
-      heading: "Biomechanics, Injury Prevention, and the Modern Scientific Foundation",
+      heading: "Biomechanics, safety literature, and the modern scientific foundation",
       paragraphs: [
-        "The American Sports Medicine Institute (ASMI), founded in 1987 by orthopedic surgeon Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, provides the evidence-based foundation for injury prevention in pitching. ASMI's research uses video analysis and computer modeling to quantify the forces acting on the shoulder, elbow, and trunk during the throwing motion. Their findings identify overuse and poor mechanics as the twin engines of injury in young pitchers.",
-        "ASMI's Position Statement for Adolescent Baseball Pitchers establishes clear thresholds: no overhead throwing for 2-3 months per year (4 months preferred), no more than 100 innings per calendar year, and a strict focus on learning fastball mechanics before introducing breaking pitches. This framework has been incorporated into MLB's Pitch Smart program, which sets age-specific pitch counts and mandatory rest periods for ages 7-22.",
-        "Driveline Baseball and Tread Athletics represent the modern analytical and biomechanical coaching frontier. Both organizations employ motion capture technology and detailed mechanical analysis to quantify individual pitcher mechanics and validate coaching cues. Driveline has demonstrated that pitching development can be measured, systematized, and optimized through high-level biomechanical analysis.",
+        "The American Sports Medicine Institute (ASMI), founded in 1987 by orthopedic surgeon Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, is one of the main sources for pitching biomechanics and safety literature. ASMI's research uses video analysis and computer modeling to quantify forces acting on the shoulder, elbow, and trunk during the throwing motion.",
+        "ASMI's Position Statement for Adolescent Baseball Pitchers records published guidance on overhead throwing, annual innings, fastball mechanics, and breaking pitches. Pitch Atlas treats that as source material, not as its own medical or workload prescription.",
+        "Driveline Baseball and Tread Athletics represent the modern analytical and biomechanical coaching frontier. Both organizations employ motion capture technology and detailed mechanical analysis to quantify individual pitcher mechanics and test coaching cues. Their work belongs in the canon because it changed the vocabulary of pitch development, not because this archive can prescribe an individual program.",
       ],
       claims: [
         kc("ASMI was founded in 1987 by Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, employing video and computer analysis to study throwing mechanics and injury risk factors.", "official-data", { label: "American Sports Medicine Institute research", url: "https://en.wikipedia.org/wiki/American_Sports_Medicine_Institute" }),
-        kc("ASMI's Position Statement for Adolescent Baseball Pitchers recommends 2-3 months minimum (4 months preferred) without overhead throwing annually and maximum 100 innings per calendar year, with a focus on learning fastball mechanics before breaking pitches.", "official-data", { label: "ASMI Position Statement for Adolescent Baseball Pitchers", url: "https://asmi.org/position-statement-for-adolescent-baseball-pitchers/" }),
-        kc("MLB's Pitch Smart program sets age-appropriate pitch count limits and mandatory rest periods for pitchers ages 7-22 based on ASMI research and recommendations.", "official-data", { label: "MLB.com Pitch Smart", url: "https://www.mlb.com/pitch-smart/pitching-guidelines" }),
+        kc("ASMI's Position Statement for Adolescent Baseball Pitchers lists annual overhead-throwing intervals, an annual innings figure, and a progression around fastball mechanics before breaking pitches.", "official-data", { label: "ASMI Position Statement for Adolescent Baseball Pitchers", url: "https://asmi.org/position-statement-for-adolescent-baseball-pitchers/" }),
+        kc("MLB's Pitch Smart program publishes age-group pitch-count tables and rest intervals for pitchers ages 7-22 based on ASMI research and recommendations.", "official-data", { label: "MLB.com Pitch Smart", url: "https://www.mlb.com/pitch-smart/pitching-guidelines" }),
         kc("Driveline Baseball employs markered and markerless motion capture, Rapsodo, and Trackman for biomechanical analysis and has conducted research on the interaction of command and mechanics in pitching.", "reputable-analysis", { label: "Driveline Baseball Research", url: "https://www.drivelinebaseball.com/pitching-research-biomechanics/" }),
       ],
     },
@@ -85,7 +85,7 @@ export const canonWing: KnowledgeWing = {
   related: [
     { label: "Pitch mechanics fundamentals", to: "/learn/mechanics" },
     { label: "Pitch design and sequencing", to: "/learn/pitch-design" },
-    { label: "Arm health and injury prevention", to: "/learn/arm-health" },
+    { label: "Safety source record", to: "/learn/arm-health" },
     { label: "Reading models", to: "/learn/metrics" },
   ],
 }
