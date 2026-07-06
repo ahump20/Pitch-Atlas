@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useEgg } from './EggProvider'
+import { useEgg } from './EggContext'
 
 /*
   A hidden-in-plain-sight trigger. It wraps an element that already belongs on the

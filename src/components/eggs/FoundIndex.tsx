@@ -1,4 +1,4 @@
-import { useEgg } from './EggProvider'
+import { useEgg } from './EggContext'
 import { EggDialog } from './EggDialog'
 import { TIDBITS } from '../../data/tidbits'
 

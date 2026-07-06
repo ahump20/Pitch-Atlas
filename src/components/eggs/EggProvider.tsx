@@ -1,13 +1,6 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useMemo,
-  useState,
-  useSyncExternalStore,
-  type ReactNode,
-} from 'react'
-import { tidbitById, TIDBIT_COUNT, type Tidbit } from '../../data/tidbits'
+import { useCallback, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { tidbitById, TIDBIT_COUNT } from '../../data/tidbits'
+import { EggContext, type EggContextValue } from './EggContext'
 import {
   discoverTidbit,
   subscribeTidbits,
@@ -23,28 +16,6 @@ import {
   SSR-safe and never sets state inside an effect; the reveal and the index are
   transient UI state, set only from event handlers.
 */
-
-interface EggContextValue {
-  found: string[]
-  count: number
-  total: number
-  has: (id: string) => boolean
-  /** Trigger an egg: file the tidbit (if new) and open its reveal. */
-  reveal: (id: string) => void
-  active: Tidbit | null
-  dismiss: () => void
-  indexOpen: boolean
-  openIndex: () => void
-  closeIndex: () => void
-}
-
-const EggContext = createContext<EggContextValue | null>(null)
-
-export function useEgg(): EggContextValue {
-  const ctx = useContext(EggContext)
-  if (!ctx) throw new Error('useEgg must be used within an EggProvider')
-  return ctx
-}
 
 export function EggProvider({ children }: { children: ReactNode }) {
   const found = useSyncExternalStore(subscribeTidbits, getFoundSnapshot, getFoundServerSnapshot)
