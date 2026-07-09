@@ -3,7 +3,7 @@ import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
 import { SeamGuide } from '../motion/SeamGuide'
 import { RotatingQuote } from '../quotes/RotatingQuote'
-import { useEgg } from '../eggs/EggProvider'
+import { useEgg } from '../eggs/EggContext'
 import { EggButton } from '../eggs/EggButton'
 
 /*
