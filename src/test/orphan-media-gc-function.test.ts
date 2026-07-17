@@ -198,6 +198,14 @@ describe('orphan discussion media cleanup contract', () => {
     )
   })
 
+  it('keeps the migration portable when a preview branch omits pg_cron', () => {
+    expect(migration).toContain("pg_catalog.to_regnamespace('cron') is null")
+    expect(migration).toContain('orphan-media scheduling skipped')
+    expect(migration).toMatch(
+      /if pg_catalog\.to_regnamespace\('cron'\) is null[\s\S]*?return;[\s\S]*?execute \$sql\$[\s\S]*?select cron\.schedule/i,
+    )
+  })
+
   it('replaces the broken SQL deleter with the Vault-authenticated scheduled function call', () => {
     expect(migration).toContain("cron.unschedule('gc-orphan-discussion-media')")
     expect(migration).toContain('drop function if exists private.gc_orphan_discussion_media()')

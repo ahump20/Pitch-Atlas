@@ -395,36 +395,52 @@ end $$;
 
 drop function if exists private.gc_orphan_discussion_media();
 
-select cron.schedule(
-  'gc-orphan-discussion-media',
-  '0 * * * *',
-  $job$
-    select net.http_post(
-      url := rtrim((
-        select decrypted_secret
-        from vault.decrypted_secrets
-        where name = 'pitch_atlas_project_url'
-      ), '/') || '/functions/v1/gc-orphan-discussion-media',
-      headers := jsonb_build_object(
-        'Content-Type', 'application/json',
-        'X-Pitch-Atlas-Automation', (
-          select decrypted_secret
-          from vault.decrypted_secrets
-          where name = 'pitch_atlas_automations_shared_secret'
-        )
-      ),
-      body := jsonb_build_object('source', 'pg_cron'),
-      timeout_milliseconds := 15000
-    ) as request_id;
-  $job$
-)
-where exists (
-  select 1
-  from vault.secrets
-  where name = 'pitch_atlas_automations_shared_secret'
-)
-and exists (
-  select 1
-  from vault.secrets
-  where name = 'pitch_atlas_project_url'
-);
+-- Supabase preview branches can omit pg_cron even when production has it. Keep
+-- the schema migration portable, then schedule only where the extension exists.
+do $schedule$
+begin
+  if pg_catalog.to_regnamespace('cron') is null then
+    raise notice 'pg_cron is unavailable; orphan-media scheduling skipped';
+    return;
+  end if;
+
+  if not exists (
+    select 1
+    from vault.secrets
+    where name = 'pitch_atlas_automations_shared_secret'
+  ) or not exists (
+    select 1
+    from vault.secrets
+    where name = 'pitch_atlas_project_url'
+  ) then
+    raise notice 'orphan-media scheduler Vault inputs are unavailable; scheduling skipped';
+    return;
+  end if;
+
+  execute $sql$
+    select cron.schedule(
+      'gc-orphan-discussion-media',
+      '0 * * * *',
+      $job$
+        select net.http_post(
+          url := rtrim((
+            select decrypted_secret
+            from vault.decrypted_secrets
+            where name = 'pitch_atlas_project_url'
+          ), '/') || '/functions/v1/gc-orphan-discussion-media',
+          headers := jsonb_build_object(
+            'Content-Type', 'application/json',
+            'X-Pitch-Atlas-Automation', (
+              select decrypted_secret
+              from vault.decrypted_secrets
+              where name = 'pitch_atlas_automations_shared_secret'
+            )
+          ),
+          body := jsonb_build_object('source', 'pg_cron'),
+          timeout_milliseconds := 15000
+        ) as request_id;
+      $job$
+    );
+  $sql$;
+end
+$schedule$;
