@@ -203,7 +203,7 @@ describe('orphan discussion media cleanup contract', () => {
   })
 
   it('keeps the migration portable when a preview branch omits pg_cron', () => {
-    expect(legacyMigration).toContain('when undefined_schema or undefined_function then')
+    expect(legacyMigration).toContain('when invalid_schema_name or undefined_function then')
     expect(legacyMigration).toContain('legacy orphan-media scheduling skipped')
     expect(migration).toContain("pg_catalog.to_regnamespace('cron') is null")
     expect(migration).toContain('orphan-media scheduling skipped')

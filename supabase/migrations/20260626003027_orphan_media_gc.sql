@@ -51,7 +51,7 @@ begin
     $job$select private.gc_orphan_discussion_media();$job$
   );
 exception
-  when undefined_schema or undefined_function then
+  when invalid_schema_name or undefined_function then
     raise notice 'pg_cron is unavailable; legacy orphan-media scheduling skipped';
 end
 $schedule$;
