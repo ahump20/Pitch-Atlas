@@ -11,8 +11,8 @@ export const canonWing: KnowledgeWing = {
   navLabel: "The Canon",
   eyebrow: "The lineage",
   title: "The Canon: Foundational Texts and Thought Lineages in Pitching",
-  summary: "Curated reading path spanning classic pitching philosophy, biomechanics, psychology, and modern analytical frameworks. Solutions, not idols.",
-  sub: "From the craft essays of Tom Seaver and Bob Gibson to the biomechanical work of ASMI and the data-driven analyses of FanGraphs and Baseball Prospectus, the canon traces how pitching knowledge has accumulated. These texts and methodologies form the intellectual backbone for understanding what works, why it works, and how to teach it.",
+  summary: "A curated reading path through classic pitching philosophy, mental routines, measurement, scouting, and modern analytical language. Solutions, not idols.",
+  sub: "From the craft writing of Tom Seaver and Bob Gibson to motion capture, Statcast, FanGraphs, and Baseball Prospectus, the canon traces how pitching knowledge has accumulated and how its vocabulary changed.",
   accent: "powder",
   educational: false,
   sections: [
@@ -42,17 +42,15 @@ export const canonWing: KnowledgeWing = {
       ],
     },
     {
-      heading: "Biomechanics, safety literature, and the modern scientific foundation",
+      heading: "Biomechanics and the modern measurement lineage",
       paragraphs: [
-        "The American Sports Medicine Institute (ASMI), founded in 1987 by orthopedic surgeon Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, is one of the main sources for pitching biomechanics and safety literature. ASMI's research uses video analysis and computer modeling to quantify forces acting on the shoulder, elbow, and trunk during the throwing motion.",
-        "ASMI's Position Statement for Adolescent Baseball Pitchers records published guidance on overhead throwing, annual innings, fastball mechanics, and breaking pitches. Pitch Atlas treats that as source material, not as its own medical or workload prescription.",
-        "Driveline Baseball and Tread Athletics represent the modern analytical and biomechanical coaching frontier. Both organizations employ motion capture technology and detailed mechanical analysis to quantify individual pitcher mechanics and test coaching cues. Their work belongs in the canon because it changed the vocabulary of pitch development, not because this archive can prescribe an individual program.",
+        "High-speed video and motion capture changed the language of pitching instruction. A delivery could be compared frame by frame, with the pelvis, trunk, arm, hand, and release described as one timed sequence instead of a collection of poses.",
+        "Driveline Baseball and Tread Athletics helped bring those tools into modern pitch development alongside ball tracking and high-speed release video. Their place in the canon comes from the vocabulary they spread: sequence, release, seam presentation, shape, and arsenal fit.",
+        "Pitch Atlas uses that vocabulary to describe craft. It does not turn a measurement system into a universal body target or personal training program.",
       ],
       claims: [
-        kc("ASMI was founded in 1987 by Dr. James R. Andrews and led by research director Dr. Glenn Fleisig, employing video and computer analysis to study throwing mechanics and injury risk factors.", "official-data", { label: "American Sports Medicine Institute research", url: "https://en.wikipedia.org/wiki/American_Sports_Medicine_Institute" }),
-        kc("ASMI's Position Statement for Adolescent Baseball Pitchers lists annual overhead-throwing intervals, an annual innings figure, and a progression around fastball mechanics before breaking pitches.", "official-data", { label: "ASMI Position Statement for Adolescent Baseball Pitchers", url: "https://asmi.org/position-statement-for-adolescent-baseball-pitchers/" }),
-        kc("MLB's Pitch Smart program publishes age-group pitch-count tables and rest intervals for pitchers ages 7-22 based on ASMI research and recommendations.", "official-data", { label: "MLB.com Pitch Smart", url: "https://www.mlb.com/pitch-smart/pitching-guidelines" }),
-        kc("Driveline Baseball employs markered and markerless motion capture, Rapsodo, and Trackman for biomechanical analysis and has conducted research on the interaction of command and mechanics in pitching.", "reputable-analysis", { label: "Driveline Baseball Research", url: "https://www.drivelinebaseball.com/pitching-research-biomechanics/" }),
+        kc("Driveline Baseball uses motion capture, Rapsodo, and Trackman in its published pitching research and development work.", "reputable-analysis", { label: "Driveline Baseball Research", url: "https://www.drivelinebaseball.com/pitching-research-biomechanics/" }),
+        kc("Tread Athletics operates an in-person pitch-design facility with ball tracking, high-speed video, and biomechanical analysis.", "reputable-analysis", { label: "Tread Athletics: College Baseball Pitching Development", url: "https://treadathletics.com/college/" }),
       ],
     },
     {
@@ -81,7 +79,7 @@ export const canonWing: KnowledgeWing = {
       ],
     },
   ],
-  confidenceNote: "Foundational texts verified via publisher catalogs and library archives (Hearst Books, Anchor/Penguin Random House, Simon & Schuster). ASMI position statement and MLB Pitch Smart sourced from official websites. Biomechanics research from Driveline and analytical frameworks from FanGraphs and Baseball Prospectus sourced from published research and methodology documentation. All URLs tested. One date correction made: Gibson/Jackson 'Sixty Feet, Six Inches' published 2009, not 2010. FanGraphs mechanics grading claim removed for lacking direct source documentation. Driveline award attribution clarified: the 2025 Dr. Mike Marshall award went to individual researchers (Pelletier and Lambert) at the organization, not Driveline Baseball as a unit.",
+  confidenceNote: "Foundational texts were verified through publisher catalogs and library archives. Modern measurement sources come from published facility materials; analytical frameworks come from FanGraphs and Baseball Prospectus methodology pages. One date correction remains recorded: Gibson and Jackson's 'Sixty Feet, Six Inches' was published in 2009, not 2010.",
   related: [
     { label: "Pitch mechanics fundamentals", to: "/learn/mechanics" },
     { label: "Pitch design and sequencing", to: "/learn/pitch-design" },

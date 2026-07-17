@@ -22,6 +22,14 @@ import { canonWing } from './canon'
 
 export { kc, KNOWLEDGE_RETRIEVED, EDUCATIONAL_DISCLAIMER } from './claim'
 
+/** Route and SEO copy shared by /learn and its regression coverage. */
+export const KNOWLEDGE_HUB_COPY = {
+  description:
+    'The craft-record layer of Pitch Atlas: mechanics, pitch design, sequencing, tunneling, spin literacy, provenance, and clear scope boundaries. Every teaching claim is sourced and labeled by confidence.',
+  heroSub:
+    'The specimens say what each pitch is. These wings explain the craft underneath it and mark the subjects Pitch Atlas does not cover. Every teaching claim is sourced and labeled by confidence.',
+} as const
+
 /** Every wing, in teaching order. Hub and prerender read from this. */
 export const WINGS: KnowledgeWing[] = [
   mechanicsWing,

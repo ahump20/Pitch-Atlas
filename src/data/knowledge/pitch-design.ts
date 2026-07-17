@@ -57,7 +57,7 @@ export const pitchDesignWing: KnowledgeWing = {
     {
       heading: "Measurement Technology Stack",
       paragraphs: [
-        "Modern pitch design relies on layered feedback. Ball-tracking systems show flight and release information. High-speed video shows what the hand, fingers, and seams were doing at release. Biomechanical tools show whether the delivery can repeat the cue without putting the arm in a bad position.",
+        "Modern pitch design relies on layered feedback. Ball-tracking systems show flight and release information. High-speed video shows what the hand, fingers, and seams were doing at release. Motion-capture tools show whether the delivery repeats the cue from throw to throw.",
         "Those tools are useful because they make the conversation more specific. They do not replace the conversation. A pitcher still has to know what the grip feels like, what the intended shape is, and whether the pitch belongs with the rest of the arsenal.",
         "The loop is tight: change one cue, throw it, inspect the shape and release, then keep or discard the cue. The best design sessions do not chase novelty. They remove guesswork.",
       ],
@@ -71,7 +71,7 @@ export const pitchDesignWing: KnowledgeWing = {
       heading: "Dedicated Pitch Design Facilities",
       paragraphs: [
         "Driveline Baseball and Tread Athletics are two major North American pitch design facilities. Driveline, headquartered in Seattle, helped popularize the modern pitch design method and publishes on grip mechanics, axis, seam orientation, and arsenal fit.",
-        "Tread Athletics operates a 33,000 square foot facility in Pineville, North Carolina with in-person coaching, biomechanical analysis, and proprietary technology for pitch design. Tread's process accounts for an athlete's unique anatomy and leverages data to create and implement pitch shapes suited to live game conditions, not just bullpen parameters.",
+        "Tread Athletics operates a 33,000 square foot facility in Pineville, North Carolina with in-person coaching, biomechanical analysis, and proprietary technology for pitch design. Its process combines delivery and release data with pitch-shape goals suited to live game conditions, not just bullpen parameters.",
         "Both facilities stress the validation phase: testing designed pitches in live at-bats with data collection and video analysis to confirm that bullpen gains translate to game performance. If results diverge from lab predictions, the design returns to the controlled setting to isolate variables and understand the gap. This is the honest constraint of pitch design—bullpen shape does not always equal game effectiveness.",
       ],
       claims: [

@@ -371,13 +371,13 @@ const niekro: Craftsman = {
   intro:
     'They called him Knucksie. On a floating knuckleball his father taught him, Phil Niekro pitched more innings than any pitcher who started in the live-ball era and threw deep into his late 40s, long after a fastball would have left him. The knuckleball is usually a last resort; for Niekro it was a 300-win, Hall of Fame career.',
   signature: claim(
-    'A true no-spin knuckleball: he arched the first two fingers of his right hand so only their tips and nails touched the ball, forsaking all humanly imparted spin and letting the seams and the air do the rest. With almost nothing on it, the pitch fluttered late and unpredictably — and because it asked so little of the arm, it let him pitch into his 48th year.',
+    'A true no-spin knuckleball: he arched the first two fingers of his right hand so only their tips and nails touched the ball, removing almost all imparted spin and letting the seams and the air do the rest. The pitch fluttered late and unpredictably.',
     'niekro-fangraphs',
     'reputable-analysis',
     { note: 'The fingertip-and-nail grip description is from the FanGraphs remembrance; he learned the pitch from his father and from minor-leaguer Nick McKay (SABR).' },
   ),
   mentalEdge: claim(
-    'Durability as a weapon. Teammate Dale Murphy called him the ultimate gamer and competitor, and the record bears it out: the most innings of any live-ball-era starter, and the oldest pitcher ever to throw a shutout, at 46 years and 188 days — a mark that stood nearly 25 years until Jamie Moyer passed it. A pitch that spares the arm let him simply outlast everyone.',
+    'Trust as a weapon. Teammate Dale Murphy called him the ultimate gamer and competitor, and the record bears it out: the most innings of any live-ball-era starter, and the oldest pitcher ever to throw a shutout, at 46 years and 188 days, a mark that stood nearly 25 years until Jamie Moyer passed it.',
     'niekro-wiki',
     'reputable-analysis',
     { note: 'The "ultimate gamer" characterization is Murphy\'s, via FanGraphs; the longevity records are from Wikipedia and the Hall of Fame.' },
@@ -412,14 +412,14 @@ const hubbell: Craftsman = {
   hand: 'left',
   signaturePitch: 'Screwball',
   specimenNo: 'C-09',
-  tagline: 'The screwball master who struck out five Hall of Famers in a row and deformed his own arm doing it.',
+  tagline: 'The screwball master who struck out five Hall of Famers in a row.',
   intro:
-    'They called him King Carl and the Meal Ticket. Carl Hubbell threw the screwball, a pitch that breaks the wrong way, so well that in the 1934 All-Star Game he struck out Babe Ruth, Lou Gehrig, Jimmie Foxx, Al Simmons, and Joe Cronin in succession. The pitch fed him for a decade and left his throwing arm permanently turned, his palm facing outward at rest.',
+    'They called him King Carl and the Meal Ticket. Carl Hubbell threw the screwball, a pitch that breaks the wrong way, so well that in the 1934 All-Star Game he struck out Babe Ruth, Lou Gehrig, Jimmie Foxx, Al Simmons, and Joe Cronin in succession.',
   signature: claim(
-    'A screwball thrown over the top with exactly the same motion as his fastball — the deception, he said, was not the break but the change of speed. To make it, he had to defy nature and twist his wrist to the right at release, so the ball broke down and to the left, away from a right-handed hitter. Years of that twist left his left palm facing out instead of in.',
+    'A screwball thrown over the top with exactly the same motion as his fastball. The deception, he said, was not the break but the change of speed. At release he turned the wrist to the right, sending the ball down and left, away from a right-handed hitter.',
     'hubbell-sabr',
     'reputable-analysis',
-    { note: 'The same-motion delivery, the wrist twist, and the change-of-speed framing are from SABR; the palm-out deformity is confirmed by SABR and RetroSimba.' },
+    { note: 'The same-motion delivery, wrist turn, and change-of-speed framing are from SABR.' },
   ),
   mentalEdge: claim(
     'Matchless control, and a sequence built on it: he used the curveball to set up the screwball, so by the time the screwball arrived the hitter had already been moved off balance. It is why he could throw a backwards-breaking pitch for strikes in any count without giving the at-bat away.',
@@ -603,7 +603,7 @@ const cijntje: Craftsman = {
   ),
   record: [
     claim(
-      'Drafted fifteenth overall in 2024 out of Mississippi State, where he carried a full starter’s load and struck out close to a third of the hitters he faced — the highest a switch-pitcher had ever been taken.',
+      'Drafted fifteenth overall in 2024 out of Mississippi State, where he worked as a starter and struck out close to a third of the hitters he faced, the highest a switch-pitcher had ever been taken.',
       'cijntje-wiki',
       'official-data',
       { note: 'Draft slot and the college strikeout picture; the full college line lives on the Baseball-Reference register linked below.' },
@@ -621,10 +621,10 @@ const cijntje: Craftsman = {
       { note: 'The transaction as recorded; stale reporting still places him in Seattle, so the org change is stated plainly.' },
     ),
     claim(
-      'Two organizations reached the same verdict — Seattle before the trade, St. Louis after: build him as a right-handed starter and keep the left arm alive in the bullpen, a break-glass option rather than an every-game weapon. The stated reason was the physical toll of the two-sided workload, not a failure of nerve.',
+      'Two organizations reached the same role plan, Seattle before the trade and St. Louis after: build him as a right-handed starter and keep the left-handed delivery as an occasional bullpen option.',
       'cijntje-cardinals',
       'coach-observed',
-      { note: 'Cardinals front office (Bloom) and manager (Marmol) on the plan; Seattle GM Justin Hollander gave the same verdict and the workload reason before the trade.' },
+      { note: 'Cardinals front office leader Chaim Bloom and manager Oli Marmol described the plan; Seattle GM Justin Hollander had outlined the same role split before the trade.' },
     ),
   ],
   recordLinks: [src('cijntje-bref')],

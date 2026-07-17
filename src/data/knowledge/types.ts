@@ -34,6 +34,11 @@ export interface KnowledgeWing {
   confidenceNote: string
   /** Safety-limit wings show the educational-use disclaimer. */
   educational?: boolean
+  /**
+   * Route-stable scope boundary. These wings intentionally carry no teaching
+   * claims or cited conclusions; they only state what Pitch Atlas does not cover.
+   */
+  boundaryOnly?: boolean
   /** Cross-links to related wings, pitches, or tools. */
   related?: { label: string; to: string }[]
 }

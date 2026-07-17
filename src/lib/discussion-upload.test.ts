@@ -12,6 +12,8 @@ const mocks = vi.hoisted(() => ({
   insert: vi.fn(),
   selectMedia: vi.fn(),
   mediaIn: vi.fn(),
+  mediaEq: vi.fn(),
+  mediaMaybeSingle: vi.fn(),
   selectPosts: vi.fn(),
   postEq: vi.fn(),
   deletePost: vi.fn(),
@@ -44,10 +46,12 @@ beforeEach(() => {
   mocks.remove.mockResolvedValue({ error: null })
   mocks.insert.mockResolvedValue({ error: null })
   mocks.mediaIn.mockResolvedValue({ data: [], error: null })
+  mocks.mediaMaybeSingle.mockResolvedValue({ data: null, error: null })
   mocks.postEq.mockResolvedValue({ data: [], error: null })
   mocks.deleteEq.mockResolvedValue({ error: null })
   mocks.storageFrom.mockReturnValue({ upload: mocks.upload, remove: mocks.remove })
-  mocks.selectMedia.mockReturnValue({ in: mocks.mediaIn })
+  mocks.mediaEq.mockReturnValue({ maybeSingle: mocks.mediaMaybeSingle })
+  mocks.selectMedia.mockReturnValue({ in: mocks.mediaIn, eq: mocks.mediaEq })
   mocks.selectPosts.mockReturnValue({ eq: mocks.postEq })
   mocks.deletePost.mockReturnValue({ eq: mocks.deleteEq })
   mocks.from.mockImplementation((table: string) => {
@@ -70,6 +74,10 @@ describe('uploadMedia', () => {
     const [path, , options] = mocks.upload.mock.calls[0]
     expect(path).toMatch(/^user-1\/.+\.webm$/)
     expect(options).toMatchObject({ contentType: 'video/webm', upsert: false })
+    expect(mocks.rpc).toHaveBeenCalledWith('reserve_discussion_media_upload', {
+      p_storage_path: path,
+    })
+    expect(mocks.rpc.mock.invocationCallOrder[0]).toBeLessThan(mocks.upload.mock.invocationCallOrder[0])
 
     expect(mocks.insert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -81,33 +89,176 @@ describe('uploadMedia', () => {
         byte_size: 8,
       }),
     )
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
   })
 
-  it('removes uploaded bytes and preserves the row error when media row insert fails', async () => {
+  it('does not upload when the database refuses the path reservation', async () => {
     const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
-    mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
+    mocks.rpc.mockResolvedValueOnce({ error: { message: 'media_blocked: upload path already exists' } })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('upload path already exists')
+
+    expect(mocks.upload).not.toHaveBeenCalled()
+    expect(mocks.insert).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+  })
+
+  it('releases the reservation after a concrete Storage 4xx without granting client cleanup access', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.upload.mockResolvedValue({
+      error: { message: 'invalid upload', status: 400, statusCode: 'InvalidRequest' },
+    })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('Could not save that just now. Try again.')
+
+    const [path] = mocks.upload.mock.calls[0]
+    expect(mocks.insert).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).toHaveBeenCalledWith('release_discussion_media_upload', {
+      p_storage_path: path,
+    })
+  })
+
+  it('retains the reservation when a Storage response is ambiguous', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.upload.mockResolvedValue({
+      error: { message: 'storage unavailable', status: 503, statusCode: 'ServiceUnavailable' },
+    })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('Could not save that just now. Try again.')
+
+    expect(mocks.insert).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
+  })
+
+  it('releases a rowless reservation after a concrete media-row rejection', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({
+      error: { message: 'rate_limit: slow down', code: 'P0001' },
+      status: 400,
+    })
 
     await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
       'slow down',
     )
 
     const [path] = mocks.upload.mock.calls[0]
-    expect(mocks.remove).toHaveBeenCalledWith([path])
+    expect(mocks.selectMedia).toHaveBeenCalledWith('id')
+    expect(mocks.mediaEq).toHaveBeenCalledWith('storage_path', path)
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).toHaveBeenCalledWith('release_discussion_media_upload', {
+      p_storage_path: path,
+    })
   })
 
-  it('preserves the original row error even when storage cleanup also fails', async () => {
+  it('preserves the original row error when best-effort reservation release fails', async () => {
     const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
-    mocks.insert.mockResolvedValue({ error: { message: 'rate_limit: slow down' } })
-    mocks.remove.mockResolvedValue({ error: { message: 'permission denied for bucket discussion-media' } })
+    mocks.insert.mockResolvedValue({
+      error: { message: 'rate_limit: slow down', code: 'P0001' },
+      status: 400,
+    })
+    mocks.rpc
+      .mockResolvedValueOnce({ error: null })
+      .mockResolvedValueOnce({ error: { message: 'reservation release unavailable' } })
 
     // The insert error is the cause the contributor needs; a failed best-effort
-    // cleanup must not replace it. Cleanup is still attempted.
+    // release must not replace it. Expiry remains the backstop.
     await expect(uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain'))).rejects.toThrow(
       'slow down',
     )
 
     const [path] = mocks.upload.mock.calls[0]
-    expect(mocks.remove).toHaveBeenCalledWith([path])
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).toHaveBeenCalledWith('release_discussion_media_upload', {
+      p_storage_path: path,
+    })
+  })
+
+  it('treats an existing row as success after a concrete insert rejection response', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({
+      error: { message: 'duplicate response', code: '23505' },
+      status: 409,
+    })
+    mocks.mediaMaybeSingle.mockResolvedValue({ data: { id: 'media-1' }, error: null })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).resolves.toBeUndefined()
+
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
+  })
+
+  it('leaves the reservation and object intact when row presence cannot be checked', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({
+      error: { message: 'rate_limit: slow down', code: 'P0001' },
+      status: 400,
+    })
+    mocks.mediaMaybeSingle.mockResolvedValue({
+      data: null,
+      error: { message: 'permission denied for discussion_media lookup' },
+    })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('slow down')
+
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
+  })
+
+  it('does not inspect or release after a status-0 PostgREST outcome', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({
+      error: { message: 'Failed to fetch', code: '' },
+      status: 0,
+    })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('Could not save that just now. Try again.')
+
+    expect(mocks.selectMedia).not.toHaveBeenCalledWith('id')
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
+  })
+
+  it('does not inspect or release after a PostgREST 5xx outcome', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockResolvedValue({
+      error: { message: 'gateway response failed', code: 'PGRST000' },
+      status: 503,
+    })
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('Could not save that just now. Try again.')
+
+    expect(mocks.selectMedia).not.toHaveBeenCalledWith('id')
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
+  })
+
+  it('leaves the reservation and object intact when the insert outcome throws', async () => {
+    const webm = [0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88]
+    mocks.insert.mockRejectedValue(new Error('connection reset after request'))
+
+    await expect(
+      uploadMedia('post-1', 'pitch:four-seam', fileFrom(webm, 'clip.txt', 'text/plain')),
+    ).rejects.toThrow('connection reset after request')
+
+    expect(mocks.selectMedia).not.toHaveBeenCalledWith('id')
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
   })
 })
 

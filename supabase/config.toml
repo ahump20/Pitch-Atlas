@@ -9,3 +9,8 @@ entrypoint = "./functions/delete-account/index.ts"
 enabled = true
 verify_jwt = true
 entrypoint = "./functions/summarize-thread/index.ts"
+
+[functions.gc-orphan-discussion-media]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/gc-orphan-discussion-media/index.ts"

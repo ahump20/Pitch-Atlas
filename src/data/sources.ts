@@ -1418,13 +1418,6 @@ export const SOURCES = {
     url: 'https://www.baseball-almanac.com/quotes/carl_hubbell_quotes.shtml',
     retrievedAt: RETRIEVED_4,
   },
-  'hubbell-retrosimba': {
-    id: 'hubbell-retrosimba',
-    label: 'RetroSimba, Carl Hubbell: giant among pitchers knew glory, tragedy',
-    url: 'https://retrosimba.com/2018/11/24/carl-hubbell-giant-among-pitchers-knew-glory-tragedy/',
-    retrievedAt: RETRIEVED_4,
-  },
-
   // --- The Craftsmen roundout: Mariano Rivera ---
   'rivera-wiki': {
     id: 'rivera-wiki',
@@ -1580,29 +1573,11 @@ export const SOURCES = {
     retrievedAt: RETRIEVED_6,
   },
 
-  // --- Softball: fastpitch windmill mechanics + arm-health ---
+  // --- Softball: fastpitch windmill mechanics ---
   'sb-friesen-2025-biomech': {
     id: 'sb-friesen-2025-biomech',
     label: 'Friesen et al., Biomechanics of Fastpitch Softball Pitching: A Practitioner’s Guide, Sports Health (2025) — PMC',
     url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC11969493/',
-    retrievedAt: RETRIEVED_6,
-  },
-  'sb-barrentine-1998-jospt': {
-    id: 'sb-barrentine-1998-jospt',
-    label: 'Barrentine et al., Biomechanics of Windmill Softball Pitching With Implications About Injury Mechanisms at the Shoulder and Elbow, JOSPT (1998)',
-    url: 'https://www.jospt.org/doi/10.2519/jospt.1998.28.6.405',
-    retrievedAt: RETRIEVED_6,
-  },
-  'sb-injury-epi-2024': {
-    id: 'sb-injury-epi-2024',
-    label: 'Fastpitch Softball Injuries: Epidemiology, Biomechanics, and Injury Prevention (2024) — PMC',
-    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC10917712/',
-    retrievedAt: RETRIEVED_6,
-  },
-  'sb-shoulder-stress-pmc': {
-    id: 'sb-shoulder-stress-pmc',
-    label: 'Biomechanics Related to Increased Softball Pitcher Shoulder Stress: Implications for Injury Prevention — PMC',
-    url: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8739590/',
     retrievedAt: RETRIEVED_6,
   },
   'sb-ler-lowerbody': {

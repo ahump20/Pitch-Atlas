@@ -53,7 +53,7 @@ export function IndexLedger({ className = '' }: { className?: string }) {
         <i className="block h-full rounded-full bg-[#D8CFB8]" style={{ width: `${FILED_PCT}%` }} />
       </div>
       <p className="mt-2 font-mono text-[9px] uppercase tracking-[0.1em] text-ink-3">
-        <span className="text-[#D8CFB8]">{FILED} open a full specimen</span> · {BASIC} basic files
+        <span className="text-[#D8CFB8]">{FILED} full specimens</span> · {BASIC} basic files
       </p>
     </aside>
   )

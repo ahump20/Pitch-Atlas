@@ -1,39 +1,17 @@
-import { lazy, Suspense, useEffect, useId, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
+import { lazy, Suspense, useEffect, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
 import { useCardTilt } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useInView } from '../../hooks/useInView'
 import { SpecimenBoundary } from '../ball/SpecimenBoundary'
-import type { FamilyCrumb } from './familyCrumb'
 
 /*
-  The signature artifact: a holographic refractor specimen card. The foil + tilt are
-  decoration; the read is a front-of-card summary on a dark matte plate — never body
-  copy on the patterned foil. The `face` slot holds the grip read (an Austin grip
-  photo where he throws the pitch, otherwise the seam ball with its grip pins), never
-  a player likeness. The card sets its accent triad (--c1/--c2/--c3) and reveal index
-  (--i) from props, so every consumer drives the look from data. Gold is the 1/1 chase.
-
-  Tilt now moves through a spring (useCardTilt — same CSS-var contract as the old
-  pointer hook, plus a frame-rate store), and a card can opt into the live WebGL
-  foil with the `foil` prop: a lazy canvas layer behind the DOM content whose
-  houndstooth catches light per-pixel as the card tilts — the physical reference
-  card's behavior, digitized. The gate runs BEFORE Suspense, so the prerender, the
-  jsdom tests, reduced-motion visitors, no-GL devices, and cards scrolled well off
-  screen never request the chunk or hold a GL context: for all of them this card
-  renders exactly the static CSS card below.
-
-  Two provenance signals, kept apart on purpose: the crumb (top-right of the window)
-  says WHAT KIND of pitch this is; the confidence dot (in the plate) says how well sourced
-  the shape read is. The grip-source chip (bottom of the window) says whose grip the face
-  shows. There is no stat rail and no movement number by design: the card leads with the
-  grip and the shape, in words, never a fabricated figure.
-
-  Accessibility: the whole card is one link when `to` is set; the face is decorative
-  (the plate carries the content), the canvas is aria-hidden with no pointer events,
-  and reduced motion freezes the reveal and tilt via the rules in index.css.
+  The front-of-card job is narrow: name, grip face, one sourced cue, and the
+  route into the full file. The foil and spring tilt stay decorative. Detailed
+  shape, family, grade, and source records live on the back or in the specimen.
 */
+
 export type RefractorAccent = { c1: string; c2: string; c3: string }
 
 const FoilLayer = lazy(() => import('./foil/FoilLayer'))
@@ -43,29 +21,14 @@ export interface RefractorCardProps {
   index?: number
   gold?: boolean
   accent: RefractorAccent
-  /** Specimen number, e.g. "00". */
   vnum?: string
-  /** Banner nameplate. */
   name: string
-  /** The arched-window visual: a seam ball (with grip pins) or an Austin grip photo. */
   face: ReactNode
-  /** The shape read — how the pitch moves, in words. The card's lead read. */
-  shape?: string
-  /** One short read: the pitcher's grip cue (his words) or the pitch's tagline. */
+  /** Visible provenance for the grip face, separate from the cue's claim tier. */
+  faceSource?: { label: string; color: string }
   cue?: string
-  /** The provenance dot for the shape read: how well sourced it is. */
   confidence?: { label: string; color: string; approx?: boolean }
-  /** What kind of pitch — family icon + word. A different job from confidence. */
-  crumb?: FamilyCrumb
-  /** Whose grip the face shows: Austin's first-party grip, or a reference schematic. */
-  gripSource?: { label: string; color: string }
-  /** The honest collectible grade — how richly this specimen is preserved (specimen-grade.ts). */
-  grade?: { key: string; label: string }
-  /** Top-right micro-tab. Defaults to "SPECIMEN". */
-  wmTab?: string
-  /** Override the outer max width (px). Defaults to 360; the hero uses a larger card. */
   maxWidth?: number
-  /** Mount the live WebGL foil layer (hero-tier cards only). Default off. */
   foil?: boolean
   className?: string
 }
@@ -78,13 +41,9 @@ export function RefractorCard({
   vnum,
   name,
   face,
-  shape,
+  faceSource,
   cue,
   confidence,
-  crumb,
-  gripSource,
-  grade,
-  wmTab = 'SPECIMEN',
   maxWidth = 360,
   foil = false,
   className,
@@ -92,36 +51,24 @@ export function RefractorCard({
   const { ref: tiltRef, handlers, store } = useCardTilt<HTMLElement>()
   const webgl = useWebGLSupport()
   const reduced = useReducedMotion()
-  /* Context budget. Browsers keep ~16 live WebGL contexts; a binder of foil
-     cards would blow through that on its own. Each card opens its context only
-     near the viewport and surrenders it when scrolled well away (FoilLayer's
-     cleanup loses the context, freeing the slot). */
   const { ref: viewRef, inView } = useInView<HTMLDivElement>()
-  /* useInView reports in-view until its observer attaches — optimistic for
-     content, wrong for a GL budget: every offscreen card would open a context
-     for one frame at load. Arm the foil only after a real answer: while the
-     report is the optimistic "on", confirm with one geometry read a frame
-     later; a report of "off" proves the observer is live, so arm and let
-     inView rule from there. Once armed, armed for good — inView alone mounts
-     and unmounts the layer. */
   const [foilArmed, setFoilArmed] = useState(false)
+
   useEffect(() => {
     if (!foil || foilArmed) return
     if (inView) {
-      const el = viewRef.current
-      if (!el) return
-      const id = window.requestAnimationFrame(() => {
-        const margin = 160 // match the hook's default rootMargin
-        const r = el.getBoundingClientRect()
-        if (r.bottom >= -margin && r.top <= window.innerHeight + margin) setFoilArmed(true)
+      const element = viewRef.current
+      if (!element) return
+      const frame = window.requestAnimationFrame(() => {
+        const margin = 160
+        const rect = element.getBoundingClientRect()
+        if (rect.bottom >= -margin && rect.top <= window.innerHeight + margin) setFoilArmed(true)
       })
-      return () => window.cancelAnimationFrame(id)
+      return () => window.cancelAnimationFrame(frame)
     }
-    const id = window.setTimeout(() => setFoilArmed(true), 0)
-    return () => window.clearTimeout(id)
+    const timeout = window.setTimeout(() => setFoilArmed(true), 0)
+    return () => window.clearTimeout(timeout)
   }, [foil, foilArmed, inView, viewRef])
-  // unique arc-path id per card instance (several cards render per page)
-  const arcId = `wmarc-${useId().replace(/:/g, '')}`
 
   const cardStyle = {
     '--c1': accent.c1,
@@ -130,123 +77,63 @@ export function RefractorCard({
     '--i': index,
   } as CSSProperties
 
-  const CrumbIcon = crumb?.Icon
-
-  /* the live foil mounts only when it can actually run AND is near the
-     viewport; everyone else keeps the CSS card untouched (it is the
-     prerendered DOM and the test DOM) */
-  const liveFoil =
-    foil && webgl && !reduced && inView && foilArmed ? (
-      <SpecimenBoundary fallback={null}>
-        <Suspense fallback={null}>
-          <FoilLayer store={store} accent={accent} gold={gold} />
-        </Suspense>
-      </SpecimenBoundary>
-    ) : null
-
   const inner = (
     <div className="rfx-field">
-      {liveFoil}
+      {foil && webgl && !reduced && inView && foilArmed ? (
+        <SpecimenBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <FoilLayer store={store} accent={accent} gold={gold} />
+          </Suspense>
+        </SpecimenBoundary>
+      ) : null}
       <div className="rfx-inner">
-        <div className="rfx-cardtop">
-          <span
-            className="rfx-diamond"
-            aria-hidden="true"
-            style={{
-              width: 'calc(var(--rfxu) * 6.67)',
-              height: 'calc(var(--rfxu) * 6.67)',
-              borderRadius: 'calc(var(--rfxu) * 1.39)',
-              position: 'absolute',
-              left: 2,
-              top: 0,
-            }}
-          >
-            <b style={{ fontSize: 'max(6px, calc(var(--rfxu) * 1.94))' }}>PA</b>
-          </span>
-          {/* the brand arches over the field, like the reference card's script */}
-          <svg className="rfx-wmarc" viewBox="0 0 200 34" aria-hidden="true">
-            <defs>
-              <path id={arcId} d="M 8 30 Q 100 4 192 30" fill="none" />
-            </defs>
-            <text>
-              <textPath href={`#${arcId}`} startOffset="50%" textAnchor="middle">
-                PITCH ATLAS
-              </textPath>
-            </text>
-          </svg>
-          <span
-            className="absolute right-1 top-[5px] font-mono text-bone-2"
-            style={{ fontSize: 'max(7px, calc(var(--rfxu) * 2.08))', letterSpacing: '0.22em' }}
-          >
-            {wmTab}
-          </span>
+        <header className="rfx-head">
+          <span className="rfx-name">{name}</span>
+          <span className="rfx-head-meta">{vnum ? <b className="rfx-no">{vnum}</b> : null}</span>
+        </header>
+
+        <div className="rfx-stage">
+          <div className="rfx-halftone" aria-hidden="true" />
+          {face}
+          {faceSource ? (
+            <span className="rfx-gripchip">
+              <i
+                className="rfx-dot"
+                style={{ background: faceSource.color, color: faceSource.color }}
+                aria-hidden="true"
+              />
+              {faceSource.label}
+            </span>
+          ) : null}
         </div>
 
-        {/* vnum badge + family seal live OUTSIDE the window so its arched overflow
-            clip can't slice them — they share the window's box via the unclipped wrap.
-            The seal is the SLUGGERS center coin: the kind word stays readable for
-            screen readers; the glyph coin is decorative. */}
-        <div className="rfx-windowwrap">
-          <div className="rfx-window">
-            <div className="rfx-halftone" aria-hidden="true" />
-            {face}
-            {gripSource ? (
-              <span className="rfx-gripchip">
-                <i className="rfx-dot" style={{ background: gripSource.color, color: gripSource.color }} />
-                {gripSource.label}
-              </span>
+        {cue || confidence ? (
+          <div className="rfx-read">
+            {cue ? <p className="rfx-cue">{cue}</p> : null}
+            {confidence ? (
+              <ul className="rfx-facts">
+                <li className="rfx-fact">
+                  <i
+                    className="rfx-dot"
+                    style={{ background: confidence.color, color: confidence.color }}
+                    aria-hidden="true"
+                  />
+                  <span className="sr-only">Source: </span>
+                  {confidence.label}
+                  {confidence.approx ? <span className="rfx-approx">≈ approx</span> : null}
+                </li>
+              </ul>
             ) : null}
           </div>
-          {vnum ? <span className="rfx-vnum">{vnum}</span> : null}
-          {crumb && CrumbIcon ? (
-            <span className="rfx-seal">
-              <span className="rfx-seal-coin" aria-hidden="true">
-                <CrumbIcon />
-              </span>
-              <span className="rfx-seal-label">{crumb.label}</span>
-            </span>
-          ) : null}
-        </div>
-
-        <div className="rfx-banner">{name}</div>
-
-        {grade ? (
-          <p className="rfx-grade" data-grade={grade.key}>
-            <span className="rfx-grade-dot" aria-hidden="true" />
-            <span className="sr-only">Specimen grade: </span>
-            {grade.label}
-          </p>
         ) : null}
 
-        <div className="rfx-content">
-          {shape || cue ? (
-            <div className="rfx-summary">
-              {shape ? (
-                <div className="rfx-shape">
-                  <span className="rfx-k">Shape</span>
-                  <span className="rfx-v">{shape}</span>
-                </div>
-              ) : null}
-              {cue ? <p className="rfx-cue">{cue}</p> : null}
-            </div>
-          ) : null}
-
-          {confidence ? (
-            <span className="rfx-srcbadge">
-              <i className="rfx-dot" style={{ background: confidence.color, color: confidence.color }} />
-              {confidence.label}
-              {confidence.approx ? <span className="rfx-approx">≈ approx</span> : null}
+        {to ? (
+          <div className="rfx-strip">
+            <span className="rfx-open">
+              Open specimen <i aria-hidden="true">→</i>
             </span>
-          ) : null}
-        </div>
-
-        <div className="rfx-strip">
-          <span className="inline-flex items-center gap-1">
-            pitch-atlas.com
-            <span className="mx-1 inline-block h-[calc(var(--rfxu)*3.06)] w-[calc(var(--rfxu)*3.06)] rotate-45 rounded-[calc(var(--rfxu)*0.83)] align-middle rfx-diamond" aria-hidden="true" />
-            {to ? 'OPEN SPECIMEN' : 'SOURCED SPECIMEN'}
-          </span>
-        </div>
+          </div>
+        ) : null}
       </div>
     </div>
   )
@@ -254,8 +141,6 @@ export function RefractorCard({
   const cardClass = `rfx-card${gold ? ' is-gold' : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
 
   return (
-    // rfx-holder is the size container the card unit (--rfxu, 1% of card width)
-    // reads from — the card's print scales with THIS box, never the viewport
     <div ref={viewRef} className="rfx-holder" style={{ perspective: '1500px', width: '100%', maxWidth }}>
       {to ? (
         <Link

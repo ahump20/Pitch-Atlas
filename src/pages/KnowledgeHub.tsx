@@ -4,7 +4,7 @@ import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
-import { WINGS } from '../data/knowledge'
+import { KNOWLEDGE_HUB_COPY, WINGS } from '../data/knowledge'
 import type { KnowledgeWing } from '../data/knowledge/types'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -14,8 +14,8 @@ import { EggButton } from '../components/eggs/EggButton'
   The Learn hub: the front door to the craft-record layer. The specimen pages answer
   "what is this pitch"; these wings answer the craft underneath — how the body
   creates timing, how a pitch is built, how pitches work together,
-  and where the source boundary sits. Two shelves: the craft, and safety limits
-  (the wings that carry the educational-use note). Cards match the index plates so
+  and where the source boundary sits. Two shelves: the craft and scope boundaries.
+  Cards match the index plates so
   the whole atlas reads as one system.
 */
 
@@ -30,13 +30,13 @@ function WingCard({ wing }: { wing: KnowledgeWing }) {
   return (
     <Link
       to={`/learn/${wing.slug}`}
-      className={`rfx-plate group ${wing.educational ? 'is-edge is-dashed' : ''}`}
-      style={{ '--gc': wing.educational ? 'var(--color-seam-bright)' : 'var(--color-cyan)' } as CSSProperties}
+      className={`rfx-plate group ${wing.boundaryOnly ? 'is-edge is-dashed' : ''}`}
+      style={{ '--gc': wing.boundaryOnly ? 'var(--color-seam-bright)' : 'var(--color-cyan)' } as CSSProperties}
     >
       <span aria-hidden="true" className="absolute left-2.5 top-2.5 h-3 w-3 border-l border-t border-white/15" />
       <span aria-hidden="true" className="absolute right-2.5 top-2.5 h-3 w-3 border-r border-t border-white/15" />
       <div className="flex items-baseline justify-between gap-3">
-        <p className={`mono-label ${wing.educational ? 'text-seam' : 'text-ink-3'}`}>{wing.eyebrow}</p>
+        <p className={`mono-label ${wing.boundaryOnly ? 'text-seam' : 'text-ink-3'}`}>{wing.eyebrow}</p>
         <span
           aria-hidden="true"
           className="font-athletic text-2xl leading-none text-bone/25 tabular-nums"
@@ -47,8 +47,8 @@ function WingCard({ wing }: { wing: KnowledgeWing }) {
       <h3 className="rfx-platetitle text-2xl">{wing.navLabel || wing.title}</h3>
       <p className="line-clamp-3 text-[0.95rem] leading-relaxed text-bone-2">{wing.summary}</p>
       <div className="mt-auto flex items-center gap-x-3 border-t border-white/10 pt-3">
-        <span className={`mono-label ${wing.educational ? 'text-seam' : 'text-ink-3'}`}>
-          {wing.educational ? 'Educational reference' : 'The craft'}
+        <span className={`mono-label ${wing.boundaryOnly ? 'text-seam' : 'text-ink-3'}`}>
+          {wing.boundaryOnly ? 'Scope boundary' : 'The craft'}
         </span>
         <span className="ml-auto mono-label text-cyan transition-colors group-hover:text-bone">Open →</span>
       </div>
@@ -104,13 +104,12 @@ function Shelf({ label, wings }: { label: string; wings: KnowledgeWing[] }) {
 }
 
 export function KnowledgeHub() {
-  const craft = WINGS.filter((w) => !w.educational)
-  const health = WINGS.filter((w) => w.educational)
+  const craft = WINGS.filter((w) => !w.boundaryOnly)
+  const boundaries = WINGS.filter((w) => w.boundaryOnly)
 
   useSeoMeta({
     title: `Learn: the craft underneath the pitch | ${SITE.siteName}`,
-    description:
-      'The craft-record layer of Pitch Atlas: mechanics, pitch design, sequencing, tunneling, spin literacy, source boundaries, and safety limits. Every claim sourced and labeled by confidence.',
+    description: KNOWLEDGE_HUB_COPY.description,
     ogTitle: `Learn | ${SITE.siteName}`,
     ogDescription: 'The craft underneath the pitch.',
     ogUrl: canonicalUrl('/learn'),
@@ -124,8 +123,7 @@ export function KnowledgeHub() {
           type: 'CreativeWork',
           url: canonicalUrl('/learn'),
           name: 'Learn: the craft underneath the pitch',
-          description:
-            'The craft-record layer of Pitch Atlas: mechanics, pitch design, sequencing, tunneling, spin literacy, source boundaries, and safety limits. Every claim sourced and labeled by confidence.',
+          description: KNOWLEDGE_HUB_COPY.description,
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Learn' }],
         })}
       />
@@ -133,13 +131,7 @@ export function KnowledgeHub() {
         breadcrumb={<Breadcrumb trail={[{ label: 'The Atlas', to: '/' }, { label: 'Learn' }]} />}
         eyebrow="The craft record"
         title="The craft underneath the pitch."
-        sub={
-          <>
-            The specimens say what each pitch is. These wings say how the craft works: how the body
-            creates timing, how a pitch gets built, how pitches work together, and where the source
-            boundary is. Every claim sourced and labeled by confidence.
-          </>
-        }
+        sub={KNOWLEDGE_HUB_COPY.heroSub}
       />
 
       <section>
@@ -151,7 +143,7 @@ export function KnowledgeHub() {
           ) : (
             <>
               <Shelf label="The craft" wings={craft} />
-              <Shelf label="Safety &amp; limits" wings={health} />
+              <Shelf label="Scope boundaries" wings={boundaries} />
             </>
           )}
           {/* a cryptic filing mark: the famous distance, hiding a note about why */}

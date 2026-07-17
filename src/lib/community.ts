@@ -5,6 +5,8 @@ import type {
   VelocityBand,
   PitchIntent,
   ClaimedResultKind,
+  WritablePitchIntent,
+  WritableClaimedResultKind,
 } from '../data/field-notes'
 import type { ClaimConfidence } from '../data/types'
 
@@ -63,8 +65,8 @@ export interface NewFieldNote {
   playerLevel: PlayerLevel
   armSlot: ArmSlot
   velocityBand: VelocityBand | null
-  intent: PitchIntent
-  claimedResultKind: ClaimedResultKind
+  intent: WritablePitchIntent
+  claimedResultKind: WritableClaimedResultKind
   claimedResultNote: string | null
   sampleSize: number | null
   evidenceUrl: string | null
@@ -83,27 +85,37 @@ export interface CommunityIdentity {
 }
 
 /** Labeled option lists for the submit form. */
-export const INTENT_OPTIONS: { value: PitchIntent; label: string }[] = [
+export const INTENT_OPTIONS: { value: WritablePitchIntent; label: string }[] = [
   { value: 'more-movement', label: 'More movement' },
   { value: 'less-movement', label: 'Less movement' },
   { value: 'firmer-feel', label: 'Firmer feel' },
   { value: 'softer-feel', label: 'Softer feel' },
   { value: 'better-command', label: 'Better command' },
   { value: 'deception', label: 'More deception' },
-  { value: 'reduce-stress', label: 'Less arm stress' },
   { value: 'other', label: 'Something else' },
 ]
 
-export const RESULT_OPTIONS: { value: ClaimedResultKind; label: string }[] = [
+export const RESULT_OPTIONS: { value: WritableClaimedResultKind; label: string }[] = [
   { value: 'more-movement', label: 'More movement' },
   { value: 'better-command', label: 'Better command' },
   { value: 'firmer-result', label: 'Firmer feel' },
-  { value: 'reduced-discomfort', label: 'Less discomfort' },
   { value: 'worked-in-bullpen', label: 'Worked in the bullpen' },
   { value: 'worked-in-game', label: 'Worked in a game' },
   { value: 'inconsistent', label: 'Inconsistent so far' },
   { value: 'no-noticeable-change', label: 'No noticeable change' },
 ]
+
+/** Existing rows can still carry the two retired enum values. Keep those rows
+    readable without turning their old medical-adjacent categories into prompts. */
+export function fieldNoteIntentLabel(value: PitchIntent): string {
+  if (value === 'reduce-stress') return 'Legacy category (closed)'
+  return INTENT_OPTIONS.find((option) => option.value === value)?.label ?? 'Something else'
+}
+
+export function fieldNoteResultLabel(value: ClaimedResultKind): string {
+  if (value === 'reduced-discomfort') return 'Legacy category (closed)'
+  return RESULT_OPTIONS.find((option) => option.value === value)?.label ?? 'Inconsistent so far'
+}
 
 export const SOURCE_TIER_OPTIONS: {
   value: CommunitySourceTier
@@ -188,14 +200,13 @@ const intentFromDb: Record<string, PitchIntent> = {
   other: 'other',
 }
 
-const intentToDb: Record<PitchIntent, string> = {
+const intentToDb: Record<WritablePitchIntent, string> = {
   'more-movement': 'more-movement',
   'less-movement': 'less-movement',
   'firmer-feel': 'added-velocity',
   'softer-feel': 'reduced-velocity',
   'better-command': 'better-command',
   deception: 'deception',
-  'reduce-stress': 'reduce-stress',
   other: 'other',
 }
 
@@ -211,11 +222,10 @@ const resultFromDb: Record<string, ClaimedResultKind> = {
   'no-noticeable-change': 'no-noticeable-change',
 }
 
-const resultToDb: Record<ClaimedResultKind, string> = {
+const resultToDb: Record<WritableClaimedResultKind, string> = {
   'more-movement': 'more-movement',
   'better-command': 'better-command',
   'firmer-result': 'velocity-gain',
-  'reduced-discomfort': 'reduced-discomfort',
   inconsistent: 'inconsistent',
   'worked-in-bullpen': 'worked-in-bullpen',
   'worked-in-game': 'worked-in-game',
@@ -425,6 +435,9 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
     .from('field_notes')
     .select(NOTE_COLUMNS)
     .eq('pitch_slug', pitchSlug)
+    // Authors may read their own pending row under RLS so insert().select() can
+    // return it, but the ranked drawer is a public surface and shows approved rows.
+    .eq('visibility', 'approved')
     .order('base_rank', { ascending: false })
     .order('created_at', { ascending: false })
   if (error) throw new Error(friendlyReadError(error))
@@ -443,7 +456,7 @@ export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
   return (rows ?? []).map((row) => mapRow(row as FieldNoteRow, viewerId, tried, helpful))
 }
 
-/** Submit a field note. Saves the display name to the profile, returns the stored note. */
+/** Submit a field note for review. Saves the display name and returns the private row. */
 export async function submitNote(input: NewFieldNote): Promise<CommunityNote> {
   const viewerId = await ensureSession()
 

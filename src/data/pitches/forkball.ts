@@ -5,9 +5,9 @@ import { sharedSeam } from './_shared-seam'
 /*
   The forkball. The splitter's deeper, older cousin: the ball jammed all the way
   down between the first two fingers and released with a downward wrist snap, so it
-  leaves with almost no spin and tumbles down hard and late. Taxing on the arm and
-  rare in the majors, it lives on in Japan and, lately, in a new low-spin ghost
-  fork. Grip prose paraphrased from MLB.com, Baseball Prospectus, and Wikipedia,
+  leaves with almost no spin and tumbles down hard and late. Rare in the majors,
+  it lives on in Japan and, lately, in a new low-spin ghost fork. Grip prose
+  paraphrased from MLB.com, Baseball Prospectus, and Wikipedia,
   never copied. No player image, no likeness.
 
   Movement is described as SHAPE — direction and character — never as a measured
@@ -42,7 +42,7 @@ const gripModel: GripModel = {
   thumbRole: 'Thumb underneath supports a ball wedged deep against the base of the fingers.',
   palmGapCue: 'No gap — the ball is jammed all the way down between the forked fingers, deeper than a splitter.',
   releaseCue: 'Snap the wrist down as the ball squirts out from between the fingers; the deep grip kills the spin.',
-  visualCaveat: 'Grip geometry is schematic; the deep, wide fork demands extreme finger flexibility and is hard on the arm.',
+  visualCaveat: 'Grip geometry is schematic; the deep, wide fork demands unusual finger reach and flexibility.',
   contacts: [
     {
       finger: 'index',
@@ -114,7 +114,7 @@ export const forkball: PitchAtlasEntry = {
         { note: 'Paraphrased. The Contreras softball-stretch detail is from Baseball Prospectus.' },
       ),
       claim(
-        'What separates a forkball from a splitter today is mostly how wide the fingers fork and how hard it is thrown: Roki Sasaki throws both, a wider, slower fork and a narrower, harder splitter, and Statcast files them separately. It is common in Japan and seldom adopted in the majors, where it has a reputation as an arm-taxing pitch.',
+        'What separates a forkball from a splitter today is mostly how wide the fingers fork and how hard it is thrown: Roki Sasaki throws both, a wider, slower fork and a narrower, harder splitter, and Statcast files them separately. It is common in Japan and seldom adopted in the majors.',
         'wiki-forkball',
         'reputable-analysis',
         { note: 'Paraphrased. The wide-fork-vs-narrow-split distinction is from the MLB Sasaki article; the Japan-vs-MLB prevalence is from Wikipedia.' },
@@ -123,10 +123,10 @@ export const forkball: PitchAtlasEntry = {
     fingerPlacement,
     gripModel,
     mechanics: claim(
-      'It is thrown with a fastball arm action, but the ball squirts out from between the deep-forked fingers with almost no spin rather than being spun. The downward wrist snap that gives it its tumble also puts real torque on the elbow, which is why MLB.com calls it one of the more taxing pitches to throw.',
+      'It is thrown with fastball arm action, but the ball squirts out from between the deep-forked fingers with almost no spin. The downward wrist snap and deep grip separate its release from the shallower splitter.',
       'mlb-glossary-forkball',
       'reputable-analysis',
-      { note: 'Paraphrased. The squirt-out release and the taxing-on-the-arm point are from the MLB glossary.' },
+      { note: 'Paraphrased from the MLB glossary description of the grip depth, wrist snap, and release.' },
     ),
     physics: {
       spinAxis: claim(
@@ -142,10 +142,10 @@ export const forkball: PitchAtlasEntry = {
         { note: 'Described as shape, not a measured number. The tumble is the read; how far it falls depends on the arm. The arm-side fade is a modern ghost-fork variation.' },
       ),
       teaching: claim(
-        'Most pitches fight gravity: backspin makes a Magnus force that holds the ball up. The forkball does the opposite. Jamming the ball deep and snapping it out kills the spin, so there is almost no lift, and gravity tumbles the ball down hard and late. The price for that free fall is torque on the arm.',
+        'Most pitches fight gravity: backspin makes a Magnus force that holds the ball up. The forkball does the opposite. Jamming the ball deep and snapping it out kills the spin, so there is almost no lift and gravity tumbles the ball down hard and late.',
         'mlb-glossary-forkball',
         'reputable-analysis',
-        { note: 'Synthesis of the low-spin grip and the MLB glossary\'s downward-snap / taxing description.' },
+        { note: 'Synthesis of the low-spin grip and the MLB glossary\'s downward-snap description.' },
       ),
     },
     rights: 'original',
@@ -170,7 +170,7 @@ export const forkball: PitchAtlasEntry = {
     specimenNo: '11',
     heroSub: 'Jammed deep, tumbles down.',
     heroIntro:
-      'Wedge the ball all the way down between two split fingers, wider than a splitter, and snap the wrist as it squirts out. It leaves with almost no spin, so there is nothing to hold it up — gravity takes over and it tumbles down late. The catch: it is hard on the arm.',
+      'Wedge the ball all the way down between two split fingers, wider than a splitter, and snap the wrist as it squirts out. It leaves with almost no spin, so there is nothing to hold it up and gravity takes over late.',
     foundationCaption: 'Almost no spin means almost no lift, so gravity dominates: the ball plots near the spinless ball and falls off the table.',
     mastersIntro:
       'Three forkballs: the modern ghost fork, the deadest-spin version anyone has thrown, and the arm that brought the pitch to the majors. The visual is our own seam schematic. What sets each version apart is in the read, not a gauge.',
@@ -217,16 +217,16 @@ export const forkball: PitchAtlasEntry = {
 
   community: {
     enabled: true,
-    safetyNote: 'When the community layer opens, every note will carry a source and confidence label, a content filter will block abusive language, and any note can be flagged. A note hides automatically once enough people report it.',
+    safetyNote: 'Field Notes are live for grip and technique only. No medical, injury, workload, or youth-training prescriptions. Every note carries a source and confidence label, and contributors can report problems.',
     provenanceNote:
-      'When they open, every community variant will carry the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.',
+      'Every community variant carries the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.',
     columns: ['Rank', 'Variant', 'Adoption', 'Source tier'],
   },
 
   guide: {
     family: 'The tumble',
     tagline: 'Jammed deep between two fingers and snapped out with no spin, so gravity tumbles it down late.',
-    feel: 'Bury the ball deep between your fingers, wider than a split. Snap your wrist down as it squirts out. Expect it to feel hard on the arm.',
+    feel: 'Bury the ball deep between your fingers, wider than a split. Snap your wrist down as it squirts out and feel the ball leave with little rotation.',
     steps: [
       'Split your index and middle fingers wide and wedge the ball deep, toward the base of the fingers.',
       'Keep your thumb underneath to hold it in place.',
@@ -236,7 +236,7 @@ export const forkball: PitchAtlasEntry = {
     does: {
       headline: 'It leaves with no spin, so it just falls.',
       plain:
-        'A forkball is squeezed so deep between the fingers that it comes out almost without spinning. With no spin there is nothing holding it up, so it tumbles down late and hard, like the floor dropped out. It fools hitters who are geared up for a fastball. The snap that makes it work is tough on the arm.',
+        'A forkball is squeezed so deep between the fingers that it comes out almost without spinning. With no spin there is nothing holding it up, so it tumbles down late and hard, like the floor dropped out. It fools hitters who are geared up for a fastball.',
     },
   },
 

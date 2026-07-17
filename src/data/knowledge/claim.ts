@@ -63,11 +63,7 @@ export function kc(
   return { value, confidence, source: src, ...(note ? { note } : {}) }
 }
 
-/**
- * The educational-use framing shown on every safety-limit wing. The atlas can
- * cite source positions without turning them into medical care, workload advice,
- * rehab guidance, or an age-specific pitching prescription.
- */
+/** The absolute scope boundary shown on claim-free safety routes. */
 export const EDUCATIONAL_DISCLAIMER =
-  'Sourced safety reference, not medical care. Nothing here diagnoses, prescribes, sets workload, or chooses pitches for a young athlete. ' +
-  'Use the cited sources with a qualified coach, parent or guardian, and medical professional.'
+  'Pitch Atlas does not publish medical, injury, pain, rehabilitation, recovery, workload, durability, health-outcome, or youth-training claims. ' +
+  'This route remains as a clear scope boundary and intentionally contains no teaching claims.'

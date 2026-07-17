@@ -92,11 +92,12 @@ populated state full of fabricated ones is the one thing that kills the trust th
 whole product runs on.
 
 **4. The safety floor.**
-This teaches grip and technique. It does not practice medicine. No diagnosis, no
-injury triage, no rehab prescription, no "this grip is safe." No youth workload or
-"throw this at this age" calls beyond citing published Pitch Smart guidance. Pain
-questions go to a qualified professional. This is non-negotiable in product copy,
-in community guardrails, and in everything the plugin generates.
+This teaches grip and technique. It publishes no medical, injury, pain,
+rehabilitation, recovery, workload, durability, health-outcome, or youth-training
+claims. A source, confidence label, or disclaimer does not create an exception.
+Route-stable safety pages may state this boundary and must remain claim-free. This
+is non-negotiable in product copy, community guardrails, and everything the plugin
+generates.
 
 **5. Provenance on every claim and real figure.**
 Every real figure that survives carries a `Source` (id, label, url, retrievedAt,
@@ -268,6 +269,26 @@ This is the mechanism that lets the product change without losing itself.
 
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
+
+### 2026-07-16: Make the safety floor an absolute product boundary
+
+**Decision.** Pitch Atlas publishes no medical, injury, pain, rehabilitation,
+recovery, workload, durability, health-outcome, or youth-training claims, even when
+a source exists and even behind a disclaimer. `/learn/arm-health` and `/learn/youth`
+remain as claim-free boundary pages so existing links resolve and the limit stays
+visible.
+
+**Why.** A sourced conclusion is still a product conclusion. The earlier
+source-record model left Pitch Atlas reading like a health and workload adviser,
+which is outside a grip-first archive's job.
+
+**Touches.** The Learn data model and boundary routes, mechanics and pitch-design
+copy, baseball and softball pitch records, repertoire and craftsmen records, public
+SEO copy, README, and the web/iOS platform contract.
+
+**Respects.** The safety floor. Sourced, not corrected still governs every claim
+that is eligible to ship; provenance does not grant permission to cross the product
+boundary. Real, never faked remains intact.
 
 ### 2026-06-25: Deepen the specimen artifact (grade kept, grip on the card, family shelves, gold grail)
 

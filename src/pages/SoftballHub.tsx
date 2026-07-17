@@ -5,6 +5,7 @@ import { SITE } from '../config/site'
 import { canonicalUrl, contentJsonLd, ogImageMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from '../data/softball'
+import { SOFTBALL_HUB_FASTPITCH_BLURB } from '../data/softball/fundamentals'
 import type { SoftballPitch } from '../data/softball'
 import type { Craftsman } from '../data/types'
 import { accentForSlug } from '../components/refractor/accents'
@@ -161,7 +162,7 @@ export function SoftballHub() {
             to="/softball/fastpitch"
             eyebrow="Fastpitch · fundamentals"
             title="The windmill, from the ground up"
-            blurb="The four phases of the delivery, where the speed actually comes from, and the honest arm-health reality the 'underhand is safe' myth gets wrong."
+            blurb={SOFTBALL_HUB_FASTPITCH_BLURB}
             gc="var(--color-cyan)"
           />
           <StartPlate

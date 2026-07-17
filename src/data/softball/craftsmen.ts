@@ -130,7 +130,7 @@ const jennieFinch: Craftsman = {
     'reputable-analysis',
   ),
   mentalEdge: claim(
-    'Relentless and unflappable in the biggest moments, she set the NCAA record with 60 consecutive wins and then carried the sport on her back as its most recognizable ambassador. The standard for what a dominant, durable, mainstream softball star could be.',
+    'Relentless and unflappable in the biggest moments, she set the NCAA record with 60 consecutive wins and then carried the sport on her back as its most recognizable ambassador. The standard for what a dominant, visible softball star could be.',
     'sb-finch-wikipedia',
     'reputable-analysis',
   ),
@@ -170,7 +170,7 @@ const monicaAbbott: Craftsman = {
     { note: 'The NCAA career records (189 wins, 2,440 K, 112 shutouts, 1,448 IP) are from her Tennessee career.' },
   ),
   mentalEdge: claim(
-    'Workhorse durability turned into a career: she became the first million-dollar player in professional fastpitch, the most decorated pitcher in NPF history, and a two-time Olympic silver medalist across a span that bridged softball’s removal from and return to the Games.',
+    'Sustained excellence defined the career: she became the first million-dollar player in professional fastpitch, the most decorated pitcher in NPF history, and a two-time Olympic silver medalist across a span that bridged softball’s removal from and return to the Games.',
     'sb-abbott-mlb-million',
     'reputable-analysis',
   ),
@@ -210,7 +210,7 @@ const niJareeCanady: Craftsman = {
     { note: 'The riseball, the slider, and the long, close release point are from NCAA.com’s scouting of the top college pitchers.' },
   ),
   mentalEdge: claim(
-    'Workhorse dominance under the brightest lights: in the 2025 postseason she threw 686 consecutive pitches dating to the start of Super Regionals before Texas Tech was eliminated in the WCWS finals. Back-to-back NFCA National Pitcher of the Year, and the athlete a million-dollar program was built around.',
+    'She owned the brightest stage in 2025, carrying Texas Tech to its first Women’s College World Series finals and winning a second straight NFCA National Pitcher of the Year award. The program’s million-dollar commitment had its centerpiece.',
     'sb-canady-wikipedia',
     'reputable-analysis',
   ),
@@ -221,7 +221,7 @@ const niJareeCanady: Craftsman = {
   ),
   record: [
     claim(
-      'In 2025 she led the nation in run prevention while carrying Texas Tech, in its first trip, to the Women’s College World Series finals — and from the start of Super Regionals to elimination she threw every pitch the staff needed, six hundred eighty-six of them in a row. National pitcher of the year twice running, 2024 and 2025.',
+      'In 2025 she led the nation in run prevention while carrying Texas Tech, in its first trip, to the Women’s College World Series finals. She was named national pitcher of the year for the second season in a row, 2024 and 2025.',
       'sb-canady-wikipedia',
       'reputable-analysis',
     ),

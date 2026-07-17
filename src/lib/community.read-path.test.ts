@@ -45,11 +45,16 @@ vi.mock('./supabase', () => ({
 }))
 
 /** A thenable PostgREST-style chain that resolves every shape the libs await. */
-function chainFor(data: unknown, error: unknown = null, hooks: { in?: (...args: unknown[]) => void } = {}) {
+function chainFor(
+  data: unknown,
+  error: unknown = null,
+  hooks: { in?: (...args: unknown[]) => void; eq?: (...args: unknown[]) => void } = {},
+) {
   const chain: Record<string, unknown> = {}
   for (const m of ['select', 'eq', 'in', 'order', 'insert', 'delete', 'update']) {
     chain[m] = (...args: unknown[]) => {
       if (m === 'in') hooks.in?.(...args)
+      if (m === 'eq') hooks.eq?.(...args)
       return chain
     }
   }
@@ -103,13 +108,19 @@ beforeEach(() => {
 
 describe('read path mints no account', () => {
   it('listNotes with no session: no sign-in, no viewer-scoped queries, flags all false', async () => {
+    const eqCalls: unknown[][] = []
     mocks.getSession.mockResolvedValue({ data: { session: null } })
-    mocks.from.mockImplementation((table: string) => chainFor(table === 'field_notes' ? [NOTE_ROW] : []))
+    mocks.from.mockImplementation((table: string) =>
+      chainFor(table === 'field_notes' ? [NOTE_ROW] : [], null, {
+        eq: (...args) => eqCalls.push(args),
+      }),
+    )
 
     const notes = await listNotes('four-seam')
 
     expect(mocks.signInAnonymously).not.toHaveBeenCalled()
     expect(tablesQueried()).toEqual(['field_notes'])
+    expect(eqCalls).toContainEqual(['visibility', 'approved'])
     expect(notes).toHaveLength(1)
     expect(notes[0].displayName).toBe('RHP_threequarter')
     expect(notes[0].adoptionCount).toBe(3)

@@ -82,6 +82,33 @@
   --radius-md: 3px;
 }
 
+/* Unlayered on purpose: short-landscape safety must beat responsive utilities.
+   These rooms prioritize the primary front-door action over decoration. */
+@media (max-height: 500px) {
+  .pitch-index-intro,
+  .pitch-index-ledger,
+  #case .v2-secondary-cta { display: none !important; }
+  .pitch-index-header { padding-bottom: 8px !important; }
+  #case .v2-enter {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media (max-height: 500px) and (min-width: 768px) {
+  #case .v2-hero-lede { display: none !important; }
+  #case .v2-hero-grid {
+    min-height: 0 !important;
+    align-items: start !important;
+    gap: 16px !important;
+    padding-top: 12px !important;
+    padding-bottom: 20px !important;
+  }
+  #case .v2-hero-read { align-self: start !important; }
+  #case .v2-refract { max-width: 210px !important; }
+}
+
 @layer base {
   :root {
     color-scheme: dark;
@@ -557,9 +584,8 @@
   .scene-coal {
     position: relative;
     background:
-      radial-gradient(50% 40% at 50% -6%, #16121f 0%, transparent 60%),
-      radial-gradient(36% 36% at 8% 18%, rgba(55,214,255,.10), transparent 60%),
-      radial-gradient(36% 36% at 92% 14%, rgba(196,75,255,.09), transparent 60%),
+      radial-gradient(50% 40% at 50% -6%, #17130D 0%, transparent 60%),
+      radial-gradient(40% 36% at 12% 16%, rgba(216,207,184,.055), transparent 60%),
       var(--color-void);
   }
   /* .on-stage (the Heritage dark chamber) shares the coal scene's token scope,
@@ -614,7 +640,7 @@
      a handled set, not a printed sheet. */
   .rfx-card {
     --mx: 50%; --my: 32%;
-    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 6px;
+    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 20px; padding: 9px;
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     rotate: calc(sin((var(--i, 0) + 1) * 2.1) * 0.45deg);
     transition: transform .4s cubic-bezier(.2,.8,.2,1); will-change: transform;
@@ -651,7 +677,7 @@
     opacity: .72; mix-blend-mode: screen;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude; padding: 6px;
+    -webkit-mask-composite: xor; mask-composite: exclude; padding: 9px;
   }
   .rfx-card.is-gold {
     background:
@@ -713,15 +739,11 @@
   /* the woven check in the negative space — bone-warm threads with a whisper of
      the pitch accent so the per-pitch triad still breathes through. */
   .rfx-field::before {
-    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .28; mix-blend-mode: screen;
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .14; mix-blend-mode: screen;
     background:
       repeating-linear-gradient(45deg, rgba(214,205,186,.55) 0 2px, transparent 2px 11px),
       repeating-linear-gradient(-45deg, rgba(214,205,186,.4) 0 2px, transparent 2px 11px),
-      repeating-linear-gradient(45deg, rgba(214,205,186,.22) 0 1px, transparent 1px 5.5px),
-      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 45%, transparent) 0 1px, transparent 1px 22px),
-      var(--foil);
-    background-size: auto, auto, auto, auto, 220% 220%;
-    background-position: 0 0, 0 0, 0 0, 0 0, var(--mx) var(--my);
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#37D6FF) 40%, transparent) 0 1px, transparent 1px 22px);
   }
   /* the gold 1/1 shimmers gold in its negative space, never rainbow */
   .rfx-card.is-gold .rfx-field::before {
@@ -789,7 +811,7 @@
       0 8px 18px -8px rgba(0,0,0,.8) inset;
   }
   .rfx-halftone {
-    position: absolute; inset: 0; z-index: 0; opacity: .16;
+    position: absolute; inset: 0; z-index: 0; opacity: .12;
     background-image: radial-gradient(color-mix(in srgb, var(--c3,#37D6FF) 70%, transparent) 22%, transparent 24%);
     background-size: 9px 9px; mask-image: radial-gradient(80% 70% at 50% 30%, #000, transparent 78%);
   }
@@ -841,9 +863,9 @@
     background: radial-gradient(circle at 50% 28%, #fff0c2, #caa14a 60%, #7a571f);
     border-color: rgba(0,0,0,.5); color: #2a1d05;
   }
-  /* grip-source chip (bottom-left): WHOSE grip the face shows — Austin's, or a reference. */
+  /* face-source chip: whose media the grip stage shows, or that it is a schematic. */
   .rfx-gripchip {
-    position: absolute; left: calc(var(--rfxu) * 2.5); bottom: calc(var(--rfxu) * 5.56); z-index: 4;
+    position: absolute; left: calc(var(--rfxu) * 2.5); bottom: calc(var(--rfxu) * 2.5); z-index: 4;
     display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.39); padding: calc(var(--rfxu) * 0.83) calc(var(--rfxu) * 2.22); border-radius: 999px;
     background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,.12);
@@ -853,13 +875,18 @@
   /* the Austin grip photo, filling the arched window (the seam ball is used otherwise).
      display:grid so the clip's poster and its video stack in one cell (grid-area 1/1)
      and crossfade; a single-child GripFace figure is unaffected. */
-  .rfx-grip { position: absolute; inset: 0; z-index: 1; margin: 0; display: grid; }
-  .rfx-grip-img { grid-area: 1 / 1; width: 100%; height: 100%; object-fit: cover; object-position: center 42%; display: block; transition: opacity .3s; }
-  /* the grip clips are shot portrait with the ball low in frame — crop lower so the
-     hand and ball fill the window instead of the torso above them. The clip's poster
-     (its own first frame) matches the video's crop so the crossfade never shifts. */
+  .rfx-grip { position: absolute; inset: 0; z-index: 1; margin: 0; overflow: hidden; }
+  .rfx-grip-img {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 42%;
+    display: block; filter: saturate(.8) contrast(1.08) brightness(.88); transform: scale(1.16); transition: opacity .3s;
+  }
+  .rfx-grip::after {
+    content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: radial-gradient(130% 100% at 50% 44%, transparent 46%, rgba(7,5,3,.58) 100%),
+      linear-gradient(rgba(7,5,3,.22) 0%, transparent 24% 68%, rgba(7,5,3,.3) 100%);
+  }
   video.rfx-grip-img,
-  .rfx-grip-poster { object-position: center 60%; }
+  .rfx-grip-poster { object-position: center 58%; }
 
   /* ── the media stage: real footage at page scale (MediaStage.tsx) ──
      'bleed' fills its positioned parent and crops to cover; 'portrait' keeps the
@@ -1007,9 +1034,9 @@
   .rfx-shape .rfx-v { font-family: var(--font-prose); font-weight: 600; font-size: calc(var(--rfxu) * 4.27); line-height: 1.34; color: #211D17;
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   /* the cue reads in the editorial serif — a coach's margin note on the plate */
-  .rfx-cue { font-family: var(--font-display); font-style: italic; font-size: calc(var(--rfxu) * 3.73); line-height: 1.4; color: #4A443A; margin: 0;
-    padding-top: calc(var(--rfxu) * 1.94); border-top: 1px solid rgba(33,29,23,.18);
+  .rfx-cue { font-family: var(--font-display); font-style: italic; font-size: calc(var(--rfxu) * 3.9); line-height: 1.32; color: #37322A; margin: 0;
     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  @container (width <= 300px) { .rfx-cue { -webkit-line-clamp: 1; } }
   /* source badge: mono — a tag, not prose. How much to trust the reading. */
   .rfx-srcbadge { display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.67); font-family: var(--font-mono); font-size: calc(var(--rfxu) * 2.93);
     letter-spacing: .06em; line-height: 1; text-transform: uppercase; color: #4A443A; }
@@ -1022,8 +1049,55 @@
   /* bottom strip — always on the dark card face, so its ink is literal.
      flex:none so a content-tall card can never crush or slice its one line;
      the window's min-height floor is what gives instead. */
-  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: calc(var(--rfxu) * 1.67); display: flex; align-items: center; justify-content: space-between; gap: calc(var(--rfxu) * 2.22);
-    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); letter-spacing: .08em; text-transform: uppercase; color: #8A8576; }
+  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: calc(var(--rfxu) * 1.67); display: flex; align-items: center; justify-content: flex-end; gap: calc(var(--rfxu) * 2.22);
+    font-family: var(--font-mono); font-size: max(8px, calc(var(--rfxu) * 2.5)); letter-spacing: .08em; text-transform: uppercase; color: #D8CFB8; text-shadow: 0 1px 3px rgba(0,0,0,.85); }
+
+  /* restrained card face: the hand and sourced read get the space. The richer
+     collectible metadata remains on the back and in the full specimen. */
+  .rfx-head, .rfx-stage, .rfx-strip { flex: none; }
+  .rfx-head {
+    display: flex; align-items: baseline; justify-content: space-between; gap: calc(var(--rfxu) * 2.22);
+    padding: calc(var(--rfxu) * 1.11) calc(var(--rfxu) * .83) calc(var(--rfxu) * 2.22);
+  }
+  .rfx-name {
+    min-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-athletic);
+    font-size: calc(var(--rfxu) * 7.2); line-height: .95; letter-spacing: .01em; text-transform: uppercase;
+    color: #FBF7EE; -webkit-text-stroke: .6px rgba(0,0,0,.6);
+    text-shadow: 0 1px rgba(255,255,255,.14), 1.5px 2px 1px rgba(0,0,0,.6); transform: skewX(-5deg);
+  }
+  .rfx-card.is-gold .rfx-name { color: #FFF0C2; }
+  .rfx-head-meta { display: inline-flex; flex: none; align-items: baseline; gap: calc(var(--rfxu) * 1.94); }
+  .rfx-no {
+    font-family: var(--font-athletic); font-size: calc(var(--rfxu) * 5.2); font-weight: 400; line-height: 1;
+    color: color-mix(in srgb, var(--c3,#37D6FF) 72%, var(--color-bone));
+    -webkit-text-stroke: .5px rgba(0,0,0,.55); transform: skewX(-6deg);
+  }
+  .rfx-card.is-gold .rfx-no { color: #F4D98A; }
+  .rfx-stage {
+    position: relative; width: 100%; aspect-ratio: 10 / 9; overflow: hidden;
+    border-radius: calc(var(--rfxu) * 21.67) calc(var(--rfxu) * 21.67) calc(var(--rfxu) * 3.89) calc(var(--rfxu) * 3.89) /
+      calc(var(--rfxu) * 23) calc(var(--rfxu) * 23) calc(var(--rfxu) * 3.89) calc(var(--rfxu) * 3.89);
+    background: radial-gradient(120% 90% at 50% 24%, color-mix(in srgb, var(--c2,#114A8C) 48%, #000) 0%, #060403 78%);
+    border: 1px solid rgba(0,0,0,.92); outline: 1.5px solid color-mix(in srgb, var(--c3,#37D6FF) 22%, rgba(246,241,230,.5));
+    outline-offset: -4px; box-shadow: inset 0 10px 20px -10px rgba(0,0,0,.85);
+  }
+  .rfx-read {
+    position: relative; z-index: 9; flex: 1 1 auto; min-height: 0; overflow: hidden;
+    margin-top: calc(var(--rfxu) * 2.5); padding: calc(var(--rfxu) * 2.5) calc(var(--rfxu) * 3.33) calc(var(--rfxu) * 2.22);
+    display: flex; flex-direction: column; justify-content: center; gap: calc(var(--rfxu) * 1.94);
+    border-radius: calc(var(--rfxu) * 2.22); border: 1px solid rgba(0,0,0,.55);
+    background: radial-gradient(120% 100% at 50% 0%, rgba(255,252,242,.55), transparent 60%), #EFE6D0;
+    box-shadow: inset 0 0 0 1px rgba(255,252,242,.65), 0 1px rgba(255,255,255,.06), 0 8px 16px -12px rgba(0,0,0,.85);
+  }
+  .rfx-facts {
+    display: flex; flex-wrap: wrap; align-items: center; row-gap: calc(var(--rfxu) * 1.4); column-gap: calc(var(--rfxu) * 3.6);
+    margin: 0; padding: calc(var(--rfxu) * 1.67) 0 0; list-style: none; border-top: 1px solid rgba(33,29,23,.16);
+  }
+  .rfx-fact {
+    display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.4); white-space: nowrap;
+    font-family: var(--font-mono); font-size: max(8px, calc(var(--rfxu) * 2.5)); line-height: 1.2;
+    letter-spacing: .07em; text-transform: uppercase; color: #4A443A;
+  }
 
   /* ── the card back, struck as a scout file ──
      The SLUGGERS stats-table back, but every row is a sourced or categorical fact —
@@ -1045,6 +1119,7 @@
     line-height: 1.5; text-transform: uppercase; color: color-mix(in srgb, var(--c3,#37D6FF) 60%, var(--color-bone-2)); }
   .rfx-scout-k svg { width: 10px; height: 10px; flex: none; }
   .rfx-scout-v { font-size: 12px; line-height: 1.42; color: var(--color-bone); }
+  .rfx-scout-value { display: -webkit-box; overflow: hidden; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; }
   .rfx-scout-v--clip { display: block; max-height: calc(1.42em * 3); overflow: hidden; word-break: normal; overflow-wrap: normal; }
   /* the sourced grip itself, surfaced on the scout back: the same solved seam
      schematic the no-WebGL path draws, shrunk to a thumbnail that leads the Grip
@@ -1070,12 +1145,12 @@
   .rfx-wheel-note { font-family: var(--font-mono); font-size: 7.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--color-bone-2); opacity: .7; }
   .rfx-wheel.is-empty svg { opacity: .48; filter: grayscale(.45); }
   .rfx-wheel.is-empty .rfx-wheel-dir { color: var(--color-bone-2); opacity: .78; }
-  /* the standard grid backs are tighter than the 1/1 chase, so the wheel runs
-     smaller there to keep the sourced rows + footer inside the card's clipped edge. */
-  .v2-mount:not(.is-chase) .rfx-wheel svg { width: clamp(72px, 30%, 104px); }
+  /* Standard cards use the space for the sourced grip and shape read. The chase
+     keeps the wheel only while it has enough width to show every source without
+     clipping the rows. */
+  .v2-mount:not(.is-chase) .rfx-wheel { display: none; }
   @media (max-width: 560px) {
-    .rfx-wheel svg { width: clamp(66px, 28%, 94px); }
-    .rfx-wheel-note { display: none; }
+    .rfx-wheel { display: none; }
   }
 
   /* a foil-edged surface for non-card sections (tools, wings, content chrome) */
@@ -1157,7 +1232,7 @@
       0 10px 24px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(246,241,230,.14);
     font-family: var(--font-athletic); font-size: 14px; letter-spacing: .06em;
     text-transform: uppercase; color: #F6F1E6; line-height: 1;
-    transition: transform .15s var(--pa-ease-spring), border-color .2s ease, box-shadow .15s ease;
+    transition: transform .15s var(--pa-ease-settle), border-color .2s ease, box-shadow .15s ease;
   }
   /* the anisotropic light edge: a thin raking highlight across the top lip, the
      same raking-light vocabulary the card face uses — not a generic box-shadow.
@@ -1353,11 +1428,6 @@
       repeating-linear-gradient(45deg, rgba(246,241,230,.75) 0 1px, transparent 1px 8px),
       repeating-linear-gradient(-45deg, color-mix(in srgb, var(--gc, #37D6FF) 60%, transparent) 0 1px, transparent 1px 18px);
   }
-  .rfx-entry::after {
-    content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; pointer-events: none;
-    background: color-mix(in srgb, var(--gc, #37D6FF) 78%, #F6F1E6);
-    box-shadow: 0 0 18px color-mix(in srgb, var(--gc, #37D6FF) 42%, transparent);
-  }
   .rfx-entry:hover {
     transform: translateY(-2px);
     border-color: color-mix(in srgb, var(--gc, #37D6FF) 50%, transparent);
@@ -1388,37 +1458,36 @@
   }
 
   /* Tier-B plate: the directory / archive card in the refractor family — the
-     card-shaped sibling of .rfx-entry. Mid-density: a matte field with a left accent
-     edge keyed to --gc (the pitch/family accent), an Anton title, mono meta, a cyan
+     card-shaped sibling of .rfx-entry. Mid-density: a matte field with a shallow accent
+     lip keyed to --gc (the pitch/family accent), an Anton title, mono meta, a cyan
      affordance. Not a 5:7 trading card, but unmistakably the same DNA. The Pitch
      Index plates, the craftsmen plates, the lost-pitch plates, and the Learn wings
      all share this one source. Variants: is-filed (gold — a filed specimen), is-edge
      (seam — a banned/alias/illusion/lost item), is-dashed (a may-not-exist / showman
      frame). The card sets --gc inline from accentForSlug(). */
   .rfx-plate {
+    --plate-edge: color-mix(in srgb, var(--gc, #37D6FF) 78%, transparent);
     position: relative; display: flex; flex-direction: column; gap: 14px; height: 100%;
     border-radius: 13px; padding: 20px;
     background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #37D6FF) 8%, #1A140C), #100C07);
     border: 1px solid rgba(0, 0, 0, .55);
-    border-left: 3px solid color-mix(in srgb, var(--gc, #37D6FF) 78%, transparent);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.08), inset 0 -2px 6px rgba(0,0,0,.45), 0 16px 30px -22px rgba(0,0,0,.8);
+    box-shadow: inset 0 3px 0 var(--plate-edge), inset 0 -2px 6px rgba(0,0,0,.45), 0 16px 30px -22px rgba(0,0,0,.8);
     transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
   }
   .rfx-plate:hover {
     transform: translateY(-2px);
     border-color: color-mix(in srgb, var(--gc, #37D6FF) 38%, rgba(0, 0, 0, .55));
-    border-left-color: var(--gc, #37D6FF);
     background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #37D6FF) 14%, #1D1610), #100C07);
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.12), inset 0 -2px 6px rgba(0,0,0,.45), 0 20px 34px -22px rgba(0,0,0,.85);
+    box-shadow: inset 0 3px 0 var(--plate-edge), inset 0 -2px 6px rgba(0,0,0,.45), 0 20px 34px -22px rgba(0,0,0,.85);
   }
   .rfx-plate.is-filed {
-    border-left-color: color-mix(in srgb, #D8CFB8 82%, transparent);
+    --plate-edge: color-mix(in srgb, #D8CFB8 82%, transparent);
     background: linear-gradient(120deg, rgba(216, 207, 184, .10), var(--color-press));
   }
-  .rfx-plate.is-filed:hover { border-color: color-mix(in srgb, #D8CFB8 55%, transparent); border-left-color: #D8CFB8; }
-  .rfx-plate.is-edge { border-left-color: color-mix(in srgb, var(--color-seam-bright) 82%, transparent); }
-  .rfx-plate.is-edge:hover { border-color: color-mix(in srgb, var(--color-seam-bright) 50%, transparent); border-left-color: var(--color-seam-bright); }
-  .rfx-plate.is-dashed { border-style: dashed; border-left-style: solid; }
+  .rfx-plate.is-filed:hover { --plate-edge: #D8CFB8; border-color: color-mix(in srgb, #D8CFB8 55%, transparent); }
+  .rfx-plate.is-edge { --plate-edge: color-mix(in srgb, var(--color-seam-bright) 82%, transparent); }
+  .rfx-plate.is-edge:hover { --plate-edge: var(--color-seam-bright); border-color: color-mix(in srgb, var(--color-seam-bright) 50%, transparent); }
+  .rfx-plate.is-dashed { border-style: dashed; }
 
   /* the Anton title that sits on a plate (and on the index rows). Bone, condensed,
      uppercase — the card-banner identity at list scale. Replaces the old serif
@@ -1463,7 +1532,7 @@
      segment reads as a key pushed in, part of the same material. */
   .rfx-seg { position: relative; font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
     padding: 8px 14px; color: var(--ctl-text, #3F4654); background: transparent; cursor: pointer;
-    transition: color .2s, background .2s, box-shadow .15s var(--pa-ease-spring); }
+    transition: color .2s, background .2s, box-shadow .15s var(--pa-ease-settle); }
   .rfx-seg[aria-pressed="true"], .rfx-seg.is-on {
     color: var(--ctl-on-accent, #FFFFFF); background: var(--ctl-accent, #C8102E); font-weight: 600;
     box-shadow: inset 0 1px 0 rgba(255,255,255,.28), inset 0 -2px 4px rgba(0,0,0,.22);
@@ -1607,7 +1676,7 @@
 
   /* motion (alias the existing --pa-* easings; add the durations) */
   --ease-settle: var(--pa-ease-settle);
-  --ease-spring: var(--pa-ease-spring);
+  --ease-spring: var(--pa-ease-settle);
   --dur-quick: 0.18s;
   --dur-settle: 0.22s;
   --dur-reveal: 0.7s;
@@ -2224,10 +2293,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   --pa-shadow-lift: 0 2px 6px -3px rgba(0, 0, 0, 0.28), 0 14px 28px -18px rgba(0, 0, 0, 0.45);
   --pa-shadow-float: 0 30px 56px -26px rgba(0, 0, 0, 0.6);
 
-  /* — the two house easings, named. settle = entrances and reveals;
-     spring = anything a hand moves. — */
+  /* — one restrained house easing for entrances, controls, and reveals. — */
   --pa-ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
-  --pa-ease-spring: cubic-bezier(0.2, 0.8, 0.2, 1);
 
   /* NOTE on the two seam reds: Heritage --color-seam (#C8102E) on cream and the
      void-tuned --color-seam-bright (#FF2D44) inside coal scenes are DELIBERATE
@@ -2296,7 +2363,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   /* ── lift on hover: the cream-field card answer. Dark plates already lift
      (.rfx-plate, .rfx-entry); this gives claim cards, wax packs, and any cream
      tile the same hand-feel at the same weight. ── */
-  .lift-hover { transition: transform 0.22s var(--pa-ease-spring), box-shadow 0.22s ease; }
+  .lift-hover { transition: transform 0.22s var(--pa-ease-settle), box-shadow 0.22s ease; }
   .lift-hover:hover { transform: translateY(-3px); box-shadow: var(--pa-shadow-lift); }
 
   /* ── the busy control: a submitting button shows a turning seam ring and goes
@@ -2331,11 +2398,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     }
   }
 
-  /* dialogs settle on the spring, not the browser default */
+  /* dialogs use the same quick settle as the rest of the control layer */
   [data-slot="dialog-content"],
   [data-slot="alert-dialog-content"] {
     animation-duration: 0.22s;
-    animation-timing-function: var(--pa-ease-spring);
+    animation-timing-function: var(--pa-ease-settle);
   }
 }
 
@@ -2538,9 +2605,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     .overlay-frost-cream { background: var(--color-paper-2, #EAE2D2); }
     .overlay-frost-coal { background: #1A140D; }
   }
-  /* the dropdown and sheet settle on the house spring, not a default snap */
+  /* the dropdown and sheet use the same restrained house settle */
   @media (prefers-reduced-motion: no-preference) {
-    .overlay-settle { animation: overlay-settle .2s var(--pa-ease-spring) backwards; }
+    .overlay-settle { animation: overlay-settle .2s var(--pa-ease-settle) backwards; }
   }
 
   /* ── 10b · skeleton in the material vocabulary ──
@@ -2682,9 +2749,8 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     text-transform: uppercase; color: var(--color-bone-2);
   }
 
-  .v2-wall { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-  @media (min-width: 640px) { .v2-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 768px) { .v2-wall { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; } }
+  .v2-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); align-items: start; gap: 14px; }
+  @media (min-width: 768px) { .v2-wall { gap: 18px; } }
   .v2-mount {
     position: relative; border-radius: var(--radius-md);
     background: linear-gradient(180deg, #141210 0%, #0a0908 100%);
@@ -2700,7 +2766,6 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     opacity: .04; mix-blend-mode: overlay;
   }
   .v2-mount.is-chase {
-    grid-column: span 2;
     /* the grail cell reads gold before any flip: a warm edge, a thin gold inner
        ring, and a soft gold glow. The glow is the mount's own box-shadow, so it
        survives the chase mount's scroll-timeline overflow:hidden. */
@@ -2712,6 +2777,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
       0 12px 30px -18px #000,
       0 0 40px -22px rgba(212, 170, 90, .5);
   }
+  @media (min-width: 600px) { .v2-mount.is-chase { grid-column: span 2; } }
+  .v2-mount .v2-flip { max-width: 360px; margin-inline: auto; }
+  .v2-mount.is-chase .v2-flip { max-width: 520px; }
 
   /* ── the flip: chrome front <-> matte card back ──
      A real toggle (button + aria-pressed in markup); the transform
@@ -2724,7 +2792,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   @media (prefers-reduced-motion: reduce) { .v2-flip-inner { transition: none; } }
 
   .v2-flip-btn {
-    position: absolute; bottom: 8px; right: 8px; z-index: 6;
+    position: absolute; bottom: 6px; left: 6px; z-index: 6;
     /* ≥44px tap target (WCAG 2.5.5): the visible pill stays compact via mono micro-caps,
        but min-width/height + centered content give a full-size, finger-safe hit area. */
     display: inline-flex; align-items: center; justify-content: center; gap: 5px;
@@ -2736,9 +2804,22 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     cursor: pointer; transition: border-color .18s ease, transform .12s ease;
   }
+  .v2-face:not(.v2-face-back) .rfx-strip { min-height: calc(var(--rfxu) * 8); padding-left: 52px; }
+  .v2-flip-btn--inline { position: static; flex: none; min-width: 44px; min-height: 44px; padding: 7px 10px; }
   .v2-flip-btn:hover { border-color: color-mix(in srgb, var(--c3, #37D6FF) 60%, transparent); }
   .v2-flip-btn:active { transform: scale(.95); }
   .v2-flip-btn:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 2px; }
+  .rfx-strip .rfx-open { transition: color .16s ease-out; }
+  .rfx-strip .rfx-open i { display: inline-block; font-style: normal; transition: transform .16s ease-out; }
+  .rfx-card:hover .rfx-strip .rfx-open,
+  .rfx-card:focus-visible .rfx-strip .rfx-open,
+  .rfx-card:active .rfx-strip .rfx-open { color: var(--color-bone); }
+  .rfx-card:hover .rfx-strip .rfx-open i,
+  .rfx-card:focus-visible .rfx-strip .rfx-open i { transform: translateX(2px); }
+  .rfx-card:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 4px; }
+  @media (prefers-reduced-motion: reduce) {
+    .rfx-strip .rfx-open, .rfx-strip .rfx-open i { transition: none; }
+  }
   @media (prefers-reduced-transparency: reduce) { .v2-flip-btn { background: #0a0908; -webkit-backdrop-filter: none; backdrop-filter: none; } }
 
   /* ── the matte black card back (v2) ──

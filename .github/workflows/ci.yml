@@ -71,6 +71,21 @@ jobs:
         if: steps.node_app.outputs.present == 'true'
         run: npm ci
 
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+          cache: true
+
+      - name: Check orphan-media cleanup function
+        run: |
+          deno fmt --check \
+            supabase/functions/gc-orphan-discussion-media/index.ts \
+            supabase/functions/gc-orphan-discussion-media/deno.json
+          deno check --frozen \
+            --config supabase/functions/gc-orphan-discussion-media/deno.json \
+            supabase/functions/gc-orphan-discussion-media/index.ts
+
       - name: Typecheck
         if: steps.node_app.outputs.present == 'true'
         run: npm run typecheck

@@ -11,11 +11,9 @@ import { EducationalDisclaimer } from './EducationalDisclaimer'
 import { DiscussionPanel } from './DiscussionPanel'
 
 /*
-  One template for every knowledge wing. Hero (dark stage) -> educational note when
-  the wing carries one -> a numbered section per teaching block: original prose,
-  then the sourced claims that back it, each wearing its confidence + source badge.
-  Legacy pull-outs are folded back into that sourced claim list so teaching pages do
-  not visually recreate the old stat-rail pattern.
+  One template for every knowledge wing. Teaching pages pair original prose with
+  sourced claims. Route-stable boundary pages use the same shell but deliberately
+  render no claim rail.
 */
 
 function pad(n: number): string {
@@ -46,7 +44,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         sub={wing.sub}
       />
 
-      {wing.educational ? (
+      {wing.boundaryOnly ? (
         <section className="mx-auto max-w-6xl px-5 pt-12 md:px-8">
           <EducationalDisclaimer />
         </section>
@@ -61,7 +59,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
               <StageTierMarker index={pad(i + 1)} label={section.heading} />
 
               <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
-                <div className="md:col-span-7">
+                <div className={wing.boundaryOnly ? 'md:col-span-9' : 'md:col-span-7'}>
                   {section.paragraphs.map((p, j) => (
                     <p
                       key={j}
@@ -93,10 +91,11 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         )
       })}
 
-      {/* How this wing was sourced — honest footer, in the page's own voice. */}
       <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
         <p className="max-w-[72ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-ink-2">
-          <span className="mono-label mr-2 text-ink-3">How this was sourced</span>
+          <span className="mono-label mr-2 text-ink-3">
+            {wing.boundaryOnly ? 'Why this page stops here' : 'How this was sourced'}
+          </span>
           {wing.confidenceNote}
         </p>
       </section>
@@ -126,7 +125,9 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         <WingNav prev={prev} next={next} position={idx + 1} total={WINGS.length} />
       ) : null}
 
-      <DiscussionPanel topicKey={`learn:${wing.slug}`} topicName={wing.navLabel || wing.title} />
+      {wing.boundaryOnly ? null : (
+        <DiscussionPanel topicKey={`learn:${wing.slug}`} topicName={wing.navLabel || wing.title} />
+      )}
     </>
   )
 }

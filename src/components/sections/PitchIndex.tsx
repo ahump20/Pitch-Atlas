@@ -2,13 +2,13 @@ import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
-import { BookOpenIcon, ListIcon, SearchIcon, XIcon } from 'lucide-react'
+import { BookOpenIcon, ListIcon, SearchIcon, SlidersHorizontalIcon, XIcon } from 'lucide-react'
 import type { RepertoireEntry, RepertoireFamily, RepertoireStatus } from '../../data/types'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
 import { LOST_PITCHES } from '../../data/lost-pitches'
 import { pitchBySlug } from '../../data/pitches'
-import { specimenGradeFor, SPECIMEN_GRADES, type SpecimenGradeKey } from '../../data/specimen-grade'
+import { specimenGradeFor, type SpecimenGradeKey } from '../../data/specimen-grade'
 import { projectSeam, splitRuns } from '../../lib/seam2d'
 import { accentForSlug } from '../refractor/accents'
 import { FAMILY_ACCENT } from './family-accent'
@@ -45,13 +45,13 @@ type FamilyFilter = RepertoireFamily | 'filed' | 'all'
 
 /* status tier -> void-tuned accent + label. Glyph-not-only-hue: the label always shows. */
 const STATUS: Record<RepertoireStatus, { color: string; label: string }> = {
-  standard: { color: 'var(--color-ok-bright)', label: 'Standard' },
-  niche: { color: 'var(--color-teal-glow)', label: 'Niche' },
-  rare: { color: 'var(--color-amber-bright)', label: 'Rare' },
-  'near-extinct': { color: 'var(--color-sand-bright)', label: 'Near-extinct' },
+  standard: { color: 'var(--color-bone-2)', label: 'Standard' },
+  niche: { color: 'var(--color-bone-2)', label: 'Niche' },
+  rare: { color: 'var(--color-bone-2)', label: 'Rare' },
+  'near-extinct': { color: 'var(--color-bone-2)', label: 'Near-extinct' },
   banned: { color: 'var(--color-seam-bright)', label: 'Banned' },
-  alias: { color: 'var(--color-violet)', label: 'Alias' },
-  illusion: { color: 'var(--color-orange)', label: 'Illusion' },
+  alias: { color: 'var(--color-ink-3)', label: 'Alias' },
+  illusion: { color: 'var(--color-ink-3)', label: 'Illusion' },
   'not-a-pitch': { color: 'var(--color-ink-3)', label: 'Not a pitch' },
 }
 
@@ -242,8 +242,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
           <span className="font-prose text-[15px] font-bold text-bone">{entry.name}</span>
           {filed ? (
             <Badge
-              className="h-auto rounded-[4px] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#14110A]"
-              style={{ background: 'var(--foil)', backgroundSize: '300% 100%', backgroundPosition: '38% 0' }}
+              className="h-auto rounded-[4px] bg-[#D8CFB8] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-[#14110A]"
             >
               Filed
             </Badge>
@@ -251,30 +250,10 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
         </span>
         {aka ? <span className="mt-1 block text-[11.5px] leading-snug text-ink-3">{aka}</span> : null}
         {gripEntry ? (
-          /* the tell is a ten-word phrase, not a ticker — it wraps whole on
-             desktop and clamps at two lines on a phone, never mid-word */
-          <Badge
-            variant="outline"
-            className="mt-2 h-auto max-w-full items-start justify-start gap-2 whitespace-normal rounded-[10px] px-2.5 py-1 text-left font-mono text-[9px] uppercase tracking-[0.08em] text-bone-2"
-            style={{
-              borderColor: `color-mix(in srgb, ${accent} 30%, transparent)`,
-              background: `color-mix(in srgb, ${accent} 8%, transparent)`,
-            }}
-          >
-            <span className="flex-none" style={{ color: accent }}>
-              Grip tell
-            </span>
-            <span className="line-clamp-2 min-w-0 leading-snug sm:line-clamp-none">
-              {gripEntry.shortCue}
-            </span>
-          </Badge>
+          <span className="mt-1.5 line-clamp-2 block font-prose text-[13px] italic leading-snug text-bone-2 sm:line-clamp-none">
+            {gripEntry.shortCue}
+          </span>
         ) : null}
-        <span
-          className="mt-2.5 inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
-          style={{ color: filed ? '#D8CFB8' : 'var(--color-ink-3)' }}
-        >
-          {filed ? 'Open specimen' : 'Basic file'} <span aria-hidden="true">→</span>
-        </span>
       </span>
     </Link>
   )
@@ -289,6 +268,9 @@ export function PitchIndex({ id }: { id?: string }) {
   const status = searchStatus(searchParams.get('status'))
   const reduced = useReducedMotion()
   const q = query.trim().toLowerCase()
+  const advancedCount =
+    (filter === 'all' ? 0 : 1) + (sort === 'default' ? 0 : 1) + (status === 'all' ? 0 : 1)
+  const [filtersOpen, setFiltersOpen] = useState(() => advancedCount > 0)
 
   // the announcer: a hidden live region for events the screen can't show.
   // Repeat announcements briefly reset the node, then keep the last message so
@@ -310,8 +292,8 @@ export function PitchIndex({ id }: { id?: string }) {
       (prev) => {
         const next = new URLSearchParams(prev)
         if ('q' in patch) {
-          const nextQuery = patch.q?.trim() ?? ''
-          if (nextQuery) next.set('q', nextQuery)
+          const nextQuery = patch.q ?? ''
+          if (nextQuery.trim()) next.set('q', nextQuery)
           else next.delete('q')
         }
         if ('family' in patch) {
@@ -380,176 +362,205 @@ export function PitchIndex({ id }: { id?: string }) {
 
   return (
     <div id={id}>
-      {/* Sticky controls */}
+      {/* Search and the two frequent actions stay close at hand. The larger
+          family/sort/status set expands into normal flow, so it never consumes
+          half a small phone while stuck to the viewport. */}
       <div className="sticky top-16 z-20 -mx-5 mt-6 overflow-hidden bg-background/86 px-5 py-3 backdrop-blur-md md:-mx-8 md:px-8 md:py-4">
         <div className="pa-atmo pa-atmo-index-shelf opacity-[0.22] md:opacity-[0.28]" aria-hidden="true" />
         <div className="relative z-[1]">
-        <label className="block">
-          <span className="sr-only">Search the Pitch Index</span>
-          <SearchField
-            value={query}
-            onChange={(e) => updateIndexParams({ q: e.target.value }, { replace: true })}
-            onClear={() => updateIndexParams({ q: null }, { replace: true, announce: 'Search cleared' })}
-            placeholder="Search a pitch, an alias, a family…"
-          />
-        </label>
-        {/* One control row: family filters scroll horizontally on phones (so the
-            sticky bar stays short and doesn't bury the list) with the view toggle
-            and reset pinned right. `min-w-0 flex-1` bounds the filter group so its
-            overflow scrolls INSIDE the row instead of pushing the page wide. From
-            640px up the filters wrap normally. The seam here is gap-2.5 so the
-            family rail's right-edge fade clears the pinned view toggle. */}
-        <div className="mt-3 flex items-center gap-2.5">
-          <ToggleGroup
-            type="single"
-            value={filter}
-            onValueChange={(next) => {
-              if (next) morph(() => updateIndexParams({ family: next as FamilyFilter }, { announce: `${FILTERS.find((f) => f.key === next)?.label ?? 'All'} filter applied` }))
-            }}
-            className="chip-rail flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
-            aria-label="Filter pitch family"
-          >
-            {FILTERS.map((f) => (
-              <ToggleGroupItem
-                key={f.key}
-                value={f.key}
-                aria-label={f.label}
-                className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-              >
-                {f.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-          <ToggleGroup
-            type="single"
-            value={view}
-            onValueChange={(next) => {
-              if (next) morph(() => updateIndexParams({ view: next as IndexView }, { announce: `${next === 'binder' ? 'Binder' : 'Rows'} view selected` }))
-            }}
-            className="shrink-0 rounded-full border border-white/14 p-0.5"
-            aria-label="Index view"
-          >
-            <ToggleGroupItem value="rows" aria-label="Rows view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-              <ListIcon data-icon="inline-start" />
-              Rows
-            </ToggleGroupItem>
-            <ToggleGroupItem value="binder" aria-label="Binder view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
-              <BookOpenIcon data-icon="inline-start" />
-              Binder
-            </ToggleGroupItem>
-          </ToggleGroup>
-          {hasActiveState ? (
-            <Button
+          <label className="block">
+            <span className="sr-only">Search the Pitch Index</span>
+            <SearchField
+              value={query}
+              onChange={(e) => updateIndexParams({ q: e.target.value }, { replace: true })}
+              onClear={() => updateIndexParams({ q: null }, { replace: true, announce: 'Search cleared' })}
+              placeholder="Search a pitch, an alias, a family…"
+            />
+          </label>
+          <div className="mt-3 flex flex-wrap items-center gap-2.5">
+            <button
               type="button"
-              onClick={resetIndex}
-              variant="ghost"
-              size="sm"
-              className="h-9 shrink-0 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:text-bone"
+              aria-expanded={filtersOpen}
+              aria-controls="index-filter-panel"
+              onClick={() => setFiltersOpen((open) => !open)}
+              className="pi-toggle inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border border-white/14 px-3.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:text-bone aria-expanded:border-primary aria-expanded:text-bone"
             >
-              <XIcon data-icon="inline-start" />
-              Reset
-            </Button>
-          ) : null}
-        </div>
-        {/* Sort orders cards within each family. Its own compact row so the filter
-            bar stays short on phones; scrolls horizontally if it must. */}
-        <div className="mt-2.5 flex items-center gap-2">
-          <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Sort</span>
-          <ToggleGroup
-            type="single"
-            value={sort}
-            onValueChange={(next) => {
-              if (next)
-                morph(() =>
-                  updateIndexParams(
-                    { sort: next as IndexSort },
-                    { announce: `Sorted: ${SORTS.find((s) => s.key === next)?.label ?? 'Family'}` },
-                  ),
-                )
-            }}
-            className="chip-rail flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
-            aria-label="Sort the index within each family"
-          >
-            {SORTS.map((s) => (
-              <ToggleGroupItem
-                key={s.key}
-                value={s.key}
-                aria-label={s.aria}
-                className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-              >
-                {s.label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </div>
-        {/* Status facet: filter to one field-rarity / honest-edge tier. Its own
-            compact row so the bar stays short on phones; scrolls horizontally if it
-            must. Dot color + label both show (never hue-only), read off the same
-            STATUS map the Field rarity legend uses. Only tiers in the data render. */}
-        {PRESENT_STATUSES.length > 1 ? (
-          <div className="mt-2.5 flex items-center gap-2">
-            <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Status</span>
+              <SlidersHorizontalIcon className="h-3 w-3" aria-hidden="true" />
+              Filter &amp; sort{advancedCount > 0 ? ` (${advancedCount})` : ''}
+            </button>
             <ToggleGroup
               type="single"
-              value={status}
+              value={view}
               onValueChange={(next) => {
                 if (next)
                   morph(() =>
                     updateIndexParams(
-                      { status: next as StatusFilter },
-                      {
-                        announce:
-                          next === 'all'
-                            ? 'All statuses shown'
-                            : `Status: ${STATUS[next as RepertoireStatus].label}`,
-                      },
+                      { view: next as IndexView },
+                      { announce: `${next === 'binder' ? 'Binder' : 'Rows'} view selected` },
                     ),
                   )
               }}
-              className="chip-rail flex min-w-0 flex-1 flex-nowrap gap-1.5 overflow-x-auto pb-1 [scrollbar-width:none] sm:flex-wrap sm:gap-2 sm:overflow-visible sm:pb-0 [&::-webkit-scrollbar]:hidden"
-              aria-label="Filter by pitch status"
+              className="shrink-0 rounded-full border border-white/14 p-0.5"
+              aria-label="Index view"
             >
-              <ToggleGroupItem
-                value="all"
-                aria-label="All statuses"
-                className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-              >
-                All
+              <ToggleGroupItem value="rows" aria-label="Rows view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                <ListIcon data-icon="inline-start" /> Rows
               </ToggleGroupItem>
-              {PRESENT_STATUSES.map((s) => (
+              <ToggleGroupItem value="binder" aria-label="Binder view" className="pi-toggle rounded-full font-mono text-xs uppercase tracking-[0.06em] data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                <BookOpenIcon data-icon="inline-start" /> Binder
+              </ToggleGroupItem>
+            </ToggleGroup>
+            {hasActiveState ? (
+              <Button
+                type="button"
+                onClick={resetIndex}
+                variant="ghost"
+                size="sm"
+                className="h-9 shrink-0 rounded-full px-3 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 hover:text-bone"
+              >
+                <XIcon data-icon="inline-start" /> Reset
+              </Button>
+            ) : null}
+          </div>
+          <p aria-live="polite" className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3 md:mt-3">
+            {countLabel}
+          </p>
+          {q === 'eephus' ? (
+            <p className="mt-2">
+              <EggButton
+                tidbitId="eephus"
+                label="Reveal a hidden note about the eephus pitch"
+                className="font-mono text-[10px] uppercase tracking-[0.1em] text-bone"
+              >
+                A hidden note on the eephus <span aria-hidden="true">→</span>
+              </EggButton>
+            </p>
+          ) : null}
+          <span role="status" aria-live="polite" data-testid="pitch-index-announcer" className="sr-only">
+            {announce}
+          </span>
+        </div>
+      </div>
+
+      {filtersOpen ? (
+        <div id="index-filter-panel" className="mt-4 rounded-[12px] border border-white/10 bg-card/50 p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="w-14 shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Family</span>
+            <ToggleGroup
+              type="single"
+              value={filter}
+              onValueChange={(next) => {
+                if (next)
+                  morph(() =>
+                    updateIndexParams(
+                      { family: next as FamilyFilter },
+                      { announce: `${FILTERS.find((item) => item.key === next)?.label ?? 'All'} filter applied` },
+                    ),
+                  )
+              }}
+              className="flex min-w-0 flex-1 flex-wrap gap-1.5 sm:gap-2"
+              aria-label="Filter pitch family"
+            >
+              {FILTERS.map((item) => (
                 <ToggleGroupItem
-                  key={s}
-                  value={s}
-                  aria-label={STATUS[s].label}
-                  className="pi-toggle inline-flex shrink-0 items-center gap-1.5 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  key={item.key}
+                  value={item.key}
+                  aria-label={item.label}
+                  className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
                 >
-                  <i className="h-1.5 w-1.5 flex-none rounded-full" style={{ background: STATUS[s].color }} aria-hidden="true" />
-                  {STATUS[s].label}
+                  {item.label}
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>
           </div>
-        ) : null}
-        <p aria-live="polite" className="mt-2 font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3 md:mt-3">
-          {countLabel}
-        </p>
-        {/* search the strangest pitch by name and a hidden note surfaces, quietly */}
-        {q === 'eephus' ? (
-          <p className="mt-2">
-            <EggButton
-              tidbitId="eephus"
-              label="Reveal a hidden note about the eephus pitch"
-              className="font-mono text-[10px] uppercase tracking-[0.1em] text-cyan"
+
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="w-14 shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Sort</span>
+            <ToggleGroup
+              type="single"
+              value={sort}
+              onValueChange={(next) => {
+                if (next)
+                  morph(() =>
+                    updateIndexParams(
+                      { sort: next as IndexSort },
+                      { announce: `Sorted: ${SORTS.find((item) => item.key === next)?.label ?? 'Family'}` },
+                    ),
+                  )
+              }}
+              className="flex min-w-0 flex-1 flex-wrap gap-1.5 sm:gap-2"
+              aria-label="Sort the index within each family"
             >
-              A hidden note on the eephus <span aria-hidden="true">→</span>
-            </EggButton>
-          </p>
-        ) : null}
-        <span role="status" aria-live="polite" data-testid="pitch-index-announcer" className="sr-only">
-          {announce}
-        </span>
+              {SORTS.map((item) => (
+                <ToggleGroupItem
+                  key={item.key}
+                  value={item.key}
+                  aria-label={item.aria}
+                  className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  {item.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+
+          {PRESENT_STATUSES.length > 1 ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="w-14 shrink-0 font-mono text-[9px] uppercase tracking-[0.14em] text-ink-3">Status</span>
+              <ToggleGroup
+                type="single"
+                value={status}
+                onValueChange={(next) => {
+                  if (next)
+                    morph(() =>
+                      updateIndexParams(
+                        { status: next as StatusFilter },
+                        {
+                          announce:
+                            next === 'all'
+                              ? 'All statuses shown'
+                              : `Status: ${STATUS[next as RepertoireStatus].label}`,
+                        },
+                      ),
+                    )
+                }}
+                className="flex min-w-0 flex-1 flex-wrap gap-1.5 sm:gap-2"
+                aria-label="Filter by pitch status"
+              >
+                <ToggleGroupItem
+                  value="all"
+                  aria-label="All statuses"
+                  className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                >
+                  All
+                </ToggleGroupItem>
+                {PRESENT_STATUSES.map((item) => (
+                  <ToggleGroupItem
+                    key={item}
+                    value={item}
+                    aria-label={STATUS[item].label}
+                    className="pi-toggle shrink-0 rounded-full border border-white/14 px-3 py-1.5 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2 data-[state=on]:border-primary data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+                  >
+                    {STATUS[item].label}
+                  </ToggleGroupItem>
+                ))}
+              </ToggleGroup>
+            </div>
+          ) : null}
+
+          <div className="mt-4 border-t border-white/10 pt-3">
+            <p className="max-w-[72ch] text-[11.5px] leading-snug text-bone-2">
+              Documentation depth is how richly the atlas has preserved a grip, richest first:
+              filmed in the pitcher's own hand, then a first-party still, then a filed reference.
+              The lone gold 1 of 1 is the four-seam, specimen 00.
+            </p>
+            <p className="mt-2 max-w-[72ch] text-[11.5px] leading-snug text-bone-2">
+              Status is the atlas's filing label for an entry. Banned, alias, illusion, and
+              not-a-pitch entries are honest edges, labeled for what they are, never dressed up as a chase.
+            </p>
+          </div>
         </div>
-      </div>
+      ) : null}
 
       {/* Empty state — says which lever to pull: the search term or the filter */}
       {total === 0 ? (
@@ -579,69 +590,6 @@ export function PitchIndex({ id }: { id?: string }) {
             </Button>
           </EmptyHeader>
         </Empty>
-      ) : null}
-
-      {/* The documentation-depth legend: how richly THIS atlas has preserved the pitch,
-          a filmed grip over a still over a schematic. Read straight off specimen-grade.ts's
-          ordered label map (SPECIMEN_GRADES) so the key and the card stamps can never word a
-          grade differently. The only digits anywhere are the real 1/1 gold; this is
-          preservation depth, never a chase ladder — that scarcity read is Field rarity below,
-          and the two axes are never folded into one. */}
-      {total > 0 ? (
-        <div className="mt-6 rounded-[10px] border border-white/10 bg-card/50 px-4 py-3">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Documentation depth</span>
-            {SPECIMEN_GRADES.map((g) => {
-              const isGold = g.key === 'gold'
-              return (
-                <span
-                  key={g.key}
-                  className={`inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] ${isGold ? 'text-[#FFE9B0]' : 'text-bone-2'}`}
-                >
-                  <i
-                    className="h-1.5 w-1.5 flex-none rotate-45"
-                    style={{
-                      background: isGold ? '#FFD98A' : 'var(--c3,#37D6FF)',
-                      boxShadow: isGold ? '0 0 8px -1px #FFD98A' : '0 0 8px -1px var(--c3,#37D6FF)',
-                    }}
-                    aria-hidden="true"
-                  />
-                  {g.label}
-                </span>
-              )
-            })}
-          </div>
-          <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-bone-2">
-            How richly the atlas has preserved the grip, richest first: filmed in the pitcher's
-            own hand, then a first-party still, then a filed reference. The lone gold 1 of 1 is the
-            four-seam struck as specimen 00, the only number here.
-          </p>
-        </div>
-      ) : null}
-
-      {/* The collection legend: the per-row status tier is a real scarcity read —
-          how rare the pitch is in the game today — not an invented chase ladder. The
-          honest edges (banned/alias/illusion/not-a-pitch) stay edges, never a tier to
-          covet. Read straight off the STATUS map; nothing here is fabricated. */}
-      {total > 0 ? (
-        <div className="mt-3 rounded-[10px] border border-white/10 bg-card/50 px-4 py-3">
-          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-            <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">Field rarity</span>
-            {(['standard', 'niche', 'rare', 'near-extinct'] as RepertoireStatus[]).map((s) => (
-              <span
-                key={s}
-                className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-bone-2"
-              >
-                <i className="h-1.5 w-1.5 flex-none rounded-full" style={{ background: STATUS[s].color }} aria-hidden="true" />
-                {STATUS[s].label}
-              </span>
-            ))}
-          </div>
-          <p className="mt-2 max-w-[68ch] text-[11.5px] leading-snug text-bone-2">
-            How rare the pitch is in the game today, common to rare. Banned, alias, illusion, and not-a-pitch
-            entries are filed as honest edges, labeled for what they are, never dressed up as a chase.
-          </p>
-        </div>
       ) : null}
 
       {/* Family groups */}

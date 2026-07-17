@@ -4,7 +4,7 @@ import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { createHead, UnheadProvider } from '@unhead/react/client'
 import { routes } from './routes'
 import { PITCHES } from './data/pitches'
-import { specimenGradeFor } from './data/specimen-grade'
+import { featuredPitchSet } from './data/featured'
 
 /*
   Multi-page smoke tests. jsdom has no WebGL, so every page renders through its
@@ -53,18 +53,22 @@ describe('Atlas home', () => {
     expect(schema).not.toContain('2026-06-04')
   })
 
-  it('leads with the Refractor Case hero and files the whole set', async () => {
+  it('leads with the Refractor Case hero and a representative filed set', async () => {
     renderRoute('/')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
       /struck as a specimen/i,
     )
-    expect(screen.getAllByText('Preserve and progress the art of the pitch.').length).toBeGreaterThan(0)
-    expect(screen.getByText('The goal is not nostalgia. It is continuity.')).toBeInTheDocument()
-    expect(screen.getByText(/Founding note/)).toBeInTheDocument()
-    // the chrome wall carries the whole filed set: every specimen name is in the DOM
-    for (const p of PITCHES) {
+    expect(
+      screen.getByText(/Every pitch has a file; every grip has a history/),
+    ).toBeInTheDocument()
+    // the front door carries one real filed specimen from each core family;
+    // the full set belongs to the searchable Pitch Index.
+    for (const p of featuredPitchSet()) {
       expect(screen.getAllByText(p.display.shortName).length).toBeGreaterThan(0)
     }
+    expect(
+      screen.getByText(new RegExp(`${featuredPitchSet().length} shown · ${PITCHES.length} filed`)),
+    ).toBeInTheDocument()
     // the seam bridge renders the honest four-seam schematic, never a blank stage
     expect(screen.getAllByLabelText(/four-seam specimen/i).length).toBeGreaterThan(0)
     // the onward doors open the two side wings
@@ -72,19 +76,20 @@ describe('Atlas home', () => {
     expect(screen.getAllByText('Lost Pitches of the Negro Leagues').length).toBeGreaterThan(0)
   })
 
-  it('opens onward into the tools, the craft record, and the rule sheet', async () => {
+  it('keeps the front door to five beats and closes on the sourced rule', async () => {
     renderRoute('/')
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
-    // all four tools, named to match their destination pages and the masthead
-    for (const label of ['Shape Lab', 'The Shape Map', 'Compare pitches', 'Compare grips']) {
-      expect(screen.getAllByText(label).length).toBeGreaterThan(0)
+    for (const heading of ['One seam. Two media.', 'The filed set.', 'The other doors.']) {
+      expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     }
-    // the craft record leads into the ten sourced chapters
-    expect(screen.getByRole('heading', { name: 'The craft record.' })).toBeInTheDocument()
     expect(screen.getAllByText(/Preserve the pitches baseball almost forgot/).length).toBeGreaterThan(0)
-    // the rule sheet keeps its real honesty items through the redesign
-    expect(screen.getByText('Hardcoded freshness')).toBeInTheDocument()
-    expect(screen.getByText('A source on every claim')).toBeInTheDocument()
+    expect(screen.getAllByText(/Sourced, not corrected/).length).toBeGreaterThan(0)
+    expect(screen.getByRole('link', { name: /How a claim is filed/ })).toHaveAttribute(
+      'href',
+      '/sources',
+    )
+    expect(screen.queryByRole('heading', { name: 'The craft record.' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Shape Lab')).not.toBeInTheDocument()
   })
 
   it('shows one clear primary nav, not the old per-pitch strip', async () => {
@@ -104,32 +109,28 @@ describe('Atlas home', () => {
   })
 })
 
-describe('Specimen grade', () => {
-  /*
-    The honest collectible grade renders on the home specimen wall (ChromeWall),
-    where every filed pitch is struck as a card. The gold 1/1 is keyed on data —
-    whichever pitch carries specimenNo '00' — never a hardcoded slug, so this
-    survives the gold moving to another specimen. A non-gold pitch must wear its
-    own computed documentation grade, proving the grade is a real switch on the
-    record and not one decorative badge.
-  */
-  it('stamps the data-keyed 1/1 gold and a dynamic grade on the home wall', async () => {
-    const goldEntry = PITCHES.find((p) => p.display.specimenNo === '00')
-    expect(goldEntry, 'a filed pitch must be struck at specimen 00 (the gold 1/1)').toBeDefined()
-    expect(specimenGradeFor(goldEntry!).label).toBe('Gold · 1 of 1')
-
-    renderRoute('/')
+describe('Home card restraint', () => {
+  it('keeps documentation grades off the card front while retaining sourced flips', async () => {
+    const { container } = renderRoute('/')
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+    const wall = container.querySelector('#set')
+    expect(wall).not.toBeNull()
+    expect(wall!.querySelectorAll('.rfx-card')).toHaveLength(featuredPitchSet().length)
+    expect(wall!.querySelector('.rfx-grade')).toBeNull()
+    expect(screen.queryByText('Gold · 1 of 1')).not.toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /to its sourced back/ })).toHaveLength(
+      featuredPitchSet().length,
+    )
+  })
 
-    // the gold stamp — the only digits the grade system is allowed to print
-    expect(screen.getAllByText('Gold · 1 of 1').length).toBeGreaterThan(0)
-
-    // a non-gold filed pitch wears its computed depth grade, not the gold label
-    const other = PITCHES.find((p) => p.display.specimenNo !== '00')
-    expect(other, 'the atlas files more than the single gold specimen').toBeDefined()
-    const grade = specimenGradeFor(other!)
-    expect(grade.label).not.toBe('Gold · 1 of 1')
-    expect(screen.getAllByText(grade.label).length).toBeGreaterThan(0)
+  it('labels Austin grip media with the matching first-person claim tier', async () => {
+    const { container } = renderRoute('/')
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+    const hero = container.querySelector('#case')
+    expect(hero).not.toBeNull()
+    expect(within(hero as HTMLElement).getByText('Austin video')).toBeInTheDocument()
+    expect(within(hero as HTMLElement).getByText("Pitcher's own words")).toBeInTheDocument()
+    expect(within(hero as HTMLElement).getByText('Fingertips cross the seam path')).toBeInTheDocument()
   })
 })
 
@@ -223,6 +224,24 @@ describe('Sources', () => {
           el?.tagName === 'P' && /As of\s+.*\d{4}\.\s*Sources last checked/.test(el.textContent ?? ''),
       ),
     ).toBeInTheDocument()
+  })
+})
+
+describe('Learn safety boundaries', () => {
+  it.each(['/learn/arm-health', '/learn/youth'])(
+    'keeps %s claim-free without opening a topic discussion',
+    async (path) => {
+      renderRoute(path)
+      await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+      expect(screen.getByText('Scope boundary')).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: /discussion/i })).not.toBeInTheDocument()
+    },
+  )
+
+  it('keeps discussion available on in-scope teaching routes', async () => {
+    renderRoute('/learn/mechanics')
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+    expect(screen.getByRole('button', { name: /discussion/i })).toBeInTheDocument()
   })
 })
 
@@ -332,7 +351,8 @@ describe('The Pitch Index', () => {
     expect(screen.getAllByText('Kick Change').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Four-Seam Fastball').length).toBeGreaterThan(0)
     expect(screen.getAllByText('Cutter').length).toBeGreaterThan(0)
-    expect(screen.getAllByText('Grip tell').length).toBeGreaterThan(0)
+    expect(screen.getByText('Fingertips cross the seam path')).toBeInTheDocument()
+    expect(screen.queryByText('Grip tell')).not.toBeInTheDocument()
   })
 
   it('files the knuckle-slurve honestly as not a pitch', async () => {

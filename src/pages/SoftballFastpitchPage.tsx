@@ -4,23 +4,21 @@ import { SITE } from '../config/site'
 import { canonicalUrl, contentJsonLd, ogImageMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { WINDMILL_PHASES, FUNDAMENTAL_BLOCKS } from '../data/softball'
+import { SOFTBALL_FASTPITCH_COPY } from '../data/softball/fundamentals'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 
 /*
-  Fastpitch fundamentals — the windmill from the ground up, sourced to peer-reviewed
-  biomechanics. Section 01 walks the four phases of the delivery; the blocks that
-  follow cover where the speed comes from, the honest arm-health reality, and the
-  rules that shape the craft. The arm-health block carries the education-only note.
+  Fastpitch fundamentals: four delivery phases, whole-body sequence, and the rules
+  that shape the craft.
 */
 
 export function SoftballFastpitchPage() {
   useSeoMeta({
     title: `Fastpitch fundamentals: the windmill, from the ground up | ${SITE.siteName}`,
-    description:
-      'The core of fastpitch softball pitching: the four phases of the windmill delivery, where the speed actually comes from (the lower half, not the arm circle), and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
+    description: SOFTBALL_FASTPITCH_COPY.description,
     ogTitle: `Fastpitch fundamentals | ${SITE.siteName}`,
     ogDescription: 'The windmill, from the ground up.',
     ogUrl: canonicalUrl('/softball/fastpitch'),
@@ -34,8 +32,7 @@ export function SoftballFastpitchPage() {
           type: 'Article',
           url: canonicalUrl('/softball/fastpitch'),
           name: 'Fastpitch fundamentals: the windmill, from the ground up',
-          description:
-            'The core of fastpitch softball pitching: the four phases of the windmill delivery, where the speed actually comes from, and the honest arm-health reality. Sourced to peer-reviewed biomechanics. Education only.',
+          description: SOFTBALL_FASTPITCH_COPY.description,
           breadcrumb: [
             { name: 'The Atlas', to: '/' },
             { name: 'Softball', to: '/softball' },
@@ -51,21 +48,13 @@ export function SoftballFastpitchPage() {
         }
         eyebrow="Fastpitch · fundamentals"
         title="The windmill, from the ground up."
-        sub={
-          <>
-            The underhand windmill looks like an arm pitch and is not. Here is the delivery in four phases,
-            where the speed is really made, and the arm-health truth the "underhand is natural and safe" myth
-            gets wrong, sourced to peer-reviewed biomechanics rather than coaching lore. Education and documentation
-            only; this is not medical advice.
-          </>
-        }
+        sub={SOFTBALL_FASTPITCH_COPY.heroSub}
       />
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="01" label="The windmill, in four phases" />
         <p className="mb-10 max-w-[64ch] text-base leading-relaxed text-ink-2">
-          Biomechanics splits the delivery into four phases: the wind-up, the stride, the acceleration, and
-          the follow-through. Each hands energy to the next.
+          {SOFTBALL_FASTPITCH_COPY.phaseLede}
         </p>
         <div className="grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-2">
           {WINDMILL_PHASES.map((phase) => (
