@@ -41,8 +41,17 @@ exception when others then
   null;
 end $$;
 
-select cron.schedule(
-  'gc-orphan-discussion-media',
-  '0 * * * *',
-  $$select private.gc_orphan_discussion_media();$$
-);
+-- Supabase preview branches can omit pg_cron. The cleanup function still
+-- migrates there; production schedules it when the extension is available.
+do $schedule$
+begin
+  perform cron.schedule(
+    'gc-orphan-discussion-media',
+    '0 * * * *',
+    $job$select private.gc_orphan_discussion_media();$job$
+  );
+exception
+  when undefined_schema or undefined_function then
+    raise notice 'pg_cron is unavailable; legacy orphan-media scheduling skipped';
+end
+$schedule$;
