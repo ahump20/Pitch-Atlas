@@ -1,40 +1,56 @@
-import { render } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
+import { featuredPitchSet } from '../../data/featured'
 import { ChromeWall } from './ChromeWall'
 
 describe('ChromeWall (the filed set)', () => {
-  it('keeps the specimen grade on every card front', () => {
-    // The grade is the owner-confirmed read of how richly each specimen is
-    // preserved. It must not be silently retired by a future pass.
+  it('shows one real filed specimen per core family', () => {
     const { container } = render(
       <MemoryRouter>
         <ChromeWall />
       </MemoryRouter>,
     )
-    expect(container.querySelectorAll('.rfx-grade').length).toBeGreaterThan(0)
+
+    const featured = featuredPitchSet()
+    expect(featured).toHaveLength(3)
+    expect(container.querySelectorAll('.v2-mount')).toHaveLength(featured.length)
+    for (const entry of featured) {
+      expect(screen.getAllByText(entry.display.shortName).length).toBeGreaterThan(0)
+    }
   })
 
-  it('surfaces the sourced grip silhouette on filed specimens', () => {
+  it('keeps sourced grip and shape detail on the card backs', () => {
     const { container } = render(
       <MemoryRouter>
         <ChromeWall />
       </MemoryRouter>,
     )
     expect(container.querySelectorAll('.rfx-grip-twin').length).toBeGreaterThan(0)
+    const keys = [...container.querySelectorAll('.rfx-scout-k')].map((node) => node.textContent)
+    expect(keys.filter((key) => key === 'Grip cue')).toHaveLength(featuredPitchSet().length)
+    expect(keys.filter((key) => key === 'Shape')).toHaveLength(featuredPitchSet().length)
+    for (const entry of featuredPitchSet()) {
+      const gripCue = entry.canonical.gripDetails[0] ?? entry.canonical.grip
+      expect(gripCue.source).toBeTruthy()
+      expect(shapeSource(entry)).toBeTruthy()
+      expect(container.querySelector(`a[href="${gripCue.source?.url}"]`)).not.toBeNull()
+      expect(container.querySelector(`a[href="${shapeSource(entry)?.url}"]`)).not.toBeNull()
+    }
   })
 
-  it('groups specimens by family with a labeled header and count', () => {
+  it('keeps collectible grading off the restrained card front', () => {
     const { container } = render(
       <MemoryRouter>
         <ChromeWall />
       </MemoryRouter>,
     )
-    const heads = container.querySelectorAll('.v2-family-head')
-    expect(heads.length).toBeGreaterThanOrEqual(3) // fastball / breaking / offspeed
-    const fastball = Array.from(heads).find((h) => /hard|fastball/i.test(h.textContent ?? ''))
-    expect(fastball).toBeTruthy()
-    // the gold chase (four-seam, specimen 00) lives inside the fastball group
-    expect(fastball?.parentElement?.querySelector('.v2-mount.is-chase')).toBeTruthy()
+    expect(container.querySelector('.rfx-grade')).toBeNull()
+    expect(container.querySelectorAll('.rfx-read').length).toBe(featuredPitchSet().length)
+    expect(screen.getAllByText('Reference schematic')).toHaveLength(featuredPitchSet().length)
   })
 })
+
+function shapeSource(entry: ReturnType<typeof featuredPitchSet>[number]) {
+  return entry.canonical.physics.shape.source
+}

@@ -9,7 +9,7 @@ import { claim } from '../sources'
   note, and together they draw one honest throughline: the rise is the lone
   illusion — perception plus reduced drop — while the drop, the curve, and the
   screw are real movement the spin genuinely delivers. The fastball's note is the
-  43-foot reaction-time weapon; the change's is its measured low arm load. Every
+  43-foot reaction-time weapon; the change's is its timing gap off the same arm circle. Every
   grip, spin, and movement line is a Claim; nothing is asserted past what a
   reachable source supports. Depth still to come: full grip geometry and a 12" seam.
 */
@@ -121,7 +121,7 @@ const changeup: SoftballPitch = {
   family: 'offspeed',
   specimenNo: 'S-04',
   status: 'standard',
-  tagline: 'The slow pitch off a fast look — and, measurably, the gentlest on the arm.',
+  tagline: 'The slow pitch off a fast look, built on the timing gap.',
   intro:
     'The change-up subtracts speed while the arm keeps fastball tempo, so the hitter commits early and the ball arrives late. Fastpitch has a whole shelf of ways to make it — the flip, the turnover or backhand, the circle, the knuckle change — each killing speed a different way off the same windmill.',
   grip: claim(
@@ -132,11 +132,11 @@ const changeup: SoftballPitch = {
   spin: claim('Low spin and reduced speed; the deception is sameness of arm action, not movement.', 'sb-wiki-fastpitch', 'reputable-analysis'),
   movement: claim('Arrives well under fastball speed; the gap, not the break, is the pitch.', 'sb-wiki-fastpitch', 'reputable-analysis'),
   physicsNote: claim(
-    'The change-up is also the kindest pitch to the arm: biomechanics work measured significantly less peak elbow anterior force and shoulder distraction force on the change-up than on the fastball.',
-    'sb-friesen-2025-biomech',
+    'The change-up keeps the windmill look while arriving later than the fastball. That extra flight time is the pitch: the hitter starts the swing against the familiar arm circle, then the ball reaches the plate after the expected window.',
+    'sb-wiki-fastpitch',
     'reputable-analysis',
   ),
-  role: 'The timing-wrecker — and a lower-load pitch worth leaning on.',
+  role: 'The timing-wrecker off the same arm circle as the fastball.',
 }
 
 const curve: SoftballPitch = {
@@ -181,7 +181,7 @@ const screwball: SoftballPitch = {
 
 /*
   The arsenal, in reading order: the flagship rise, the signature drop, the
-  foundation fastball, the low-load change, then the two horizontal breakers.
+  foundation fastball, the timing-change, then the two horizontal breakers.
   Adding a pitch is one const and one array entry.
 */
 export const SOFTBALL_PITCHES: SoftballPitch[] = [

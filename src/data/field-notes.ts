@@ -1,10 +1,9 @@
 /*
   The Field Notes data model. Community variants extend the provenance model
   without relaxing it: a note is a sourced claim with a confidence tier, ranked
-  by evidence and context, never by popularity alone. v1 ships waitlist-gated —
-  these types describe the shape every note will take when posting opens, and
-  drive the structured template and the ranking explainer today. No fabricated
-  posts, no fabricated counts.
+  by evidence and context, never by popularity alone. Posting enters review. These
+  types keep legacy database values readable while the write surface stays inside
+  the current grip-and-technique scope. No fabricated posts, no fabricated counts.
 */
 
 import type { ClaimConfidence } from './types'
@@ -30,6 +29,10 @@ export type ClaimedResultKind =
   | 'worked-in-bullpen'
   | 'worked-in-game'
   | 'no-noticeable-change'
+/** Legacy medical-adjacent values remain in the read model so an old row never
+    breaks the archive. New submissions exclude them here and in the database. */
+export type WritablePitchIntent = Exclude<PitchIntent, 'reduce-stress'>
+export type WritableClaimedResultKind = Exclude<ClaimedResultKind, 'reduced-discomfort'>
 /** Community source tiers. Extract ties them to the canonical ClaimConfidence
     union, so a non-canonical tier string fails typecheck. */
 export type FieldNoteSourceTier = Extract<
@@ -38,9 +41,9 @@ export type FieldNoteSourceTier = Extract<
 >
 
 export const PLAYER_LEVELS: { value: PlayerLevel; label: string }[] = [
-  { value: 'youth', label: 'Youth (under 14)' },
-  { value: 'high-school', label: 'High school (14-18)' },
-  { value: 'college-plus', label: 'College and up' },
+  { value: 'youth', label: 'Developing competition' },
+  { value: 'high-school', label: 'School competition' },
+  { value: 'college-plus', label: 'College and adult competition' },
 ]
 
 export const ARM_SLOTS: { value: ArmSlot; label: string }[] = [
@@ -52,10 +55,10 @@ export const ARM_SLOTS: { value: ArmSlot; label: string }[] = [
 
 export const VELOCITY_BANDS: { value: VelocityBand; label: string }[] = [
   { value: 'low-effort', label: 'Low-effort context' },
-  { value: 'developing-arm', label: 'Developing-arm context' },
-  { value: 'prep-arm', label: 'High-school pace context' },
-  { value: 'college-arm', label: 'College pace context' },
-  { value: 'power-arm', label: 'Power-arm context' },
+  { value: 'developing-arm', label: 'Developing pace context' },
+  { value: 'prep-arm', label: 'Intermediate pace context' },
+  { value: 'college-arm', label: 'Advanced pace context' },
+  { value: 'power-arm', label: 'Power pace context' },
 ]
 
 /** Hard limits, enforced on both the client form and the future Worker. */
@@ -127,7 +130,7 @@ export interface FieldNoteContext {
   velocityBand?: VelocityBand
 }
 
-/** A community field note. The read model for the future live phase. */
+/** A community field note. The live read model. */
 export interface FieldNote {
   id: string
   pitchSlug: string

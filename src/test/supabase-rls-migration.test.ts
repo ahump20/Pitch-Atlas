@@ -102,6 +102,12 @@ const clientCallablePublicDefinerFunctions = new Set<string>([
   'block_user',
   'unblock_user',
   'my_blocked_users',
+  // These three are deliberately exposed through narrow guards: permanent-account
+  // ownership + accepted terms for reservations, and a SHA-256 Vault-secret match
+  // for the scheduled cleanup authorization gate.
+  'reserve_discussion_media_upload',
+  'release_discussion_media_upload',
+  'authorize_discussion_media_gc',
 ])
 
 describe('Supabase RLS migration contracts', () => {

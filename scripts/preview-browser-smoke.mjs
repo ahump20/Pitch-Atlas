@@ -60,13 +60,13 @@ async function assertNoHorizontalOverflow(page, label) {
   )
 }
 
-async function assertVisible(page, selector, label) {
+async function renderedBox(page, selector, label) {
   const locator = page.locator(selector).first()
   try {
-    await locator.waitFor({ state: 'attached', timeout: 10_000 })
+    await locator.waitFor({ state: 'visible', timeout: 10_000 })
   } catch {
-    record(false, `${label} was not attached`)
-    return
+    record(false, `${label} was not visible`)
+    return null
   }
 
   const deadline = Date.now() + 10_000
@@ -90,9 +90,33 @@ async function assertVisible(page, selector, label) {
 
   const viewport = page.viewportSize()
   record(Boolean(box), `${label} was not rendered`)
-  if (!box || !viewport) return
+  if (!box || !viewport) return null
   record(box.width > 0 && box.height > 0, `${label} rendered with empty dimensions`)
-  record(box.x < viewport.width && box.y < viewport.height, `${label} starts outside the first viewport`)
+  return { box, viewport }
+}
+
+async function assertRenderedVisible(page, selector, label) {
+  await renderedBox(page, selector, label)
+}
+
+async function assertStartsInInitialViewport(page, selector, label) {
+  const result = await renderedBox(page, selector, label)
+  if (!result) return
+  const { box, viewport } = result
+  record(
+    box.x < viewport.width && box.x + box.width > 0 && box.y < viewport.height && box.y + box.height > 0,
+    `${label} starts outside the first viewport`,
+  )
+}
+
+async function assertFullyInInitialViewport(page, selector, label) {
+  const result = await renderedBox(page, selector, label)
+  if (!result) return
+  const { box, viewport } = result
+  record(
+    box.x >= 0 && box.x + box.width <= viewport.width && box.y >= 0 && box.y + box.height <= viewport.height,
+    `${label} is not fully visible in the first viewport`,
+  )
 }
 
 // A non-recording layout-box probe, used inside retry loops where a transient
@@ -176,9 +200,9 @@ async function checkRepertoire(page, viewport) {
   record(dom.hasSearchAction, 'SearchAction schema missing from Pitch Index')
   record(!dom.staleMetadata, 'Stale Pitch Index metadata returned')
 
-  await assertVisible(page, 'h1', 'Pitch Index heading')
-  await assertVisible(page, 'input[type="search"]', 'Pitch Index search')
-  await assertVisible(page, '[data-state="on"]', 'Pitch Index active controls')
+  await assertRenderedVisible(page, 'h1', 'Pitch Index heading')
+  await assertFullyInInitialViewport(page, 'input[type="search"]', 'Pitch Index search')
+  await assertRenderedVisible(page, '[data-state="on"]', 'Pitch Index active controls')
   await assertNoHorizontalOverflow(page, `Pitch Index ${viewport.width}x${viewport.height}`)
 }
 
@@ -197,8 +221,8 @@ async function checkHomeMobileMenu(page) {
   record(includesText(body, /pitch atlas/i), 'Home body did not render')
   record(messages.length === 0, `Home mobile console warnings/errors: ${messages.join(' | ')}`)
   if (!(await waitForHomeShell(page))) return
-  await assertVisible(page, 'header', 'Home mobile masthead')
-  await assertVisible(page, 'main', 'Home mobile main')
+  await assertRenderedVisible(page, 'header', 'Home mobile masthead')
+  await assertRenderedVisible(page, 'main', 'Home mobile main')
   await assertNoHorizontalOverflow(page, 'Home mobile')
 
   const menuButton = page.locator(mobileMenuButtonSelector).first()
@@ -267,6 +291,89 @@ async function checkHomeMobileMenu(page) {
   record(expandedAfterEscape === 'false', 'Mobile menu did not close on Escape')
 }
 
+async function checkHomeFirstViewport(page, viewport) {
+  await page.setViewportSize(viewport)
+  const label = `Home ${viewport.width}x${viewport.height}`
+  const messages = await collectConsole(page, async () => {
+    await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
+    await page.locator('#case h1').waitFor({ state: 'visible', timeout: 15_000 })
+  })
+
+  record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
+  await assertStartsInInitialViewport(page, '#case h1', `${label} heading`)
+  await assertFullyInInitialViewport(
+    page,
+    '#case a[href="/repertoire"]',
+    `${label} primary Pitch Index action`,
+  )
+  await assertNoHorizontalOverflow(page, label)
+}
+
+async function checkHomeCardBacks(page, viewport) {
+  await page.setViewportSize(viewport)
+  const label = `Home card backs ${viewport.width}x${viewport.height}`
+  const messages = await collectConsole(page, async () => {
+    await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
+    await page.locator('#set .v2-mount').first().waitFor({ state: 'visible', timeout: 15_000 })
+  })
+
+  record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
+  const flipButtons = page.locator('#set .v2-face:not(.v2-face-back) .v2-flip-btn')
+  const count = await flipButtons.count()
+  record(count > 0, `${label} found no sourced card backs`)
+
+  for (let index = 0; index < count; index += 1) {
+    await flipButtons.nth(index).click()
+    await page
+      .locator('#set .v2-mount')
+      .nth(index)
+      .locator('.v2-flip.is-flipped')
+      .waitFor({ state: 'attached', timeout: 5_000 })
+  }
+
+  const backs = await page.locator('#set .v2-mount').evaluateAll((mounts) =>
+    mounts.map((mount) => {
+      const back = mount.querySelector('.v2-back')
+      const rows = mount.querySelector('.rfx-scout-rows')
+      const foot = mount.querySelector('.rfx-scout-foot')
+      const sourceLinks = foot ? [...foot.querySelectorAll('a[target="_blank"]')] : []
+      if (!(back instanceof HTMLElement) || !(rows instanceof HTMLElement) || !(foot instanceof HTMLElement)) {
+        return { complete: false }
+      }
+
+      const rowsRect = rows.getBoundingClientRect()
+      const backRect = back.getBoundingClientRect()
+      const rowChildrenFit = [...rows.children].every((child) => {
+        const rect = child.getBoundingClientRect()
+        return rect.top >= rowsRect.top - 1 && rect.bottom <= rowsRect.bottom + 1
+      })
+      const linksVisible = sourceLinks.every((link) => {
+        const rect = link.getBoundingClientRect()
+        return rect.width > 0 && rect.height > 0
+      })
+
+      return {
+        complete: true,
+        rowsFit: rows.scrollHeight <= rows.clientHeight + 1 && rowChildrenFit,
+        backFits: back.scrollHeight <= back.clientHeight + 1,
+        footFits: foot.getBoundingClientRect().bottom <= backRect.bottom + 1,
+        sourceCount: sourceLinks.length,
+        linksVisible,
+      }
+    }),
+  )
+
+  for (const [index, back] of backs.entries()) {
+    record(back.complete, `${label} card ${index + 1} is missing its sourced back structure`)
+    if (!back.complete) continue
+    record(back.rowsFit, `${label} card ${index + 1} clips a sourced row`)
+    record(back.backFits, `${label} card ${index + 1} overflows its matte back`)
+    record(back.footFits, `${label} card ${index + 1} clips its source footer`)
+    record(back.sourceCount >= 2, `${label} card ${index + 1} is missing grip or shape source links`)
+    record(back.linksVisible, `${label} card ${index + 1} hides a source link`)
+  }
+}
+
 async function checkFourSeam(page) {
   await page.setViewportSize({ width: 1280, height: 900 })
   const messages = await collectConsole(page, async () => {
@@ -282,7 +389,7 @@ async function checkFourSeam(page) {
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href')
   record(canonical === 'https://pitch-atlas.com/pitch/four-seam/', `Four-seam canonical was ${canonical}`)
-  await assertVisible(page, 'h1', 'Four-seam heading')
+  await assertRenderedVisible(page, 'h1', 'Four-seam heading')
   await assertNoHorizontalOverflow(page, 'Four-seam desktop')
 }
 
@@ -303,7 +410,7 @@ async function checkSupportAndPrivacy(page, viewport) {
     record(!body.includes('Loading...'), `${label} is stuck in a loading state`)
     record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
 
-    await assertVisible(page, 'h1', `${label} heading`)
+    await assertRenderedVisible(page, 'h1', `${label} heading`)
     await assertNoHorizontalOverflow(page, label)
   }
 }
@@ -321,7 +428,18 @@ async function withPage(callback) {
 
 try {
   await withPage((page) => checkRepertoire(page, { width: 1280, height: 900 }))
+  await withPage((page) => checkRepertoire(page, { width: 320, height: 568 }))
+  await withPage((page) => checkRepertoire(page, { width: 375, height: 667 }))
   await withPage((page) => checkRepertoire(page, { width: 390, height: 844 }))
+  await withPage((page) => checkRepertoire(page, { width: 568, height: 320 }))
+  await withPage((page) => checkRepertoire(page, { width: 844, height: 390 }))
+  await withPage((page) => checkHomeFirstViewport(page, { width: 320, height: 568 }))
+  await withPage((page) => checkHomeFirstViewport(page, { width: 375, height: 667 }))
+  await withPage((page) => checkHomeFirstViewport(page, { width: 568, height: 320 }))
+  await withPage((page) => checkHomeFirstViewport(page, { width: 844, height: 390 }))
+  await withPage((page) => checkHomeCardBacks(page, { width: 320, height: 568 }))
+  await withPage((page) => checkHomeCardBacks(page, { width: 375, height: 667 }))
+  await withPage((page) => checkHomeCardBacks(page, { width: 1280, height: 900 }))
   await withPage(checkHomeMobileMenu)
   await withPage(checkFourSeam)
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))

@@ -70,6 +70,7 @@ let originalRevoke: typeof URL.revokeObjectURL
 beforeEach(() => {
   vi.clearAllMocks()
   mocks.ensureSession.mockResolvedValue('user-1')
+  mocks.rpc.mockResolvedValue({ error: null })
   mocks.upload.mockResolvedValue({ error: null })
   mocks.remove.mockResolvedValue({ error: null })
   mocks.insert.mockResolvedValue({ error: null })

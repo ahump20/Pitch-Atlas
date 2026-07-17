@@ -3,7 +3,7 @@
 One product, two surfaces. Pitch-Atlas.com and the iOS app share the same source
 doctrine, content model, route map, privacy/support URLs, and community backend.
 Anything one surface carries that the other cannot support is labeled, not fudged.
-Last reconciled: 2026-06-09.
+Last reconciled: 2026-07-16.
 
 ## Shared doctrine (identical on both surfaces)
 
@@ -15,8 +15,10 @@ Last reconciled: 2026-06-09.
   content pass.)
 - No fake community activity, counts, or freshness. Counts come from Supabase
   or don't render. Freshness comes from real `retrievedAt` data or doesn't render.
-- No medical or injury claims outside sourced, disclaimer-wrapped educational
-  wings.
+- No medical, injury, pain, rehabilitation, recovery, workload, durability,
+  health-outcome, or youth-training claims on either surface. Citations and
+  disclaimers do not create exceptions. Route-stable safety pages are claim-free
+  scope boundaries.
 - Third-party media is rights-led: official platform embeds or links unless a
   license covers bundling. See `docs/MEDIA-LEDGER.md`.
 - No Blaze Sports Intel branding. Blaze the dog is the mascot; BSI is a

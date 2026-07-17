@@ -71,14 +71,10 @@ export const trendsWing: KnowledgeWing = {
       heading: 'The Screwball Is a Broken Teaching Line',
       paragraphs: [
         'The screwball is nearly gone because the teaching line broke. Christy Mathewson, Carl Hubbell, Fernando Valenzuela, and John Franco kept the pitch visible in earlier eras, but modern development systems rarely teach it.',
-        'The injury fear is real as culture, but the evidence is thinner than the fear. Coaches repeat the warning, fewer pitchers learn the pitch, and fewer coaches remain who can teach it safely. That loop turns a rare pitch into a museum piece.',
-        'A future revival would need credible coaching, careful progression, and honest source boundaries. Until then, the screwball belongs in the lost-pitches wing with a clear uncertainty label.',
+        'Fewer pitchers learn it, fewer coaches retain firsthand experience with it, and the names used for its grip and release vary across eras. That broken chain turns a rare pitch into a museum piece.',
+        'A future revival would need credible firsthand instruction and honest source boundaries. Until then, the screwball belongs in the lost-pitches wing with a clear uncertainty label.',
       ],
       claims: [
-        kc('The screwball’s decline is commonly attributed to perceived injury risk and a loss of teaching expertise.', 'reputable-analysis', {
-          label: 'Wikipedia: Screwball',
-          url: 'https://en.wikipedia.org/wiki/Screwball',
-        }, 'The injury-risk claim remains partly anecdotal because pitch-specific biomechanical research is limited.'),
         kc('Historical screwball pitchers include Christy Mathewson, Carl Hubbell, Fernando Valenzuela, and John Franco.', 'reputable-analysis', {
           label: 'Wikipedia: Screwball',
           url: 'https://en.wikipedia.org/wiki/Screwball',

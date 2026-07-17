@@ -8,16 +8,27 @@ permissions:
   deployments: write
 
 concurrency:
-  group: cloudflare-pages-${{ github.ref }}
-  cancel-in-progress: true
+  group: pitch-atlas-production
+  cancel-in-progress: false
 
 jobs:
   deploy:
     name: deploy
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    environment:
+      name: production
+      url: https://pitch-atlas.com
 
     steps:
+      - name: Require main branch
+        shell: bash
+        run: |
+          test "$GITHUB_REF" = "refs/heads/main" || {
+            echo "Production deploys must run from main; received $GITHUB_REF"
+            exit 1
+          }
+
       - name: Checkout
         uses: actions/checkout@v7
         with:
@@ -104,5 +115,5 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           # Production runs only after the exact dist/ artifact has rendered on
           # a Pages preview and passed the public route smoke test above.
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'pitch-atlas' }} --branch=main
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT || 'pitch-atlas' }} --branch=main --commit-hash=${{ github.sha }} --commit-dirty=false
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}

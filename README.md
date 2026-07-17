@@ -51,9 +51,11 @@ The seam geometry, equation, constants, coordinate system, and stitch-count assu
 
 ## Safety boundary
 
-Pitch Atlas cites training-safety literature only as educational context and source boundary. It does not diagnose, prescribe, make injury-prevention guarantees, or tell a young pitcher what to throw at what age. Pain, workload, rehab, and age-specific decisions belong with a qualified coach, parent or guardian, and medical professional.
+Pitch Atlas does not publish medical, injury, pain, rehabilitation, recovery, workload, durability, health-outcome, or youth-training claims. A citation or disclaimer does not create an exception. The route-stable `/learn/arm-health` and `/learn/youth` pages are claim-free scope boundaries; the product itself stays with grips, qualitative pitch shape, provenance, history, and firsthand craft.
 
-The discussion layer keeps its safety floor: a standing note that posts are shared experience and technique, not personal medical advice; source labels; anonymous sign-in; and report-driven auto-hide. Native uploads ride a one-time terms acceptance (own-the-rights, no copyrighted footage, no minors), magic-byte type validation, per-kind size caps, and report-driven takedown that stops serving a hidden item the instant its row flips. The full runbook and the honest list of deferred limitations (no automated content scanning, no bot protection yet) live in [`docs/community-media-moderation.md`](docs/community-media-moderation.md).
+The discussion layer keeps its safety floor: a standing note that posts are shared experience and technique, not personal medical advice; source labels; anonymous sign-in; and report-driven auto-hide. Native uploads ride a one-time terms acceptance (own-the-rights, no copyrighted footage, no minors), magic-byte type validation, per-kind size caps, and report-driven takedown. Hiding a media row stops new URL signing immediately; a URL signed before the hide can remain valid until its one-hour expiry. The full runbook and the honest list of deferred limitations (no automated content scanning, no bot protection yet) live in [`docs/community-media-moderation.md`](docs/community-media-moderation.md).
+
+Structured Field Notes enter a private review state on submission. Only approved notes appear in the public ranked drawer; contributors see an explicit review receipt instead of a false claim that the note is already live.
 
 ## Stack
 
@@ -78,7 +80,7 @@ npm run preview    # serve the production build
 
 ## Honesty contract
 
-No fake community posts. No fake adoption counts. No fake verified-pro badges. No hardcoded freshness strings. No unlicensed agency photos of identifiable players, team/league logos, or broadcast footage (real grip photos from clean sources are welcome). No copied instructional prose. No unsourced grip claims. No runtime API dependency for pitch data. No fabricated geometry or physics for a pitch the atlas has not measured. Community content is real, contributor-supplied, source-labeled, and moderated — never seeded with fakes. Unsourced becomes `unverified` or `approximate`.
+No fake community posts. No fake adoption counts. No fake verified-pro badges. No hardcoded freshness strings. No unlicensed agency photos of identifiable players, team/league logos, or broadcast footage (real grip photos from clean sources are welcome). No copied instructional prose. No medical, injury, workload, durability, health-outcome, or youth-training claims. No unsourced grip claims. No runtime API dependency for pitch data. No fabricated geometry or physics for a pitch the atlas has not measured. Community content is real, contributor-supplied, source-labeled, and moderated, never seeded with fakes. Unsourced becomes `unverified` or `approximate`.
 
 ## License
 

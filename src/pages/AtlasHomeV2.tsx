@@ -4,25 +4,16 @@ import { useSceneTint } from '../hooks/useSceneTint'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, truncateForMeta } from '../lib/seo'
 import { HeroCase } from '../components/v2/HeroCase'
-import { MissionCase } from '../components/v2/MissionCase'
-import { ArchiveBand } from '../components/v2/ArchiveBand'
 import { RefractionBridge } from '../components/v2/RefractionBridge'
 import { ChromeWall } from '../components/v2/ChromeWall'
-import { TheRead } from '../components/v2/TheRead'
 import { WingsNav } from '../components/v2/WingsNav'
-import { ToolsLab } from '../components/v2/ToolsLab'
-import { FieldManual } from '../components/v2/FieldManual'
-import { ProvenanceStrip } from '../components/v2/ProvenanceStrip'
 import { CloseCta } from '../components/v2/CloseCta'
 
 /*
-  The Refractor Case — the home. A bolder staging of the atlas on matte Topps-Now
-  black: the cinematic specimen pull, the seam flattening into its 2D twin, the
-  filed set as a chrome wall that flips to sourced backs, the grip-and-shape read,
-  the other wings, the tools, the craft record, and the provenance model as a
-  feature. Promoted from /v2 to / once it carried the whole atlas; the old
-  editorial home was retired in the same change. Every visible reading is the real
-  PITCHES data wearing its real source.
+  The Refractor Case — the home. Five deliberate beats: specimen, seam, filed set,
+  wings, close. The deeper teaching, tools, provenance, and archive material keep
+  their own routes instead of making the front door repeat the whole product.
+  Every visible reading is real PITCHES data wearing its real source.
 */
 export function AtlasHomeV2() {
   const featured = PITCHES[0]
@@ -47,18 +38,9 @@ export function AtlasHomeV2() {
   return (
     <>
       <HeroCase featured={featured} />
-      <MissionCase />
-      <ArchiveBand />
       <RefractionBridge featured={featured} />
       <ChromeWall />
-      <TheRead featured={featured} />
-      {/* the landing opens into the rest of the atlas: the other wings, the
-          tools, then the pedagogy — so the page leads onward instead of ending
-          on the deep read. */}
       <WingsNav />
-      <ToolsLab />
-      <FieldManual />
-      <ProvenanceStrip />
       <CloseCta />
     </>
   )

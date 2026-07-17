@@ -44,23 +44,18 @@ export function RepertoirePage() {
         <Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'The Pitch Index' }]} />
       </div>
 
-      {/* the header's right hand carries the counted shelf on desktop; on a
-          phone it stacks below the lede as its own single column */}
-      <header className="grid items-end gap-6 pb-2 md:grid-cols-[minmax(0,1fr)_300px] md:gap-10">
+      <header className="pitch-index-header grid items-end gap-6 pb-4 md:grid-cols-[minmax(0,1fr)_300px] md:gap-10 md:pb-8">
         <div>
-          <p className="rfx-skick">The front door</p>
           <h1 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone" style={{ fontSize: 'clamp(40px,8vw,86px)' }}>
-            The Pitch <span className="rfx-holo">Index</span>
+            The Pitch Index
           </h1>
-          <p className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-            This is the atlas shelf: every accepted pitch by family, plus the honest edges, aliases,
-            illusions, colloquialisms, and banned doctored balls. A filed pitch opens its full
-            specimen. A basic file keeps the entry findable without inventing geometry the atlas has
-            not measured. The shelf holds {INDEX_SCOPE.shelfLabel}, plus {INDEX_SCOPE.lostNote} in
-            the lost-pitches wing, one click away.
+          <p className="pitch-index-intro mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
+            Every accepted pitch by family, plus the honest edges: aliases, illusions, and banned
+            doctored balls. The shelf holds {INDEX_SCOPE.shelfLabel}; a filed pitch opens its full
+            specimen, and a basic file stays honest until evidence earns more.
           </p>
         </div>
-        <IndexLedger />
+        <IndexLedger className="pitch-index-ledger hidden md:block" />
       </header>
 
       <PitchIndex />

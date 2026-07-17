@@ -41,15 +41,20 @@ describe('knowledge wings, provenance integrity', () => {
         expect(wing.sub.length).toBeGreaterThan(0)
         expect(wing.confidenceNote.length).toBeGreaterThan(0)
         expect(typeof wing.educational === 'boolean' || wing.educational === undefined).toBe(true)
+        expect(typeof wing.boundaryOnly === 'boolean' || wing.boundaryOnly === undefined).toBe(true)
       })
 
-      it('has at least three teaching sections, each with prose and a backing claim', () => {
+      it('has at least three sections; teaching pages have claims and boundaries do not', () => {
         expect(wing.sections.length).toBeGreaterThanOrEqual(3)
         for (const s of wing.sections) {
           expect(s.heading.length).toBeGreaterThan(0)
           expect(s.paragraphs.length).toBeGreaterThan(0)
           for (const p of s.paragraphs) expect(p.length).toBeGreaterThan(0)
-          expect(sectionClaims(s.claims, s.pullStat).length).toBeGreaterThan(0)
+          if (wing.boundaryOnly) {
+            expect(sectionClaims(s.claims, s.pullStat)).toHaveLength(0)
+          } else {
+            expect(sectionClaims(s.claims, s.pullStat).length).toBeGreaterThan(0)
+          }
         }
       })
 
@@ -95,6 +100,15 @@ describe('knowledge wings, provenance integrity', () => {
     for (const s of sources) {
       expect(s.url).toMatch(/^https?:\/\//)
       expect(s.retrievedAt).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    }
+  })
+
+  it('marks scope boundaries explicitly and keeps them claim-free', () => {
+    const boundarySlugs = WINGS.filter((wing) => wing.boundaryOnly).map((wing) => wing.slug)
+    expect(boundarySlugs).toEqual(['arm-health', 'youth'])
+
+    for (const wing of WINGS) {
+      expect(Boolean(wing.educational)).toBe(Boolean(wing.boundaryOnly))
     }
   })
 

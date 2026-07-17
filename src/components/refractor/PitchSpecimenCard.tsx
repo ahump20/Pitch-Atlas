@@ -5,9 +5,7 @@ import { ACCENT, FALLBACK_ACCENT } from './accents'
 import { RefractorBall } from './RefractorBall'
 import { GripFace } from './GripFace'
 import { GripClip } from './GripClip'
-import { familyCrumb } from './familyCrumb'
 import { gripEntryFor } from '../../data/grips'
-import { specimenGradeFor } from '../../data/specimen-grade'
 
 /*
   One filed pitch, struck as a holographic specimen card. The single source of "how a
@@ -51,27 +49,21 @@ export function PitchSpecimenCard({
   priority?: boolean
 }) {
   const { canonical, motion, display } = entry
-  const physics = canonical.physics
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
-  const grade = specimenGradeFor(entry)
-  const shapeClaim = physics.shape
-  const conf = {
-    label: CONFIDENCE_META[shapeClaim.confidence].label,
-    color: CONF_COLOR[shapeClaim.confidence],
-  }
 
   const grip = gripEntryFor(display.slug)
   const clip = grip?.clip
   const photo = grip && grip.photos.length > 0 ? grip.photos[0] : undefined
   const austinGrip = Boolean(clip || photo)
-  const cue = austinGrip && grip ? grip.shortCue : display.heroSub
-  /* the grip chip sits on the dark window glass, so its inks stay literal —
-     they never re-tone with the page field */
-  const gripSource = austinGrip
-    ? { label: "Austin's grip", color: '#7FC6FF' }
-    : { label: 'Reference grip', color: '#CDBA8E' }
-
+  const referenceGripClaim = canonical.gripDetails[0] ?? canonical.grip
+  const cue = austinGrip && grip ? grip.shortCue : referenceGripClaim.value
+  const cueConfidence = austinGrip && grip ? grip.claimTier : referenceGripClaim.confidence
+  const faceSource = clip
+    ? { label: 'Austin video', color: '#7FC6FF' }
+    : photo
+      ? { label: 'Austin photo', color: '#7FC6FF' }
+      : { label: 'Reference schematic', color: '#CDBA8E' }
   const face = clip ? (
     <GripClip clip={clip} priority={priority} />
   ) : photo ? (
@@ -96,12 +88,13 @@ export function PitchSpecimenCard({
       vnum={display.specimenNo}
       name={display.shortName}
       face={face}
-      shape={shapeClaim.value}
+      faceSource={faceSource}
       cue={cue}
-      confidence={{ label: conf.label, color: conf.color, approx: shapeClaim.approximate }}
-      crumb={familyCrumb(canonical.family)}
-      gripSource={gripSource}
-      grade={grade}
+      confidence={{
+        label: CONFIDENCE_META[cueConfidence].label,
+        color: CONF_COLOR[cueConfidence],
+        approx: austinGrip ? false : referenceGripClaim.approximate,
+      }}
       foil={foil}
     />
   )

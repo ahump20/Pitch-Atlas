@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/repertoire'
 import { gripEntryForRepertoire } from '../../data/grips'
-import { SPECIMEN_GRADES } from '../../data/specimen-grade'
 import { IndexLedger } from './IndexLedger'
 import { PitchIndex } from './PitchIndex'
 
@@ -55,11 +54,23 @@ describe('PitchIndex controls', () => {
     expect(screen.getByTestId('location-search')).toHaveTextContent('')
   })
 
+  it('preserves spaces while a visitor types a multi-word pitch name', async () => {
+    const user = userEvent.setup()
+    renderIndex()
+
+    const search = screen.getByRole('searchbox', { name: /search the pitch index/i })
+    await user.type(search, 'circle change')
+
+    expect(search).toHaveValue('circle change')
+    expect(screen.getAllByText('Circle Changeup').length).toBeGreaterThan(0)
+    expect(screen.getByTestId('location-search')).toHaveTextContent('q=circle+change')
+  })
+
   it('switches between row and binder views without losing filed routing labels', async () => {
     const user = userEvent.setup()
     renderIndex()
 
-    expect(screen.getAllByText('Open specimen').length).toBeGreaterThan(0)
+    expect(document.querySelector('a[href="/pitch/four-seam"]')).not.toBeNull()
 
     const binder = screen.getByRole('radio', { name: /binder view/i })
     await user.click(binder)
@@ -97,6 +108,7 @@ describe('PitchIndex controls', () => {
     const user = userEvent.setup()
     renderIndex()
 
+    await user.click(screen.getByRole('button', { name: /filter & sort/i }))
     await user.click(screen.getByRole('radio', { name: /sort a to z by name/i }))
     expect(screen.getByTestId('location-search')).toHaveTextContent('sort=az')
     await waitFor(() =>
@@ -125,17 +137,13 @@ describe('PitchIndex controls', () => {
     expect(screen.getByTestId('location-search')).not.toHaveTextContent('sort')
   })
 
-  it('decodes the specimen grade in a legend, worded from the grade source, beside field rarity', () => {
+  it('explains documentation depth and status inside the optional filter panel', async () => {
+    const user = userEvent.setup()
     renderIndex()
-    // both axes are present and kept distinct — documentation depth vs field rarity
-    // ("Documentation depth" is the legend; "Documentation" alone is the sort control)
-    expect(screen.getByText('Documentation depth')).toBeInTheDocument()
-    expect(screen.getByText('Field rarity')).toBeInTheDocument()
-    // every grade the source defines is decoded on the page; labels come straight
-    // from SPECIMEN_GRADES, so this fails if the legend ever hardcodes its own copy
-    for (const g of SPECIMEN_GRADES) {
-      expect(screen.getAllByText(g.label).length).toBeGreaterThan(0)
-    }
+    expect(screen.queryByRole('radio', { name: /sort by documentation depth/i })).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /filter & sort/i }))
+    expect(screen.getByText(/Documentation depth is how richly/)).toBeInTheDocument()
+    expect(screen.getByText(/Status is the atlas's filing label/)).toBeInTheDocument()
   })
 
   it('facets the index by status and carries it in the URL', async () => {
@@ -143,6 +151,7 @@ describe('PitchIndex controls', () => {
     const { container } = renderIndex()
     const allRows = container.querySelectorAll('a.rfx-entry').length
 
+    await user.click(screen.getByRole('button', { name: /filter & sort/i }))
     // 'Near-extinct' is a status with no colliding family-filter label, and only
     // some entries carry it — so the facet must genuinely narrow the list.
     await user.click(screen.getByRole('radio', { name: /^near-extinct$/i }))
@@ -186,7 +195,7 @@ describe('PitchIndex row marks', () => {
     expect(new Set(turns).size).toBeGreaterThan(1)
   })
 
-  it('lets the grip tell wrap whole instead of cutting mid-word', () => {
+  it('lets the sourced grip cue wrap whole instead of cutting mid-word', () => {
     renderIndex()
     const cue = screen.getByText('Fingertips cross the seam path')
     expect(cue.className).not.toMatch(/truncate/)
@@ -200,7 +209,7 @@ describe('IndexLedger', () => {
 
     const filed = REPERTOIRE.filter((e) => e.filedSlug).length
     const basic = REPERTOIRE.length - filed
-    expect(screen.getByText(`${filed} open a full specimen`)).toBeInTheDocument()
+    expect(screen.getByText(`${filed} full specimens`)).toBeInTheDocument()
     expect(screen.getByText(new RegExp(`${basic} basic files`))).toBeInTheDocument()
     expect(screen.getByText(`${REPERTOIRE.length} rows`)).toBeInTheDocument()
 

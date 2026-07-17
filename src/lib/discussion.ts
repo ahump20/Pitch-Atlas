@@ -5,11 +5,12 @@ import { DISCUSSION_LIMITS } from '../data/discussion'
 /*
   The discussion-forum data layer. Pure functions over Supabase; React lives in the
   hook. A post is a comment; a reply is a post with a parent (one level deep). Media
-  is uploaded to a private bucket and served through short-lived signed URLs, so a
-  hidden item stops being reachable when its row flips. Every write rides the
-  signed-in account (anonymous or claimed). The database re-enforces every rule
-  here (banned terms, rate limits, size/mime, the upload-terms gate); this layer is
-  the friendly front of those guards, never the guard itself.
+  is uploaded to a private bucket and served through short-lived signed URLs. A
+  hidden row stops new URL signing immediately; a URL signed before moderation can
+  remain valid for its one-hour TTL. Every write rides the signed-in account
+  (anonymous or claimed). The database re-enforces every rule here (banned terms,
+  rate limits, size/mime, the upload-terms gate); this layer is the friendly front
+  of those guards, never the guard itself.
 */
 
 const BUCKET = 'discussion-media'
@@ -211,12 +212,30 @@ async function scrubImageMetadata(file: File, mime: string): Promise<ScrubbedIma
   }
 }
 
+/** Release is best-effort and idempotent; expiry is the fallback if it fails. */
+async function releaseFailedMediaReservation(path: string): Promise<void> {
+  try {
+    await supabase.rpc('release_discussion_media_upload', { p_storage_path: path })
+  } catch {
+    // Expiry is the final backstop if the idempotent release request is interrupted.
+  }
+}
+
+/**
+ * Only a concrete 4xx service response proves a non-idempotent write was rejected.
+ * Network failures, empty error codes, and 5xx responses can arrive while the write
+ * is still committing, so they must retain the reservation and private object.
+ */
+function isDefiniteWriteRejection(status: number | undefined, code: string | undefined): boolean {
+  return typeof status === 'number' && status >= 400 && status < 500 && Boolean(code)
+}
+
 /**
  * Validate a file against the same rules the DB enforces, then upload to the
- * owner's folder and record the row. Order matters: the storage object lands
- * first, then the row points at it; if the row insert fails, the object is
- * removed so nothing is orphaned. Still images are re-encoded first to drop
- * EXIF/GPS metadata before any bytes leave the device.
+ * owner's folder and record the row. Order matters: reserve the new path, upload
+ * the Storage object, then finalize its row. The insert transaction consumes the
+ * reservation. Still images are re-encoded first to drop EXIF/GPS metadata before
+ * any bytes leave the device.
  */
 export async function uploadMedia(postId: string, topicKey: string, file: File): Promise<void> {
   const uid = await ensureSession()
@@ -252,12 +271,25 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
   }
 
   const path = `${uid}/${crypto.randomUUID()}.${extension}`
+  const { error: reserveError } = await supabase.rpc('reserve_discussion_media_upload', {
+    p_storage_path: path,
+  })
+  if (reserveError) throw new Error(friendlyError(reserveError))
+
   const { error: upErr } = await supabase.storage
     .from(BUCKET)
     .upload(path, payload, { contentType: mime, upsert: false })
-  if (upErr) throw new Error(friendlyError(upErr))
+  if (upErr) {
+    // Storage returns structured 4xx API rejections for definite failures. An
+    // unknown/network/5xx outcome may still have written the object, so retain its
+    // reservation and let a retry or expiry settle it.
+    if (isDefiniteWriteRejection(upErr.status, upErr.statusCode)) {
+      await releaseFailedMediaReservation(path)
+    }
+    throw new Error(friendlyError(upErr))
+  }
 
-  const { error } = await supabase.from('discussion_media').insert({
+  const { error, status: insertStatus } = await supabase.from('discussion_media').insert({
     post_id: postId,
     topic_key: topicKey,
     storage_path: path,
@@ -268,10 +300,30 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
     height: dims.height,
   })
   if (error) {
-    // Roll back the orphaned object so a failed row never leaves bytes behind, but
-    // the insert error is the cause the contributor needs — surface it even if the
-    // best-effort cleanup also fails (a stray object can be swept separately).
-    await supabase.storage.from(BUCKET).remove([path])
+    // A network/5xx/empty-code PostgREST result can describe a write that is still
+    // committing. Never release its reservation. A concrete 4xx rejection can be
+    // checked by path before the reservation is released for GC.
+    if (!isDefiniteWriteRejection(insertStatus, error.code)) {
+      throw new Error(friendlyError(error))
+    }
+
+    let lookup: { data: { id: string } | null; error: { message?: string } | null }
+    try {
+      lookup = await supabase
+        .from('discussion_media')
+        .select('id')
+        .eq('storage_path', path)
+        .maybeSingle()
+    } catch {
+      throw new Error(friendlyError(error))
+    }
+
+    if (lookup.error) throw new Error(friendlyError(error))
+    if (lookup.data) return
+
+    // Failed rowless bytes stay private. Client SELECT would also allow signed URL
+    // minting, so only release the claim and let the 24-hour GC remove the object.
+    await releaseFailedMediaReservation(path)
     throw new Error(friendlyError(error))
   }
 }

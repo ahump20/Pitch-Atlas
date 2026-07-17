@@ -108,7 +108,7 @@ export const splitter: PitchAtlasEntry = {
         { note: 'Paraphrased from Driveline. Described as a loss of spin, in words, not a measured figure.' },
       ),
       claim(
-        "Bruce Sutter's unusually large hands let him spread the split far enough to execute it; he learned it from instructor Fred Martin after his fastball faded post-surgery and never changed the grip after the first day.",
+        "Bruce Sutter's unusually large hands let him spread the split far enough to execute it; instructor Fred Martin taught it to him, and Sutter never changed the grip after the first day.",
         'sutter-hof',
         'reputable-analysis',
         { note: 'From the Hall of Fame tribute to Sutter; the hand-size detail is corroborated on his Wikipedia page.' },
@@ -182,7 +182,7 @@ export const splitter: PitchAtlasEntry = {
     {
       tier: 'verified-attributed',
       pitcher: 'Bruce Sutter',
-      context: 'The pioneer. Taught the split-finger by instructor Fred Martin after arm surgery, he rode it to the Hall of Fame as one of the first dominant closers.',
+      context: 'The pioneer. Instructor Fred Martin taught him the split-finger, and he rode it to the Hall of Fame as one of the first dominant closers.',
       verifiedPro: true,
       distinction: claim(
         'The first to ride this pitch to the Hall of Fame, and the proof of concept for the whole grip — a closer who turned one trap-door drop into a career after his fastball left him.',
@@ -231,9 +231,9 @@ export const splitter: PitchAtlasEntry = {
 
   community: {
     enabled: true,
-    safetyNote: 'When the community layer opens, every note will carry a source and confidence label, a content filter will block abusive language, and any note can be flagged. A note hides automatically once enough people report it.',
+    safetyNote: 'Field Notes are live for grip and technique only. No medical, injury, workload, or youth-training prescriptions. Every note carries a source and confidence label, and contributors can report problems.',
     provenanceNote:
-      'When they open, every community variant will carry the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.',
+      'Every community variant carries the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.',
     columns: ['Rank', 'Variant', 'Adoption', 'Source tier'],
   },
 

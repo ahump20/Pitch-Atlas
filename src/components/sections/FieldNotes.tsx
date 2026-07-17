@@ -12,13 +12,15 @@ import {
   type PlayerLevel,
   type ArmSlot,
   type VelocityBand,
-  type PitchIntent,
-  type ClaimedResultKind,
+  type WritablePitchIntent,
+  type WritableClaimedResultKind,
 } from '../../data/field-notes'
 import {
   INTENT_OPTIONS,
   RESULT_OPTIONS,
   SOURCE_TIER_OPTIONS,
+  fieldNoteIntentLabel,
+  fieldNoteResultLabel,
   type CommunityIdentity,
   type CommunityNote,
   type CommunitySourceTier,
@@ -206,8 +208,8 @@ function NoteCard({
       <p className="text-[15px] leading-relaxed text-bone">{note.tweak}</p>
 
       <p className="mt-3 text-sm leading-relaxed text-bone-2">
-        <span className="text-ink-3">Going for</span> {labelFor(INTENT_OPTIONS, note.intent)}
-        <span className="text-ink-3"> · result</span> {labelFor(RESULT_OPTIONS, note.claimedResultKind)}
+        <span className="text-ink-3">Going for</span> {fieldNoteIntentLabel(note.intent)}
+        <span className="text-ink-3"> · result</span> {fieldNoteResultLabel(note.claimedResultKind)}
         {note.sampleSize ? <span className="text-ink-3"> · {note.sampleSize} reps</span> : null}
       </p>
 
@@ -316,8 +318,8 @@ interface FormState {
   playerLevel: PlayerLevel
   armSlot: ArmSlot
   velocityBand: '' | VelocityBand
-  intent: PitchIntent
-  claimedResultKind: ClaimedResultKind
+  intent: WritablePitchIntent
+  claimedResultKind: WritableClaimedResultKind
   claimedResultNote: string
   sampleSize: string
   sourceTier: CommunitySourceTier
@@ -401,7 +403,7 @@ function SubmitForm({
   const [form, setForm] = useState<FormState>({ ...EMPTY_FORM, displayName: defaultName ?? '' })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  // the brief 'Filed ✓' confirmation; settles back on its own
+  // The brief review-queue confirmation; settles back on its own.
   const [done, setDone] = useState(false)
   const doneTimer = useRef<number | undefined>(undefined)
   useEffect(() => () => window.clearTimeout(doneTimer.current), [])
@@ -457,11 +459,12 @@ function SubmitForm({
         <h3 className="rfx-athletic rfx-skew text-xl text-bone">Log a field note</h3>
         <p className="mt-2 text-sm leading-relaxed text-bone-2">
           Throw the {pitchName.toLowerCase()} with a wrinkle of your own? Add it. Label where it comes from:
-          your own report, a coach, or a hunch. Sourced, not corrected.
+          your own report, a coach, or a hunch. Keep it to grip and technique only. No medical, injury,
+          workload, or youth-training prescriptions. Sourced, not corrected.
         </p>
         {done ? (
           <p role="status" className="quiet-status rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">
-            Filed ✓ · your note is live below.
+            Sent for review ✓ · it stays private until approved.
           </p>
         ) : null}
         <Button
@@ -529,8 +532,8 @@ function SubmitForm({
           </div>
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <SelectField label="Going for" value={form.intent} options={INTENT_OPTIONS} onChange={(v) => set('intent', v as PitchIntent)} />
-            <SelectField label="What happened" value={form.claimedResultKind} options={RESULT_OPTIONS} onChange={(v) => set('claimedResultKind', v as ClaimedResultKind)} />
+            <SelectField label="Going for" value={form.intent} options={INTENT_OPTIONS} onChange={(v) => set('intent', v as WritablePitchIntent)} />
+            <SelectField label="What happened" value={form.claimedResultKind} options={RESULT_OPTIONS} onChange={(v) => set('claimedResultKind', v as WritableClaimedResultKind)} />
           </div>
 
           <SelectField
@@ -697,7 +700,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                 <h3 className="rfx-athletic rfx-skew mt-3 text-xl text-bone md:text-2xl">Field notes open soon.</h3>
                 <p className="mt-3 text-sm leading-relaxed text-bone-2">
                   Soon you will file your own grip tweak, mark the ones you have tried, and flag anything
-                  off, anonymously or under a handle you keep. {community.safetyNote}
+                  off, anonymously or under a handle you keep. Field Notes stay limited to grip and technique,
+                  with no medical, injury, workload, or youth-training prescriptions.
                 </p>
               </div>
             )}
@@ -754,9 +758,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
               <p className="rfx-skick text-cyan">Keeping the bullpen honest</p>
               <Separator className="my-3" />
               <p className="mt-2 text-sm leading-relaxed text-bone-2">
-                Keep notes about pitching. No abuse, no personal attacks, no off-topic spam, nothing aimed at minors.
-                Field notes are community-submitted: they are not vetted before they post, and any note can be hidden
-                after review. See a problem with a note? Use <span className="text-bone">Report</span> on it; a note
+                {community.safetyNote} No abuse, no personal attacks, no off-topic spam, nothing aimed at minors.
+                New field notes stay private until review. See a problem with a public note? Use <span className="text-bone">Report</span> on it; a note
                 flagged by enough people is hidden automatically until it is checked.
               </p>
             </div>
@@ -765,9 +768,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
 
         {/* how the layer sources its notes — present tense once open, the preview copy until then */}
         <p className="mt-12 max-w-[78ch] border-t border-ink/15 pt-6 text-sm leading-relaxed text-bone-2">
-          {live
-            ? 'Every community variant carries the same source and confidence labels as the records above. Nothing appears here unsourced, and no count is shown until it is real.'
-            : community.provenanceNote}
+          {community.provenanceNote}
         </p>
       </div>
     </section>

@@ -43,4 +43,20 @@ describe('FieldNotes', () => {
     expect(screen.getByLabelText(/context \(required\)/i)).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /file field note/i })).toBeDisabled()
   })
+
+  it('tells the contributor that a new note stays private for review', async () => {
+    const submit = vi.fn().mockResolvedValue(undefined)
+    vi.mocked(useFieldNotes).mockReturnValue({ ...baseFieldNotes, submit })
+
+    render(<FieldNotes entry={{ ...PITCHES[0], community: { ...PITCHES[0].community, enabled: true } }} />)
+
+    fireEvent.click(screen.getByRole('button', { name: /write a note/i }))
+    fireEvent.change(screen.getByLabelText(/the tweak/i), {
+      target: { value: 'Thumb tucked deeper under the leather.' },
+    })
+    fireEvent.click(screen.getByRole('button', { name: /file field note/i }))
+
+    expect(await screen.findByText(/sent for review.*stays private until approved/i)).toBeInTheDocument()
+    expect(screen.queryByText(/your note is live below/i)).not.toBeInTheDocument()
+  })
 })

@@ -209,14 +209,14 @@ export default defineConfig({
     css: false,
     restoreMocks: true,
     // The dominant cost is jsdom environment creation (~31s across the suite), paid
-    // once per file — so it parallelizes cleanly across workers. The 3D/R3F code does
+    // once per file, so it parallelizes cleanly across a small worker pool. The 3D/R3F code does
     // NOT load in tests: BallStage falls back to the 2D seam schematic when jsdom
     // reports no WebGL, so the lazy BallScene (the sole importer of three/@react-three)
-    // is never imported. Run files in parallel with headroom on the 8-core machine;
-    // the generous timeout stays as a safety net for async-heavy route/form tests.
+    // is never imported. Two workers keep file parallelism without assuming the test
+    // run owns every core; the timeout stays as a safety net for async-heavy route/form tests.
     testTimeout: 60000,
     fileParallelism: true,
-    maxWorkers: 4,
+    maxWorkers: 2,
     exclude: [
       ...configDefaults.exclude,
       '.claude/**',

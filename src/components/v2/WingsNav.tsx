@@ -1,40 +1,5 @@
 import { Link } from 'react-router-dom'
-import { CRAFTSMEN } from '../../data/craftsmen'
-import { LOST_PITCHES } from '../../data/lost-pitches'
-import { DOCUMENTATION_META, type DocumentationTier } from '../../data/types'
-import { ChapterMark } from './ChapterMark'
 import { Descent } from '../motion/Descent'
-import { featuredCraftsmanMedia } from '../../data/media/craftsmen'
-import { LOST_PITCH_ARCHIVE_IMAGES } from '../../data/media/archive-images'
-
-/*
-  v2 · The other doors. The hero pulls one specimen and the wall files the set;
-  this is where the landing opens its other wings so it never dead-ends. Two
-  feature doors — the hall of craftsmen and the Negro Leagues lost-pitch archive
-  — on matte stock, then a compact rail to the softball set, the grip library,
-  and the why. Every count and name is read from the real data, never hand-typed.
-*/
-
-const HALL_NAMES = CRAFTSMEN.filter((c) => c.kind === 'craftsman').map((c) => c.name)
-const FEATURED_MEDIA = featuredCraftsmanMedia()
-
-const TIER_ORDER: DocumentationTier[] = ['documented', 'partial', 'legend']
-const ARCHIVE_TIERS = TIER_ORDER.map((tier) => ({
-  tier,
-  label: DOCUMENTATION_META[tier].label,
-  count: LOST_PITCHES.filter((p) => p.tier === tier).length,
-})).filter((t) => t.count > 0)
-
-const ARCHIVE_IMAGE_COUNTS = [
-  {
-    label: 'public-domain plates',
-    count: LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.rights === 'public-domain').length,
-  },
-  {
-    label: 'original study',
-    count: LOST_PITCH_ARCHIVE_IMAGES.filter((image) => image.rights === 'original').length,
-  },
-].filter((entry) => entry.count > 0)
 
 const RAIL = [
   { to: '/softball', label: 'Softball', note: 'The fastpitch & slowpitch wing' },
@@ -42,72 +7,49 @@ const RAIL = [
   { to: '/about', label: 'Why it exists', note: 'The case for a living archive' },
 ]
 
-/* the chapter's accent: published to the far stratum and worn by the chapter tick */
 const SCENE_TINT = '#6CACE4'
 
 export function WingsNav() {
   return (
-    <section data-scene-tint={SCENE_TINT} className="v2-stage v2-tooth relative border-t border-bone/10">
+    <section
+      data-scene-tint={SCENE_TINT}
+      className="v2-stage v2-tooth relative border-t border-bone/10"
+    >
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <ChapterMark n="05" name="The Wings" accent={SCENE_TINT} />
-        <h2 className="rfx-athletic v2-display mt-4 max-w-[18ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
+        <h2 className="rfx-athletic v2-display max-w-[18ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
           The other doors.
         </h2>
         <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
-          Four wings open off the same atlas: the arms that owned a pitch, the grips history dropped,
-          the softball set, and the grip library. Each is a different angle on the one craft.
+          More doors open off the same atlas, each a different angle on the one craft.
         </p>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
-          {/* door one — the hall */}
           <Link
             to="/craftsmen"
             className="v2-mount group block rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-7 transition-colors hover:border-bone/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
             style={{ '--i': 0 } as React.CSSProperties}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-cyan">The hall</p>
-            <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">The Craftsmen</p>
+            <p className="rfx-athletic text-[clamp(24px,3.4vw,34px)] text-bone">The Craftsmen</p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
-              The arms that owned a pitch, and the one pitch that is a legend, not a person. Every
-              quote in here is real and carries its source.
+              The arms that owned a pitch. Every quote in here is real and carries its source.
             </p>
-            <p className="mt-4 font-mono text-[9.5px] uppercase leading-relaxed tracking-[0.1em] text-bone-2/70">
-              {HALL_NAMES.join(', ')}
-            </p>
-            {FEATURED_MEDIA.length > 0 ? (
-              <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-cyan">
-                {FEATURED_MEDIA.length} source-owned clips filed to people
-              </p>
-            ) : null}
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Step into the hall <span aria-hidden="true">→</span>
             </span>
           </Link>
 
-          {/* door two — the archive */}
           <Link
             to="/lost-pitches"
             className="v2-mount group block rounded-[3px] border border-bone/12 bg-[#0d0c0b] p-7 transition-colors hover:border-bone/30 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
             style={{ '--i': 1 } as React.CSSProperties}
           >
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-bone-2/80">The archive</p>
-            <p className="rfx-athletic mt-3 text-[clamp(24px,3.4vw,34px)] text-bone">
+            <p className="rfx-athletic text-[clamp(24px,3.4vw,34px)] text-bone">
               Lost Pitches of the Negro Leagues
             </p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
-              The statistics are being recovered; the technique mostly never will be. Every entry wears
-              the tier its record can actually support. Nothing smoothed into legend, or out of it.
-            </p>
-            <p className="mt-4 flex flex-wrap gap-x-4 gap-y-1 font-mono text-[9.5px] uppercase tracking-[0.1em] text-bone-2/80">
-              {ARCHIVE_TIERS.map((t) => (
-                <span key={t.tier}>
-                  {t.count} {t.label.toLowerCase()}
-                </span>
-              ))}
-            </p>
-            <p className="mt-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-bone-2/80">
-              {ARCHIVE_IMAGE_COUNTS.map((entry) => `${entry.count} ${entry.label}`).join(' · ')}
+              The statistics are being recovered; the technique mostly never will be. Every entry
+              wears the tier its record can actually support.
             </p>
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Enter the archive <span aria-hidden="true">→</span>
@@ -115,18 +57,17 @@ export function WingsNav() {
           </Link>
         </div>
 
-        {/* the compact rail — the remaining wings, one line each */}
         <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          {RAIL.map((r, i) => (
+          {RAIL.map((item, index) => (
             <Link
-              key={r.to}
-              to={r.to}
+              key={item.to}
+              to={item.to}
               className="v2-mount group flex flex-col rounded-[3px] border border-bone/10 bg-[#0b0a09] p-5 transition-colors hover:border-bone/25 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-bone"
-              style={{ '--i': i + 2 } as React.CSSProperties}
+              style={{ '--i': index + 2 } as React.CSSProperties}
             >
-              <span className="rfx-athletic text-[clamp(18px,2.4vw,22px)] text-bone">{r.label}</span>
-              <span className="mt-1 text-[13px] leading-snug text-bone-2">{r.note}</span>
-              <span className="mt-3 font-mono text-[9.5px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-cyan">
+              <span className="rfx-athletic text-[clamp(18px,2.4vw,22px)] text-bone">{item.label}</span>
+              <span className="mt-1 text-[13px] leading-snug text-bone-2">{item.note}</span>
+              <span className="mt-3 font-mono text-[9.5px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
                 Open <span aria-hidden="true">→</span>
               </span>
             </Link>

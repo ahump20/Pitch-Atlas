@@ -77,7 +77,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "coach-observed",
     ),
     whyLost: claim(
-      "Smith spent his Kansas City Monarchs years relieving Satchel Paige, who would throw a few crowd-pleasing innings before handing the real workload to Smith; the headlines followed Satchel, leaving Smith remembered as the 'forgotten star' of the Negro Leagues.",
+      "Smith spent his Kansas City Monarchs years relieving Satchel Paige, who would throw a few crowd-pleasing innings before Smith handled the rest of the game; the headlines followed Satchel, leaving Smith remembered as the 'forgotten star' of the Negro Leagues.",
       "bbhof-hilton-smith",
       "reputable-analysis",
     ),
@@ -312,9 +312,9 @@ export const LOST_PITCHES: LostPitch[] = [
   },
   {
     slug: "doctored-ball-divergence-and-recovery",
-    name: "The Doctored-Ball Divergence and the Recovery",
+    name: "The Doctored-Ball Divergence and the Reconstruction",
     kind: "doctored",
-    era: "1920 ban through 2024 recovery",
+    era: "1920 ban through 2024 reconstruction",
     tier: "documented",
     specimenNo: "N-08",
     tagline: "Two rulebooks, one career-killer, and a hundred-year correction",
@@ -325,7 +325,7 @@ export const LOST_PITCHES: LostPitch[] = [
       "reputable-analysis",
     ),
     whyLost: claim(
-      "These careers were lost twice — first because the pitches that defined them were illegal in the integrated game, and second because the statistical record was nearly erased. The recovery came late: in December 2020 MLB granted major-league status to seven Negro Leagues (1920-1948), and in May 2024 it folded roughly 2,300 players' statistics into the official record. The reconstruction was possible only because the Seamheads Negro Leagues Database had rebuilt the numbers from surviving box scores.",
+      "These careers were lost twice — first because the pitches that defined them were illegal in the integrated game, and second because the statistical record was nearly erased. The reconstruction came late: in December 2020 MLB granted major-league status to seven Negro Leagues (1920-1948), and in May 2024 it folded roughly 2,300 players' statistics into the official record. That work was possible only because the Seamheads Negro Leagues Database had rebuilt the numbers from surviving box scores.",
       "cbs-negro-leagues-2024",
       "reputable-analysis",
     ),
@@ -486,9 +486,9 @@ export const LOST_PITCHES: LostPitch[] = [
     tier: "partial",
     specimenNo: "N-12",
     tagline: "Outsmarted you at the plate",
-    intro: "Bell was the kind of pitcher contemporaries compared to a polished big-leaguer: durable, in command, mixing his pitches and thinking ahead of the hitter. He carried pennant-winning Kansas City Monarchs staffs through the mid-1920s. What we have is the texture of his craft — control and guile — not the grips that produced it.",
+    intro: "Bell was the kind of pitcher contemporaries compared to a polished big-leaguer: poised, in command, mixing his pitches and thinking ahead of the hitter. He led pennant-winning Kansas City Monarchs staffs through the mid-1920s. What we have is the texture of his craft — control and guile — not the grips that produced it.",
     what: claim(
-      "A durable, intelligent workhorse with excellent control who, in a contemporary's words, would mix his pitches and out-think hitters at the plate.",
+      "An intelligent starter with excellent control who, in a contemporary's words, would mix his pitches and out-think hitters at the plate.",
       "nl-bell-sabr",
       "reputable-analysis",
     ),
@@ -619,7 +619,7 @@ export const LOST_PITCHES: LostPitch[] = [
     ),
     record: [
       {
-        label: "Claimed pitch count",
+        label: "Claimed repertoire size",
         claim: secondhand(
           "The marketed boast of nineteen different pitches, carried in trivia and roundup retellings and attributed to Paige's own salesmanship rather than to any pitch-tracking record.",
           "trivia-mafia-paige",
