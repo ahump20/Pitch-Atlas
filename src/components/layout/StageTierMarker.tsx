@@ -22,12 +22,12 @@ export function StageTierMarker({
   as?: 'h2' | 'h3' | 'span'
 }) {
   return (
-    <div id={id} className="mb-10 flex items-center gap-4 scroll-mt-24">
-      <span className="font-mono text-sm font-medium tabular-nums text-ink" aria-hidden="true">
+    <div id={id} data-stage-tier-marker className="mb-10 flex min-w-0 items-start gap-4 scroll-mt-24">
+      <span className="pt-px font-mono text-sm font-medium tabular-nums text-ink" aria-hidden="true">
         {index}
       </span>
-      <Tag className="mono-label whitespace-nowrap">{label}</Tag>
-      <span className="hairline" aria-hidden="true" />
+      <Tag className="mono-label min-w-0 leading-snug whitespace-normal">{label}</Tag>
+      <span className="hairline mt-[0.4rem] min-w-0 flex-1" aria-hidden="true" />
     </div>
   )
 }
