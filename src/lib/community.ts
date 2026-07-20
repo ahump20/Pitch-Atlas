@@ -362,8 +362,8 @@ async function readViewerEngagement(noteIds: string[]): Promise<ViewerEngagement
 /**
  * Sign in anonymously if there is no session yet, and return the user id.
  * Write-intent only — posting, reacting, reporting, accepting terms, claiming.
- * Reads use getSessionUserId() instead: the anon role already holds the SELECT
- * grants, so a visitor who only ever reads never mints an account.
+ * Reads use getSessionUserId() instead: the public read function already exposes
+ * the approved feed, so a visitor who only ever reads never mints an account.
  */
 export async function ensureSession(): Promise<string> {
   const existing = await getSessionUserForWrite()
@@ -424,36 +424,35 @@ export async function setDisplayName(name: string): Promise<void> {
  * Sorts on `base_rank` — the live ranking, computed by a DB trigger via
  * `note_base_rank()`. The richer model in lib/field-notes-rank.ts is the future
  * convergence target (needs view instrumentation); see its header for the plan.
- * RLS already drops hidden / unapproved notes, so what comes back is the public set.
+ * The public read function drops hidden / unapproved notes before returning rows.
  */
 export async function listNotes(pitchSlug: string): Promise<CommunityNote[]> {
-  // Reading is anonymous: no session is created here. The anon role holds the
-  // field_notes SELECT grant, so the public set loads for a signed-out visitor.
+  // Reading is anonymous: no session is created here. The public RPC returns a
+  // deliberately narrow, moderated projection for a signed-out visitor.
   const viewerId = await getSessionUserId()
 
-  const { data: rows, error } = await supabase
-    .from('field_notes')
-    .select(NOTE_COLUMNS)
-    .eq('pitch_slug', pitchSlug)
-    // Authors may read their own pending row under RLS so insert().select() can
-    // return it, but the ranked drawer is a public surface and shows approved rows.
-    .eq('visibility', 'approved')
-    .order('base_rank', { ascending: false })
-    .order('created_at', { ascending: false })
+  // The public function owns the moderation filter. Keeping visibility and
+  // is_hidden out of client SELECT grants means a browser cannot inspect review
+  // state, while signed-in authors still retain the base-table read needed by
+  // insert().select() for their own pending submission.
+  const { data: rows, error } = await supabase.rpc('list_public_field_notes', {
+    p_pitch_slug: pitchSlug,
+  })
   if (error) throw new Error(friendlyReadError(error))
+  const publicRows = (rows ?? []) as FieldNoteRow[]
 
   let tried = new Set<string>()
   let helpful = new Set<string>()
-  if (viewerId && (rows ?? []).length > 0) {
+  if (viewerId && publicRows.length > 0) {
     // RLS and column grants expose only this viewer's note ids. Scope the read to
     // the notes on this page; fall back to the legacy RPC if a deployment still
     // has older engagement grants.
-    const engagementRows = await readViewerEngagement((rows ?? []).map((row) => (row as FieldNoteRow).id))
+    const engagementRows = await readViewerEngagement(publicRows.map((row) => row.id))
     tried = new Set(engagementRows.filter((r) => r.tried).map((r) => r.note_id))
     helpful = new Set(engagementRows.filter((r) => r.helpful).map((r) => r.note_id))
   }
 
-  return (rows ?? []).map((row) => mapRow(row as FieldNoteRow, viewerId, tried, helpful))
+  return publicRows.map((row) => mapRow(row, viewerId, tried, helpful))
 }
 
 /** Submit a field note for review. Saves the display name and returns the private row. */

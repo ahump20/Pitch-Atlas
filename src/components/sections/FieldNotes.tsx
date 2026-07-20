@@ -739,7 +739,13 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
                   <EmptyMedia variant="icon" className="bg-primary/12 text-primary">
                     <TrophyIcon aria-hidden="true" />
                   </EmptyMedia>
-                  <EmptyTitle className="rfx-athletic rfx-skew text-2xl text-bone-2">No field notes filed yet</EmptyTitle>
+                  <EmptyTitle
+                    role="heading"
+                    aria-level={4}
+                    className="rfx-athletic rfx-skew text-2xl text-bone-2"
+                  >
+                    No field notes filed yet
+                  </EmptyTitle>
                   <EmptyDescription>
                     No field notes filed yet for this pitch. The first one starts the drawer. Add how you throw it above.
                   </EmptyDescription>

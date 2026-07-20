@@ -185,7 +185,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           className="rfx-athletic rfx-skew rfx-stroke mt-2 text-bone leading-[0.95] [text-wrap:balance]"
           style={{ fontSize: 'clamp(40px,7vw,82px)' }}
         >
-          {canonical.name}
+          <span className="rfx-holo">{canonical.name}</span>
         </h1>
         <p className="rfx-athletic rfx-skew mt-2.5 text-[clamp(15px,2vw,19px)] leading-[1.18] [text-wrap:balance]" style={{ color: accentColor }}>
           {guide?.tagline ?? display.heroSub}

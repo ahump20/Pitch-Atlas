@@ -5,9 +5,10 @@ import { useId } from 'react'
   holding a cream baseball whose seam reads as atlas meridians — the seam is the
   map. Saddle-leather edge, warm-black inner bezel, the ball with two longitude
   ellipses and the real red horseshoe seam + stitches. Static (no animation) so
-  it stays crisp and reduced-motion-safe; the holographic life lives in the
-  cards, not the logo. The wordmark prints in currentColor, so it reads ink on
-  the cream masthead and bone on the leather footer.
+  it stays crisp and reduced-motion-safe. The ATLAS word carries the set's
+  rainbow foil, while PITCH stays bone and the diamond stays leather. That split
+  is the brand lockup shown in the shipping reference and must not be flattened
+  back to solid gold or steel.
 
   The diamond + ball carry no text, so the SVG is aria-hidden and the wordmark
   text carries the accessible name. `useId` gives each instance unique gradient
@@ -77,8 +78,8 @@ export function BrandMark({
         <rect x="19" y="19" width="62" height="62" rx="13" transform="rotate(45 50 50)" fill="#16120D" />
         <circle cx="50" cy="50" r="22" fill={`url(#${ball})`} />
         {/* meridians: the seam reads as a map */}
-        <ellipse cx="50" cy="50" rx="9" ry="22" fill="none" stroke="#8F8672" strokeWidth="1" opacity="0.55" />
-        <ellipse cx="50" cy="50" rx="18" ry="22" fill="none" stroke="#8F8672" strokeWidth="1" opacity="0.38" />
+        <ellipse cx="50" cy="50" rx="9" ry="22" fill="none" stroke="#37D6FF" strokeWidth="1" opacity="0.45" />
+        <ellipse cx="50" cy="50" rx="18" ry="22" fill="none" stroke="#37D6FF" strokeWidth="1" opacity="0.3" />
         {/* the real red horseshoe seam */}
         <path d="M34 36 Q44 50 34 64" fill="none" stroke="#FF2433" strokeWidth="2.4" strokeLinecap="round" />
         <path d="M66 36 Q56 50 66 64" fill="none" stroke="#FF2433" strokeWidth="2.4" strokeLinecap="round" />
@@ -87,8 +88,8 @@ export function BrandMark({
         </g>
       </svg>
       {wordmark ? (
-        <span className="rfx-athletic rfx-skew leading-none" style={{ fontSize: WORDMARK_SIZE[size] }}>
-          Pitch <span className="text-[#D4AA5A]">Atlas</span>
+        <span className="rfx-athletic rfx-skew leading-none text-bone" style={{ fontSize: WORDMARK_SIZE[size] }}>
+          Pitch <span className="rfx-holo" data-brand-material="rainbow-foil">Atlas</span>
         </span>
       ) : null}
     </span>

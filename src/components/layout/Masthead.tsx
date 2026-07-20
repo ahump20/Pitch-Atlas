@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
 
@@ -44,6 +44,20 @@ const TOOLS: { label: string; to: string; note: string }[] = [
 // everything reachable through the "More" trigger — drives active-state + mobile
 const MORE_ALL = [...MORE_CONTENT, ...TOOLS]
 
+/* Deep files still belong to their front door. This keeps the shell's active
+   state honest on a specimen, craftsman file, lost-pitch file, or reading wing. */
+const OWNED_ROUTES: Record<string, readonly string[]> = {
+  '/repertoire': ['/pitch/'],
+  '/craftsmen': ['/craftsman/'],
+  '/lost-pitches': ['/lost-pitch/'],
+}
+
+function routeIsActive(pathname: string, to: string): boolean {
+  if (to.includes('#')) return false
+  if (pathname === to || pathname.startsWith(`${to}/`)) return true
+  return OWNED_ROUTES[to]?.some((prefix) => pathname.startsWith(prefix)) ?? false
+}
+
 export function Masthead() {
   const { pathname } = useLocation()
   const [menu, setMenu] = useState({ open: false, pathname })
@@ -57,7 +71,8 @@ export function Masthead() {
   const [moreMenu, setMoreMenu] = useState({ open: false, pathname })
   const moreOpen = moreMenu.open && moreMenu.pathname === pathname
   const moreRef = useRef<HTMLDivElement>(null)
-  const moreActive = MORE_ALL.some((t) => t.to === pathname)
+  const moreToggleRef = useRef<HTMLButtonElement>(null)
+  const moreActive = MORE_ALL.some((t) => routeIsActive(pathname, t.to))
 
   useEffect(() => {
     if (!moreOpen) return
@@ -65,7 +80,10 @@ export function Masthead() {
       if (!moreRef.current?.contains(event.target as Node)) setMoreMenu({ open: false, pathname })
     }
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMoreMenu({ open: false, pathname })
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      setMoreMenu({ open: false, pathname })
+      moreToggleRef.current?.focus()
     }
     document.addEventListener('mousedown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
@@ -106,21 +124,21 @@ export function Masthead() {
 
         <nav aria-label="Primary" className="hidden items-center gap-7 md:flex lg:gap-9">
           {NAV.map((n) => (
-            <NavLink
+            <Link
               key={n.to}
               to={n.to}
-              className={({ isActive }) =>
-                `link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
-                  isActive ? 'text-cyan' : 'text-ink-2'
-                }`
-              }
+              aria-current={routeIsActive(pathname, n.to) ? (pathname === n.to ? 'page' : 'location') : undefined}
+              className={`link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                routeIsActive(pathname, n.to) ? 'is-current text-cyan' : 'text-ink-2'
+              }`}
             >
               {n.label}
-            </NavLink>
+            </Link>
           ))}
 
           <div ref={moreRef} className="relative">
             <button
+              ref={moreToggleRef}
               type="button"
               aria-expanded={moreOpen}
               aria-controls="more-menu"
@@ -131,7 +149,7 @@ export function Masthead() {
                 }))
               }
               className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
-                moreActive ? 'text-cyan' : 'text-ink-2'
+                moreActive ? 'is-current text-cyan' : 'text-ink-2'
               }`}
             >
               More
@@ -154,18 +172,17 @@ export function Masthead() {
                 <ul className="flex flex-col">
                   {MORE_CONTENT.map((t) => (
                     <li key={`${t.to}-${t.label}`}>
-                      <NavLink
+                      <Link
                         to={t.to}
+                        aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                         onClick={() => setMoreMenu({ open: false, pathname })}
-                        className={({ isActive }) =>
-                          `block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
-                            isActive ? 'text-cyan' : 'text-ink-2'
-                          }`
-                        }
+                        className={`block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
+                          routeIsActive(pathname, t.to) ? 'text-cyan' : 'text-ink-2'
+                        }`}
                       >
                         <span className="block font-mono text-xs uppercase tracking-[0.1em]">{t.label}</span>
                         <span className="mt-0.5 block text-[0.78rem] leading-snug text-ink-3">{t.note}</span>
-                      </NavLink>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -173,18 +190,17 @@ export function Masthead() {
                 <ul className="flex flex-col">
                   {TOOLS.map((t) => (
                     <li key={`${t.to}-${t.label}`}>
-                      <NavLink
+                      <Link
                         to={t.to}
+                        aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                         onClick={() => setMoreMenu({ open: false, pathname })}
-                        className={({ isActive }) =>
-                          `block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
-                            isActive ? 'text-cyan' : 'text-ink-2'
-                          }`
-                        }
+                        className={`block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
+                          routeIsActive(pathname, t.to) ? 'text-cyan' : 'text-ink-2'
+                        }`}
                       >
                         <span className="block font-mono text-xs uppercase tracking-[0.1em]">{t.label}</span>
                         <span className="mt-0.5 block text-[0.78rem] leading-snug text-ink-3">{t.note}</span>
-                      </NavLink>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -225,17 +241,16 @@ export function Masthead() {
           <ul className="mx-auto flex max-w-[1320px] flex-col px-5 py-2">
             {NAV.map((n) => (
               <li key={n.to}>
-                <NavLink
+                <Link
                   to={n.to}
+                  aria-current={routeIsActive(pathname, n.to) ? (pathname === n.to ? 'page' : 'location') : undefined}
                   onClick={() => setMenu({ open: false, pathname })}
-                  className={({ isActive }) =>
-                    `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
-                      isActive ? 'text-cyan' : 'text-ink-2'
-                    }`
-                  }
+                  className={`link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                    routeIsActive(pathname, n.to) ? 'is-current text-cyan' : 'text-ink-2'
+                  }`}
                 >
                   {n.label}
-                </NavLink>
+                </Link>
               </li>
             ))}
 
@@ -244,17 +259,16 @@ export function Masthead() {
               <ul className="mt-1 flex flex-col">
                 {MORE_CONTENT.map((t) => (
                   <li key={`${t.to}-${t.label}`}>
-                    <NavLink
+                    <Link
                       to={t.to}
+                      aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                       onClick={() => setMenu({ open: false, pathname })}
-                      className={({ isActive }) =>
-                        `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
-                          isActive ? 'text-cyan' : 'text-ink-2'
-                        }`
-                      }
+                      className={`link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                        routeIsActive(pathname, t.to) ? 'is-current text-cyan' : 'text-ink-2'
+                      }`}
                     >
                       {t.label}
-                    </NavLink>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -265,17 +279,16 @@ export function Masthead() {
               <ul className="mt-1 flex flex-col">
                 {TOOLS.map((t) => (
                   <li key={`${t.to}-${t.label}`}>
-                    <NavLink
+                    <Link
                       to={t.to}
+                      aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                       onClick={() => setMenu({ open: false, pathname })}
-                      className={({ isActive }) =>
-                        `link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
-                          isActive ? 'text-cyan' : 'text-ink-2'
-                        }`
-                      }
+                      className={`link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+                        routeIsActive(pathname, t.to) ? 'is-current text-cyan' : 'text-ink-2'
+                      }`}
                     >
                       {t.label}
-                    </NavLink>
+                    </Link>
                   </li>
                 ))}
               </ul>

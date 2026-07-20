@@ -211,7 +211,7 @@ export function ChromeWall() {
       <div className="relative z-[1] mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="rfx-athletic v2-display text-[clamp(30px,5vw,52px)] leading-[0.94]">
-            The filed set.
+            The <span className="rfx-holo">filed set.</span>
           </h2>
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2">
             {featured.length} shown · {PITCHES.length} filed. Flip a card for its sources.

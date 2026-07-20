@@ -27,7 +27,7 @@ import 'react-tweet/theme.css'
 
 import './index.css'
 import { routes } from './routes'
-import { ReloadPrompt } from './components/pwa/ReloadPrompt'
+import { ServiceWorkerUpdateController } from './components/pwa/ServiceWorkerUpdateController'
 
 /*
   The client entry. The archive is a multi-page site now: a data router holds the
@@ -50,7 +50,7 @@ function mount() {
     <StrictMode>
       <UnheadProvider head={head}>
         <RouterProvider router={router} />
-        <ReloadPrompt router={router} />
+        <ServiceWorkerUpdateController router={router} />
       </UnheadProvider>
     </StrictMode>,
   )

@@ -103,9 +103,9 @@ export default defineConfig({
     postBuildArtifacts(),
     // Offline support for a LIVE, prerendered site. The live build always wins
     // online (NetworkFirst for navigation), only the immutable hashed bundles are
-    // precached, and a new version installs only when the pitcher taps Reload
-    // (registerType 'prompt'). That is what keeps a deploy from stranding an
-    // installed visitor on a stale build. manifest:false keeps the hand-written
+    // precached, and a waiting version activates at the visitor's next route
+    // change (registerType 'prompt'). That keeps an installed visitor current
+    // without interrupting the page in front of them. manifest:false keeps the hand-written
     // public/site.webmanifest; injectRegister:null because main.tsx registers via
     // the React hook (client-only, never touched by the build-time prerender).
     VitePWA({

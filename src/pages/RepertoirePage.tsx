@@ -47,7 +47,7 @@ export function RepertoirePage() {
       <header className="pitch-index-header grid items-end gap-6 pb-4 md:grid-cols-[minmax(0,1fr)_300px] md:gap-10 md:pb-8">
         <div>
           <h1 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone" style={{ fontSize: 'clamp(40px,8vw,86px)' }}>
-            The Pitch Index
+            The Pitch <span className="rfx-holo">Index</span>
           </h1>
           <p className="pitch-index-intro mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
             Every accepted pitch by family, plus the honest edges: aliases, illusions, and banned
