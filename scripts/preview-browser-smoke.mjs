@@ -480,7 +480,10 @@ async function checkFourSeam(page) {
     notesResponse?.status() === 200,
     `Four-seam public Field Notes feed returned ${notesResponse?.status() ?? 'no response'}`,
   )
-  record(!includesText(body, /couldn't load the field notes/i), 'Four-seam Field Notes rendered an error state')
+  record(
+    !includesText(body, /couldn't load the field notes|could not load community notes just now/i),
+    'Four-seam Field Notes rendered an error state',
+  )
 
   const activePitchIndex = await page
     .waitForFunction(() =>
