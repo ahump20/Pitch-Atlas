@@ -300,6 +300,25 @@ async function checkHomeFirstViewport(page, viewport) {
   })
 
   record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
+  const brandState = await page.evaluate(() => {
+    const foil = document.querySelector('[data-brand-material="rainbow-foil"]')
+    const text = document.body?.innerText ?? ''
+    return {
+      hasBrandFoil: Boolean(foil),
+      foilBackground: foil ? getComputedStyle(foil).backgroundImage : 'none',
+      hasUpdatePrompt: text.includes('A new version of Pitch Atlas is ready.'),
+      hasReloadButton: [...document.querySelectorAll('button')].some(
+        (button) => button.textContent?.trim().toLowerCase() === 'reload',
+      ),
+    }
+  })
+  record(brandState.hasBrandFoil, `${label} is missing the rainbow-foil wordmark`)
+  record(
+    brandState.foilBackground.includes('linear-gradient'),
+    `${label} rainbow-foil wordmark has no gradient material`,
+  )
+  record(!brandState.hasUpdatePrompt, `${label} still renders the update prompt`)
+  record(!brandState.hasReloadButton, `${label} still renders the forced Reload action`)
   await assertStartsInInitialViewport(page, '#case h1', `${label} heading`)
   await assertFullyInInitialViewport(
     page,
@@ -309,12 +328,40 @@ async function checkHomeFirstViewport(page, viewport) {
   await assertNoHorizontalOverflow(page, label)
 }
 
+async function checkReducedMotionBrand(page) {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
+  await page.locator('header [data-brand-material="rainbow-foil"]').waitFor({ state: 'visible' })
+  await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
+  await page
+    .waitForFunction(() => {
+      const element = document.querySelector('header [data-brand-material="rainbow-foil"]')
+      if (!element?.isConnected) return false
+      const style = getComputedStyle(element)
+      return style.animationName === 'none' && style.backgroundImage.includes('linear-gradient')
+    }, undefined, { timeout: 15_000 })
+    .catch(() => undefined)
+
+  const state = await page.evaluate(() => {
+    const element = document.querySelector('header [data-brand-material="rainbow-foil"]')
+    if (!element) return { animationName: 'missing', backgroundImage: 'none' }
+    return {
+      animationName: getComputedStyle(element).animationName,
+      backgroundImage: getComputedStyle(element).backgroundImage,
+    }
+  })
+  record(state.animationName === 'none', `Reduced-motion wordmark still animates via ${state.animationName}`)
+  record(state.backgroundImage.includes('linear-gradient'), 'Reduced-motion wordmark lost its static foil material')
+}
+
 async function checkHomeCardBacks(page, viewport) {
   await page.setViewportSize(viewport)
   const label = `Home card backs ${viewport.width}x${viewport.height}`
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
     await page.locator('#set .v2-mount').first().waitFor({ state: 'visible', timeout: 15_000 })
+    await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
   })
 
   record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
@@ -323,12 +370,27 @@ async function checkHomeCardBacks(page, viewport) {
   record(count > 0, `${label} found no sourced card backs`)
 
   for (let index = 0; index < count; index += 1) {
-    await flipButtons.nth(index).click()
-    await page
-      .locator('#set .v2-mount')
-      .nth(index)
-      .locator('.v2-flip.is-flipped')
-      .waitFor({ state: 'attached', timeout: 5_000 })
+    // The prerendered wall can be replaced once while the client root attaches.
+    // Resolve the button again on each attempt so a click cannot land on the
+    // outgoing static node and then lose its state during hydration.
+    let flipped = false
+    for (let attempt = 0; attempt < 6; attempt += 1) {
+      try {
+        await flipButtons.nth(index).click({ timeout: 4_000 })
+      } catch (error) {
+        if (error?.name !== 'TimeoutError' && !String(error).includes('not attached')) throw error
+      }
+      flipped = await page
+        .locator('#set .v2-mount')
+        .nth(index)
+        .locator('.v2-flip.is-flipped')
+        .waitFor({ state: 'attached', timeout: 1_000 })
+        .then(() => true)
+        .catch(() => false)
+      if (flipped) break
+      await page.waitForTimeout(500)
+    }
+    record(flipped, `${label} card ${index + 1} did not flip to its sourced back`)
   }
 
   const backs = await page.locator('#set .v2-mount').evaluateAll((mounts) =>
@@ -375,17 +437,64 @@ async function checkHomeCardBacks(page, viewport) {
 }
 
 async function checkFourSeam(page) {
+  // Exercise the promised no-WebGL path and keep the deep-route data check from
+  // competing with software-rendered Three.js in headless Chromium.
+  await page.addInitScript(() => {
+    const getContext = HTMLCanvasElement.prototype.getContext
+    HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
+      if (String(type).toLowerCase().startsWith('webgl')) return null
+      return getContext.call(this, type, ...args)
+    }
+  })
   await page.setViewportSize({ width: 1280, height: 900 })
+  const publicNotesResponse = page
+    .waitForResponse(
+      (response) => response.url().includes('/rest/v1/rpc/list_public_field_notes'),
+      { timeout: 75_000 },
+    )
+    .catch(() => null)
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/pitch/four-seam/'), { waitUntil: 'domcontentloaded' })
     await page.locator('h1').waitFor({ state: 'attached' })
+    await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
+    await page.evaluate(() => document.querySelector('#field-notes')?.scrollIntoView())
+    await page
+      .waitForFunction(() => !document.querySelector('#field-notes [aria-busy="true"]'), undefined, { timeout: 20_000 })
+      .catch(() => undefined)
   })
+  const notesResponse = await publicNotesResponse
 
   assert.equal(await page.title(), 'Four-seam fastball: grip, release, and movement | Pitch Atlas')
   const body = await pageText(page)
+  const unexpectedMessages = messages.filter(
+    (message) => !message.includes('THREE.WebGLRenderer: Error creating WebGL context'),
+  )
   record(includesText(body, /four-seam fastball/i), 'Four-seam page body did not render')
   record(includesText(body, /sourced, not corrected/i), 'Four-seam page lost the source principle')
-  record(messages.length === 0, `Four-seam console warnings/errors: ${messages.join(' | ')}`)
+  record(
+    unexpectedMessages.length === 0,
+    `Four-seam console warnings/errors: ${unexpectedMessages.join(' | ')}`,
+  )
+  record(Boolean(notesResponse), 'Four-seam page never requested the moderated public Field Notes feed')
+  record(
+    notesResponse?.status() === 200,
+    `Four-seam public Field Notes feed returned ${notesResponse?.status() ?? 'no response'}`,
+  )
+  record(!includesText(body, /couldn't load the field notes/i), 'Four-seam Field Notes rendered an error state')
+
+  const activePitchIndex = await page
+    .waitForFunction(() =>
+      [...document.querySelectorAll('header a[aria-current]')].some(
+        (link) =>
+          link.textContent?.replace(/\s+/g, ' ').trim() === 'Pitch Index' &&
+          link.getAttribute('aria-current') === 'location',
+      ),
+      undefined,
+      { timeout: 15_000 },
+    )
+    .then(() => true)
+    .catch(() => false)
+  record(activePitchIndex, 'Four-seam route did not keep Pitch Index marked current')
 
   const canonical = await page.locator('link[rel="canonical"]').getAttribute('href')
   record(canonical === 'https://pitch-atlas.com/pitch/four-seam/', `Four-seam canonical was ${canonical}`)
@@ -437,6 +546,7 @@ try {
   await withPage((page) => checkHomeFirstViewport(page, { width: 375, height: 667 }))
   await withPage((page) => checkHomeFirstViewport(page, { width: 568, height: 320 }))
   await withPage((page) => checkHomeFirstViewport(page, { width: 844, height: 390 }))
+  await withPage(checkReducedMotionBrand)
   await withPage((page) => checkHomeCardBacks(page, { width: 320, height: 568 }))
   await withPage((page) => checkHomeCardBacks(page, { width: 375, height: 667 }))
   await withPage((page) => checkHomeCardBacks(page, { width: 1280, height: 900 }))

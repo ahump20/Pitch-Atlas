@@ -514,11 +514,15 @@
 }
 
 @layer components {
-  /* ── athletic logotype + holo text ── */
+  /* ── athletic logotype + rainbow foil ──
+     This is the Pitch Atlas identity material, not a card-only effect. It belongs
+     on the ATLAS wordmark, filed-specimen names, and a few load-bearing headings.
+     Do not replace it with flat gold or steel without changing the brand system. */
   .rfx-athletic { font-family: var(--font-athletic); text-transform: uppercase; letter-spacing: 0.01em; line-height: 0.9; }
   .rfx-skew { transform: skewX(-7deg); }
   .rfx-stroke { -webkit-text-stroke: 1px rgba(0,0,0,.35); text-shadow: 3px 3px 0 rgba(0,0,0,.45); }
   .rfx-holo {
+    color: var(--color-bone);
     background: var(--foil); background-size: 300% 100%;
     -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
     animation: rfx-slide 7s linear infinite;
@@ -2359,6 +2363,13 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   }
   .link-stitch:hover,
   .link-stitch:focus-visible { background-size: 100% 1px; }
+  /* Current wayfinding keeps a fine foil stitch at rest. Cyan remains the solid
+     semantic active color, so the spectrum is identity, not status. */
+  .link-stitch.is-current {
+    background-image: var(--foil);
+    background-size: 300% 1px;
+    background-position: 38% calc(100% - 1px);
+  }
 
   /* ── lift on hover: the cream-field card answer. Dark plates already lift
      (.rfx-plate, .rfx-entry); this gives claim cards, wax packs, and any cream
@@ -2528,15 +2539,13 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     -webkit-backdrop-filter: blur(14px) saturate(1.18);
     backdrop-filter: blur(14px) saturate(1.18);
   }
-  /* the light edge: a raked bone-to-seam hairline along the bottom of the bar,
-     deepening with the scroll-shade. Not a border — a caught edge of light. */
+  /* the light edge: the same rainbow foil as the wordmark and filed specimens,
+     masked down to a hairline so the shell reads as part of the set. */
   .masthead-glass::after {
     content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px; z-index: 1; pointer-events: none;
-    background: linear-gradient(100deg,
-      transparent 0 4%,
-      color-mix(in srgb, var(--color-seam) 30%, transparent) 18%,
-      rgba(246,241,230,.5) 32%,
-      transparent 60%);
+    background: var(--foil); background-size: 300% 100%; background-position: 38% 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
     opacity: .5; transition: opacity .2s ease;
   }
   /* solid fallbacks: reduced-transparency users and browsers without the filter
@@ -2894,17 +2903,18 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     }
   }
 
-  /* ── the chrome-lipped CTA (distinct from btn-foil's rainbow) ──
-     A matte pill with a single raked bone highlight on the top lip:
-     the chrome read at control scale, AA contrast both states. */
+  /* ── the rainbow-chrome CTA ──
+     A matte control cut inside a one-pixel foil rim. The dark face keeps the
+     label at AA contrast; the spectrum identifies the primary action. */
   .v2-cta {
     position: relative; display: inline-flex; align-items: center; gap: 8px; overflow: hidden;
     padding: 11px 20px; border-radius: 999px; font-family: var(--font-mono);
     font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
-    color: #080706; background: linear-gradient(176deg, #F6F2E8 0%, #C9CFD7 52%, #EDEFF3 100%);
-    border: 1px solid rgba(0, 0, 0, .25); transition: transform .12s ease, box-shadow .2s ease;
-    /* struck cap: a hot top lip, a dark undercut, the drop. */
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .85), inset 0 -1px 1px rgba(0, 0, 0, .4), 0 8px 22px -14px rgba(0, 0, 0, .8);
+    color: var(--color-bone);
+    background: linear-gradient(176deg, #17131d 0%, #09070e 100%) padding-box, var(--foil) border-box;
+    border: 1px solid transparent; transition: transform .12s ease, box-shadow .2s ease;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), inset 0 -1px 1px rgba(0, 0, 0, .7),
+      0 8px 22px -14px rgba(0, 0, 0, .9), 0 0 24px -18px #37D6FF;
   }
   .v2-cta.is-ghost {
     color: var(--color-bone); background: color-mix(in srgb, #0a0908 55%, transparent);
@@ -3153,6 +3163,17 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .community-specimen-caption span:first-child {
     color: color-mix(in srgb, var(--spec-accent) 78%, var(--color-bone));
   }
+}
+
+/* Gradient-clipped type can disappear in forced-colors mode. Keep every label
+   readable when the operating system owns the palette. */
+@media (forced-colors: active) {
+  .rfx-holo {
+    background: none;
+    color: CanvasText;
+    -webkit-text-fill-color: currentColor;
+  }
+  .masthead-glass::after { background: CanvasText; }
 }
 
 @keyframes v2-rake { from { opacity: .26; transform: translateX(-4%); } to { opacity: .5; transform: translateX(4%); } }

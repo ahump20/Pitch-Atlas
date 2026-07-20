@@ -128,7 +128,7 @@ export function AboutPage() {
         eyebrow="About Pitch Atlas"
         title={
           <>
-            Preserve and progress the <span className="text-seam">art of the pitch</span>.
+            Preserve and progress the <span className="rfx-holo">art of the pitch</span>.
           </>
         }
         sub={

@@ -344,6 +344,59 @@ describe('community safety database policy contracts', () => {
     ]))
   })
 
+  it('serves public field notes through a narrow moderation-gated RPC', () => {
+    const migration = readFileSync(
+      resolve(process.cwd(), 'supabase/migrations/20260720134000_public_field_notes_read_rpc.sql'),
+      'utf8',
+    )
+    const executableSql = stripSqlLineComments(migration)
+
+    expect(executableSql).toContain('create or replace function public.list_public_field_notes(p_pitch_slug text)')
+    expect(executableSql).toContain('returns table (')
+    expect(executableSql).toContain('security definer')
+    expect(executableSql).toContain("set search_path = ''")
+    expect(executableSql).toContain("f.visibility = 'approved'")
+    expect(executableSql).toContain('f.is_hidden = false')
+    expect(executableSql).toContain('not private.blocked_between((select auth.uid()), f.author_id)')
+    expect(executableSql).toContain('order by f.base_rank desc, f.created_at desc')
+    expect(executableSql).toContain(
+      'revoke all on function public.list_public_field_notes(text) from public, anon, authenticated',
+    )
+    expect(executableSql).toContain(
+      'grant execute on function public.list_public_field_notes(text) to anon, authenticated',
+    )
+    expect(executableSql).not.toMatch(/\b(insert|update|delete|truncate)\b/i)
+
+    const returnedColumns = executableSql
+      .match(/returns\s+table\s*\(([^)]+)\)/i)?.[1]
+      .split(',')
+      .map((column) => column.trim().split(/\s+/)[0])
+
+    expect(returnedColumns).toEqual([
+      'id',
+      'pitch_slug',
+      'author_id',
+      'display_name',
+      'tweak',
+      'player_level',
+      'arm_slot',
+      'velocity_band',
+      'intent',
+      'claimed_result_kind',
+      'claimed_result_note',
+      'sample_size',
+      'evidence_url',
+      'evidence_label',
+      'source_tier',
+      'note',
+      'adoption_count',
+      'helpful_count',
+      'base_rank',
+      'created_at',
+    ])
+    expect(returnedColumns).not.toEqual(expect.arrayContaining(['visibility', 'is_hidden', 'updated_at']))
+  })
+
   it('keeps viewer engagement reads limited to current-client columns', () => {
     const migration = readFileSync(
       resolve(process.cwd(), 'supabase/migrations/20260615032000_viewer_engagement_read_column_grants.sql'),

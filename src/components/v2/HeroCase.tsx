@@ -41,7 +41,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             The pitch,
             <br className="hidden md:inline" />
             {' '}
-            struck as a specimen.
+            struck as a <span className="rfx-holo">specimen.</span>
           </h1>
 
           <p
