@@ -527,6 +527,40 @@ async function checkSupportAndPrivacy(page, viewport) {
   }
 }
 
+async function checkKnowledgeMarkerWrap(page) {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const messages = await collectConsole(page, async () => {
+    await page.goto(route('/learn/canon/'), { waitUntil: 'domcontentloaded' })
+    await page.locator('h1').waitFor({ state: 'visible' })
+    await page.locator('[data-stage-tier-marker] h2').first().waitFor({ state: 'visible' })
+  })
+
+  const markers = await page.locator('[data-stage-tier-marker]').evaluateAll((elements) =>
+    elements.map((element) => {
+      const heading = element.querySelector('h2')
+      const rect = heading?.getBoundingClientRect()
+      return {
+        label: heading?.textContent?.replace(/\s+/g, ' ').trim() ?? 'missing heading',
+        whiteSpace: heading ? getComputedStyle(heading).whiteSpace : 'missing',
+        left: rect?.left ?? -1,
+        right: rect?.right ?? Number.POSITIVE_INFINITY,
+        viewportWidth: document.documentElement.clientWidth,
+      }
+    }),
+  )
+
+  record(markers.length > 0, 'Canon mobile rendered no section markers')
+  for (const marker of markers) {
+    record(marker.whiteSpace === 'normal', `Canon mobile marker does not wrap: ${marker.label}`)
+    record(
+      marker.left >= 0 && marker.right <= marker.viewportWidth + 2,
+      `Canon mobile marker clips outside the viewport: ${marker.label}`,
+    )
+  }
+  record(messages.length === 0, `Canon mobile console warnings/errors: ${messages.join(' | ')}`)
+  await assertNoHorizontalOverflow(page, 'Canon mobile')
+}
+
 const browser = await chromium.launch({ headless: true })
 
 async function withPage(callback) {
@@ -557,6 +591,7 @@ try {
   await withPage(checkFourSeam)
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 390, height: 844 }))
+  await withPage(checkKnowledgeMarkerWrap)
 } finally {
   await browser.close()
 }
