@@ -2,13 +2,12 @@ import type { ReactNode } from 'react'
 import { SeamGuide } from '../motion/SeamGuide'
 
 /*
-  The hall header on the warm field, extracted from RepertoirePage /
+  The shared chapter header on the void field, extracted from RepertoirePage /
   CraftsmenHall / LostPitchesHall / the chapters, which each rolled the same
-  markup. A deeper cream band with a faint accent wash and the scorebook's
-  vertical rules, a mono eyebrow, the display headline in ink, and an optional
-  sub. Accent picks the wash tint: powder for the living catalog and the
-  craftsmen, seam for the lost-pitches archive. Inside a .scene-coal wrapper the
-  ink tokens re-tone to bone on their own.
+  markup. A faint accent wash and scorebook rules sit behind the mono eyebrow,
+  display headline, and optional sub. Accent picks the wash tint: powder for the
+  living catalog and the craftsmen, seam for the lost-pitches archive. An
+  explicit .field-cream ancestor flips the semantic ink tokens for a light inset.
 */
 const ACCENT_WASH: Record<'powder' | 'seam', string> = {
   powder: 'rgba(75,146,219,0.12)',

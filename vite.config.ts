@@ -213,9 +213,11 @@ export default defineConfig({
     // NOT load in tests: BallStage falls back to the 2D seam schematic when jsdom
     // reports no WebGL, so the lazy BallScene (the sole importer of three/@react-three)
     // is never imported. Two workers keep file parallelism without assuming the test
-    // run owns every core; the timeout stays as a safety net for async-heavy route/form tests.
+    // run owns every core. Threads also avoid intermittent fork-worker startup stalls on
+    // constrained CI/local runners; the timeout stays as a safety net for async-heavy tests.
     testTimeout: 60000,
     fileParallelism: true,
+    pool: 'threads',
     maxWorkers: 2,
     exclude: [
       ...configDefaults.exclude,

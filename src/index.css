@@ -2649,15 +2649,17 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 }
 
 /* ============================================================
-   v2 · THE REFRACTOR CASE  ·  the /v2 landing prototype
-   A bolder staging of the existing refractor card + R3F ball:
+   v2 · THE REFRACTOR CASE  ·  the current home composition
+   Promoted from the retired /v2 prototype to the live / front door. A bolder
+   staging of the existing refractor card + R3F ball:
    glossy chromium (the --foil rainbow + a brushed-metal display
    face) set against matte Topps-Now card stock. Extends the
    refractive-chrome vocabulary above (raking light + --c3 rim +
    foil); never the retired casino-chrome / steel gradients.
    Every motion gates on prefers-reduced-motion; the no-WebGL
    ball path (BallStage -> SpecimenBoundary -> 2D schematic) is
-   unchanged. Lives only under .v2 surfaces, so / is untouched.
+   unchanged. The .v2 scope composes the home page without creating a second
+   sitewide token system.
    ============================================================ */
 @layer components {
   /* ── the matte Topps-Now stage ──
