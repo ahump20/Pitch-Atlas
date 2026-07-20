@@ -13,12 +13,11 @@ import { TidbitReveal } from '../eggs/TidbitReveal'
 import { FoundIndex } from '../eggs/FoundIndex'
 
 /*
-  The shell every route renders inside. The site sits on the warm field — aged
-  cream scorebook paper with faint ink rules — and dark lives only inside the
-  scoped .scene-coal sections (the foil-viewing theaters). The masthead and the
-  leather footer persist, and the Outlet is the chapter. A route change resets
-  scroll to the top; a hash (a deep link into a section) scrolls there once it
-  is laid out.
+  The shell every route renders inside. The dark void is the global field, with
+  the rainbow-foil masthead and the leather footer persisting around each
+  chapter. Cream is reserved for explicit .field-cream insets and physical card
+  objects. A route change resets scroll to the top; a hash (a deep link into a
+  section) scrolls there once it is laid out.
 */
 
 function ScrollManager() {

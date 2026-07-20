@@ -346,7 +346,7 @@ describe('community safety database policy contracts', () => {
 
   it('serves public field notes through a narrow moderation-gated RPC', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260720134000_public_field_notes_read_rpc.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260720182650_public_field_notes_read_rpc.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
