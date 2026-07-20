@@ -3171,7 +3171,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .rfx-holo {
     background: none;
     color: CanvasText;
-    -webkit-text-fill-color: currentColor;
+    -webkit-text-fill-color: currentcolor;
   }
   .masthead-glass::after { background: CanvasText; }
 }
