@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
@@ -116,9 +116,12 @@ export function Masthead() {
     // masthead-glass carries the refractive translucency (coal glows faintly
     // through on scroll) with its own reduced-transparency + no-filter solid
     // fallbacks, so the bg-paper utility is no longer needed here.
-    <header className="masthead-glass scroll-shade sticky top-0 z-30 border-b border-leather/30 text-ink">
+    <header
+      className="masthead-glass scroll-shade sticky top-0 z-30 border-b border-leather/30 text-ink"
+      style={{ viewTransitionName: 'persistent-masthead' } as CSSProperties}
+    >
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
-        <Link to="/" aria-label={`${SITE.siteName}, home`}>
+        <Link to="/" viewTransition aria-label={`${SITE.siteName}, home`}>
           <BrandMark size="sm" />
         </Link>
 
@@ -127,6 +130,7 @@ export function Masthead() {
             <Link
               key={n.to}
               to={n.to}
+              viewTransition
               aria-current={routeIsActive(pathname, n.to) ? (pathname === n.to ? 'page' : 'location') : undefined}
               className={`link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
                 routeIsActive(pathname, n.to) ? 'is-current text-cyan' : 'text-ink-2'
@@ -174,6 +178,7 @@ export function Masthead() {
                     <li key={`${t.to}-${t.label}`}>
                       <Link
                         to={t.to}
+                        viewTransition
                         aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                         onClick={() => setMoreMenu({ open: false, pathname })}
                         className={`block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
@@ -192,6 +197,7 @@ export function Masthead() {
                     <li key={`${t.to}-${t.label}`}>
                       <Link
                         to={t.to}
+                        viewTransition
                         aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                         onClick={() => setMoreMenu({ open: false, pathname })}
                         className={`block rounded-sm px-3 py-2.5 transition-colors hover:bg-bone/[0.06] ${
@@ -243,6 +249,7 @@ export function Masthead() {
               <li key={n.to}>
                 <Link
                   to={n.to}
+                  viewTransition
                   aria-current={routeIsActive(pathname, n.to) ? (pathname === n.to ? 'page' : 'location') : undefined}
                   onClick={() => setMenu({ open: false, pathname })}
                   className={`link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
@@ -261,6 +268,7 @@ export function Masthead() {
                   <li key={`${t.to}-${t.label}`}>
                     <Link
                       to={t.to}
+                      viewTransition
                       aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                       onClick={() => setMenu({ open: false, pathname })}
                       className={`link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${
@@ -281,6 +289,7 @@ export function Masthead() {
                   <li key={`${t.to}-${t.label}`}>
                     <Link
                       to={t.to}
+                      viewTransition
                       aria-current={routeIsActive(pathname, t.to) ? (pathname === t.to ? 'page' : 'location') : undefined}
                       onClick={() => setMenu({ open: false, pathname })}
                       className={`link-stitch block border-b border-ink/10 py-3.5 font-mono text-sm uppercase tracking-[0.1em] transition-colors hover:text-bone ${

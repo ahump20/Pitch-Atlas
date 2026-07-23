@@ -254,6 +254,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           </a>
           <Link
             to="/repertoire"
+            viewTransition
             className="inline-flex items-center gap-2 rounded-md border border-bone/30 px-5 py-3 font-mono text-sm uppercase tracking-wide text-bone transition-colors hover:border-bone"
           >
             All pitches <span aria-hidden="true">→</span>
@@ -660,7 +661,7 @@ function Pager({ prev, next }: { prev?: PitchAtlasEntry; next?: PitchAtlasEntry 
     <nav aria-label="Pitch chapters" className="grid grid-cols-1 gap-4 border-t border-bone/10 py-12 md:grid-cols-3">
       <div className="md:justify-self-start">
         {prev ? (
-          <Link to={`/pitch/${prev.display.slug}`} className="group flex flex-col gap-1">
+          <Link to={`/pitch/${prev.display.slug}`} viewTransition className="group flex flex-col gap-1">
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">← Previous specimen</span>
             <span className="rfx-athletic rfx-skew text-lg text-bone transition-colors group-hover:text-cyan">
               {prev.canonical.name}
@@ -670,6 +671,7 @@ function Pager({ prev, next }: { prev?: PitchAtlasEntry; next?: PitchAtlasEntry 
       </div>
       <Link
         to="/craftsmen"
+        viewTransition
         className="flex flex-col items-center justify-center gap-1 rounded-md border border-bone/20 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center"
       >
         <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-cyan">The Craftsmen</span>
@@ -677,7 +679,7 @@ function Pager({ prev, next }: { prev?: PitchAtlasEntry; next?: PitchAtlasEntry 
       </Link>
       <div className="md:justify-self-end">
         {next ? (
-          <Link to={`/pitch/${next.display.slug}`} className="group flex flex-col gap-1 text-right">
+          <Link to={`/pitch/${next.display.slug}`} viewTransition className="group flex flex-col gap-1 text-right">
             <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-ink-3">Next specimen →</span>
             <span className="rfx-athletic rfx-skew text-lg text-bone transition-colors group-hover:text-cyan">
               {next.canonical.name}

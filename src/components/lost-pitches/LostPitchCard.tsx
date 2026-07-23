@@ -23,6 +23,7 @@ export function LostPitchCard({ pitch }: { pitch: LostPitch }) {
   return (
     <Link
       to={`/lost-pitches/${pitch.slug}`}
+      viewTransition
       className={`rfx-plate group ${isLegend ? 'is-edge is-dashed' : ''}`}
       style={{ '--gc': 'var(--color-sand-bright)' } as CSSProperties}
     >

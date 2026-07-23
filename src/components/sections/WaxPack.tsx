@@ -128,6 +128,7 @@ export function WaxPack({ tool }: { tool: WaxPackTool }) {
     <Link
       ref={ref}
       to={tool.to}
+      viewTransition
       className={`wax-pack group${shown ? ' is-stitched' : ''}`}
       aria-label={`Open ${tool.label}`}
     >

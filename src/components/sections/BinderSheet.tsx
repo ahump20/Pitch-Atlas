@@ -39,7 +39,7 @@ export function PocketCard({ entry }: { entry: PitchAtlasEntry }) {
   const tab = FAMILY_TAB[canonical.family] ?? '#D8CFB8'
 
   return (
-    <Link to={`/pitch/${display.slug}`} className="pocket-lift" aria-label={`Open the ${display.shortName} specimen`}>
+    <Link to={`/pitch/${display.slug}`} viewTransition className="pocket-lift" aria-label={`Open the ${display.shortName} specimen`}>
       <span className="pocket-card">
         <span className="pocket-inner">
           <span className="pocket-face">
@@ -69,7 +69,7 @@ export function PocketCard({ entry }: { entry: PitchAtlasEntry }) {
 /* a filler card: the checklist / set-ad card a real pack ships with */
 export function FillerCard({ to, label, note, ghost }: { to: string; label: string; note: string; ghost?: boolean }) {
   return (
-    <Link to={to} className="pocket-lift" aria-label={label}>
+    <Link to={to} viewTransition className="pocket-lift" aria-label={label}>
       <span className={`pocket-card ${ghost ? 'is-ghost' : 'is-filler'}`}>
         <span className="pocket-inner">
           <span
@@ -110,7 +110,7 @@ export function RepertoirePocket({ entry }: { entry: RepertoireEntry }) {
   /* no photograph, no authored schematic -> the honest slip */
   if (!still && !filed) {
     return (
-      <Link to={to} className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
+      <Link to={to} viewTransition className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
         <span className={`pocket-slip ${edge ? 'is-edge' : ''}`}>
           <span
             className="font-mono uppercase"
@@ -133,7 +133,7 @@ export function RepertoirePocket({ entry }: { entry: RepertoireEntry }) {
   }
 
   return (
-    <Link to={to} className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
+    <Link to={to} viewTransition className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
       <span className="pocket-card">
         <span className="pocket-inner">
           <span className="pocket-face">

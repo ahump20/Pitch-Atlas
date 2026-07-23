@@ -51,19 +51,19 @@ function ChapterNav({ prev, next }: { prev?: LostPitch; next?: LostPitch }) {
       <div className="mx-auto grid max-w-6xl grid-cols-1 gap-4 px-5 py-12 md:grid-cols-3 md:px-8">
         <div className="md:justify-self-start">
           {prev ? (
-            <Link to={`/lost-pitches/${prev.slug}`} className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-cyan/40 px-4 py-3 transition-colors hover:border-l-cyan">
+            <Link to={`/lost-pitches/${prev.slug}`} viewTransition className="group flex flex-col gap-1 rounded-sm border-l-2 border-l-cyan/40 px-4 py-3 transition-colors hover:border-l-cyan">
               <span className="mono-label text-ink-3">← Previous</span>
               <span className="font-athletic text-lg uppercase text-bone">{prev.name}</span>
             </Link>
           ) : null}
         </div>
-        <Link to="/lost-pitches" className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
+        <Link to="/lost-pitches" viewTransition className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-cyan md:justify-self-center">
           <span className="mono-label text-cyan">Lost Pitches</span>
           <span className="text-sm leading-snug text-ink-2">Back to the archive →</span>
         </Link>
         <div className="md:justify-self-end">
           {next ? (
-            <Link to={`/lost-pitches/${next.slug}`} className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-cyan/40 px-4 py-3 text-right transition-colors hover:border-r-cyan">
+            <Link to={`/lost-pitches/${next.slug}`} viewTransition className="group flex flex-col gap-1 rounded-sm border-r-2 border-r-cyan/40 px-4 py-3 text-right transition-colors hover:border-r-cyan">
               <span className="mono-label text-ink-3">Next →</span>
               <span className="font-athletic text-lg uppercase text-bone">{next.name}</span>
             </Link>

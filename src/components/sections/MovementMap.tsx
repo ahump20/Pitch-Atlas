@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
 import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
+import { useReducedMotion } from '../../hooks/useReducedMotion'
 
 /*
   The global shape map: every filed specimen on one catcher's-eye quadrant, placed by
@@ -63,6 +64,7 @@ export function MovementMap() {
   const [hand, setHand] = useState<'RHP' | 'LHP'>('RHP')
   const [active, setActive] = useState<string | null>(null)
   const navigate = useNavigate()
+  const reduced = useReducedMotion()
   const handFactor = hand === 'RHP' ? 1 : -1
 
   const plotted = useMemo<Plotted[]>(() => {
@@ -134,7 +136,7 @@ export function MovementMap() {
           const c = FAMILY_META[family].color
           const label = LABELS[entry.display.slug] ?? { dx: 0, dy: -14, anchor: 'middle' as const }
           const slug = entry.display.slug
-          const open = () => navigate(`/pitch/${slug}`)
+          const open = () => navigate(`/pitch/${slug}`, { viewTransition: !reduced })
           return (
             <g key={slug}>
               <line x1={CX} y1={CY} x2={x} y2={y} stroke={c} strokeWidth="0.8" strokeDasharray="2 3" opacity="0.32" />
@@ -220,6 +222,7 @@ export function MovementMap() {
           <Link
             key={p.display.slug}
             to={`/pitch/${p.display.slug}`}
+            viewTransition
             className="mono-label text-seam transition-colors hover:text-ink"
           >
             {p.display.shortName} →

@@ -31,6 +31,7 @@ export function CraftsmanCard({ craftsman }: { craftsman: Craftsman }) {
   return (
     <Link
       to={`/craftsmen/${craftsman.slug}`}
+      viewTransition
       className={`rfx-plate group ${isLegend ? 'is-dashed' : ''}`}
       style={{ '--gc': gc } as CSSProperties}
     >

@@ -68,6 +68,7 @@ function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireE
           {prev ? (
             <Link
               to={`/repertoire/${prev.id}`}
+              viewTransition
               className="group flex flex-col gap-1 rounded-sm border border-ink/15 px-4 py-3 transition-colors hover:border-seam"
             >
               <span className="mono-label text-ink-3">← Previous</span>
@@ -77,6 +78,7 @@ function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireE
         </div>
         <Link
           to="/repertoire"
+          viewTransition
           className="flex flex-col items-center justify-center gap-1 rounded-sm border border-ink/15 px-4 py-3 text-center transition-colors hover:border-seam md:justify-self-center"
         >
           <span className="mono-label text-seam">The Pitch Index</span>
@@ -86,6 +88,7 @@ function ChapterNav({ prev, next }: { prev?: RepertoireEntry; next?: RepertoireE
           {next ? (
             <Link
               to={`/repertoire/${next.id}`}
+              viewTransition
               className="group flex flex-col gap-1 rounded-sm border border-ink/15 px-4 py-3 text-right transition-colors hover:border-seam"
             >
               <span className="mono-label text-ink-3">Next →</span>
@@ -123,6 +126,7 @@ function StudyFirst({ slug, note }: { slug: string; note?: Claim<string> }) {
         ) : null}
         <Link
           to={`/pitch/${target.display.slug}`}
+          viewTransition
           className="group inline-flex items-center gap-3 rounded-sm border border-ink/20 bg-paper px-5 py-3 transition-colors hover:border-seam"
         >
           <span className="mono-label text-ink-3">Filed specimen</span>

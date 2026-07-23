@@ -1,3 +1,4 @@
+import { type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { SITE } from '../../config/site'
 import { BrandMark } from '../brand/BrandMark'
@@ -29,6 +30,7 @@ export function SiteFooter() {
   return (
     <footer
       className="relative border-t border-cyan/12 text-bone"
+      style={{ viewTransitionName: 'persistent-footer' } as CSSProperties}
     >
       {/* closing the archive: the back cover's last beat before the binding.
           One line, one way back to the front door. */}
@@ -45,7 +47,7 @@ export function SiteFooter() {
         </EggButton>
         <p className="mono-label-stage mt-2.5 max-w-[64ch] leading-relaxed">
           Everything above wears its source. When you want the set again, start at the front door:{' '}
-          <Link to="/repertoire" className="text-bone underline decoration-1 underline-offset-2 transition-colors hover:decoration-seam">
+          <Link to="/repertoire" viewTransition className="text-bone underline decoration-1 underline-offset-2 transition-colors hover:decoration-seam">
             the Pitch Index
           </Link>
           .
@@ -67,6 +69,7 @@ export function SiteFooter() {
             <Link
               key={l.to}
               to={l.to}
+              viewTransition
               className="touch-link mono-label-stage transition-colors hover:text-bone"
             >
               <span className="link-stitch">{l.label}</span>
