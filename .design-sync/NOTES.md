@@ -64,6 +64,26 @@ wraps its demo in the real `.rfx-panel` charcoal surface so the dark-native
 components read correctly on the void; content is real, qualitative pitch material
 (no fabricated velo/spin/break, no medical/youth claims). Render check: 22/22 clean.
 
+## ORDERING RULE: re-point cssEntry AFTER the last app build, never before
+Bit twice on 2026-07-24. The hash changes on EVERY `vite build`, so any sequence
+of "set cssEntry → build the app again → run the driver" ships a bundle with no
+component CSS. What it looks like:
+
+    ! cssEntry: dist/assets/index-<old>.css not found — skipped
+    styles.css: 1 @import(s)        # 2 when the CSS is really there
+
+**The driver still reports `ok: true`, "render check 19/19 previews render
+cleanly", and "bundle is complete".** The render check only asserts a non-empty
+root, so a completely unstyled design system passes every automated gate — the
+cards come out as default browser buttons and serif text on white. The ONLY thing
+that catches it is reading a review sheet. If a sheet looks unstyled, check this
+line first, before anything else.
+
+So: do all app builds first, then `ls dist/assets/index-*.css`, take the LARGE one
+(~285KB; the ~10KB one is a chunk), write it into cssEntry, and only then run the
+driver. If you edit `src/index.css` mid-run, you have invalidated cssEntry — repoint
+and re-run.
+
 ## cssEntry is a HASHED dist file — re-point on every app rebuild
 `cfg.cssEntry` is the compiled Tailwind v4 CSS (`dist/assets/index-*.css`, the
 large ~260KB one — the small one is a chunk). **The hash changes every `vite

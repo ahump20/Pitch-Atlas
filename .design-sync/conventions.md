@@ -55,6 +55,21 @@ Fonts (self-hosted, no network): **Newsreader** (editorial display serif — the
 italic is the warmth), **Hanken Grotesk** (prose), **Martian Mono** (labels, data,
 every micro-label), **Anton** (athletic logotype, uppercase).
 
+## Motion
+
+Use the shipped duration tokens and the one house easing — never a raw ms value:
+`var(--pa-motion-tiny)` 120ms (press, focus, hover), `--pa-motion-short` 190ms
+(state change, chip settle), `--pa-motion-medium` 400ms (positional move),
+`--pa-motion-slow` 700ms (one-shot scroll reveal), all with
+`var(--pa-ease-settle)`.
+
+The rules are not stylistic preferences: motion supports orientation, feedback, or
+state change and then **decays into stillness** — nothing loops. Animate transforms
+and opacity only. Never animate long prose, and never animate a source badge or
+confidence label in a way that hurts reading; provenance gets one settle on first
+reveal and then rests. Always provide a `prefers-reduced-motion: reduce` branch
+where the final state is visible immediately.
+
 ## Where the truth lives
 
 - `styles.css` — the import closure (tokens + `_ds_bundle.css` component styles +
