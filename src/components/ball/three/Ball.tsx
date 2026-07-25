@@ -245,11 +245,15 @@ function makeLeatherMaps(): LeatherMaps {
 export function Ball({
   fingerPlacement,
   showGrip = true,
+  pins = true,
   handedness = 'right',
   activeContact,
 }: {
   fingerPlacement: GripContactModel[]
   showGrip?: boolean
+  /** Fingertip label pins. An inspection affordance — off inside a card window,
+   *  where three labels cover the grip they are naming. */
+  pins?: boolean
   handedness?: Handedness
   activeContact?: string
 }) {
@@ -404,6 +408,7 @@ export function Ball({
 
       {showGrip && fingerPlacement.length > 0 ? (
         <Hand
+          pins={pins}
           contacts={fingerPlacement}
           handedness={handedness}
           activeContact={activeContact}

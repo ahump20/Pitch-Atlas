@@ -191,9 +191,87 @@ size, with the 2D schematic struck small beneath it.
 Deliberately **no grip hand on that beat**: the subject is the seam, not the grip. It also
 avoids the honest weak point below.
 
-### Known weak point, not fixed
+### Known weak point, fixed in the pass below
 
 The hand geometry is finger tubes with no palm, knuckles, or web behind them. At card scale,
 cropped like a photograph, it reads. At size it reads as tubes. Giving `solveGripPose` a
 palm mass is the next real piece of work on "real hand positioning," and it touches every
 specimen page's Grip Lab, so it wants its own pass and its own verification.
+
+---
+
+## Addendum — the hand (2026-07-25)
+
+### It was worse than "no palm"
+
+The first read was that the render lacked a palm. Measuring the solver said something
+harder: **the fingers were never a hand at all.** `solveGripPose` answers one question per
+contact, independently — each spine walked a full finger length across the cover from its
+own contact point. Dumping the base of every filed pitch:
+
+| pitch | index base → middle base |
+|---|---|
+| four-seam | 0.48 ball radii |
+| circle change | 1.08 |
+| splinker | 2.20 |
+| splitter | **2.87** |
+
+A splitter's two finger roots ended nearly three ball radii apart, and the knuckleball's
+index root sat three radii from the ball's center, in open space. There was nothing to
+attach a palm to. Fingers converge on knuckles; knuckles sit on a palm; that had to become
+part of the solve.
+
+### solveHand
+
+`solveGripPose` is untouched and still owns the leather: same seam point, same azimuth,
+same hug arc, same pressure. A test asserts that for every filed pitch, byte for byte.
+`solveHand` owns everything behind the contact:
+
+- **The palm frame is walked around the cover**, not floated above it. From the mean contact
+  point, back along the mean finger direction by 0.95 radians of surface arc — that lands
+  the knuckle line where the hand actually is. The first attempt placed it on a tangent
+  above the contacts and rendered as a plate resting on a lid.
+- **Across is read off the data.** Whether index-to-pinky runs one way or the other depends
+  on the pitch, so the axis is fitted to the authored contacts' own ordering and flipped if
+  they come out descending.
+- **Each finger is re-laid** from its knuckle down to its contact: a quadratic that leaves
+  the leather along the finger's own direction and bows out, curled fingers bowing more.
+  The thumb's run under the ball is a chord through the leather, so its samples ride out
+  onto the cover — which is how it wraps.
+- **The palm is a loft, not an extrusion.** Six cross-sections swept knuckles-to-heel, each
+  a superellipse so the mass stays flat like a hand with edges that roll, cupping back
+  toward the ball as it runs to the heel, both ends rounding closed.
+
+### Four things that had to be looked at to be found
+
+Build output proved none of these. Each came off a rendered frame.
+
+1. **The plate.** A flat extruded outline above the ball read as a wedge of cheese. Fixed by
+   walking the frame around the cover and lofting instead of extruding.
+2. **Bead knuckles.** Rendering the MCPs as separate ellipsoids put four beans on the back
+   of the hand. Deleted; the finger's own swell into the mass carries it.
+3. **Curled fingers.** The ring and pinky, drawn folded, read as a claw when they cleared
+   the palm's silhouette and were invisible when they didn't. Deleted — the palm spans the
+   full four-knuckle width, so a closed finger is read inside that silhouette instead of
+   drawn as a loose digit.
+4. **The notches.** Every finger had a scoop cut out of it where it crossed the ball's
+   silhouette. The spine sat flat on the cover, which buried most of the swept tube inside
+   the ball; the leather then cut the finger open along the intersection. The centerline
+   now rides its own radius above the surface, less a little for the flesh giving.
+
+### What is authored and what is rendered
+
+Unchanged and worth restating, because the hand grew: contacts, engagement, pressure tier
+and cue are authored and sourced, and every label on screen still comes from one of those.
+The palm and the knuckles are rendered proportions — the same status as the finger lengths
+that were always in the solver. No claim hangs on them; none is labeled.
+
+### Two surface calls that came out of looking
+
+- **The 2D twin clips to the cover.** The hand now converges off the ball, so projecting it
+  whole spilled a grey slab past the frame of a 240px diagram. The schematic draws the part
+  of the hold that is on the leather and stops at the rim.
+- **Cards drop the fingertip pins and show the side view.** Three labels in a 300px window
+  sit on top of the grip they name, and a pitch's own default view is tuned for the Grip
+  Lab, where the ball is big enough to read a thumb-side angle. Pins stay on the specimen
+  page, where handling the ball is the point.

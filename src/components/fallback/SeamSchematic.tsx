@@ -1,7 +1,7 @@
 import { useId, useMemo } from 'react'
 import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
-import { solveGripPose, projectSpine, type ProjectedSpine } from '../../lib/gripPose'
+import { solveHand, projectHand, type ProjectedSpine, type ProjectedPoint } from '../../lib/gripPose'
 import type { GripContactModel, Handedness } from '../../data/types'
 
 /*
@@ -46,6 +46,10 @@ function spinePath(points: ProjectedSpine['points']): string {
     .join(' ')
 }
 
+function outlinePath(points: ProjectedPoint[]): string {
+  return `${points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(2)} ${p.y.toFixed(2)}`).join(' ')} Z`
+}
+
 export function SeamSchematic({
   className = '',
   showAxis = true,
@@ -60,6 +64,7 @@ export function SeamSchematic({
   const uid = useId()
   const gradId = `leather-${uid}`
   const arrowId = `arrow-${uid}`
+  const clipId = `cover-${uid}`
 
   const projected = useMemo(() => projectSeam(CX, CY, R, SEG), [])
   const runs = useMemo(() => splitRuns(projected), [projected])
@@ -89,15 +94,22 @@ export function SeamSchematic({
   // unnamed role="img", so the decorative case is self-describing.
   const decorative = !title
 
-  // The same solver the 3D hand reads: each contact becomes a finger spine,
-  // projected through the same presentation tilt as the seam itself.
-  const fingers = useMemo(() => {
-    if (!grip || grip.length === 0) return []
-    return grip.map((g) => ({
-      label: g.label,
-      spine: projectSpine(solveGripPose(g, { handedness, samples: 20 }), CX, CY, R),
-    }))
+  // The same solver the 3D hand reads — the whole hand, not one finger at a
+  // time: the contacts converging on knuckles and the palm behind them.
+  // Projected through the same presentation tilt as the seam, so the flat draw
+  // and the model can never disagree about the hold.
+  const hand = useMemo(() => {
+    if (!grip || grip.length === 0) return null
+    return projectHand(
+      solveHand(grip, { handedness, samples: 22 }),
+      grip.map((g) => g.label),
+      CX,
+      CY,
+      R,
+    )
   }, [grip, handedness])
+
+  const fingers = hand?.fingers ?? []
 
   const fingerTone = stageSurface ? FINGER_STAGE : FINGER_PAPER
 
@@ -118,6 +130,14 @@ export function SeamSchematic({
         <marker id={arrowId} markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
           <path d="M0.5 0.5 L6 3.5 L0.5 6.5 Z" fill="var(--color-ink-3)" />
         </marker>
+        {/* The hand is a whole hand now — it converges on knuckles and carries a
+            palm, both of which sit off the ball. This is a 240px diagram of a
+            baseball, so it shows the part of the hold that is on the cover and
+            stops at the rim; a hand spilling past the frame taught nothing and
+            read as a smear. */}
+        <clipPath id={clipId}>
+          <circle cx={CX} cy={CY} r={R} />
+        </clipPath>
       </defs>
 
       <circle cx={CX} cy={CY} r={R} fill={`url(#${gradId})`} />
@@ -153,22 +173,27 @@ export function SeamSchematic({
         </>
       ) : null}
 
-      {/* finger silhouettes behind the ball — dimmed, drawn under the seam */}
-      {fingers
-        .filter((f) => !f.spine.contact.front)
-        .map((f) => (
-          <path
-            key={`hb-${f.label}`}
-            data-grip-finger={f.label}
-            d={spinePath(f.spine.points)}
-            fill="none"
-            stroke={fingerTone}
-            strokeOpacity="0.22"
-            strokeWidth={f.spine.strokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        ))}
+      {/* the hand behind the ball — dimmed, drawn under the seam */}
+      <g clipPath={`url(#${clipId})`}>
+        {hand && !hand.palm.front ? (
+          <path d={outlinePath(hand.palm.outline)} fill={fingerTone} fillOpacity="0.14" />
+        ) : null}
+        {fingers
+          .filter((f) => !f.contact.front)
+          .map((f) => (
+            <path
+              key={`hb-${f.label}`}
+              data-grip-finger={f.label}
+              d={spinePath(f.points)}
+              fill="none"
+              stroke={fingerTone}
+              strokeOpacity="0.22"
+              strokeWidth={f.strokeWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          ))}
+      </g>
 
       {runs
         .filter((r) => !r.front)
@@ -213,32 +238,46 @@ export function SeamSchematic({
           />
         ))}
 
-      {/* finger silhouettes in front of the ball — the hold itself, labeled */}
+      {/* the hand in front of the ball — the hold itself */}
+      <g clipPath={`url(#${clipId})`}>
+        {hand && hand.palm.front ? (
+          <path d={outlinePath(hand.palm.outline)} fill={fingerTone} fillOpacity="0.62" />
+        ) : null}
+        {fingers
+          .filter((f) => f.contact.front)
+          .map((f) => (
+            <g key={`hf-${f.label}`}>
+              <path
+                data-grip-finger={f.label}
+                d={spinePath(f.points)}
+                fill="none"
+                stroke={fingerTone}
+                strokeOpacity="0.92"
+                strokeWidth={f.strokeWidth}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* contact mark: where the finger meets the leather */}
+              <circle
+                cx={f.contact.x}
+                cy={f.contact.y}
+                r="2.6"
+                fill="var(--color-ink)"
+                opacity="0.35"
+              />
+            </g>
+          ))}
+      </g>
+
+      {/* the labels ride outside the clip — a name cut in half by the rim is
+          worse than a name that overhangs it */}
       {fingers
-        .filter((f) => f.spine.contact.front)
+        .filter((f) => f.contact.front)
         .map((f) => (
-          <g key={`hf-${f.label}`}>
-            <path
-              data-grip-finger={f.label}
-              d={spinePath(f.spine.points)}
-              fill="none"
-              stroke={fingerTone}
-              strokeOpacity="0.92"
-              strokeWidth={f.spine.strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            {/* contact mark: where the finger meets the leather */}
-            <circle
-              cx={f.spine.contact.x}
-              cy={f.spine.contact.y}
-              r="2.6"
-              fill="var(--color-ink)"
-              opacity="0.35"
-            />
+          <g key={`hl-${f.label}`}>
             <text
-              x={f.spine.points[0]?.x ?? f.spine.contact.x}
-              y={(f.spine.points[0]?.y ?? f.spine.contact.y) - 9}
+              x={f.points[0]?.x ?? f.contact.x}
+              y={(f.points[0]?.y ?? f.contact.y) - 9}
               fill={stageSurface ? 'var(--color-bone)' : 'var(--color-ink)'}
               fontFamily="var(--font-mono)"
               fontSize="7.5"

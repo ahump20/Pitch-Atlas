@@ -170,7 +170,13 @@ export default function BallScene({
       <group>
         <FaceGroup faceGrip={faceGrip} view={view} placement={placement}>
           <SpinGroup axis={entry.motion.spinAxis} active={spin && active}>
-            <Ball fingerPlacement={placement} showGrip={grip} handedness={handedness} activeContact={activeContact} />
+            <Ball
+              fingerPlacement={placement}
+              showGrip={grip}
+              pins={interactive}
+              handedness={handedness}
+              activeContact={activeContact}
+            />
           </SpinGroup>
         </FaceGroup>
         {vectors ? <Vectors motion={entry.motion} /> : null}
