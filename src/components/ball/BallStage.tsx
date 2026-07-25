@@ -25,6 +25,8 @@ export function BallStage({
   vectors = false,
   faceGrip = false,
   autoSpin = true,
+  interactive = true,
+  distance,
   activeContact,
   className = '',
 }: {
@@ -36,6 +38,13 @@ export function BallStage({
   vectors?: boolean
   faceGrip?: boolean
   autoSpin?: boolean
+  /** Drag-to-turn. Off inside a card window, where the card itself is the link —
+   *  the stage also stops swallowing pointer events so the card's tilt and click
+   *  still reach it. */
+  interactive?: boolean
+  /** Camera distance — pull back on square or card-shaped canvases so the whole
+   *  hand stays in frame. Defaults to the Grip Lab's framing. */
+  distance?: number
   activeContact?: string
   className?: string
 }) {
@@ -58,7 +67,11 @@ export function BallStage({
   if (!webgl) return schematic(className)
 
   return (
-    <div ref={ref} aria-hidden="true" className={`relative ${className}`}>
+    <div
+      ref={ref}
+      aria-hidden="true"
+      className={`relative ${interactive ? '' : 'pointer-events-none '}${className}`}
+    >
       <SpecimenBoundary fallback={schematic('h-full w-full')}>
         <Suspense fallback={schematic('h-full w-full')}>
           <BallScene
@@ -70,6 +83,8 @@ export function BallStage({
             handedness={handedness}
             vectors={vectors}
             faceGrip={faceGrip}
+            interactive={interactive}
+            distance={distance}
             activeContact={activeContact}
           />
         </Suspense>

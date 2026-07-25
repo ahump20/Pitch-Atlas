@@ -140,3 +140,60 @@ context per card in a grid.
 
 `npm run typecheck` · `lint` · `test` · `build`, then render the real pages at desktop and
 mobile and read the pixels. Build output is not proof; the rendered card is.
+
+---
+
+## Addendum — the media pass (2026-07-25)
+
+Austin, looking at the front door: *"Why aren't you using actual video assets that you have
+in the card frames? Specifically with the landing page heroes."* He was right, and the
+cause was mechanical.
+
+### Cause 1 — a duplicated card, drifting
+
+`PitchSpecimenCard` resolved the card face down a ladder (clip → photo → seam ball).
+`ChromeWall`'s `WallCard` — the three cards on the home page — carried a hand-copied
+version that always passed `RefractorBall` and always printed the words "Reference
+schematic." So the four-seam and the 12-6, both of which Austin filmed, showed a drawing on
+the front door while `/public/grips/*.mp4` sat unused. A test pinned the bug in place:
+`expect(getAllByText('Reference schematic')).toHaveLength(3)`.
+
+Identical failure shape to the binder tab that carried three of five families. Both are now
+fixed the same way: **one resolver**, `specimenFace`, read by every card surface, plus one
+`CARD_INK` table replacing the two hand-maintained confidence-color maps that had already
+drifted apart. The replacement test derives its expectation from the grip library, so a new
+clip can never be shadowed silently again.
+
+### Cause 2 — the 3D existed and never reached a card
+
+`BallStage` → `BallScene` → `Hand` already renders the real specimen: leather, the solved
+seam, and the hand seated on the pitch's filed contacts with sourced pressure pins. It ran
+only on the specimen pages. `specimenFace` now takes a `model` flag: on showcase surfaces
+(the home wall), a pitch with a filed grip model and no footage mounts the live specimen
+instead of the flat drawing, chipped **Reference grip model**. Everywhere else keeps the
+cheap SVG, so the WebGL context cost stays bounded.
+
+Two supporting props were needed:
+
+- `interactive` — off inside a card. The card is a link, so a drag released on it would
+  navigate; the stage also stops swallowing pointer events so the card's tilt and click
+  still work. Handling the ball stays the Grip Lab's job.
+- `distance` — the Grip Lab's camera framing runs the fingers off the top of a 10:9 card
+  window. Cards sit back at 7.7.
+
+### Cause 3 — the page promised a 3D specimen it never showed
+
+`RefractionBridge` reads *"One seam. Two media."* and *"This flat diagram and the tilting 3D
+specimen are two draws of a single function"* — beside a single flat diagram. The claim was
+asking the visitor to take the specimen on faith. The live `BallStage` now stands there at
+size, with the 2D schematic struck small beneath it.
+
+Deliberately **no grip hand on that beat**: the subject is the seam, not the grip. It also
+avoids the honest weak point below.
+
+### Known weak point, not fixed
+
+The hand geometry is finger tubes with no palm, knuckles, or web behind them. At card scale,
+cropped like a photograph, it reads. At size it reads as tubes. Giving `solveGripPose` a
+palm mass is the next real piece of work on "real hand positioning," and it touches every
+specimen page's Grip Lab, so it wants its own pass and its own verification.

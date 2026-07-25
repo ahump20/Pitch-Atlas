@@ -1,6 +1,7 @@
 import type { PitchAtlasEntry } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
 import { SeamSchematic } from '../fallback/SeamSchematic'
+import { BallStage } from '../ball/BallStage'
 import { ChapterMark } from './ChapterMark'
 import { Descent } from '../motion/Descent'
 
@@ -28,21 +29,52 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
           on scroll. Decorative; the section reads complete without it. */}
       <Descent />
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 items-center gap-12 px-5 py-20 md:grid-cols-2 md:gap-16 md:px-8 md:py-28">
-        {/* the schematic, blooming its foil as it enters */}
+        {/* Both media, together. The heading has always said "One seam. Two
+            media." — until now only the flat draw was on the page, so the
+            sentence was asking the visitor to take the 3D specimen on faith.
+            Here it is: real leather, the solved seam, turning, and draggable.
+
+            No grip hand on this beat, on purpose. The subject here is the seam —
+            one function drawn two ways — so the specimen is the bare cover. The
+            hand and its sourced pressure pins belong on the cards and in the
+            Grip Lab, where the grip itself is the subject. */}
         <div className="order-2 flex justify-center md:order-1">
-          <div className="v2-bridge-svg relative aspect-square w-full max-w-[380px]">
-            <div
-              className="v2-bridge-foil pointer-events-none absolute inset-0 rounded-full blur-2xl"
-              aria-hidden="true"
-              style={{ background: 'var(--foil)', mixBlendMode: 'screen' }}
-            />
-            <SeamSchematic
-              className="relative h-full w-full"
-              surface="stage"
-              spinAxis={featured.motion.spinAxis}
-              gyro={featured.motion.gyro}
-              title="The four-seam specimen, flattened: the same figure-eight seam the 3D ball draws, projected to 2D and oriented to the pitch's spin axis."
-            />
+          <div className="v2-bridge-svg relative w-full max-w-[380px]">
+            {/* the refraction the section is named for, scoped to the ball it
+                comes off — spread across the whole column it read as haze */}
+            <div className="relative aspect-square w-full">
+              <div
+                className="v2-bridge-foil pointer-events-none absolute inset-[14%] rounded-full opacity-70 blur-2xl"
+                aria-hidden="true"
+                style={{ background: 'var(--foil)', mixBlendMode: 'screen' }}
+              />
+              <BallStage
+                entry={featured}
+                surface="stage"
+                distance={6.9}
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+
+            {/* the flat twin, struck small beneath the model it comes out of */}
+            <div className="relative mt-1 flex items-end justify-between gap-5">
+              <p className="font-mono text-[9px] uppercase leading-relaxed tracking-[0.14em] text-bone-2">
+                3D specimen
+                <span className="block text-bone-2/70">Drag to turn</span>
+              </p>
+              <figure className="m-0 w-[118px] flex-none">
+                <SeamSchematic
+                  className="aspect-square w-full"
+                  surface="stage"
+                  spinAxis={featured.motion.spinAxis}
+                  gyro={featured.motion.gyro}
+                  title="The four-seam specimen, flattened: the same figure-eight seam the 3D ball draws, projected to 2D and oriented to the pitch's spin axis."
+                />
+                <figcaption className="mt-1 text-center font-mono text-[9px] uppercase tracking-[0.14em] text-bone-2">
+                  2D schematic
+                </figcaption>
+              </figure>
+            </div>
           </div>
         </div>
 

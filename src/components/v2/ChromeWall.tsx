@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../ds/Button'
-import { CONFIDENCE_META, type ClaimConfidence, type PitchAtlasEntry } from '../../data/types'
+import { CONFIDENCE_META, type PitchAtlasEntry } from '../../data/types'
 import { PITCHES } from '../../data/pitches'
 import { featuredPitchSet } from '../../data/featured'
 import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
-import { RefractorBall } from '../refractor/RefractorBall'
+import { specimenFace } from '../refractor/specimenFace'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { Descent } from '../motion/Descent'
@@ -16,17 +16,12 @@ import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
   The home shows one real specimen per core family. The full filed set belongs in
   the Pitch Index; the front door only needs enough cards to explain the medium.
   Each card still flips to the sourced back, and focus follows the active face.
-*/
 
-const FRONT_INK: Record<ClaimConfidence, string> = {
-  'official-data': '#1E7A4A',
-  'reputable-analysis': '#6E5E3A',
-  'pitcher-own-words': '#6E5E3A',
-  'coach-observed': '#6E5E3A',
-  'secondhand-attributed': '#6E5E3A',
-  'community-firsthand': '#6E5E3A',
-  unverified: '#6E675A',
-}
+  The front face comes from the shared `specimenFace` resolver, same as every
+  other card. This file used to hard-wire the seam ball and the words "Reference
+  schematic" onto all three, which meant the two pitches Austin filmed showed a
+  drawing on the front door while their real clips shipped unused.
+*/
 
 function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean; i: number }) {
   const [flipped, setFlipped] = useState(false)
@@ -37,6 +32,9 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
   const shape = canonical.physics.shape
   const gripCue = canonical.gripDetails[0] ?? canonical.grip
   const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
+  /* The front door is the one place a card earns a live grip model: three cards,
+     and only the ones with no clip or photo of Austin's own hand mount a canvas. */
+  const { face, faceSource, cue, confidence } = specimenFace(entry, { idPrefix: 'wall-', model: true })
 
   function setFace(next: boolean) {
     setFlipped(next)
@@ -57,23 +55,11 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
               gold={display.specimenNo === '00'}
               vnum={display.specimenNo}
               name={display.shortName}
-              cue={gripCue.value}
-              faceSource={{ label: 'Reference schematic', color: '#CDBA8E' }}
-              confidence={{
-                label: CONFIDENCE_META[gripCue.confidence].label,
-                color: FRONT_INK[gripCue.confidence],
-                approx: gripCue.approximate,
-              }}
+              cue={cue}
+              faceSource={faceSource}
+              confidence={confidence}
               maxWidth={chase ? 520 : 360}
-              face={
-                <RefractorBall
-                  spinAxis={motion.spinAxis}
-                  gyro={motion.gyro}
-                  accent={accent}
-                  id={`wall-${display.slug}`}
-                  gripPoints={canonical.fingerPlacement}
-                />
-              }
+              face={face}
             />
             <button
               ref={frontButton}

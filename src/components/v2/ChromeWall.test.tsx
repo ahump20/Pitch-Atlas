@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { featuredPitchSet } from '../../data/featured'
+import { gripEntryFor } from '../../data/grips'
 import { ChromeWall } from './ChromeWall'
 
 describe('ChromeWall (the filed set)', () => {
@@ -47,7 +48,29 @@ describe('ChromeWall (the filed set)', () => {
     )
     expect(container.querySelector('.rfx-grade')).toBeNull()
     expect(container.querySelectorAll('.rfx-read').length).toBe(featuredPitchSet().length)
-    expect(screen.getAllByText('Reference schematic')).toHaveLength(featuredPitchSet().length)
+    expect(container.querySelectorAll('.rfx-gripchip')).toHaveLength(featuredPitchSet().length)
+  })
+
+  /* The front door used to hard-code the seam drawing and the words "Reference
+     schematic" onto all three cards, so the two pitches Austin filmed showed a
+     drawing while their real clips shipped unused. Derive the expectation from
+     the grip library instead of pinning a literal, so a new clip can't be
+     shadowed again without this failing. */
+  it('plays Austin\'s own grip video on every featured pitch that has one', () => {
+    const { container } = render(
+      <MemoryRouter>
+        <ChromeWall />
+      </MemoryRouter>,
+    )
+
+    const filmed = featuredPitchSet().filter((entry) => gripEntryFor(entry.display.slug)?.clip)
+    expect(filmed.length).toBeGreaterThan(0)
+    expect(screen.getAllByText('Austin video')).toHaveLength(filmed.length)
+
+    for (const entry of filmed) {
+      const clip = gripEntryFor(entry.display.slug)?.clip
+      expect(container.querySelector(`video source[src="${clip?.mp4}"]`)).not.toBeNull()
+    }
   })
 })
 

@@ -125,6 +125,8 @@ export default function BallScene({
   handedness = 'right',
   vectors = false,
   faceGrip = false,
+  interactive = true,
+  distance = 6.4,
   activeContact,
 }: {
   entry: PitchAtlasEntry
@@ -135,6 +137,14 @@ export default function BallScene({
   handedness?: Handedness
   vectors?: boolean
   faceGrip?: boolean
+  /** Drag-to-turn. Off for a ball mounted inside a card: the card is a link, so a
+   *  drag that ends on it would navigate, and the showpiece spin is the whole job
+   *  there. Handling the ball is what the specimen page's Grip Lab is for. */
+  interactive?: boolean
+  /** Camera distance. The default frames the ball for the Grip Lab's wide stage;
+   *  a square or card-shaped canvas needs more room or the fingers leave the top
+   *  of the frustum. Larger = further back = more of the hand in frame. */
+  distance?: number
   activeContact?: string
 }) {
   const placement = entry.canonical.gripModel.contacts
@@ -146,7 +156,7 @@ export default function BallScene({
       // visible difference at arm's length.
       dpr={[1, 1.5]}
       gl={{ antialias: true, alpha: true }}
-      camera={{ position: [0, 0.15, 6.4], fov: 32 }}
+      camera={{ position: [0, 0.15, distance], fov: 32 }}
       onCreated={({ gl }) => {
         // The recipe's visual target. Set explicitly — do not rely on defaults.
         // Pulled up a touch to suit the studio's darker gradient env, so the warm
@@ -166,14 +176,16 @@ export default function BallScene({
         {vectors ? <Vectors motion={entry.motion} /> : null}
       </group>
 
-      <OrbitControls
-        makeDefault
-        enableZoom={false}
-        enablePan={false}
-        enableDamping
-        dampingFactor={0.08}
-        rotateSpeed={0.55}
-      />
+      {interactive ? (
+        <OrbitControls
+          makeDefault
+          enableZoom={false}
+          enablePan={false}
+          enableDamping
+          dampingFactor={0.08}
+          rotateSpeed={0.55}
+        />
+      ) : null}
     </Canvas>
   )
 }
