@@ -1,92 +1,116 @@
 # design-sync notes — Pitch Atlas
 
-Project: **Pitch Atlas Design System** (`aa4ea331-5881-4e4c-a982-988929d543ac`).
-Shape: `package`, synth-entry mode. Global: `window.PitchAtlas`.
+Project: **Pitch Atlas Design System** (`e8154c97-53f1-4412-aa6b-9d019bc85e0c`) —
+verified live 2026-07-24 and the ONLY canonical system. Two dead ids appear in
+older prose: `1f94fe08-…` and `aa4ea331-…`. Both are gone (`aa4ea331` 404s). The
+config's `projectId` is the authority; check it against `list_projects` first.
 
-## This repo is an app, not a component library
-Pitch Atlas builds a static SSG site (`vite build` → `dist/` of HTML pages), with
-no `package.json` `main`/`module`/`exports`. The converter therefore runs in
-**synth-entry mode** (scans `srcDir` for PascalCase exports) and needs the package
-locatable at `node_modules/<pkg>`:
+## READ THIS FIRST — the config was clobbered once (2026-06-28 → 2026-07-24)
+Commit `993e5f9` ("import UI primitives to Claude Design system") overwrote this
+file, `config.json`, `conventions.md`, and the whole `previews/` directory with a
+DIFFERENT effort: 73 raw shadcn primitives from `src/components/ui`, aimed at the
+now-deleted `aa4ea331` project. The real elevated system's sync inputs survived
+only in commit `1f53c503`, and were restored from there on 2026-07-24.
+If this file ever again describes `srcDir: src/components/ui` and ~73 components,
+you are reading the clobbered variant — recover from `1f53c503`. The primitives
+effort itself is preserved at commit `a46ee0e` if it is ever wanted back.
 
-- **Symlink required (gitignored, recreate per clone):**
-  `ln -sfn /Users/AustinHumphrey/Pitch-Atlas node_modules/pitch-atlas`
-  (the path is the canonical checkout — earlier notes said `~/code/Pitch-Atlas`,
-  which is stale; this repo lives at `~/Pitch-Atlas`.)
-  Without it the build dies with `ENOENT node_modules/pitch-atlas/package.json`.
+Shape: `package`. Global: `window.PitchAtlas`.
 
-## Scope is deliberately the reusable primitives only
-`cfg.srcDir = "src/components/ui"` → the 18 shadcn-style primitive files, which
-expand to 73 exported components. The rest of `src/components/` is **intentionally
-excluded**: page sections (HeroCase, ChromeWall, TheRead…) are bound to the
-`PitchAtlasEntry` data model, and the 3D ball (Ball/BallStage/Studio) needs a WebGL
-canvas — neither makes a reusable design-system card. A full-`src` scan also fails
-the esbuild bundle (companion components import `.webp` sprites; `index.css` has
-`url(/atmosphere/*.webp)` with no loader). If asked to widen scope later, add the
-provenance atoms (ClaimCard, badges) before the page sections.
+## What this system is now (regenerated from live source, 2026-06-28)
+The delivered system is regenerated from the REAL product components, not a
+hand-authored re-creation. The earlier `pa-*` mock components are retired.
+
+- **Entry:** `--entry ./src/components/ds/index.ts` (the barrel; exports all 15
+  branded components incl. the 3 re-exports BrandMark/ConfidenceDot/PitchSpecimenCard).
+- **Components (19 as of 2026-07-24; was 22):** 15 branded `ds/` + 4 curated
+  generic primitives (Select, Dialog, Tooltip, Toaster). **Tabs, Checkbox, and
+  Avatar were dropped** — the June build compiled them from `src/components/ui/`
+  files that only ever existed on an unmerged branch (`6191e44` and siblings);
+  they are not on `main`, so they cannot be built and must not be advertised.
+  Their cards/previews were deleted from the project. To bring them back it is a
+  product decision (`npx shadcn add tabs checkbox avatar`), then re-add to
+  `componentSrcMap` + `extraEntries` + `docsMap`; the old previews and doc-groups
+  are recoverable from commit `1f53c503`. The primitives live in
+  `src/components/ui/` (outside `srcDir`), so they are bundled onto the global via
+  `cfg.extraEntries` (path-form repo files) AND carded via `cfg.componentSrcMap`.
+  Their group is set by `.design-sync/doc-groups/<Name>.md` frontmatter
+  (`category: Primitives`).
+- **Real classes:** the bundled components render the product's own
+  `.v2-cta`/`.btn-foil`/`.rfx-*`/`.hairline` — verified in `_ds_bundle.js`.
+
+## cfg.provider = DsRouter (MemoryRouter) — REQUIRED
+`PitchSpecimenCard` → `RefractorCard` renders a react-router `<Link>`, which throws
+without a Router. `.design-sync/ds-router.tsx` exports `DsRouter` (a MemoryRouter
+wrapper from `react-router-dom`), added to `cfg.extraEntries` and set as
+`cfg.provider`. Because it is bundled into the SAME `_ds_bundle.js` as the card,
+its MemoryRouter shares the one react-router context the Link consumes (a second
+copy would not). Harmless for every non-routing cell.
+
+## OPEN: the cards are verified but NOT yet uploaded (2026-07-24)
+The 2026-07-24 driver run is fully green — `ok: true`, render check 19/19, anchor
+matches, only the accepted `Impact` warn — and the upload was deliberately **not**
+performed. Austin's call: the 19 cards read as a thin strip of content on 60–85%
+dead void, with several exports clipped off the right edge, and they do not match
+how the product actually presents these components (see
+`src/pages/DesignSystemShowcase.tsx`, the canonical in-product gallery). Approved
+design for the fix: `docs/superpowers/specs/2026-07-24-ds-component-truth-and-motion-design.md`.
+Do not upload the current cards as-is; finish that work first. Bundle is at
+`ds-bundle/`, verdict at `ds-bundle/.resync-verdict.json`.
+
+## Previews — authored, on the real surface
+`.design-sync/previews/<Name>.tsx` (committed, owned — win over generated). Each
+wraps its demo in the real `.rfx-panel` charcoal surface so the dark-native
+components read correctly on the void; content is real, qualitative pitch material
+(no fabricated velo/spin/break, no medical/youth claims). Render check: 22/22 clean.
 
 ## cssEntry is a HASHED dist file — re-point on every app rebuild
-`cfg.cssEntry = "dist/assets/index-Dtuk9Hgh.css"` is the compiled Tailwind v4 CSS
-(tokens + used utilities + @font-face). **The hash changes every `vite build`.**
-Before a re-sync: run `npm run build`, then re-point `cssEntry` at the new
-`dist/assets/index-*.css` (the large one, ~230KB — the small one is a chunk).
-Source `src/index.css` is NOT usable: Tailwind v4 utilities are generated at build,
-not present in source.
+`cfg.cssEntry` is the compiled Tailwind v4 CSS (`dist/assets/index-*.css`, the
+large ~260KB one — the small one is a chunk). **The hash changes every `vite
+build`.** Re-point before a re-sync. It carries the `:root` tokens, the real
+component classes, AND the primitives' utilities (Tailwind scans the `ui/` files
+even though no page imports them).
 
-## Fonts
-`cfg.extraFonts` points at `@fontsource/*/latin-400.css` (Anton, Martian Mono,
-Hanken Grotesk, Newsreader). The compiled site CSS references fonts via absolute
-`/assets/*.woff2` paths the converter can't resolve, so they ship from @fontsource
-instead. Only latin-400 to keep the bundle light.
+## Fonts — self-hosted, NO Google CDN (the audit's −2, fixed)
+The Google `@import` lived only in the graded artifact's hand-authored
+`tokens/fonts.css`, which the regenerated bundle replaces. `cfg.extraFonts` ships
+`@fontsource` latin-400 for the four families; `styles.css` → `fonts/fonts.css` is
+the self-hosted closure (zero remote font request — verified by grep).
+POLISH (converter-pipeline, not a hand-edit): `fonts/fonts.css` also carries ~42
+`@font-face` extracted from the compiled cssEntry that point at absolute
+`/assets/*.woff2` (404 in the sandbox; the 4 self-hosted faces carry every glyph,
+so nothing visibly breaks). Suppress those at the converter level + add the real
+weights/italics when polishing.
 
-## Render check / capture — no chromium cached
-Drive the system Chrome:
-`DS_CHROMIUM_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"`
-on both `package-validate.mjs` and `package-capture.mjs` (and the `resync.mjs`
-driver). Avoids the ~200MB `npx playwright install chromium`.
+## Upload — ATOMIC path, PRESERVE the curation
+`1f94fe08` is pinned + non-empty → atomic upload. The regeneration replaces ONLY
+the component layer + bundle + css + fonts. **Preserve (never delete):**
+`tokens/{colors,typography,spacing,effects}.css`, `guidelines/**` (17 cards),
+`ui_kits/**` (the web kit), `reference/**`, `assets/**`, `SKILL.md`.
+- writes: `components/**`, `_ds_bundle.js`, `_ds_bundle.css`, `styles.css`,
+  `fonts/**`, `_preview/**`, `_vendor/**`, `README.md`, `_ds_sync.json`,
+  `_ds_needs_recompile`.
+- deletes (NARROW): `components/**` (orphan the old flat mock layout),
+  `components.css`, `components-specimen.css` (dead — the new `styles.css` imports
+  `_ds_bundle.css` instead). Do NOT glob-delete tokens/guidelines/ui_kits/reference/assets.
 
-## Known render warns (check re-sync warns against this list)
-- `[FONT_MISSING] "Impact"` — accepted. Impact is a decorative system display
-  fallback used by the compiled CSS; it legitimately can't ship. Renders in the
-  system fallback. Not a new warn.
+## Render check / capture — DO NOT set DS_CHROMIUM_PATH (corrected 2026-07-24)
+Playwright chromium **1228 is cached** at `~/Library/Caches/ms-playwright/`
+(macOS path — NOT `~/.cache/ms-playwright/`, which is the Linux one and will look
+empty). 1228 is exactly what the repo's pinned playwright 1.61.1 wants, so the
+render check works with **no env var at all**.
 
-## Authored previews
-27 of 73 components have authored `.design-sync/previews/*.tsx`, all graded `good`.
-The other 46 are floor cards — sub-parts (DialogContent, SelectItem, AlertTitle…)
-shown composed inside their parents' authored cards. Portal components (Select,
-Dialog, AlertDialog, Tooltip) author the trigger/closed surface only; the open
-panel portals to `<body>` and escapes a static card. SelectGroup is authored
-standalone with plain rows (its real use is inside an open SelectContent).
+The older advice here said to drive system Chrome via
+`DS_CHROMIUM_PATH="/Applications/Google Chrome.app/…"`. That now **hangs and fails**
+with `browserType.launch: Timeout 180000ms exceeded` — Austin's real Chrome is
+normally running and playwright cannot take its profile. Symptom is
+`[RENDER_SKIPPED]`, validate exit 1, and capture skipped as `prior_failure`, which
+looks like a build problem but is not. Just unset it and re-run the driver.
 
-## Re-sync risks (what can silently go stale)
-- **cssEntry hash** — stale hash → `[CSS_…]` or missing tokens. Re-point after
-  `npm run build`. This is the single most likely break.
-- **The symlink** — gitignored; recreate on a fresh clone or the build ENOENTs.
-- **Repo lint/typecheck** — `tsconfig` only includes `src/` (previews safe), and
-  `eslint.config.js` ignores `.design-sync` / `.ds-sync` / `ds-bundle`. If those
-  ignores are dropped, `eslint .` fails on the previews' `pitch-atlas` shim import.
-- **Node** — `.nvmrc` says 24; this sync ran on v22.17.1 (above the `>=20.19`
-  floor). Fine for the converter; the app build target is still 24.
-- **`Impact` font** — if the compiled CSS stops referencing it the warn vanishes;
-  if a real brand font goes missing instead, that IS new — investigate.
+## Symlink required (gitignored, recreate per clone)
+`ln -sfn /Users/AustinHumphrey/Pitch-Atlas node_modules/pitch-atlas` — synth-entry
++ `pitch-atlas` import shim need the package locatable at `node_modules/<pkg>`.
 
-## HELD re-sync 2026-06-25 — dark-void rebrand changes every card surface
-A re-sync ran clean mechanically (73 components `unchanged`, 0 `bad`, 0 `thin`;
-upload delta = bundle + styling + aux + 27 render-churned components, no deletes)
-but the **canary spot-checks were held, not uploaded**. Cause: the cream→dark-void
-rebrand landed AFTER the Jun 24 sync. The compiled CSS now sets `--background:#070509`
-and the previews render each small primitive (Label, Separator, Skeleton, Alert)
-floating above a large near-black panel — the Jun 24 grades were earned on the old
-CREAM surface, so the look genuinely changed. Two artifacts to resolve before a
-clean push:
-  1. **Card surface** — decide the DS card treatment for the dark brand (a framed
-     dark surface like the live site, vs. the raw `--background` void the preview
-     container currently shows). This is a brand call, not mechanical.
-  2. **Atmosphere webps 404** — the CSS references `url(/atmosphere/leather.webp)`
-     and `url(/atmosphere/seam.webp)` (absolute paths the converter can't ship);
-     in the preview sandbox they fall back to the void color. Either add them to a
-     copied-assets path the bundle can serve, or scope those rules out of the DS
-     styles. Until then, any preview that hits them shows a black fallback.
-The upload was NOT performed; the project still holds the Jun 24 (cream) cards. The
-built bundle is at `ds-bundle/` and the verdict at `ds-bundle/.resync-verdict.json`
-if resuming. `cssEntry` was re-pointed to `index-diVqhKo8.css` for this build.
+## Known render warns (accepted)
+`[FONT_MISSING] "Impact"` — a decorative system display fallback the compiled CSS
+references; it legitimately can't ship and renders in the system fallback.

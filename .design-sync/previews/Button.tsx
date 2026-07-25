@@ -1,29 +1,36 @@
 import { Button } from 'pitch-atlas'
 
-export const Variants = () => (
-  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-    <Button>File the pitch</Button>
-    <Button variant="secondary">Secondary</Button>
-    <Button variant="outline">Outline</Button>
-    <Button variant="ghost">Ghost</Button>
-    <Button variant="destructive">Remove</Button>
-    <Button variant="link">View source</Button>
-  </div>
-)
+// Previews render on the void; a real .rfx-panel surface gives the dark-native
+// components the charcoal stage + bone hairline they were drawn for.
+const stage = {
+  padding: '22px 24px',
+  display: 'flex',
+  gap: '14px',
+  flexWrap: 'wrap',
+  alignItems: 'center',
+}
 
-export const Sizes = () => (
-  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-    <Button size="xs">Extra small</Button>
-    <Button size="sm">Small</Button>
-    <Button size="default">Default</Button>
-    <Button size="lg">Large</Button>
-  </div>
-)
+export function Registers() {
+  return (
+    <div className="rfx-panel" style={stage}>
+      <Button variant="chrome">Study the grip</Button>
+      <Button variant="foil">File the pitch</Button>
+      <Button variant="ghost">Not now</Button>
+      <Button variant="ink">Cite a source</Button>
+      <Button variant="link">View provenance</Button>
+    </div>
+  )
+}
 
-export const States = () => (
-  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
-    <Button>Enabled</Button>
-    <Button disabled>Disabled</Button>
-    <Button variant="outline" disabled>Disabled outline</Button>
-  </div>
-)
+export function WithArrow() {
+  return (
+    <div className="rfx-panel" style={stage}>
+      <Button variant="chrome" arrow>
+        Open the four-seam
+      </Button>
+      <Button variant="foil" arrow>
+        Next specimen
+      </Button>
+    </div>
+  )
+}

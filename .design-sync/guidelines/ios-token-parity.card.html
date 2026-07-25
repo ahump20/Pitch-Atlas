@@ -1,0 +1,124 @@
+<!-- @dsCard group="Foundations" -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iOS ↔ Web token parity</title>
+<link rel="stylesheet" href="../styles.css">
+<style>
+  :root {
+    --void: #070509; --press: #221E18; --bone: #F6F1E6; --bone2: #C9C2B0; --ink3: #8A8576;
+    --cyan: #37D6FF; --powder: #6CACE4; --machined: rgba(246,241,230,0.12);
+    --font-anton: "Anton", Impact, sans-serif;
+    --font-display: "Newsreader", ui-serif, Georgia, serif;
+    --font-prose: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-mono: "Martian Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 36px clamp(20px, 4vw, 52px) 56px; color: var(--bone);
+    font-family: var(--font-prose);
+    background:
+      radial-gradient(120% 70% at 85% -10%, rgba(108,172,228,0.08), transparent 60%),
+      var(--void);
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--powder); margin: 0 0 16px; }
+  h1 { font-family: var(--font-anton); font-size: clamp(34px, 5vw, 52px); margin: 0; letter-spacing: 0.01em; transform: skewX(-7deg); text-shadow: 2px 3px 0 rgba(0,0,0,0.5); }
+  .lede { font-family: var(--font-display); font-style: italic; font-size: 18px; line-height: 1.5; color: var(--bone2); margin: 20px 0 6px; max-width: 64ch; }
+  .lede code { font-style: normal; font-family: var(--font-mono); font-size: 13px; color: var(--bone); }
+  .grp { margin-top: 34px; }
+  .grp > h2 { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--cyan); margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid var(--machined); }
+  table { width: 100%; border-collapse: collapse; }
+  th { text-align: left; font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink3); padding: 0 10px 8px; font-weight: 400; }
+  td { padding: 9px 10px; border-top: 1px solid var(--machined); vertical-align: middle; }
+  .sw { display: inline-block; width: 34px; height: 22px; border-radius: 5px; border: 1px solid var(--machined); vertical-align: middle; }
+  .tok { font-family: var(--font-mono); font-size: 12px; color: var(--bone); }
+  .tok.web { color: var(--bone2); }
+  .hex { font-family: var(--font-mono); font-size: 11px; color: var(--ink3); letter-spacing: 0.04em; }
+  .role { font-family: var(--font-prose); font-size: 12.5px; color: var(--bone2); }
+  sup { color: var(--powder); font-family: var(--font-mono); font-size: 9px; }
+  .note { margin-top: 30px; font-family: var(--font-prose); font-size: 12.5px; line-height: 1.6; color: var(--ink3); border-top: 1px solid var(--machined); padding-top: 16px; }
+  .note code { font-family: var(--font-mono); font-size: 11px; color: var(--bone2); }
+  .colw1 { width: 32%; } .colw2 { width: 30%; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="eyebrow">Foundations · Pitch Atlas</p>
+    <h1>WEB ↔ iOS TOKEN PARITY</h1>
+    <p class="lede">The SwiftUI <code>PitchAtlasTheme</code> is a direct port of the web design system's rendered tokens; its own header says exactly that. Each color below shows the web CSS variable beside its <code>PitchAtlasTheme.*</code> name and the one shared hex.</p>
+
+    <div class="grp">
+      <h2>Surfaces</h2>
+      <table>
+        <thead><tr><th class="colw1">Web token</th><th class="colw2">iOS PitchAtlasTheme</th><th>Hex</th><th></th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="tok web">--color-void</td><td class="tok">.void</td><td class="hex">#070509</td><td><span class="sw" style="background:#070509"></span></td><td class="role">App field, every screen</td></tr>
+          <tr><td class="tok web">--color-press</td><td class="tok">.press</td><td class="hex">#221E18</td><td><span class="sw" style="background:#221E18"></span></td><td class="role">Leather-press cards</td></tr>
+          <tr><td class="tok web">--color-paper-2 <sup>†</sup></td><td class="tok">.paper2</td><td class="hex">#141016</td><td><span class="sw" style="background:#141016"></span></td><td class="role">Secondary panels</td></tr>
+          <tr><td class="tok web">--color-navy</td><td class="tok">.paper3</td><td class="hex">#0C2340</td><td><span class="sw" style="background:#0C2340"></span></td><td class="role">Deep insets, ball core</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grp">
+      <h2>Text</h2>
+      <table>
+        <thead><tr><th class="colw1">Web token</th><th class="colw2">iOS PitchAtlasTheme</th><th>Hex</th><th></th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="tok web">--color-bone</td><td class="tok">.bone</td><td class="hex">#F6F1E6</td><td><span class="sw" style="background:#F6F1E6"></span></td><td class="role">Primary text</td></tr>
+          <tr><td class="tok web">--color-bone-2</td><td class="tok">.bone2</td><td class="hex">#C9C2B0</td><td><span class="sw" style="background:#C9C2B0"></span></td><td class="role">Secondary, captions</td></tr>
+          <tr><td class="tok web">--color-ink-3</td><td class="tok">.ink3</td><td class="hex">#8A8576</td><td><span class="sw" style="background:#8A8576"></span></td><td class="role">Muted, hairlines, "unverified"</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grp">
+      <h2>Accent &amp; seam</h2>
+      <table>
+        <thead><tr><th class="colw1">Web token</th><th class="colw2">iOS PitchAtlasTheme</th><th>Hex</th><th></th><th>Role</th></tr></thead>
+        <tbody>
+          <tr><td class="tok web">--color-cyan</td><td class="tok">.cyan</td><td class="hex">#37D6FF</td><td><span class="sw" style="background:#37D6FF"></span></td><td class="role">Interaction accent</td></tr>
+          <tr><td class="tok web">--color-cyan-deep</td><td class="tok">.cyanDeep</td><td class="hex">#1C8FD6</td><td><span class="sw" style="background:#1C8FD6"></span></td><td class="role">Specimen numbers, links</td></tr>
+          <tr><td class="tok web">--color-seam-bright</td><td class="tok">.seamBright</td><td class="hex">#FF2D44</td><td><span class="sw" style="background:#FF2D44"></span></td><td class="role">The seam, graphic only</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grp">
+      <h2>Provenance ladder</h2>
+      <table>
+        <thead><tr><th class="colw1">Web token</th><th class="colw2">iOS PitchAtlasTheme</th><th>Hex</th><th></th><th>Confidence tier</th></tr></thead>
+        <tbody>
+          <tr><td class="tok web">--color-ok-bright</td><td class="tok">.okBright</td><td class="hex">#34E27E</td><td><span class="sw" style="background:#34E27E"></span></td><td class="role">official-data</td></tr>
+          <tr><td class="tok web">--color-powder</td><td class="tok">.powder</td><td class="hex">#6CACE4</td><td><span class="sw" style="background:#6CACE4"></span></td><td class="role">pitcher-own-words</td></tr>
+          <tr><td class="tok web">--color-teal-glow <sup>†</sup></td><td class="tok">.tealGlow</td><td class="hex">#00A2A0</td><td><span class="sw" style="background:#00A2A0"></span></td><td class="role">coach-observed</td></tr>
+          <tr><td class="tok web">--color-amber-bright</td><td class="tok">.amberBright</td><td class="hex">#FFC23C</td><td><span class="sw" style="background:#FFC23C"></span></td><td class="role">reputable-analysis</td></tr>
+          <tr><td class="tok web">--color-sand</td><td class="tok">.sandBright</td><td class="hex">#8A7A5E</td><td><span class="sw" style="background:#8A7A5E"></span></td><td class="role">secondhand / community</td></tr>
+          <tr><td class="tok web">--color-ink-3</td><td class="tok">.ink3</td><td class="hex">#8A8576</td><td><span class="sw" style="background:#8A8576"></span></td><td class="role">unverified — honest gray</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grp">
+      <h2>Pitch-family dots</h2>
+      <table>
+        <thead><tr><th class="colw1">Web token</th><th class="colw2">iOS PitchAtlasTheme</th><th>Hex</th><th></th><th>Family</th></tr></thead>
+        <tbody>
+          <tr><td class="tok web">--color-navy-2</td><td class="tok">.navyLift</td><td class="hex">#15406E</td><td><span class="sw" style="background:#15406E"></span></td><td class="role">fastball, lifted navy</td></tr>
+          <tr><td class="tok web">--color-violet <sup>‡</sup></td><td class="tok">.violet</td><td class="hex">#A92A22</td><td><span class="sw" style="background:#A92A22"></span></td><td class="role">breaking, seam-burgundy</td></tr>
+          <tr><td class="tok web">--color-ok</td><td class="tok">.lime</td><td class="hex">#2E7D55</td><td><span class="sw" style="background:#2E7D55"></span></td><td class="role">offspeed, field green</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="note">
+      Hex values are read directly from <code>Core/Theme/PitchAtlasTheme.swift</code> (the iOS source of truth) and match this kit's <code>kit.css</code> exactly.
+      <sup>†</sup> The iOS layer carries a small documented retone of two web surfaces. <code>--color-paper-2</code> warms to <code>#141016</code>, and <code>--color-teal-glow</code> deepens to <code>#00A2A0</code> on device. <sup>‡</sup> The family-dot accents are the theme's "collegiate jewel lifts": iOS reuses the <code>.violet</code> name for a seam-burgundy, where the web <code>--color-violet</code> renders <code>#8A6BFF</code>. Sourced, not corrected. The divergences are shown, not smoothed over.
+    </p>
+  </div>
+</body>
+</html>
