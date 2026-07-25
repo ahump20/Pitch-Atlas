@@ -64,6 +64,32 @@ wraps its demo in the real `.rfx-panel` charcoal surface so the dark-native
 components read correctly on the void; content is real, qualitative pitch material
 (no fabricated velo/spin/break, no medical/youth claims). Render check: 22/22 clean.
 
+## ALWAYS pass --entry; omitting it silently drops the 3 re-exported components
+Bit on 2026-07-24. The full driver call is:
+
+    node .ds-sync/resync.mjs --config .design-sync/config.json \
+      --node-modules node_modules --out ds-bundle \
+      --entry ./src/components/ds/index.ts
+
+`--entry` is NOT in the one-line usage string (it hides behind the `…`) and is
+NOT a config field, so it is easy to drop. Without it the build resolves the
+package's own entry instead of the ds barrel, and **BrandMark, ConfidenceDot and
+PitchSpecimenCard vanish from `window.PitchAtlas`** — precisely the 3 components
+the barrel re-exports from outside `srcDir` (`brand/`, `provenance/`,
+`refractor/`). The 4 primitives survive because they are in `cfg.extraEntries`.
+
+The tell is one line in the build stage:
+
+    exported PascalCase symbols: 41; bundle export list: 38   # WRONG (no --entry)
+    exported PascalCase symbols: 26; bundle export list: 41   # RIGHT
+
+**package-build still prints `✓ wrote ds-bundle: … + 19 component previews`** and
+the manifest still lists all 19, because the manifest comes from
+`cfg.componentSrcMap` and never from what actually bundled. Only `validate`
+catches it, as `[BUNDLE_EXPORT] 3/19 not a component on window.PitchAtlas` plus
+two `root empty` renders. If BrandMark or ConfidenceDot ever render empty, check
+this flag before debugging the components — they are fine.
+
 ## ORDERING RULE: re-point cssEntry AFTER the last app build, never before
 Bit twice on 2026-07-24. The hash changes on EVERY `vite build`, so any sequence
 of "set cssEntry → build the app again → run the driver" ships a bundle with no

@@ -44,7 +44,7 @@
     "Tooltip": ".design-sync/doc-groups/Tooltip.md",
     "Toaster": ".design-sync/doc-groups/Toaster.md"
   },
-  "cssEntry": "dist/assets/index-Bj-tBw3q.css",
+  "cssEntry": "dist/assets/index-B6v5Yv9_.css",
   "extraEntries": [
     "./src/components/ui/select.tsx",
     "./src/components/ui/dialog.tsx",

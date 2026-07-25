@@ -338,7 +338,14 @@
   /* Route transitions speak the same duration vocabulary as component motion —
      see the --pa-motion-* bands. Exit/enter shift by 30ms/20ms against the older
      hand-set values; both stay inside their doctrine bands, and move was already
-     exactly the medium band. */
+     exactly the medium band. Measured on the built site: the blank-void gap
+     between old and new content is 120ms (was 150ms) and the whole handoff is
+     310ms (was 360ms), with the page legible by 150ms.
+
+     CAREFUL: --duration-exit is used twice — as the exit duration AND as the
+     delay that holds the enter animation until the exit finishes. Retuning it
+     re-choreographs every route handoff, so do not treat it as a free alias of
+     the press/hover band even though it currently resolves to the same value. */
   --duration-exit: var(--pa-motion-tiny);
   --duration-enter: var(--pa-motion-short);
   --duration-move: var(--pa-motion-medium);
