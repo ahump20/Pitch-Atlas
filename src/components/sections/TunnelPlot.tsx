@@ -37,9 +37,9 @@ const RELEASE_Y = CY - CLAMP - 6
 const TUNNEL_Y = CY - 150
 
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
-  fastball: { label: 'Fastball', color: '#37D6FF' },
-  breaking: { label: 'Breaking', color: '#8A6BFF' },
-  offspeed: { label: 'Offspeed', color: '#7CFF52' },
+  fastball: { label: 'Fastball', color: '#FF6A29' },
+  breaking: { label: 'Breaking', color: '#5FE0EA' },
+  offspeed: { label: 'Offspeed', color: '#E4B45A' },
 }
 
 interface Spot {

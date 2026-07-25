@@ -146,7 +146,7 @@
 
   .blaze-prop-ink {
     fill: none;
-    stroke: color-mix(in srgb, var(--color-cyan, #37d6ff) 64%, var(--color-bone, #f6f1e6));
+    stroke: color-mix(in srgb, var(--color-cyan, #5fe0ea) 64%, var(--color-bone, #f6f1e6));
     stroke-width: 1.5;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -172,7 +172,7 @@
   }
 
   .blaze-dog-button:focus-visible {
-    outline: 2px solid color-mix(in srgb, var(--color-cyan, #37d6ff) 80%, white);
+    outline: 2px solid color-mix(in srgb, var(--color-cyan, #5fe0ea) 80%, white);
     outline-offset: 5px;
     border-radius: 999px;
   }
@@ -264,7 +264,7 @@
     height: 10px;
     border-radius: 50%;
     background:
-      radial-gradient(circle at 52% 44%, var(--color-cyan, #37d6ff) 0 2px, transparent 2px),
+      radial-gradient(circle at 52% 44%, var(--color-cyan, #5fe0ea) 0 2px, transparent 2px),
       color-mix(in srgb, var(--color-bone, #f6f1e6) 84%, var(--color-seam-bright, #ff2d44));
     border: 1px solid color-mix(in srgb, var(--color-seam-bright, #ff2d44) 68%, #2b160d);
     transform: rotate(7deg);

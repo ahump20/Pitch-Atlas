@@ -37,14 +37,13 @@ const FAMILY_EYEBROW: Record<RepertoireFamily, string> = {
 }
 
 const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  // collegiate jewels printed at ink density for the cream field — pennant
-  // navy, varsity forest, letterman burgundy, sand, seam. The neon triads
-  // stay on the card faces.
-  fastball: '#2C5A8C',
-  offspeed: '#2F5D46',
-  breaking: '#6E2B35',
-  specialty: '#8A6B24',
-  banned: '#A8232F',
+  // The same five families as FAMILY_ACCENT, printed at ink density for the cream
+  // field. Electric Burnt Chrome struck as ink rather than as a lift.
+  fastball: '#A83607', // burnt orange ink
+  offspeed: '#8A6420', // brass ink
+  breaking: '#1F6E78', // cyan ink
+  specialty: '#4E555B', // chromium ink
+  banned: '#8F2420', // seam ink
 }
 
 function HeroBadge({ entry }: { entry: RepertoireEntry }) {

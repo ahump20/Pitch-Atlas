@@ -91,20 +91,27 @@ export function RefractorBall({
       style={{ position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%' }}
     >
       <defs>
-        <radialGradient id={`lea-${id}`} cx="40%" cy="28%" r="82%">
-          <stop offset="0%" stopColor="#FFFCF4" />
-          <stop offset="40%" stopColor="#F4EEDF" />
-          <stop offset="78%" stopColor="#DDCFB4" />
-          <stop offset="100%" stopColor="#B8A582" />
+        {/* Aged cover, not a glossy orb: the terminator runs down into a genuine
+            shadow so the sphere has a dark side. The old ramp bottomed out at
+            #B8A582 and never got dark, which is what made it read plastic. */}
+        <radialGradient id={`lea-${id}`} cx="38%" cy="26%" r="84%">
+          <stop offset="0%" stopColor="#FFFDF7" />
+          <stop offset="34%" stopColor="#EFE6D4" />
+          <stop offset="66%" stopColor="#C9B795" />
+          <stop offset="88%" stopColor="#7E6E52" />
+          <stop offset="100%" stopColor="#3A3125" />
         </radialGradient>
         <radialGradient id={`sun-${id}`} cx="50%" cy="50%" r="58%">
           <stop offset="0%" stopColor={accent.c3} stopOpacity="0.02" />
           <stop offset="62%" stopColor={accent.c3} stopOpacity="0.14" />
           <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
         </radialGradient>
+        {/* A rim LIGHT, not a paint job. At 0.72 the pitch accent washed the whole
+            cover — the circle change's old hot pink turned the ball bubblegum. The
+            leather stays leather; the accent only catches its edge. */}
         <radialGradient id={`rim-${id}`} cx="70%" cy="76%" r="62%">
-          <stop offset="58%" stopColor={accent.c3} stopOpacity="0" />
-          <stop offset="90%" stopColor={accent.c3} stopOpacity="0.72" />
+          <stop offset="62%" stopColor={accent.c3} stopOpacity="0" />
+          <stop offset="91%" stopColor={accent.c3} stopOpacity="0.42" />
           <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
         </radialGradient>
         <radialGradient id={`halo-${id}`} cx="50%" cy="50%" r="50%">
@@ -119,9 +126,29 @@ export function RefractorBall({
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
+        {/* Speculars and the cast shadow are GRADIENTS, not blurred shapes. A
+            filter:blur() inside a 300-unit viewBox rasterizes at that resolution
+            and is then scaled up into the card window, which resampled visibly
+            soft on a high-DPI screen — the "pixelated" read. A gradient is
+            resolution-independent and costs nothing. */}
+        <radialGradient id={`spec-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fff" stopOpacity="0.6" />
+          <stop offset="42%" stopColor="#fff" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id={`spec2-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#fff" stopOpacity="0.92" />
+          <stop offset="52%" stopColor="#fff" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id={`cast-${id}`} cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#000" stopOpacity="0.62" />
+          <stop offset="55%" stopColor="#000" stopOpacity="0.26" />
+          <stop offset="100%" stopColor="#000" stopOpacity="0" />
+        </radialGradient>
       </defs>
 
-      <ellipse cx={cx} cy={cy + r + 8} rx={r * 0.8} ry={12} fill="#000" opacity="0.45" filter={`url(#glow-${id})`} />
+      <ellipse cx={cx} cy={cy + r + 10} rx={r * 0.95} ry={17} fill={`url(#cast-${id})`} />
       {/* a faint accent sunburst behind the ball so it reads set INTO the dark window,
           not floating on it (very low opacity; the dramatic halo, when on, layers over). */}
       <circle cx={cx} cy={cy} r={r + 30} fill={`url(#sun-${id})`} />
@@ -138,8 +165,8 @@ export function RefractorBall({
       <circle cx={cx} cy={cy} r={r} fill={`url(#lea-${id})`} />
       <circle cx={cx} cy={cy} r={r} fill={`url(#rim-${id})`} />
       <circle cx={cx} cy={cy} r={r} fill="#000" opacity="0.12" style={{ mixBlendMode: 'multiply' }} />
-      <ellipse cx={cx - 34} cy={cy - 42} rx={42} ry={27} fill="#fff" opacity="0.62" style={{ filter: 'blur(7px)' }} />
-      <ellipse cx={cx - 44} cy={cy - 52} rx={13} ry={9} fill="#fff" opacity="0.9" style={{ filter: 'blur(2px)' }} />
+      <ellipse cx={cx - 34} cy={cy - 42} rx={54} ry={35} fill={`url(#spec-${id})`} />
+      <ellipse cx={cx - 44} cy={cy - 52} rx={18} ry={13} fill={`url(#spec2-${id})`} />
 
       {runs.filter((x) => !x.front).map((x, i) => (
         <path key={`b${i}`} d={x.d} fill="none" stroke="#6f5036" strokeWidth="1.1" strokeDasharray="2 3" opacity="0.5" />
@@ -175,9 +202,9 @@ export function RefractorBall({
         </g>
       ))}
 
-      <line x1={sx.toFixed(1)} y1={sy.toFixed(1)} x2={ex.toFixed(1)} y2={ey.toFixed(1)} stroke="#37D6FF" strokeWidth="1.8" strokeDasharray="6 4" opacity="0.95" filter={`url(#glow-${id})`} />
-      <path d={arrow(ex, ey, ang)} stroke="#37D6FF" strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d={arrow(sx, sy, ang + Math.PI)} stroke="#37D6FF" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <line x1={sx.toFixed(1)} y1={sy.toFixed(1)} x2={ex.toFixed(1)} y2={ey.toFixed(1)} stroke="#5FE0EA" strokeWidth="1.8" strokeDasharray="6 4" opacity="0.95" filter={`url(#glow-${id})`} />
+      <path d={arrow(ex, ey, ang)} stroke="#5FE0EA" strokeWidth="2" fill="none" strokeLinecap="round" />
+      <path d={arrow(sx, sy, ang + Math.PI)} stroke="#5FE0EA" strokeWidth="2" fill="none" strokeLinecap="round" />
       {gyro ? (
         <>
           <circle cx={ex.toFixed(1)} cy={ey.toFixed(1)} r="9" fill="#FF2433" filter={`url(#glow-${id})`} />

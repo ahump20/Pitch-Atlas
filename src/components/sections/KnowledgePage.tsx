@@ -110,7 +110,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                   key={r.to}
                   to={r.to}
                   className="rfx-plate group flex items-center justify-between gap-3 rounded-sm px-5 py-4"
-                  style={{ '--gc': '#37D6FF' } as CSSProperties}
+                  style={{ '--gc': '#B9D4E5' } as CSSProperties}
                 >
                   <span className="font-athletic text-lg uppercase text-ink">{r.label}</span>
                   <span className="mono-label text-seam transition-colors group-hover:text-ink">→</span>

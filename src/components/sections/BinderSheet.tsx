@@ -6,6 +6,7 @@ import { RefractorBall } from '../refractor/RefractorBall'
 import { gripEntryFor, gripEntryForRepertoire } from '../../data/grips'
 import { pitchBySlug } from '../../data/pitches'
 import { STATUS_LABEL, isEdgeStatus } from '../index/statusBadgeMeta'
+import { FAMILY_ACCENT } from './family-accent'
 
 /*
   The nine-pocket binder sheet — the plastic collector page every card kid knows.
@@ -24,12 +25,11 @@ import { STATUS_LABEL, isEdgeStatus } from '../index/statusBadgeMeta'
   the case lining showing between sleeves.
 */
 
-/* family tab inks — the collegiate jewels (lift variants for the charcoal field) */
-const FAMILY_TAB: Record<string, string> = {
-  fastball: '#5C84B8',
-  breaking: '#B0606C',
-  offspeed: '#5FA27B',
-}
+/* The binder tab dips the same inkwell as the index rows and the header ledger.
+   This used to be a hand-copied subset of FAMILY_ACCENT carrying only three of the
+   five families, so specialty and banned silently fell through to the bone default
+   and the set drifted every time one file was edited and the other wasn't. */
+const FAMILY_TAB: Record<string, string> = FAMILY_ACCENT
 
 export function PocketCard({ entry }: { entry: PitchAtlasEntry }) {
   const { display, canonical, motion } = entry

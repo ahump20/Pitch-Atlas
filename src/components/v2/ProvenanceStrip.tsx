@@ -28,7 +28,7 @@ const LADDER: ClaimConfidence[] = [
 const EXAMPLE = PITCHES[0]
 
 /* the chapter's accent: published to the far stratum and worn by the chapter tick */
-const SCENE_TINT = '#34E27E'
+const SCENE_TINT = '#1F97A2'
 
 export function ProvenanceStrip() {
   return (
