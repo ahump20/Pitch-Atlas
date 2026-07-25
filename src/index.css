@@ -270,8 +270,8 @@
     opacity: 0;
     transform: translateY(20px);
     transition:
-      opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-      transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity var(--pa-motion-slow) var(--pa-ease-settle),
+      transform var(--pa-motion-slow) var(--pa-ease-settle);
     will-change: opacity, transform;
   }
   .reveal.is-visible {
@@ -335,9 +335,13 @@
 /* View Transitions API recipes. The Pitch Index uses stable per-card names for
    filter/view/sort morphs; route links opt into browser-managed transitions. */
 :root {
-  --duration-exit: 150ms;
-  --duration-enter: 210ms;
-  --duration-move: 400ms;
+  /* Route transitions speak the same duration vocabulary as component motion —
+     see the --pa-motion-* bands. Exit/enter shift by 30ms/20ms against the older
+     hand-set values; both stay inside their doctrine bands, and move was already
+     exactly the medium band. */
+  --duration-exit: var(--pa-motion-tiny);
+  --duration-enter: var(--pa-motion-short);
+  --duration-move: var(--pa-motion-medium);
 }
 
 @keyframes fade {
@@ -1401,7 +1405,9 @@
       0 10px 24px -12px rgba(0,0,0,.5), inset 0 1px 0 rgba(246,241,230,.14);
     font-family: var(--font-athletic); font-size: 14px; letter-spacing: .06em;
     text-transform: uppercase; color: #F6F1E6; line-height: 1;
-    transition: transform .15s var(--pa-ease-settle), border-color .2s ease, box-shadow .15s ease;
+    transition: transform var(--pa-motion-tiny) var(--pa-ease-settle),
+      border-color var(--pa-motion-short) var(--pa-ease-settle),
+      box-shadow var(--pa-motion-tiny) var(--pa-ease-settle);
   }
   /* the anisotropic light edge: a thin raking highlight across the top lip, the
      same raking-light vocabulary the card face uses — not a generic box-shadow.
@@ -1427,7 +1433,7 @@
     opacity: 0; mix-blend-mode: screen;
   }
   .btn-foil:hover { border-color: color-mix(in srgb, #FF2D44 85%, transparent); }
-  .btn-foil:hover::after { animation: foil-sweep .9s ease-out; }
+  .btn-foil:hover::after { animation: foil-sweep var(--pa-motion-sweep) var(--pa-ease-settle); }
   .btn-foil.is-ghost {
     background: transparent;
     border-color: color-mix(in srgb, var(--color-bone) 55%, transparent);
@@ -1564,10 +1570,22 @@
     font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .1em; text-transform: uppercase;
     padding: 7px 13px; border-radius: 999px; color: var(--ctl-text, #3F4654);
     border: 1px solid var(--ctl-border, rgba(20,22,27,.22)); background: transparent; cursor: pointer;
-    transition: color .2s, background .2s, border-color .2s;
+    transition: color var(--pa-motion-short) var(--pa-ease-settle),
+      background var(--pa-motion-short) var(--pa-ease-settle),
+      border-color var(--pa-motion-short) var(--pa-ease-settle);
   }
   .rfx-chip:hover { color: var(--ctl-text, #14161B); border-color: var(--ctl-accent, #C8102E); }
+  .rfx-chip:focus-visible { outline: 2px solid var(--ctl-accent, #C8102E); outline-offset: 2px; }
   .rfx-chip[aria-pressed="true"] { color: var(--ctl-on-accent, #FFFFFF); background: var(--ctl-accent, #C8102E); border-color: var(--ctl-accent, #C8102E); font-weight: 600; }
+  /* the paper-tab settle: selecting a chip presses it down once and it rests.
+     Fires when the attribute starts matching, so it is one-shot by construction. */
+  @media (prefers-reduced-motion: no-preference) {
+    .rfx-chip[aria-pressed="true"] { animation: chip-settle var(--pa-motion-short) var(--pa-ease-settle); }
+  }
+  @keyframes chip-settle {
+    from { transform: translateY(-1px) scale(1.015); }
+    to { transform: none; }
+  }
 
   /* status pill: tier color carried via currentColor (set color on the element). */
   .rfx-statpill {
@@ -2465,6 +2483,23 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   /* — one restrained house easing for entrances, controls, and reveals. — */
   --pa-ease-settle: cubic-bezier(0.22, 1, 0.36, 1);
 
+  /* — the four duration bands from docs/WABI-SABI-MOTION.md, promoted to tokens
+       so routes, components, and media share one unit. The doctrine names ranges;
+       these are the single value each band resolves to. `slow` is pinned to the
+       BOTTOM of its 700–1100ms band on purpose: .reveal has always run at 0.7s
+       and adopting a token must not silently retune the site's most-used effect.
+       Component motion uses these names — a raw ms literal in DS component CSS
+       is a defect. Motion supports orientation, feedback, or state change, then
+       decays into stillness; nothing here loops. — */
+  --pa-motion-tiny: 120ms;    /* doctrine 90–140:   press, focus, hover feedback */
+  --pa-motion-short: 190ms;   /* doctrine 160–220:  state change, chip settle    */
+  --pa-motion-medium: 400ms;  /* doctrine 320–480:  positional move, draw-in     */
+  --pa-motion-slow: 700ms;    /* doctrine 700–1100: one-shot scroll reveal       */
+  /* the signature foil sweep sits high in the same slow band and keeps its own
+     tuned value — one pass on hover, never a loop. Named rather than inlined so
+     it is still part of the vocabulary. */
+  --pa-motion-sweep: 900ms;   /* doctrine 700–1100: the foil light pass          */
+
   /* NOTE on the two seam reds: Heritage --color-seam (#C8102E) on cream and the
      void-tuned --color-seam-bright (#FF2D44) inside coal scenes are DELIBERATE
      scene voices, not drift — the bright red exists because #C8102E muddies on
@@ -3079,7 +3114,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     font-size: 11px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase;
     color: var(--color-bone);
     background: linear-gradient(176deg, #17131d 0%, #09070e 100%) padding-box, var(--foil) border-box;
-    border: 1px solid transparent; transition: transform .12s ease, box-shadow .2s ease;
+    border: 1px solid transparent;
+    transition: transform var(--pa-motion-tiny) var(--pa-ease-settle),
+      box-shadow var(--pa-motion-short) var(--pa-ease-settle);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), inset 0 -1px 1px rgba(0, 0, 0, .7),
       0 8px 22px -14px rgba(0, 0, 0, .9), 0 0 24px -18px #37D6FF;
   }
@@ -3104,7 +3141,10 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   /* the specular travels the cap on hover / keyboard focus; the static edge is the
      reduced-motion floor, so the cap stays struck either way. */
   @media (prefers-reduced-motion: no-preference) {
-    .v2-cta::after { transition: opacity .2s ease, background-position .35s ease; }
+    .v2-cta::after {
+      transition: opacity var(--pa-motion-short) var(--pa-ease-settle),
+        background-position var(--pa-motion-medium) var(--pa-ease-settle);
+    }
     .v2-cta:hover::after,
     .v2-cta:focus-visible::after { opacity: .85; background-position: 60% 0; }
   }
@@ -3117,9 +3157,11 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     background: none; border: none; cursor: pointer; text-decoration: none;
     font-family: var(--font-mono); font-size: 11px; font-weight: 600;
     letter-spacing: .14em; text-transform: uppercase; line-height: 1;
-    color: var(--color-bone-2); transition: color .2s ease;
+    color: var(--color-bone-2);
+    transition: color var(--pa-motion-short) var(--pa-ease-settle);
   }
   .ds-btn-link:hover { color: var(--color-bone); }
+  .ds-btn-link:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 3px; border-radius: 3px; }
 
   /* ── the founder's register on the matte stage ──
      Where the atlas speaks in its institutional athletic voice (Anton), the
