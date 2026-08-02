@@ -65,7 +65,17 @@ components read correctly on the void; content is real, qualitative pitch materi
 (no fabricated velo/spin/break, no medical/youth claims). Render check: 22/22 clean.
 
 ## ALWAYS pass --entry; omitting it silently drops the 3 re-exported components
-Bit on 2026-07-24. The full driver call is:
+Bit on 2026-07-24. **Enforced since 2026-08-02 — use `npm run design-sync`**, which
+is `scripts/design-sync.mjs`: it passes `--entry` unconditionally, resolves
+`cssEntry` from the built HTML, and refuses to run if the barrel stopped
+re-exporting any of the three. `npm run design-sync:check` is the preflight alone
+(no build, no sync). `src/test/design-sync-config.test.ts` pins both invariants,
+so the trap now fails a test rather than waiting to be remembered. The driver in
+`.ds-sync/` is gitignored and re-vendored by the skill, so the guardrail lives in
+tracked source instead of in the tool. The rest of this section is the diagnosis,
+kept because the symptom is still worth recognizing by eye.
+
+The full driver call, which the wrapper makes for you:
 
     node .ds-sync/resync.mjs --config .design-sync/config.json \
       --node-modules node_modules --out ds-bundle \
@@ -91,7 +101,15 @@ two `root empty` renders. If BrandMark or ConfidenceDot ever render empty, check
 this flag before debugging the components — they are fine.
 
 ## ORDERING RULE: re-point cssEntry AFTER the last app build, never before
-Bit twice on 2026-07-24. The hash changes on EVERY `vite build`, so any sequence
+Bit twice on 2026-07-24, and again on 2026-08-02 — the committed `cssEntry` was
+two builds stale and named a file that was no longer on disk. **Enforced since
+2026-08-02:** `npm run design-sync` builds first, then reads the stylesheet out of
+`dist/index.html` and re-points `cssEntry` itself, so the ordering is structural
+rather than remembered. It reads the `<link>` rather than picking the largest
+`index-*.css`, because dist carries a CSS-module chunk alongside the app sheet and
+"largest" is a guess that happens to be right. The diagnosis below still stands.
+
+The hash changes on EVERY `vite build`, so any sequence
 of "set cssEntry → build the app again → run the driver" ships a bundle with no
 component CSS. What it looks like:
 

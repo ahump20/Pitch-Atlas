@@ -1,0 +1,131 @@
+<!-- @dsCard group="Color" viewport="720x600" name="Metallics — the only jewelry" subtitle="Foil is the jewelry; gold strikes the 1/1 chase" -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../styles.css">
+<style>
+  /*
+    Every token below is verified present in the shipped styles.css closure.
+    The previous version of this card named four that do not exist
+    (--leather-edge, --glow-gold, --inset-mount, --shadow-lift): the leather
+    swatch rendered as an empty box and all three swatches silently lost their
+    depth treatment. A guideline card that names a token which does not resolve
+    teaches the design agent vocabulary that will fail in every design it builds.
+  */
+  body { margin: 0; background: var(--color-void); color: var(--color-bone);
+    font-family: var(--font-prose); padding: 24px 28px; }
+  .meta { font-family: var(--font-mono); font-size: 9px; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--color-bone-2); margin: 0 0 16px; }
+
+  /* ── The foil leads, because it IS the brand — not one metallic among three.
+       Giving it the full width and the two usage demos states the hierarchy
+       structurally, instead of asserting it in a footnote under equal boxes. ── */
+  .hero { border-radius: var(--radius); border: 1px solid var(--border-card);
+    box-shadow: var(--pa-shadow-lift); overflow: hidden; }
+  /* The reference band shows the WHOLE gradient — both pink ends visible — so the
+     closed loop the copy claims is something you can actually see. Scaling it up
+     and drifting it cropped the spectrum to its middle, and the card ended up
+     asserting a pink that was nowhere on screen. The material's motion is
+     demonstrated on the wordmark below instead, where it does not cost the
+     reference its truthfulness. */
+  .band { height: 78px; background: var(--foil); background-size: 100% 100%; }
+  .uses { display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+    border-top: 1px solid var(--border-card); background: var(--color-press); }
+  .use { padding: 13px 16px; display: flex; align-items: center; gap: 11px; }
+  .use + .use { border-left: 1px solid var(--border-card); }
+  .useLbl { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--color-bone-3); }
+
+  /* the wordmark clip: foil read through type, the way ATLAS carries it */
+  .wordmark { font-family: var(--font-athletic); font-size: 21px; letter-spacing: .04em;
+    background: var(--foil); background-size: 220% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  /* the 1px rim that marks the primary action — matte face, spectrum edge */
+  .rim { display: inline-flex; align-items: center; padding: 7px 14px; border-radius: 999px;
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--color-bone); border: 1px solid transparent;
+    background: linear-gradient(176deg, #17131d, #09070e) padding-box, var(--foil) border-box; }
+
+  .tokrow { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin: 11px 0 0; }
+  .tok { font-family: var(--font-mono); font-size: 12.5px; color: var(--color-bone); }
+  .val { font-family: var(--font-mono); font-size: 9.5px; color: var(--color-bone-2);
+    letter-spacing: .02em; line-height: 1.5; word-break: break-all; }
+  .role { font-family: var(--font-prose); font-size: 12px; color: var(--color-bone-2);
+    line-height: 1.45; margin: 5px 0 0; }
+
+  .rule { border: 0; border-top: 1px solid var(--hairline-void); margin: 16px 0 14px; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+
+  .sw { height: 62px; border-radius: var(--radius); border: 1px solid var(--border-card);
+    box-shadow: var(--pa-shadow-rest); display: flex; align-items: center;
+    justify-content: center; }
+  .sw.gold { background: var(--gold); }
+  /* leather is a SOLID, not a gradient — the old card printed a two-stop
+     gradient that never existed. */
+  .sw.leather { background: var(--color-leather); }
+  .chase { font-family: var(--font-mono); font-size: 9px; letter-spacing: .18em;
+    text-transform: uppercase; color: #2a1d07; font-weight: 600; }
+  .diamond { width: 24px; height: 24px; transform: rotate(45deg);
+    border: 1.5px solid #f6f1e6; border-radius: 3px; }
+
+  .note { font-family: var(--font-prose); font-size: 11.5px; color: var(--color-bone-3);
+    line-height: 1.55; margin: 16px 0 0; padding-top: 12px;
+    border-top: 1px solid var(--hairline-void); }
+
+  /* Ambient material motion, per docs/WABI-SABI-MOTION.md: the foil behaves like
+     foil under a moving light. Slow, low-contrast, non-informational. It reuses
+     the shipped `ambient-drift` keyframes rather than inventing a curve, and the
+     gradient's first and last stop are the same pink — which is what lets it
+     slide without a visible seam. */
+  @media (prefers-reduced-motion: no-preference) {
+    .wordmark { animation: ambient-drift 7s ease-in-out infinite alternate; }
+  }
+</style>
+</head>
+<body>
+  <p class="meta">Color · metallic tokens</p>
+
+  <div class="hero">
+    <div class="band"></div>
+    <div class="uses">
+      <div class="use">
+        <span class="wordmark">ATLAS</span>
+        <span class="useLbl">clipped into type</span>
+      </div>
+      <div class="use">
+        <span class="rim">Open the specimen</span>
+        <span class="useLbl">1px primary rim</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="tokrow"><span class="tok">--foil</span></div>
+  <div class="val">linear-gradient(115deg, #ff2d6e, #ff8a3c, #ffe14d, #46ff9c, #33e0ff, #6b7bff, #c44bff, #ff2d6e)</div>
+  <p class="role">Eight stops, closing on the pink it opened with. That closed loop is
+    why it can drift without a seam. This is the brand material — do not flatten it
+    to a solid.</p>
+
+  <hr class="rule">
+
+  <div class="pair">
+    <div>
+      <div class="sw gold"><span class="chase">1 of 1</span></div>
+      <div class="tokrow"><span class="tok">--gold</span></div>
+      <div class="val">linear-gradient(150deg, #5a3d12, #caa14a 22%, #fff0c2 38%, #b8893a 54%, #f4d98a 70%, #7a571f 90%)</div>
+      <p class="role">Six stops, so it shimmers gold in its own negative space. The 1/1
+        chase register. Gold strikes alone and never goes rainbow.</p>
+    </div>
+    <div>
+      <div class="sw leather"><span class="diamond"></span></div>
+      <div class="tokrow"><span class="tok">--color-leather</span></div>
+      <div class="val">#7a4a2e</div>
+      <p class="role">A solid, not a gradient. Saddle leather carries the brand-mark
+        diamond edge — the one place the set touches a real material.</p>
+    </div>
+  </div>
+
+  <p class="note">Foil and gold are the only metallics; the casino steel is retired. They
+    never meet on one object: the foil is the jewelry, the gold is the chase.</p>
+</body>
+</html>
