@@ -12,7 +12,7 @@ describe('BrandMark', () => {
     const mark = atlas.parentElement?.parentElement?.querySelector('svg')
     expect(mark).toBeInTheDocument()
     expect(mark?.querySelector('stop[stop-color="#9C7350"]')).toBeInTheDocument()
-    expect(mark?.querySelector('ellipse[stroke="#5FE0EA"]')).toBeInTheDocument()
+    expect(mark?.querySelectorAll('ellipse[stroke="#5FE0EA"]')).toHaveLength(2)
   })
 
   it('can render the mark without a wordmark', () => {

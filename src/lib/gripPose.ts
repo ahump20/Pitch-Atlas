@@ -215,10 +215,7 @@ export function solveGripPose(contact: GripPoseContact, opts: SolveOptions = {})
 */
 
 /** Rendered hand proportions, in ball radii. A regulation ball is ~36.5mm in
-    radius, so 0.62 across the knuckles is ~23mm — an adult hand is wider than
-    the ball it holds, which is the whole reason the fingers converge. */
-/** Rendered hand proportions, in ball radii. A regulation ball is ~36.5mm in
-    radius, so the 0.50 between knuckles is ~18mm and the palm spans about one
+    radius, so the 0.44 between knuckles is ~16mm and the palm spans about one
     ball diameter — an adult hand is a little wider than the ball it holds,
     which is the whole reason the fingers converge behind it. */
 const HAND = {

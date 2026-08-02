@@ -1,7 +1,7 @@
 # Electric Burnt Chrome — art direction correction
 
 **Date:** 2026-07-25
-**Status:** Palette + frame landed; card face outstanding
+**Status:** Palette + frame landed; card face and hand solver landed in the addenda below
 **Decisions taken by Austin:** foil ramp **B (Full Refractor)**; accents **pulled fully into the metal family**
 
 ---
@@ -194,9 +194,10 @@ avoids the honest weak point below.
 ### Known weak point, fixed in the pass below
 
 The hand geometry is finger tubes with no palm, knuckles, or web behind them. At card scale,
-cropped like a photograph, it reads. At size it reads as tubes. Giving `solveGripPose` a
-palm mass is the next real piece of work on "real hand positioning," and it touches every
-specimen page's Grip Lab, so it wants its own pass and its own verification.
+cropped like a photograph, it reads. At size it reads as tubes. A palm mass is the next real
+piece of work on "real hand positioning," and it touches every specimen page's Grip Lab, so
+it wants its own pass and its own verification. Done in "Addendum — the hand" below, in a new
+`solveHand`; `solveGripPose` stayed as it was.
 
 ---
 
