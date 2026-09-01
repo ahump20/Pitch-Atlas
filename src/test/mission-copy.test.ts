@@ -16,7 +16,6 @@ const GOVERNING_AND_PUBLIC_FILES = [
   'public/site.webmanifest',
   'src/config/site.ts',
   'src/pages/SourcesPage.tsx',
-  'src/components/v2/ProvenanceStrip.tsx',
   'src/components/v2/CloseCta.tsx',
 ] as const
 

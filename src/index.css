@@ -1251,7 +1251,6 @@
   .pa-atmo-seam { background-image: url(/atmosphere/seam.webp); }
   .pa-atmo-specimen-stage { background-image: url(/atmosphere/specimen-stage.webp); }
   .pa-atmo-index-shelf { background-image: url(/atmosphere/index-shelf.webp); }
-  .pa-atmo-seam-macro { background-image: url(/atmosphere/seam-macro.webp); }
   .pa-atmo-archive-paper { background-image: url(/atmosphere/archive-paper.webp); }
 
   /* Presentation plates are provenance-declared atmosphere, never grip evidence.
@@ -3453,114 +3452,6 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   .ds-btn-link:hover { color: var(--color-bone); }
   .ds-btn-link:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 3px; border-radius: 3px; }
 
-  /* ── the founder's register on the matte stage ──
-     Where the atlas speaks in its institutional athletic voice (Anton), the
-     founder speaks in the editorial serif (Newsreader). These three classes
-     give that human register real presence on the home, so the handwritten
-     thesis and the Clemens line are staged with the same care the specimen
-     gets — the voice work made visible, not buried in body copy. */
-
-  /* the thesis lede: the most distinctive sentence on the page, lifted out of
-     body grotesk into a large serif statement so the rare words land. */
-  .v2-lede {
-    font-family: var(--font-display);
-    font-size: clamp(21px, 2.6vw, 29px);
-    line-height: 1.28;
-    letter-spacing: -0.012em;
-    color: var(--color-bone);
-    text-wrap: balance;
-  }
-
-  /* the founding note: the human voice filed as its own specimen — matte
-     Topps-Now card stock (same material as the wall mounts), stamped once
-     with a seam-red filing rule across the top edge. */
-  .v2-note {
-    position: relative;
-    border-radius: var(--radius-md);
-    background: linear-gradient(180deg, #141210 0%, #0a0908 100%);
-    border: 1px solid color-mix(in srgb, var(--color-bone) 18%, transparent);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 14px 34px -22px #000;
-    padding: clamp(20px, 3vw, 30px);
-    overflow: hidden;
-  }
-  .v2-note::before {
-    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; z-index: 2;
-    background: linear-gradient(90deg, var(--color-seam) 0%, color-mix(in srgb, var(--color-seam) 35%, transparent) 62%, transparent 100%);
-  }
-  .v2-note::after {
-    content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none; border-radius: inherit;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.62'/%3E%3C/svg%3E");
-    opacity: .04; mix-blend-mode: overlay;
-  }
-  .v2-note > * { position: relative; z-index: 1; }
-
-  /* the pull-quote: the Express/Pitcher line, enlarged to the moment it is, with
-     an oversized seam-red hanging quotation mark as the one second-read motif. */
-  .v2-quote {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: clamp(24px, 2.9vw, 37px);
-    line-height: 1.16;
-    letter-spacing: -0.014em;
-    color: var(--color-bone);
-    text-wrap: balance;
-  }
-  .v2-quote-mark {
-    display: block;
-    font-family: var(--font-display);
-    font-size: clamp(52px, 8vw, 88px);
-    line-height: .62;
-    color: var(--color-seam);
-    /* no negative left bearing — .v2-note clips overflow, so keep the glyph
-       fully inside the card; a small bottom pull seats the quote under it. */
-    margin: 0 0 -.1em 0;
-  }
-
-  .v2-progression {
-    position: relative;
-    border-top: 1px solid color-mix(in srgb, var(--color-bone) 16%, transparent);
-    padding-top: 18px;
-  }
-  .v2-progress-step {
-    position: relative;
-    min-height: 154px;
-    border-radius: var(--radius-md);
-    border: 1px solid color-mix(in srgb, var(--color-bone) 12%, transparent);
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--color-bone) 5%, transparent), transparent 52%),
-      #0a0908;
-    padding: 15px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,.05);
-    overflow: hidden;
-  }
-  .v2-progress-step::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    background:
-      linear-gradient(115deg, transparent 0 18%, color-mix(in srgb, var(--color-bone) 12%, transparent) 34%, transparent 54%),
-      radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, var(--color-cyan) 11%, transparent), transparent 58%);
-    opacity: .4;
-  }
-  .v2-progress-step > * {
-    position: relative;
-    z-index: 1;
-  }
-  .v2-progress-no {
-    display: inline-flex;
-    min-width: 30px;
-    height: 24px;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid color-mix(in srgb, var(--color-bone) 18%, transparent);
-    border-radius: 999px;
-    font-family: var(--font-mono);
-    font-size: 9px;
-    letter-spacing: .12em;
-    color: var(--color-bone-2);
-    background: rgba(0,0,0,.28);
-  }
   .v2-wall-line {
     font-family: var(--font-display);
     font-size: clamp(22px, 3.2vw, 36px);
@@ -3711,12 +3602,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes v2-mount-deal { from { opacity: 0; transform: translateY(14px) rotateX(7deg); filter: brightness(.7); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes v2-chase-sweep { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
 
-/* purpose-shaped section reveals: the read's halves converge, the ladder climbs,
-   the colophon count focuses in, the close settles as one unit, the hero staggers. */
-@keyframes v2-converge-from-l { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
-@keyframes v2-converge-from-r { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
-@keyframes v2-rung-in { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: none; } }
-@keyframes v2-count-rise { from { opacity: 0; transform: translateY(6px); filter: blur(2px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+/* purpose-shaped section reveals: the close settles as one unit, the hero staggers. */
 @keyframes v2-close-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 @keyframes v2-enter { from { opacity: 0; transform: translateY(14px); } }
 
@@ -3750,14 +3636,6 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
       mix-blend-mode: screen; transform: translateX(-120%);
       animation: v2-chase-sweep linear both; animation-timeline: view(); animation-range: entry 10% cover 35%;
     }
-    /* the read's two halves converge inward — two sides of one pitch */
-    .v2-converge-l { animation: v2-converge-from-l linear both; animation-timeline: view(); animation-range: entry 5% cover 24%; }
-    .v2-converge-r { animation: v2-converge-from-r linear both; animation-timeline: view(); animation-range: entry 5% cover 24%; }
-    /* the trust ladder climbs rung by rung */
-    .v2-rung { animation: v2-rung-in linear both; animation-timeline: view(); animation-range: entry calc(4% + var(--i, 0) * 2.5%) cover 26%; }
-    /* the colophon count focuses in like an instrument read; the date a beat later */
-    .v2-count { transform-origin: left center; animation: v2-count-rise linear both; animation-timeline: view(); animation-range: entry 8% cover 30%; }
-    .v2-count-sub { transform-origin: left center; animation: v2-count-rise linear both; animation-timeline: view(); animation-range: entry 18% cover 40%; }
     /* the close settles as one unit — the film resolving */
     .v2-close-converge { animation: v2-close-in linear both; animation-timeline: view(); animation-range: entry 8% cover 40%; }
   }
