@@ -1475,6 +1475,80 @@
     background-blend-mode: overlay, normal;
   }
 
+  /* ── the 1/1's interior ──
+     The heavier frame was only half the tell. Inside, the grail still wore the
+     standard run's world: a cold blue stage ground, a cyan halftone, and the
+     same commodity cream plate — a rich border around an unchanged interior
+     reads as a mount, not a card. So the interior is struck by the same hand.
+     Same information, same print system (--rfxu drives every size here as it
+     does everywhere else); different material.
+
+     The stage takes ember light instead of room light, and its bezel repeats
+     the frame's coach-line — black, ember, black — so the window looks cut by
+     the tool that struck the border. */
+  .rfx-card.is-gold .rfx-stage {
+    background: radial-gradient(126% 92% at 50% 22%, #3d1a06 0%, #170b03 46%, #050302 82%);
+    border-color: rgba(0,0,0,.95);
+    outline-color: rgba(191,87,0,.62);
+    box-shadow:
+      inset 0 0 0 2.5px rgba(0,0,0,.9),
+      inset 0 0 0 6.5px rgba(0,0,0,.78),
+      inset 0 14px 26px -12px rgba(0,0,0,.92),
+      inset 0 -12px 26px -16px rgba(255,148,64,.26);
+  }
+  /* the coach-line has to sit ABOVE the grip photo. The stage clips its face at
+     inset 0 on z-index 1, so an inset box-shadow or an inset outline on the stage
+     itself paints under the photograph and is never seen — which is exactly what
+     the first pass did. This rides at z-index 3: over the face, under the source
+     chip. The stage's outline stays warm underneath for a transparent schematic
+     face, where there is no photo to cover it. */
+  .rfx-card.is-gold .rfx-stage::after {
+    content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    border-radius: inherit;
+    box-shadow:
+      inset 0 0 0 3px rgba(0,0,0,.85),
+      inset 0 0 0 4.5px rgba(232,106,23,.72),
+      inset 0 0 0 6px rgba(0,0,0,.7);
+  }
+  /* the dot screen warms and comes UP, not down: the last pass went flat
+     because light was subtracted. Texture is added here, never dimmed. */
+  .rfx-card.is-gold .rfx-halftone {
+    opacity: .16;
+    background-image: radial-gradient(rgba(255,150,74,.6) 22%, transparent 24%);
+  }
+  .rfx-card.is-gold .rfx-gripchip {
+    background: rgba(14,7,3,.82); border-color: rgba(191,87,0,.42); color: #F0D8C2;
+  }
+  /* engraved caps: the grail sets its small type with more air and warmer ink,
+     the way a struck certificate does. Same mono face as the standard run — the
+     shared print system stays intact; only the tracking and the ink change. */
+  .rfx-card.is-gold .rfx-overline { color: #C98A52; letter-spacing: .22em; }
+  .rfx-card.is-gold .rfx-filelabel { color: #8A6A4C; }
+  /* the plate is PRESSED, not printed on: a white hairline, an ember keyline
+     inside it, the paper dipping into shadow along the top edge and catching
+     light on the bottom lip. Warmer ivory stock, warmer ruling. */
+  .rfx-card.is-gold .rfx-read {
+    border-color: rgba(58,26,6,.6);
+    background:
+      repeating-linear-gradient(0deg, transparent 0 calc(var(--rfxu) * 4.7), rgba(107,67,24,.07) calc(var(--rfxu) * 4.7) calc(var(--rfxu) * 4.9)),
+      radial-gradient(120% 100% at 50% 0%, rgba(255,248,232,.7), transparent 62%),
+      #F1E4C8;
+    box-shadow:
+      inset 0 0 0 1px rgba(255,252,242,.7),
+      inset 0 0 0 3px rgba(191,87,0,.22),
+      inset 0 3px 6px -3px rgba(84,52,18,.35),
+      inset 0 -2px 0 rgba(255,252,240,.85),
+      0 1px rgba(255,255,255,.06),
+      0 10px 18px -12px rgba(0,0,0,.9);
+  }
+  .rfx-card.is-gold .rfx-readmeta { color: #6B4318; letter-spacing: .24em; }
+  .rfx-card.is-gold .rfx-cue { color: #33261A; }
+  .rfx-card.is-gold .rfx-facts { border-top-color: rgba(107,67,24,.28); }
+  .rfx-card.is-gold .rfx-fact { color: #3A2A16; }
+  .rfx-card.is-gold .rfx-approx { border-color: #8A5A1E; color: #6B4318; }
+  .rfx-card.is-gold .rfx-strip { color: #E8C9A6; }
+  .rfx-card.is-gold .rfx-serial { color: rgba(214,140,74,.88); }
+
   /* ── the card back, struck as a scout file ──
      The SLUGGERS stats-table back, but every row is a sourced or categorical fact —
      family, the shape read, the grip, the source tier — never an invented figure.
