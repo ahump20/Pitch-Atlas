@@ -68,6 +68,84 @@ masters set the floor. Community field notes create the reason to return.
 
 ---
 
+## The pillars (why a pitcher picks this over everything else)
+
+The Core below is the builder's list: seven things that must never break. This is
+the visitor's list: five reasons someone opens Pitch Atlas instead of a search bar,
+a forum thread, or a movement plot. Each pillar leans on a Core principle, but says
+it as a promise to the person holding the ball rather than a rule for the person
+writing the code.
+
+**1. Lead with the hand.**
+You get something you can do in the next ten minutes: where the fingers go, which
+way the seams face, the one feel cue that makes it click. Everywhere else opens
+with spin efficiency and a movement chart. Here the physics waits behind a
+disclosure until you want it. (Core: grip-first.)
+
+**2. One roof over the whole history.**
+A dead-ball experiment, a Negro Leagues pitch the record barely kept, a modern
+craftsman's signature curve, a fastpitch riseball, and a field note somebody wrote
+last night all sit in the same catalog with the same structure. Nothing is exiled to
+a novelty wing. The forgotten stuff gets the same specimen treatment as the famous
+stuff. (Core: preserve the living art.)
+
+**3. Traceable, so you can decide for yourself.**
+Every claim shows where it came from and how much weight it carries — a pitcher's
+own words, a coach's observation, official tracking, or an honest "unverified."
+This is not rigor as decoration. It is so you can tell the difference between
+something measured and something remembered, and choose what to try. (Core:
+provenance on every claim; real, never faked.)
+
+**4. Built for the bullpen, not the desk.**
+Gloves on, sun on the screen, one bar of signal, an old phone with no WebGL. The 3D
+ball is the hook, never the gate — the same seam function draws the model, the flat
+schematic, and the fallback, so they can't disagree. If it only works on a good
+laptop, it doesn't work. (Core: usable with zero WebGL; four states or it isn't
+done.)
+
+**5. The conversation is part of the archive.**
+What you tried and what happened is not a comment section bolted to a reference
+page. It is the next layer of the record. An unknown pitcher who moved a thumb and
+learned something has a real place here next to the verified master — labeled
+honestly as what it is, never dressed up as more. (Core: preserve the living art;
+real, never faked; the safety floor.)
+
+---
+
+## Vision scenarios
+
+Three illustrative futures, written in present tense as if they already work. These
+are design targets, not research findings and not user testimony — no one said
+these words. They exist so a trade-off argument has something concrete to check
+itself against.
+
+**The bullpen, between innings.**
+A junior-college fastpitch pitcher has lost her riseball. She opens Pitch Atlas on
+her phone with dirt on her hands. The page loads without the 3D ball because the
+signal is bad, and it doesn't matter — the flat seam diagram and the grip photo are
+right there. She reads one feel cue about wrist position she has never heard phrased
+that way. She tries it in the pen. Two days later she comes back and writes what
+happened, and it lands in the record with her name on it and a label saying exactly
+what kind of evidence it is.
+
+**The coach with a retiring mentor.**
+A pitching coach spent nine years around an older instructor who is about to stop
+teaching. The man throws a changeup grip nobody else uses and has never written a
+word about it. The coach films his hands, uploads it through the rights gate, and
+writes the grip up in the atlas's structure: finger placement, seam orientation,
+what it feels like, who taught it to whom. It is marked coach-observed, not
+official. Ten years from now, when the old instructor is gone, the grip is still
+here — and it is here honestly, wearing exactly the confidence it earned.
+
+**The stranger who fell in.**
+Someone with no stake in pitching follows a link about a forgotten dead-ball pitch.
+An hour later they are four chapters deep in the Lost Pitches wing, reading about
+what the record can and cannot support, and they have learned something true about
+how a craft loses its own history. They send it to a friend. Nothing was sold to
+them. The archive did the work.
+
+---
+
 ## The Core (change these and it stops being Pitch Atlas)
 
 **1. Preserve the living art.**
@@ -204,7 +282,7 @@ serves (sourced, real, never faked) does not move.
 
 ---
 
-## The product shape today (snapshot, 2026-06-09)
+## The product shape today (snapshot, 2026-08-31)
 
 So a future reader knows the starting line:
 
@@ -228,26 +306,102 @@ So a future reader knows the starting line:
 - **The plugin:** `pitch-atlas` with the `pitching-coach` skill, six commands
   (grip, design, arsenal, translate, field-note, breakdown), the `pitch-analyst`
   agent, and handoffs to `gibby` and `video-visual-intelligence-v2`.
+- **Softball wing:** `/softball` with fastpitch and slowpitch halls plus their own
+  pitch and craftsman chapters, wired into the top nav and carrying its own data
+  wing. Baseball and softball are both in scope; "pitching" in this document means
+  the craft in both games.
+- **Grips index:** `/grips`, a direct index into the grip layer itself.
+- **Knowledge hub:** `/learn` and its chapters, guarded by a safety-copy test so the
+  safety floor is enforced by the suite and not by memory.
+- **Tool and reference routes:** `/movement-map`, `/sandbox`, `/compare`, `/sources`,
+  and the design-system showcase.
 
 ---
 
-## Where it's heading (directions, not a contract)
+## Where it's heading (horizons, not a contract)
 
-Horizon, in rough priority. None of this is a promise; it's the current read.
+Three time horizons. None of this is a promise; it is the current read, and the
+further out it goes the less it should be trusted as a plan and the more it should
+be read as a direction. The execution detail for any of it lives in its own dated
+plan. This file just keeps them pointed at the Northstar.
 
-- **My Bullpen (iOS).** Get it in pitchers' hands where they actually pitch. Phased
-  so a 48-hour-old web app doesn't get split across two codebases too early. The
-  plan is `docs/ios-app-plan.md`.
+### Near (the next year) — make what exists complete
+
 - **The visual grip library.** Stand up the clean-channel photo layer so a grip
   carries a real reference image, not just geometry. Community uploads first; CC and
   first-party shots alongside.
+- **Softball to parity.** The wing is live and in the top nav. Bring fastpitch and
+  slowpitch up to the same specimen depth, craftsmen coverage, and sourcing bar the
+  baseball side already holds, so "one roof over the whole history" is true of both
+  games and not just claimed.
 - **Deeper atlas.** More filed specimens, more craftsmen, the long tail of the
   encyclopedia promoted from one-liners to full files as the sourcing clears the bar.
-- **The return habit.** The structured field-note / grip-tweak engine that turns
-  "I moved my thumb and it did this" into a reproducible, ranked, sourced entry.
+- **My Bullpen (iOS), phase 0.** The service-worker step, not a second codebase. The
+  plan is `docs/ios-app-plan.md`.
 
-The execution detail for any of these lives in its own dated plan. This file just
-keeps them pointed at the Northstar.
+### Mid (two to three years) — make it a habit, not a visit
+
+- **The return habit.** The structured field-note / grip-tweak engine that turns
+  "I moved my thumb and it did this" into a reproducible, ranked, sourced entry —
+  the thing that makes pillar five real rather than aspirational.
+- **iOS in pitchers' hands.** Past phase 0, on the field, where the signal is bad
+  and the hands are dirty.
+- **Contribution that earns standing.** A way for a coach or pitcher who keeps
+  submitting good, honest, well-sourced work to accumulate visible standing — without
+  ever inventing a badge, a count, or a credential nobody earned.
+
+### Long (five years and out) — the aspiration
+
+- **The default reference for the craft.** When a pitcher, coach, or writer wants to
+  know how a pitch is actually held and where it came from, this is where they go
+  first, the way you'd reach for a field guide.
+- **Knowledge here that would otherwise be gone.** The real test of a living museum:
+  grips, cues, and experiments preserved in the atlas that exist nowhere else because
+  the person who knew them stopped teaching, and somebody wrote it down in time.
+
+---
+
+## How we'd know it's working
+
+The Northstar already says what the win condition is not: traffic. This is what to
+watch instead. Signals first, because they are readable long before any number is
+meaningful at this stage.
+
+**Qualitative signals (the ones that actually matter first)**
+
+- Someone returns and writes down what happened after trying a grip. That single
+  loop — read, try, come back, report — is the whole product working.
+- A contribution arrives that could not have been found anywhere else: a grip with no
+  prior public write-up, from someone who learned it in person.
+- A coach cites the atlas to a student, or a writer cites it in a piece, and the
+  citation survives scrutiny because the provenance holds up.
+- Someone corrects the atlas and is right. A record that can be corrected is alive;
+  one that never is has stopped being read carefully.
+
+**Quantitative signals worth instrumenting**
+
+Named here as *what to measure*, not as targets. No goal numbers are written in this
+document, because none have been set — inventing one would violate "real, never
+faked" in the one place it would be least visible.
+
+- Return rate of contributors (people who submit more than once), not raw visitors.
+- Filed specimens with full sourced depth, versus one-line encyclopedia entries —
+  the ratio, tracked over time, is the honest measure of "deeper atlas."
+- Share of filed specimens carrying a real grip image versus geometry alone.
+- Softball depth as a fraction of baseball depth, until parity closes.
+- Moderation load per contribution, watched as a health signal rather than a target:
+  rising load means the safety floor is doing work; a sudden drop usually means
+  contribution stopped, not that behavior improved.
+
+**Milestones (binary, so they can't be fudged)**
+
+- First community-contributed grip that becomes a filed specimen.
+- Softball reaches specimen parity with baseball.
+- The field-note engine produces its first reproducible, ranked, sourced tweak.
+- A pitch is preserved here whose only surviving public record is this one.
+
+Anything that would require a number to be invented rather than measured stays out
+of this section until it can be measured for real.
 
 ---
 
@@ -272,6 +426,36 @@ This is the mechanism that lets the product change without losing itself.
 
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
+
+### 2026-08-31: Give the charter pillars, scenarios, horizons, and a scoreboard
+
+**Decision.** The Northstar keeps its one-line mission and its seven Core
+principles. Added around them: five **pillars** stating why a pitcher chooses this
+(the visitor's list, where the Core is the builder's list), three **vision
+scenarios** written as illustrative design targets, a **near / mid / long** split
+replacing the flat direction list, and a **"How we'd know it's working"** section
+naming qualitative signals, metrics worth instrumenting, and binary milestones.
+
+**Why.** The charter could say what Pitch Atlas must never do and could not say what
+would make someone come back. Seven guardrails are not a reason to visit. Trade-off
+arguments had nothing concrete to check against, and "the win condition isn't
+traffic" named only what success is not.
+
+**The correction that forced it.** The product snapshot was three months stale and
+never recorded the softball wing, which is live, routed, in the top nav, and carries
+its own data. A vision document describing a smaller product than the one that
+shipped cannot be extended honestly, so the snapshot was refreshed first: softball,
+the grips index, the knowledge hub, and the tool routes are now on the page.
+
+**No numbers were invented.** The success section names what to measure and states
+plainly that no targets have been set. Writing a goal number nobody chose would
+break "real, never faked" in the least visible place in the repo.
+
+**Touches.** `docs/NORTHSTAR.md` only. No Core principle changed; no code, copy, or
+data model moved.
+
+**Respects.** Preserve the living art. Grip-first. Real, never faked. The safety
+floor. Usable with zero WebGL. Four states or it is not done.
 
 ### 2026-08-31: Recover the living-museum mission; keep provenance as infrastructure
 
