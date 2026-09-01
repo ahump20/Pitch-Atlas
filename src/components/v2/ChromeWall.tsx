@@ -58,7 +58,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
               cue={cue}
               faceSource={faceSource}
               confidence={confidence}
-              maxWidth={chase ? 520 : 360}
+              maxWidth={360}
               face={face}
             />
             <button

@@ -3126,7 +3126,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   }
 
   .v2-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); align-items: start; gap: 14px; }
-  @media (min-width: 768px) { .v2-wall { gap: 18px; } }
+  /* Three filed specimens, three equal columns. auto-fill resolves to four at this
+     width, which left the row a dead trailing column. */
+  @media (min-width: 768px) { .v2-wall { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
   .v2-mount {
     position: relative; border-radius: var(--radius-md);
     background: linear-gradient(180deg, #141210 0%, #0a0908 100%);
@@ -3153,9 +3155,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
       0 12px 30px -18px #000,
       0 0 40px -22px rgba(212, 170, 90, .5);
   }
-  @media (min-width: 600px) { .v2-mount.is-chase { grid-column: span 2; } }
   .v2-mount .v2-flip { max-width: 360px; margin-inline: auto; }
-  .v2-mount.is-chase .v2-flip { max-width: 520px; }
 
   /* ── the flip: chrome front <-> matte card back ──
      A real toggle (button + aria-pressed in markup); the transform
@@ -3180,7 +3180,16 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     cursor: pointer; transition: border-color .18s ease, transform .12s ease;
   }
-  .v2-face:not(.v2-face-back) .rfx-strip { min-height: calc(var(--rfxu) * 8); padding-left: 52px; }
+  /* The flip pill is an absolute overlay because the whole card face is a link and
+     a button cannot nest inside an anchor. It renders ~82px wide (min-width 44px is
+     the tap floor, not the drawn width), so the strip must reserve that much or the
+     pill sits on "Grip / release / shape" and clips it. The serial itself is
+     aria-hidden caption text that reads as a control it isn't, so on the flip cards
+     it yields the row to the pill and the real action. */
+  .v2-face:not(.v2-face-back) .rfx-strip {
+    min-height: calc(var(--rfxu) * 8); padding-left: 96px; justify-content: flex-end;
+  }
+  .v2-face:not(.v2-face-back) .rfx-serial { display: none; }
   .v2-flip-btn--inline { position: static; flex: none; min-width: 44px; min-height: 44px; padding: 7px 10px; }
   .v2-flip-btn:hover { border-color: color-mix(in srgb, var(--c3, #37D6FF) 60%, transparent); }
   .v2-flip-btn:active { transform: scale(.95); }

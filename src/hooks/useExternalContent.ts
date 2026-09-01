@@ -16,10 +16,19 @@ export function useExternalContent(query: ExternalContentQuery): {
 
   useEffect(() => {
     let live = true
-    void listExternalContent(stableQuery).then((next) => {
-      if (!live) return
-      setResult({ key, items: next, settled: true })
-    })
+    void listExternalContent(stableQuery)
+      .then((next) => {
+        if (!live) return
+        setResult({ key, items: next, settled: true })
+      })
+      .catch(() => {
+        // A rejected read still has to settle. Without this the rail keeps
+        // aria-busy="true" for the rest of the visit — a screen reader is told the
+        // region is loading forever — and the rejection goes unhandled. The
+        // committed seed ledger is the honest fallback, same as the initial state.
+        if (!live) return
+        setResult({ key, items: externalContentFor(stableQuery), settled: true })
+      })
     return () => {
       live = false
     }
