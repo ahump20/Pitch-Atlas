@@ -67,11 +67,12 @@ export function SourcesPage() {
         <StageTierMarker index="04" label="Sources" as="span" />
 
         <h1 className="rfx-stitle max-w-[18ch] text-4xl leading-[1.04] md:text-5xl">
-          Sourced, not corrected.
+          Every voice keeps its trail.
         </h1>
         <p className="mt-5 max-w-[58ch] text-lg leading-relaxed text-ink-2">
-          Many ways can work. Nothing here is marked right or wrong; every claim is labeled by where it
-          came from and how confident the source is. The reader judges. The atlas only sources.
+          Pitching knowledge travels through official records, pitchers, coaches, analysts, historians,
+          and the community. Every claim is labeled by where it came from and how confident that source is,
+          so those voices can share one museum without losing their context.
         </p>
         <p className="mono-label mt-6">
           As of{' '}

@@ -14,7 +14,7 @@ import type { ClaimConfidence } from '../data/types'
   The Field Notes data layer. Pure functions over Supabase — React lives in the
   hook, not here. Every write rides the signed-in account (anonymous or claimed);
   the database enforces one-per-account on Tried This and Helpful, own-row edits,
-  and "Sourced, not corrected" (a weak tier without a note is rejected by a
+  and the source trust model (a weak tier without a note is rejected by a
   CHECK constraint, not just the form). Nothing here fabricates a post or a count.
 */
 
@@ -238,7 +238,7 @@ const CLAIM_EMAIL_ERROR = 'Could not send the claim email just now. Try again.'
 /**
  * Turn a Postgres/PostgREST error into a sentence a contributor can act on. The
  * safety triggers raise prefixed messages ("content_blocked: ...", "rate_limit: ...");
- * the "Sourced, not corrected" CHECK surfaces by constraint name. Anything else
+ * the weak-source CHECK surfaces by constraint name. Anything else
  * stays generic so raw database text does not leak to the browser.
  */
 export function friendlyDbError(error: { message?: string } | null): string {

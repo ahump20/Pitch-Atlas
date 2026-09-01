@@ -7,7 +7,7 @@ import { CONFIDENCE_COLOR } from './refractorClaimMeta'
   (ConfidenceLabel / SourceBadge / ClaimProse) encode confidence with a mono glyph
   on ink; here the same seven tiers read as a glowing dot in the card palette, the
   way the specimen cards and the landing ladder do. Same model, same labels, same
-  "sourced, not corrected" — just tuned to bone-on-void. Foil is decoration; the
+  the source-and-confidence trust model — tuned to bone-on-void. Foil is decoration; the
   readings are sourced.
 */
 

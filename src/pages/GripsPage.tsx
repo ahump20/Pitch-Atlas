@@ -6,9 +6,10 @@ import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { SectionHero } from '../components/layout/SectionHero'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
-import { GripLibrary, AttackPlan } from '../components/sections/GripLibrary'
+import { GripLibrary, GripLibraryIndex, AttackPlan } from '../components/sections/GripLibrary'
 import { GripCompare } from '../components/sections/GripCompare'
 import { EggButton } from '../components/eggs/EggButton'
+import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
 
 /*
   The Grip Library. The page leads with the real article — photographed grips in
@@ -67,6 +68,20 @@ export function GripsPage() {
 
       {/* the grip theater: footage and film read in the dark */}
       <div className="scene-coal">
+      <section className="border-b border-bone/8">
+        <div className="mx-auto max-w-5xl px-5 py-8 md:px-8 md:py-10">
+          <GripLibraryIndex />
+        </div>
+      </section>
+
+      <ExternalMediaRail
+        query={{ placement: 'grips', limit: 4 }}
+        eyebrow="Grip lessons in motion"
+        title="More hands in the conversation."
+        intro="First-party photographs remain the evidence in this library. These official, credited embeds add outside teaching and history without becoming the canonical grip."
+        allowSuggestion
+      />
+
       <section>
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
           <GripLibrary />

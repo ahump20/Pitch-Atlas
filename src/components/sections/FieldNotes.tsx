@@ -460,7 +460,7 @@ function SubmitForm({
         <p className="mt-2 text-sm leading-relaxed text-bone-2">
           Throw the {pitchName.toLowerCase()} with a wrinkle of your own? Add it. Label where it comes from:
           your own report, a coach, or a hunch. Keep it to grip and technique only. No medical, injury,
-          workload, or youth-training prescriptions. Sourced, not corrected.
+          workload, or youth-training prescriptions. Every contribution keeps its source context.
         </p>
         {done ? (
           <p role="status" className="quiet-status rfx-panel mt-3 px-3 py-2 text-xs leading-relaxed text-bone-2">

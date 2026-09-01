@@ -62,8 +62,8 @@ matte<->chrome rhythm; eyebrow count within taste budget).
    "The grip is the lesson."
 5. **The Shape (the honest read).** Qualitative shape-in-words + the spin-axis
    vector on the ball. Sourced, labeled. No fabricated figures.
-6. **Sourced, Not Corrected (provenance strip).** `ClaimCard` examples + the
-   confidence vocabulary, on the matte register. The principle made visible.
+6. **The trust layer (provenance strip).** `ClaimCard` examples + the
+   confidence vocabulary, on the matte register. The source trail made visible.
 7. **File Your Own (close + footer).** CTA into `/repertoire` (the Pitch Index
    front door) and the live community; reuse `SiteFooter`.
 
@@ -81,7 +81,7 @@ matte<->chrome rhythm; eyebrow count within taste budget).
 
 ## Charter guardrails (non-negotiable, = no regression)
 
-- "Sourced, not corrected": every visible claim keeps its `Source` + `confidence`.
+- Provenance is trust infrastructure: every visible claim keeps its `Source` + `confidence`.
 - No fabricated spin-rate, velocity, or break-in-inches. "Physics" = rendering
   fidelity + real spin-axis/gyro vectors + the qualitative shape read only.
 - One `seamPoint` feeds 3D ball, 2D schematic, and fallback. Keep them in sync.

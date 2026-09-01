@@ -4,7 +4,7 @@ A sourced field brief on the strategic and biomechanical edge of baseball's best
 switch-pitcher: the matchup he manufactures, the roster math he bends, and the honest
 catch nobody who's excited about him wants to say out loud.
 
-Status: research document, 2026-07-05. Not a live specimen. Sourced, not corrected —
+Status: research document, 2026-07-05. Not a live specimen. Every voice keeps its trail —
 every claim below is tagged by where it came from, and the argument is kept visibly
 separate from the facts it stands on.
 

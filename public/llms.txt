@@ -1,8 +1,8 @@
 # Pitch Atlas
 
-> A living field manual for how pitchers grip and shape a baseball. Grip first,
-> then the physics. Every claim is labeled by its source, not declared right or
-> wrong. Principle: "Sourced, not corrected. Many ways can work."
+> A living museum and conversation space for the heritage, history, craft, and
+> evolving art of pitching. Grip first, then the physics. Claims and media keep
+> their source, confidence, and rights context.
 
 Pitch Atlas (https://pitch-atlas.com/) is a multi-page field manual. Every page
 is prerendered to its own HTML file, so the substance reads as plain text:

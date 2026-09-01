@@ -8,7 +8,7 @@ import { BrandMark } from '../brand/BrandMark'
   primary nav of four content pillars, and a single "More" disclosure holding the
   rest of the atlas (Craftsmen, Lost Pitches, Sources, About) plus the interactive
   Tools. The active page reads in refractor cyan; the rest sit in slate ink. The
-  "Sourced, not corrected" principle is no longer parked in the action zone — it
+  The provenance system is no longer parked in the action zone — it
   lives in the footer and on the specimen UI — so navigation owns the bar.
 */
 

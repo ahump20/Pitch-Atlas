@@ -303,8 +303,8 @@ export function RepertoireChapter() {
           <p className="mono-label mb-2 text-seam">Basic file</p>
           <p className="max-w-[72ch] text-sm leading-relaxed text-ink-2">
             This pitch has a sourced one-line grip and movement and an honest explanation, not yet a filed
-            specimen with authored grip geometry and a full craft chapter. A fuller breakdown is coming. Sourced, not
-            corrected.
+            specimen with authored grip geometry and a full craft chapter. A fuller breakdown is coming;
+            the source trail stays attached.
           </p>
         </div>
       </section>

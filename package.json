@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "A sourced living archive for how pitches are gripped, preserved, and carried forward. Sourced, not corrected.",
+  "description": "A living museum and conversation space for the heritage, history, craft, and evolving art of pitching.",
   "engines": {
     "node": ">=20.19"
   },

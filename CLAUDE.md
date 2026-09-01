@@ -4,17 +4,18 @@ Work in `ahump20/Pitch-Atlas`. Do not create a new repository.
 
 ## Source of truth
 
-Core principle:
+Core mission:
 
-> Sourced, not corrected. Many ways can work. Claims are labeled by provenance.
+> Pitch Atlas preserves the heritage, history, and art of pitching—one place to
+> learn from trusted minds, discover creative voices, and talk about the craft.
 
-The README, the UI copy, and the data model all preserve that principle. They
-are already wired to it in the committed code (`README.md`, `src/data/types.ts`,
-`src/data/sources.ts`, `src/data/pitches/four-seam.ts`). Keep them in lockstep:
-a change to one of these without the others is a regression.
+The README, UI copy, and North Star preserve that mission. Provenance, confidence
+labels, rights records, and moderation remain the trust infrastructure underneath
+it (`src/data/types.ts`, `src/data/sources.ts`, and the Supabase policies); they are
+not the product vision or a public motto.
 
 `docs/NORTHSTAR.md` is the project's constitution: it splits the **Core** (the
-commitments that are Pitch Atlas, this principle among them) from the **Surface**
+commitments that are Pitch Atlas, this mission among them) from the **Surface**
 (stack, scope, surfaces, rights policy — built to change). Read it before a
 direction change. Core changes get a Decision Log entry there; Surface changes
 just get built. When this file and the charter disagree on a Core principle, the

@@ -1,14 +1,15 @@
 import { readdirSync, statSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 import { describe, expect, it } from 'vitest'
+import { PRESENTATION_MEDIA } from './presentation'
 
 /*
-  The hardest media rule, made executable. The only motion files that may ship in
-  public/ or the iOS bundle are Austin's own first-party grip videos (under a
-  grips/ folder). Everything else — third-party MLB broadcast, agency, or archive
-  footage — stays embed-only at its source, never a hosted byte. The EXIF tests
-  guard the upload boundary; this guards the committed-bundle floor on both
-  platforms. A planted clip anywhere else fails the build.
+  The hardest media rule, made executable. Motion files may ship only as Austin's
+  own grip videos under grips/ or as an explicitly declared presentation-manifest
+  derivative with rights and budget receipts. Third-party broadcast, agency, or
+  archive footage stays embed-only at its source, never a hosted byte. The EXIF
+  tests guard the upload boundary; this guards the committed-bundle floor on both
+  platforms. An undeclared planted clip anywhere else fails the build.
 */
 
 const MOTION_EXT = /\.(mp4|webm|mov|m4v|avi|mkv|gif)$/i
@@ -44,12 +45,19 @@ function posixPath(path: string): string {
   return path.split(sep).join('/')
 }
 
-describe('motion-floor guard: only first-party grip videos ship', () => {
-  it('public/ holds no motion files outside public/grips/', () => {
+describe('motion-floor guard: only grip or declared presentation videos ship', () => {
+  it('public/ holds no motion files outside public/grips/ or the presentation manifest', () => {
     const root = join(process.cwd(), 'public')
+    const declaredPresentationMotion = new Set(
+      Object.values(PRESENTATION_MEDIA).flatMap((asset) =>
+        'motion' in asset && asset.motion
+          ? [asset.motion.mp4.src, asset.motion.webm.src].map((src) => src.replace(/^\//, ''))
+          : [],
+      ),
+    )
     const offenders = motionFilesUnder(root)
       .map((file) => posixPath(relative(root, file)))
-      .filter((rel) => !rel.startsWith('grips/'))
+      .filter((rel) => !rel.startsWith('grips/') && !declaredPresentationMotion.has(rel))
     expect(offenders).toEqual([])
   })
 

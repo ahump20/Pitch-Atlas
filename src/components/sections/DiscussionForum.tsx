@@ -39,7 +39,7 @@ import { Skeleton } from '../ui/skeleton'
   in. This module is loaded LAZILY (React.lazy in DiscussionPanel.tsx) only when a
   visitor actually opens the panel, so none of it — nor lucide, sonner, or the ui
   primitives below — ships in the initial page bundle. Everything renders the four
-  data states (loading, error, empty, populated). "Sourced, not corrected" still
+  data states (loading, error, empty, populated). The trust model still
   governs: a clip is evidence, not a verdict, and nothing here is faked.
 */
 

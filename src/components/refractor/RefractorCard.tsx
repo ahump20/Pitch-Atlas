@@ -88,8 +88,13 @@ export function RefractorCard({
       ) : null}
       <div className="rfx-inner">
         <header className="rfx-head">
-          <span className="rfx-name">{name}</span>
-          <span className="rfx-head-meta">{vnum ? <b className="rfx-no">{vnum}</b> : null}</span>
+          <span className="rfx-titlelock">
+            <span className="rfx-overline">Filed specimen</span>
+            <span className="rfx-name">{name}</span>
+          </span>
+          <span className="rfx-head-meta">
+            {vnum ? <><span className="rfx-filelabel">File</span><b className="rfx-no">{vnum}</b></> : null}
+          </span>
         </header>
 
         <div className="rfx-stage">
@@ -109,6 +114,10 @@ export function RefractorCard({
 
         {cue || confidence ? (
           <div className="rfx-read">
+            <div className="rfx-readmeta" aria-hidden="true">
+              <span>Grip tell</span>
+              <span>{vnum ? `PA—${vnum}` : 'Pitch Atlas'}</span>
+            </div>
             {cue ? <p className="rfx-cue">{cue}</p> : null}
             {confidence ? (
               <ul className="rfx-facts">
@@ -129,6 +138,7 @@ export function RefractorCard({
 
         {to ? (
           <div className="rfx-strip">
+            <span className="rfx-serial" aria-hidden="true">Grip / release / shape</span>
             <span className="rfx-open">
               Open specimen <i aria-hidden="true">→</i>
             </span>

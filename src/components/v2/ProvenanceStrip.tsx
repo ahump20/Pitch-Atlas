@@ -7,7 +7,7 @@ import { Descent } from '../motion/Descent'
 import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 /*
-  v2 · Sourced, not corrected. The principle as the feature, not a footnote.
+  v2 · The source trail. The trust system shown as a feature, not a footnote.
   The full seven-tier confidence ladder (read straight from CONFIDENCE_META, so
   the page can never drift from the model) on the matte stage, beside one real
   filed claim wearing its real badge on cream stock: the model showing itself
@@ -42,7 +42,7 @@ export function ProvenanceStrip() {
           <div className="md:sticky md:top-24">
             <ChapterMark n="08" name="The Model" accent={SCENE_TINT} />
             <h2 className="rfx-athletic v2-display mt-4 max-w-[16ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
-              Sourced, not corrected.
+              Every voice keeps its trail.
             </h2>
             <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
               A pitch can be thrown a dozen credible ways. The atlas does not crown one. It records

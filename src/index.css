@@ -1169,6 +1169,12 @@
   }
   video.rfx-grip-img,
   .rfx-grip-poster { object-position: center 58%; }
+  .rfx-grip-img--hero,
+  video.rfx-grip-img--hero,
+  .rfx-grip-poster.rfx-grip-img--hero {
+    object-position: center 56%; transform: scale(1.02);
+    filter: saturate(.88) contrast(1.05) brightness(.96);
+  }
 
   /* ── the media stage: real footage at page scale (MediaStage.tsx) ──
      'bleed' fills its positioned parent and crops to cover; 'portrait' keeps the
@@ -1205,6 +1211,30 @@
   .pa-atmo-index-shelf { background-image: url(/atmosphere/index-shelf.webp); }
   .pa-atmo-seam-macro { background-image: url(/atmosphere/seam-macro.webp); }
   .pa-atmo-archive-paper { background-image: url(/atmosphere/archive-paper.webp); }
+
+  /* Presentation plates are provenance-declared atmosphere, never grip evidence.
+     Their one-shot drift replaces an unavailable hero video without adding a
+     persistent autoplay loop. Reduced-motion visitors receive the settled crop. */
+  .presentation-backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(110% 95% at 52% 42%, transparent 26%, var(--color-void) 92%);
+  }
+  .presentation-parallax {
+    transform: scale(1.045) translate3d(-0.6%, -0.4%, 0);
+    animation: presentation-settle 6s cubic-bezier(.2,.7,.2,1) 1 both;
+  }
+  .presentation-heritage img {
+    filter: saturate(.72) contrast(1.08) brightness(.76);
+    transform: scale(1.025);
+  }
+  @keyframes presentation-settle {
+    to { transform: scale(1.02) translate3d(0, 0, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .presentation-parallax { animation: none; transform: scale(1.02); }
+  }
 
   /* the nameplate: a machined-chrome banner extruded off the card face. A hard
      specular line up top, an accent-steel body, a dark base, and a ::before
@@ -1325,21 +1355,28 @@
   .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid #6E5E3A; color: #6E5E3A;
     padding: 1px calc(var(--rfxu) * 1.67); font-size: max(7px, calc(var(--rfxu) * 2.58)); letter-spacing: .04em; }
 
-  /* confidence dot (sourced, not corrected) */
+  /* confidence dot (the claim's source trail) */
   .rfx-dot { width: calc(var(--rfxu) * 2.22); height: calc(var(--rfxu) * 2.22); border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
 
   /* bottom strip — always on the dark card face, so its ink is literal.
      flex:none so a content-tall card can never crush or slice its one line;
      the window's min-height floor is what gives instead. */
-  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: calc(var(--rfxu) * 1.67); display: flex; align-items: center; justify-content: flex-end; gap: calc(var(--rfxu) * 2.22);
+  .rfx-strip { z-index: 9; flex: none; margin-top: auto; padding-top: calc(var(--rfxu) * 1.67); display: flex; align-items: center; justify-content: space-between; gap: calc(var(--rfxu) * 2.22);
     font-family: var(--font-mono); font-size: max(8px, calc(var(--rfxu) * 2.5)); letter-spacing: .08em; text-transform: uppercase; color: #D8CFB8; text-shadow: 0 1px 3px rgba(0,0,0,.85); }
+  .rfx-serial { min-width: 0; overflow: hidden; color: color-mix(in srgb, var(--c3,#B9D4E5) 58%, #D8CFB8); font-size: .86em; letter-spacing: .1em; white-space: nowrap; }
+  .rfx-open { flex: none; }
 
   /* restrained card face: the hand and sourced read get the space. The richer
      collectible metadata remains on the back and in the full specimen. */
   .rfx-head, .rfx-stage, .rfx-strip { flex: none; }
   .rfx-head {
-    display: flex; align-items: baseline; justify-content: space-between; gap: calc(var(--rfxu) * 2.22);
-    padding: calc(var(--rfxu) * 1.11) calc(var(--rfxu) * .83) calc(var(--rfxu) * 2.22);
+    display: flex; align-items: flex-end; justify-content: space-between; gap: calc(var(--rfxu) * 2.22);
+    padding: calc(var(--rfxu) * .83) calc(var(--rfxu) * .83) calc(var(--rfxu) * 2.22);
+  }
+  .rfx-titlelock { display: flex; min-width: 0; flex-direction: column; gap: calc(var(--rfxu) * .83); }
+  .rfx-overline, .rfx-filelabel {
+    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2)); line-height: 1;
+    letter-spacing: .17em; text-transform: uppercase; color: color-mix(in srgb, var(--c3,#B9D4E5) 68%, #D8CFB8);
   }
   .rfx-name {
     min-width: 0; overflow: hidden; white-space: nowrap; font-family: var(--font-athletic);
@@ -1348,7 +1385,8 @@
     text-shadow: 0 1px rgba(255,255,255,.14), 1.5px 2px 1px rgba(0,0,0,.6); transform: skewX(-5deg);
   }
   .rfx-card.is-gold .rfx-name { color: #FFF0C2; }
-  .rfx-head-meta { display: inline-flex; flex: none; align-items: baseline; gap: calc(var(--rfxu) * 1.94); }
+  .rfx-head-meta { display: inline-flex; flex: none; align-items: flex-end; gap: calc(var(--rfxu) * 1.1); }
+  .rfx-filelabel { padding-bottom: calc(var(--rfxu) * .65); color: #9D927D; }
   .rfx-no {
     font-family: var(--font-athletic); font-size: calc(var(--rfxu) * 5.2); font-weight: 400; line-height: 1;
     color: color-mix(in srgb, var(--c3,#B9D4E5) 72%, var(--color-bone));
@@ -1366,10 +1404,17 @@
   .rfx-read {
     position: relative; z-index: 9; flex: 1 1 auto; min-height: 0; overflow: hidden;
     margin-top: calc(var(--rfxu) * 2.5); padding: calc(var(--rfxu) * 2.5) calc(var(--rfxu) * 3.33) calc(var(--rfxu) * 2.22);
-    display: flex; flex-direction: column; justify-content: center; gap: calc(var(--rfxu) * 1.94);
+    display: flex; flex-direction: column; justify-content: center; gap: calc(var(--rfxu) * 1.75);
     border-radius: calc(var(--rfxu) * 2.22); border: 1px solid rgba(0,0,0,.55);
-    background: radial-gradient(120% 100% at 50% 0%, rgba(255,252,242,.55), transparent 60%), #EFE6D0;
+    background:
+      repeating-linear-gradient(0deg, transparent 0 calc(var(--rfxu) * 4.7), rgba(74,68,58,.055) calc(var(--rfxu) * 4.7) calc(var(--rfxu) * 4.9)),
+      radial-gradient(120% 100% at 50% 0%, rgba(255,252,242,.62), transparent 60%), #EFE6D0;
     box-shadow: inset 0 0 0 1px rgba(255,252,242,.65), 0 1px rgba(255,255,255,.06), 0 8px 16px -12px rgba(0,0,0,.85);
+  }
+  .rfx-readmeta {
+    display: flex; align-items: center; justify-content: space-between; gap: calc(var(--rfxu) * 2);
+    font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.05)); line-height: 1;
+    letter-spacing: .15em; text-transform: uppercase; color: #746B5D;
   }
   .rfx-facts {
     display: flex; flex-wrap: wrap; align-items: center; row-gap: calc(var(--rfxu) * 1.4); column-gap: calc(var(--rfxu) * 3.6);
@@ -1379,6 +1424,13 @@
     display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.4); white-space: nowrap;
     font-family: var(--font-mono); font-size: max(8px, calc(var(--rfxu) * 2.5)); line-height: 1.2;
     letter-spacing: .07em; text-transform: uppercase; color: #4A443A;
+  }
+  .rfx-card.is-hero-specimen { rotate: -.28deg; }
+  .rfx-card.is-hero-specimen .rfx-field {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.13'/%3E%3C/svg%3E"),
+      linear-gradient(164deg,#171006 0%,#0a0703 54%,#040301 100%);
+    background-blend-mode: overlay, normal;
   }
 
   /* ── the card back, struck as a scout file ──

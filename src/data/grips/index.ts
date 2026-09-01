@@ -1,4 +1,5 @@
 import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualReference } from '../types'
+import { PRESENTATION_MEDIA } from '../media/presentation'
 
 /*
   The visual grip library — the clean-channel photo layer.
@@ -10,7 +11,7 @@ import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualRef
   are his own first-person account of how he holds and thinks about each pitch.
   His words are the primary source; we restate, we do not invent.
 
-  Sourced, not corrected: this is one pitcher's hand, not the canonical "right"
+  Source context matters: this is one pitcher's hand, not the canonical "right"
   grip. Where his grip diverges from the textbook (short fingers on the split-finger,
   no circle change at all), the note says so plainly. The library teaches the
   *tells* a flat schematic can't — fingertips crossing a seam vs. riding it, the
@@ -54,11 +55,11 @@ export interface GripClip {
 }
 
 /** Build a grip clip from a base name, e.g. `four-seam-grip` → mp4/webm + webp poster. */
-function clip(name: string, alt: string, caption?: string, start?: number): GripClip {
+function clip(name: string, alt: string, caption?: string, start?: number, poster?: string): GripClip {
   return {
     mp4: `/grips/${name}.mp4`,
     webm: `/grips/${name}.webm`,
-    poster: `/grips/${name}-poster.webp`,
+    poster: poster ?? `/grips/${name}-poster.webp`,
     alt,
     caption,
     start,
@@ -113,6 +114,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       "A looping close-up of Austin's four-seam grip: two fingertips laid across the seam, the ball held out toward the camera.",
       'The grip in motion: ball turned to the camera with index and middle fingertips riding the wide horseshoe, thumb seated underneath.',
       0.8,
+      PRESENTATION_MEDIA.homeGripStill.variants.desktop.src,
     ),
     photos: [
       shot(

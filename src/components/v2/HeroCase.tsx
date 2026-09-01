@@ -3,16 +3,18 @@ import { Button } from '../ds/Button'
 import type { PitchAtlasEntry } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
 import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
+import { PresentationBackdrop } from '../media/PresentationMedia'
+import { PRESENTATION_MEDIA } from '../../data/media/presentation'
 
 /*
   v2 · The Case. The pull, restaged off-axis on matte Topps-Now black: the
   hero specimen stands to the right under a raking accent light, the read sits
   lower-left, and the chrome lives in the materials around the words (the card's
-  foil, the polished CTA lips, the ball's specular) rather than in a gradient
-  fill. Reuses the real PitchSpecimenCard, so the live R3F ball, the foil, and
-  the spring tilt are the same parts the rest of the site ships. The card exits
-  with a scroll-driven refraction (.v2-refract) on capable browsers; reduced
-  motion and no-WebGL keep it standing and swap the schematic in cleanly.
+  foil and polished CTA lips) rather than in a gradient fill. Reuses the real
+  PitchSpecimenCard, but composes the first-party clip to enter on the clearest
+  cross-seam angle, play once, and settle. Reduced motion holds the matched poster.
+  The card exits with a scroll-driven
+  refraction (.v2-refract) on capable browsers; reduced motion keeps it standing.
 */
 export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
   const accent = accentForSlug(featured.display.slug)
@@ -24,10 +26,9 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
       className="v2-stage v2-tooth relative overflow-hidden"
       style={{ '--c3': accent.c3 } as React.CSSProperties}
     >
-      <div
-        className="pa-atmo pa-atmo-specimen-stage opacity-[0.28] md:opacity-[0.36]"
-        style={{ backgroundPosition: '58% 46%' }}
-        aria-hidden="true"
+      <PresentationBackdrop
+        asset={PRESENTATION_MEDIA.homeThreadAtmosphere}
+        className="opacity-[0.22] mix-blend-screen md:opacity-[0.3]"
       />
       {/* Phones lead with the read and primary action; the specimen follows.
           Desktop keeps the off-axis specimen composition beside the read. */}
@@ -73,7 +74,23 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             <div className="v2-rim" aria-hidden="true" />
             <div className="v2-enter relative" style={{ '--i': 4 } as React.CSSProperties}>
               {/* the card carries its own specimen plate; no second stamp over it */}
-              <PitchSpecimenCard entry={featured} maxWidth={460} foil priority />
+              <PitchSpecimenCard
+                entry={featured}
+                maxWidth={460}
+                foil
+                priority
+                className="is-hero-specimen"
+                clipPresentation={{
+                  playback: 'once',
+                  sourceOverride: {
+                    mp4: PRESENTATION_MEDIA.homeGripStill.motion.mp4.src,
+                    webm: PRESENTATION_MEDIA.homeGripStill.motion.webm.src,
+                    poster: PRESENTATION_MEDIA.homeGripStill.variants.desktop.src,
+                    alt: PRESENTATION_MEDIA.homeGripStill.alt,
+                  },
+                  mediaClassName: 'rfx-grip-img--hero',
+                }}
+              />
             </div>
           </div>
         </div>

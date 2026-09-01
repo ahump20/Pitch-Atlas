@@ -123,7 +123,7 @@ On top of it, the app's reason to exist:
 
 Nothing about the phone loosens the Core:
 
-- **Sourced, not corrected.** Every number keeps its source and confidence label on
+- **Provenance remains the trust layer.** Every number keeps its source and confidence label on
   a small screen too.
 - **Real, never faked.** No fake adoption counts, no fake "reproduced" badges, no
   invented push nudges. An empty bullpen says "no notes yet."

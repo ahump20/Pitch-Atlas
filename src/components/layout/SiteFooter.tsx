@@ -62,6 +62,7 @@ export function SiteFooter() {
         <div className="flex flex-col gap-3">
           <BrandMark size="md" />
           <p className="mono-label-stage">{SITE.tagline}</p>
+          <p className="mono-label-stage opacity-75">{SITE.brandLine}</p>
         </div>
 
         <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-6 gap-y-2">
@@ -81,7 +82,9 @@ export function SiteFooter() {
           <a href={SITE.canonicalDomain} className="touch-link mono-label-stage transition-colors hover:text-bone">
             <span className="link-stitch">pitch-atlas.com</span>
           </a>
-          <span className="mono-label-stage opacity-75">{SITE.sourcePrinciple}</span>
+          <span className="mono-label-stage max-w-[32ch] text-right opacity-75">
+            Heritage · history · craft · conversation
+          </span>
         </div>
       </div>
       {/* True by construction: every content route is prerendered to static HTML,

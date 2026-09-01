@@ -1,14 +1,16 @@
 # Pitch Atlas Platform Contract — web and iOS
 
-One product, two surfaces. Pitch-Atlas.com and the iOS app share the same source
-doctrine, content model, route map, privacy/support URLs, and community backend.
+One product, two surfaces. Pitch-Atlas.com and the iOS app share the same mission,
+trust model, content model, route map, privacy/support URLs, and community backend.
 Anything one surface carries that the other cannot support is labeled, not fudged.
 Last reconciled: 2026-07-16.
 
-## Shared doctrine (identical on both surfaces)
+## Shared mission and trust contract (identical on both surfaces)
 
-- Sourced, not corrected. Every factual claim routes through the Claim/Source
-  engine with a confidence tier; the two weakest tiers must carry a note.
+- Pitch Atlas preserves the heritage, history, and art of pitching in one place
+  where trusted minds and creative voices can teach, discover, and talk craft.
+- Every factual claim routes through the Claim/Source engine with a confidence
+  tier; the two weakest tiers must carry a note.
 - Words-only physics. No rpm, IVB, mph, or inch figures in product prose or
   bundled content. Movement is shape and timing. (Web: `src/data/types.ts`
   PhysicsReference. iOS: bundled content JSON, synced by the qualitative
