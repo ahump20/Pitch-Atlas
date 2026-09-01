@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Descent } from '../motion/Descent'
+import { ChapterMark } from './ChapterMark'
 
 const RAIL = [
   { to: '/softball', label: 'Softball', note: 'The fastpitch & slowpitch wing' },
@@ -17,6 +18,7 @@ export function WingsNav() {
     >
       <Descent />
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
+        <ChapterMark n="04" name="The Other Doors" accent={SCENE_TINT} className="mb-4" />
         <h2 className="rfx-athletic v2-display max-w-[18ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
           The other doors.
         </h2>

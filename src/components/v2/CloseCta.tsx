@@ -3,6 +3,7 @@ import { Button } from '../ds/Button'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
 import { Descent } from '../motion/Descent'
+import { ChapterMark } from './ChapterMark'
 
 const REGISTRY_COUNT = allSources().length
 const REGISTRY_AS_OF = asOfDate(latestRetrievedAt(allSources()))
@@ -17,6 +18,7 @@ export function CloseCta() {
       <Descent />
       <div className="mx-auto max-w-[760px] px-5 pt-24 text-center md:px-8 md:pt-32">
         <div className="v2-close-converge">
+          <ChapterMark n="05" name="The Record" accent={SCENE_TINT} className="mb-5 justify-center" />
           <h2 className="rfx-athletic v2-display text-[clamp(32px,6vw,64px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]">
             Preserve the pitches baseball almost forgot.
           </h2>

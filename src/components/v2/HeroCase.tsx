@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Button } from '../ds/Button'
 import type { PitchAtlasEntry } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
+import { ChapterMark } from './ChapterMark'
 import { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
 import { PresentationBackdrop } from '../media/PresentationMedia'
 import { PRESENTATION_MEDIA } from '../../data/media/presentation'
@@ -36,6 +37,9 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
       <div className="v2-hero-grid relative z-[1] mx-auto grid max-w-[1320px] grid-cols-1 items-center gap-7 px-5 pb-16 pt-6 md:min-h-[calc(100dvh-4.5rem)] md:grid-cols-12 md:gap-6 md:px-8 md:pb-24 md:pt-12">
         {/* the read, lower-left */}
         <div className="v2-hero-read order-1 md:col-span-6 md:self-center">
+          <div className="v2-enter mb-4" style={{ '--i': 0 } as React.CSSProperties}>
+            <ChapterMark n="01" name="The Specimen" accent={accent.c3} />
+          </div>
           <h1
             className="rfx-athletic v2-display v2-enter text-[clamp(40px,8.5vw,84px)] leading-[0.98] [text-wrap:balance] md:leading-[0.92]"
             style={{ '--i': 1 } as React.CSSProperties}
