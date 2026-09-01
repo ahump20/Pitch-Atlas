@@ -22,6 +22,20 @@ function renderIndex(initialEntry = '/repertoire') {
 }
 
 describe('PitchIndex controls', () => {
+  it('places route media after the search controls and before the indexed families', () => {
+    render(
+      <MemoryRouter>
+        <PitchIndex afterControls={<section data-testid="route-media">Filed conversation</section>} />
+      </MemoryRouter>,
+    )
+
+    const search = screen.getByRole('searchbox', { name: /search the pitch index/i })
+    const media = screen.getByTestId('route-media')
+    const firstFamily = screen.getByRole('heading', { name: 'Fastballs' })
+    expect(search.compareDocumentPosition(media) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(media.compareDocumentPosition(firstFamily) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
   it('filters the index and renders the designed empty state', async () => {
     const user = userEvent.setup()
     renderIndex()

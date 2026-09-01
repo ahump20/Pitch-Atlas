@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -259,7 +259,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
   )
 }
 
-export function PitchIndex({ id }: { id?: string }) {
+export function PitchIndex({ id, afterControls }: { id?: string; afterControls?: ReactNode }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const query = searchParams.get('q') ?? ''
   const filter = searchFilter(searchParams.get('family'))
@@ -561,6 +561,8 @@ export function PitchIndex({ id }: { id?: string }) {
           </div>
         </div>
       ) : null}
+
+      {afterControls ? <div className="mt-5">{afterControls}</div> : null}
 
       {/* Empty state — says which lever to pull: the search term or the filter */}
       {total === 0 ? (

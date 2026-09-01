@@ -20,7 +20,7 @@ const GOVERNING_AND_PUBLIC_FILES = [
   'src/components/v2/CloseCta.tsx',
 ] as const
 
-const TEXT_EXTENSIONS = /\.(?:md|ts|tsx|json|txt|webmanifest)$/
+const TEXT_EXTENSIONS = /\.(?:md|ts|tsx|json|txt|webmanifest|sql|toml)$/
 
 function textFilesUnder(root: string): string[] {
   const files: string[] = []
@@ -38,7 +38,14 @@ function textFilesUnder(root: string): string[] {
 describe('Pitch Atlas mission contract', () => {
   it('keeps the retired sourcing slogan out of governing documents and public copy', () => {
     const governing = GOVERNING_AND_PUBLIC_FILES.map((file) => join(process.cwd(), file))
-    const candidates = new Set([...governing, ...textFilesUnder('docs'), ...textFilesUnder('src'), ...textFilesUnder('public')])
+    const candidates = new Set([
+      ...governing,
+      ...textFilesUnder('docs'),
+      ...textFilesUnder('src'),
+      ...textFilesUnder('public'),
+      ...textFilesUnder('supabase'),
+      ...textFilesUnder('workers'),
+    ])
     const offenders = [...candidates]
       .filter((file) => RETIRED_SLOGAN.test(readFileSync(file, 'utf8')))
       .map((file) => file.replace(`${process.cwd()}/`, ''))

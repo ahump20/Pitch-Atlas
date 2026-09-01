@@ -1,8 +1,9 @@
 -- PITCH ATLAS — Community "Field Notes" schema.
 -- Maps onto the app's existing provenance + Field Notes vocabulary
 -- (src/data/types.ts ClaimConfidence, src/data/field-notes.ts FieldNote / RANK_WEIGHTS).
--- Doctrine: "Sourced, not corrected" (weak tiers must carry a note), evidence-ranked
--- (not raw popularity), anonymous participation with claim-later, one-action-per-account.
+-- Trust-layer invariant: weak provenance tiers must carry a note; ranking follows
+-- evidence rather than raw popularity. Participation is anonymous with claim-later
+-- identity and one action per account.
 
 -- ===== generic helper (plpgsql body not schema-validated at create time) =====
 create or replace function public.set_updated_at()
@@ -62,7 +63,7 @@ create table public.field_notes (
   is_hidden boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  -- Sourced, not corrected: the two weakest tiers MUST carry an explanatory note.
+  -- Provenance guard: the two weakest tiers MUST carry an explanatory note.
   constraint weak_tier_requires_note check (
     source_tier not in ('secondhand-attributed','unverified')
     or (note is not null and char_length(btrim(note)) > 0)

@@ -72,15 +72,18 @@ export function RepertoirePage() {
       </div>
       </section>
 
-      <ExternalMediaRail
-        query={{ placement: 'repertoire', limit: 2 }}
-        eyebrow="Filed conversation"
-        title="Voices beside the taxonomy."
-        intro="The index names the families. These credited lessons show how pitchers and teachers keep testing, describing, and handing the craft forward."
-      />
-
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <PitchIndex />
+        <PitchIndex
+          afterControls={(
+            <ExternalMediaRail
+              query={{ placement: 'repertoire', limit: 2 }}
+              eyebrow="Filed conversation"
+              title="Voices beside the taxonomy."
+              intro="The index names the families. These credited lessons show how pitchers and teachers keep testing, describing, and handing the craft forward."
+              className="relative left-1/2 w-screen -translate-x-1/2"
+            />
+          )}
+        />
       </div>
 
       {/* the whole accepted catalog as one map, a complement to the searchable rows */}
