@@ -26,11 +26,32 @@ function includesText(text, pattern) {
   return pattern.test(text.replace(/\s+/g, ' '))
 }
 
+const OFFICIAL_EMBED_HOSTS = [
+  'tiktok.com',
+  'tiktokcdn',
+  'x.com',
+  'twitter.com',
+  'twimg.com',
+  'youtube.com',
+  'googlevideo.com',
+  'instagram.com',
+  'cdninstagram.com',
+]
+
+function isExpectedExternalMediaNoise(message) {
+  const preMigrationShelfProbe =
+    message.includes('Failed to load resource: the server responded with a status of 404') &&
+    message.includes('.supabase.co/rest/v1/external_content_items?')
+  const officialEmbedMessage = OFFICIAL_EMBED_HOSTS.some((host) => message.includes(host))
+  return preMigrationShelfProbe || officialEmbedMessage
+}
+
 async function collectConsole(page, callback) {
   const messages = []
   page.on('console', (message) => {
     if (['error', 'warning'].includes(message.type())) {
-      messages.push(`${message.type()}: ${message.text()}`)
+      const sourceUrl = message.location().url
+      messages.push(`${message.type()}: ${message.text()}${sourceUrl ? ` @ ${sourceUrl}` : ''}`)
     }
   })
   await callback()
@@ -45,6 +66,7 @@ async function collectConsole(page, callback) {
       !message.includes('THREE.Clock: This module has been deprecated') &&
       !message.includes('THREE.sigmaRadians') &&
       !message.includes('GL Driver Message') &&
+      !isExpectedExternalMediaNoise(message) &&
       !message.includes("'upgrade-insecure-requests' is ignored when delivered in a report-only policy"),
   )
 }
@@ -365,6 +387,8 @@ async function checkHomeCardBacks(page, viewport) {
   })
 
   record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
+  const externalCards = await page.locator('[data-external-provider]').count()
+  record(externalCards >= 3, `${label} lost the committed external-media fallback shelf`)
   const flipButtons = page.locator('#set .v2-face:not(.v2-face-back) .v2-flip-btn')
   const count = await flipButtons.count()
   record(count > 0, `${label} found no sourced card backs`)
@@ -470,7 +494,11 @@ async function checkFourSeam(page) {
     (message) => !message.includes('THREE.WebGLRenderer: Error creating WebGL context'),
   )
   record(includesText(body, /four-seam fastball/i), 'Four-seam page body did not render')
-  record(includesText(body, /sourced, not corrected/i), 'Four-seam page lost the source principle')
+  record(includesText(body, /every claim, sourced/i), 'Four-seam page lost the visible provenance contract')
+  record(
+    (await page.locator('[data-external-provider]').count()) > 0,
+    'Four-seam page lost its matched external-media fallback',
+  )
   record(
     unexpectedMessages.length === 0,
     `Four-seam console warnings/errors: ${unexpectedMessages.join(' | ')}`,
