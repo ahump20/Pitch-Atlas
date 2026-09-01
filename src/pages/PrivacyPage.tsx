@@ -92,10 +92,12 @@ export function PrivacyPage() {
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Official X, Instagram, TikTok, and YouTube players are kept roughly 300 pixels outside
-              the viewport until you approach their card. At that point the provider receives the
-              normal network request needed to render its player and applies its own privacy terms.
-              With a browser data-saver preference, Pitch Atlas waits for an explicit tap instead.
-              X embeds request its do-not-track mode where supported.
+              the viewport until you approach their card. When one loads, that company's player runs
+              inside the page and behaves as it does on its own site: TikTok's assigns a device
+              identifier, loads its own tracking scripts, and reports playback activity back to
+              TikTok. Pitch Atlas neither controls nor receives any of that, and their privacy terms
+              apply from that moment. With a browser data-saver preference, Pitch Atlas waits for an
+              explicit tap instead. X embeds request its do-not-track mode where supported.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The same is true in the Pitch Atlas iOS app: the reference archive works fully logged
