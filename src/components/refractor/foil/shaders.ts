@@ -17,8 +17,8 @@
     3. a cosine-palette thin-film ramp (the standard cheap spectral
        approximation of interference) whose phase also rides the tilt, so the
        hue walks the spectrum as the card moves;
-    4. the per-pitch accent triad as a tint, and a gold mode that collapses
-       the palette toward a gold-white spectrum for the 1/1 chase card.
+    4. the per-pitch accent triad as a tint, and an ember mode that collapses
+       the palette toward burnt-orange heat for the 1/1 chase card.
 
   One fullscreen triangle, one pass, zero textures.
 */
@@ -100,8 +100,8 @@ void main() {
   float t = mix(dirB, dirA, parity) * 1.6 + rx * 0.9 + ry * 0.45;
   vec3 irid = vec3(palette(t + 0.045).r, palette(t).g, palette(t - 0.045).b);
 
-  // gold mode: collapse the spectrum toward gold-white for the 1/1
-  vec3 goldTone = mix(vec3(0.85, 0.66, 0.30), vec3(1.0, 0.94, 0.76), spec);
+  // ember mode: collapse the spectrum toward burnt-orange heat for the matte 1/1
+  vec3 goldTone = mix(vec3(0.55, 0.22, 0.02), vec3(1.0, 0.72, 0.45), spec);
   vec3 sheen = mix(irid, goldTone, uGold * 0.82);
 
   // the pitch accent breathes through the dark teeth

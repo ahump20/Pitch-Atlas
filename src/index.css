@@ -644,7 +644,7 @@
 /* ============================================================
    REFRACTOR LAYER  ·  feat/refractor-redesign
    The holographic trading-card language from the (since-deleted) specimen-card
-   prototype, ported and namespaced `rfx-`. Dark void field, rainbow foil + gold 1/1,
+   prototype, ported and namespaced `rfx-`. Dark void field, rainbow foil + ember 1/1,
    Anton athletic logotype. Foil is decoration; the readings are sourced.
    Additive: Heritage tokens above stay live until each page is migrated.
    ============================================================ */
@@ -758,16 +758,17 @@
       #a7adb0 70%, #e4b45a 77%, #e0722a 84%, #ff6a29 90%, #b8560f 95%,
       #6e757b 100%);
 
-    /* The 1/1 register. Gold shimmers gold in its negative space and never goes
-       rainbow — the two materials never mix on one object. Warmed to the Electric
-       Burnt Chrome brass so it sits in the same world as the foil. */
-    /* Yellow-brass, never olive. #3a2a0c / #8a6420 sit close enough to green that
-       the frame's overlay+multiply hatch pushed the whole 1/1 army-drab — the darks
-       have to stay warm-brown for the metal to stay gold. */
-    --gold: linear-gradient(150deg,#2a1a04,#b8802e 18%,#e4b45a 34%,#fff3ec 46%,#f0c968 56%,#a06f1e 72%,#e4b45a 86%,#2a1a04 100%);
+    /* The 1/1 register — the Ember. The grail is the one card in the case that
+       does not shine: matte warm black with burnt-orange heat drifting under the
+       surface. Nobody prints a matte grail, which is the point. The class, prop,
+       and shader uniform keep their historical `gold` names; the material moved on. */
+    /* Mostly lacquer, one crisp seam of fire: the wide stops washed the whole
+       frame brown; the narrow band keeps the card black and lets the heat read
+       as a drifting ember line under the surface. */
+    --ember: linear-gradient(150deg,#0b0807,#241105 30%,#8a3d02 44%,#ff8c3a 50%,#8a3d02 56%,#241105 70%,#0b0807 100%);
 
-    /* The casino chrome/steel gradients are retired. The rainbow foil and the
-       gold 1/1 are the only metallics in the set — the foil is the jewelry. */
+    /* The casino chrome/steel gradients are retired. The rainbow foil is the only
+       metallic in the set — the 1/1 ember is matte heat, not a second metal. */
     --bevel-hi: rgba(255,255,255,.62);
     --bevel-lo: rgba(0,0,0,.7);
   }
@@ -879,8 +880,8 @@
     box-shadow: 0 2px 8px -2px #000, inset 0 1px 0 rgba(246,241,230,.18);
   }
   .rfx-diamond > * { transform: rotate(-45deg); font-family: var(--font-mono); font-weight: 700; color: #F6F1E6; }
-  .rfx-diamond.is-gold { background: var(--gold); border-color: rgba(0,0,0,.5); }
-  .rfx-diamond.is-gold > * { color: #2a1d05; }
+  .rfx-diamond.is-gold { background: var(--ember); border-color: rgba(191,87,0,.45); }
+  .rfx-diamond.is-gold > * { color: #FFD9B8; }
 
   /* ── the card-width unit ──
      Everything printed INSIDE the card is sized in --rfxu: 1% of the card's own
@@ -900,7 +901,7 @@
 
   /* ── refractor card (component sets --c1/--c2/--c3 + --i index) ──
      The frame is the rainbow holo on the standard run — the refractor identity,
-     catching the pointer's light. The 1/1 chase alone wears the gold, so the
+     catching the pointer's light. The 1/1 chase alone runs matte ember, so the
      chase still reads as the chase. A deterministic micro-lean (driven by the
      reveal index, sin-spread) keeps repeated cards related, never identical —
      a handled set, not a printed sheet. */
@@ -956,25 +957,28 @@
   }
   .rfx-card.is-gold {
     background:
-      repeating-linear-gradient(57deg, rgba(255,255,255,.24) 0 1px, transparent 1px 7px),
-      repeating-linear-gradient(-57deg, rgba(0,0,0,.22) 0 1px, transparent 1px 8px),
-      var(--gold);
+      repeating-linear-gradient(57deg, rgba(255,255,255,.05) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(-57deg, rgba(0,0,0,.35) 0 1px, transparent 1px 8px),
+      var(--ember);
     background-size: 9px 9px, 11px 11px, 240% 240%;
     background-position: 0 0, 0 0, var(--mx) var(--my);
     background-blend-mode: overlay, multiply, normal;
-    /* the grail aura: the standard card's accent ring, struck in gold, plus a
-       wide warm bloom so the 1/1 visibly outshines the run on a dark field.
-       Static — the casino metallic sweep is retired; this is steady radiance. */
-    /* The 1/1 still outshines the run, but by frame weight and brass density —
-       not by a 104px bloom. Same solid-black outer edge as the standard card. */
+    /* the ember frame: matte near-black stock with the heat band drifting under
+       the pointer — warmth that moves, nothing that shines. The hatch drops to a
+       charcoal-on-charcoal tooth so the frame reads printed matte, not foiled. */
+    /* the double coach-line: twin ember hairlines with a breath of black
+       between — the vintage double rule the card backs already speak, struck
+       here in burnt orange on black lacquer. */
     box-shadow:
       0 0 0 3px #000,
-      0 0 0 4px color-mix(in srgb, #e4b45a 34%, transparent),
+      0 0 0 4px color-mix(in srgb, #bf5700 62%, #1c0e02),
+      0 0 0 6px #000,
+      0 0 0 7px color-mix(in srgb, #bf5700 30%, transparent),
       0 26px 42px -20px rgba(0,0,0,.92),
       0 6px 14px -6px rgba(0,0,0,.8),
-      inset 0 1px 0 rgba(255,243,236,.42),
+      inset 0 1px 0 rgba(255,178,122,.18),
       inset 0 -2px 5px rgba(0,0,0,.7),
-      0 0 34px -20px rgba(228,180,90,.55);
+      0 0 34px -20px rgba(191,87,0,.6);
   }
   .rfx-field {
     position: relative; height: 100%; border-radius: 4px; overflow: hidden;
@@ -1003,16 +1007,16 @@
   .rfx-card.is-gold .rfx-field {
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
-      linear-gradient(170deg,#120c02,#0a0703 60%,#050301);
+      linear-gradient(170deg,#0f0a06,#090604 60%,#040302);
     background-blend-mode: overlay, normal;
-    /* gold 1/1 wears a gold chrome bezel, not the cyan accent ring */
+    /* the ember 1/1 wears a burnt-orange bezel, not the cyan accent ring */
     box-shadow:
       0 0 0 2px #000,
-      0 0 0 3px color-mix(in srgb, #e4b45a 70%, #8a6420),
+      0 0 0 3px color-mix(in srgb, #bf5700 72%, #5a2c08),
       0 0 0 4.5px #000,
       inset 0 0 0 2px #000,
-      inset 0 0 0 3px color-mix(in srgb, #e4b45a 16%, rgba(246,241,230,.16)),
-      inset 0 20px 32px -24px rgba(255,255,255,.2),
+      inset 0 0 0 3px color-mix(in srgb, #e86a17 18%, rgba(246,241,230,.1)),
+      inset 0 20px 32px -24px rgba(255,255,255,.12),
       inset 0 -22px 34px -24px rgba(0,0,0,.94);
   }
   /* the woven check in the negative space — bone-warm threads with a whisper of
@@ -1024,16 +1028,15 @@
       repeating-linear-gradient(-45deg, rgba(214,205,186,.4) 0 2px, transparent 2px 11px),
       repeating-linear-gradient(-45deg, color-mix(in srgb, var(--c3,#B9D4E5) 40%, transparent) 0 1px, transparent 1px 22px);
   }
-  /* the gold 1/1 shimmers gold in its negative space, never rainbow */
-  /* .13, not .2 — screen-blending the gold weave over the field lifted the whole
-     negative space to khaki. The 1/1's field is near-black with brass threads
-     through it, the way a black-bordered card actually prints. */
+  /* the ember 1/1 smolders in its negative space, never rainbow */
+  /* near-black field with burnt-orange threads through it, the way a
+     black-bordered card actually prints. */
   .rfx-card.is-gold .rfx-field::before {
-    opacity: .13;
+    opacity: .12;
     background:
-      repeating-linear-gradient(45deg, rgba(255,240,194,.4) 0 2px, transparent 2px 11px),
-      repeating-linear-gradient(-45deg, rgba(255,240,194,.3) 0 2px, transparent 2px 11px),
-      var(--gold);
+      repeating-linear-gradient(45deg, rgba(232,106,23,.3) 0 2px, transparent 2px 11px),
+      repeating-linear-gradient(-45deg, rgba(232,106,23,.22) 0 2px, transparent 2px 11px),
+      var(--ember);
     background-size: auto, auto, 220% 220%;
     background-position: 0 0, 0 0, var(--mx) var(--my);
   }
@@ -1046,7 +1049,7 @@
     mix-blend-mode: soft-light; opacity: .3; transition: opacity .4s;
   }
   .rfx-card:hover .rfx-field::after { opacity: .44; }
-  .rfx-card.is-gold .rfx-field::after { opacity: .16; }
+  .rfx-card.is-gold .rfx-field::after { opacity: .1; }
   .rfx-inner { position: relative; z-index: 8; display: flex; flex-direction: column; height: 100%; }
   /* The window is the ONLY row that flexes (the design's stated intent: the grip
      is the card, so the portrait absorbs the slack). Pin the print rows so a long
@@ -1064,7 +1067,7 @@
     fill: color-mix(in srgb, var(--c3,#B9D4E5) 26%, #F6F1E6);
     stroke: rgba(0,0,0,.65); stroke-width: .8px; paint-order: stroke fill;
   }
-  .rfx-card.is-gold .rfx-wmarc text { fill: #fff0c2; }
+  .rfx-card.is-gold .rfx-wmarc text { fill: #ffb27a; }
 
   /* unclipped twin of the window's box: holds the vnum + family crumb so the
      arch's overflow:hidden can't slice them at the rounded corners. The min-height
@@ -1114,10 +1117,10 @@
     text-shadow: 1.5px 2px 0 rgba(0,0,0,.55); transform: skewX(-6deg);
   }
   .rfx-card.is-gold .rfx-vnum {
-    /* gradient pinned light (ends at #caa14a, ~6.8:1 under the dark digits) + a
+    /* gradient pinned light (ends at #d96a10, ~5.2:1 under the dark digits) + a
        hairline dark stroke, so the digits clear WCAG AA across the whole badge. */
-    background: linear-gradient(160deg,#fff0c2,#e8c773 52%,#caa14a);
-    border-color: rgba(0,0,0,.5); color: #2a1d05; -webkit-text-stroke: 0.6px rgba(0,0,0,.45);
+    background: linear-gradient(160deg,#ffd9b8,#f08a2e 52%,#d96a10);
+    border-color: rgba(0,0,0,.5); color: #1c0e02; -webkit-text-stroke: 0.6px rgba(0,0,0,.45);
     text-shadow: 0 1px 0 rgba(255,255,255,.4);
   }
   /* the family seal: a struck coin at the crown of the arched window naming WHAT KIND
@@ -1142,8 +1145,8 @@
     backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,.1);
   }
   .rfx-card.is-gold .rfx-seal-coin {
-    background: radial-gradient(circle at 50% 28%, #fff0c2, #caa14a 60%, #7a571f);
-    border-color: rgba(0,0,0,.5); color: #2a1d05;
+    background: radial-gradient(circle at 50% 28%, #ffd9b8, #bf5700 60%, #4a2405);
+    border-color: rgba(0,0,0,.5); color: #1c0e02;
   }
   /* face-source chip: whose media the grip stage shows, or that it is a schematic. */
   .rfx-gripchip {
@@ -1268,15 +1271,15 @@
     box-shadow: 0 3px 6px -2px rgba(0,0,0,.7);
   }
   .rfx-card.is-gold .rfx-banner {
-    background: linear-gradient(180deg, #fff6d8 0%, #ffe9a8 14%, #e8c468 42%, #b98a2f 70%, #7c5a1c 100%); color: #2a1d05;
-    -webkit-text-stroke: .5px rgba(80,52,8,.5); text-shadow: 0 1px 0 rgba(255,255,255,.55), 1px 2px 1px rgba(90,60,12,.5);
+    background: linear-gradient(180deg, #ffe0c4 0%, #ff9c4d 14%, #e86a17 42%, #9c4506 70%, #4a2405 100%); color: #1c0e02;
+    -webkit-text-stroke: .5px rgba(90,38,4,.5); text-shadow: 0 1px 0 rgba(255,224,196,.55), 1px 2px 1px rgba(74,36,5,.5);
     box-shadow:
-      inset 0 1.5px 0 rgba(255,255,255,.75),
-      inset 0 -3px 5px rgba(120,86,20,.5),
+      inset 0 1.5px 0 rgba(255,224,196,.6),
+      inset 0 -3px 5px rgba(122,58,8,.5),
       0 7px 14px -6px #000,
-      0 0 0 1px rgba(202,161,74,.7);
+      0 0 0 1px rgba(191,87,0,.7);
   }
-  .rfx-card.is-gold .rfx-banner::before { background: linear-gradient(180deg, #5a3f12, #2a1d0500); }
+  .rfx-card.is-gold .rfx-banner::before { background: linear-gradient(180deg, #3a1d06, #1c0e0200); }
   /* the specimen grade — one honest rarity stamp under the nameplate. Replaces the
      old three-chip attr row: family already reads in the seal coin and source in the
      plate badge, so this carries the one thing they didn't — how richly the specimen
@@ -1296,11 +1299,11 @@
     background: var(--c3,#B9D4E5); box-shadow: 0 0 8px -1px var(--c3,#B9D4E5);
   }
   .rfx-card.is-gold .rfx-grade {
-    border-color: rgba(202,161,74,.5); color: #FFE9B0;
-    background: linear-gradient(180deg, rgba(255,240,194,.15), rgba(42,29,5,.5));
-    box-shadow: inset 0 1px 0 rgba(255,240,194,.3), 0 2px 8px -4px rgba(0,0,0,.7);
+    border-color: rgba(191,87,0,.55); color: #FFCC9E;
+    background: linear-gradient(180deg, rgba(255,178,122,.13), rgba(26,13,4,.55));
+    box-shadow: inset 0 1px 0 rgba(255,178,122,.28), 0 2px 8px -4px rgba(0,0,0,.7);
   }
-  .rfx-card.is-gold .rfx-grade-dot { background: #FFD98A; box-shadow: 0 0 8px -1px #FFD98A; }
+  .rfx-card.is-gold .rfx-grade-dot { background: #FF6A29; box-shadow: 0 0 8px -1px #FF6A29; }
 
   /* the READ plate — the read lives here, never on the patterned foil. Cream
      card stock printed in ink, the way the physical card carries its readings:
@@ -1384,7 +1387,7 @@
     color: #FBF7EE; -webkit-text-stroke: .6px rgba(0,0,0,.6);
     text-shadow: 0 1px rgba(255,255,255,.14), 1.5px 2px 1px rgba(0,0,0,.6); transform: skewX(-5deg);
   }
-  .rfx-card.is-gold .rfx-name { color: #FFF0C2; }
+  .rfx-card.is-gold .rfx-name { color: #FFD9B8; }
   .rfx-head-meta { display: inline-flex; flex: none; align-items: flex-end; gap: calc(var(--rfxu) * 1.1); }
   .rfx-filelabel { padding-bottom: calc(var(--rfxu) * .65); color: #9D927D; }
   .rfx-no {
@@ -1392,7 +1395,7 @@
     color: color-mix(in srgb, var(--c3,#B9D4E5) 72%, var(--color-bone));
     -webkit-text-stroke: .5px rgba(0,0,0,.55); transform: skewX(-6deg);
   }
-  .rfx-card.is-gold .rfx-no { color: #F4D98A; }
+  .rfx-card.is-gold .rfx-no { color: #FF8C3A; }
   .rfx-stage {
     position: relative; width: 100%; aspect-ratio: 10 / 9; overflow: hidden;
     border-radius: calc(var(--rfxu) * 21.67) calc(var(--rfxu) * 21.67) calc(var(--rfxu) * 3.89) calc(var(--rfxu) * 3.89) /
@@ -1465,7 +1468,7 @@
   .rfx-scout-foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
   .rfx-scout-edition { font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-bone);
     padding: 2px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3,#B9D4E5) 40%, rgba(246,241,230,.16)); white-space: nowrap; }
-  .is-chase .rfx-scout-edition { color: #FFE9B0; border-color: rgba(202,161,74,.6); }
+  .is-chase .rfx-scout-edition { color: #FFCC9E; border-color: rgba(191,87,0,.6); }
 
   /* the movement wheel — the visual shape read on the scout back. A direction
      target built from the sourced motion enums + the render-only spin axis;
@@ -3100,7 +3103,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   /* ── the chrome wall ──
      A matte grid of Topps-Now mounts, each a flip card. The mount
      is the matte black border; the card inside is the chrome. Two
-     up on phones, four up at md; the gold 1/1 takes the one wide
+     up on phones, four up at md; the ember 1/1 takes the one wide
      cell as the wall's single accent. */
   /* One card per row on phones: at 2-col widths a 147px card cramps the nameplate
      and the absolute SOURCE button overruns the grade stamp + READ tab. 2-col only
@@ -3142,16 +3145,16 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     opacity: .04; mix-blend-mode: overlay;
   }
   .v2-mount.is-chase {
-    /* the grail cell reads gold before any flip: a warm edge, a thin gold inner
-       ring, and a soft gold glow. The glow is the mount's own box-shadow, so it
+    /* the grail cell reads ember before any flip: a burnt edge, a thin ember inner
+       ring, and a soft ember glow. The glow is the mount's own box-shadow, so it
        survives the chase mount's scroll-timeline overflow:hidden. */
-    border-color: color-mix(in srgb, #caa14a 34%, rgba(0, 0, 0, .4));
+    border-color: color-mix(in srgb, #bf5700 40%, rgba(0, 0, 0, .4));
     box-shadow:
       inset 0 1px 2px rgba(0, 0, 0, .62),
       inset 0 -1px 0 rgba(255, 255, 255, .06),
-      inset 0 0 0 1px color-mix(in srgb, #f4d98a 20%, transparent),
+      inset 0 0 0 1px color-mix(in srgb, #ff8c3a 20%, transparent),
       0 12px 30px -18px #000,
-      0 0 40px -22px rgba(212, 170, 90, .5);
+      0 0 40px -22px rgba(191, 87, 0, .55);
   }
   @media (min-width: 600px) { .v2-mount.is-chase { grid-column: span 2; } }
   .v2-mount .v2-flip { max-width: 360px; margin-inline: auto; }
@@ -3226,20 +3229,20 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     mix-blend-mode: screen; opacity: .35;
   }
   .v2-back > * { position: relative; z-index: 1; }
-  /* the gold 1/1 wears foil on BOTH faces: its flipped scout back gets a gold
-     frame and a faintly warmed plate, while the data rows keep their dark stock
-     for contrast. Standard backs stay matte — only the 1-of-1 is foil front and
-     back. The wash is a thin gold sweep, not a field behind the text. */
+  /* the ember 1/1 carries its heat on BOTH faces: the flipped scout back gets a
+     burnt-orange frame and a faintly warmed plate, while the data rows keep their
+     dark stock for contrast. Standard backs stay cool — only the 1-of-1 is warm
+     front and back. The wash is a thin ember sweep, not a field behind the text. */
   .v2-mount.is-chase .v2-back {
-    background: radial-gradient(120% 90% at 50% 0%, #1d160b 0%, #0a0908 62%);
-    border-color: color-mix(in srgb, #f4d98a 46%, #8a6a22);
+    background: radial-gradient(120% 90% at 50% 0%, #1a100a 0%, #0a0908 62%);
+    border-color: color-mix(in srgb, #e86a17 40%, #5a2c08);
     box-shadow:
-      inset 0 0 0 1px color-mix(in srgb, #f4d98a 34%, transparent),
-      inset 0 1px 0 rgba(255, 240, 194, .16),
-      0 0 34px -18px rgba(212, 170, 90, .55);
+      inset 0 0 0 1px color-mix(in srgb, #e86a17 26%, transparent),
+      inset 0 1px 0 rgba(255, 178, 122, .14),
+      0 0 34px -18px rgba(191, 87, 0, .5);
   }
   .v2-mount.is-chase .v2-back::before {
-    background: linear-gradient(108deg, transparent 0 14%, color-mix(in srgb, #f4d98a 30%, transparent) 40%, transparent 66%);
+    background: linear-gradient(108deg, transparent 0 14%, color-mix(in srgb, #e86a17 28%, transparent) 40%, transparent 66%);
     opacity: .4;
   }
 
@@ -3591,7 +3594,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
 @keyframes v2-grain-shift { from { background-position: 0 0; } to { background-position: 3px 2px; } }
 @keyframes v2-rim-breath { from { opacity: .46; } to { opacity: .56; } }
 
-/* the wall dealt in card by card; the gold 1/1 raked once on arrival. */
+/* the wall dealt in card by card; the ember 1/1 flared once on arrival. */
 @keyframes v2-mount-deal { from { opacity: 0; transform: translateY(14px) rotateX(7deg); filter: brightness(.7); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes v2-chase-sweep { from { transform: translateX(-120%); } to { transform: translateX(120%); } }
 
@@ -3627,10 +3630,10 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
        so the settled rest state never out-ranks the hover lift above. */
     .v2-mount { animation: v2-mount-deal linear backwards; animation-timeline: view(); animation-range: entry calc(2% + var(--i, 0) * 3%) cover 30%; }
     .v2-mount.is-chase { overflow: hidden; animation-range: entry calc(2% + var(--i, 0) * 3%) cover 40%; }
-    /* the gold 1/1 raked once on arrival — gold in MATERIAL, never letters */
+    /* the ember 1/1 flared once on arrival — heat in MATERIAL, never letters */
     .v2-mount.is-chase::after {
       content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none; border-radius: inherit;
-      background-image: linear-gradient(101deg, transparent 0 30%, color-mix(in srgb, #D8A24A 55%, transparent) 50%, transparent 70%);
+      background-image: linear-gradient(101deg, transparent 0 30%, color-mix(in srgb, #E86A17 55%, transparent) 50%, transparent 70%);
       mix-blend-mode: screen; transform: translateX(-120%);
       animation: v2-chase-sweep linear both; animation-timeline: view(); animation-range: entry 10% cover 35%;
     }
