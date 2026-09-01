@@ -762,10 +762,24 @@
        does not shine: matte warm black with burnt-orange heat drifting under the
        surface. Nobody prints a matte grail, which is the point. The class, prop,
        and shader uniform keep their historical `gold` names; the material moved on. */
-    /* Mostly lacquer, one crisp seam of fire: the wide stops washed the whole
-       frame brown; the narrow band keeps the card black and lets the heat read
-       as a drifting ember line under the surface. */
-    --ember: linear-gradient(150deg,#0b0807,#241105 30%,#8a3d02 44%,#ff8c3a 50%,#8a3d02 56%,#241105 70%,#0b0807 100%);
+    /* Lacquer needs the whole value range or it reads as printed ink. Eleven
+       stops: true near-black shoulders, a deep oxblood shelf, the burnt climb,
+       then a blown near-white core at 50% — the specular ridge. Metal reads as
+       metal because something in it is clipped to white; a ramp of mid oranges
+       is a wash. The secondary shelves at 22%/78% give the surface a second,
+       weaker band so it reads as a CURVED face catching light twice, not one
+       stripe airbrushed across a flat card.
+
+       The shoulders are OXBLOOD, not black. The frame is a 9px rim showing one
+       slice of a card-sized ramp, so whatever value sits under that rim is the
+       whole material at rest. Near-black shoulders meant most slices rendered as
+       an empty dark band with a thin orange line — thin, not deep. Deep mahogany
+       carries chroma at the same luminance: still reads black against the page,
+       but it has blood in it, and every slice lands on something. */
+    --ember: linear-gradient(150deg,
+      #2a1208 0%, #451c09 9%, #6b2a08 18%, #5c2408 24%, #8a3806 30%, #b34a07 37%,
+      #e0700f 43%, #ff9f52 47%, #fff0e2 50%, #ff9f52 53%, #e0700f 57%,
+      #b34a07 63%, #8a3806 70%, #5c2408 78%, #451c09 88%, #2a1208 100%);
 
     /* The casino chrome/steel gradients are retired. The rainbow foil is the only
        metallic in the set — the 1/1 ember is matte heat, not a second metal. */
@@ -955,17 +969,29 @@
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask-composite: xor; mask-composite: exclude; padding: 9px;
   }
+  /* The grail is struck on heavier stock. The standard run wears a 9px rim; the
+     1/1 wears 15px, because a 2%-of-the-card hairline has no room to be a
+     material no matter how the ramp is tuned — and because a heavier border is
+     the physical tell a premium print actually carries. The rake mask below
+     matches, or the highlight paints over the window. */
+  .rfx-card.is-gold { padding: 15px; }
+  .rfx-card.is-gold::before,
+  .rfx-card.is-gold::after { padding: 15px; }
   .rfx-card.is-gold {
+    /* Five layers, coarse to fine: a lacquer grain (the tooth you feel before
+       you see), the cracked-ice cross-hatch that catches the specular ridge, a
+       deep multiply hatch cutting the shadow side, and the ember beneath. The
+       hatch has to stay near the standard run's weight — dropping it to .05 was
+       what made this read as ink on paper: no micro-texture, no surface. */
     background:
-      repeating-linear-gradient(57deg, rgba(255,255,255,.05) 0 1px, transparent 1px 7px),
-      repeating-linear-gradient(-57deg, rgba(0,0,0,.35) 0 1px, transparent 1px 8px),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(57deg, rgba(255,222,196,.26) 0 1px, transparent 1px 7px),
+      repeating-linear-gradient(-57deg, rgba(0,0,0,.46) 0 1px, transparent 1px 8px),
+      repeating-linear-gradient(57deg, rgba(0,0,0,.3) 0 1px, transparent 1px 3px),
       var(--ember);
-    background-size: 9px 9px, 11px 11px, 240% 240%;
-    background-position: 0 0, 0 0, var(--mx) var(--my);
-    background-blend-mode: overlay, multiply, normal;
-    /* the ember frame: matte near-black stock with the heat band drifting under
-       the pointer — warmth that moves, nothing that shines. The hatch drops to a
-       charcoal-on-charcoal tooth so the frame reads printed matte, not foiled. */
+    background-size: 180px 180px, 9px 9px, 11px 11px, 4px 4px, 150% 150%;
+    background-position: 0 0, 0 0, 0 0, 0 0, var(--mx) var(--my);
+    background-blend-mode: overlay, overlay, multiply, multiply, normal;
     /* the double coach-line: twin ember hairlines with a breath of black
        between — the vintage double rule the card backs already speak, struck
        here in burnt orange on black lacquer. */
@@ -976,9 +1002,22 @@
       0 0 0 7px color-mix(in srgb, #bf5700 30%, transparent),
       0 26px 42px -20px rgba(0,0,0,.92),
       0 6px 14px -6px rgba(0,0,0,.8),
-      inset 0 1px 0 rgba(255,178,122,.18),
-      inset 0 -2px 5px rgba(0,0,0,.7),
+      /* the frame has THICKNESS: a lit top lip, a deep shadowed well at the
+         bottom, and a warm bounce raking back up off the floor of it. */
+      inset 0 2px 0 rgba(255,224,204,.4),
+      inset 0 -1px 0 rgba(255,148,64,.14),
+      inset 0 -14px 22px -14px rgba(0,0,0,.95),
+      inset 0 18px 26px -22px rgba(255,148,64,.3),
       0 0 34px -20px rgba(191,87,0,.6);
+  }
+  /* the 1/1's rake is tighter and warm-cored: on black lacquer a broad white
+     wash flattens the frame back out, but a small hot node travelling the
+     surface is what makes it read wet and deep. */
+  .rfx-card.is-gold::before {
+    background:
+      radial-gradient(120px circle at var(--mx) var(--my), rgba(255,240,225,.72), rgba(255,148,64,.3) 42%, transparent 62%),
+      linear-gradient(110deg, transparent 0 34%, rgba(255,214,180,.16) 37%, transparent 41% 100%);
+    opacity: .62;
   }
   .rfx-field {
     position: relative; height: 100%; border-radius: 4px; overflow: hidden;
