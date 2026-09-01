@@ -3126,9 +3126,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   }
 
   .v2-wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); align-items: start; gap: 14px; }
-  /* Three filed specimens, three equal columns. auto-fill resolves to four at this
-     width, which left the row a dead trailing column. */
-  @media (min-width: 768px) { .v2-wall { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; } }
+  @media (min-width: 768px) { .v2-wall { gap: 18px; } }
   .v2-mount {
     position: relative; border-radius: var(--radius-md);
     background: linear-gradient(180deg, #141210 0%, #0a0908 100%);
@@ -3155,7 +3153,9 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
       0 12px 30px -18px #000,
       0 0 40px -22px rgba(212, 170, 90, .5);
   }
+  @media (min-width: 600px) { .v2-mount.is-chase { grid-column: span 2; } }
   .v2-mount .v2-flip { max-width: 360px; margin-inline: auto; }
+  .v2-mount.is-chase .v2-flip { max-width: 520px; }
 
   /* ── the flip: chrome front <-> matte card back ──
      A real toggle (button + aria-pressed in markup); the transform
