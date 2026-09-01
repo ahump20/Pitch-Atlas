@@ -1,0 +1,15 @@
+name = "pitch-atlas-external-content-sync"
+main = "src/index.ts"
+compatibility_date = "2026-08-31"
+
+[triggers]
+crons = ["17 */6 * * *"]
+
+[vars]
+SUPABASE_URL = "https://cloeoulvrrfcbitrjpso.supabase.co"
+
+# Secrets, never committed:
+#   wrangler secret put SUPABASE_SERVICE_ROLE_KEY
+#   wrangler secret put X_BEARER_TOKEN
+#   wrangler secret put YOUTUBE_API_KEY
+#   wrangler secret put CRON_SECRET

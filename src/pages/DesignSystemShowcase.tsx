@@ -81,7 +81,7 @@ export function DesignSystemShowcase() {
       </h1>
       <p className="mt-4 max-w-[60ch] text-[15.5px] leading-relaxed text-bone-2">
         The component layer that ships the product. Each primitive renders the same branded CSS as the live
-        site; this gallery is the system as built, not a mock. Sourced, not corrected.
+        site; this gallery is the system as built, not a mock. Every voice keeps its trail.
       </p>
 
       <Section eyebrow="Brand" title="The marks">
@@ -113,7 +113,7 @@ export function DesignSystemShowcase() {
           <Kicker>The filed set</Kicker>
           <div className="flex flex-wrap gap-3">
             <Stamp>Specimen 00</Stamp>
-            <Stamp style={{ color: 'var(--color-cyan)' }}>Sourced, not corrected</Stamp>
+            <Stamp style={{ color: 'var(--color-cyan)' }}>Source trail intact</Stamp>
           </div>
           <div className="flex flex-wrap gap-2">
             {['fastball', 'breaking', 'offspeed', 'specialty'].map((f) => (

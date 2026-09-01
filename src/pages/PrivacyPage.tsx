@@ -14,7 +14,7 @@ import { SectionHero } from '../components/layout/SectionHero'
   a freshness claim.
 */
 
-const POLICY_DATE = '2026-06-09'
+const POLICY_DATE = '2026-08-31'
 
 const COLLECTED_ROWS = [
   {
@@ -35,7 +35,7 @@ const NOT_COLLECTED_ROWS = [
   { label: 'No ads', text: 'There are no ad networks and no ad identifiers anywhere in the product.' },
   {
     label: 'No tracking',
-    text: 'The site runs no analytics scripts and sets no tracking cookies. Reading the archive sends nothing about you to us.',
+    text: 'Pitch Atlas sets no advertising or cross-site tracking cookies. Cloudflare processes normal request metadata at the edge and may provide the operator with aggregate route traffic; Pitch Atlas does not build reader profiles.',
   },
   { label: 'No sale of data', text: 'Nothing you file is sold, rented, or shared with data brokers. Ever.' },
   {
@@ -66,9 +66,9 @@ export function PrivacyPage() {
         }
         sub={
           <p>
-            Pitch Atlas is a reference first. Reading it requires no account and sends no tracking
-            data. The only personal data the product ever holds is what you choose to file through
-            the community layer.
+            Pitch Atlas is a reference first. Reading it requires no account and sets no advertising
+            or cross-site tracking cookies. Community submissions are the only personal data you
+            intentionally file with Pitch Atlas.
           </p>
         }
         breadcrumb={<Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'Privacy' }]} />}
@@ -84,9 +84,18 @@ export function PrivacyPage() {
           </div>
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              The archive is a set of static pages. No analytics scripts run, no advertising loads,
-              and no tracking cookies are set. The pages you open may be cached on your own device
-              so they read offline; that cache lives on your device and is never reported back.
+              The archive is a set of static pages. No advertising loads and no cross-site tracking
+              cookies are set. Cloudflare serves the site and processes ordinary request metadata;
+              its aggregate route counts help the operator understand which rooms are visited without
+              creating a Pitch Atlas reader profile. Pages you open may be cached on your own device
+              so they read offline; that cache is not reported back by the service worker.
+            </p>
+            <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
+              Official X, Instagram, TikTok, and YouTube players are kept roughly 300 pixels outside
+              the viewport until you approach their card. At that point the provider receives the
+              normal network request needed to render its player and applies its own privacy terms.
+              With a browser data-saver preference, Pitch Atlas waits for an explicit tap instead.
+              X embeds request its do-not-track mode where supported.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               The same is true in the Pitch Atlas iOS app: the reference archive works fully logged

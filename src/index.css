@@ -1206,6 +1206,30 @@
   .pa-atmo-seam-macro { background-image: url(/atmosphere/seam-macro.webp); }
   .pa-atmo-archive-paper { background-image: url(/atmosphere/archive-paper.webp); }
 
+  /* Presentation plates are provenance-declared atmosphere, never grip evidence.
+     Their one-shot drift replaces an unavailable hero video without adding a
+     persistent autoplay loop. Reduced-motion visitors receive the settled crop. */
+  .presentation-backdrop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(110% 95% at 52% 42%, transparent 26%, var(--color-void) 92%);
+  }
+  .presentation-parallax {
+    transform: scale(1.045) translate3d(-0.6%, -0.4%, 0);
+    animation: presentation-settle 6s cubic-bezier(.2,.7,.2,1) 1 both;
+  }
+  .presentation-heritage img {
+    filter: saturate(.72) contrast(1.08) brightness(.76);
+    transform: scale(1.025);
+  }
+  @keyframes presentation-settle {
+    to { transform: scale(1.02) translate3d(0, 0, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .presentation-parallax { animation: none; transform: scale(1.02); }
+  }
+
   /* the nameplate: a machined-chrome banner extruded off the card face. A hard
      specular line up top, an accent-steel body, a dark base, and a ::before
      "side of the block" offset down-left so it reads as a 3D-stamped plate, not a
@@ -1325,7 +1349,7 @@
   .rfx-approx { margin-left: 2px; border-radius: 999px; border: 1px solid #6E5E3A; color: #6E5E3A;
     padding: 1px calc(var(--rfxu) * 1.67); font-size: max(7px, calc(var(--rfxu) * 2.58)); letter-spacing: .04em; }
 
-  /* confidence dot (sourced, not corrected) */
+  /* confidence dot (the claim's source trail) */
   .rfx-dot { width: calc(var(--rfxu) * 2.22); height: calc(var(--rfxu) * 2.22); border-radius: 50%; box-shadow: 0 0 9px -1px currentColor; display: inline-block; }
 
   /* bottom strip — always on the dark card face, so its ink is literal.

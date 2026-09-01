@@ -25,7 +25,8 @@ export function TikTokEmbed({ clip, accentColor }: { clip: TeachingClip; accentC
     setPopped(true)
     pip.open(
       {
-        videoId: clip.videoId,
+        platform: 'tiktok',
+        externalId: clip.videoId,
         title: clip.title,
         author: clip.author,
         authorUrl: clip.authorUrl,

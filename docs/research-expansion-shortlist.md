@@ -4,7 +4,7 @@ From the 2026-06-06 8-lane deep-research run (`wf_3de2a019-5ff`), recovered afte
 Verify/Synthesize phases died on an auth error. The **Repertoire** additions from this set were
 authored, verified, and shipped to `/repertoire`. The candidates below need heavier, hand-authored
 surfaces (full specimens, craftsman halls, Lost-Pitches entries, or a knowledge wing) and are parked
-here as a sourced shortlist for a dedicated follow-up pass. Sourced, not corrected — confidence tags
+here as a sourced shortlist for a dedicated follow-up pass. Every voice keeps its trail — confidence tags
 are the research lane's own.
 
 ## Filed-specimen candidates (12)

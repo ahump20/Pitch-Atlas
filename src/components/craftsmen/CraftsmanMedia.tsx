@@ -1,13 +1,11 @@
 import { Link } from 'react-router-dom'
 import type { Craftsman } from '../../data/types'
 import {
-  craftsmanMediaForSlug,
   featuredCraftsmanMedia,
   type CraftsmanMediaItem,
 } from '../../data/media/craftsmen'
 import { StageTierMarker } from '../layout/StageTierMarker'
-import { TikTokEmbed } from '../embeds/TikTokEmbed'
-import { RiveraTeachingLead } from '../embeds/RiveraTeachingLead'
+import { ExternalMediaRail } from '../media/ExternalMediaRail'
 
 function fmtDate(iso: string): string {
   const d = new Date(iso + 'T00:00:00Z')
@@ -81,42 +79,13 @@ export function CraftsmenMediaShelf() {
 }
 
 export function CraftsmanMediaSection({ craftsman }: { craftsman: Craftsman }) {
-  const items = craftsmanMediaForSlug(craftsman.slug)
-  if (items.length === 0) return null
-
   return (
-    <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-      <StageTierMarker index="02b" label="The lesson, on film" />
-      <div className="flex flex-col gap-8">
-        {items.map((item) =>
-          item.kind === 'tiktok' ? (
-            <TikTokEmbed key={`${item.kind}-${item.id}`} clip={item.clip} />
-          ) : (
-            <div
-              key={`${item.kind}-${item.id}`}
-              className="grid grid-cols-1 items-start gap-10 md:grid-cols-12"
-            >
-              <div className="md:col-span-6">
-                <p className="max-w-[52ch] text-lg leading-relaxed text-ink">{item.lede}</p>
-                <p className="mt-4 max-w-[52ch] text-sm leading-relaxed text-ink-2">
-                  Shared by Rob Friedman ({item.author}). Embedded with credit, never rehosted.
-                </p>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
-                >
-                  Watch at source <span aria-hidden="true">↗</span>
-                </a>
-              </div>
-              <div className="md:col-span-6 lg:col-span-5 lg:col-start-8">
-                <RiveraTeachingLead />
-              </div>
-            </div>
-          ),
-        )}
-      </div>
-    </section>
+    <ExternalMediaRail
+      query={{ craftsmanSlug: craftsman.slug, limit: 2 }}
+      eyebrow="The lesson, on film"
+      title={`${craftsman.name}, still teaching.`}
+      intro="A route-aware shelf for credited interviews, demonstrations, and historical clips connected to this craftsman's file."
+      allowSuggestion
+    />
   )
 }

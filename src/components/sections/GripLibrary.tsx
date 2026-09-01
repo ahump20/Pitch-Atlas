@@ -460,6 +460,25 @@ export function AttackPlan() {
 }
 
 /** The full library: the through-line, then each grip in Austin's own words. */
+export function GripLibraryIndex() {
+  return (
+    <nav aria-label="Grip library index">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan">Jump to a grip</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {AUSTIN_GRIPS.map((grip) => (
+          <a
+            key={grip.id}
+            href={`#grip-${grip.id}`}
+            className="rounded-full border border-bone/15 bg-black/20 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/55 hover:text-bone"
+          >
+            {grip.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  )
+}
+
 export function GripLibrary() {
   return (
     <div className="flex flex-col gap-12">
@@ -477,7 +496,7 @@ export function GripLibrary() {
             ? { to: `/repertoire/${grip.repertoireId}`, label: 'Open the file' }
             : null
         return (
-          <article key={grip.id} className="border-t border-bone/10 pt-9">
+          <article id={`grip-${grip.id}`} key={grip.id} className="scroll-mt-24 border-t border-bone/10 pt-9">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
               <h2 className="rfx-stitle text-[clamp(24px,4vw,42px)]">{grip.label}</h2>
               {link ? (

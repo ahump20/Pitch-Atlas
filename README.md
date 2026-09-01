@@ -1,12 +1,12 @@
 # Pitch Atlas
 
-Austin Humphrey's living archive of pitching craft: how pitchers hold, describe, preserve, and carry forward the art.
+Austin Humphrey's living museum and conversation space for pitching craft: how pitchers hold, describe, preserve, debate, and carry forward the art.
 
-The knowledge of how a pitch works is scattered and easy to lose. The best footage has no structure. A grip reference is often a flat photo, a PDF, a clip, or a coach's memory. Pitch Atlas is the layer underneath that footage: a structured archive where each pitch carries an original interactive specimen and every claim wears the label of where it came from.
+The knowledge of how a pitch works is scattered and easy to lose. The best footage has no structure. A grip reference is often a flat photo, a PDF, a clip, or a coach's memory. Pitch Atlas gathers that living record into one place: a museum where each pitch carries an interactive specimen, trusted voices sit beside creative unknowns, and people who love pitching can keep the conversation moving.
 
 ## Mission
 
-Pitch Atlas exists to preserve and progress the art of the pitch.
+Pitch Atlas preserves the heritage, history, and art of pitching—one place to learn from trusted minds, discover creative voices, and talk about the craft.
 
 It canonizes, catalogs, and contextualizes the craft knowledge of baseball: the grips, variants, feel cues, forgotten experiments, master examples, and field notes that too often disappear when a player ages out, a coach retires, or a pitch falls out of fashion.
 
@@ -16,13 +16,13 @@ The goal is not nostalgia. It is continuity.
 
 Pitch Atlas keeps the art from vanishing quietly into memory, rumor, and half-told stories, then gives the next generation something to study, challenge, refine, and carry forward. Preserve the pitches baseball almost forgot. Progress the craft for the pitchers still searching.
 
-## The model: sourced, not corrected
+## The trust model
 
-**Many ways can work. Nothing here is marked right or wrong. Everything is marked by where it came from and how confident the source is.**
+**Many ways can work. Claims are attributed, confidence-labeled, and kept close to the people and records they came from.**
 
-A four-seam fastball can be thrown a dozen credible ways. Pitch Atlas does not adjudicate which grip is correct. It records what is known, attributes it, and labels the confidence of each claim. Sourced biography facts stay when they are real. Pitch behavior is written as shape language unless the pitch was actually measured by this atlas. The reader judges. The atlas only sources.
+A four-seam fastball can be thrown a dozen credible ways. Pitch Atlas records what is known, attributes it, and labels the confidence of each claim. Biography facts stay when they are real. Pitch behavior is written as shape language unless the pitch was actually measured by this atlas. Provenance protects the conversation; it is the infrastructure that lets different experiences sit together without being flattened into invented certainty.
 
-This principle governs the README, the UI copy, and the data model in equal measure.
+The mission governs the experience. The source and rights models govern whether a claim or media item has earned a place in it.
 
 ## What the atlas is
 

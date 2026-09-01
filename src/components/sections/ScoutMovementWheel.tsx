@@ -9,7 +9,7 @@ import type { PitchMotion } from '../../data/types'
   magnitude — the arrow points where the pitch breaks at a fixed length, because the
   data model stores no measured break-in-inches by design. A knuckleball
   (indeterminateBreak) shows scatter, not a confident arrow. No motion record →
-  nothing renders, so unfiled pitches degrade cleanly. Sourced, not corrected.
+  nothing renders, so unfiled pitches degrade cleanly. Source boundaries remain visible.
 */
 
 const VERT: Record<PitchMotion['verticalShape'], { dy: number; word: string }> = {

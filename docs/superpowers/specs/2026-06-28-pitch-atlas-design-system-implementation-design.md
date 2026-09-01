@@ -1,7 +1,7 @@
 # Pitch Atlas — Design System Implementation (Design Spec)
 
 > **Preserving & Progressing the Art of the Pitch.**
-> *Sourced, not corrected.*
+> *Every voice keeps its trail.*
 
 - **Date:** 2026-06-28
 - **Branch:** `feat/design-system-implementation`
@@ -44,7 +44,7 @@ The design project was **extracted from the live app**, not authored as a new ta
 
 Carried through every phase, verified at the end:
 
-- **Sourced, not corrected.** Every behavioral claim keeps its `Source` + `confidence` label. Shape language, never fabricated figures. The `claim`/`secondhand`/`unverified` helpers and the 7-tier `ClaimConfidence` union are untouched; a bad source id still throws at build via `src()`.
+- **Provenance remains the trust layer.** Every behavioral claim keeps its `Source` + `confidence` label. Shape language, never fabricated figures. The `claim`/`secondhand`/`unverified` helpers and the 7-tier `ClaimConfidence` union are untouched; a bad source id still throws at build via `src()`.
 - **Freshness is computed.** The colophon "as of" date keeps deriving from `latestRetrievedAt(allSources())` → `asOfDate(...)`. Never hardcode a freshness string.
 - **Seam label.** Public copy stays "seam-informed schematic," never "seam-accurate." `seamPoint` stays the single source for 3D tube, 2D schematic, and no-WebGL fallback.
 - **Four-state surfaces.** Loading / error / empty / populated coverage preserved on any surface touched (the index already has a real empty state — keep it).

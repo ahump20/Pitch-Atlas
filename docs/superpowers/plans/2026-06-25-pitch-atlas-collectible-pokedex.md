@@ -7,7 +7,7 @@
 "Pokédex of Pitching" feel) using only data already on the page, and clear the stale-language
 and polish drift a three-front audit surfaced — with zero fabrication.
 
-**Architecture:** Three lanes. (A) Strip the disavowed "Sourced, not corrected" phrase from
+**Architecture:** Three lanes. (A) Strip the disavowed sourcing slogan from
 the external-facing slogan slots and retire the dead "living field manual" frame; keep the
 phrase only on charter-sanctioned trust surfaces. (B) Polish: micro-type legibility floor,
 hero H1 balance, de-duped close. (C) The collectible slice: a pure `specimenGradeFor()` switch
@@ -22,7 +22,7 @@ Cloudflare Pages.
 - **Anti-fabrication:** rarity derives ONLY from fields already shipping (`specimenNo`, first-party
   clip/photo presence, `gripImages`, `filedSlug`, `RepertoireStatus`). No RNG, no numeric score,
   no percentile, no "N left" scarcity language, no live request → no faked four-state.
-- **Charter boundary:** "Sourced, not corrected" stays VERBATIM in the data model, README,
+- **Superseded charter boundary:** the retired slogan was previously kept in the data model, README,
   NORTHSTAR, the `/sources` body + H1 (`routes.test.tsx:183` asserts it), the home "The Model"
   H2 (`ProvenanceStrip.tsx:53`), the `FieldNotes` method line, and the home close
   (`CloseCta.tsx:143`). It is the sourcing METHOD, never a public tagline.
@@ -58,7 +58,7 @@ reads `SITE.positioning`, already correct — do NOT touch them.)
 - [ ] `index.html:69` og:image:alt → `Pitch Atlas — the living archive of pitching craft`
 - [ ] Verify: `grep -in "field manual" index.html` → no output. Commit.
 
-### Task A2: Strip the "Sourced, not corrected" sign-off from external meta + two hero subs + card back
+### Task A2: Strip the retired sourcing sign-off from external meta + two hero subs + card back
 
 **Files:** Modify the `description`/`ogDescription` fields on `RepertoirePage.tsx:24`,
 `AboutPage.tsx:110`, `ComparePage.tsx:19`, `MovementMapPage.tsx:19`, `KnowledgeHub.tsx:114`,
@@ -69,13 +69,12 @@ reads `SITE.positioning`, already correct — do NOT touch them.)
 **Leave:** `SourcesPage.tsx:69` (H1), `ProvenanceStrip.tsx:53` (H2), `FieldNotes.tsx:460`,
 `CloseCta.tsx:143`, `SiteFooter.tsx:65`, and all code comments.
 
-- [ ] For each meta field, delete the trailing ` Sourced, not corrected.` (or `, sourced not
-  corrected` in GripsPage:23,50) so the body sentence stands alone. The exact replacements are
+- [ ] For each meta field, delete the trailing retired sourcing sign-off so the body sentence stands alone. The exact replacements are
   in the audit; each ends the prior sentence cleanly.
-- [ ] `GripsPage.tsx:62` hero sub → end at `…one arm's actual hold.` (drop ` Sourced, not corrected.`)
+- [ ] `GripsPage.tsx:62` hero sub → end at `…one arm's actual hold.` (drop the retired sign-off)
 - [ ] `SoftballHub.tsx:152` → `…the anchor. Slowpitch is filed honestly and lighter. Early innings.`
 - [ ] `ChromeWall.tsx:154` → `pitch-atlas.com · filed specimen`
-- [ ] Verify the sanctioned set still reads the phrase: `grep -rn "Sourced, not corrected" src/pages/SourcesPage.tsx src/components/v2/ProvenanceStrip.tsx src/components/v2/CloseCta.tsx` → present.
+- [ ] Historical verification step superseded by the 2026-08-31 mission recovery.
 - [ ] Add a guard test (Task A3) before committing.
 
 ### Task A3: Guard test — meta descriptions carry no slogan sign-off
@@ -84,7 +83,7 @@ reads `SITE.positioning`, already correct — do NOT touch them.)
 
 - [ ] Add a test that mounts a representative sample of routes (`/repertoire`, `/compare`,
   `/about`, `/grips`) and asserts the rendered `<meta name="description">`/`og:description`
-  content does not end in `Sourced, not corrected.` — fails before A2, passes after.
+  content does not end in the retired sourcing slogan — fails before A2, passes after.
 - [ ] Keep the existing `/sources` H1 assertion (`routes.test.tsx:183`) intact.
 - [ ] Run `npm run test -- src/routes.test.tsx`; commit A1–A3 together.
 
@@ -115,7 +114,7 @@ reads `SITE.positioning`, already correct — do NOT touch them.)
   "Preserve…/Progress…" couplet with a distinct closing beat, e.g.
   `Every grip filed before it's forgotten. Every claim still wearing its source.` — or delete the
   `.v2-wall-line` paragraph so the brand line is the last word. Keep `CloseCta.tsx:143`
-  (`{SITE.sourcePrinciple}.`) intact.
+  (the then-current trust-line property) intact.
 - [ ] Commit B1–B3.
 
 ### Task C1: The honest specimen grade — pure function + test (TDD)
@@ -222,7 +221,7 @@ groups, using the existing `STATUS` map ~44-53).
   (grade-from-truth + dex framing) → C1/C2/C3. Deferred live-data phases documented (P2–P4). ✔
 - **Anti-fabrication:** C1 is a pure switch with a test asserting no digits / no scarcity words;
   C3 reads only existing counts/labels. ✔
-- **Charter:** the sanctioned "Sourced, not corrected" homes are explicitly left untouched and
+- **Charter (superseded):** the former slogan homes were explicitly left untouched and
   re-verified by A2; `routes.test.tsx:183` stays valid. ✔
 - **Type consistency:** `specimenGradeFor`/`SpecimenGrade`/`SpecimenGradeKey` used identically in
   C1→C2; the `grade` prop shape (`{ key, label }`) matches across RefractorCard/PitchSpecimenCard/

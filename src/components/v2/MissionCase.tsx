@@ -120,7 +120,7 @@ export function MissionCase() {
                 with the care the wall gives a pitch: card stock, a seam filing rule,
                 the Clemens line enlarged under an oversized hanging quote mark. The
                 "personal memory, not endorsement" guard reads at the card's baseline
-                weight, never below the boast it qualifies — sourced, not corrected. */}
+                weight, never below the boast it qualifies — the source trail stays attached. */}
             <figure className="v2-note">
               <p className="font-mono text-[10px] uppercase tracking-[0.16em]">
                 <span className="text-bone-2/55">Founding note</span>{' '}

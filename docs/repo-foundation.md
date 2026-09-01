@@ -7,7 +7,8 @@ This repo foundation is intentionally separate from product implementation. It s
 - Existing repo: `ahump20/Pitch-Atlas`
 - Product: standalone — its own brand, not affiliated with any other company
 - v1 scope: four-seam visual proof
-- Principle: sourced, not corrected
+- Mission: preserve the heritage, history, craft, and evolving art of pitching
+- Trust infrastructure: source, confidence, rights, and moderation labels
 - Node: 24 LTS
 - Hosting target: Cloudflare Pages
 - CI: GitHub Actions

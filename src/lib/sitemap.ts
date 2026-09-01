@@ -11,8 +11,8 @@ import { SOFTBALL_PITCHES, SOFTBALL_CRAFTSMEN } from '../data/softball'
   The hand-written public/sitemap.xml this replaces went stale within days.
 
   Deliberately minimal entries: <loc> only. No <lastmod> — a build date is not a
-  content date, and a fabricated freshness claim is worse than none ("Sourced,
-  not corrected" applies to metadata too).
+  content date, and a fabricated freshness claim is worse than none. Provenance
+  and date receipts apply to metadata too.
 
   STATIC_PATHS must mirror the static routes in src/routes.tsx. This module
   cannot import routes.tsx (that would pull every page component, and their

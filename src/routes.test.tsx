@@ -76,14 +76,14 @@ describe('Atlas home', () => {
     expect(screen.getAllByText('Lost Pitches of the Negro Leagues').length).toBeGreaterThan(0)
   })
 
-  it('keeps the front door to five beats and closes on the sourced rule', async () => {
+  it('keeps the front door focused and closes on the preservation mission', async () => {
     renderRoute('/')
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     for (const heading of ['One seam. Two media.', 'The filed set.', 'The other doors.']) {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     }
     expect(screen.getAllByText(/Preserve the pitches baseball almost forgot/).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(/Sourced, not corrected/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/Preserving & Progressing the Art of the Pitch/).length).toBeGreaterThan(0)
     expect(screen.getByRole('link', { name: /How a claim is filed/ })).toHaveAttribute(
       'href',
       '/sources',
@@ -128,7 +128,7 @@ describe('Home card restraint', () => {
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     const hero = container.querySelector('#case')
     expect(hero).not.toBeNull()
-    expect(within(hero as HTMLElement).getByText('Austin video')).toBeInTheDocument()
+    expect(within(hero as HTMLElement).getByText('Austin photo')).toBeInTheDocument()
     expect(within(hero as HTMLElement).getByText("Pitcher's own words")).toBeInTheDocument()
     expect(within(hero as HTMLElement).getByText('Fingertips cross the seam path')).toBeInTheDocument()
   })
@@ -215,7 +215,7 @@ describe('The Craftsmen', () => {
 describe('Sources', () => {
   it('states the provenance model and a computed as-of date', async () => {
     renderRoute('/sources')
-    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Sourced, not corrected.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Every voice keeps its trail.')
     // the as-of date now nests an easter-egg trigger, so the year sits in a child
     // element; assert on the whole line's text content, not a single text node.
     expect(
@@ -247,11 +247,8 @@ describe('Learn safety boundaries', () => {
 
 describe('Meta copy discipline', () => {
   /*
-    "Sourced, not corrected" is the internal sourcing METHOD, never a public
-    tagline. Its sanctioned homes are the data model, the /sources H1, the home
-    "The Model" section, and the close — never a trailing sign-off on a
-    social-card or search-result description, where it reads as the brand motto.
-    This pins that boundary so the sign-off can't creep back into page meta.
+    The retired sourcing slogan is not product vision or a public tagline. This
+    pins the boundary so stale sign-off copy cannot creep back into page metadata.
   */
   const SLOGAN = /sourced,? not corrected/i
   const META_ROUTES = [

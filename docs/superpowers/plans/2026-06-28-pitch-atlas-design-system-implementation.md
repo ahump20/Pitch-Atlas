@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- **Sourced, not corrected.** Every visible claim keeps its `Source` + `confidence` label. Shape language, never a fabricated number/badge/count. The `ClaimConfidence` union and `claim`/`secondhand`/`unverified`/`src` helpers are untouched.
+- **Provenance remains the trust layer.** Every visible claim keeps its `Source` + `confidence` label. Shape language, never a fabricated number/badge/count. The `ClaimConfidence` union and `claim`/`secondhand`/`unverified`/`src` helpers are untouched.
 - **Freshness computed**, never hardcoded: colophon "as of" derives from `latestRetrievedAt(allSources())` → `asOfDate(...)`.
 - **Seam label** stays "seam-informed schematic"; `seamPoint` stays the single source for 3D/2D/fallback.
 - **No new data, no runtime external API calls, no `src/data/*` changes** (protects the iOS bundle drift gate).

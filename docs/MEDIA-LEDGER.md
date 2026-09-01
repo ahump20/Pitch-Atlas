@@ -164,3 +164,34 @@ always present. Clips surface on filed-specimen pages by slug: four-seam + two-s
 - [Inside Interview: The Pitching Ninja — ABCA Inside Pitch, Mar/Apr 2019](https://www.abca.org/magazine/magazine/2019-2-March_April/Inside_Interview_The_Pitching_Ninja_Rob_Friedman.aspx) — fetch blocked (403); cited as a lead for the "free Dropbox for coaches" posture.
 - [Rapsodo Baseball Podcast — Rob Friedman on Pitching Ninja, FlatGround](https://rapsodo.com/blogs/baseball/rapsodo-baseball-podcast-rob-friedman-on-pitching-ninja-flatground-growing-the-game/) — Dropbox library offered free; pros report learning pitches from it.
 - Rows 1–13 status: X syndication API via `react-tweet/api` `getTweet()`, 2026-06-09.
+
+## Presentation media addendum (2026-08-31)
+
+Presentation atmosphere is tracked separately from grip evidence in
+`src/data/media/presentation.ts`. Every hosted derivative is content-hashed,
+self-hosted, budgeted, credited, and labeled `presentation-only`; none may be
+used to support a grip, release, seam-placement, velocity, movement, or medical
+claim. The two Unsplash crops were visually screened for people, marks, and
+logos before export. The raw Unsplash responses are not bundled.
+
+| Asset | Origin and source | Placement | Rights | Hosted treatment |
+|---|---|---|---|---|
+| Worn baseball seam | Mick Haupt, [Unsplash source](https://unsplash.com/photos/a-close-up-of-a-baseball-game-1za_Ddp_Xfs) | `/repertoire` atmosphere | Unsplash License; attribution retained | 1600×960 desktop WebP (76 KB), 800×800 mobile WebP (43 KB) |
+| Scuffed home plate | Mick Haupt, [Unsplash source](https://unsplash.com/photos/a-close-up-of-a-wooden-board-1ttDmCobFQo) | Home heritage transition | Unsplash License; attribution retained | 1800×900 desktop WebP (180 KB), 900×900 mobile WebP (86 KB) |
+| Leather and thread material study | Pitch Atlas original, OpenAI built-in image generation (`imagegen`), 2026-08-31 | Home hero atmosphere | Original | Prompt excluded complete baseballs, seam paths, people, logos, and text; 1600×901 / 800×451 WebP derivatives |
+| Four-seam hero still | Austin H., first-party | Home specimen face and video poster | Original | Trademark-screened 900px crop of `four-seam-7165.webp`; color and framing only, no generated instructional content |
+
+Unsplash illustration searches for baseball, pitching, vintage baseball, card,
+diagram, and sports-archive themes were reviewed during this pass. None cleared
+the relevance and authorship bar: the candidates were generic icon sheets,
+mislabeled photography, or decorative filler. No illustration was shipped.
+
+### Narrated grip cues
+
+Four optional 8–10 second cues ship for four-seam, two-seam, 12-6 curve, and
+three-finger change. They condense the already-visible first-party grip notes,
+use one local enhanced system voice, never autoplay, and carry time-coded WebVTT
+plus visible transcripts. Each AAC file is 53–61 KB. Runway audio was unavailable;
+the Creative Production fallback exhausted its two included credits after two
+test renders, so those inconsistent test files were rejected and are not bundled.
+No credits were purchased.

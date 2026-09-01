@@ -46,7 +46,8 @@ and the data model is a half-finished change.
 
 One line:
 
-> Pitch Atlas exists to preserve and progress the art of the pitch.
+> Pitch Atlas preserves the heritage, history, and art of pitching—one place to
+> learn from trusted minds, discover creative voices, and talk about the craft.
 
 The moral spine: preserve and progress the art before baseball's craft knowledge
 disappears into memory, rumor, and half-told stories.
@@ -69,14 +70,16 @@ masters set the floor. Community field notes create the reason to return.
 
 ## The Core (change these and it stops being Pitch Atlas)
 
-**1. Sourced, not corrected.**
-Many grips work. The atlas does not pick a winner. It records what's known,
-attributes it, and labels how confident the source is, then lets the reader judge.
-Official tracking context and a beat writer's quote can both support a claim, but
-they must never wear the same badge. Sourced biography facts stay when they are
-real; pitch behavior is described as shape unless this atlas has measured it. This
-principle governs the README, the UI copy, and the data model in equal measure. It
-is the whole personality of the product.
+**1. Preserve the living art.**
+Pitching knowledge belongs in one place where history, trusted instruction,
+creative experimentation, and real conversation can meet. The atlas preserves
+what came before without freezing the craft in place, and it makes room for both
+established minds and unknown pitchers who have something useful to share.
+
+Provenance is the trust infrastructure supporting that mission. Claims keep their
+source and confidence labels; media keeps its rights record; official tracking
+context and a coach's observation never wear the same badge. That machinery earns
+trust, but it is not the product's personality.
 
 **2. Grip-first.**
 The thing a human can physically hold leads. Finger placement, seam orientation, the
@@ -270,6 +273,27 @@ This is the mechanism that lets the product change without losing itself.
 Newest first. Each entry: what was decided, why, what it touches, which Core
 principle it respects.
 
+### 2026-08-31: Recover the living-museum mission; keep provenance as infrastructure
+
+**Decision.** Pitch Atlas is a living museum and conversation space for the
+heritage, history, craft, and evolving art of pitching. It brings trusted minds,
+creative unknowns, historical context, first-party grip evidence, and real
+community discussion into one distributed experience. The former sourcing phrase
+is retired as product vision. Source, confidence, rights, and moderation labels
+remain intact as the trust infrastructure underneath the mission.
+
+**Why.** The sourcing method had drifted from a supporting quality system into the
+personality of the product. That framing narrowed a project meant to preserve and
+advance pitching culture. The mission now says what the atlas is for; provenance
+still determines what has earned a place in it.
+
+**Touches.** README, this charter, agent operating documents, metadata, public
+copy, route tests, and the living external-media layer. The Claim/Source types,
+rights ledger, confidence union, and moderation floor remain compatible.
+
+**Respects.** Preserve the living art. Grip-first. Real, never faked. The safety
+floor. Four states or it is not done.
+
 ### 2026-07-16: Make the safety floor an absolute product boundary
 
 **Decision.** Pitch Atlas publishes no medical, injury, pain, rehabilitation,
@@ -286,8 +310,8 @@ which is outside a grip-first archive's job.
 copy, baseball and softball pitch records, repertoire and craftsmen records, public
 SEO copy, README, and the web/iOS platform contract.
 
-**Respects.** The safety floor. Sourced, not corrected still governs every claim
-that is eligible to ship; provenance does not grant permission to cross the product
+**Respects.** The safety floor. The trust model still governs every claim that is
+eligible to ship; provenance does not grant permission to cross the product
 boundary. Real, never faked remains intact.
 
 ### 2026-06-25: Deepen the specimen artifact (grade kept, grip on the card, family shelves, gold grail)
@@ -318,8 +342,8 @@ their tests; src/components/fallback/fallback.test.tsx; src/pages/{SandboxPage,
 NotFound,KnowledgeHub,SoftballPitchChapter,SoftballCraftsmanChapter}.tsx. The
 specimen grade (specimen-grade.ts) is kept and pinned by a guard test.
 
-**Respects.** Sourced, not corrected (the method stays in the data, the /sources
-headline, and the four-seam body, never coined as a card or meta tagline). Real,
+**Respects.** The trust model (the method stays in the data and source registry,
+never coined as a card or meta tagline). Real,
 never faked (no invented movement numbers, no fabricated edition counts, the
 colophon "as of" stays computed). Grip-first (the hold is surfaced on the card,
 schematic and sourced). Four states or it is not done (the 404 stays an honest,
@@ -336,7 +360,7 @@ cues, forgotten experiments, master examples, and field notes from disappearing
 into memory, rumor, and half-told stories.
 **Touches.** README, this charter, home page, About, footer, sources/support/privacy
 copy, SEO metadata, and route tests.
-**Respects.** Sourced, not corrected. Grip-first. Real, never faked.
+**Respects.** Preserve the living art. Grip-first. Real, never faked.
 
 ### 2026-06-09: Craft-over-numbers doctrine replaces pitch-behavior gauges
 
@@ -348,7 +372,7 @@ structure made the product less honest and less useful. The archive needs the ha
 the seam, the release, and the claim boundary first.
 **Touches.** README, agent operating docs, data model language, route framing,
 cards, and the tool surfaces.
-**Respects.** Sourced, not corrected. Grip-first. Real, never faked.
+**Respects.** The trust model. Grip-first. Real, never faked.
 
 ### 2026-06-06: iOS plan pressure-tested — Phase 0 rescoped to the service worker; reuse and 3D claims corrected
 
@@ -384,7 +408,7 @@ players and not trademark. This version gets the accurate references in while
 keeping the one line that prevents a lawsuit.
 **Touches.** This charter, `README.md`, root `CLAUDE.md`, `src/data/types.ts`
 (an additive `VisualReference` type), the `pitching-coach` skill.
-**Respects.** Sourced, not corrected (every image carries rights + attribution).
+**Respects.** The trust model (every image carries rights + attribution).
 Real, never faked.
 
 ### 2026-06-06: iOS is phased, not a from-scratch native build now

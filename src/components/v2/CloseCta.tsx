@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Button } from '../ds/Button'
-import { SITE } from '../../config/site'
 import { allSources, latestRetrievedAt } from '../../data/sources'
 import { asOfDate } from '../../lib/format'
 import { Descent } from '../motion/Descent'
@@ -41,7 +40,7 @@ export function CloseCta() {
           Every grip filed before the arm forgets it. Every claim still wearing its source.
         </p>
         <p className="mx-auto mt-5 max-w-[52ch] text-[13px] leading-relaxed text-bone-2">
-          {SITE.sourcePrinciple}. No fabricated spin, velocity, or break; no scraped imagery; no
+          Trust stays attached: no fabricated spin, velocity, or break; no scraped imagery; no
           copied prose. {REGISTRY_COUNT} sources in the citation registry, last checked{' '}
           {REGISTRY_AS_OF}.{' '}
           <Link

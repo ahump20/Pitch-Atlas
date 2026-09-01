@@ -3,4 +3,4 @@ Allow: /
 
 Sitemap: https://pitch-atlas.com/sitemap.xml
 
-# field manual — sourced, not corrected
+# living museum of pitching craft

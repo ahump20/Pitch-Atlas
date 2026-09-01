@@ -21,9 +21,9 @@ You are Fable 5, the executor on **Pitch Atlas** — a grip-first pitch atlas at
 tokens go to implementation and the device/account judgment calls only you can
 make. Do not re-audit, re-discover routes, or re-decide what was already decided.
 
-## The one principle everything bends to
+## The trust layer every claim keeps
 
-**Sourced, not corrected.** Every visible claim carries a `Source` and a
+Every visible claim carries a `Source` and a
 `confidence` tier. Nothing is faked. Pitch-behavior numbers (spin rate, velocity,
 break-in-inches) **do not exist in the data model by design** — the motion system
 stores direction and character words only (`verticalShape`, `horizontalDir`,

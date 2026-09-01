@@ -17,6 +17,7 @@ export function PitchSpecimenCard({
   maxWidth,
   foil = false,
   priority = false,
+  presentationFace,
 }: {
   entry: PitchAtlasEntry
   index?: number
@@ -26,11 +27,33 @@ export function PitchSpecimenCard({
   foil?: boolean
   /** Hero-of-the-page card: load its grip face eagerly for a fast LCP. */
   priority?: boolean
+  /**
+   * Route-specific, presentation-only crop. This never replaces the filed grip
+   * media used by the specimen page or Grip Library.
+   */
+  presentationFace?: { src: string; alt: string }
 }) {
   const { display } = entry
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
-  const { face, faceSource, cue, confidence } = specimenFace(entry, { priority })
+  const resolvedFace = specimenFace(entry, { priority })
+  const face = presentationFace ? (
+    <figure className="rfx-grip">
+      <img
+        className="rfx-grip-img media-fade is-loaded"
+        src={presentationFace.src}
+        alt={presentationFace.alt}
+        width={900}
+        height={900}
+        loading={priority ? 'eager' : 'lazy'}
+        fetchPriority={priority ? 'high' : 'auto'}
+        decoding="async"
+      />
+    </figure>
+  ) : resolvedFace.face
+  const faceSource = presentationFace
+    ? { label: 'Austin photo', color: '#7FC6FF' }
+    : resolvedFace.faceSource
 
   return (
     <RefractorCard
@@ -43,8 +66,8 @@ export function PitchSpecimenCard({
       name={display.shortName}
       face={face}
       faceSource={faceSource}
-      cue={cue}
-      confidence={confidence}
+      cue={resolvedFace.cue}
+      confidence={resolvedFace.confidence}
       foil={foil}
     />
   )

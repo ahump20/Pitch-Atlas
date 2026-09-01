@@ -7,7 +7,7 @@
 The signature is the **holographic refractor**: a dark void field, a rainbow-foil
 collectible-card aesthetic applied with restraint, athletic Anton type, and a strict
 "the read lives on a matte plate, never on the patterned foil" discipline. Foil is
-decoration; the numbers are sourced. ("Sourced, not corrected.")
+decoration; the numbers keep their source and confidence labels.
 
 Reference implementation: `src/components/refractor/RefractorCard.tsx` + the `rfx-*`
 layer in `src/index.css` (lines ~338–717). Those are canon. Everything else conforms.

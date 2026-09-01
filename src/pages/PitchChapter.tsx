@@ -26,7 +26,8 @@ import { FieldNotes } from '../components/sections/FieldNotes'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { SpecimenGrips } from '../components/sections/GripLibrary'
 import { PitchConnections } from '../components/pitch/PitchConnections'
-import { TeachingClipSection } from '../components/embeds/TikTokEmbed'
+import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
+import { GripAudioCue } from '../components/media/GripAudioCue'
 import { NotFound } from './NotFound'
 
 /*
@@ -754,9 +755,18 @@ export function PitchChapter() {
       <ChapterHero entry={entry} />
       <GripLabSection entry={entry} accentColor={accentColor} />
       <SpecimenGrips entry={gripEntry} accentColor={accentColor} />
+      <GripAudioCue pitchSlug={entry.display.slug} accentColor={accentColor} />
       <ReleaseSection entry={entry} accentColor={accentColor} />
       <MovementSection entry={entry} accentColor={accentColor} />
-      <TeachingClipSection slug={entry.display.slug} accentColor={accentColor} />
+      <ExternalMediaRail
+        query={{ pitchSlug: entry.display.slug, limit: 2 }}
+        eyebrow="Filed from the conversation"
+        title={`See the ${entry.canonical.name.toLowerCase()} taught.`}
+        intro="Credited posts that add a useful grip, release, history, or craft perspective to this specimen. The original provider serves every clip."
+        allowSuggestion
+        pitchSlug={entry.display.slug}
+        className="-mx-5 md:-mx-8"
+      />
       <MasterFilesSection entry={entry} accentColor={accentColor} />
       <ColophonSection entry={entry} accentColor={accentColor} />
       <PitchConnections

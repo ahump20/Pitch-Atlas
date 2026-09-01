@@ -1,5 +1,5 @@
 /*
-  The provenance model. Sourced, not corrected.
+  The provenance model: trust infrastructure for the living museum.
 
   Nothing here is marked right or wrong. Every claim is labeled by where it came
   from and how confident the source is. Official tracking context and a coaching

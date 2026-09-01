@@ -158,12 +158,16 @@ export default defineConfig({
             },
           },
           {
-            // Grip imagery for opened pages.
-            urlPattern: ({ request }) => request.destination === 'image',
+            // Same-origin images and posters only. The repository media guard
+            // caps each image at 250 KB; 48 entries therefore bounds this cache
+            // at 12 MB. Video and narration remain network-required and fall
+            // back to their poster / transcript when offline.
+            urlPattern: ({ url, request }) =>
+              url.origin === self.location.origin && request.destination === 'image',
             handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'pa-images',
-              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              expiration: { maxEntries: 48, maxAgeSeconds: 60 * 60 * 24 * 30 },
               cacheableResponse: { statuses: [200] },
             },
           },

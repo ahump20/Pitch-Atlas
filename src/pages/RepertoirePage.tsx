@@ -7,6 +7,9 @@ import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { IndexLedger } from '../components/sections/IndexLedger'
 import { PitchIndex } from '../components/sections/PitchIndex'
 import { LineageMap } from '../components/repertoire/LineageMap'
+import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
+import { PresentationBackdrop, PresentationCredit } from '../components/media/PresentationMedia'
+import { PRESENTATION_MEDIA } from '../data/media/presentation'
 
 /*
   The Pitch Index: the front door, struck in the refractor language. The whole
@@ -28,7 +31,7 @@ export function RepertoirePage() {
   })
 
   return (
-    <div className="scene-coal">
+    <div className="scene-coal overflow-hidden">
       <StructuredData
         graph={contentJsonLd({
           type: 'CreativeWork',
@@ -39,7 +42,13 @@ export function RepertoirePage() {
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'The Pitch Index' }],
         })}
       />
-      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+      <section className="relative overflow-hidden border-b border-bone/8">
+      <PresentationBackdrop
+        asset={PRESENTATION_MEDIA.repertoireWornSeam}
+        eager
+        className="opacity-[0.17] grayscale-[0.35] md:opacity-[0.24]"
+      />
+      <div className="relative mx-auto max-w-[1240px] px-5 md:px-8">
       <div className="pt-6">
         <Breadcrumb trail={[{ label: 'Pitch Atlas', to: '/' }, { label: 'The Pitch Index' }]} />
       </div>
@@ -58,7 +67,20 @@ export function RepertoirePage() {
         <IndexLedger className="pitch-index-ledger hidden md:block" />
       </header>
 
-      <PitchIndex />
+      <PresentationCredit asset={PRESENTATION_MEDIA.repertoireWornSeam} className="pb-5 md:pb-7" />
+
+      </div>
+      </section>
+
+      <ExternalMediaRail
+        query={{ placement: 'repertoire', limit: 2 }}
+        eyebrow="Filed conversation"
+        title="Voices beside the taxonomy."
+        intro="The index names the families. These credited lessons show how pitchers and teachers keep testing, describing, and handing the craft forward."
+      />
+
+      <div className="mx-auto max-w-[1240px] px-5 md:px-8">
+        <PitchIndex />
       </div>
 
       {/* the whole accepted catalog as one map, a complement to the searchable rows */}

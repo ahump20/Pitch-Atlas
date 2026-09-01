@@ -4,22 +4,21 @@
     - brandLine, "Preserving & Progressing the Art of the Pitch", is the product's
       voice — what it IS, in Austin's own words (2026-06-25; supersedes the earlier
       "Pitchers Progressing Pitches"). It fronts the home hero stamp and the close.
-    - sourcePrinciple, "Sourced, not corrected", is the constitutional Core
-      principle — how the atlas BEHAVES (a method, not a motto; never credited as
-      anyone's coinage). It is wired byte-for-byte into the data model, README, and
-      NORTHSTAR, so it stays verbatim; on the home it lives on the trust surfaces
-      (the rule sheet and the close), not the hero.
+    - mission, below, is the plain-language reason the atlas exists. Provenance,
+      confidence labels, rights records, and moderation remain the trust system
+      underneath that mission; they are not the product's personality or tagline.
 */
 export const SITE = {
   siteName: 'Pitch Atlas',
   /** Short category line under the wordmark. */
-  moduleName: 'Living archive',
+  moduleName: 'Living museum',
   /** The product promise, used in the hero and meta. */
-  positioning: 'The living archive of pitching craft.',
+  positioning: 'The living museum of pitching craft.',
   canonicalDomain: 'https://pitch-atlas.com',
   previewDomain: 'https://pitch-atlas.pages.dev',
   tagline: 'The pitch, in your hand.',
   /** The brand voice line — fronts the home hero. */
   brandLine: 'Preserving & Progressing the Art of the Pitch',
-  sourcePrinciple: 'Sourced, not corrected',
+  mission:
+    'Pitch Atlas preserves the heritage, history, and art of pitching—one place to learn from trusted minds, discover creative voices, and talk about the craft.',
 } as const
