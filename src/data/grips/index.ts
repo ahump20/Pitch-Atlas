@@ -1,5 +1,4 @@
 import type { ClaimConfidence, GripView, PitchFamily, RepertoireEntry, VisualReference } from '../types'
-import { PRESENTATION_MEDIA } from '../media/presentation'
 
 /*
   The visual grip library — the clean-channel photo layer.
@@ -54,12 +53,15 @@ export interface GripClip {
   start?: number
 }
 
-/** Build a grip clip from a base name, e.g. `four-seam-grip` → mp4/webm + webp poster. */
-function clip(name: string, alt: string, caption?: string, start?: number, poster?: string): GripClip {
+/** Build a grip clip from a base name, e.g. `four-seam-grip` → mp4/webm + webp poster.
+    The poster is the clip's own first visible frame; a route that wants a different
+    frame passes a full sourceOverride (file + poster together) to GripClip, so the
+    still and the moving frame can never show two different moments. */
+function clip(name: string, alt: string, caption?: string, start?: number): GripClip {
   return {
     mp4: `/grips/${name}.mp4`,
     webm: `/grips/${name}.webm`,
-    poster: poster ?? `/grips/${name}-poster.webp`,
+    poster: `/grips/${name}-poster.webp`,
     alt,
     caption,
     start,
@@ -114,7 +116,6 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       "A looping close-up of Austin's four-seam grip: two fingertips laid across the seam, the ball held out toward the camera.",
       'The grip in motion: ball turned to the camera with index and middle fingertips riding the wide horseshoe, thumb seated underneath.',
       0.8,
-      PRESENTATION_MEDIA.homeGripStill.variants.desktop.src,
     ),
     photos: [
       shot(

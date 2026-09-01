@@ -42,7 +42,14 @@ function isExpectedExternalMediaNoise(message) {
   const preMigrationShelfProbe =
     message.includes('Failed to load resource: the server responded with a status of 404') &&
     message.includes('.supabase.co/rest/v1/external_content_items?')
-  const officialEmbedMessage = OFFICIAL_EMBED_HOSTS.some((host) => message.includes(host))
+  // Match on where the message CAME FROM (the ` @ url` suffix collectConsole
+  // appends), never on its text. Matching the text silenced any real Pitch Atlas
+  // failure that merely mentioned a provider host — a blocked frame, a CSP
+  // violation, a React error whose markup diff contains an embed src.
+  const at = message.lastIndexOf(' @ ')
+  const sourceUrl = at === -1 ? '' : message.slice(at + 3)
+  const officialEmbedMessage =
+    sourceUrl !== '' && OFFICIAL_EMBED_HOSTS.some((host) => sourceUrl.includes(host))
   return preMigrationShelfProbe || officialEmbedMessage
 }
 

@@ -45,10 +45,13 @@ export function GripClip({
   // layers stacked in the same grid cell (.rfx-grip is display:grid).
   const [posterLoaded, setPosterLoaded] = useState(false)
   const [settled, setSettled] = useState(false)
+  // An override swaps the file, so the library clip's in-point does NOT carry over:
+  // seeking a 1.2s curated cut to the full clip's 0.8s in-point would burn most of
+  // the reveal. An explicit `start` still wins.
   const composedClip = {
     ...clip,
     ...sourceOverride,
-    ...(start === undefined ? {} : { start }),
+    start: start ?? (sourceOverride ? undefined : clip.start),
   }
   const mediaClass = mediaClassName ? ` ${mediaClassName}` : ''
 

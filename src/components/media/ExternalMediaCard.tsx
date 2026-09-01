@@ -28,8 +28,13 @@ function useNearViewportEmbed() {
   const [saveData] = useState(
     () => typeof navigator !== 'undefined' && Boolean((navigator as DataSavingNavigator).connection?.saveData),
   )
+  // The `document` guard keeps this false during the build-time prerender (plain
+  // Node, no DOM): without it every card baked a live provider iframe into the
+  // static HTML, so X and TikTok were fetched on first paint for every reader,
+  // whatever their scroll position or data-saver setting. In a real browser that
+  // lacks IntersectionObserver the old eager fallback still applies.
   const [near, setNear] = useState(
-    () => typeof IntersectionObserver === 'undefined' && !saveData,
+    () => typeof document !== 'undefined' && typeof IntersectionObserver === 'undefined' && !saveData,
   )
   const [manual, setManual] = useState(false)
 
@@ -65,6 +70,29 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
   )
 
   const visibleLoadState = shouldLoad && embedUrl && !inDock && loadState === 'waiting' ? 'loading' : loadState
+  // A pulled-down post has nothing to load, so its placeholder must not pretend to
+  // be a button: tapping it would do nothing at all.
+  const canLoad = Boolean(embedUrl) && item.availability !== 'removed'
+  const placeholderFace = (
+    <span>
+      <img
+        src="/brand/seal-128.webp"
+        alt=""
+        width={48}
+        height={48}
+        loading="lazy"
+        decoding="async"
+        className="mx-auto opacity-70"
+      />
+      <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.13em] text-bone-2">
+        {item.availability === 'removed'
+          ? 'Original post unavailable'
+          : saveData
+            ? `Data saver · load ${provider}`
+            : `Load from ${provider}`}
+      </span>
+    </span>
+  )
 
   useEffect(() => {
     if (visibleLoadState !== 'loading') return
@@ -148,31 +176,18 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
               />
             ) : null}
           </>
-        ) : (
+        ) : canLoad ? (
           <button
             type="button"
             onClick={load}
             className="absolute inset-0 grid place-items-center px-6 text-center"
           >
-            <span>
-              <img
-                src="/brand/seal-128.webp"
-                alt=""
-                width={48}
-                height={48}
-                loading="lazy"
-                decoding="async"
-                className="mx-auto opacity-70"
-              />
-              <span className="mt-3 block font-mono text-[10px] uppercase tracking-[0.13em] text-bone-2">
-                {item.availability === 'removed'
-                  ? 'Original post unavailable'
-                  : saveData
-                    ? `Data saver · load ${provider}`
-                    : `Load from ${provider}`}
-              </span>
-            </span>
+            {placeholderFace}
           </button>
+        ) : (
+          <div className="absolute inset-0 grid place-items-center px-6 text-center">
+            {placeholderFace}
+          </div>
         )}
 
         {visibleLoadState === 'error' ? (

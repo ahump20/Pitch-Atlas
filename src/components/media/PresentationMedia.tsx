@@ -46,8 +46,12 @@ export function PresentationPicture({
         onError={(event) => {
           const image = event.currentTarget
           if (image.src.endsWith(asset.fallback)) return
-          image.src = asset.fallback
+          // The mobile art direction lives on a sibling <source>, which outranks
+          // img.src below 768px — drop it first or the fallback never paints on a
+          // phone.
+          image.parentElement?.querySelectorAll('source').forEach((source) => source.remove())
           image.removeAttribute('srcset')
+          image.src = asset.fallback
         }}
       />
     </picture>

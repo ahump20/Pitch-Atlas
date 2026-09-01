@@ -28,6 +28,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
     >
       <PresentationBackdrop
         asset={PRESENTATION_MEDIA.homeThreadAtmosphere}
+        eager
         className="opacity-[0.22] mix-blend-screen md:opacity-[0.3]"
       />
       {/* Phones lead with the read and primary action; the specimen follows.

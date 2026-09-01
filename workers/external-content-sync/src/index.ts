@@ -80,9 +80,12 @@ async function supabase<T>(env: Env, path: string, init: RequestInit = {}): Prom
       ...(init.headers ?? {}),
     },
   })
-  if (!response.ok) throw new Error(`Supabase ${response.status}: ${await response.text()}`)
-  if (response.status === 204) return undefined as T
-  return (await response.json()) as T
+  const body = await response.text()
+  if (!response.ok) throw new Error(`Supabase ${response.status}: ${body}`)
+  // A write with Prefer: return=minimal answers 201 with an EMPTY body, so parsing
+  // it unconditionally turned every successful ingest into a reported failure.
+  if (!body) return undefined as T
+  return JSON.parse(body) as T
 }
 
 async function loadSources(env: Env): Promise<SourceRow[]> {
@@ -190,9 +193,12 @@ async function ingestSource(source: SourceRow, env: Env): Promise<number> {
     }
   })
 
+  // ignore-duplicates, never merge: a row that already exists has been through
+  // review. Merging would reset a moderator's state, title, lede, and featured flag
+  // on the next six-hourly run and republish something a human had rejected.
   await supabase<void>(env, 'external_content_items?on_conflict=platform,external_id', {
     method: 'POST',
-    headers: { prefer: 'resolution=merge-duplicates,return=minimal' },
+    headers: { prefer: 'resolution=ignore-duplicates,return=minimal' },
     body: JSON.stringify(rows),
   })
   return rows.length
