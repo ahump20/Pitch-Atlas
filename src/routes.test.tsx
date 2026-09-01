@@ -128,7 +128,7 @@ describe('Home card restraint', () => {
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
     const hero = container.querySelector('#case')
     expect(hero).not.toBeNull()
-    expect(within(hero as HTMLElement).getByText('Austin photo')).toBeInTheDocument()
+    expect(within(hero as HTMLElement).getByText('Austin video')).toBeInTheDocument()
     expect(within(hero as HTMLElement).getByText("Pitcher's own words")).toBeInTheDocument()
     expect(within(hero as HTMLElement).getByText('Fingertips cross the seam path')).toBeInTheDocument()
   })

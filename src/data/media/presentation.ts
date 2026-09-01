@@ -8,6 +8,22 @@ export interface PresentationVariant {
   bytes: number
 }
 
+export interface PresentationMotionVariant {
+  src: string
+  bytes: number
+  codec: 'h264' | 'vp9'
+}
+
+export interface PresentationMotion {
+  mp4: PresentationMotionVariant
+  webm: PresentationMotionVariant
+  durationMs: number
+  audio: false
+  playback: 'once'
+  /** Editorial cut from the untouched first-party source, in source seconds. */
+  sourceRange: { from: number; to: number }
+}
+
 export interface PresentationMediaAsset {
   id: string
   title: string
@@ -21,6 +37,7 @@ export interface PresentationMediaAsset {
     mobile: PresentationVariant
     desktop: PresentationVariant
   }
+  motion?: PresentationMotion
   fallback: string
   credit: {
     label: string
@@ -38,15 +55,23 @@ export interface PresentationMediaAsset {
 export const PRESENTATION_MEDIA = {
   homeGripStill: {
     id: 'home-grip-still',
-    title: 'Four-seam grip, first-party still',
+    title: 'Four-seam grip, curated first-party film frame',
     alt: 'Austin holding a baseball with index and middle fingertips crossing the wide horseshoe seam.',
     origin: 'first-party',
     rights: 'original',
     evidenceUse: 'presentation-only',
     placements: ['home-hero'],
     variants: {
-      mobile: { src: '/presentation/four-seam-hero-33dc9dcf.webp', width: 900, height: 900, bytes: 60966 },
-      desktop: { src: '/presentation/four-seam-hero-33dc9dcf.webp', width: 900, height: 900, bytes: 60966 },
+      mobile: { src: '/presentation/four-seam-hero-7e2052d6.webp', width: 900, height: 900, bytes: 25986 },
+      desktop: { src: '/presentation/four-seam-hero-7e2052d6.webp', width: 900, height: 900, bytes: 25986 },
+    },
+    motion: {
+      mp4: { src: '/presentation/four-seam-hero-motion-1894cc9c.mp4', bytes: 200704, codec: 'h264' },
+      webm: { src: '/presentation/four-seam-hero-motion-bc08482d.webm', bytes: 133243, codec: 'vp9' },
+      durationMs: 1167,
+      audio: false,
+      playback: 'once',
+      sourceRange: { from: 1.8, to: 2.983 },
     },
     fallback: '/brand/seal-128.webp',
     credit: { label: 'Austin H. / Pitch Atlas' },

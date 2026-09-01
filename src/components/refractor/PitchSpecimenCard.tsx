@@ -1,7 +1,7 @@
 import type { PitchAtlasEntry } from '../../data/types'
 import { RefractorCard } from './RefractorCard'
 import { ACCENT, FALLBACK_ACCENT } from './accents'
-import { specimenFace } from './specimenFace'
+import { specimenFace, type ClipPresentation } from './specimenFace'
 
 /*
   One filed pitch, struck as a holographic specimen card. Used by the home hero
@@ -17,7 +17,8 @@ export function PitchSpecimenCard({
   maxWidth,
   foil = false,
   priority = false,
-  presentationFace,
+  clipPresentation,
+  className,
 }: {
   entry: PitchAtlasEntry
   index?: number
@@ -27,33 +28,15 @@ export function PitchSpecimenCard({
   foil?: boolean
   /** Hero-of-the-page card: load its grip face eagerly for a fast LCP. */
   priority?: boolean
-  /**
-   * Route-specific, presentation-only crop. This never replaces the filed grip
-   * media used by the specimen page or Grip Library.
-   */
-  presentationFace?: { src: string; alt: string }
+  /** Route-specific timing/framing for the same real clip used in the grip file. */
+  clipPresentation?: ClipPresentation
+  /** Material treatment hook; the content contract stays shared. */
+  className?: string
 }) {
   const { display } = entry
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
-  const resolvedFace = specimenFace(entry, { priority })
-  const face = presentationFace ? (
-    <figure className="rfx-grip">
-      <img
-        className="rfx-grip-img media-fade is-loaded"
-        src={presentationFace.src}
-        alt={presentationFace.alt}
-        width={900}
-        height={900}
-        loading={priority ? 'eager' : 'lazy'}
-        fetchPriority={priority ? 'high' : 'auto'}
-        decoding="async"
-      />
-    </figure>
-  ) : resolvedFace.face
-  const faceSource = presentationFace
-    ? { label: 'Austin photo', color: '#7FC6FF' }
-    : resolvedFace.faceSource
+  const resolvedFace = specimenFace(entry, { priority, clipPresentation })
 
   return (
     <RefractorCard
@@ -64,11 +47,12 @@ export function PitchSpecimenCard({
       maxWidth={maxWidth}
       vnum={display.specimenNo}
       name={display.shortName}
-      face={face}
-      faceSource={faceSource}
+      face={resolvedFace.face}
+      faceSource={resolvedFace.faceSource}
       cue={resolvedFace.cue}
       confidence={resolvedFace.confidence}
       foil={foil}
+      className={className}
     />
   )
 }

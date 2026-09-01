@@ -11,9 +11,9 @@ import { PRESENTATION_MEDIA } from '../../data/media/presentation'
   hero specimen stands to the right under a raking accent light, the read sits
   lower-left, and the chrome lives in the materials around the words (the card's
   foil and polished CTA lips) rather than in a gradient fill. Reuses the real
-  PitchSpecimenCard, but gives the home route a tightly framed first-party still
-  instead of starting instructional motion above the fold. The specimen page and
-  Grip Library retain the real clip. The card exits with a scroll-driven
+  PitchSpecimenCard, but composes the first-party clip to enter on the clearest
+  cross-seam angle, play once, and settle. Reduced motion holds the matched poster.
+  The card exits with a scroll-driven
   refraction (.v2-refract) on capable browsers; reduced motion keeps it standing.
 */
 export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
@@ -79,9 +79,16 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
                 maxWidth={460}
                 foil
                 priority
-                presentationFace={{
-                  src: PRESENTATION_MEDIA.homeGripStill.variants.desktop.src,
-                  alt: PRESENTATION_MEDIA.homeGripStill.alt,
+                className="is-hero-specimen"
+                clipPresentation={{
+                  playback: 'once',
+                  sourceOverride: {
+                    mp4: PRESENTATION_MEDIA.homeGripStill.motion.mp4.src,
+                    webm: PRESENTATION_MEDIA.homeGripStill.motion.webm.src,
+                    poster: PRESENTATION_MEDIA.homeGripStill.variants.desktop.src,
+                    alt: PRESENTATION_MEDIA.homeGripStill.alt,
+                  },
+                  mediaClassName: 'rfx-grip-img--hero',
                 }}
               />
             </div>

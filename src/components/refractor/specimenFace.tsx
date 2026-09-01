@@ -3,7 +3,7 @@ import { CONFIDENCE_META, type ClaimConfidence, type PitchAtlasEntry } from '../
 import { ACCENT, FALLBACK_ACCENT } from './accents'
 import { RefractorBall } from './RefractorBall'
 import { GripFace } from './GripFace'
-import { GripClip } from './GripClip'
+import { GripClip, type GripClipPlayback, type GripClipSourceOverride } from './GripClip'
 import { BallStage } from '../ball/BallStage'
 import { gripEntryFor } from '../../data/grips'
 
@@ -56,12 +56,20 @@ export interface SpecimenFace {
   modelled: boolean
 }
 
+export interface ClipPresentation {
+  playback?: GripClipPlayback
+  start?: number
+  sourceOverride?: GripClipSourceOverride
+  mediaClassName?: string
+}
+
 export function specimenFace(
   entry: PitchAtlasEntry,
   {
     priority = false,
     idPrefix = '',
     model = false,
+    clipPresentation,
   }: {
     /** Hero-of-the-page face: paint its poster eagerly for a fast LCP. */
     priority?: boolean
@@ -69,6 +77,8 @@ export function specimenFace(
     idPrefix?: string
     /** Showcase surface: mount the live 3D grip model instead of the flat drawing. */
     model?: boolean
+    /** Route-specific timing and framing for a real clip; never changes its evidence. */
+    clipPresentation?: ClipPresentation
   } = {},
 ): SpecimenFace {
   const { canonical, motion, display } = entry
@@ -95,7 +105,7 @@ export function specimenFace(
         : { label: 'Reference schematic', color: '#CDBA8E' }
 
   const face = clip ? (
-    <GripClip clip={clip} priority={priority} />
+    <GripClip clip={clip} priority={priority} {...clipPresentation} />
   ) : photo ? (
     <GripFace photo={photo} priority={priority} />
   ) : modelFace ? (

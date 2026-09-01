@@ -15,7 +15,28 @@ import { AutoplayVideo } from '../media/AutoplayVideo'
   failure, so the dark window never breaks. Fills the window via the shared
   .rfx-grip / .rfx-grip-img rules, identical to GripFace.
 */
-export function GripClip({ clip, priority = false }: { clip: GripClipData; priority?: boolean }) {
+export type GripClipPlayback = 'loop' | 'once'
+export type GripClipSourceOverride = Pick<GripClipData, 'mp4' | 'webm' | 'poster' | 'alt'>
+
+export function GripClip({
+  clip,
+  priority = false,
+  playback = 'loop',
+  start,
+  sourceOverride,
+  mediaClassName = '',
+}: {
+  clip: GripClipData
+  priority?: boolean
+  /** Card loops by default; the home hero uses one deliberate reveal and holds. */
+  playback?: GripClipPlayback
+  /** Route-specific in-point without changing the instructional source record. */
+  start?: number
+  /** Color-managed/cropped derivative of the same first-party source. */
+  sourceOverride?: GripClipSourceOverride
+  /** Route-specific framing hook shared by the poster and moving frame. */
+  mediaClassName?: string
+}) {
   const reduced = useReducedMotion()
   // Two independent fades. The poster is the always-present first layer: the real
   // first frame, painted the instant its bytes arrive so the window is never blank
@@ -24,12 +45,18 @@ export function GripClip({ clip, priority = false }: { clip: GripClipData; prior
   // layers stacked in the same grid cell (.rfx-grip is display:grid).
   const [posterLoaded, setPosterLoaded] = useState(false)
   const [settled, setSettled] = useState(false)
+  const composedClip = {
+    ...clip,
+    ...sourceOverride,
+    ...(start === undefined ? {} : { start }),
+  }
+  const mediaClass = mediaClassName ? ` ${mediaClassName}` : ''
 
   const poster = (
     <img
-      className={`rfx-grip-img rfx-grip-poster media-fade${posterLoaded ? ' is-loaded' : ''}`}
-      src={clip.poster}
-      alt={clip.alt}
+      className={`rfx-grip-img rfx-grip-poster media-fade${posterLoaded ? ' is-loaded' : ''}${mediaClass}`}
+      src={composedClip.poster}
+      alt={composedClip.alt}
       // Hero clips paint their poster eagerly at high priority (the LCP element);
       // off-hero clips stay lazy. The video preload follows the same flag.
       loading={priority ? 'eager' : 'lazy'}
@@ -53,9 +80,10 @@ export function GripClip({ clip, priority = false }: { clip: GripClipData; prior
       {poster}
       {reduced ? null : (
         <AutoplayVideo
-          clip={clip}
-          className={`rfx-grip-img media-fade${settled ? ' is-loaded' : ''}`}
+          clip={composedClip}
+          className={`rfx-grip-img media-fade${settled ? ' is-loaded' : ''}${mediaClass}`}
           priority={priority}
+          loop={playback === 'loop'}
           onSettled={() => setSettled(true)}
           render={() => null}
         />

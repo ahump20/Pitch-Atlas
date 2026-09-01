@@ -34,6 +34,7 @@ export function AutoplayVideo({
   className,
   decorative = false,
   priority = false,
+  loop = true,
   onSettled,
   render,
 }: {
@@ -43,6 +44,8 @@ export function AutoplayVideo({
   decorative?: boolean
   /** Hero-of-the-page media: preload the file eagerly. */
   priority?: boolean
+  /** Loop by default; a composed hero reveal can play once and hold its final frame. */
+  loop?: boolean
   /** First real frame painted (or a decode failure surfaced the poster). */
   onSettled: () => void
   /** When autoplay is refused, the parent renders its poster fallback instead. */
@@ -105,7 +108,7 @@ export function AutoplayVideo({
       className={className}
       poster={clip.poster}
       muted
-      loop
+      loop={loop}
       playsInline
       preload={priority ? 'auto' : 'metadata'}
       aria-label={decorative ? undefined : clip.alt}
