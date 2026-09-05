@@ -102,12 +102,20 @@ describe('ExternalMediaCard loading contract', () => {
     expect(document.querySelectorAll('iframe')).toHaveLength(1)
   })
 
-  it('unmounts an activated player offscreen to stop playback', () => {
+  it('pauses offscreen playback without collapsing the opened player geometry', () => {
     const { container } = renderCard()
     fireEvent.click(screen.getByRole('button', { name: /Load from X/i }))
     expect(container.querySelector('iframe')).not.toBeNull()
+    const player = container.querySelector<HTMLElement>('.archive-media-player')!
+    const openedRatio = player.style.aspectRatio
+    expect(openedRatio).not.toBe('')
     act(() => intersectionCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver))
     expect(container.querySelector('iframe')).toBeNull()
+    expect(player.style.aspectRatio).toBe(openedRatio)
+    expect(container.querySelector('article')).toHaveAttribute('data-player-open', 'true')
+    act(() => intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver))
+    expect(container.querySelector('iframe')).not.toBeNull()
+    expect(player.style.aspectRatio).toBe(openedRatio)
   })
 
   it('requires a tap when the browser requests reduced data', () => {

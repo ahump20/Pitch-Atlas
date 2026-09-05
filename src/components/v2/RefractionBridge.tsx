@@ -1,4 +1,5 @@
 import { lazy, Suspense, useState } from 'react'
+import { Link } from 'react-router-dom'
 import type { PitchAtlasEntry } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
 import { SeamSchematic } from '../fallback/SeamSchematic'
@@ -13,7 +14,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
   const accent = accentForSlug(featured.display.slug)
   const webgl = useWebGLSupport()
   const { ref, inView } = useInView<HTMLDivElement>('200px')
-  const [view, setView] = useState<'scroll' | 'model' | 'diagram'>('scroll')
+  const [view, setView] = useState<'model' | 'diagram'>('model')
   const schematic = <SeamSchematic className="archive-seam-drawing" surface="stage"
     spinAxis={featured.motion.spinAxis} gyro={featured.motion.gyro} showAxis={false}
     title="Seam-informed schematic: the same figure-eight seam projected into two dimensions." />
@@ -24,14 +25,15 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
       style={{ '--c3': accent.c3 } as React.CSSProperties}>
       <div className="archive-bridge-inner">
         <div className="archive-bridge-read">
-          <ChapterMark n="02" name="The Refraction" accent={accent.c3} className="archive-chapter-mark" />
-          <h2>One seam.<br />{' '}<em>Two media.</em></h2>
-          <p>The leather gives it depth. The diagram brings the seam into focus. Follow the same seam from the specimen to the page.</p>
-          <p className="archive-bridge-note">A seam-informed schematic, not a measured cover. Both views share a single function.</p>
+          <ChapterMark n="02" name="Inside the cover" accent={accent.c3} className="archive-chapter-mark" />
+          <h2>Follow<br />{' '}<em>the seam.</em></h2>
+          <p>One seam, two ways to look. Inspect the leather and stitching, then bring the same seam into a clear drawing.</p>
+          <p className="archive-bridge-note">Seam-informed schematic. Use the drawing to orient yourself; open the grip to see where the fingers rest.</p>
           {webgl ? <div className="archive-seam-controls" aria-label="Seam presentation">
-            <button type="button" aria-pressed={view === 'model'} onClick={() => setView('model')}>See the specimen</button>
-            <button type="button" aria-pressed={view === 'diagram'} onClick={() => setView('diagram')}>See the schematic</button>
+            <button type="button" aria-pressed={view === 'model'} onClick={() => setView('model')}>Leather & stitching</button>
+            <button type="button" aria-pressed={view === 'diagram'} onClick={() => setView('diagram')}>Seam drawing</button>
           </div> : null}
+          <Link className="archive-text-link" to={`/pitch/${featured.display.slug}#grip-lab`}>Find the fingers on the four-seam <span aria-hidden="true">→</span></Link>
         </div>
         <figure className="archive-seam-figure">
           <div className="archive-seam-stage" ref={ref}>

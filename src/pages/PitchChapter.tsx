@@ -14,6 +14,7 @@ import { StructuredData } from '../components/seo/StructuredData'
 import { scrollToId } from '../lib/scroll'
 import { GripStudy } from '../components/study/GripStudy'
 import { ChapterSections } from '../components/study/ChapterSections'
+import { craftsmanForVariant } from '../lib/archiveConnections'
 import { CompareButton } from '../components/compare/CompareButton'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
@@ -411,7 +412,8 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
 }
 
 /* ── Master Files ────────────────────────────────────────────────────────── */
-function MasterCard({ variant, accentColor }: { variant: MasterVariantRecord; accentColor: string }) {
+function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVariantRecord; accentColor: string; pitchSlug: string }) {
+  const person = craftsmanForVariant(pitchSlug, variant.pitcher)
   return (
     <article
       className="relative overflow-hidden rounded-2xl p-5"
@@ -421,6 +423,7 @@ function MasterCard({ variant, accentColor }: { variant: MasterVariantRecord; ac
       }}
     >
       <h3 className="rfx-athletic rfx-skew text-2xl text-bone">{variant.pitcher}</h3>
+      {person && <Link className="archive-text-link" to={`/craftsmen/${person.slug}`}>The person behind this hold →</Link>}
       <p className="mt-2 text-[12.5px] leading-relaxed text-bone-2">{variant.context}</p>
       <div className="mt-4 border-t border-white/8 pt-4">
         <p className="text-[13px] leading-relaxed text-bone">{variant.distinction.value}</p>
@@ -485,7 +488,7 @@ function MasterFilesSection({ entry, accentColor }: { entry: PitchAtlasEntry; ac
       {masterVariants.length > 0 ? (
         <div className="mt-7 grid grid-cols-1 gap-3.5 md:grid-cols-3">
           {masterVariants.map((v) => (
-            <MasterCard key={v.pitcher} variant={v} accentColor={accentColor} />
+            <MasterCard key={v.pitcher} variant={v} accentColor={accentColor} pitchSlug={entry.display.slug} />
           ))}
         </div>
       ) : (
@@ -509,8 +512,8 @@ function ColophonSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
     <section id="sources" className="study-anchor border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
       <SectionHead kicker="The colophon" title="Every claim, sourced" accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-          Nothing here is marked right or wrong. It is marked by where it came from and how confident the
-          source is. A broken citation throws at build, so a dead source never reaches you.
+          Follow a claim back to the person or record behind it. Confidence labels distinguish firsthand
+          accounts, analysis, and secondhand attribution; the notes preserve what remains uncertain.
         </p>
       </SectionHead>
 
@@ -661,7 +664,7 @@ export function PitchChapter() {
         familyLabel={FAMILY_LABEL[entry.canonical.family]}
         siblings={siblings}
       />
-      <div id="discussion" className="study-anchor border-t border-bone/8 pt-8">
+      <div className="study-anchor border-t border-bone/8 pt-8">
         <FieldNotes entry={entry} />
         <DiscussionPanel topicKey={entry.display.slug} topicName={entry.canonical.name} />
       </div>

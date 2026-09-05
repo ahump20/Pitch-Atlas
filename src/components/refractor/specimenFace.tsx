@@ -126,10 +126,9 @@ export function specimenFace(
            thumb-side or edge-on angle; in a 300px window those angles hide the
            fingers behind the ball. */
         view="side"
-        /* the card window is only 10:9 — the Grip Lab's framing would run the
-           hand off the top edge, so the camera sits back far enough to hold all
-           of it, palm included */
-        distance={7.4}
+        /* The cover and contacting fingers lead in the card window; full-hand
+           inspection remains available in the specimen. */
+        distance={5.8}
         className="h-full w-full"
       />
     </figure>

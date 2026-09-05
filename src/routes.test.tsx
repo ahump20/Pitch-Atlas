@@ -59,7 +59,7 @@ describe('Atlas home', () => {
       /The pitch, in your hand/i,
     )
     expect(
-      screen.getByText(/A living archive of grips, stories, and the art of pitching/),
+      screen.getByText(/A grip to inspect. A seam to follow/),
     ).toBeInTheDocument()
     // the front door carries one real filed specimen from each core family;
     // the full set belongs to the searchable Pitch Index.
@@ -79,7 +79,7 @@ describe('Atlas home', () => {
   it('keeps the front door focused and closes on the preservation mission', async () => {
     renderRoute('/')
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
-    for (const heading of ['One seam. Two media.', 'The filed set.', 'The other doors.']) {
+    for (const heading of ['Every grip opens a story.', 'Follow the seam.', 'The filed set.', 'Keep the craft in view.']) {
       expect(screen.getByRole('heading', { name: heading })).toBeInTheDocument()
     }
     expect(screen.getAllByText(/Preserve the pitches baseball almost forgot/).length).toBeGreaterThan(0)
@@ -90,6 +90,8 @@ describe('Atlas home', () => {
     )
     expect(screen.queryByRole('heading', { name: 'The craft record.' })).not.toBeInTheDocument()
     expect(screen.queryByText('Shape Lab')).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Read the craftsman’s file/ })).toHaveAttribute('href', '/craftsmen/adam-wainwright')
+    expect(screen.getByText('Grip demonstration by Austin H.')).toBeInTheDocument()
   })
 
   it('shows one clear primary nav, not the old per-pitch strip', async () => {

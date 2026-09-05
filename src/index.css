@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "./styles/world.css";
 /*
   ---break---
 */
@@ -921,33 +922,22 @@
      a handled set, not a printed sheet. */
   .rfx-card {
     --mx: 50%; --my: 32%;
-    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 8px; padding: 9px;
+    position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 9px; padding: 13px;
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     rotate: calc(sin((var(--i, 0) + 1) * 2.1) * 0.45deg);
-    transition: transform .4s cubic-bezier(.2,.8,.2,1); will-change: transform;
-    /* prismatic frame: a fine cracked-ice hatch (bright over, dark multiply) baked
-       into the rainbow foil. It only shows in the 6px border the field doesn't
-       cover, so the rim reads like real refractor chrome at no cost to the face. */
+    transition: transform .4s cubic-bezier(.2,.8,.2,1);
+    /* Oxidized foil beneath a handled leather rim; the face keeps its family ink. */
     background:
-      repeating-linear-gradient(57deg, rgba(255,255,255,.20) 0 1px, transparent 1px 7px),
-      repeating-linear-gradient(-57deg, rgba(0,0,0,.16) 0 1px, transparent 1px 8px),
-      var(--foil);
-    background-size: 9px 9px, 11px 11px, 300% 300%;
-    background-position: 0 0, 0 0, var(--mx) var(--my);
-    background-blend-mode: overlay, multiply, normal;
-    filter: saturate(1.04) contrast(1.02);
-    /* A card sits on a surface; it does not emit light. The old rule carried a 48px
-       accent bloom and a 6px translucent glow ring OUTSIDE a 2px 82%-alpha black —
-       so the halo was wider and brighter than the frame, which is what read as
-       glossy. Now: solid opaque black at 3px is the outermost edge, the accent
-       survives only as a 1px seat against it, and the card throws a cast shadow
-       DOWN instead of a bloom outward. */
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.3'/%3E%3C/svg%3E"),
+      repeating-linear-gradient(98deg, #efe0c412 0 1px, transparent 1px 4px),
+      linear-gradient(135deg, #b7a187 0%, #43382f 6%, color-mix(in srgb, var(--c3) 28%, #68523c) 28%, #29231e 57%, #76634e 82%, #c0a17a 97%, #382c23);
+    background-blend-mode: soft-light, overlay, normal;
     box-shadow:
-      0 0 0 3px #000,
-      0 0 0 4px color-mix(in srgb, var(--c3,#B9D4E5) 22%, transparent),
-      0 26px 42px -20px rgba(0,0,0,.92),
-      0 6px 14px -6px rgba(0,0,0,.8),
-      inset 0 1px 0 rgba(255,255,255,.22), inset 0 -2px 5px var(--bevel-lo);
+      0 0 0 1px #b89d7266, 0 0 0 3px #090806,
+      0 3px 0 3px #3d3025, 0 5px 0 3px #120e0b,
+      0 7px 0 3px #46382c, 0 9px 0 3px #090705,
+      9px 30px 35px -14px #000c, 0 8px 12px -4px #0009,
+      inset 0 1px 1px #f5e2bf77, inset 0 -3px 5px #000c;
     /* reveal runs BACKWARDS-fill (hidden through its delay), then releases the
        element entirely. fill:forwards used to pin `transform: none` from the
        final keyframe forever, silently overriding the live tilt rotation on
@@ -967,16 +957,26 @@
     opacity: .46; mix-blend-mode: screen;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor; mask-composite: exclude; padding: 9px;
+    -webkit-mask-composite: xor; mask-composite: exclude; padding: 13px;
+  }
+  .rfx-card::after {
+    content: ''; position: absolute; inset: 4px; z-index: 9; pointer-events: none;
+    border: 1px solid #eee0bf26; border-radius: 6px;
+    background:
+      linear-gradient(135deg, #f5dab778, transparent 65%) top left / 20px 20px,
+      linear-gradient(225deg, #dcc3a644, transparent 65%) top right / 17px 17px,
+      linear-gradient(45deg, #dcc3a622, transparent 65%) bottom left / 14px 14px,
+      linear-gradient(315deg, #a68b6566, transparent 65%) bottom right / 22px 22px;
+    background-repeat: no-repeat;
+    box-shadow: inset 0 0 0 2px #0003;
   }
   /* The grail is struck on heavier stock. The standard run wears a 9px rim; the
      1/1 wears 15px, because a 2%-of-the-card hairline has no room to be a
      material no matter how the ramp is tuned — and because a heavier border is
      the physical tell a premium print actually carries. The rake mask below
      matches, or the highlight paints over the window. */
-  .rfx-card.is-gold { padding: 15px; }
-  .rfx-card.is-gold::before,
-  .rfx-card.is-gold::after { padding: 15px; }
+  .rfx-card.is-gold { padding: 16px; }
+  .rfx-card.is-gold::before { padding: 16px; }
   .rfx-card.is-gold {
     /* Five layers, coarse to fine: a lacquer grain (the tooth you feel before
        you see), the cracked-ice cross-hatch that catches the specular ridge, a
@@ -1000,8 +1000,9 @@
       0 0 0 4px color-mix(in srgb, #bf5700 62%, #1c0e02),
       0 0 0 6px #000,
       0 0 0 7px color-mix(in srgb, #bf5700 30%, transparent),
-      0 26px 42px -20px rgba(0,0,0,.92),
-      0 6px 14px -6px rgba(0,0,0,.8),
+      0 4px 0 6px #46240e, 0 7px 0 6px #130b05,
+      10px 34px 42px -18px rgba(0,0,0,.92),
+      0 8px 14px -6px rgba(0,0,0,.8),
       /* the frame has THICKNESS: a lit top lip, a deep shadowed well at the
          bottom, and a warm bounce raking back up off the floor of it. */
       inset 0 2px 0 rgba(255,224,204,.4),
@@ -1029,7 +1030,7 @@
     /* worn matte: a turbulence pass blended over the warm-black field so the
        card stock reads handled, not printed this morning. CSS-only. */
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
       linear-gradient(170deg, color-mix(in srgb, var(--c2,#114A8C) 34%, #0B0805) 0%, #0B0805 52%, #070503 100%);
     background-blend-mode: overlay, normal;
     /* Black → accent hairline → black, fully opaque on the blacks. The window is
@@ -1045,7 +1046,7 @@
   }
   .rfx-card.is-gold .rfx-field {
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.16'/%3E%3C/svg%3E"),
       linear-gradient(170deg,#0f0a06,#090604 60%,#040302);
     background-blend-mode: overlay, normal;
     /* the ember 1/1 wears a burnt-orange bezel, not the cyan accent ring */
@@ -1061,7 +1062,7 @@
   /* the woven check in the negative space — bone-warm threads with a whisper of
      the pitch accent so the per-pitch triad still breathes through. */
   .rfx-field::before {
-    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .14; mix-blend-mode: screen;
+    content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: .075; mix-blend-mode: screen;
     background:
       repeating-linear-gradient(45deg, rgba(214,205,186,.55) 0 2px, transparent 2px 11px),
       repeating-linear-gradient(-45deg, rgba(214,205,186,.4) 0 2px, transparent 2px 11px),
@@ -1469,7 +1470,7 @@
   .rfx-card.is-hero-specimen { rotate: -.28deg; }
   .rfx-card.is-hero-specimen .rfx-field {
     background:
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.55' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.13'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23w)' opacity='0.13'/%3E%3C/svg%3E"),
       linear-gradient(164deg,#171006 0%,#0a0703 54%,#040301 100%);
     background-blend-mode: overlay, normal;
   }
@@ -1501,6 +1502,11 @@
      the first pass did. This rides at z-index 3: over the face, under the source
      chip. The stage's outline stays warm underneath for a transparent schematic
      face, where there is no photo to cover it. */
+  .rfx-stage::after {
+    content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 2px #080604, inset 0 0 0 3.5px color-mix(in srgb,var(--c3) 35%,#a38d72), inset 0 0 0 5px #090806cc, inset 0 12px 20px -10px #0009;
+  }
   .rfx-card.is-gold .rfx-stage::after {
     content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
     border-radius: inherit;

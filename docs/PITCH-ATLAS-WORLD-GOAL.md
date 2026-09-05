@@ -48,3 +48,9 @@ Reviewable source changes, a verified web preview, native build/test and availab
 Preserve the existing implementation and the charter's trust infrastructure: canonical pitch facts, sources, confidence, rights, moderation, original grip media, and shared seam geometry. No invented pitch behavior, biography, relationships, engagement, or medical/workload/youth prescriptions. Paraphrase and cite any new eligible factual content; navigation copy may frame existing records without inventing historical relationships.
 
 The separate [release checklist](ARCHIVE-RELEASE-CHECKLIST.md) remains in force. Signing/export, physical-device performance, full VoiceOver, genuine first-launch offline, device swipe acceptance, and store delivery are tracked with their actual prerequisites. Unchanged credential or hardware conditions do not restart implementation retry loops or permit false release claims.
+
+## Material revision — user direction, 2026-09-05
+
+The beige homepage seam presentation is rejected. Replace its composition and large beige surfaces with charcoal and burnt-orange materials. Extend the orange cover's physical finish across the standard collectible set: layered edges, recessed media mounts, restrained wear, and coherent light. Small ivory reference labels remain part of the existing cards; beige page canvases do not.
+
+Repair the baseball presentation on both platforms. Natural off-white leather, fine restrained grain, a recessed cover join and dark red lacing replace the coarse foam surface, yellow metallic gradients and glowing continuous red cord. Opaque cover illustrations occlude the hidden seam. Preserve seamPoint, sourced contact positions, schematic labels, and original grip media. Fresh stills must show the revised cover, ordinary cards, seam study, and comparison before any new release claim.

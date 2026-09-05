@@ -1,5 +1,7 @@
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useEffect, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
+import { craftsmanForVariant } from '../../lib/archiveConnections'
 import type { PitchAtlasEntry, VisualReference } from '../../data/types'
 import { gripEntryFor } from '../../data/grips'
 import { GripViewer } from '../grip/GripViewer'
@@ -16,7 +18,13 @@ function StudyPhoto({ photo, className }: { photo: VisualReference; className?: 
 const STEPS = ['Hold', 'Fingers', 'Seam', 'Sourced cue'] as const
 
 export function GripStudy({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
-  const [step, setStep] = useState(0)
+  const [search, setSearch] = useSearchParams()
+  const rawStep = Number(search.get('detail') ?? 0)
+  const step = Number.isInteger(rawStep) && rawStep >= 0 && rawStep < STEPS.length ? rawStep : 0
+  function updateStudy(key: string, value: string) {
+    setSearch(current => { const next = new URLSearchParams(current); if (value) next.set(key, value); else next.delete(key); return next }, { replace: true, preventScrollReset: true })
+  }
+  const setStep = (value: number | ((current: number) => number)) => updateStudy('detail', String(typeof value === 'function' ? value(step) : value))
   const content = useRef<HTMLElement>(null)
   const reduced = useReducedMotion()
   useEffect(() => {
@@ -25,14 +33,18 @@ export function GripStudy({ entry, accentColor }: { entry: PitchAtlasEntry; acce
     return () => transition.cancel()
   }, [step, reduced])
   const [contact, setContact] = useState<string>()
-  const [variant, setVariant] = useState('')
-  const [photoIndex, setPhotoIndex] = useState(0)
   const { canonical, guide } = entry
   const model = canonical.gripModel
   const photos = gripEntryFor(entry.display.slug)?.photos ?? []
+  const rawPhoto = Number(search.get('photo') ?? 0)
+  const photoIndex = Number.isInteger(rawPhoto) && rawPhoto >= 0 && rawPhoto < photos.length ? rawPhoto : 0
+  const setPhotoIndex = (value: number) => updateStudy('photo', String(value))
   const photo = photos[photoIndex]
-  const master = entry.masterVariants.find(v => v.pitcher === variant)
-  const context = master ? <><p className="study-eyebrow">Selected master · {master.pitcher}</p><RefractorClaim claim={master.distinction} /></> : <p>Reference grip · {entry.canonical.name}</p>
+  const master = entry.masterVariants.find(v => v.pitcher === search.get('variant'))
+  const variant = master?.pitcher ?? ''
+  const setVariant = (value: string) => updateStudy('variant', value)
+  const person = master ? craftsmanForVariant(entry.display.slug, master.pitcher) : undefined
+  const context = master ? <><p className="study-eyebrow">Selected master · {master.pitcher}</p><RefractorClaim claim={master.distinction} />{person && <Link className="archive-text-link" to={`/craftsmen/${person.slug}`}>Follow {person.name}’s story →</Link>}</> : <p>Reference grip · {entry.canonical.name}</p>
 
   return <section id="grip-lab" className="grip-study">
     <header className="study-heading"><p className="study-eyebrow">01 / At the grip bench</p><h2>Get to know the hold.</h2><p>Four ways into the same specimen. Take them in order, or go straight to the detail you came for.</p></header>

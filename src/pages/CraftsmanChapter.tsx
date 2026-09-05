@@ -145,6 +145,7 @@ export function CraftsmanChapter() {
             Signature pitch
             <span className="text-powder">{craftsman.signaturePitch}</span>
           </p>
+          {pitch && <Link className="archive-text-link mt-5" to={`/pitch/${pitch.display.slug}#grip-lab`} viewTransition>Inspect the {pitch.display.shortName.toLowerCase()} grip <span aria-hidden="true">↗</span></Link>}
         </div>
       </section>
 

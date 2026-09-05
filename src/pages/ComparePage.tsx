@@ -12,14 +12,19 @@ import { useCompare } from '../components/compare/compareContext'
 import { EMPTY_SELECTION, type CompareView } from '../components/compare/selection'
 import { canonicalUrl } from '../lib/seo'
 
-function CueColumn({ entry }: { entry: PitchAtlasEntry }) {
-  return <article className="compare-cue-column">
-    <h2>{entry.display.shortName}</h2>
-    <section><h3>The hold</h3><ClaimProse claim={entry.canonical.grip} /></section>
-    <section><h3>Grip details</h3>{entry.canonical.gripDetails.length ? entry.canonical.gripDetails.map((claim, i) => <ClaimProse key={i} claim={claim} />) : <p>Not documented.</p>}</section>
-    <section><h3>Release and mechanics</h3><ClaimProse claim={entry.canonical.mechanics} /></section>
-    <section><h3>Master variants</h3>{entry.masterVariants.length ? entry.masterVariants.map((variant) => <div key={variant.pitcher}><h4>{variant.pitcher}</h4><ClaimProse claim={variant.distinction} /></div>) : <p>Not documented.</p>}</section>
-  </article>
+const CUE_SECTIONS = ['The hold', 'Grip details', 'Release and mechanics', 'Master variants'] as const
+
+function CueComparison({ entries }: { entries: PitchAtlasEntry[] }) {
+  return <>{CUE_SECTIONS.map((label, section) => <section key={label} className="compare-cue-row">
+    <h2>{label}</h2>
+    <div className="compare-cue-cells">{entries.map((entry, index) => <article key={entry.display.slug}>
+      <h3><span>{index === 0 ? 'A' : 'B'}</span> {entry.display.shortName}</h3>
+      {section === 0 && <ClaimProse claim={entry.canonical.grip} />}
+      {section === 1 && (entry.canonical.gripDetails.length ? entry.canonical.gripDetails.map((claim, i) => <ClaimProse key={i} claim={claim} />) : <p>Not documented.</p>)}
+      {section === 2 && <ClaimProse claim={entry.canonical.mechanics} />}
+      {section === 3 && (entry.masterVariants.length ? entry.masterVariants.map(variant => <div key={variant.pitcher}><h4>{variant.pitcher}</h4><ClaimProse claim={variant.distinction} /></div>) : <p>Not documented.</p>)}
+    </article>)}</div>
+  </section>)}</>
 }
 
 export function ComparePage() {
@@ -32,8 +37,8 @@ export function ComparePage() {
   return <div className="archive-compare">
     <header className="archive-compare-header">
       <Link to="/repertoire" className="archive-back">Back to the Pitch Index</Link>
-      <h1>Two pitches.<br />{' '}<span>One closer look.</span></h1>
-      <p>Turn the grips together. Read what changes. Keep the source beside the lesson.</p>
+      <div className="compare-heading-line"><h1>Look at <span>the difference.</span></h1>
+      <p>Two grips on the same table.<br />{' '}Turn them together. Follow what changes.</p></div>
     </header>
     <div className="compare-controls">
       <div className="compare-pickers">
@@ -49,11 +54,21 @@ export function ComparePage() {
     {!a || !b ? <section className="compare-empty"><span aria-hidden="true">A / B</span><h2>{a || b ? 'Bring another pitch to the table.' : 'Start with two pitches.'}</h2><p>Choose from the selectors above, or select Compare while exploring the Pitch Index. An unavailable pitch leaves its place open.</p><Link className="archive-action" to="/repertoire">Explore the index</Link></section> : <>
       {selection.view === 'grips' && <section className="compare-grips" aria-label="Grip comparison">
         <div className="compare-toggles" role="group" aria-label="View both grips">{(['top', 'side', 'thumb'] as GripView[]).map((orientation) => <button key={orientation} aria-pressed={selection.orientation === orientation} onClick={() => update({ orientation })}>{orientation === 'top' ? 'Top' : orientation === 'side' ? 'Side' : 'Thumb'}</button>)}</div>
-        <div className="compare-pair">{[a, b].map((entry, i) => <article key={entry.display.slug}><header><span>{i === 0 ? 'A' : 'B'}</span><h2>{entry.display.shortName}</h2></header>{entry.canonical.gripModel.status === 'unfiled' ? <GripUnfiledState entry={entry} accentColor="#c7a66b" /> : <><div className="compare-ball"><BallStage entry={entry} grip faceGrip autoSpin={false} surface="stage" view={selection.orientation} handedness={selection.hand} className="h-full w-full" /></div><GripSourceBadge provenance={entry.canonical.gripModel.provenance} /><p className="compare-note">{entry.canonical.gripModel.visualCaveat}</p></>}<ClaimProse claim={entry.canonical.grip} proseClassName="text-bone leading-relaxed" /><Link to={`/pitch/${entry.display.slug}`} viewTransition>Study {entry.display.shortName} →</Link></article>)}</div>
+        <div className="compare-pair compare-specimens">{[a, b].map((entry, i) => <article key={entry.display.slug}>
+          <header><span>{i === 0 ? 'A' : 'B'}</span><h2>{entry.display.shortName}</h2></header>
+          {entry.canonical.gripModel.status === 'unfiled' ? <GripUnfiledState entry={entry} accentColor="#c7a66b" /> : <div className="compare-ball"><BallStage entry={entry} grip faceGrip autoSpin={false} interactive={false} surface="stage" view={selection.orientation} handedness={selection.hand} className="h-full w-full" /></div>}
+          <Link to={`/pitch/${entry.display.slug}#grip-lab`} viewTransition>Study {entry.display.shortName} <span aria-hidden="true">↗</span></Link>
+        </article>)}</div>
         <p className="compare-note">Seam-informed schematics. View and handedness apply to both drawings; they do not transform real grip photographs.</p>
+        <div className="compare-pair compare-grip-reading archive-paper">{[a, b].map((entry) => <article key={entry.display.slug}>
+          <p className="archive-eyebrow">The hold</p><h2>{entry.display.shortName}</h2>
+          <ClaimProse claim={entry.canonical.grip} proseClassName="compare-grip-prose" />
+          {entry.canonical.gripModel.status === 'filed' && <details className="compare-model-note"><summary>About this reference</summary><GripSourceBadge provenance={entry.canonical.gripModel.provenance} /><p>{entry.canonical.gripModel.visualCaveat}</p></details>}
+        </article>)}</div>
       </section>}
-      {selection.view === 'cues' && <section className="compare-cues compare-pair field-cream" aria-label="Sourced cue comparison"><CueColumn entry={a} /><CueColumn entry={b} /></section>}
+      {selection.view === 'cues' && <section className="compare-cues" aria-label="Sourced cue comparison"><CueComparison entries={[a, b]} /></section>}
       {selection.view === 'movement' && <section className="compare-movement"><p className="compare-note">Direction and character only. These paths illustrate a shared-release idea; they do not show measured flight, speed, distance or separation timing.</p><TunnelPlot selection={{ a: a.display.slug, b: b.display.slug, hand: selection.hand }} hideControls /></section>}
+      <aside className="compare-next"><div><p className="archive-eyebrow">Put the difference in context</p><h2>What does the next pitch change?</h2><p>Keep this pair at the table while you explore how pitches work together.</p></div><Link to="/learn/sequencing" className="archive-text-link">Read the sequencing lesson <span aria-hidden="true">→</span></Link></aside>
     </>}
   </div>
 }

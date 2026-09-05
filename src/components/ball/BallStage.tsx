@@ -56,6 +56,8 @@ export function BallStage({
   const schematic = (cn: string) => (
     <SeamSchematic
       className={cn}
+      showAxis={vectors}
+      showLabels={interactive}
       spinAxis={entry.motion.spinAxis}
       gyro={entry.motion.gyro}
       grip={grip ? entry.canonical.gripModel.contacts : undefined}

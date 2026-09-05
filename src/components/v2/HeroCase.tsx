@@ -52,7 +52,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             className="v2-hero-lede v2-enter mt-4 max-w-[46ch] text-[15.5px] leading-relaxed text-bone-2 md:mt-5 md:text-base"
             style={{ '--i': 2 } as React.CSSProperties}
           >
-            A living archive of grips, stories, and the art of pitching.
+            A grip to inspect. A seam to follow. A story that brings you back to the ball.
           </p>
 
           <div
@@ -62,8 +62,8 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             <Button as={Link} to="/repertoire" variant="chrome" arrow>
               Open the Pitch Index
             </Button>
-            <Button as={Link} to="/about" variant="ghost" className="v2-secondary-cta" arrow>
-              Read the mission
+            <Button as={Link} to={`/pitch/${featured.display.slug}#grip-lab`} variant="ghost" className="v2-secondary-cta" arrow>
+              Study this grip
             </Button>
           </div>
 

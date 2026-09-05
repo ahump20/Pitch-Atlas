@@ -10,10 +10,10 @@ import type { GripContactModel, Handedness } from '../../../data/types'
      a roughness map, all lit by the studio env). The seam's own channel and
      contact shadow are baked into those maps so the thread reads as set into the
      leather, not painted on top.
-   - a raised red waxed-thread seam tube swept along the shared figure-eight curve
+   - a dark recessed cover join following the shared figure-eight curve
      from seam.ts
    - 216 instanced stitches: 108 double-stitch pairs straddling the seam in the
-     classic herringbone V, given a flatter waxed cross-section with a brighter top
+     classic herringbone V, laid across the cover join, with tucked ends and a raised thread crown
    - the specimen hand: solved finger spines from gripPose.ts rendered by Hand.tsx,
      each fingertip carrying its sourced label pin
   The hand is a cast of the authored, sourced contacts, so "hold it like this"
@@ -26,6 +26,7 @@ import type { GripContactModel, Handedness } from '../../../data/types'
 const R = 1
 const STITCH_PAIRS = 108
 const TEX = 1024
+let leatherCanvases: HTMLCanvasElement[] | undefined
 
 const clampByte = (n: number) => Math.max(0, Math.min(255, Math.round(n)))
 
@@ -95,6 +96,8 @@ interface LeatherMaps {
      the valleys, and the seam channel is rougher (waxed thread aside, the leather
      lip is matte). All <=1024px, generated once, reused. */
 function makeLeatherMaps(): LeatherMaps {
+  // Reuse the CPU bake across specimens; each mount owns disposable GPU textures.
+  if (leatherCanvases) return texturesFromCanvases(leatherCanvases)
   const size = TEX
   const grain = makeNoise(11)
   const blotch = makeNoise(29)
@@ -133,7 +136,7 @@ function makeLeatherMaps(): LeatherMaps {
     return best
   }
 
-  const CHANNEL = 0.018 // half-width of the recessed seam lane, in UV units
+  const CHANNEL = 0.0035 // half-width of the recessed seam lane, in UV units
 
   // ── albedo ────────────────────────────────────────────────────────────────
   const ca = document.createElement('canvas')
@@ -142,22 +145,22 @@ function makeLeatherMaps(): LeatherMaps {
   const aimg = ax.createImageData(size, size)
   const ad = aimg.data
   // base warm hide
-  const baseR = 238
-  const baseG = 230
-  const baseB = 214
+  const baseR = 244
+  const baseG = 242
+  const baseB = 235
   for (let y = 0; y < size; y++) {
     const vv = y / size
     for (let x = 0; x < size; x++) {
       const u = x / size
       const idx = (y * size + x) * 4
-      const fine = grain(u, vv, 220, 4) // pebble-scale
+      const fine = grain(u, vv, 360, 2) // pebble-scale
       const wide = blotch(u, vv, 7, 3) // slow mottle
-      const tone = (fine - 0.5) * 16 + (wide - 0.5) * 14
+      const tone = (fine - 0.5) * 5 + (wide - 0.5) * 7
       // soiling that hugs the seam channel — real covers gray along the stitches
       const sd = seamDistAt(u, vv)
-      const soil = sd < CHANNEL * 3 ? (1 - sd / (CHANNEL * 3)) * 12 : 0
+      const soil = sd < CHANNEL * 3 ? (1 - sd / (CHANNEL * 3)) * 5 : 0
       // recessed channel reads slightly darker (less light reaches the groove)
-      const groove = sd < CHANNEL ? (1 - sd / CHANNEL) * 26 : 0
+      const groove = sd < CHANNEL ? (1 - sd / CHANNEL) * 28 : 0
       ad[idx] = clampByte(baseR + tone - soil * 1.1 - groove)
       ad[idx + 1] = clampByte(baseG + tone - soil - groove)
       ad[idx + 2] = clampByte(baseB + tone * 0.9 - soil * 0.8 - groove * 0.9)
@@ -180,13 +183,13 @@ function makeLeatherMaps(): LeatherMaps {
   const nd = nimg.data
   const heightAt = (u: number, vv: number): number => {
     // pebble grain (multi-octave) minus a carved seam channel
-    const pebble = grain(u, vv, 200, 5)
+    const pebble = grain(u, vv, 360, 2)
     const sd = seamDistAt(u, vv)
     const channel = sd < CHANNEL ? Math.cos((sd / CHANNEL) * Math.PI * 0.5) : 0
-    return pebble - channel * 1.4
+    return pebble * 0.32 - channel * 0.7
   }
   const eps = 1 / size
-  const STRENGTH = 2.1
+  const STRENGTH = 0.8
   for (let y = 0; y < size; y++) {
     const vv = y / size
     for (let x = 0; x < size; x++) {
@@ -222,9 +225,9 @@ function makeLeatherMaps(): LeatherMaps {
     for (let x = 0; x < size; x++) {
       const u = x / size
       const idx = (y * size + x) * 4
-      const fine = grain(u, vv, 200, 5)
+      const fine = grain(u, vv, 360, 2)
       // pebble tops a touch glossier (lower roughness), valleys matte
-      let rough = 0.52 + (0.5 - fine) * 0.22
+      let rough = 0.78 + (0.5 - fine) * 0.10
       const sd = seamDistAt(u, vv)
       if (sd < CHANNEL) rough += (1 - sd / CHANNEL) * 0.16 // matte leather lip
       const r8 = clampByte(rough * 255)
@@ -239,6 +242,18 @@ function makeLeatherMaps(): LeatherMaps {
   roughness.anisotropy = 4
   roughness.wrapS = THREE.RepeatWrapping
 
+  leatherCanvases = [ca, cn, cr]
+  return { albedo, normal, roughness }
+}
+
+function texturesFromCanvases(canvases: HTMLCanvasElement[]): LeatherMaps {
+  const [albedo, normal, roughness] = canvases.map((canvas) => {
+    const texture = new THREE.CanvasTexture(canvas)
+    texture.wrapS = THREE.RepeatWrapping
+    texture.anisotropy = 8
+    return texture
+  })
+  albedo.colorSpace = THREE.SRGBColorSpace
   return { albedo, normal, roughness }
 }
 
@@ -284,18 +299,21 @@ export function Ball({
     [],
   )
 
-  // raised waxed thread: a hair fatter than before and seated in the leather
-  // channel baked into the maps above, so it reads proud of a groove, not glued
-  // onto a flat surface.
+  // The cover join is recessed dark leather. Red belongs to the lacing.
   const tubeGeometry = useMemo(
-    // 18 radial segments (up from 14): a rounder cross-section so the raised
-    // waxed thread keeps its bead under the raking key light at large scale.
-    () => new THREE.TubeGeometry(seamCurve, 500, 0.0135, 18, true),
+    () => new THREE.TubeGeometry(seamCurve, 600, 0.0035, 8, true),
     [seamCurve],
   )
-  // flatter cross-section than a round bead: a wide, low waxed stitch. The
-  // instance transform below scales it thin in the radial axis after orienting.
-  const stitchGeometry = useMemo(() => new THREE.CapsuleGeometry(0.0125, 0.05, 5, 10), [])
+  // One curved thread: both ends tuck into the leather, the middle catches light.
+  const stitchGeometry = useMemo(() => new THREE.TubeGeometry(
+    new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, -0.040, -0.006),
+      new THREE.Vector3(0, -0.022, 0.004),
+      new THREE.Vector3(0, 0, 0.008),
+      new THREE.Vector3(0, 0.022, 0.004),
+      new THREE.Vector3(0, 0.040, -0.006),
+    ]), 10, 0.0055, 7, false,
+  ), [])
 
   // Free the imperatively-built seam geometries on unmount. R3F auto-disposes
   // JSX-declared geometries, but these two are made with useMemo and handed in by
@@ -317,40 +335,30 @@ export function Ball({
     if (!mesh) return
     const m = new THREE.Matrix4()
     const q = new THREE.Quaternion()
-    const qFlat = new THREE.Quaternion()
+    const basis = new THREE.Matrix4()
     const pos = new THREE.Vector3()
     const tan = new THREE.Vector3()
     const nrm = new THREE.Vector3()
     const bin = new THREE.Vector3()
-    const yUp = new THREE.Vector3(0, 1, 0)
-    // press the capsule down toward the leather: thin along the surface normal,
-    // a touch wider across, full length along the thread.
-    const flatten = new THREE.Vector3(1.25, 1, 0.55)
+    const xAxis = new THREE.Vector3()
+    const scale = new THREE.Vector3(1, 1, 1)
     let idx = 0
     for (let i = 0; i < STITCH_PAIRS; i++) {
-      const u = i / STITCH_PAIRS
-      seamCurve.getPointAt(u, pos)
-      seamCurve.getTangentAt(u, tan).normalize()
+      seamCurve.getPointAt(i / STITCH_PAIRS, pos)
+      seamCurve.getTangentAt(i / STITCH_PAIRS, tan).normalize()
       nrm.copy(pos).normalize()
       bin.crossVectors(nrm, tan).normalize()
-      for (let s = 0; s < 2; s++) {
-        const side = s === 0 ? 1 : -1
-        const center = pos
-          .clone()
-          .multiplyScalar(1.005)
-          .add(bin.clone().multiplyScalar(0.034 * side))
-        const slant = side * 0.62
-        const dir = tan
-          .clone()
-          .multiplyScalar(Math.cos(slant))
-          .add(bin.clone().multiplyScalar(Math.sin(slant) * side))
-          .normalize()
-        q.setFromUnitVectors(yUp, dir)
-        // align the capsule's "thin" local axis with the surface normal so the
-        // flatten scale presses it into the leather rather than sideways.
-        qFlat.setFromUnitVectors(yUp, nrm)
-        q.multiply(qFlat.invert())
-        m.compose(center, q, flatten)
+      for (const side of [1, -1]) {
+        const center = pos.clone().addScaledVector(bin, 0.029 * side).normalize().multiplyScalar(1.002)
+        const normal = center.clone().normalize()
+        const direction = tan.clone().multiplyScalar(0.58).addScaledVector(bin, 0.82 * side)
+        direction.addScaledVector(normal, -direction.dot(normal)).normalize()
+        // Local Y follows the thread, local Z points out of the cover. The old
+        // quaternion composition tilted stitches upright like fins.
+        xAxis.crossVectors(direction, normal).normalize()
+        basis.makeBasis(xAxis, direction, normal)
+        q.setFromRotationMatrix(basis)
+        m.compose(center, q, scale)
         mesh.setMatrixAt(idx++, m)
       }
     }
@@ -364,46 +372,25 @@ export function Ball({
         <meshPhysicalMaterial
           map={textures.albedo}
           normalMap={textures.normal}
-          normalScale={new THREE.Vector2(0.85, 0.85)}
+          normalScale={new THREE.Vector2(0.34, 0.34)}
           roughnessMap={textures.roughness}
-          color="#F1EADA"
+          color="#FFFFFF"
           roughness={1}
-          clearcoat={0.35}
-          clearcoatRoughness={0.42}
-          sheen={0.55}
+          clearcoat={0.03}
+          clearcoatRoughness={0.8}
+          sheen={0.08}
           sheenRoughness={0.7}
           sheenColor="#FFF7E6"
-          envMapIntensity={1.0}
+          envMapIntensity={0.45}
         />
       </mesh>
 
-      {/* the seam: raised waxed red thread, glossier than the matte leather lip.
-          tighter clearcoat roughness sharpens the specular line the rim light rakes. */}
       <mesh geometry={tubeGeometry}>
-        <meshPhysicalMaterial
-          color="#B81127"
-          roughness={0.42}
-          clearcoat={0.5}
-          clearcoatRoughness={0.22}
-          sheen={0.4}
-          sheenColor="#E2544E"
-        />
+        <meshStandardMaterial color="#786C61" roughness={0.95} />
       </mesh>
-
-      {/* 216 waxed stitches: flatter, glossier on top, brighter than the seam line.
-          a low deep-red emissive reads as the waxed crown catching rim light — a
-          glint, not a glow — and the sharper clearcoat crisps the thread's specular. */}
       <instancedMesh ref={stitchRef} args={[stitchGeometry, undefined, STITCH_PAIRS * 2]}>
-        <meshPhysicalMaterial
-          color="#D6213B"
-          roughness={0.34}
-          clearcoat={0.6}
-          clearcoatRoughness={0.16}
-          sheen={0.5}
-          sheenColor="#F39C92"
-          emissive="#3a0810"
-          emissiveIntensity={0.15}
-        />
+        <meshPhysicalMaterial color="#9C2430" roughness={0.68}
+          clearcoat={0.08} clearcoatRoughness={0.65} />
       </instancedMesh>
 
       {showGrip && fingerPlacement.length > 0 ? (

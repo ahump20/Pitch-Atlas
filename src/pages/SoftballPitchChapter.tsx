@@ -13,6 +13,8 @@ import { FamilyRail } from '../components/pitch/FamilyRail'
 import { ChapterSections } from '../components/study/ChapterSections'
 import { RefractorSource } from '../components/provenance/RefractorClaim'
 import { NotFound } from './NotFound'
+import { SOFTBALL_CRAFTSMEN } from '../data/softball/craftsmen'
+import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 
 /*
   One softball pitch, one chapter: the grip, the spin, the movement, and — where it
@@ -186,6 +188,13 @@ export function SoftballPitchChapter() {
         heading={`Others in the ${FAMILY_LABEL[pitch.family].toLowerCase()}`}
         items={familySiblings}
       />
+
+      {SOFTBALL_CRAFTSMEN.some(person => person.signaturePitchSlug === pitch.slug) && <section className="archive-history-next mx-auto max-w-6xl px-5 py-12 md:px-8">
+        <p className="archive-eyebrow">The people behind the pitch</p>
+        <h2>Follow the hold into the circle.</h2>
+        <div className="mt-5 grid gap-5 md:grid-cols-2">{SOFTBALL_CRAFTSMEN.filter(person => person.signaturePitchSlug === pitch.slug).map(person => <div key={person.slug}><Link className="archive-text-link" to={`/softball/craftsmen/${person.slug}`}>{person.name} <span aria-hidden="true">→</span></Link><p className="mt-2 text-sm leading-relaxed text-bone-2">{person.tagline}</p></div>)}</div>
+      </section>}
+      <DiscussionPanel topicKey={`softball:${pitch.slug}`} topicName={pitch.name} />
 
       <ChapterNav prev={prev} next={next} />
     </>

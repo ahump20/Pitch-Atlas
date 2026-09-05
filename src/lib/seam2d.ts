@@ -84,3 +84,18 @@ export function buildStitches(points: P2[], every = 5, len = 6): Stitch[] {
   }
   return out
 }
+
+/** Paired lacing for cover illustrations. Counts and spacing remain schematic. */
+export function buildLacing(points: P2[], every = 4, len = 6): Stitch[] {
+  return buildStitches(points, every, len).flatMap((stitch) => {
+    const dx = stitch.x2 - stitch.x1
+    const dy = stitch.y2 - stitch.y1
+    const cx = (stitch.x1 + stitch.x2) / 2
+    const cy = (stitch.y1 + stitch.y2) / 2
+    const tip = { x: cx - dy * .3, y: cy + dx * .3 }
+    return [
+      { x1: stitch.x1, y1: stitch.y1, x2: tip.x, y2: tip.y, front: stitch.front },
+      { x1: stitch.x2, y1: stitch.y2, x2: tip.x, y2: tip.y, front: stitch.front },
+    ]
+  })
+}

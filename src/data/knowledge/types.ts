@@ -40,5 +40,5 @@ export interface KnowledgeWing {
    */
   boundaryOnly?: boolean
   /** Cross-links to related wings, pitches, or tools. */
-  related?: { label: string; to: string }[]
+  related?: { label: string; to: string; reason?: string }[]
 }

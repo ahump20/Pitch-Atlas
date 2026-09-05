@@ -201,6 +201,13 @@ export function LostPitchChapter() {
         </section>
       ) : null}
 
+      {pitch.slug === 'rube-foster-fadeaway' && <section className="archive-history-next mx-auto max-w-6xl px-5 py-12 md:px-8" aria-labelledby="history-next-title">
+        <p className="archive-eyebrow">Follow the name into the pitch</p>
+        <h2 id="history-next-title">From the fadeaway to the screwball file.</h2>
+        <p>The surviving account above identifies Foster’s fadeaway as a screwball. The screwball file follows that pitch’s grip and direction, with its own sources. It does not reconstruct Foster’s undocumented hold.</p>
+        <Link className="archive-text-link" to="/repertoire/screwball">Open the screwball file <span aria-hidden="true">→</span></Link>
+      </section>}
+
       <DiscussionPanel topicKey={`lost:${pitch.slug}`} topicName={pitch.name} variant="compact" />
 
       <ChapterNav prev={prev} next={next} />

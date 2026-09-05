@@ -115,7 +115,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                   className="rfx-plate group flex items-center justify-between gap-3 rounded-sm px-5 py-4"
                   style={{ '--gc': '#B9D4E5' } as CSSProperties}
                 >
-                  <span className="font-athletic text-lg uppercase text-ink">{r.label}</span>
+                  <span><span className="font-athletic text-lg uppercase text-ink">{r.label}</span>{r.reason && <span className="mt-2 block text-sm leading-relaxed text-ink-2">{r.reason}</span>}</span>
                   <span className="mono-label text-seam transition-colors group-hover:text-ink">→</span>
                 </Link>
               ))}
@@ -124,13 +124,12 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         </section>
       ) : null}
 
-      {idx >= 0 ? (
-        <WingNav prev={prev} next={next} position={idx + 1} total={WINGS.length} />
-      ) : null}
-
       {wing.boundaryOnly ? null : (
         <DiscussionPanel topicKey={`learn:${wing.slug}`} topicName={wing.navLabel || wing.title} />
       )}
+      {idx >= 0 ? (
+        <WingNav prev={prev} next={next} position={idx + 1} total={WINGS.length} />
+      ) : null}
     </>
   )
 }

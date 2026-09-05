@@ -51,47 +51,41 @@
 }
 .archive-section-hero .display { font-style: normal; }
 .field-cream .archive-section-hero { background-color: transparent; }
-/* A paper folio, with an isolated dark object stage. The semantic ink tokens of
-   other routes are untouched. */
+/* A charcoal inspection desk with an inset specimen, continuous with the cards. */
 .archive-bridge {
-  background: #e9e0ce; color: #2a2823;
-  border-top: 1px solid #d4c7b1; border-bottom: 1px solid #c7b89d;
-  view-timeline-name: --archive-seam;
-  view-timeline-axis: block;
+  background: radial-gradient(ellipse at 10% 20%, #5b2c1733, transparent 55%), #11100f;
+  color: #eee9df; border-block: 1px solid #98664945;
 }
 .archive-bridge-inner {
-  max-width: 1320px; margin: auto; display: grid; grid-template-columns: 1fr 1fr;
-  align-items: center; gap: clamp(40px, 7vw, 100px); padding: clamp(56px, 7vw, 100px) clamp(24px, 5vw, 80px);
+  max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr 1fr;
+  align-items: center; gap: clamp(40px, 7vw, 100px); padding: 64px clamp(24px, 5vw, 64px);
 }
-.archive-bridge-read h2 {
-  font: 400 clamp(42px, 5.4vw, 74px)/.99 var(--font-display); letter-spacing: -.04em; margin: 24px 0;
-}
-.archive-bridge-read h2 em { color: #725238; }
-.archive-bridge-read p { max-width: 35ch; font-size: 17px; line-height: 1.7; }
-.archive-bridge-read .archive-bridge-note { margin-top: 22px; font-size: 13px; color: #62594b; }
+.archive-bridge-read h2 { font: 400 clamp(42px,5vw,66px)/.99 var(--font-display); letter-spacing: -.04em; margin: 24px 0; }
+.archive-bridge-read h2 em { color: #d58b57; }
+.archive-bridge-read p { max-width: 35ch; font-size: 16px; line-height: 1.7; color: #cac1b7; }
+.archive-bridge-read .archive-bridge-note { margin-top: 22px; font-size: 12px; color: #a79c8f; }
 .archive-bridge .archive-chapter-mark { font-size: 10px; }
-.archive-bridge .archive-chapter-mark > span:nth-child(2), .archive-bridge .archive-chapter-mark > span:last-child { color: #62594b; }
-.archive-bridge .archive-chapter-mark .cm-rule { background: #8b7a6155; }
-.archive-bridge-read > :first-child { color: #62594b; }
+.archive-bridge .archive-chapter-mark > span:nth-child(2), .archive-bridge .archive-chapter-mark > span:last-child { color: #c09b79; }
+.archive-bridge .archive-chapter-mark .cm-rule { background: #aa785655; }
+.archive-bridge-read > :first-child { color: #c09b79; }
 .archive-seam-figure { margin: 0; min-width: 0; }
-.archive-seam-stage { aspect-ratio: 1; position: relative; isolation: isolate; background: #171713; border: 1px solid #554c3d; box-shadow: 0 20px 36px -26px #22180dad; }
+.archive-seam-stage {
+  aspect-ratio: 1; position: relative; isolation: isolate; border-radius: 8px;
+  background: #191716; border: 10px solid #513825;
+  outline: 1px solid #9f724b88; outline-offset: 3px;
+  box-shadow: 0 3px 0 4px #20150e, 10px 28px 40px -16px #000, inset 0 1px 0 #fff1;
+}
 .archive-seam-flat, .archive-seam-model { position: absolute; inset: 0; }
 .archive-seam-drawing { display: block; height: 100%; width: 100%; }
 .archive-seam-flat { z-index: 1; }
-.archive-seam-model { z-index: 2; opacity: 0; pointer-events: none; }
-.archive-seam-registration { position: absolute; inset: 7%; border: 1px solid #b1a38c24; }
-.archive-seam-registration::before, .archive-seam-registration::after { content: ''; position: absolute; background: #b1a38c24; }
-.archive-seam-registration::before { inset: 50% -4% auto; height: 1px; }
-.archive-seam-registration::after { inset: -4% auto -4% 50%; width: 1px; }
-.archive-seam-figure figcaption { display: flex; justify-content: space-between; padding-top: 15px; font: 10px/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: .1em; }
-.archive-seam-caption { margin-top: 12px; color: #62594b; font: 10px/1.6 var(--font-mono); }
-.archive-seam-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 28px; }
-.archive-seam-controls button {
-  min-height: 44px; padding: 10px 13px; border: 1px solid #8b7a61; color: #363027; background: transparent;
-  font: 11px/1.4 var(--font-mono); cursor: pointer;
-}
-.archive-seam-controls button[aria-pressed='true'] { color: #f4ebdb; background: #363027; }
-.archive-seam-controls button:focus-visible { outline: 2px solid #725238; outline-offset: 3px; }
+.archive-seam-model { z-index: 2; opacity: 0; pointer-events: none; background: #191716; transition: opacity 400ms ease; }
+.archive-seam-registration { position: absolute; inset: 7%; border: 1px solid #b1a38c18; }
+.archive-seam-figure figcaption { display: flex; justify-content: space-between; padding-top: 23px; font: 10px/1.5 var(--font-mono); text-transform: uppercase; letter-spacing: .1em; color: #d6b18a; }
+.archive-seam-caption { margin-top: 10px; color: #a79c8f; font: 10px/1.6 var(--font-mono); }
+.archive-seam-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 26px; }
+.archive-seam-controls button { min-height: 44px; padding: 10px 13px; border: 1px solid #9b775b77; border-radius: 3px; color: #cfc4b8; background: #211a15; font: 11px/1.4 var(--font-mono); cursor: pointer; }
+.archive-seam-controls button[aria-pressed='true'] { color: #ffe8d4; background: #723e20; border-color: #c7854f; }
+.archive-seam-controls button:focus-visible { outline: 2px solid #e9a570; outline-offset: 3px; }
 .archive-bridge[data-view='model'] .archive-seam-model { opacity: 1; }
 .archive-bridge[data-view='diagram'] .archive-seam-model { opacity: 0; }
 @supports (animation-timeline: view()) {
@@ -103,15 +97,9 @@
       animation: archive-card-depth linear both; animation-timeline: --archive-case; animation-range: exit 0% exit 100%;
     }
   }
-  @media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
-    .archive-bridge[data-view='scroll'][data-webgl='true'] .archive-seam-model {
-      animation: archive-seam-flatten linear both; animation-timeline: --archive-seam; animation-range: entry 55% cover 60%;
-    }
-  }
 }
 @keyframes archive-background-depth { from { transform: translateY(0); } to { transform: translateY(var(--archive-background-travel)); } }
 @keyframes archive-card-depth { from { transform: translateY(0); } to { transform: translateY(var(--archive-card-travel)); } }
-@keyframes archive-seam-flatten { 0%, 25% { opacity: 1; } 85%, 100% { opacity: 0; } }
 @media (max-width: 767px) {
   .archive-case { --archive-background-travel: -8px; --archive-card-travel: -24px; }
   .archive-case .v2-hero-grid { min-height: 0; padding: 28px 24px 66px; gap: 36px; }
@@ -133,20 +121,20 @@
   .archive-case .v2-hero-read > .v2-enter { margin-top: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .archive-case .archive-case-card, .archive-case .archive-case-atmosphere, .archive-case-light, .archive-seam-model { animation: none; transform: none; }
+  .archive-case .archive-case-card, .archive-case .archive-case-atmosphere, .archive-case-light, .archive-seam-model { animation: none; transition: none; transform: none; }
 }
 
-/* Shared archive surfaces: reading paper has local ink, never inherited dark-stage tokens. */
+/* Bound reading surfaces use charcoal ink stock; warm ivory stays in the type. */
 .archive-paper {
-  --color-ink: #2a2823; --color-ink-2: #574e42; --color-ink-3: #695d4d;
-  --color-paper: #e9e0ce; --color-paper-2: #e1d5be;
-  background: #e9e0ce; color: #2a2823;
-  border-block: 1px solid #b8a17b55;
+  --color-ink: #eee9df; --color-ink-2: #cec4b8; --color-ink-3: #bfb09f;
+  --color-paper: #211b17; --color-paper-2: #2d211a;
+  background: linear-gradient(120deg,#2b211a,#1c1916); color: #eee9df;
+  border-block: 1px solid #aa77574d;
 }
-.archive-paper .pa-atmo { opacity: .08; }
-.archive-paper :is(.text-ink, .text-ink\/90) { color: #2a2823; }
-.archive-paper :is(.text-ink-2, .text-ink-3) { color: #635645; }
-.archive-paper a { color: #704b2b; }
+.archive-paper .pa-atmo { opacity: .035; }
+.archive-paper :is(.text-ink, .text-ink\/90) { color: #eee9df; }
+.archive-paper :is(.text-ink-2, .text-ink-3) { color: #c8bbae; }
+.archive-paper a { color: #e4b182; }
 .archive-paper blockquote { font-family: var(--font-display); font-size: clamp(25px, 3vw, 40px); line-height: 1.25; }
 .archive-editorial > .study-chapter-nav { max-width: 1152px; margin-inline: auto; padding-inline: 24px; }
 .archive-editorial > section, .archive-lesson { scroll-margin-top: 145px; }
