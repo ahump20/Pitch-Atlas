@@ -1,8 +1,16 @@
-# Archive Within Reach — release checklist
+# Pitch Atlas — release checklist
 
 This is the separate release stage created by Austin's 2026-09-05 goal revision. These checks remain open and do not hold the completed implementation goal in a retry loop.
 
-## Delivered implementation
+## Connected archive and material revision — 2026-09-05
+
+- Web runtime `f13f6f42b7c518fcaec700a29e94ae638db10cf0`: [Cloudflare preview](https://f44c9def.pitch-atlas.pages.dev), [PR 191](https://github.com/ahump20/Pitch-Atlas/pull/191).
+- [Exact-runtime web CI](https://github.com/ahump20/Pitch-Atlas/actions/runs/33984087979): 971 tests passed / 9 existing skips, 109 prerendered routes, lint, typechecking/build, integrity and browser smoke. Final hosted smoke and representative study/compare/offline/keyboard journeys also passed.
+- Native source checkpoint `d0900e0b1d591015b51f746ab3c54dd9041950c2`: [PR 35](https://github.com/ahump20/Pitch-Atlas-iOS/pull/35), [green 70-test CI and bundle check](https://github.com/ahump20/Pitch-Atlas-iOS/actions/runs/33984976940).
+- Exact `d0900e0` unsigned archive succeeded on Air at `/Users/AustinHumphrey/Pitch-Atlas-iOS/.build/PitchAtlas-archive-world-label-final.xcarchive`. This is unsigned preparation only. A native poster-to-player continuity fix and current card/discovery capture are still being verified; this checkpoint does not certify that later change.
+- Current evidence and exact artifact boundaries: [ARCHIVE-WORLD-EVIDENCE.md](ARCHIVE-WORLD-EVIDENCE.md).
+
+## Earlier Archive Within Reach implementation
 
 - Web runtime `e52cc2f01a13f825b5033be1c205558283bfea0d`: https://2d8e53d4.pitch-atlas.pages.dev
 - Web review: https://github.com/ahump20/Pitch-Atlas/pull/191
@@ -23,6 +31,6 @@ This is the separate release stage created by Austin's 2026-09-05 goal revision.
 | iPhone 13-class 60fps and idle cost | Desktop recordings and simulator stills are not physical-device frame-rate measurements. | Profile representative web and native interactions on the agreed physical device class, including reverse scrolling and offscreen/idle rendering. Fix sustained work or dropped-frame defects found. |
 | Production and TestFlight/App Store delivery | Cloudflare preview exists; no production or store deployment occurred. | After the applicable release checks pass, perform the separately authorized deployment/upload and inspect the delivered version. |
 
-The final Air signing retry log is `.build/ArchiveWithinReach-3a130d6-signed-retry.log`; SHA-256 `9a343660440d765a229fb99a35b224ebd51a54c5700facf79cb92c9d2b0bf077`. Native swipe evidence is `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-study/pitch-atlas-edge-swipe-unchanged.png` on the Pro. The task-owned native app and temporary web preview server were stopped after inspection.
+The earlier Air signing retry log is `.build/ArchiveWithinReach-3a130d6-signed-retry.log`; SHA-256 `9a343660440d765a229fb99a35b224ebd51a54c5700facf79cb92c9d2b0bf077`. Native swipe evidence is `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-study/pitch-atlas-edge-swipe-unchanged.png` on the Pro. The task-owned native app and temporary web preview server for that earlier checkpoint were stopped after its inspection; this is not a statement about the current review preview.
 
 Provenance, rights, moderation, and canonical seam/data integrity remain release requirements. The goal revision changes when external checks are performed; it does not assert that they passed.

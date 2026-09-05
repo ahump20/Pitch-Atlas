@@ -6,7 +6,7 @@ const origin = (process.argv[2] ?? 'http://127.0.0.1:5173').replace(/\/$/, '')
 const before = process.argv[3]
 const output = resolve(process.env.ARCHIVE_EVIDENCE ?? '/tmp/pitch-archive-evidence')
 await mkdir(output, { recursive: true })
-const browser = await chromium.launch({ args: ['--disable-webgl'] })
+const browser = await chromium.launch({ channel: process.env.PLAYWRIGHT_CHANNEL || undefined, args: ['--disable-webgl'] })
 const results = []
 const errors = []
 let activePage
