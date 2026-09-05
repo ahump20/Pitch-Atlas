@@ -2,6 +2,10 @@
 
 This is the separate release stage created by Austin's 2026-09-05 goal revision. These checks remain open and do not hold the completed implementation goal in a retry loop.
 
+## Selective-color refinement — 2026-09-05
+
+The [identity refinement evidence](IDENTITY-REFINEMENT.md) records the current visual correction, exact preview, build checks and actual web/native stills. It supersedes the material styling of the following checkpoint. Its web runtime is `fc3d50c9d4d5129c24d6b91677987180cce8299f`, [preview](https://06c6afb0.pitch-atlas.pages.dev), with green exact-runtime CI and 19 independently executed hosted smoke checks. The existing native unsigned archive below remains from `1e2b854` and does not contain this refinement. No production or store delivery is asserted.
+
 ## Connected archive and material revision — 2026-09-05
 
 - Web runtime `f13f6f42b7c518fcaec700a29e94ae638db10cf0`: [Cloudflare preview](https://f44c9def.pitch-atlas.pages.dev), [PR 191](https://github.com/ahump20/Pitch-Atlas/pull/191).

@@ -2,6 +2,8 @@
 
 Evidence date: 2026-09-05. This records the delivery in [PITCH-ATLAS-WORLD-GOAL.md](PITCH-ATLAS-WORLD-GOAL.md), including Austin's rejection of the beige seam presentation and the low-quality baseball finish. Earlier Archive Within Reach evidence is a baseline, not proof of this revision.
 
+**Material follow-up:** [Identity refinement](IDENTITY-REFINEMENT.md) supersedes the palette and card-finish review below. It restores selective signature orange, standard refractor rims and neutral shared panels. The following source versions and recordings remain the preceding implementation checkpoint; they are not recordings of the new finish.
+
 ## Review builds
 
 - Web runtime: `f13f6f42b7c518fcaec700a29e94ae638db10cf0` on branch `codex/archive-within-reach`, [immutable Cloudflare preview](https://f44c9def.pitch-atlas.pages.dev). [Draft PR 191](https://github.com/ahump20/Pitch-Atlas/pull/191).
