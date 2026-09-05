@@ -18,7 +18,8 @@
     "design-sync:check": "node scripts/design-sync.mjs --check",
     "test": "vitest run --reporter dot",
     "test:preview:browser": "node scripts/preview-browser-smoke.mjs",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:archive:browser": "node scripts/archive-browser-acceptance.mjs"
   },
   "dependencies": {
     "@fontsource/anton": "^5.2.7",

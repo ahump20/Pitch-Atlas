@@ -1,3 +1,4 @@
+import { ChapterSections } from '../components/study/ChapterSections'
 import { useParams, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type { Claim, Craftsman } from '../data/types'
@@ -100,7 +101,7 @@ export function CraftsmanChapter() {
   if (!craftsman) return <NotFound />
 
   return (
-    <>
+    <div className="archive-editorial">
       <StructuredData
         graph={contentJsonLd({
           type: 'Article',
@@ -147,11 +148,12 @@ export function CraftsmanChapter() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <ChapterSections label="In this craftsman file" sections={[{ id: 'story', label: 'The arm' }, { id: 'signature', label: 'Signature pitch' }, ...(craftsman.record?.length ? [{ id: 'record', label: 'The record' }] : [])]} />
+      <section id="story" className="archive-paper mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.75rem]">{craftsman.intro}</p>
       </section>
 
-      <section>
+      <section id="signature">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
           <StageTierMarker index="01" label="The signature pitch" />
           <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
@@ -214,7 +216,7 @@ export function CraftsmanChapter() {
       <CraftsmanMediaSection craftsman={craftsman} />
 
       {craftsman.record?.length ? (
-        <section className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+        <section id="record" className="archive-paper relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
           <div className="pa-atmo pa-atmo-leather" aria-hidden="true" />
           <div className="relative">
             <StageTierMarker index={isLegend ? '04' : '03'} label="The record" />
@@ -244,6 +246,6 @@ export function CraftsmanChapter() {
       ) : null}
 
       <ChapterNav prev={prev} next={next} />
-    </>
+    </div>
   )
 }

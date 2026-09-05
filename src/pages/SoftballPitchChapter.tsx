@@ -10,6 +10,8 @@ import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { SoftballProvenanceRow } from '../components/provenance/SoftballProvenanceRow'
 import { FamilyRail } from '../components/pitch/FamilyRail'
+import { ChapterSections } from '../components/study/ChapterSections'
+import { RefractorSource } from '../components/provenance/RefractorClaim'
 import { NotFound } from './NotFound'
 
 /*
@@ -128,8 +130,10 @@ export function SoftballPitchChapter() {
         <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.75rem]">{pitch.intro}</p>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <StageTierMarker index="01" label="Grip, spin, movement" />
+      <div className="mx-auto max-w-6xl px-5 md:px-8"><ChapterSections sections={[{ id: 'softball-grip', label: 'Grip' }, { id: 'softball-lessons', label: 'Lessons' }, { id: 'softball-sources', label: 'Sources' }]} /></div>
+      <section id="softball-grip" className="study-anchor mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+        <StageTierMarker index="01" label="Read the hold" />
+        <p className="mb-8 max-w-[64ch] text-ink-2">Start with the sourced grip, then follow its spin and movement. This file has no measured finger geometry or grip photograph; the written account is the specimen.</p>
         <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-3">
           <div className="border-t border-ink/15 pt-4">
             <div className="mono-label mb-3 text-ink-2">The grip</div>
@@ -153,7 +157,7 @@ export function SoftballPitchChapter() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <section id="softball-lessons" className="study-anchor mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index={pitch.physicsNote ? '03' : '02'} label="The job" />
         <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-2">
           <div className="border-t border-ink/15 pt-4">
@@ -171,6 +175,11 @@ export function SoftballPitchChapter() {
           Every line above is one click from its source. Still to come for the circle: the full grip geometry
           and a 12&Prime; seam, the way the baseball wing files a pitch.
         </p>
+      </section>
+
+      <section id="softball-sources" className="study-anchor mx-auto max-w-6xl px-5 py-12 md:px-8">
+        <StageTierMarker index="04" label="Sources in this file" />
+        <ul className="grid gap-4">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
       </section>
 
       <FamilyRail

@@ -135,6 +135,19 @@ export default defineConfig({
         clientsClaim: true,
         runtimeCaching: [
           {
+            // Rolldown can put shared runtime code in a nominally-3D chunk.
+            // Cache assets actually requested by a controlled page, so excluding
+            // large chunks from eager precache cannot break an offline reload.
+            urlPattern: ({ url, request }) => url.origin === self.location.origin &&
+              url.pathname.startsWith('/assets/') && ['script', 'style'].includes(request.destination),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'pa-loaded-assets',
+              expiration: { maxEntries: 20, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [200] },
+            },
+          },
+          {
             // Pages you've opened read offline; online, the live build always wins.
             urlPattern: ({ request }) => request.mode === 'navigate',
             handler: 'NetworkFirst',

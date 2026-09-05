@@ -15,11 +15,18 @@ import {
 
 export type DiscussionStatus = 'idle' | 'loading' | 'error' | 'ready'
 
+export interface SubmitProgress {
+  phase: 'saving' | 'uploading'
+  completed: number
+  total: number
+}
+
 export interface SubmitInput {
   displayName: string
   body: string
   files: File[]
   parentId?: string | null
+  onProgress?: (progress: SubmitProgress) => void
 }
 
 export interface SubmitResult {
@@ -102,10 +109,11 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
   }, [open, load, reloadKey])
 
   const submit = useCallback(
-    async ({ displayName: name, body, files, parentId }: SubmitInput): Promise<SubmitResult> => {
+    async ({ displayName: name, body, files, parentId, onProgress }: SubmitInput): Promise<SubmitResult> => {
       // createPost throws on a real failure — the composer keeps the draft and
       // shows that error. It is intentionally NOT wrapped here, so the only thing
       // a caller's catch sees is a genuine post-creation failure.
+      onProgress?.({ phase: 'saving', completed: 0, total: files.length })
       const postId = await createPost({ topicKey, displayName: name, body, parentId })
       setDisplayName(name)
       // Media is additive: the file is already saved, so a failed upload never
@@ -114,12 +122,16 @@ export function useDiscussion(topicKey: string, open: boolean): UseDiscussion {
       // success RETURNS that notice instead of throwing, so the composer clears
       // behind a saved file and never invites a double-submit.
       const mediaErrors: string[] = []
+      let completed = 0
       for (const file of files) {
+        onProgress?.({ phase: 'uploading', completed, total: files.length })
         try {
           await uploadMedia(postId, topicKey, file)
         } catch (err) {
           mediaErrors.push(message(err))
         }
+        completed += 1
+        onProgress?.({ phase: 'uploading', completed, total: files.length })
       }
       refresh()
       if (mediaErrors.length > 0) {

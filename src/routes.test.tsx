@@ -56,10 +56,10 @@ describe('Atlas home', () => {
   it('leads with the Refractor Case hero and a representative filed set', async () => {
     renderRoute('/')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent(
-      /struck as a specimen/i,
+      /The pitch, in your hand/i,
     )
     expect(
-      screen.getByText(/Every pitch has a file; every grip has a history/),
+      screen.getByText(/A living archive of grips, stories, and the art of pitching/),
     ).toBeInTheDocument()
     // the front door carries one real filed specimen from each core family;
     // the full set belongs to the searchable Pitch Index.
@@ -147,7 +147,7 @@ describe('Pitch chapters', () => {
   it('renders the new splitter specimen with its pioneer master', async () => {
     renderRoute('/pitch/splitter')
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Splitter')
-    expect(screen.getByText('Bruce Sutter')).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Bruce Sutter' })).toBeInTheDocument()
   })
 
   it('renders the new splinker specimen with Skenes as a master', async () => {
@@ -438,4 +438,14 @@ describe('No failure signatures', () => {
       }
     },
   )
+})
+
+
+describe('Comparison evidence boundary', () => {
+  it('keeps an unfiled grip explicit and displays model provenance for both pitches', async () => {
+    const { container } = renderRoute('/compare?a=eephus&b=four-seam&view=grips')
+    expect(await screen.findByText('No canonical grip on file', {}, COLD_LOAD)).toBeInTheDocument()
+    expect(container.querySelector('[data-grip-unfiled]')).not.toBeNull()
+    expect(container.querySelectorAll('[data-grip-source-badge]')).toHaveLength(2)
+  })
 })

@@ -1,3 +1,4 @@
+import { ChapterSections } from '../study/ChapterSections'
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { KnowledgeWing } from '../../data/knowledge/types'
@@ -44,6 +45,8 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         sub={wing.sub}
       />
 
+      <ChapterSections key={wing.slug} label="In this lesson" sections={wing.sections.map((section, i) => ({ id: `lesson-${i + 1}`, label: section.heading }))} />
+
       {wing.boundaryOnly ? (
         <section className="mx-auto max-w-6xl px-5 pt-12 md:px-8">
           <EducationalDisclaimer />
@@ -54,7 +57,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         const claims = section.pullStat ? [...(section.claims ?? []), section.pullStat.claim] : (section.claims ?? [])
 
         return (
-          <section key={section.heading}>
+          <section key={section.heading} id={`lesson-${i + 1}`} className={`archive-lesson${i % 2 === 0 ? ' archive-paper' : ''}`}>
             <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
               <StageTierMarker index={pad(i + 1)} label={section.heading} />
 

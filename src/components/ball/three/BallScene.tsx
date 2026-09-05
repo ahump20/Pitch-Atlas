@@ -5,7 +5,9 @@ import * as THREE from 'three'
 import { Ball } from './Ball'
 import { Vectors } from './Vectors'
 import { Studio } from './Studio'
-import { v, seamPoint } from '../../../lib/seam'
+import { canvasEvents } from './canvasEvents'
+import { v } from '../../../lib/seam'
+import { gripViewQuaternion } from '../../../lib/gripView'
 import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
 
 /*
@@ -22,40 +24,6 @@ import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '.
                 "if you want it" disclosure is open (vectors === true).
 */
 
-/* Present the grip to the camera. Rotate the ball so the mean of the non-thumb
-   contact normals points at the viewer (+z, lifted slightly). Verified per pitch
-   in Phase 7; if a convention flip ever points the grip away, negate `target`. */
-function faceGripQuaternion(placement: SeamAnchoredPoint[]): THREE.Quaternion {
-  const lead = placement.filter((p) => p.finger !== 'thumb')
-  const pts = lead.length ? lead : placement
-  const mean = new THREE.Vector3()
-  for (const p of pts) {
-    const s = seamPoint(p.seamT * Math.PI * 2, 1)
-    mean.add(new THREE.Vector3(s.x, s.y, s.z).normalize())
-  }
-  if (mean.lengthSq() < 1e-6) return new THREE.Quaternion()
-  mean.normalize()
-  const target = new THREE.Vector3(0, 0.22, 1).normalize()
-  const q = new THREE.Quaternion().setFromUnitVectors(mean, target)
-  // a small world-space roll so the grip never reads dead-on flat
-  const tilt = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 0, 1), 0.05)
-  return q.premultiply(tilt)
-}
-
-function viewQuaternion(view: GripView): THREE.Quaternion {
-  const q = new THREE.Quaternion()
-  if (view === 'side') {
-    q.setFromEuler(new THREE.Euler(-0.2, -0.64, 0.03))
-    return q
-  }
-  if (view === 'thumb') {
-    q.setFromEuler(new THREE.Euler(0.78, 0.16, 0.04))
-    return q
-  }
-  q.setFromEuler(new THREE.Euler(-0.08, 0.02, 0.04))
-  return q
-}
-
 function FaceGroup({
   faceGrip,
   view,
@@ -67,10 +35,7 @@ function FaceGroup({
   placement: SeamAnchoredPoint[]
   children: ReactNode
 }) {
-  const quaternion = useMemo(() => {
-    const faced = faceGrip ? faceGripQuaternion(placement) : new THREE.Quaternion()
-    return viewQuaternion(view).multiply(faced)
-  }, [faceGrip, placement, view])
+  const quaternion = useMemo(() => new THREE.Quaternion(...gripViewQuaternion(placement, view, faceGrip)), [faceGrip, placement, view])
   return <group quaternion={quaternion}>{children}</group>
 }
 
@@ -116,6 +81,20 @@ function SpinGroup({
   return <group ref={groupRef}>{children}</group>
 }
 
+/** Canvas creation precedes its first draw. Keep the SVG visible until then. */
+function FirstFrame({ onReady }: { onReady?: () => void }) {
+  const sent = useRef(false)
+  const frame = useRef(0)
+  useEffect(() => () => cancelAnimationFrame(frame.current), [])
+  useFrame(() => {
+    if (sent.current) return
+    sent.current = true
+    // useFrame precedes R3F's render; the following frame follows that draw.
+    frame.current = requestAnimationFrame(() => onReady?.())
+  })
+  return null
+}
+
 export default function BallScene({
   entry,
   spin,
@@ -128,6 +107,7 @@ export default function BallScene({
   interactive = true,
   distance = 6.4,
   activeContact,
+  onReady,
 }: {
   entry: PitchAtlasEntry
   spin: boolean
@@ -146,10 +126,12 @@ export default function BallScene({
    *  of the frustum. Larger = further back = more of the hand in frame. */
   distance?: number
   activeContact?: string
+  onReady?: () => void
 }) {
   const placement = entry.canonical.gripModel.contacts
   return (
     <Canvas
+      events={canvasEvents}
       frameloop="demand"
       // Cap at 1.5x to match the foil shader's DPR_CAP — on a 2x/3x phone this
       // halves (or more) the rasterized pixel area of the spinning ball with no
@@ -166,6 +148,7 @@ export default function BallScene({
       }}
     >
       <Studio />
+      <FirstFrame onReady={onReady} />
 
       <group>
         <FaceGroup faceGrip={faceGrip} view={view} placement={placement}>

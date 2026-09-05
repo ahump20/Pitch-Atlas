@@ -1,6 +1,9 @@
-import { useEffect } from 'react'
+import '../../styles/archive.css'
+import { CompareProvider } from '../compare/CompareProvider'
+import { CompareTray } from '../compare/CompareTray'
+import { useEffect, useRef } from 'react'
 import { useHead } from '@unhead/react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigationType } from 'react-router-dom'
 import { Masthead } from './Masthead'
 import { SiteFooter } from './SiteFooter'
 import { scrollToId } from '../../lib/scroll'
@@ -21,17 +24,30 @@ import { FoundIndex } from '../eggs/FoundIndex'
 */
 
 function ScrollManager() {
-  const { pathname, hash } = useLocation()
-
+  const location = useLocation()
+  const navigation = useNavigationType()
+  const positions = useRef(new Map<string, number>())
+  const previousPath = useRef(location.pathname)
   useEffect(() => {
-    if (hash) {
-      const id = decodeURIComponent(hash.slice(1))
-      requestAnimationFrame(() => requestAnimationFrame(() => scrollToId(id)))
-      return
+    const samePage = previousPath.current === location.pathname
+    previousPath.current = location.pathname
+    let frame = 0
+    let second = 0
+    if (location.hash) {
+      let id = location.hash.slice(1)
+      try { id = decodeURIComponent(id) } catch { /* malformed fragment stays literal */ }
+      frame = requestAnimationFrame(() => { second = requestAnimationFrame(() => scrollToId(id)) })
+    } else if (navigation === 'POP' && positions.current.has(location.key)) {
+      const top = positions.current.get(location.key) ?? 0
+      frame = requestAnimationFrame(() => { second = requestAnimationFrame(() => window.scrollTo({ top, behavior: 'instant' })) })
+    } else if (!samePage) window.scrollTo({ top: 0, left: 0, behavior: 'instant' })
+    const savedPositions = positions.current
+    return () => {
+      savedPositions.set(location.key, window.scrollY)
+      cancelAnimationFrame(frame)
+      cancelAnimationFrame(second)
     }
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [pathname, hash])
-
+  }, [location.key, location.pathname, location.hash, navigation])
   return null
 }
 
@@ -66,6 +82,7 @@ export function RootLayout() {
       {/* the film pass: one fixed multiply layer of grain over the whole page,
           breathing slowly at rest (the CSS gates it behind reduced-motion) */}
       <div className="grain-overlay" aria-hidden="true" />
+      <CompareProvider>
       <TooltipProvider delayDuration={150}>
         <PipProvider>
         <EggProvider>
@@ -91,6 +108,8 @@ export function RootLayout() {
         </EggProvider>
         </PipProvider>
       </TooltipProvider>
+      <CompareTray />
+      </CompareProvider>
     </div>
   )
 }

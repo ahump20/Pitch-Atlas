@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -51,6 +51,7 @@ export function BallStage({
   const webgl = useWebGLSupport()
   const reduced = useReducedMotion()
   const { ref, inView } = useInView<HTMLDivElement>()
+  const [ready, setReady] = useState(false)
 
   const schematic = (cn: string) => (
     <SeamSchematic
@@ -59,6 +60,8 @@ export function BallStage({
       gyro={entry.motion.gyro}
       grip={grip ? entry.canonical.gripModel.contacts : undefined}
       handedness={handedness}
+      view={faceGrip ? view : undefined}
+      referenceContacts={entry.canonical.gripModel.contacts}
       surface={surface}
       title={`A ${entry.canonical.name} specimen. The seam is the closed figure-eight curve laid on the ball, oriented to the pitch's spin axis.`}
     />
@@ -72,6 +75,8 @@ export function BallStage({
       aria-hidden="true"
       className={`relative ${interactive ? '' : 'pointer-events-none '}${className}`}
     >
+      {!ready && <div className="absolute inset-0" data-stage-loading="true">{schematic('h-full w-full')}</div>}
+      <div className="relative h-full w-full" style={{ opacity: ready ? 1 : 0 }}>
       <SpecimenBoundary fallback={schematic('h-full w-full')}>
         <Suspense fallback={schematic('h-full w-full')}>
           <BallScene
@@ -86,9 +91,11 @@ export function BallStage({
             interactive={interactive}
             distance={distance}
             activeContact={activeContact}
+            onReady={() => setReady(true)}
           />
         </Suspense>
       </SpecimenBoundary>
+      </div>
     </div>
   )
 }

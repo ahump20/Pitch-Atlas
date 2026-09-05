@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd } from '../lib/seo'
@@ -28,18 +26,6 @@ export function GripsPage() {
     ogUrl: canonicalUrl('/grips'),
     ...ogImageMeta('grips', 'The Grip Library: real grips, in the hand'),
   })
-
-  // Deep links (e.g. the Tools menu's "Compare two grips" → /grips#grip-compare)
-  // land at the comparator, not the top of the library. The page scrolls itself
-  // to the section once it is in the DOM; with no hash it stays at the top.
-  const { hash } = useLocation()
-  useEffect(() => {
-    if (hash !== '#grip-compare') return
-    const frame = window.requestAnimationFrame(() => {
-      document.getElementById('grip-compare')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
-    return () => window.cancelAnimationFrame(frame)
-  }, [hash])
 
   return (
     <>

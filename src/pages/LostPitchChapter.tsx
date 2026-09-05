@@ -1,3 +1,4 @@
+import { ChapterSections } from '../components/study/ChapterSections'
 import { useParams, Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type { Claim, LostPitch } from '../data/types'
@@ -102,7 +103,7 @@ export function LostPitchChapter() {
   const archiveImage = archiveImageForLostPitch(pitch.slug)
 
   return (
-    <>
+    <div className="archive-editorial">
       <StructuredData
         graph={contentJsonLd({
           type: 'Article',
@@ -150,20 +151,21 @@ export function LostPitchChapter() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <ChapterSections label="In this archive file" sections={[{ id: 'story', label: 'The pitch' }, { id: 'account', label: 'What it was' }, { id: 'absence', label: 'Why it is lost' }, ...(pitch.record.length ? [{ id: 'record', label: 'Surviving record' }] : [])]} />
+      <section id="story" className="archive-paper mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.75rem]">{pitch.intro}</p>
       </section>
 
       {archiveImage ? <LostPitchArchivePlate image={archiveImage} /> : null}
 
-      <section>
+      <section id="account">
         <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
           <StageTierMarker index="01" label="What it was" />
           <ClaimProse claim={pitch.what} proseClassName="max-w-[64ch] text-xl leading-relaxed text-ink" />
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <section id="absence" className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="02" label="Why it is lost" />
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12">
           <div className={pitch.quote ? 'md:col-span-7' : 'md:col-span-12'}>
@@ -178,7 +180,7 @@ export function LostPitchChapter() {
       </section>
 
       {pitch.record.length > 0 ? (
-        <section className="relative">
+        <section id="record" className="archive-paper relative">
           <div className="pa-atmo pa-atmo-seam" aria-hidden="true" />
           <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
             <StageTierMarker index="03" label="The surviving record" />
@@ -202,6 +204,6 @@ export function LostPitchChapter() {
       <DiscussionPanel topicKey={`lost:${pitch.slug}`} topicName={pitch.name} variant="compact" />
 
       <ChapterNav prev={prev} next={next} />
-    </>
+    </div>
   )
 }

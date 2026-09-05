@@ -1,3 +1,4 @@
+import '../../styles/archive.css'
 import type { ReactNode } from 'react'
 import { SeamGuide } from '../motion/SeamGuide'
 
@@ -38,7 +39,7 @@ export function SectionHero({
   children?: ReactNode
 }) {
   return (
-    <section className="relative overflow-hidden border-b border-bone/12">
+    <section className={`archive-section-hero relative overflow-hidden border-b border-bone/12 ${dense ? 'archive-section-hero--dense' : ''}`}>
       <div className="absolute inset-0 opacity-[0.5]" aria-hidden="true">
         <div
           className="h-full w-full"

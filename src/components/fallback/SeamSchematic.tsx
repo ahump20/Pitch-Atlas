@@ -2,7 +2,8 @@ import { useId, useMemo } from 'react'
 import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
 import { solveHand, projectHand, type ProjectedSpine, type ProjectedPoint } from '../../lib/gripPose'
-import type { GripContactModel, Handedness } from '../../data/types'
+import { gripViewQuaternion, rotateByQuaternion } from '../../lib/gripView'
+import type { GripContactModel, GripView, Handedness } from '../../data/types'
 
 /*
   The 2D twin of the 3D ball, drawn from the same seam-point function. Roles:
@@ -35,6 +36,8 @@ export interface SeamSchematicProps {
   /** Grip contacts to draw as solved finger silhouettes (the no-WebGL grip lab). */
   grip?: GripContactModel[]
   /** Which hand holds the ball; mirrors the silhouettes like the 3D hand. */
+  view?: GripView
+  referenceContacts?: GripContactModel[]
   handedness?: Handedness
   surface?: 'paper' | 'stage'
   title?: string
@@ -58,6 +61,8 @@ export function SeamSchematic({
   gyro = false,
   grip,
   handedness = 'right',
+  view,
+  referenceContacts,
   surface = 'paper',
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
 }: SeamSchematicProps) {
@@ -66,7 +71,12 @@ export function SeamSchematic({
   const arrowId = `arrow-${uid}`
   const clipId = `cover-${uid}`
 
-  const projected = useMemo(() => projectSeam(CX, CY, R, SEG), [])
+  const rotate = useMemo(() => {
+    if (!view) return undefined
+    const q = gripViewQuaternion(referenceContacts ?? grip ?? [], view)
+    return (point: Vec3) => rotateByQuaternion(point, q)
+  }, [view, referenceContacts, grip])
+  const projected = useMemo(() => projectSeam(CX, CY, R, SEG, rotate), [rotate])
   const runs = useMemo(() => splitRuns(projected), [projected])
   const stitches = useMemo(
     () => (showStitches ? buildStitches(projected) : []),
@@ -74,7 +84,7 @@ export function SeamSchematic({
   )
 
   const axis = useMemo(() => {
-    const a = v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+    const a = rotate ? rotate(v.normalize(spinAxis)) : v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
     const reach = R * 1.34
     return {
       x1: CX - a.x * reach,
@@ -85,7 +95,7 @@ export function SeamSchematic({
       // points at the viewer (dot, for a gyro pitch).
       inPlane: Math.hypot(a.x, a.y),
     }
-  }, [spinAxis])
+  }, [spinAxis, rotate])
 
   const axisAsDot = gyro || axis.inPlane < 0.34
   const stageSurface = surface === 'stage'
@@ -106,8 +116,9 @@ export function SeamSchematic({
       CX,
       CY,
       R,
+      rotate,
     )
-  }, [grip, handedness])
+  }, [grip, handedness, rotate])
 
   const fingers = hand?.fingers ?? []
 
