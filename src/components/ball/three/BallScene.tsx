@@ -80,6 +80,20 @@ function SpinGroup({
   return <group ref={groupRef}>{children}</group>
 }
 
+/** Canvas creation precedes its first draw. Keep the SVG visible until then. */
+function FirstFrame({ onReady }: { onReady?: () => void }) {
+  const sent = useRef(false)
+  const frame = useRef(0)
+  useEffect(() => () => cancelAnimationFrame(frame.current), [])
+  useFrame(() => {
+    if (sent.current) return
+    sent.current = true
+    // useFrame precedes R3F's render; the following frame follows that draw.
+    frame.current = requestAnimationFrame(() => onReady?.())
+  })
+  return null
+}
+
 export default function BallScene({
   entry,
   spin,
@@ -92,6 +106,7 @@ export default function BallScene({
   interactive = true,
   distance = 6.4,
   activeContact,
+  onReady,
 }: {
   entry: PitchAtlasEntry
   spin: boolean
@@ -110,6 +125,7 @@ export default function BallScene({
    *  of the frustum. Larger = further back = more of the hand in frame. */
   distance?: number
   activeContact?: string
+  onReady?: () => void
 }) {
   const placement = entry.canonical.gripModel.contacts
   return (
@@ -130,6 +146,7 @@ export default function BallScene({
       }}
     >
       <Studio />
+      <FirstFrame onReady={onReady} />
 
       <group>
         <FaceGroup faceGrip={faceGrip} view={view} placement={placement}>
