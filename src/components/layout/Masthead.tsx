@@ -35,7 +35,7 @@ const MORE_CONTENT: { label: string; to: string; note: string }[] = [
 // Grouped under the "More" disclosure with the content destinations. "Compare two
 // grips" deep-links to the comparator itself, not the top of the library.
 const TOOLS: { label: string; to: string; note: string }[] = [
-  { label: 'Shape Lab', to: '/sandbox', note: 'Dial a grip and watch the shape' },
+  { label: 'Shape Lab', to: '/sandbox', note: 'Turn spin into shape' },
   { label: 'Shape map', to: '/movement-map', note: 'Every pitch, plotted by direction' },
   { label: 'Compare two pitches', to: '/compare', note: 'Read two shapes side by side' },
   { label: 'Compare two grips', to: '/grips#grip-compare', note: 'Two grips in the hand at once' },

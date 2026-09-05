@@ -60,6 +60,12 @@ export function GripsPage() {
         </div>
       </section>
 
+      <section>
+        <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
+          <GripLibrary />
+        </div>
+      </section>
+
       <ExternalMediaRail
         query={{ placement: 'grips', limit: 4 }}
         eyebrow="Grip lessons in motion"
@@ -67,12 +73,6 @@ export function GripsPage() {
         intro="First-party photographs remain the evidence in this library. These official, credited embeds add outside teaching and history without becoming the canonical grip."
         allowSuggestion
       />
-
-      <section>
-        <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
-          <GripLibrary />
-        </div>
-      </section>
 
       <section className="border-t border-ink/15">
         <div className="mx-auto max-w-5xl px-5 py-14 md:px-8 md:py-16">
