@@ -602,7 +602,10 @@ async function checkKnowledgeMarkerWrap(page) {
   await assertNoHorizontalOverflow(page, 'Canon mobile')
 }
 
-const browser = await chromium.launch({ headless: true })
+// An explicit channel lets local verification use installed Chrome when the
+// bundled headless shell stalls during WebGL page teardown. CI keeps its
+// bundled browser unless the caller opts into a channel.
+const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined })
 
 let smokeStep = 0
 async function withPage(callback) {

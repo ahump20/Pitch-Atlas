@@ -86,7 +86,7 @@
 .archive-seam-controls button { min-height: 44px; padding: 10px 13px; border: 1px solid #9b775b77; border-radius: 3px; color: #cfc4b8; background: #211a15; font: 11px/1.4 var(--font-mono); cursor: pointer; }
 .archive-seam-controls button[aria-pressed='true'] { color: #ffe8d4; background: #723e20; border-color: #c7854f; }
 .archive-seam-controls button:focus-visible { outline: 2px solid #e9a570; outline-offset: 3px; }
-.archive-bridge[data-view='model'] .archive-seam-model { opacity: 1; }
+.archive-bridge[data-view='model'] .archive-seam-model[data-ready='true'] { opacity: 1; }
 .archive-bridge[data-view='diagram'] .archive-seam-model { opacity: 0; }
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {

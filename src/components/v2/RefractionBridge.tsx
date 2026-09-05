@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import type { PitchAtlasEntry } from '../../data/types'
 import { accentForSlug } from '../refractor/accents'
@@ -9,6 +9,17 @@ import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useInView } from '../../hooks/useInView'
 
 const AlignedSeamScene = lazy(() => import('./AlignedSeamScene'))
+
+/** Readiness belongs to this canvas mount, so a return from offscreen starts
+ * with the complete diagram again until the new canvas has drawn. */
+function SeamModel({ fallback }: { fallback: ReactNode }) {
+  const [ready, setReady] = useState(false)
+  return <div className="archive-seam-model" data-ready={ready} aria-hidden="true">
+    <SpecimenBoundary fallback={fallback}>
+      <Suspense fallback={null}><AlignedSeamScene onReady={() => setReady(true)} /></Suspense>
+    </SpecimenBoundary>
+  </div>
+}
 
 export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
   const accent = accentForSlug(featured.display.slug)
@@ -39,11 +50,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
           <div className="archive-seam-stage" ref={ref}>
             <div className="archive-seam-registration" aria-hidden="true" />
             <div className="archive-seam-flat">{schematic}</div>
-            {webgl && inView ? <div className="archive-seam-model" aria-hidden="true">
-              <SpecimenBoundary fallback={schematic}>
-                <Suspense fallback={schematic}><AlignedSeamScene /></Suspense>
-              </SpecimenBoundary>
-            </div> : null}
+            {webgl && inView ? <SeamModel fallback={schematic} /> : null}
           </div>
           <figcaption><span>01 / The cover</span><span>02 / The seam</span></figcaption>
           <p className="archive-seam-caption">Seam-informed schematic · Original geometry</p>

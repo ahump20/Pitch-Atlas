@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { Ball } from './Ball'
 import { Vectors } from './Vectors'
 import { Studio } from './Studio'
+import { FirstFrame } from './FirstFrame'
 import { canvasEvents } from './canvasEvents'
 import { v } from '../../../lib/seam'
 import { gripViewQuaternion } from '../../../lib/gripView'
@@ -79,20 +80,6 @@ function SpinGroup({
   })
 
   return <group ref={groupRef}>{children}</group>
-}
-
-/** Canvas creation precedes its first draw. Keep the SVG visible until then. */
-function FirstFrame({ onReady }: { onReady?: () => void }) {
-  const sent = useRef(false)
-  const frame = useRef(0)
-  useEffect(() => () => cancelAnimationFrame(frame.current), [])
-  useFrame(() => {
-    if (sent.current) return
-    sent.current = true
-    // useFrame precedes R3F's render; the following frame follows that draw.
-    frame.current = requestAnimationFrame(() => onReady?.())
-  })
-  return null
 }
 
 export default function BallScene({
