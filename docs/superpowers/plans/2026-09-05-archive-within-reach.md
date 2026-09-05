@@ -2,6 +2,8 @@
 
 Approved by Austin in the implementation request. Work in existing ahump20 repositories; preserve provenance, rights, moderation and offline reference content.
 
+Austin revised the goal on 2026-09-05 to prevent unavailable signing and device access from blocking completed implementation work. [The revised goal](../../ARCHIVE-AUTONOMOUS-GOAL.md) defines implementation completion; [the separate release checklist](../../ARCHIVE-RELEASE-CHECKLIST.md) retains the remaining credential/device/store requirements.
+
 ## Delivery ledger
 - [x] Web app-wide CompareSelection with URL/session state, two-slot tray, replacement dialog and three-view workspace.
 - [x] Homepage depth composition and parallax; coordinated card selection and seam projection.
@@ -10,7 +12,7 @@ Approved by Austin in the implementation request. Work in existing ahump20 repos
 - [x] Native SwiftUI study and compare, deep links, preserved offline data, native material and motion source changes (runtime acceptance remains separate).
 - [x] Web behavioral tests, typecheck, lint, build, local preview and browser acceptance evidence.
 - [x] Native source build/tests, scoped simulator captures, GitHub draft PRs, and Cloudflare preview.
-- [ ] Complete native device/accessibility/offline acceptance, physical performance, signed export and TestFlight preparation (Air keychain blocker).
+- [x] Prepare the final unsigned native archive and a concrete, separately tracked release checklist. Native device/accessibility/offline acceptance, physical performance, signed export and store delivery remain open in that checklist.
 
 ## Interfaces
 Web CompareSelection: a/b nullable filed slugs, view grips|cues|movement, hand right|left, orientation top|side|thumb. URL /compare?a=&b=&view=&hand=&orientation= is canonical when on comparison route. Explicit invalid inputs clear the affected slot. App state survives route changes and session reload; adding a third opens an accessible replacement choice. Legacy /grips#grip-compare continues working through the unified workspace.
