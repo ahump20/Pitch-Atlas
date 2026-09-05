@@ -5,7 +5,7 @@ Evidence date: 2026-09-05. This records the delivery in [PITCH-ATLAS-WORLD-GOAL.
 ## Review builds
 
 - Web runtime: `f13f6f42b7c518fcaec700a29e94ae638db10cf0` on branch `codex/archive-within-reach`, [immutable Cloudflare preview](https://f44c9def.pitch-atlas.pages.dev). [Draft PR 191](https://github.com/ahump20/Pitch-Atlas/pull/191).
-- Native source: `d0900e0b1d591015b51f746ab3c54dd9041950c2`, existing SwiftUI app and [draft PR 35](https://github.com/ahump20/Pitch-Atlas-iOS/pull/35). Exact-source CI and unsigned archive passed; current card/discovery runtime capture remains pending below.
+- Native source: `1e2b8547d14d0083fadc8af55feaf21f6e5d1871`, existing SwiftUI app and [draft PR 35](https://github.com/ahump20/Pitch-Atlas-iOS/pull/35). Current simulator build, **71-test CI**, unsigned archive and complete discovery/study/comparison/return recording passed.
 - The [release checklist](ARCHIVE-RELEASE-CHECKLIST.md) separately tracks signing, physical-device inspection and delivery. This is a preview implementation review; no production deployment or TestFlight/App Store upload is asserted.
 
 ## What changed and why
@@ -18,6 +18,21 @@ Charcoal and copper replace the rejected beige seam canvas and the large reading
 
 The baseball now has natural white leather, fine grain, a recessed neutral cover join and curved dark-red paired lacing. The SVG cover is opaque, hiding the rear seam. A hand-mesh winding defect that exposed the inside of finger tubes was repaired; the fingers are now closed volumes. Card models stay still at rest. The seam stage retains its complete drawing until the model's first rendered frame, and resets readiness after offscreen disposal. It remains a **seam-informed schematic**, with simplified hand forms; it is not a calibrated scan or anatomical reconstruction.
 
+Main source changes for review:
+
+| Area | Files |
+| --- | --- |
+| Collectible composition and materials | `src/index.css`, `src/styles/archive.css`, `src/styles/world.css`, `src/components/v2/HeroCase.tsx`, `src/components/refractor/specimenFace.tsx` |
+| Ball finish, solid hand geometry and matching fallback | `src/components/ball/three/Ball.tsx`, `Studio.tsx`, `Hand.tsx`, `src/lib/taperedTube.ts`, `src/lib/seam2d.ts`, `src/components/fallback/BaseballCover.tsx`, `SeamSchematic.tsx` |
+| Seam startup and offscreen continuity | `src/components/ball/three/FirstFrame.tsx`, `src/components/v2/AlignedSeamScene.tsx`, `RefractionBridge.tsx` and its regression test |
+| Discovery and contextual next steps | `src/components/v2/ArchiveDiscovery.tsx`, `src/lib/archiveConnections.ts`, `src/components/pitch/PitchConnections.tsx`, `src/pages/AtlasHomeV2.tsx`, `CraftsmanChapter.tsx`, `LostPitchChapter.tsx`, `SoftballPitchChapter.tsx` |
+| Study, comparison and return | `src/components/study/GripStudy.tsx`, `src/pages/ComparePage.tsx`, `RepertoirePage.tsx`, `PitchChapter.tsx`, `src/styles/compare.css`, `study.css` |
+| Media and real discussion | `src/components/media/ExternalMediaCard.tsx`, `src/components/sections/DiscussionPanel.tsx`, `KnowledgePage.tsx` and the media lifecycle regression test |
+| Native materials and media | `PitchAtlas/Components/ContentCards.swift`, `CardBackPanel.swift`, `PitchAtlasUI.swift`, `GripFilm.swift`, `Core/Theme/PitchAtlasTheme.swift`, `Core/Scene3D/LeatherMaps.swift`, `SpecimenSceneBuilder.swift`, `Features/PitchDetail/SeamBall.swift` in PR 35 |
+| Native discovery, study and comparison | `PitchAtlas/Features/Atlas/AtlasView.swift`, `Craftsmen/CraftsmanDetailView.swift`, `Learn/KnowledgeWingView.swift`, `PitchDetail/PitchDetailView.swift`, `Study/CompareSelection.swift`, `Core/Data/ContentModels.swift`, `PitchStore.swift` and focused native tests in PR 35 |
+
+The draft PR contains the full diff, including focused relationship, geometry, lifecycle and route tests. The preview browser scripts' optional Chrome channel affects verification only.
+
 ## Representative journeys
 
 | Required journey | Current evidence |
@@ -28,6 +43,22 @@ The baseball now has natural white leather, fine grain, a recessed neutral cover
 | Lesson and softball discovery → retained comparison | Home → sequencing lesson → Back → softball wing → Compare pair. Both destinations rendered; the final comparison retained Four-seam/Slider and the Side orientation. |
 | Studied pitch → real conversation | The hosted 12–6 discussion opens its live form, labeled Name/Comment fields, ownership terms and real empty state. The recording and still preserve this state. No post, terms acceptance or upload was submitted. |
 | Native connected discovery, study, compare and return | See the native receipts below. Bundled reference records and existing native community capabilities are retained. |
+
+## Goal audit
+
+| Product criterion | Evidence and limit |
+| --- | --- |
+| Inviting front door | Final desktop/mobile home stills show the grip, headline, index and direct study actions. Native `materials/card-final.png` now shows the actual filed rail and discovery entry points. |
+| Meaningful connections | Recorded web practitioner/master, Foster/screwball and sequencing/softball paths use documented relationships. Native's fresh recording follows Atlas → Nolan Ryan → his filed Four-seam through bundled signature relationships. |
+| Memorable point of view | The original hand demonstration, separate Wainwright quotation/source and Foster historical question form the discovery folio. Native cards retain real, accurately attributed reference media. |
+| Learning continuity | Hosted recordings and route assertions prove retained study step, master, comparison pair and return context. The new native recording continues through Fingers, comparison with Slider, Cues, Done and Back to Nolan Ryan. |
+| Living archive | The actual web discussion form, firsthand prompt and ownership controls are visible in the discovery recording. Native's current Four-seam Discussion was opened and inspected with an honest empty state and unaccepted guidelines/age gates. No posts, uploads or authentication actions were submitted. |
+| Coherent surfaces | Web stills and journeys cover home, index, study, comparison, practitioner, history, lessons and softball at the requested viewport classes. Native actual card and comparison stills carry the same orange stock, light cover and dark-red lacing; accessibility-size and reduced-preference captures are indexed below. |
+| Useful detail and motion | Static compositions remain complete. Shared seam geometry, first-frame fallback, paused offscreen media, explicit study controls and still comparison models make the visual treatment serve inspection. Physical-device 60fps remains a separately listed release check. |
+
+This audit applies to the representative bounded delivery in the goal document. It does not certify exhaustive relationship curation, every route at every accessibility setting, or production/store delivery.
+
+**Bounded implementation delivery complete:** source is reviewable in the existing web/native draft PRs, the web preview is verified, current native build/test and actual simulator journey evidence passed, and the materials are demonstrated against earlier stills. External release conditions remain explicitly separate below and in the release checklist.
 
 ## Web verification
 
@@ -55,6 +86,7 @@ Web evidence root on the Pro: `/Users/AustinHumphrey/Pitch-Atlas-living-media/ou
 | Artifact | Meaning and boundary |
 | --- | --- |
 | `review-web-home.png`, `review-web-home-second.png` | Earlier implementation baseline. |
+| `before-e52-home-desktop.png`, `before-e52-seam-desktop.png`, `before-e52-home-mobile.png` | Matched baseline captures from immutable `e52cc2f` preview `https://2d8e53d4.pitch-atlas.pages.dev`: desktop 1440×1000 and mobile 390×844. Compare directly with the final `f44-` views below. The seam baseline retains the rejected beige canvas and coarse cover/red cord. |
 | `world-discovery-first.png`, `world-compare-desktop-first.png` | First connected-archive compositions, before the rejected beige material was replaced. |
 | `f44-home-desktop.png`, `f44-cards-desktop.png`, `f44-discovery-desktop.png`, `f44-seam-desktop.png` | Final hosted runtime: cover, standard set, connected discovery folio and rendered seam. The selected pair remains visible in the tray while browsing. |
 | `f44-home-mobile.png`, `f44-cards-mobile-ready.png`, `f44-compare-mobile.png` | Final hosted 390px views. The settled mobile card shows the complete reference credit, cue plate and action. |
@@ -67,7 +99,7 @@ Web evidence root on the Pro: `/Users/AustinHumphrey/Pitch-Atlas-living-media/ou
 | `final-hosted-history-connection.png`, `final-hosted-screwball-file.png`, `final-hosted-discussion.png` | Actual history bridge, resulting basic file and contribution form. |
 | `final-hosted-sequencing.png`, `final-hosted-softball.png` | Current hosted lesson and softball entry points, reached through home discovery links. |
 
-Blank first-frame captures, a card capture taken during resize/repaint and earlier open-finger images are diagnostic artifacts, not accepted final proof. The first native `card-final.png` attempt was also rejected when it showed an unloaded hero instead of the filed card rail; it is not accepted final evidence.
+Blank first-frame captures, a card capture taken during resize/repaint and earlier open-finger images are diagnostic artifacts, not accepted final proof. The original native `card-final.png` attempt was rejected when it showed an unloaded hero instead of the filed rail. Its replacement captured at 14:23 and independently viewed by root shows the actual Four-seam/Two-seam rail; that replacement is accepted.
 
 ## Accessibility, performance and trust boundaries
 
@@ -85,10 +117,20 @@ The independent scoped review rated the seam bridge and hero around **A−**, th
 
 ## Native receipts
 
-Native branch `codex/archive-within-reach`, exact source `d0900e0b1d591015b51f746ab3c54dd9041950c2`, has green [CI run 33984976940](https://github.com/ahump20/Pitch-Atlas-iOS/actions/runs/33984976940): **70 tests, zero failures**, build and bundled-content drift check. The local simulator build also passed. The exact-source unsigned archive on the Air succeeded; the copied receipt is `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-world/materials/unsigned-archive-d090.log`.
+Native branch `codex/archive-within-reach`, exact source `1e2b8547d14d0083fadc8af55feaf21f6e5d1871`, has green [CI run 33987500529](https://github.com/ahump20/Pitch-Atlas-iOS/actions/runs/33987500529): **71 tests, zero failures**, build and bundled-content drift check. The final local simulator build passed. The exact-source unsigned archive on Air succeeded at `/Users/AustinHumphrey/Pitch-Atlas-iOS/.build/PitchAtlas-archive-world-route-final.xcarchive`, bundle `com.pitchatlas.app`, version 1.1.0/build 11. Receipts copied to `materials/ci-1e2b.log`, `route-final-build.log` and `unsigned-archive-1e2b.log`. The archive is unsigned preparation, not a signed export or TestFlight delivery.
 
-The last changes enlarge the collectible thumbnail within its clipped frame, use `#E8D8C7` for small text on orange (at least 4.99:1 against the brightest fill), and stack first-party attribution at narrow widths. Full inspection photographs remain aspect-fit and accurately attributed. Family colors remain in dots and borders.
+The card changes enlarge the collectible thumbnail within its clipped frame, use `#E8D8C7` for small specimen-card text on orange (at least 4.99:1 against the brightest fill), and stack first-party attribution at narrow widths. This contrast result applies to the repaired card labels, not all legacy accent text in the app. Full inspection photographs remain aspect-fit and accurately attributed. Card family colors remain in dots and borders.
 
-Accepted material/comparison artifacts at `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-world/materials/`: `compare-normal.png`, `compare-cues.png`, `compare-side.png`, `compare-thumb.png`, `compare-left.png`, `compare-a11y.png`, `compare-reduced.png`, `return-context.png`, and the 80.31-second continuous `comparison-cues-return.mp4`. These show the material/geometry checkpoint before the final card-only framing and small-label changes. Shared orientation is identical across both diagrams; rear contacts are intentionally hidden by the opaque ball. Maximum accessibility text and reduced motion/transparency preferences were inspected; test settings were restored.
+Accepted material/comparison artifacts at `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-world/materials/`: `compare-normal.png`, `compare-cues.png`, `compare-side.png`, `compare-thumb.png`, `compare-left.png`, `compare-a11y.png`, `compare-reduced.png`, `return-context.png`, and the 80.31-second continuous `comparison-cues-return.mp4`. These show the material/geometry checkpoint before the final card-only framing and small-label changes. Shared orientation is identical across both diagrams; rear contacts are intentionally hidden by the opaque ball. Maximum accessibility text and reduced motion/transparency preferences were inspected; test settings were restored. The directly comparable baseline is `archive-world/round-1/compare-normal.png`, with the prior golden cover and continuous red lines; root viewed it alongside the new white-leather/red-lacing composition.
 
-Fresh final card/discovery capture remains pending. The original QA simulator's launch service stalled before the app started. A new disposable task-owned simulator is completing first boot; the original device and data are preserved. No failed capture is accepted as current card proof, and no simulator condition is recast as a signing or production result.
+The poster continuity correction is `f29898d3d52a93cb5237fa62fde46c9615507b84`. The original decoded image remains visible until AVPlayerLayer has a displayable frame. Player, current-item and looper failures restore it; looper observation is necessary because a failure can occur before a current item exists. The actual invalid-file playback test and bundled-film/rights test passed locally (2/2). Exact-source [CI run 33986746584](https://github.com/ahump20/Pitch-Atlas-iOS/actions/runs/33986746584) passed **71 tests, zero failures**, build and content drift. Its unsigned archive succeeded. These are checkpoints preceding the subsequent Atlas navigation correction. A separate scoped source review approved the poster change, including failure handling and observer teardown.
+
+Current `materials/card-final.png` and `discovery-final.png` show the same combined Atlas discovery/filed-rail composition: centered real hand/ball photographs, complete dark nameplates and readable warm labels. Both were viewed by root. The fresh journey exposed a mixed-navigation defect in the new Atlas entry: the practitioner hall opened, but a practitioner selected inside it did not advance. `1e2b854` repairs all seven Atlas wing entries with a consistent value-based route and destination mapping, preserving the existing five tabs and native navigation. The scoped source review and actual repeated journey both passed.
+
+The new continuous `materials/discovery-practitioner-study-compare-final.mp4` is **268.63 seconds** with natural interaction pauses: Atlas → Craftsmen → Nolan Ryan → signature Four-seam → Fingers → compare Slider → Cues → Done → Back to Nolan. Current `practitioner-final.png`, `study-final.png`, `journey-compare-final.png` and `practitioner-return-final.png` show that route. Root inspected the practitioner, selected Fingers step and returned practitioner stills, plus the recording's 120s/220s/260s frames showing selection, sourced Cues and the retained specimen. `materials/final-evidence-manifest.json` records final artifact hashes and sizes.
+
+Additional final-source native smoke passed: Atlas → Learn → Kinetic Chain, Atlas → Lost Pitches → Satchel Paige, and `pitchatlas://pitch/four-seam`. `lesson-route-final.png`, `lost-route-final.png`, `discussion-final.png` and `atlas-return-final.png` retain the results. The last image shows the Four-seam/Slider pair still present after returning across the five-tab experience. Discussion was inspection only; no guidelines acceptance, age confirmation, post, upload or sign-in was performed.
+
+Capture custody: `materials/source-parity-final.json` records that 145 of 146 tracked source/resource/test inputs match the authoritative Air checkout. The only different file is the temporary QA clone's `PitchAtlasApp.swift` launch hooks; none were exercised in the recording. It used a normal launch without `PA_*` overrides and real UI taps/swipes. Those hooks and protected untracked assets were not pushed. Captures demonstrate actual SwiftUI views, not recreated mockups.
+
+The disposable task-owned simulator's test host and actual app now launch successfully; no CoreSimulatorService restart was needed. The original simulator and data are preserved. No failed capture is accepted as current journey proof, and no simulator condition is recast as a signing or production result.
