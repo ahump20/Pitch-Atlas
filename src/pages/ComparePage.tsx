@@ -46,6 +46,7 @@ export function ComparePage() {
         <button className="archive-icon-action" aria-label="Swap pitches" disabled={!a || !b} onClick={() => update({ a: selection.b, b: selection.a })}><ArrowLeftRight size={20} /></button>
         <button className="archive-icon-action" aria-label="Clear comparison" onClick={() => update({ a: null, b: null })}><RotateCcw size={18} /></button>
       </div>
+      {(a || b) && <nav className="compare-study-links" aria-label="Study selected pitches">{[a, b].map((entry) => entry && <Link key={entry.display.slug} to={`/pitch/${entry.display.slug}#grip-lab`} viewTransition>Study {entry.display.shortName} <span aria-hidden="true">↗</span></Link>)}</nav>}
       <div className="compare-toolbar">
         <div className="compare-tabs" role="group" aria-label="Comparison view">{(['grips', 'cues', 'movement'] as CompareView[]).map((view) => <button key={view} aria-pressed={selection.view === view} onClick={() => update({ view })}>{view === 'grips' ? 'Grips' : view === 'cues' ? 'Cues' : 'Movement'}</button>)}</div>
         {selection.view !== 'cues' && <div className="compare-toggles" role="group" aria-label="Schematic handedness">{(['right', 'left'] as Handedness[]).map((hand) => <button key={hand} aria-pressed={selection.hand === hand} onClick={() => update({ hand })}>{hand === 'right' ? 'RHP' : 'LHP'}</button>)}</div>}
@@ -57,7 +58,6 @@ export function ComparePage() {
         <div className="compare-pair compare-specimens">{[a, b].map((entry, i) => <article key={entry.display.slug}>
           <header><span>{i === 0 ? 'A' : 'B'}</span><h2>{entry.display.shortName}</h2></header>
           {entry.canonical.gripModel.status === 'unfiled' ? <GripUnfiledState entry={entry} accentColor="#c7a66b" /> : <div className="compare-ball"><BallStage entry={entry} grip faceGrip autoSpin={false} interactive={false} surface="stage" view={selection.orientation} handedness={selection.hand} className="h-full w-full" /></div>}
-          <Link to={`/pitch/${entry.display.slug}#grip-lab`} viewTransition>Study {entry.display.shortName} <span aria-hidden="true">↗</span></Link>
         </article>)}</div>
         <p className="compare-note">Seam-informed schematics. View and handedness apply to both drawings; they do not transform real grip photographs.</p>
         <div className="compare-pair compare-grip-reading archive-paper">{[a, b].map((entry) => <article key={entry.display.slug}>

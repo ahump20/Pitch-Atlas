@@ -1,12 +1,22 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Link, Route, Routes, useLocation } from 'react-router-dom'
+import { createHead, UnheadProvider } from '@unhead/react/client'
+import { ComparePage } from '../../pages/ComparePage'
+import { MemoryRouter, Link, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { CompareProvider } from './CompareProvider'
 import { CompareButton } from './CompareButton'
 import { CompareTray } from './CompareTray'
 import { useCompare } from './compareContext'
 import { COMPARE_KEY, EMPTY_SELECTION, compareUrl, normalizeSelection, parseSelection } from './selection'
+
+vi.mock('../ball/BallStage', () => ({ BallStage: () => null }))
+vi.mock('../sections/TunnelPlot', () => ({ TunnelPlot: () => null }))
+
+function HistoryBack() {
+  const navigate = useNavigate()
+  return <button onClick={() => navigate(-1)}>Browser Back</button>
+}
 
 function Probe() {
   const compare = useCompare()!
@@ -70,5 +80,31 @@ describe('comparison selection', () => {
     vi.spyOn(Storage.prototype, 'getItem').mockImplementation(() => { throw new Error('denied') })
     setup()
     expect(screen.getByTestId('pair')).toHaveTextContent('"a":null')
+  })
+})
+
+
+describe('comparison specimen navigation', () => {
+  it.each(['grips', 'cues', 'movement'] as const)('keeps study links available in %s and restores the full comparison after Back', async (view) => {
+    const user = userEvent.setup()
+    const selection = normalizeSelection({ a: 'four-seam', b: 'slider', view, hand: 'left', orientation: 'thumb' })
+    const url = compareUrl(selection)
+    render(<UnheadProvider head={createHead()}><MemoryRouter initialEntries={[url]}><CompareProvider>
+      <Probe />
+      <Routes>
+        <Route path="/compare" element={<ComparePage />} />
+        <Route path="/pitch/:slug" element={<HistoryBack />} />
+      </Routes>
+    </CompareProvider></MemoryRouter></UnheadProvider>)
+    expect(screen.getAllByRole('link', { name: 'Study Four-seam' })).toHaveLength(1)
+    expect(screen.getAllByRole('link', { name: 'Study Slider' })).toHaveLength(1)
+    expect(screen.getByRole('link', { name: 'Study Slider' })).toHaveAttribute('href', '/pitch/slider#grip-lab')
+    await user.click(screen.getByRole('link', { name: 'Study Slider' }))
+    expect(screen.getByRole('button', { name: 'Browser Back' })).toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: 'Browser Back' }))
+    expect(screen.getByTestId('pair')).toHaveTextContent(JSON.stringify(selection))
+    expect(screen.getByTestId('url').textContent).toBe(url.slice(url.indexOf('?')))
+    expect(screen.getByRole('button', { name: view === 'grips' ? 'Grips' : view === 'cues' ? 'Cues' : 'Movement' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('link', { name: 'Study Slider' })).toBeInTheDocument()
   })
 })
