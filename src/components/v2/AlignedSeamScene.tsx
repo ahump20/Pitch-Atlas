@@ -4,6 +4,7 @@ import { OrthographicCamera } from '@react-three/drei'
 import * as THREE from 'three'
 import { Ball } from '../ball/three/Ball'
 import { Studio } from '../ball/three/Studio'
+import { canvasEvents } from '../ball/three/canvasEvents'
 import { SEAM_VIEW_TILT } from '../../lib/seam'
 
 /** The diagram uses a radius of 86 in a 240 square. Match that orthographic
@@ -15,6 +16,7 @@ export default function AlignedSeamScene() {
   ), [])
   return (
     <Canvas orthographic frameloop="demand" dpr={[1, 1.5]}
+      events={canvasEvents}
       camera={{ position: [0, 0, 5], near: 0.1, far: 20 }}
       gl={{ antialias: true, alpha: true }}>
       <OrthographicCamera makeDefault manual position={[0, 0, 5]} near={0.1} far={20}

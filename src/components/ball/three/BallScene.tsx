@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { Ball } from './Ball'
 import { Vectors } from './Vectors'
 import { Studio } from './Studio'
+import { canvasEvents } from './canvasEvents'
 import { v } from '../../../lib/seam'
 import { gripViewQuaternion } from '../../../lib/gripView'
 import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
@@ -130,6 +131,7 @@ export default function BallScene({
   const placement = entry.canonical.gripModel.contacts
   return (
     <Canvas
+      events={canvasEvents}
       frameloop="demand"
       // Cap at 1.5x to match the foil shader's DPR_CAP — on a 2x/3x phone this
       // halves (or more) the rasterized pixel area of the spinning ball with no
