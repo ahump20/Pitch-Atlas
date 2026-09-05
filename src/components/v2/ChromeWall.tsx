@@ -1,6 +1,6 @@
 import { CompareButton } from '../compare/CompareButton'
 import { useCompare } from '../compare/compareContext'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../ds/Button'
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../data/types'
@@ -18,7 +18,7 @@ import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 /*
   The home shows one real specimen per core family. The full filed set belongs in
   the Pitch Index; the front door only needs enough cards to explain the medium.
-  Each card still flips to the sourced back, and focus follows the active face.
+  Each card still flips to the sourced back; its controls stay outside the turn.
 
   The front face comes from the shared `specimenFace` resolver, same as every
   other card. This file used to hard-wire the seam ball and the words "Reference
@@ -30,8 +30,6 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
   const [flipped, setFlipped] = useState(false)
   const compare = useCompare()
   const selected = compare?.selection.a === entry.display.slug || compare?.selection.b === entry.display.slug
-  const frontButton = useRef<HTMLButtonElement>(null)
-  const backButton = useRef<HTMLButtonElement>(null)
   const { canonical, motion, display } = entry
   const accent = accentForSlug(display.slug)
   const shape = canonical.physics.shape
@@ -40,11 +38,6 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
   /* The front door is the one place a card earns a live grip model: three cards,
      and only the ones with no clip or photo of Austin's own hand mount a canvas. */
   const { face, faceSource, cue, confidence } = specimenFace(entry, { idPrefix: 'wall-', model: true })
-
-  function setFace(next: boolean) {
-    setFlipped(next)
-    window.requestAnimationFrame(() => (next ? backButton : frontButton).current?.focus({ preventScroll: true }))
-  }
 
   return (
     <div
@@ -66,15 +59,6 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
               maxWidth={chase ? 520 : 360}
               face={face}
             />
-            <button
-              ref={frontButton}
-              type="button"
-              className="v2-flip-btn"
-              aria-label={`Flip ${display.shortName} to its sourced back`}
-              onClick={() => setFace(true)}
-            >
-              <span aria-hidden="true">↺</span> Source
-            </button>
           </div>
 
           <div
@@ -165,16 +149,6 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                     >
                       Open the full file <span aria-hidden="true">→</span>
                     </Link>
-                    <button
-                      ref={backButton}
-                      type="button"
-                      className="v2-flip-btn v2-flip-btn--inline"
-                      aria-label={`Flip ${display.shortName} back to its card`}
-                      tabIndex={flipped ? 0 : -1}
-                      onClick={() => setFace(false)}
-                    >
-                      <span aria-hidden="true">↺</span> Card
-                    </button>
                   </div>
                 </div>
               </div>
@@ -182,7 +156,15 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
           </div>
         </div>
       </div>
-      <div className="archive-wall-compare"><CompareButton slug={display.slug} /></div>
+      <div className="archive-wall-actions">
+        <button type="button" className="v2-flip-btn v2-flip-btn--inline archive-wall-source"
+          aria-pressed={flipped}
+          aria-label={`Flip ${display.shortName} ${flipped ? 'back to its card' : 'to its sourced back'}`}
+          onClick={() => setFlipped((current) => !current)}>
+          <span aria-hidden="true">↺</span> {flipped ? 'Card' : 'Source'}
+        </button>
+        <CompareButton slug={display.slug} />
+      </div>
     </div>
   )
 }

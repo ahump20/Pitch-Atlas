@@ -12,6 +12,7 @@ Pitch Atlas now has a shared study flow: select a pitch while browsing, inspect 
 - External lessons require explicit loading and release their iframe offscreen. Community video pauses offscreen or when the document hides. Upload status reports note-saving and actual file completions; a failed attachment does not ask the contributor to submit the saved note again.
 - Decorative lighting is static at rest. Existing tilt/reveal machinery, scroll timelines, a cancellable study transition, and route view transitions supply motion. No animation dependency, data API, or schema was added.
 - Interrupted route transitions handle readiness cancellation without hiding invalid snapshots. A bounded runtime cache retains successfully loaded application scripts/styles so a previously loaded study remains interactive offline; heavy 3D bundles are still excluded from installation precaching.
+- Homepage Source/Card and Compare controls share a stable toolbar outside the rotating faces. Keyboard focus stays on the same toggle; scroll-driven dealing applies to the card alone.
 
 ## Evidence
 
@@ -32,13 +33,15 @@ The stills use Reduced Motion with WebGL unavailable. The recording uses normal 
 
 - `npm run typecheck`: passed.
 - `npm run lint`: passed.
-- `npm run test`: 956 passed, 9 skipped. After final review added the explicit unfiled comparison state and model provenance, the affected route suite passed all 75 tests, including its new provenance regression check.
+- `npm run test`: source `99d0a00` passed 961 tests, with 9 skipped. The subsequent stable Source toolbar change passed its focused card/route suite (80 tests), lint, build, and built-preview browser smoke.
 - `npm run build`: passed; 109 routes prerendered, none skipped. Post-build integrity checks: 6 passed, 1 skipped.
 - `npm run test:archive:browser -- <origin>`: desktop, 390px mobile, short landscape, primary action in first viewport, no horizontal overflow, comparison views, study, zoom/reset, Escape, no-WebGL, Reduced Motion, index/history context, and selection continuity passed against the development origin.
 - The final comparison suite passed 7 tests; transition cancellation/error-reporting tests passed all 3.
 - `ARCHIVE_BUILT=1 npm run test:archive:browser -- http://127.0.0.1:4177`: passed the same layout/journey checks plus interactive offline reload of a previously loaded specimen and prerendered reading without JavaScript. Offline narration and external lessons are not guaranteed; the loaded-asset cache is bounded to 20 entries/30 days.
 - `npm run test:preview:browser -- http://127.0.0.1:4177`: passed.
-- Built captures and result metadata are retained alongside the matched baseline in `artifacts/archive-within-reach/`; hosted preview results follow in the review PR.
+- Both browser suites also passed against the Cloudflare preview at https://b6bd11a4.pitch-atlas.pages.dev (runtime source `99d0a00`). Alias: https://archive-within-reach.pitch-atlas.pages.dev. No production deployment occurred.
+- Desktop Chromium also rendered the WebGL seam bridge and study model. The two projection captures align visually; manual specimen/diagram controls respond, and the bridge canvas unmounts offscreen. Reduced Motion intentionally uses the study schematic. Captures and metadata are in `artifacts/archive-within-reach/webgl/`; this is not physical-device performance evidence.
+- Built and hosted captures and result metadata are retained alongside the matched baseline in `artifacts/archive-within-reach/`. Web draft review: https://github.com/ahump20/Pitch-Atlas/pull/191.
 
 ## Trust and release boundary
 
@@ -46,4 +49,6 @@ README, UI claims, and the data model retain sourced-not-corrected behavior: att
 
 Native work lives in the existing `ahump20/Pitch-Atlas-iOS` repository, with its own build/test evidence and draft PR. Web preview, production, native simulator/device evidence, signing/export, and TestFlight delivery are separate states. Physical iPhone 13-class 60fps acceptance and TestFlight delivery are not established by the web evidence here.
 
-Native draft review: https://github.com/ahump20/Pitch-Atlas-iOS/pull/35. Source implementation `c9881fd`, evidence update `46ebd4f`: 68 native tests passed, an unsigned archive and simulator build were produced. The Air signed archive fails with `CodeSign errSecInternalComponent`; the Pro has no signing identity/profile. Simulator UI startup stalled at BackBoard, so clean native visual captures, accessibility/device inspection, and first-launch offline acceptance remain open. No TestFlight upload occurred.
+Native draft review: https://github.com/ahump20/Pitch-Atlas-iOS/pull/35. Source implementation `c9881fd`: 68 native tests passed, an unsigned archive and simulator build were produced. The simulator subsequently recovered. Clean captures demonstrate Grips/Cues/Movement, Side/Thumb, accessibility text sizing, four-seam study, and invalid-link UI. A native navigation-title contrast repair (`8ed716d`) was rebuilt and visually verified; evidence update `930da74` records the detailed scope. A 32-second interaction recording and stills live locally at `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-study/`.
+
+The Air signed archive still fails with `CodeSign errSecInternalComponent`; the Pro has no signing identity/profile. First-launch offline, complete assistive-technology/device acceptance, and physical performance remain open. No TestFlight upload occurred. Refer to the native PR's `docs/ARCHIVE-STUDY.md` for subsequent runtime checks and remaining gates.

@@ -9,7 +9,8 @@ Approved by Austin in the implementation request. Work in existing ahump20 repos
 - [x] Index restoration; shared editorial, utility and community surface refinements.
 - [x] Native SwiftUI study and compare, deep links, preserved offline data, native material and motion source changes (runtime acceptance remains separate).
 - [x] Web behavioral tests, typecheck, lint, build, local preview and browser acceptance evidence.
-- [ ] Native build/tests and simulator proof; GitHub review branches and Cloudflare preview; TestFlight preparation with exact blockers.
+- [x] Native source build/tests, scoped simulator captures, GitHub draft PRs, and Cloudflare preview.
+- [ ] Complete native device/accessibility/offline acceptance, physical performance, signed export and TestFlight preparation (Air keychain blocker).
 
 ## Interfaces
 Web CompareSelection: a/b nullable filed slugs, view grips|cues|movement, hand right|left, orientation top|side|thumb. URL /compare?a=&b=&view=&hand=&orientation= is canonical when on comparison route. Explicit invalid inputs clear the affected slot. App state survives route changes and session reload; adding a third opens an accessible replacement choice. Legacy /grips#grip-compare continues working through the unified workspace.

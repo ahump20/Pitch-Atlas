@@ -396,7 +396,7 @@ async function checkHomeCardBacks(page, viewport) {
   record(messages.length === 0, `${label} console warnings/errors: ${messages.join(' | ')}`)
   const externalCards = await page.locator('[data-external-provider]').count()
   record(externalCards >= 3, `${label} lost the committed external-media fallback shelf`)
-  const flipButtons = page.locator('#set .v2-face:not(.v2-face-back) .v2-flip-btn')
+  const flipButtons = page.locator('#set .archive-wall-source')
   const count = await flipButtons.count()
   record(count > 0, `${label} found no sourced card backs`)
 
