@@ -54,3 +54,11 @@ The separate [release checklist](ARCHIVE-RELEASE-CHECKLIST.md) remains in force.
 The beige homepage seam presentation is rejected. Replace its composition and large beige surfaces with charcoal and burnt-orange materials. Extend the orange cover's physical finish across the standard collectible set: layered edges, recessed media mounts, restrained wear, and coherent light. Small ivory reference labels remain part of the existing cards; beige page canvases do not.
 
 Repair the baseball presentation on both platforms. Natural off-white leather, fine restrained grain, a recessed cover join and dark red lacing replace the coarse foam surface, yellow metallic gradients and glowing continuous red cord. Opaque cover illustrations occlude the hidden seam. Preserve seamPoint, sourced contact positions, schematic labels, and original grip media. Fresh stills must show the revised cover, ordinary cards, seam study, and comparison before any new release claim.
+
+## Identity refinement — user direction, 2026-09-05
+
+Preserve the established Pitch Atlas trading-card motif and visual balance. The burnt-orange signature card and burnt-orange/chrome/rainbow-like lettering are selective accents. The material revision spread orange too widely, especially through shared native panels; orange-on-orange is rejected.
+
+Restore neutral archive, reading, study and comparison surfaces. Keep distinct standard collectible finishes, framed media, specimen numbers, athletic nameplates and reference plates. Preserve the signature orange card and existing iridescent type. Retain the repaired baseballs, physical card depth and complete learning/navigation behavior. This refines the existing design system; it does not authorize a replacement identity or a return to the rejected beige seam canvas.
+
+Judge the correction from actual representative frames against the established references before release: the collectible should read as a card, the signature should remain exceptional, and surrounding surfaces should support the collection. Passing implementation checks alone does not establish this visual acceptance.

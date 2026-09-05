@@ -9,13 +9,13 @@
 .archive-discovery-heading h2 { font: 400 clamp(44px,5.3vw,70px)/.98 var(--font-display); letter-spacing: -.035em; }
 .archive-discovery-heading h2 em { color: #d1b58b; }
 .archive-discovery-heading > p:last-child { max-width: 39ch; font-size: 17px; line-height: 1.7; color: #c4baa7; }
-.archive-discovery-folio { position: relative; display: grid; grid-template-columns: .85fr 1.15fr; background: #271b15; color: #eee5d9; border: 1px solid #9d6b43; box-shadow: 0 32px 64px -30px #000, 0 1px 0 #e2b78a33 inset; }
-.archive-discovery-folio::before { content: ''; position: absolute; inset: 8px -6px -7px 5px; z-index: -1; background: #40291c; border: 1px solid #8c6040; transform: rotate(-.45deg); }
-.archive-discovery-specimen { padding: 28px 38px; background: radial-gradient(ellipse at 50% 15%,#514333,#201c16 70%); color: #eee4d0; border-right: 1px solid #5c4b34; box-shadow: -12px 0 30px -24px #000 inset; }
+.archive-discovery-folio { position: relative; display: grid; grid-template-columns: .85fr 1.15fr; background: #1b1b1f; color: #eee5d9; border: 1px solid #727b8466; box-shadow: 0 32px 64px -30px #000, 0 1px 0 #d6dfe533 inset; }
+.archive-discovery-folio::before { content: ''; position: absolute; inset: 8px -6px -7px 5px; z-index: -1; background: #292b30; border: 1px solid #6d778055; transform: rotate(-.45deg); }
+.archive-discovery-specimen { padding: 28px 38px; background: radial-gradient(ellipse at 50% 15%,#353c42,#18191c 70%); color: #eee4d0; border-right: 1px solid #6d778044; box-shadow: -12px 0 30px -24px #000 inset; }
 .archive-discovery-specimen > .archive-eyebrow { margin-bottom: 20px; color: #bba886; }
 .archive-discovery-specimen > .archive-text-link { display: flex; margin-top: 20px; font-size: 13px; }
 .archive-reference-credit { max-width: 32ch; margin: 16px auto 0; color: #c4b79c; font-size: 12px; line-height: 1.6; }
-.archive-discovery-story { padding: clamp(28px,4vw,54px); background: radial-gradient(ellipse at 95% 5%,#a2542929,transparent 65%),linear-gradient(100deg,#0004,transparent 7%,transparent 97%,#c28a4b0d); }
+.archive-discovery-story { padding: clamp(28px,4vw,54px); background: linear-gradient(100deg,#0004,transparent 7%,transparent 97%,#d4dbe30a); }
 .archive-discovery-story > .archive-eyebrow { color: #d0a478; }
 .archive-discovery-story h3 { margin: 12px 0 24px; font: 400 20px/1.2 var(--font-prose); }
 .archive-discovery-quote .archive-quote-text { font: 400 clamp(32px,3.25vw,46px)/1.12 var(--font-display); letter-spacing: -.018em; text-wrap: pretty; color: #f0e6d8; }
@@ -47,7 +47,7 @@
 .archive-connection-heading .archive-eyebrow, .archive-companion .archive-eyebrow, .archive-history-next .archive-eyebrow { color: #c4a777; }
 .archive-connection-heading h2, .archive-history-next h2 { font: 400 clamp(32px,4vw,48px)/1.06 var(--font-display); margin: 12px 0; letter-spacing: -.025em; }
 .archive-connection-heading > p:last-child, .archive-history-next > p { max-width: 66ch; font-size: 15px; line-height: 1.7; color: #c4baa7; }
-.archive-companion { display: grid; grid-template-columns: minmax(180px,.6fr) 1.4fr; gap: 36px; align-items: center; padding: 28px; margin-bottom: 40px; border: 1px solid #ac966344; background: radial-gradient(ellipse at 10% 50%,#55412877,#171510 60%); }
+.archive-companion { display: grid; grid-template-columns: minmax(180px,.6fr) 1.4fr; gap: 36px; align-items: center; padding: 28px; margin-bottom: 40px; border: 1px solid #a0abb344; background: radial-gradient(ellipse at 10% 50%,#3d454b66,#18191c 60%); }
 .archive-companion-drawing { max-width: 240px; margin: auto; width: 100%; }
 .archive-companion h3 { font: 400 32px/1.1 var(--font-display); margin: 12px 0 18px; }
 .archive-companion .archive-text-link { margin-top: 18px; }

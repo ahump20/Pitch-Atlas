@@ -926,18 +926,21 @@
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     rotate: calc(sin((var(--i, 0) + 1) * 2.1) * 0.45deg);
     transition: transform .4s cubic-bezier(.2,.8,.2,1);
-    /* Oxidized foil beneath a handled leather rim; the face keeps its family ink. */
+    /* The standard run keeps its refractor rim. Thickness comes from neutral
+       stock edges; burnt-orange leather belongs to the signature card below. */
     background:
       url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='.3'/%3E%3C/svg%3E"),
-      repeating-linear-gradient(98deg, #efe0c412 0 1px, transparent 1px 4px),
-      linear-gradient(135deg, #b7a187 0%, #43382f 6%, color-mix(in srgb, var(--c3) 28%, #68523c) 28%, #29231e 57%, #76634e 82%, #c0a17a 97%, #382c23);
+      repeating-linear-gradient(57deg, #ffffff24 0 1px, transparent 1px 7px),
+      var(--foil);
+    background-size: 160px 160px, 9px 9px, 300% 300%;
+    background-position: 0 0, 0 0, var(--mx) var(--my);
     background-blend-mode: soft-light, overlay, normal;
     box-shadow:
-      0 0 0 1px #b89d7266, 0 0 0 3px #090806,
-      0 3px 0 3px #3d3025, 0 5px 0 3px #120e0b,
-      0 7px 0 3px #46382c, 0 9px 0 3px #090705,
+      0 0 0 1px #b9c6cc66, 0 0 0 3px #09090b,
+      0 3px 0 3px #35383c, 0 5px 0 3px #101114,
+      0 7px 0 3px #42464b, 0 9px 0 3px #08090b,
       9px 30px 35px -14px #000c, 0 8px 12px -4px #0009,
-      inset 0 1px 1px #f5e2bf77, inset 0 -3px 5px #000c;
+      inset 0 1px 1px #e7edf277, inset 0 -3px 5px #000c;
     /* reveal runs BACKWARDS-fill (hidden through its delay), then releases the
        element entirely. fill:forwards used to pin `transform: none` from the
        final keyframe forever, silently overriding the live tilt rotation on

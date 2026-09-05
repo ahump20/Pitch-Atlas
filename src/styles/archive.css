@@ -53,8 +53,8 @@
 .field-cream .archive-section-hero { background-color: transparent; }
 /* A charcoal inspection desk with an inset specimen, continuous with the cards. */
 .archive-bridge {
-  background: radial-gradient(ellipse at 10% 20%, #5b2c1733, transparent 55%), #11100f;
-  color: #eee9df; border-block: 1px solid #98664945;
+  background: radial-gradient(ellipse at 80% 30%, #34404926, transparent 55%), #111114;
+  color: #eee9df; border-block: 1px solid #919ca32e;
 }
 .archive-bridge-inner {
   max-width: 1200px; margin: auto; display: grid; grid-template-columns: 1fr 1fr;
@@ -71,9 +71,9 @@
 .archive-seam-figure { margin: 0; min-width: 0; }
 .archive-seam-stage {
   aspect-ratio: 1; position: relative; isolation: isolate; border-radius: 8px;
-  background: #191716; border: 10px solid #513825;
-  outline: 1px solid #9f724b88; outline-offset: 3px;
-  box-shadow: 0 3px 0 4px #20150e, 10px 28px 40px -16px #000, inset 0 1px 0 #fff1;
+  background: #191716; border: 10px solid #303236;
+  outline: 1px solid #a7b1b766; outline-offset: 3px;
+  box-shadow: 0 3px 0 4px #111215, 10px 28px 40px -16px #000, inset 0 1px 0 #fff1;
 }
 .archive-seam-flat, .archive-seam-model { position: absolute; inset: 0; }
 .archive-seam-drawing { display: block; height: 100%; width: 100%; }
@@ -127,9 +127,9 @@
 /* Bound reading surfaces use charcoal ink stock; warm ivory stays in the type. */
 .archive-paper {
   --color-ink: #eee9df; --color-ink-2: #cec4b8; --color-ink-3: #bfb09f;
-  --color-paper: #211b17; --color-paper-2: #2d211a;
-  background: linear-gradient(120deg,#2b211a,#1c1916); color: #eee9df;
-  border-block: 1px solid #aa77574d;
+  --color-paper: #19191c; --color-paper-2: #222327;
+  background: linear-gradient(120deg,#222327,#17171a); color: #eee9df;
+  border-block: 1px solid #a0a9b02e;
 }
 .archive-paper .pa-atmo { opacity: .035; }
 .archive-paper :is(.text-ink, .text-ink\/90) { color: #eee9df; }
