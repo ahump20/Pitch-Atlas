@@ -1,5 +1,6 @@
 import { useMemo, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { ClaimProse } from '../provenance/ClaimProse'
 import { PITCHES } from '../../data/pitches'
 import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
 import { magnusForceRender, magnusStrength } from '../../lib/physics'
@@ -54,14 +55,6 @@ interface Spot {
   strength: number
 }
 
-function shapeWords(entry: PitchAtlasEntry): string {
-  const m = entry.motion
-  const v = m.verticalShape === 'ride' ? 'rides' : m.verticalShape === 'drop' ? 'drops' : 'holds flat'
-  const h =
-    m.horizontalDir === 'arm-side' ? 'runs arm-side' : m.horizontalDir === 'glove-side' ? 'sweeps glove-side' : 'stays true'
-  return `${v}, ${h}`
-}
-
 /*
   Build one pitch's late-splitting path geometry.
 
@@ -111,10 +104,13 @@ function pathFor(s: Spot): string {
   return `M ${CX} ${RELEASE_Y} L ${CX} ${TUNNEL_Y} Q ${s.ctrlX} ${s.ctrlY} ${s.x} ${s.y}`
 }
 
-export function TunnelPlot() {
-  const [hand, setHand] = useState<'RHP' | 'LHP'>('RHP')
-  const [aSlug, setA] = useState('four-seam')
-  const [bSlug, setB] = useState('slider')
+export function TunnelPlot({ selection, hideControls = false }: { selection?: { a: string; b: string; hand: 'right' | 'left' }; hideControls?: boolean } = {}) {
+  const [localHand, setHand] = useState<'RHP' | 'LHP'>('RHP')
+  const hand = selection ? (selection.hand === 'right' ? 'RHP' : 'LHP') : localHand
+  const [localA, setA] = useState('four-seam')
+  const aSlug = selection?.a ?? localA
+  const [localB, setB] = useState('slider')
+  const bSlug = selection?.b ?? localB
   const handFactor = hand === 'RHP' ? 1 : -1
 
   const a = useMemo(() => PITCHES.find((p) => p.display.slug === aSlug) ?? PITCHES[0], [aSlug])
@@ -144,7 +140,7 @@ export function TunnelPlot() {
       <style>{`
         .tunnel-runner { opacity: 0; }
         @media (hover: hover) {
-          .tunnel-stage:hover .tunnel-runner { opacity: 1; animation: tunnel-travel 1.5s ease-in both; }
+          .tunnel-stage:hover .tunnel-runner { opacity: 0; }
         }
         @keyframes tunnel-travel {
           from { offset-distance: 0%; }
@@ -156,7 +152,7 @@ export function TunnelPlot() {
       `}</style>
 
       {/* pickers */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-3" hidden={hideControls} style={hideControls ? { display: 'none' } : undefined}>
         <label className="block">
           <span className="mono-label text-ink-3">Pitch A</span>
           <select
@@ -217,7 +213,7 @@ export function TunnelPlot() {
         role="img"
         aria-label={`Tunnel plot comparing a ${a.display.shortName} and a ${b.display.shortName} from a ${
           hand === 'RHP' ? 'right' : 'left'
-        }-handed pitcher. Both leave a shared release at the top and run together through a tunnel window, then split late toward how each one breaks: the ${a.display.shortName} ${shapeWords(a)}, the ${b.display.shortName} ${shapeWords(b)}. A schematic of direction and character, not a measured trajectory.`}
+        }-handed pitcher. A static shared-release illustration. The drawn paths and split are layout choices, not measured trajectories or timing. Read the sourced shape descriptions below.`}
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>
@@ -321,18 +317,18 @@ export function TunnelPlot() {
               <i className="inline-block h-2 w-2 rounded-full" style={{ background: colorA }} aria-hidden="true" />
               {a.display.shortName}
             </p>
-            <p className="mt-1 text-sm capitalize text-ink-2">{shapeWords(a)}</p>
+            <ClaimProse claim={a.canonical.physics.shape} proseClassName="mt-3 text-sm leading-relaxed text-ink-2" />
           </div>
           <div className="bg-paper-2 px-4 py-3">
-            <p className="mono-label text-seam">The late split</p>
-            <p className="mt-1 text-sm text-ink-2">Same release and tunnel, then each breaks its own way late.</p>
+            <p className="mono-label text-seam">The drawn split</p>
+            <p className="mt-1 text-sm text-ink-2">A shared-release illustration. The drawn split is a layout choice, not observed flight or timing.</p>
           </div>
           <div className="bg-paper-2 px-4 py-3">
             <p className="mono-label inline-flex items-center gap-2 text-ink">
               <i className="inline-block h-2 w-2 rounded-full" style={{ background: colorB }} aria-hidden="true" />
               {b.display.shortName}
             </p>
-            <p className="mt-1 text-sm capitalize text-ink-2">{shapeWords(b)}</p>
+            <ClaimProse claim={b.canonical.physics.shape} proseClassName="mt-3 text-sm leading-relaxed text-ink-2" />
           </div>
         </div>
       ) : null}

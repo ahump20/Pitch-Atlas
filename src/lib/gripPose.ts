@@ -524,8 +524,8 @@ export interface ProjectedPoint {
 
 /** The one projection every hand part goes through: the schematic's presentation
     tilt, then an orthographic drop of z. */
-export function projectHandPoint(p: Vec3, cx: number, cy: number, r: number): ProjectedPoint {
-  const q = v.rotateAxis(p, SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+export function projectHandPoint(p: Vec3, cx: number, cy: number, r: number, rotate?: (point: Vec3) => Vec3): ProjectedPoint {
+  const q = rotate ? rotate(p) : v.rotateAxis(p, SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
   return { x: cx + q.x * r, y: cy - q.y * r, front: q.z >= 0 }
 }
 
@@ -534,8 +534,9 @@ export function projectSpine(
   cx: number,
   cy: number,
   r: number,
+  rotate?: (point: Vec3) => Vec3,
 ): ProjectedSpine {
-  const place = (p: Vec3) => projectHandPoint(p, cx, cy, r)
+  const place = (p: Vec3) => projectHandPoint(p, cx, cy, r, rotate)
   const meanRadius =
     spine.radii.reduce((a, b) => a + b, 0) / Math.max(1, spine.radii.length)
   return {
@@ -564,12 +565,13 @@ export function projectHand(
   cx: number,
   cy: number,
   r: number,
+  rotate?: (point: Vec3) => Vec3,
 ): ProjectedHand {
-  const outline = hand.palm.outline.map((p) => projectHandPoint(p, cx, cy, r))
+  const outline = hand.palm.outline.map((p) => projectHandPoint(p, cx, cy, r, rotate))
   const meanZ = outline.reduce((a, p) => a + (p.front ? 1 : -1), 0)
   return {
     fingers: hand.fingers.map((f, i) => ({
-      ...projectSpine(f, cx, cy, r),
+      ...projectSpine(f, cx, cy, r, rotate),
       label: labels[i] ?? f.finger,
     })),
     palm: { outline, front: meanZ >= 0 },

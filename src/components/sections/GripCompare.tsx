@@ -1,3 +1,5 @@
+import { useCompare } from '../compare/compareContext'
+import { compareUrl } from '../compare/selection'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
@@ -21,6 +23,7 @@ const VIEWS: { id: GripView; label: string }[] = [
 ]
 
 export function GripCompare() {
+  const compare = useCompare()
   const [aSlug, setA] = useState('four-seam')
   const [bSlug, setB] = useState('circle-change')
   const [view, setView] = useState<GripView>('top')
@@ -28,6 +31,11 @@ export function GripCompare() {
 
   const a = useMemo(() => PITCHES.find((p) => p.display.slug === aSlug) ?? PITCHES[0], [aSlug])
   const b = useMemo(() => PITCHES.find((p) => p.display.slug === bSlug) ?? PITCHES[1], [bSlug])
+
+  if (compare) return <div className="archive-compare-entry">
+    <p className="text-bone-2 leading-relaxed">Keep two pitches together as you move between grips, sourced cues, and schematic movement.</p>
+    <Link className="archive-action mt-5" to={compareUrl(compare.selection)}>Open the comparison workspace</Link>
+  </div>
 
   return (
     <div className="flex flex-col gap-6">

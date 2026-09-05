@@ -41,13 +41,15 @@ function renderCard() {
 }
 
 describe('ExternalMediaCard loading contract', () => {
-  it('does not initialize an official provider until the 300px observer boundary', async () => {
+  it('requires an explicit load even when the card enters the viewport', async () => {
     const { container } = renderCard()
     expect(container.querySelector('iframe')).toBeNull()
 
     act(() => {
       intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
     })
+    expect(container.querySelector('iframe')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: /Load from X/i }))
     await waitFor(() => expect(container.querySelector('iframe')).not.toBeNull())
     expect(container.querySelector('iframe')).toHaveAttribute('src', expect.stringContaining('dnt=true'))
   })
@@ -58,12 +60,15 @@ describe('ExternalMediaCard loading contract', () => {
     act(() => {
       intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
     })
+    fireEvent.click(screen.getByRole('button', { name: /Load from X/i }))
     expect(container.querySelector('iframe')).not.toBeNull()
     act(() => {
       vi.advanceTimersByTime(12_001)
     })
     expect(screen.getByRole('status')).toHaveTextContent(/player did not load/i)
     expect(screen.getByRole('link', { name: /Original post/ })).toHaveAttribute('href', item.canonicalUrl)
+    fireEvent.click(screen.getByRole('button', { name: /Retry player/i }))
+    expect(container.querySelector('iframe')).not.toBeNull()
     vi.useRealTimers()
   })
 
@@ -72,6 +77,7 @@ describe('ExternalMediaCard loading contract', () => {
     act(() => {
       intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
     })
+    fireEvent.click(screen.getByRole('button', { name: /Load from X/i }))
     const frame = await waitFor(() => container.querySelector('iframe') as HTMLIFrameElement)
     fireEvent.load(frame)
     fireEvent.click(screen.getByRole('button', { name: /Watch Dock/ }))
@@ -84,6 +90,7 @@ describe('ExternalMediaCard loading contract', () => {
     act(() => {
       intersectionCallback([{ isIntersecting: true } as IntersectionObserverEntry], {} as IntersectionObserver)
     })
+    fireEvent.click(screen.getByRole('button', { name: /Load from X/i }))
     fireEvent.click(screen.getByRole('button', { name: /Watch Dock/ }))
     firstRoute.unmount()
 
@@ -93,6 +100,14 @@ describe('ExternalMediaCard loading contract', () => {
     })
     expect(destinationRoute.getByText('Playing in the Watch Dock')).toBeInTheDocument()
     expect(document.querySelectorAll('iframe')).toHaveLength(1)
+  })
+
+  it('unmounts an activated player offscreen to stop playback', () => {
+    const { container } = renderCard()
+    fireEvent.click(screen.getByRole('button', { name: /Load from X/i }))
+    expect(container.querySelector('iframe')).not.toBeNull()
+    act(() => intersectionCallback([{ isIntersecting: false } as IntersectionObserverEntry], {} as IntersectionObserver))
+    expect(container.querySelector('iframe')).toBeNull()
   })
 
   it('requires a tap when the browser requests reduced data', () => {

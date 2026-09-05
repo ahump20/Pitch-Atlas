@@ -23,38 +23,25 @@ function trustLabel(item: ExternalContentItem): string {
   return 'Community find'
 }
 
-function useNearViewportEmbed() {
+function useExplicitEmbed() {
   const ref = useRef<HTMLDivElement | null>(null)
   const [saveData] = useState(
     () => typeof navigator !== 'undefined' && Boolean((navigator as DataSavingNavigator).connection?.saveData),
   )
-  // The `document` guard keeps this false during the build-time prerender (plain
-  // Node, no DOM): without it every card baked a live provider iframe into the
-  // static HTML, so X and TikTok were fetched on first paint for every reader,
-  // whatever their scroll position or data-saver setting. In a real browser that
-  // lacks IntersectionObserver the old eager fallback still applies.
-  const [near, setNear] = useState(
-    () => typeof document !== 'undefined' && typeof IntersectionObserver === 'undefined' && !saveData,
-  )
-  const [manual, setManual] = useState(false)
-
+  const [visible, setVisible] = useState(true)
+  const [requested, setRequested] = useState(false)
   useEffect(() => {
     const node = ref.current
     if (!node || typeof IntersectionObserver === 'undefined') return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setNear(true)
-          observer.disconnect()
-        }
-      },
-      { rootMargin: '300px 0px' },
-    )
+    const observer = new IntersectionObserver(entries => {
+      setVisible(entries.some(entry => entry.isIntersecting))
+    })
     observer.observe(node)
     return () => observer.disconnect()
   }, [])
-
-  return { ref, shouldLoad: manual || (near && !saveData), saveData, load: () => setManual(true) }
+  // Consent comes from a button. Removing an offscreen iframe stops playback
+  // even for providers without a supported pause message API.
+  return { ref, shouldLoad: requested && visible, saveData, load: () => setRequested(true) }
 }
 
 export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
@@ -63,7 +50,7 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
   const pip = usePip()
   const [popped, setPopped] = useState(false)
   const [loadState, setLoadState] = useState<LoadState>('waiting')
-  const { ref, shouldLoad, saveData, load } = useNearViewportEmbed()
+  const { ref, shouldLoad, saveData, load } = useExplicitEmbed()
   const portrait = item.platform === 'tiktok' || item.platform === 'instagram'
   const inDock = popped || (
     pip.active?.platform === item.platform && pip.active.externalId === item.externalId
@@ -194,6 +181,7 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
           <div role="status" className="absolute inset-0 grid place-items-center px-6 text-center">
             <span className="font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-bone-2">
               The {provider} player did not load. The credited source link still works below.
+              <button type="button" className="mt-4 block min-h-11 w-full underline" onClick={() => setLoadState('waiting')}>Retry player</button>
             </span>
           </div>
         ) : null}

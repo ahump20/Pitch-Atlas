@@ -1,3 +1,5 @@
+import { CompareButton } from '../compare/CompareButton'
+import { useCompare } from '../compare/compareContext'
 import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../ds/Button'
@@ -26,6 +28,8 @@ import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 
 function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean; i: number }) {
   const [flipped, setFlipped] = useState(false)
+  const compare = useCompare()
+  const selected = compare?.selection.a === entry.display.slug || compare?.selection.b === entry.display.slug
   const frontButton = useRef<HTMLButtonElement>(null)
   const backButton = useRef<HTMLButtonElement>(null)
   const { canonical, motion, display } = entry
@@ -39,12 +43,12 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
 
   function setFace(next: boolean) {
     setFlipped(next)
-    window.requestAnimationFrame(() => (next ? backButton : frontButton).current?.focus())
+    window.requestAnimationFrame(() => (next ? backButton : frontButton).current?.focus({ preventScroll: true }))
   }
 
   return (
     <div
-      className={`v2-mount${chase ? ' is-chase' : ''}`}
+      className={`v2-mount${chase ? ' is-chase' : ''}${selected ? ' is-selected' : ''}`}
       style={{ '--c3': accent.c3, '--i': i } as React.CSSProperties}
     >
       <div className={`v2-flip${flipped ? ' is-flipped' : ''}`}>
@@ -178,6 +182,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
           </div>
         </div>
       </div>
+      <div className="archive-wall-compare"><CompareButton slug={display.slug} /></div>
     </div>
   )
 }

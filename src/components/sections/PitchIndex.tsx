@@ -1,3 +1,4 @@
+import { CompareButton } from '../compare/CompareButton'
 import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -220,6 +221,7 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
   // a filed pitch wears its own specimen world; a basic file wears the family ink
   const markTint = entry.filedSlug ? accentForSlug(entry.filedSlug).c3 : accent
   return (
+    <div className="archive-index-entry">
     <Link
       to={filed ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`}
       className={`rfx-entry ${filed ? 'is-filed' : ''}`}
@@ -256,6 +258,8 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
         ) : null}
       </span>
     </Link>
+    {filed && entry.filedSlug ? <CompareButton slug={entry.filedSlug} /> : null}
+    </div>
   )
 }
 
@@ -621,6 +625,7 @@ export function PitchIndex({ id, afterControls }: { id?: string; afterControls?:
                 {entries.map((e) => (
                   <div key={e.id} className="pocket" style={{ viewTransitionName: `pi-${e.id}` }}>
                     <RepertoirePocket entry={e} />
+                    {e.filedSlug && <CompareButton slug={e.filedSlug} />}
                   </div>
                 ))}
               </BinderSheet>

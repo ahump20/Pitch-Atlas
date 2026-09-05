@@ -104,6 +104,8 @@ export function GripViewer({
             gyro={entry.motion.gyro}
             grip={showHand ? gm.contacts : undefined}
             handedness={hand}
+            view={view}
+            referenceContacts={gm.contacts}
             surface="stage"
             title={`A ${entry.canonical.name} held ${hand}-handed: the solved finger silhouettes drawn on the seam schematic.`}
           />

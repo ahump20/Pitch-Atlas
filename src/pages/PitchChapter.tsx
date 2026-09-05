@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useState } from 'react'
+import { type CSSProperties, type ReactNode } from 'react'
 import { useParams, Link, Navigate } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import type {
@@ -12,7 +12,9 @@ import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { scrollToId } from '../lib/scroll'
-import { GripViewer } from '../components/grip/GripViewer'
+import { GripStudy } from '../components/study/GripStudy'
+import { ChapterSections } from '../components/study/ChapterSections'
+import { CompareButton } from '../components/compare/CompareButton'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
 import { GripFace } from '../components/refractor/GripFace'
@@ -44,17 +46,6 @@ const FAMILY_LABEL: Record<PitchFamily, string> = {
   fastball: 'Fastball',
   breaking: 'Breaking',
   offspeed: 'Offspeed',
-}
-
-const BALL_DEPTH_LABEL: Record<string, string> = {
-  'out-in-fingers': 'Out in the fingers',
-  neutral: 'Neutral depth',
-  'deep-in-hand': 'Deeper in the hand',
-}
-const FINGER_SPACING_LABEL: Record<string, string> = {
-  touching: 'Fingers close',
-  'slight-spread': 'Slight spread',
-  wide: 'Wide spacing',
 }
 
 const PITCH_SLUG_ALIASES: Record<string, string> = {
@@ -129,6 +120,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
       <div
         className="relative z-[1] mx-auto aspect-square w-full max-w-[480px] overflow-hidden rounded-[24px]"
         style={{
+          viewTransitionName: 'active-specimen',
           background: isGold
             ? 'radial-gradient(120% 100% at 50% 18%, rgba(202,161,74,0.20), transparent 60%), radial-gradient(120% 90% at 50% 30%, #2a1d05, #050309 82%)'
             : `radial-gradient(120% 100% at 50% 18%, color-mix(in srgb, ${accentColor} 18%, transparent), transparent 60%), radial-gradient(120% 90% at 50% 30%, color-mix(in srgb, ${accent.c2} 50%, #000), #050309 82%)`,
@@ -149,7 +141,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
             background: `conic-gradient(from 0deg, transparent, color-mix(in srgb, ${accentColor} 40%, transparent), transparent 38%)`,
             mask: 'radial-gradient(closest-side, transparent 80%, #000 81%)',
             WebkitMask: 'radial-gradient(closest-side, transparent 80%, #000 81%)',
-            animation: 'rfx-spin 20s linear infinite',
+            animation: 'none',
           }}
         />
         {isGold ? (
@@ -290,115 +282,6 @@ function SectionHead({
 }
 
 /* ── Grip Lab: the specimen hand on the ball + the sourced hold. ─────────── */
-function GripLabSection({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
-  const { canonical, guide } = entry
-  const [activeContact, setActiveContact] = useState<string | undefined>(undefined)
-  const unfiled = canonical.gripModel.status === 'unfiled'
-
-  return (
-    <section id="grip-lab" className="scroll-mt-20 border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
-      <SectionHead
-        kicker="Archive Drawer / Grip Lab"
-        title={unfiled ? 'No one hold owns this pitch' : 'The artifact in the hand'}
-        accentColor={accentColor}
-      >
-        <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
-          {unfiled
-            ? 'This pitch has no canonical grip to draw. The panel shows what the sources actually support, and nothing more.'
-            : 'Lead with the hand. The fingers on the ball below are the sourced contacts, solved onto the seam. Drag the ball, or use the view buttons.'}
-        </p>
-      </SectionHead>
-
-      <div className="mt-7 grid grid-cols-1 gap-x-12 gap-y-10 md:grid-cols-12">
-        {/* the grip viewer: 3D hand, schematic fallback, or the unfiled state */}
-        <div className="md:col-span-6">
-          <GripViewer entry={entry} accentColor={accentColor} activeContact={activeContact} />
-        </div>
-
-        {/* steps + feel + grip facts */}
-        <div className="flex flex-col gap-7 md:col-span-6">
-          {guide ? (
-            <ol className="flex flex-col gap-3">
-              {guide.steps.map((step, i) => (
-                <li key={i} className="rfx-panel grid grid-cols-[auto_1fr] items-start gap-3.5 rounded-[13px] px-4 py-3.5">
-                  <span
-                    className="rfx-athletic rfx-skew text-2xl leading-none"
-                    style={{ color: accentColor }}
-                  >
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="text-[13.5px] leading-relaxed text-bone">{step}</span>
-                </li>
-              ))}
-            </ol>
-          ) : null}
-
-          {guide ? (
-            <div
-              className="rounded-2xl p-[22px]"
-              style={{
-                background: `radial-gradient(100% 80% at 0% 0%, color-mix(in srgb, ${accentColor} 16%, transparent), transparent 60%), var(--color-press)`,
-                border: `1px solid color-mix(in srgb, ${accentColor} 26%, transparent)`,
-              }}
-            >
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: accentColor }}>
-                What it should feel like
-              </p>
-              <p className="rfx-athletic rfx-skew mt-2 text-2xl text-bone">{guide.feel}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {canonical.gripModel.contacts.map((c) => (
-                  <button
-                    key={c.label}
-                    type="button"
-                    onPointerEnter={() => setActiveContact(c.label)}
-                    onPointerLeave={() => setActiveContact(undefined)}
-                    className="rounded-lg border px-2.5 py-1.5 text-left font-mono text-[9px] uppercase tracking-[0.06em] text-bone-2 transition-colors"
-                    style={{ background: '#14100A', borderColor: `color-mix(in srgb, ${accentColor} 30%, transparent)` }}
-                  >
-                    {c.label} · {c.pressureRole}
-                  </button>
-                ))}
-              </div>
-              <p
-                className="mt-4 border-l-2 pl-3.5 font-mono text-[10px] leading-relaxed text-ink-3"
-                style={{ borderColor: `color-mix(in srgb, ${accentColor} 40%, transparent)` }}
-              >
-                {canonical.gripModel.visualCaveat}
-              </p>
-            </div>
-          ) : null}
-
-          <div className="grid grid-cols-2 gap-x-6 gap-y-5">
-            <div className="border-t border-bone/15 pt-3.5">
-              <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2">Ball depth</p>
-              <p className="text-[14px] text-bone">{BALL_DEPTH_LABEL[canonical.gripModel.ballDepth]}</p>
-            </div>
-            <div className="border-t border-bone/15 pt-3.5">
-              <p className="mb-1.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2">Spacing</p>
-              <p className="text-[14px] text-bone">{FINGER_SPACING_LABEL[canonical.gripModel.fingerSpacing]}</p>
-            </div>
-          </div>
-
-          <details className="group border-t border-bone/15 pt-5">
-            <summary className="disclosure-row flex cursor-pointer list-none items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2 transition-colors hover:text-bone">
-              <span aria-hidden="true" className="transition-transform group-open:rotate-90" style={{ color: accentColor }}>›</span>
-              The sourced grip, in full
-            </summary>
-            <div className="disclose-body mt-5 flex flex-col gap-6">
-              <RefractorClaim claim={canonical.grip} proseClassName="text-[15px] leading-relaxed text-bone" />
-              <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2">
-                {canonical.gripDetails.map((d, i) => (
-                  <RefractorClaim key={i} claim={d} proseClassName="text-[13.5px] leading-relaxed text-bone/85" />
-                ))}
-              </div>
-            </div>
-          </details>
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ── Release Room ────────────────────────────────────────────────────────── */
 function ReleaseSection({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
   const { canonical } = entry
@@ -594,8 +477,8 @@ function MasterCard({ variant, accentColor }: { variant: MasterVariantRecord; ac
 function MasterFilesSection({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
   const { masterVariants, display } = entry
   return (
-    <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
-      <SectionHead kicker="Master Files" title="Three ways the same pitch wins" accentColor={accentColor}>
+    <section id="variants" className="study-anchor border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
+      <SectionHead kicker="Master Files" title="The master files" accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">{display.mastersIntro}</p>
       </SectionHead>
 
@@ -623,7 +506,7 @@ function ColophonSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
   const sources = collectSources(entry)
   const tiers = ['official-data', 'pitcher-own-words', 'coach-observed', 'reputable-analysis', 'secondhand-attributed'] as const
   return (
-    <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
+    <section id="sources" className="study-anchor border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
       <SectionHead kicker="The colophon" title="Every claim, sourced" accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           Nothing here is marked right or wrong. It is marked by where it came from and how confident the
@@ -753,12 +636,14 @@ export function PitchChapter() {
         />
       </div>
       <ChapterHero entry={entry} />
-      <GripLabSection entry={entry} accentColor={accentColor} />
-      <SpecimenGrips entry={gripEntry} accentColor={accentColor} />
+      <ChapterSections sections={[{ id: 'grip-lab', label: 'Grip' }, { id: 'variants', label: 'Variants' }, { id: 'lessons', label: 'Lessons' }, { id: 'discussion', label: 'Discussion' }, { id: 'sources', label: 'Sources' }]} />
+      <CompareButton slug={entry.display.slug} className="study-compare-entry" />
+      <GripStudy key={entry.display.slug} entry={entry} accentColor={accentColor} />
+      <SpecimenGrips entry={gripEntry} accentColor={accentColor} includePhotos={false} />
       <GripAudioCue pitchSlug={entry.display.slug} accentColor={accentColor} />
       <ReleaseSection entry={entry} accentColor={accentColor} />
       <MovementSection entry={entry} accentColor={accentColor} />
-      <ExternalMediaRail
+      <div id="lessons" className="study-anchor"><ExternalMediaRail
         query={{ pitchSlug: entry.display.slug, limit: 2 }}
         eyebrow="Filed from the conversation"
         title={`See the ${entry.canonical.name.toLowerCase()} taught.`}
@@ -767,6 +652,7 @@ export function PitchChapter() {
         pitchSlug={entry.display.slug}
         className="-mx-5 md:-mx-8"
       />
+      </div>
       <MasterFilesSection entry={entry} accentColor={accentColor} />
       <ColophonSection entry={entry} accentColor={accentColor} />
       <PitchConnections
@@ -775,7 +661,7 @@ export function PitchChapter() {
         familyLabel={FAMILY_LABEL[entry.canonical.family]}
         siblings={siblings}
       />
-      <div className="border-t border-bone/8 pt-8">
+      <div id="discussion" className="study-anchor border-t border-bone/8 pt-8">
         <FieldNotes entry={entry} />
         <DiscussionPanel topicKey={entry.display.slug} topicName={entry.canonical.name} />
       </div>

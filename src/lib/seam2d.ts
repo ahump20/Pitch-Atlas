@@ -1,4 +1,4 @@
-import { orientedSeamPolyline } from './seam'
+import { orientedSeamPolyline, seamPolyline, type Vec3 } from './seam'
 
 /*
   Orthographic projection of the seam to 2D screen space. The single place the
@@ -13,8 +13,9 @@ interface P2 {
 }
 
 /** Project the oriented seam onto a circle of radius r centered at (cx, cy). */
-export function projectSeam(cx: number, cy: number, r: number, segments = 280): P2[] {
-  return orientedSeamPolyline(segments, 1).map((p) => ({
+export function projectSeam(cx: number, cy: number, r: number, segments = 280, rotate?: (point: Vec3) => Vec3): P2[] {
+  const points = rotate ? seamPolyline(segments, 1).map(rotate) : orientedSeamPolyline(segments, 1)
+  return points.map((p) => ({
     x: cx + p.x * r,
     y: cy - p.y * r, // screen y grows downward
     z: p.z,
