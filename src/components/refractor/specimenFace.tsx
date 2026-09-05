@@ -121,6 +121,7 @@ export function specimenFace(
         faceGrip
         surface="stage"
         interactive={false}
+        autoSpin={false}
         /* every card presents the hold the same way. A pitch's own default view
            is tuned for the Grip Lab, where the ball is big enough to read a
            thumb-side or edge-on angle; in a 300px window those angles hide the

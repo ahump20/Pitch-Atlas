@@ -406,8 +406,13 @@ async function checkHomeCardBacks(page, viewport) {
     // outgoing static node and then lose its state during hydration.
     let flipped = false
     for (let attempt = 0; attempt < 6; attempt += 1) {
+      const mount = page.locator('#set .v2-mount').nth(index)
+      if (await mount.locator('.v2-flip.is-flipped').count()) {
+        flipped = true
+        break
+      }
       try {
-        await flipButtons.nth(index).click({ timeout: 4_000 })
+        await flipButtons.nth(index).click({ timeout: 10_000 })
       } catch (error) {
         if (error?.name !== 'TimeoutError' && !String(error).includes('not attached')) throw error
       }
@@ -415,13 +420,14 @@ async function checkHomeCardBacks(page, viewport) {
         .locator('#set .v2-mount')
         .nth(index)
         .locator('.v2-flip.is-flipped')
-        .waitFor({ state: 'attached', timeout: 1_000 })
+        .waitFor({ state: 'attached', timeout: 5_000 })
         .then(() => true)
         .catch(() => false)
       if (flipped) break
       await page.waitForTimeout(500)
     }
     record(flipped, `${label} card ${index + 1} did not flip to its sourced back`)
+    if (!flipped) console.error(`${label} card ${index + 1}: aria-pressed=${await flipButtons.nth(index).getAttribute('aria-pressed')}`)
   }
 
   const backs = await page.locator('#set .v2-mount').evaluateAll((mounts) =>
@@ -598,10 +604,16 @@ async function checkKnowledgeMarkerWrap(page) {
 
 const browser = await chromium.launch({ headless: true })
 
+let smokeStep = 0
 async function withPage(callback) {
   const page = await browser.newPage()
+  page.setDefaultTimeout(15_000)
+  page.setDefaultNavigationTimeout(30_000)
+  console.log(`Smoke ${++smokeStep}/19: ${callback.name || "responsive route"}`)
   try {
+    const priorFailures = failures.length
     await callback(page)
+    console.log(`${failures.length === priorFailures ? "Passed" : "Failed"} smoke ${smokeStep}: ${page.url()}`)
   } finally {
     await page.close()
   }

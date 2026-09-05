@@ -61,4 +61,3 @@ export function tubeFromSpine(
   geo.setIndex(index)
   return geo
 }
-
