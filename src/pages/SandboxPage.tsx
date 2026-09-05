@@ -196,7 +196,7 @@ export function SandboxPage() {
       />
 
       <section>
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-2 md:px-8 md:py-20">
+        <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 py-16 md:grid-cols-2 md:grid-rows-[auto_1fr] md:px-8 md:py-20">
           {/* Controls */}
           <div>
             <p className="rfx-skick">Stock tilts</p>
@@ -236,41 +236,10 @@ export function SandboxPage() {
                 <TiltDial tiltDeg={tiltDeg} />
               </div>
             </div>
-
-            <section className="rfx-panel mt-8 px-5 py-5" aria-labelledby={referenceId}>
-              <h2 id={referenceId} className="rfx-skick">A grip to study</h2>
-              <label className="mt-4 block">
-                <span className="mono-label">Pitch reference</span>
-                <select
-                  className="rfx-select mt-2 w-full"
-                  value={reference?.display.slug ?? ''}
-                  aria-describedby={referenceNoteId}
-                  onChange={(event) => updateLab({ pitch: event.target.value })}
-                >
-                  <option value="">Choose a filed pitch</option>
-                  {PITCHES.map((entry) => (
-                    <option key={entry.display.slug} value={entry.display.slug}>{entry.display.shortName}</option>
-                  ))}
-                </select>
-              </label>
-              <p id={referenceNoteId} className="mt-3 text-sm leading-relaxed text-ink-2">
-                Keep a sourced grip beside the experiment. Choosing a file leaves the spin tilt unchanged;
-                the plot remains an illustrative model, not measured movement for that pitch.
-              </p>
-              {reference ? (
-                <div className="mt-5 space-y-4">
-                  <RefractorClaim claim={reference.canonical.grip} />
-                  <div className="flex flex-wrap items-center gap-3">
-                    <Link className="archive-action" to={`/pitch/${reference.display.slug}#grip-lab`}>Inspect grip</Link>
-                    <CompareButton slug={reference.display.slug} />
-                  </div>
-                </div>
-              ) : null}
-            </section>
           </div>
 
-          {/* Visuals + readouts */}
-          <div>
+          {/* Visuals follow controls on narrow screens; the reference stays beside them on desktop. */}
+          <div className="md:col-start-2 md:row-span-2 md:row-start-1">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <figure className="on-stage stage-spot flex flex-col items-center justify-center rounded-sm p-4">
                 <SeamSchematic
@@ -295,6 +264,37 @@ export function SandboxPage() {
 
             <p className="mt-4 text-base leading-relaxed text-ink">{describeShape(result)}</p>
           </div>
+
+          <section className="rfx-panel px-5 py-5 md:col-start-1 md:row-start-2" aria-labelledby={referenceId}>
+            <h2 id={referenceId} className="rfx-skick">A grip to study</h2>
+            <label className="mt-4 block">
+              <span className="mono-label">Pitch reference</span>
+              <select
+                className="rfx-select mt-2 w-full"
+                value={reference?.display.slug ?? ''}
+                aria-describedby={referenceNoteId}
+                onChange={(event) => updateLab({ pitch: event.target.value })}
+              >
+                <option value="">Choose a filed pitch</option>
+                {PITCHES.map((entry) => (
+                  <option key={entry.display.slug} value={entry.display.slug}>{entry.display.shortName}</option>
+                ))}
+              </select>
+            </label>
+            <p id={referenceNoteId} className="mt-3 text-sm leading-relaxed text-ink-2">
+              Keep a sourced grip beside the experiment. Choosing a file leaves the spin tilt unchanged;
+              the plot remains an illustrative model, not measured movement for that pitch.
+            </p>
+            {reference ? (
+              <div className="mt-5 space-y-4">
+                <RefractorClaim claim={reference.canonical.grip} />
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link className="archive-action" to={`/pitch/${reference.display.slug}#grip-lab`}>Inspect grip</Link>
+                  <CompareButton slug={reference.display.slug} />
+                </div>
+              </div>
+            ) : null}
+          </section>
         </div>
 
         {/* The honest line: what is physics, what is a teaching scale. */}
