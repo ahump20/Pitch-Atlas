@@ -43,6 +43,7 @@ export function DiscussionPanel({
 
   return (
     <section aria-label="Discussion" id="discussion" className="mx-auto max-w-6xl px-5 py-12 md:px-8">
+      <p className="mb-5 max-w-[60ch] text-sm leading-relaxed text-bone-2">What did you notice? Ask about a detail, share a firsthand observation, or add a source to the conversation.</p>
       <div className="rfx-panel">
         <button
           type="button"

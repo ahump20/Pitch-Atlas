@@ -9,8 +9,7 @@ import { ChromeWall } from '../components/v2/ChromeWall'
 import { WingsNav } from '../components/v2/WingsNav'
 import { CloseCta } from '../components/v2/CloseCta'
 import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
-import { HeritageTransition } from '../components/media/PresentationMedia'
-import { PRESENTATION_MEDIA } from '../data/media/presentation'
+import { ArchiveDiscovery } from '../components/v2/ArchiveDiscovery'
 
 /*
   The Refractor Case — the home. Five deliberate beats: specimen, seam, filed set,
@@ -41,16 +40,16 @@ export function AtlasHomeV2() {
   return (
     <>
       <HeroCase featured={featured} />
+      <ArchiveDiscovery />
+      <RefractionBridge featured={featured} />
+      <ChromeWall />
       <ExternalMediaRail
         query={{ placement: 'home', limit: 3 }}
         eyebrow="Fresh from the game"
-        title="The museum is alive."
-        intro="Pitching history does not stop at the display case. Current lessons, recovered interviews, and useful finds enter the atlas with their original source still attached."
+        title="From one hand to another."
+        intro="Listen to a pitcher explain it. Watch a grip turn. These lessons and recovered conversations keep the people beside the pitch. Choose a player when you are ready to watch."
         allowSuggestion
       />
-      <HeritageTransition asset={PRESENTATION_MEDIA.homePlateHeritage} />
-      <RefractionBridge featured={featured} />
-      <ChromeWall />
       <WingsNav />
       <CloseCta />
     </>

@@ -1,4 +1,5 @@
-import { useId, useMemo, useState } from 'react'
+import { useId, useMemo } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { canonicalUrl, contentJsonLd } from '../lib/seo'
@@ -8,6 +9,9 @@ import { EggButton } from '../components/eggs/EggButton'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { MovementPlot } from '../components/fallback/MovementPlot'
+import { CompareButton } from '../components/compare/CompareButton'
+import { RefractorClaim } from '../components/provenance/RefractorClaim'
+import { PITCHES } from '../data/pitches'
 import { buildBreak, tiltClock, describeShape, ANCHOR_NOTE, type BreakInputs } from '../lib/sandbox'
 import type { PitchMotion } from '../data/types'
 
@@ -103,6 +107,7 @@ function Slider({
         onChange={(e) => onChange(e.target.valueAsNumber)}
         className="mt-2 w-full accent-[var(--color-cyan)]"
         aria-label={label}
+        aria-valuetext={display}
       />
       {hint ? <span className="mt-1 block text-xs leading-snug text-ink-2">{hint}</span> : null}
     </label>
@@ -120,7 +125,26 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
 }
 
 export function SandboxPage() {
-  const [tiltDeg, setTilt] = useState(PRESETS[0].inputs.tiltDeg)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const referenceId = useId()
+  const referenceNoteId = useId()
+  const rawTilt = searchParams.get('tilt')
+  const parsedTilt = rawTilt !== null && /^\d+$/.test(rawTilt) ? Number(rawTilt) : NaN
+  const tiltDeg = Number.isFinite(parsedTilt) && parsedTilt >= 0 && parsedTilt <= 345 && parsedTilt % 15 === 0
+    ? parsedTilt
+    : PRESETS[0].inputs.tiltDeg
+  const reference = PITCHES.find((entry) => entry.display.slug === searchParams.get('pitch'))
+
+  function updateLab(patch: { tilt?: number; pitch?: string }) {
+    setSearchParams((current) => {
+      const next = new URLSearchParams(current)
+      next.set('tilt', String(patch.tilt ?? tiltDeg))
+      const slug = patch.pitch ?? reference?.display.slug ?? ''
+      if (slug) next.set('pitch', slug)
+      else next.delete('pitch')
+      return next
+    }, { replace: true, preventScrollReset: true })
+  }
 
   const result = useMemo(() => buildBreak({ tiltDeg }), [tiltDeg])
 
@@ -134,7 +158,7 @@ export function SandboxPage() {
   }
 
   function applyPreset(inputs: BreakInputs) {
-    setTilt(inputs.tiltDeg)
+    updateLab({ tilt: inputs.tiltDeg })
   }
 
   useSeoMeta({
@@ -172,7 +196,7 @@ export function SandboxPage() {
       />
 
       <section>
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 md:grid-cols-2 md:px-8 md:py-20">
+        <div className="mx-auto grid max-w-6xl items-start gap-10 px-5 py-16 md:grid-cols-2 md:grid-rows-[auto_1fr] md:px-8 md:py-20">
           {/* Controls */}
           <div>
             <p className="rfx-skick">Stock tilts</p>
@@ -205,7 +229,7 @@ export function SandboxPage() {
                     min={0}
                     max={345}
                     step={15}
-                    onChange={setTilt}
+                    onChange={(tilt) => updateLab({ tilt })}
                     hint="Where the spin points on a clock. 12:00 is pure backspin (ride); 6:00 is topspin (drop); 3:00 and 9:00 are pure sidespin."
                   />
                 </div>
@@ -214,8 +238,8 @@ export function SandboxPage() {
             </div>
           </div>
 
-          {/* Visuals + readouts */}
-          <div>
+          {/* Visuals follow controls on narrow screens; the reference stays beside them on desktop. */}
+          <div className="md:col-start-2 md:row-span-2 md:row-start-1">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <figure className="on-stage stage-spot flex flex-col items-center justify-center rounded-sm p-4">
                 <SeamSchematic
@@ -240,6 +264,37 @@ export function SandboxPage() {
 
             <p className="mt-4 text-base leading-relaxed text-ink">{describeShape(result)}</p>
           </div>
+
+          <section className="rfx-panel px-5 py-5 md:col-start-1 md:row-start-2" aria-labelledby={referenceId}>
+            <h2 id={referenceId} className="rfx-skick">A grip to study</h2>
+            <label className="mt-4 block">
+              <span className="mono-label">Pitch reference</span>
+              <select
+                className="rfx-select mt-2 w-full"
+                value={reference?.display.slug ?? ''}
+                aria-describedby={referenceNoteId}
+                onChange={(event) => updateLab({ pitch: event.target.value })}
+              >
+                <option value="">Choose a filed pitch</option>
+                {PITCHES.map((entry) => (
+                  <option key={entry.display.slug} value={entry.display.slug}>{entry.display.shortName}</option>
+                ))}
+              </select>
+            </label>
+            <p id={referenceNoteId} className="mt-3 text-sm leading-relaxed text-ink-2">
+              Keep a sourced grip beside the experiment. Choosing a file leaves the spin tilt unchanged;
+              the plot remains an illustrative model, not measured movement for that pitch.
+            </p>
+            {reference ? (
+              <div className="mt-5 space-y-4">
+                <RefractorClaim claim={reference.canonical.grip} />
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link className="archive-action" to={`/pitch/${reference.display.slug}#grip-lab`}>Inspect grip</Link>
+                  <CompareButton slug={reference.display.slug} />
+                </div>
+              </div>
+            ) : null}
+          </section>
         </div>
 
         {/* The honest line: what is physics, what is a teaching scale. */}

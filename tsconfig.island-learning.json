@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": false,
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "noEmit": false,
+    "outDir": "./output/island-learning/.declarations",
+    "rootDir": "./src"
+  },
+  "include": [
+    "src/island-learning/index.ts"
+  ]
+}

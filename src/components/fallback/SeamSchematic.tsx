@@ -1,8 +1,10 @@
 import { useId, useMemo } from 'react'
+import { BaseballCover } from './BaseballCover'
 import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
-import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
+import { projectSeam, splitRuns, buildLacing } from '../../lib/seam2d'
 import { solveHand, projectHand, type ProjectedSpine, type ProjectedPoint } from '../../lib/gripPose'
-import type { GripContactModel, Handedness } from '../../data/types'
+import { gripViewQuaternion, rotateByQuaternion } from '../../lib/gripView'
+import type { GripContactModel, GripView, Handedness } from '../../data/types'
 
 /*
   The 2D twin of the 3D ball, drawn from the same seam-point function. Roles:
@@ -28,6 +30,7 @@ export interface SeamSchematicProps {
   className?: string
   showAxis?: boolean
   showStitches?: boolean
+  showLabels?: boolean
   /** The pitch's render-space spin axis. Defaults to the four-seam's near-horizontal backspin. */
   spinAxis?: Vec3
   /** Gyro pitch (slider): the axis points toward the viewer and reads as a red dot. */
@@ -35,6 +38,8 @@ export interface SeamSchematicProps {
   /** Grip contacts to draw as solved finger silhouettes (the no-WebGL grip lab). */
   grip?: GripContactModel[]
   /** Which hand holds the ball; mirrors the silhouettes like the 3D hand. */
+  view?: GripView
+  referenceContacts?: GripContactModel[]
   handedness?: Handedness
   surface?: 'paper' | 'stage'
   title?: string
@@ -54,10 +59,13 @@ export function SeamSchematic({
   className = '',
   showAxis = true,
   showStitches = true,
+  showLabels = true,
   spinAxis = SPIN_AXIS,
   gyro = false,
   grip,
   handedness = 'right',
+  view,
+  referenceContacts,
   surface = 'paper',
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
 }: SeamSchematicProps) {
@@ -66,15 +74,20 @@ export function SeamSchematic({
   const arrowId = `arrow-${uid}`
   const clipId = `cover-${uid}`
 
-  const projected = useMemo(() => projectSeam(CX, CY, R, SEG), [])
+  const rotate = useMemo(() => {
+    if (!view) return undefined
+    const q = gripViewQuaternion(referenceContacts ?? grip ?? [], view)
+    return (point: Vec3) => rotateByQuaternion(point, q)
+  }, [view, referenceContacts, grip])
+  const projected = useMemo(() => projectSeam(CX, CY, R, SEG, rotate), [rotate])
   const runs = useMemo(() => splitRuns(projected), [projected])
   const stitches = useMemo(
-    () => (showStitches ? buildStitches(projected) : []),
+    () => (showStitches ? buildLacing(projected) : []),
     [projected, showStitches],
   )
 
   const axis = useMemo(() => {
-    const a = v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
+    const a = rotate ? rotate(v.normalize(spinAxis)) : v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
     const reach = R * 1.34
     return {
       x1: CX - a.x * reach,
@@ -85,7 +98,7 @@ export function SeamSchematic({
       // points at the viewer (dot, for a gyro pitch).
       inPlane: Math.hypot(a.x, a.y),
     }
-  }, [spinAxis])
+  }, [spinAxis, rotate])
 
   const axisAsDot = gyro || axis.inPlane < 0.34
   const stageSurface = surface === 'stage'
@@ -106,8 +119,9 @@ export function SeamSchematic({
       CX,
       CY,
       R,
+      rotate,
     )
-  }, [grip, handedness])
+  }, [grip, handedness, rotate])
 
   const fingers = hand?.fingers ?? []
 
@@ -122,11 +136,6 @@ export function SeamSchematic({
     >
       {decorative ? null : <title>{title}</title>}
       <defs>
-        <radialGradient id={gradId} cx="38%" cy="32%" r="72%">
-          <stop offset="0%" stopColor={stageSurface ? '#FBF7EC' : '#16171C'} />
-          <stop offset="62%" stopColor={stageSurface ? '#EDE3CF' : '#101116'} />
-          <stop offset="100%" stopColor={stageSurface ? '#D6CDB8' : '#070709'} />
-        </radialGradient>
         <marker id={arrowId} markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
           <path d="M0.5 0.5 L6 3.5 L0.5 6.5 Z" fill="var(--color-ink-3)" />
         </marker>
@@ -140,16 +149,7 @@ export function SeamSchematic({
         </clipPath>
       </defs>
 
-      <circle cx={CX} cy={CY} r={R} fill={`url(#${gradId})`} />
-      <circle
-        cx={CX}
-        cy={CY}
-        r={R}
-        fill="none"
-        stroke={stageSurface ? 'var(--color-bone)' : 'var(--color-ink-3)'}
-        strokeOpacity={stageSurface ? '0.24' : '0.5'}
-        strokeWidth="1"
-      />
+      <BaseballCover id={gradId} cx={CX} cy={CY} r={R} />
 
       {showAxis && !axisAsDot ? (
         <line
@@ -195,48 +195,20 @@ export function SeamSchematic({
           ))}
       </g>
 
-      {runs
-        .filter((r) => !r.front)
-        .map((r, i) => (
-          <path
-            key={`b-${i}`}
-            d={r.d}
-            fill="none"
-            stroke="var(--color-seam)"
-            strokeOpacity="0.22"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
+      <g clipPath={`url(#${clipId})`}>
+        {runs.filter((run) => run.front).map((run, i) => (
+          <path key={`f-${i}`} d={run.d} fill="none" stroke="#766F63"
+            strokeWidth=".8" strokeLinecap="round" opacity=".75" />
         ))}
-
-      {stitches
-        .filter((s) => s.front)
-        .map((s, i) => (
-          <line
-            key={`s-${i}`}
-            x1={s.x1}
-            y1={s.y1}
-            x2={s.x2}
-            y2={s.y2}
-            stroke="var(--color-seam)"
-            strokeOpacity="0.75"
-            strokeWidth="1"
-            strokeLinecap="round"
-          />
+        {stitches.filter((stitch) => stitch.front).map((stitch, i) => (
+          <g key={`s-${i}`}>
+            <line x1={stitch.x1} y1={stitch.y1} x2={stitch.x2} y2={stitch.y2}
+              stroke="#51473E" strokeWidth="1.8" strokeOpacity=".2" strokeLinecap="round" />
+            <line x1={stitch.x1} y1={stitch.y1} x2={stitch.x2} y2={stitch.y2}
+              stroke="#9E2B35" strokeWidth="1.1" strokeLinecap="round" />
+          </g>
         ))}
-
-      {runs
-        .filter((r) => r.front)
-        .map((r, i) => (
-          <path
-            key={`f-${i}`}
-            d={r.d}
-            fill="none"
-            stroke="var(--color-seam)"
-            strokeWidth="2.4"
-            strokeLinecap="round"
-          />
-        ))}
+      </g>
 
       {/* the hand in front of the ball — the hold itself */}
       <g clipPath={`url(#${clipId})`}>
@@ -271,14 +243,18 @@ export function SeamSchematic({
 
       {/* the labels ride outside the clip — a name cut in half by the rim is
           worse than a name that overhangs it */}
-      {fingers
+      {showLabels && fingers
         .filter((f) => f.contact.front)
         .map((f) => (
           <g key={`hl-${f.label}`}>
             <text
               x={f.points[0]?.x ?? f.contact.x}
               y={(f.points[0]?.y ?? f.contact.y) - 9}
-              fill={stageSurface ? 'var(--color-bone)' : 'var(--color-ink)'}
+              fill="#34271F"
+              stroke="#FBF8F0"
+              strokeWidth=".5"
+              paintOrder="stroke"
+              fontWeight="600"
               fontFamily="var(--font-mono)"
               fontSize="7.5"
               letterSpacing="0.8"

@@ -23,7 +23,7 @@ export function CloseCta() {
             Preserve the pitches baseball almost forgot.
           </h2>
           <p className="mx-auto mt-5 max-w-[48ch] text-[15.5px] leading-relaxed text-bone-2">
-            Start at the Pitch Index, open a specimen, and carry a piece of the record forward.
+            Open a grip. Follow a story. Leave a firsthand observation for the next person who comes looking.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -42,8 +42,7 @@ export function CloseCta() {
           Every grip filed before the arm forgets it. Every claim still wearing its source.
         </p>
         <p className="mx-auto mt-5 max-w-[52ch] text-[13px] leading-relaxed text-bone-2">
-          Trust stays attached: no fabricated spin, velocity, or break; no scraped imagery; no
-          copied prose. {REGISTRY_COUNT} sources in the citation registry, last checked{' '}
+          Follow the archive back to its records: {REGISTRY_COUNT} sources in the citation registry, retrieved through{' '}
           {REGISTRY_AS_OF}.{' '}
           <Link
             to="/sources"

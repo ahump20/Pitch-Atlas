@@ -117,7 +117,7 @@ export function SourcesPage() {
             <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
               {sources.map((s) => (
                 <li key={s.id}>
-                  <SourceBadge source={s} />
+                  <SourceBadge source={s} wrapLabel />
                 </li>
               ))}
             </ul>

@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { CompareButton } from '../compare/CompareButton'
+import { Link, useSearchParams } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
 import { AUSTIN_GRIPS, ATTACK_PLAN, CIRCLE_CHANGE_DISTINCTION, GRIP_LIBRARY_INTRO, GRIP_LIBRARY_ARSENAL, GRIP_LIBRARY_COMMAND_NOTE } from '../../data/grips'
 import type { GripLibraryEntry, GripClip } from '../../data/grips'
@@ -300,13 +301,15 @@ export function SpecimenGrips({
   entry,
   accentColor,
   className = '',
+  includePhotos = true,
 }: {
   entry?: GripLibraryEntry
   accentColor: string
   className?: string
+  includePhotos?: boolean
 }) {
   if (!entry) return null
-  const photos = entry.photos
+  const photos = includePhotos ? entry.photos : []
 
   return (
     <section
@@ -336,6 +339,8 @@ export function SpecimenGrips({
                 <GripPhoto key={p.src} photo={p} />
               ))}
             </div>
+          ) : !includePhotos && entry.photos.length ? (
+            <a href="#grip-lab" className="study-button">Inspect the photographs at the grip bench ↑</a>
           ) : (
             <div
               className="rounded-[16px] border border-dashed px-5 py-8"
@@ -480,6 +485,9 @@ export function GripLibraryIndex() {
 }
 
 export function GripLibrary() {
+  const [params, setParams] = useSearchParams()
+  const query = params.get('q') ?? ''
+  const matches = AUSTIN_GRIPS.filter(grip => `${grip.label} ${grip.note}`.toLowerCase().includes(query.toLowerCase().trim()))
   return (
     <div className="flex flex-col gap-12">
       <div className="flex flex-col gap-4">
@@ -489,16 +497,27 @@ export function GripLibrary() {
         </p>
       </div>
 
-      {AUSTIN_GRIPS.map((grip) => {
+      <div className="archive-library-search">
+        <label htmlFor="grip-search">Find a grip</label>
+        <input id="grip-search" type="search" value={query} placeholder="Pitch name or grip cue" onChange={event => {
+          const next = new URLSearchParams(params)
+          if (event.target.value) next.set('q', event.target.value); else next.delete('q')
+          setParams(next, { replace: true, preventScrollReset: true })
+        }} />
+        <p role="status">{matches.length} of {AUSTIN_GRIPS.length} grips</p>
+        {!matches.length && <button type="button" className="study-button" onClick={() => { const next = new URLSearchParams(params); next.delete('q'); setParams(next, { replace: true, preventScrollReset: true }) }}>Clear search</button>}
+      </div>
+      {matches.map((grip) => {
         const link = grip.specimenSlug
           ? { to: `/pitch/${grip.specimenSlug}`, label: 'See the specimen' }
           : grip.repertoireId
             ? { to: `/repertoire/${grip.repertoireId}`, label: 'Open the file' }
             : null
         return (
-          <article id={`grip-${grip.id}`} key={grip.id} className="scroll-mt-24 border-t border-bone/10 pt-9">
+          <article id={`grip-${grip.id}`} key={grip.id} className="archive-library-entry scroll-mt-24 border-t border-bone/10 pt-9">
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
               <h2 className="rfx-stitle text-[clamp(24px,4vw,42px)]">{grip.label}</h2>
+              {grip.specimenSlug && <CompareButton slug={grip.specimenSlug} />}
               {link ? (
                 <Link
                   to={link.to}

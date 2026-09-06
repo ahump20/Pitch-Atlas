@@ -20,10 +20,10 @@ export function WingsNav() {
       <div className="mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
         <ChapterMark n="04" name="The Other Doors" accent={SCENE_TINT} className="mb-4" />
         <h2 className="rfx-athletic v2-display max-w-[18ch] text-[clamp(30px,5vw,52px)] leading-[0.94]">
-          The other doors.
+          Keep the craft in view.
         </h2>
         <p className="mt-4 max-w-[54ch] text-[15px] leading-relaxed text-bone-2">
-          More doors open off the same atlas, each a different angle on the one craft.
+          Follow a pitcher’s decisions, recover a forgotten experiment, or take a familiar grip into another part of the game.
         </p>
 
         <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -34,7 +34,7 @@ export function WingsNav() {
           >
             <p className="rfx-athletic text-[clamp(24px,3.4vw,34px)] text-bone">The Craftsmen</p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
-              The arms that owned a pitch. Every quote in here is real and carries its source.
+              The hold is one part of the pitch. Read the choices, convictions, and turning points of the people who threw it.
             </p>
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Step into the hall <span aria-hidden="true">→</span>
@@ -50,8 +50,7 @@ export function WingsNav() {
               Lost Pitches of the Negro Leagues
             </p>
             <p className="mt-2 max-w-[46ch] text-[14.5px] leading-relaxed text-bone-2">
-              The statistics are being recovered; the technique mostly never will be. Every entry
-              wears the tier its record can actually support.
+              Names and eyewitness accounts preserve pieces of a craft that film did not catch. Read what survives, and see where the record falls silent.
             </p>
             <span className="mt-5 inline-block font-mono text-[10px] uppercase tracking-[0.14em] text-bone-2 transition-colors group-hover:text-bone">
               Enter the archive <span aria-hidden="true">→</span>

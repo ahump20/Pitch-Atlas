@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useId, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
 import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
@@ -39,7 +39,7 @@ interface Plotted {
 
 const LABELS: Record<string, { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' }> = {
   'two-seam': { dx: 0, dy: -24, anchor: 'middle' },
-  'circle-change': { dx: 16, dy: 2, anchor: 'start' },
+  'circle-change': { dx: 10, dy: 2, anchor: 'start' },
   splitter: { dx: 16, dy: 18, anchor: 'start' },
   splinker: { dx: -16, dy: 22, anchor: 'end' },
   forkball: { dx: -16, dy: -16, anchor: 'end' },
@@ -61,6 +61,7 @@ function shapeWords(entry: PitchAtlasEntry): string {
 }
 
 export function MovementMap() {
+  const scrollHintId = useId()
   const [hand, setHand] = useState<'RHP' | 'LHP'>('RHP')
   const [active, setActive] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -109,9 +110,19 @@ export function MovementMap() {
         </div>
       </div>
 
+      <p id={scrollHintId} className="text-sm leading-relaxed text-ink-2 md:hidden">
+        Scroll the map sideways to read every pitch. The pitch links below open the same files.
+      </p>
+      <div
+        className="overflow-x-auto rounded-sm focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan"
+        role="region"
+        aria-label="Scrollable pitch shape map"
+        aria-describedby={scrollHintId}
+        tabIndex={0}
+      >
       <svg
         viewBox={`0 0 ${W} ${H}`}
-        className="w-full"
+        className="w-full min-w-[640px]"
         role="img"
         aria-label={`Shape map of the filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch sits in the direction it breaks (ride up top, drop below, arm-side and glove-side across) against a spinless ball at center. A map of direction, not a measured magnitude.`}
         xmlns="http://www.w3.org/2000/svg"
@@ -121,10 +132,10 @@ export function MovementMap() {
         <line x1={CX - CLAMP - 16} y1={CY} x2={CX + CLAMP + 16} y2={CY} stroke="var(--color-ink-3)" strokeWidth="1" />
 
         {/* pole labels */}
-        <text x={CX} y={CY - CLAMP - 22} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="2" textAnchor="middle">RIDE</text>
-        <text x={CX} y={CY + CLAMP + 30} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="2" textAnchor="middle">DROP</text>
-        <text x={CX - CLAMP - 20} y={CY - 8} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="2" textAnchor="middle">{leftPole}</text>
-        <text x={CX + CLAMP + 20} y={CY - 8} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="10" letterSpacing="2" textAnchor="middle">{rightPole}</text>
+        <text x={CX} y={CY - CLAMP - 16} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="2" textAnchor="middle">RIDE</text>
+        <text x={CX} y={CY + CLAMP + 24} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="2" textAnchor="middle">DROP</text>
+        <text x={CX - CLAMP - 20} y={CY - 8} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="2" textAnchor="middle">{leftPole}</text>
+        <text x={CX + CLAMP + 20} y={CY - 8} fill="var(--color-ink-2)" fontFamily="var(--font-mono)" fontSize="12" letterSpacing="2" textAnchor="middle">{rightPole}</text>
 
         {/* spinless reference */}
         <circle cx={CX} cy={CY} r="6" fill="none" stroke="var(--color-ink-2)" strokeWidth="1" strokeDasharray="3 3" opacity="0.7" />
@@ -167,7 +178,7 @@ export function MovementMap() {
                   y={y + label.dy}
                   fill="var(--color-ink)"
                   fontFamily="var(--font-mono)"
-                  fontSize="10"
+                  fontSize="12"
                   textAnchor={label.anchor}
                   dominantBaseline="middle"
                   paintOrder="stroke"
@@ -189,24 +200,25 @@ export function MovementMap() {
           const name = p.entry.canonical.name
           const meta = `${FAMILY_META[p.family].label} · ${shapeWords(p.entry)}`
           const padX = 10
-          const w = Math.max(name.length * 6.4, meta.length * 5.4) + padX * 2
-          const h = 36
+          const w = Math.max(name.length, meta.length) * 8.5 + padX * 2
+          const h = 42
           const above = p.y - 14 - h > 4
           const ty = above ? p.y - 14 - h : p.y + 16
           const tx = Math.min(Math.max(p.x - w / 2, 4), W - w - 4)
           return (
             <g pointerEvents="none" aria-hidden="true">
               <rect x={tx} y={ty} width={w} height={h} rx="7" fill="#14120C" stroke={FAMILY_META[p.family].color} strokeOpacity="0.5" />
-              <text x={tx + padX} y={ty + 15} fill="var(--color-bone)" fontFamily="var(--font-mono)" fontSize="11">
+              <text x={tx + padX} y={ty + 16} fill="var(--color-bone)" fontFamily="var(--font-mono)" fontSize="12">
                 {name}
               </text>
-              <text x={tx + padX} y={ty + 28} fill="var(--color-bone-2)" fontFamily="var(--font-mono)" fontSize="9.5">
+              <text x={tx + padX} y={ty + 32} fill="var(--color-bone-2)" fontFamily="var(--font-mono)" fontSize="12">
                 {meta}
               </text>
             </g>
           )
         })()}
       </svg>
+      </div>
 
       {/* legend + links to each filed pitch */}
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">

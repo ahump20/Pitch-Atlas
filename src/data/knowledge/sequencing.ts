@@ -121,10 +121,10 @@ export const sequencingWing: KnowledgeWing = {
   confidenceNote:
     'Core concepts are sourced from Baseball Prospectus, The Hardball Times, and coaching references. The route keeps the tunnel and sequencing ideas but removes inch gaps, rate tables, and perceived-speed examples.',
   related: [
-    { label: 'Compare two pitches', to: '/compare' },
+    { label: 'Compare two pitches', to: '/compare', reason: 'Bring your selected pair back into view and inspect their grips, cues, and schematic directions.' },
     { label: 'Pitch Design', to: '/learn/pitch-design' },
     { label: 'Mechanics', to: '/learn/mechanics' },
     { label: 'Spin & Shape', to: '/learn/spin' },
-    { label: 'Fastball', to: '/pitch/four-seam' },
+    { label: 'Fastball', to: '/pitch/four-seam', reason: 'Return to the four-seam hold discussed in this lesson.' },
   ],
 }

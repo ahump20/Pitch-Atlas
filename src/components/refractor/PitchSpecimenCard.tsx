@@ -1,3 +1,5 @@
+import { CompareButton } from '../compare/CompareButton'
+import { useCompare } from '../compare/compareContext'
 import type { PitchAtlasEntry } from '../../data/types'
 import { RefractorCard } from './RefractorCard'
 import { ACCENT, FALLBACK_ACCENT } from './accents'
@@ -33,12 +35,15 @@ export function PitchSpecimenCard({
   /** Material treatment hook; the content contract stays shared. */
   className?: string
 }) {
+  const compare = useCompare()
+  const selected = compare?.selection.a === entry.display.slug || compare?.selection.b === entry.display.slug
   const { display } = entry
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
   const resolvedFace = specimenFace(entry, { priority, clipPresentation })
 
   return (
+    <div className={`archive-specimen ${selected ? 'is-selected' : ''}`} style={{ maxWidth: maxWidth ?? 360 }}>
     <RefractorCard
       to={`/pitch/${display.slug}`}
       index={index}
@@ -54,5 +59,7 @@ export function PitchSpecimenCard({
       foil={foil}
       className={className}
     />
+    <CompareButton slug={display.slug} className="archive-specimen-compare" />
+    </div>
   )
 }

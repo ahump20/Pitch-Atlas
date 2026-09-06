@@ -1,8 +1,9 @@
+import { BaseballCover } from '../fallback/BaseballCover'
 import { v, seamPoint, SEAM_VIEW_TILT, type Vec3 } from '../../lib/seam'
 // The 2D seam projection helpers live in one place (lib/seam2d) so the hero ball
 // and the schematic draw the same curve and can never silently diverge. The ball's
 // tuned constants ride as explicit call-site arguments below (seg=300, stitch 6/10).
-import { projectSeam, splitRuns, buildStitches } from '../../lib/seam2d'
+import { projectSeam, splitRuns, buildLacing } from '../../lib/seam2d'
 import type { SeamAnchoredPoint } from '../../data/types'
 
 /*
@@ -43,7 +44,7 @@ export function RefractorBall({
 
   const pts = projectSeam(cx, cy, r, 300)
   const runs = splitRuns(pts)
-  const st = buildStitches(pts, 6, 10)
+  const st = buildLacing(pts, 4, 8)
 
   const sa = v.rotateAxis(v.normalize(spinAxis), SEAM_VIEW_TILT.axis, SEAM_VIEW_TILT.angle)
   const k = r * 0.98
@@ -91,27 +92,9 @@ export function RefractorBall({
       style={{ position: 'relative', zIndex: 2, display: 'block', width: '100%', height: '100%' }}
     >
       <defs>
-        {/* Aged cover, not a glossy orb: the terminator runs down into a genuine
-            shadow so the sphere has a dark side. The old ramp bottomed out at
-            #B8A582 and never got dark, which is what made it read plastic. */}
-        <radialGradient id={`lea-${id}`} cx="38%" cy="26%" r="84%">
-          <stop offset="0%" stopColor="#FFFDF7" />
-          <stop offset="34%" stopColor="#EFE6D4" />
-          <stop offset="66%" stopColor="#C9B795" />
-          <stop offset="88%" stopColor="#7E6E52" />
-          <stop offset="100%" stopColor="#3A3125" />
-        </radialGradient>
         <radialGradient id={`sun-${id}`} cx="50%" cy="50%" r="58%">
           <stop offset="0%" stopColor={accent.c3} stopOpacity="0.02" />
           <stop offset="62%" stopColor={accent.c3} stopOpacity="0.14" />
-          <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
-        </radialGradient>
-        {/* A rim LIGHT, not a paint job. At 0.72 the pitch accent washed the whole
-            cover — the circle change's old hot pink turned the ball bubblegum. The
-            leather stays leather; the accent only catches its edge. */}
-        <radialGradient id={`rim-${id}`} cx="70%" cy="76%" r="62%">
-          <stop offset="62%" stopColor={accent.c3} stopOpacity="0" />
-          <stop offset="91%" stopColor={accent.c3} stopOpacity="0.42" />
           <stop offset="100%" stopColor={accent.c3} stopOpacity="0" />
         </radialGradient>
         <radialGradient id={`halo-${id}`} cx="50%" cy="50%" r="50%">
@@ -126,29 +109,8 @@ export function RefractorBall({
             <feMergeNode in="SourceGraphic" />
           </feMerge>
         </filter>
-        {/* Speculars and the cast shadow are GRADIENTS, not blurred shapes. A
-            filter:blur() inside a 300-unit viewBox rasterizes at that resolution
-            and is then scaled up into the card window, which resampled visibly
-            soft on a high-DPI screen — the "pixelated" read. A gradient is
-            resolution-independent and costs nothing. */}
-        <radialGradient id={`spec-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#fff" stopOpacity="0.6" />
-          <stop offset="42%" stopColor="#fff" stopOpacity="0.3" />
-          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={`spec2-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#fff" stopOpacity="0.92" />
-          <stop offset="52%" stopColor="#fff" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#fff" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id={`cast-${id}`} cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#000" stopOpacity="0.62" />
-          <stop offset="55%" stopColor="#000" stopOpacity="0.26" />
-          <stop offset="100%" stopColor="#000" stopOpacity="0" />
-        </radialGradient>
       </defs>
 
-      <ellipse cx={cx} cy={cy + r + 10} rx={r * 0.95} ry={17} fill={`url(#cast-${id})`} />
       {/* a faint accent sunburst behind the ball so it reads set INTO the dark window,
           not floating on it (very low opacity; the dramatic halo, when on, layers over). */}
       <circle cx={cx} cy={cy} r={r + 30} fill={`url(#sun-${id})`} />
@@ -162,23 +124,15 @@ export function RefractorBall({
           </g>
         </>
       ) : null}
-      <circle cx={cx} cy={cy} r={r} fill={`url(#lea-${id})`} />
-      <circle cx={cx} cy={cy} r={r} fill={`url(#rim-${id})`} />
-      <circle cx={cx} cy={cy} r={r} fill="#000" opacity="0.12" style={{ mixBlendMode: 'multiply' }} />
-      <ellipse cx={cx - 34} cy={cy - 42} rx={54} ry={35} fill={`url(#spec-${id})`} />
-      <ellipse cx={cx - 44} cy={cy - 52} rx={18} ry={13} fill={`url(#spec2-${id})`} />
-
-      {runs.filter((x) => !x.front).map((x, i) => (
-        <path key={`b${i}`} d={x.d} fill="none" stroke="#6f5036" strokeWidth="1.1" strokeDasharray="2 3" opacity="0.5" />
+      <BaseballCover id={`cover-${id}`} cx={cx} cy={cy} r={r} />
+      {runs.filter((run) => run.front).map((run, i) => (
+        <path key={`f${i}`} d={run.d} fill="none" stroke="#766F63" strokeWidth="1" opacity=".8" />
       ))}
-      {st.filter((s) => !s.front).map((s, i) => (
-        <line key={`sb${i}`} x1={s.x1.toFixed(1)} y1={s.y1.toFixed(1)} x2={s.x2.toFixed(1)} y2={s.y2.toFixed(1)} stroke="#FF3B55" strokeWidth="1.7" strokeLinecap="round" opacity="0.32" />
-      ))}
-      {runs.filter((x) => x.front).map((x, i) => (
-        <path key={`f${i}`} d={x.d} fill="none" stroke="#5a3a23" strokeWidth="1.4" opacity="0.85" />
-      ))}
-      {st.filter((s) => s.front).map((s, i) => (
-        <line key={`sf${i}`} x1={s.x1.toFixed(1)} y1={s.y1.toFixed(1)} x2={s.x2.toFixed(1)} y2={s.y2.toFixed(1)} stroke="#FF2433" strokeWidth="2.3" strokeLinecap="round" filter={`url(#glow-${id})`} />
+      {st.filter((stitch) => stitch.front).map((stitch, i) => (
+        <g key={`sf${i}`}>
+          <line x1={stitch.x1} y1={stitch.y1} x2={stitch.x2} y2={stitch.y2} stroke="#50463D" strokeWidth="2.4" strokeLinecap="round" opacity=".2" />
+          <line x1={stitch.x1} y1={stitch.y1} x2={stitch.x2} y2={stitch.y2} stroke="#9E2B35" strokeWidth="1.5" strokeLinecap="round" />
+        </g>
       ))}
 
       {pins.map((pin) => (

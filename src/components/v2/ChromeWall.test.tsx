@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { describe, it, expect } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
 import { featuredPitchSet } from '../../data/featured'
@@ -6,6 +7,20 @@ import { gripEntryFor } from '../../data/grips'
 import { ChromeWall } from './ChromeWall'
 
 describe('ChromeWall (the filed set)', () => {
+  it('keeps focus on one stable source control through both card faces', async () => {
+    const user = userEvent.setup()
+    const { container } = render(<MemoryRouter><ChromeWall /></MemoryRouter>)
+    const control = screen.getAllByRole('button', { name: /to its sourced back/ })[0]
+    await user.click(control)
+    expect(control).toHaveFocus()
+    expect(control).toHaveAttribute('aria-pressed', 'true')
+    expect(container.querySelector('.v2-face')).toHaveAttribute('inert')
+    await user.keyboard('{Enter}')
+    expect(control).toHaveFocus()
+    expect(control).toHaveAttribute('aria-pressed', 'false')
+    expect(container.querySelector('.v2-face-back')).toHaveAttribute('inert')
+  })
+
   it('shows one real filed specimen per core family', () => {
     const { container } = render(
       <MemoryRouter>

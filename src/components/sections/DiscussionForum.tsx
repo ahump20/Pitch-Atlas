@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
 import { FlagIcon, ImagePlusIcon, MessageCircleIcon, RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { toast } from 'sonner'
-import { useDiscussion, type SubmitResult } from '../../hooks/useDiscussion'
+import { useDiscussion, type SubmitInput, type SubmitProgress, type SubmitResult } from '../../hooks/useDiscussion'
 import type { DiscussionMedia, DiscussionPost } from '../../lib/discussion'
 import { sniffMediaKind } from '../../lib/discussion'
 import { DISCUSSION_LIMITS, MEDIA_ACCEPT, UPLOAD_TERMS } from '../../data/discussion'
@@ -92,6 +92,18 @@ function MediaItem({
   displayName: string
   filedAt: string
 }) {
+  const video = useRef<HTMLVideoElement>(null)
+  useEffect(() => {
+    const element = video.current
+    if (!element) return
+    const pauseWhenHidden = () => { if (document.hidden) element.pause() }
+    const observer = typeof IntersectionObserver === 'undefined' ? null : new IntersectionObserver(entries => {
+      if (entries.every(entry => !entry.isIntersecting)) element.pause()
+    })
+    observer?.observe(element)
+    document.addEventListener('visibilitychange', pauseWhenHidden)
+    return () => { observer?.disconnect(); document.removeEventListener('visibilitychange', pauseWhenHidden) }
+  }, [m.url, m.kind])
   const accent = specimenAccent(m.id)
   const serial = specimenSerial(topicName, filedAt, m.id)
   const kindLabel = m.kind === 'video' ? 'Motion specimen' : 'Image specimen'
@@ -122,6 +134,7 @@ function MediaItem({
       />
     ) : (
       <video
+        ref={video}
         src={m.url}
         controls
         preload="metadata"
@@ -179,7 +192,7 @@ function PostBody({
   onDelete: (postId: string) => void
 }) {
   return (
-    <article className={depth > 0 ? 'border-l-2 border-ink/15 pl-4' : ''}>
+    <article className={depth > 0 ? 'archive-reply' : 'archive-post'}>
       <div className="flex flex-wrap items-baseline gap-x-2">
         <span className="rfx-athletic rfx-skew text-base text-cyan">{post.displayName}</span>
         <span className="mono-label text-ink-3">{timeAgo(post.createdAt)}</span>
@@ -199,7 +212,8 @@ function PostBody({
               <button
                 type="button"
                 onClick={() => onReport({ mediaId: m.id })}
-                className="self-start font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3 transition-colors hover:text-seam"
+                aria-label={`Report media uploaded by ${post.displayName}`}
+                className="min-h-11 self-start font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3 transition-colors hover:text-seam"
               >
                 Report media
               </button>
@@ -259,7 +273,7 @@ function Composer({
   defaultName: string
   acceptedTerms: boolean
   onAcceptTerms: () => Promise<void>
-  onSubmit: (input: { displayName: string; body: string; files: File[] }) => Promise<SubmitResult>
+  onSubmit: (input: SubmitInput) => Promise<SubmitResult>
   onCancel?: () => void
   placeholder: string
   compact?: boolean
@@ -268,6 +282,7 @@ function Composer({
   const [body, setBody] = useState('')
   const [files, setFiles] = useState<File[]>([])
   const [busy, setBusy] = useState(false)
+  const [progress, setProgress] = useState<SubmitProgress | null>(null)
   const [err, setErr] = useState<string | null>(null)
   // the brief 'Filed ✓' confirmation; settles back on its own
   const [sent, setSent] = useState(false)
@@ -322,7 +337,7 @@ function Composer({
     }
     setBusy(true)
     try {
-      const result = await onSubmit({ displayName: name.trim(), body: body.trim(), files })
+      const result = await onSubmit({ displayName: name.trim(), body: body.trim(), files, onProgress: setProgress })
       // The note saved. Always clear the composer so the same file can't be
       // submitted twice.
       setBody('')
@@ -342,11 +357,12 @@ function Composer({
       setErr(e2 instanceof Error ? e2.message : 'Could not file that.')
     } finally {
       setBusy(false)
+      setProgress(null)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="archive-composer" aria-busy={busy}>
       <FieldGroup>
         <Field data-invalid={err?.includes('name') ? true : undefined}>
           <FieldLabel htmlFor={`${fileId}-name`}>Your name</FieldLabel>
@@ -440,6 +456,11 @@ function Composer({
         </FieldError>
       ) : null}
 
+      {busy && <div className="archive-upload-status" role="status">
+        <p>{progress?.phase === 'uploading' ? `Attaching media · ${progress.completed} of ${progress.total} processed` : 'Saving your note…'}</p>
+        {progress?.phase === 'uploading' && <progress aria-label="Media files processed" value={progress.completed} max={progress.total} />}
+        <p>Your note saves before its attachments. Keep this page open while they finish.</p>
+      </div>}
       <div className="flex items-center gap-3">
         <Button
           type="submit"

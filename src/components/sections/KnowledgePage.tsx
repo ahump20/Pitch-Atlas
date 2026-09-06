@@ -1,3 +1,4 @@
+import { ChapterSections } from '../study/ChapterSections'
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { KnowledgeWing } from '../../data/knowledge/types'
@@ -44,6 +45,8 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         sub={wing.sub}
       />
 
+      <ChapterSections key={wing.slug} label="In this lesson" sections={wing.sections.map((section, i) => ({ id: `lesson-${i + 1}`, label: section.heading }))} />
+
       {wing.boundaryOnly ? (
         <section className="mx-auto max-w-6xl px-5 pt-12 md:px-8">
           <EducationalDisclaimer />
@@ -54,7 +57,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         const claims = section.pullStat ? [...(section.claims ?? []), section.pullStat.claim] : (section.claims ?? [])
 
         return (
-          <section key={section.heading}>
+          <section key={section.heading} id={`lesson-${i + 1}`} className={`archive-lesson${i % 2 === 0 ? ' archive-paper' : ''}`}>
             <div className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-16">
               <StageTierMarker index={pad(i + 1)} label={section.heading} />
 
@@ -112,7 +115,7 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
                   className="rfx-plate group flex items-center justify-between gap-3 rounded-sm px-5 py-4"
                   style={{ '--gc': '#B9D4E5' } as CSSProperties}
                 >
-                  <span className="font-athletic text-lg uppercase text-ink">{r.label}</span>
+                  <span><span className="font-athletic text-lg uppercase text-ink">{r.label}</span>{r.reason && <span className="mt-2 block text-sm leading-relaxed text-ink-2">{r.reason}</span>}</span>
                   <span className="mono-label text-seam transition-colors group-hover:text-ink">→</span>
                 </Link>
               ))}
@@ -121,13 +124,12 @@ export function KnowledgePage({ wing }: { wing: KnowledgeWing }) {
         </section>
       ) : null}
 
-      {idx >= 0 ? (
-        <WingNav prev={prev} next={next} position={idx + 1} total={WINGS.length} />
-      ) : null}
-
       {wing.boundaryOnly ? null : (
         <DiscussionPanel topicKey={`learn:${wing.slug}`} topicName={wing.navLabel || wing.title} />
       )}
+      {idx >= 0 ? (
+        <WingNav prev={prev} next={next} position={idx + 1} total={WINGS.length} />
+      ) : null}
     </>
   )
 }

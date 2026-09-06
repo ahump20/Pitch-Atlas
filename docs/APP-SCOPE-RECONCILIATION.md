@@ -1,0 +1,108 @@
+# Archive Within Reach — learning continuity reconciliation
+
+Review date: 2026-09-05. This records the approved full-app scope against implementation and actual evidence. It follows the [material correction](IDENTITY-REFINEMENT.md) and [connected archive checkpoint](ARCHIVE-WORLD-EVIDENCE.md); earlier previews and recordings retain their original source identities.
+
+## Current implementation
+
+Web runtime `ad955dd1953bef52deaf6f093a50c9bb1241c0a3` adds staged softball study at [preview37facf4b](https://37facf4b.pitch-atlas.pages.dev). The sourced written grip stays visible while Hold, Spin and Movement steps change; step URLs survive visiting a practitioner and returning. Grip, Lessons, Discussion and Sources chapters follow page order. A neutral stock card replaces the flat three-column account. No softball photograph, fingertip geometry or master variant was invented. [Softball evidence](SOFTBALL-STUDY-EVIDENCE.md) records the exact runtime, before/after stills and hosted recording.
+
+Web source through `d4d4b43b6bf56ad1fa9ee685fe7a34cd35a9fe56` extends the existing React application. Sandbox now retains its filed reference and illustrative tilt in the URL, links to the sourced grip and comparison, and places the experiment directly after its controls on phones. The Grip Library search precedes external lessons. Movement Map labels retain a readable size in a named, keyboard-focusable horizontal region on phones. The citation registry wraps complete source titles and seasons. Every comparison view exposes the same selected-specimen Study links; browser Back preserves the full comparison. Selected Compare controls remain legible inside reference panels.
+
+The corresponding native learning repair adds search and exact bundled-record exits to Grips, shared per-pitch variant selection, aligned canonical and variant Cues, selected-specimen inspection inside the comparison sheet, real chapter targets, a source ledger, and explicit photo zoom/reset controls. Its source review and nine focused state/mapping tests passed. Native source `53985e721e7f2fc9bae823399b0861d41d91f02b` is pushed to [draft PR35](https://github.com/ahump20/Pitch-Atlas-iOS/pull/35); the current simulator journey, chapter/photo controls and contrast were inspected. [Exact-source CI34000133588](https://github.com/ahump20/Pitch-Atlas-iOS/actions/runs/34000133588) passed75 tests with zero failures, the native build and content-bundle drift check. A clean Pro checkout of that exact source subsequently produced an accepted unsigned arm64 Release archive. One signed development export on Air failed at codesign with `errSecInternalComponent`, exit70; no IPA was produced.
+
+## Scope and evidence matrix
+
+| Area | Implemented experience | Evidence and remaining boundary |
+| --- | --- | --- |
+| Homepage and collectible cards | Dominant signature specimen, selective burnt orange, retained ordinary foil/chrome finishes, recessed media and layered stock; existing coordinated reveal/tilt and static reduced-motion treatment. | Current material checkpoint has accepted desktop/mobile stills. Earlier continuous discovery recordings remain behavior evidence at their stated versions. Physical 60fps remains unmeasured. |
+| Index and specimen study | Search/filter URL context, selection tray, grip-first steps, inspection, variants, source links and compact chapters. | Earlier recorded index → study → inspection → Back and comparison round trip passed; current hosted journey passes, including index query/scroll restoration. Native6bb960c now has observed row restoration with intra-row normalization; nested basic/specimen/sibling history and final non-diagnostic acceptance pass and are recorded separately in [native context evidence](NATIVE-CONTEXT-EVIDENCE.md). |
+| Comparison | Two slots, explicit replacement, Grips/Cues/Movement, hand/orientation, missing evidence states and study exits. | Web regression tests exercise all three views and complete query/state restoration. Actual native Back retained the pair, Cues view and selected Gerrit Cole variant. Schematics do not mirror photographs or claim measured movement. |
+| Grips | Search before lessons on web; native searches the seven authored grip records and routes only their explicit filed/basic mappings. | Web 390px library frame inspected. Native current search/study frame inspected; empty search is honest about the seven-record library. Not every accepted pitch has an authored grip entry. |
+| Sandbox and Movement Map | Readable controls/legends, useful specimen exits, retained experiment context. | Desktop/390px/568px captures have no document overflow. Phone map intentionally scrolls internally. Sandbox phone ordering repaired after inspection; final reordered phone frame inspected and accepted. |
+| Craftsmen, Lost Pitches and Learn | Editorial reading, existing contextual media, related sourced routes; native real chapter menus. | Twelve additional web route families reviewed at desktop/mobile entry and reading positions. Prior native practitioner/lost/lesson journeys exist; current specimen chapters, Sources and the settled Craftsmen hall were inspected; broader native editorial coverage remains partial. A still of one record does not audit every record. |
+| Softball | Existing pitch, practitioner, fastpitch and slowpitch families retain sourced content; written Hold/Spin/Movement study now keeps the grip beside the changing account, with step restoration and complete static notes. | Current 1440px,390px,568px study/Back/keyboard/reduced-motion checks pass; hosted21.52-second practitioner round trip and no-JavaScript written record verified. There is no bundled native softball model or wing: native work uses existing bundled records, and web coverage is not native parity. |
+| Sources, About, Privacy, Support and Account | Shared type/spacing; full registry labels; existing account/error actions retained. Native Privacy/Support open the existing web pages. | Web public utility frames reviewed. Native Sources legend, specimen source ledger and logged-out Account host inspected. Authenticated/error states and every utility layout are not comprehensively inspected. No authenticated account, destructive or publication action is inferred from visual review. |
+| Discussion and media | Existing web moderation/reply/upload safeguards and native platform capabilities retained; native Discussion chapter opens the existing local mode. | Provenance/moderation regression tests remain mandatory. No fake community content, new backend table or native video upload. Signed-in upload/retry/report runtime states are not comprehensively inspected. |
+| Accessibility and failures | Reduced motion, native reduced transparency, static/no-WebGL references, semantic controls, bounded zoom and composed empty states. | Automated tests and representative layouts cover these mechanisms. Full spoken VoiceOver, actual native edge-swipe, first-launch disconnected usage and physical performance remain separate acceptance checks. |
+
+## Verification receipts
+
+- Current `ad955dd`: typecheck, lint, full suite **998 passed/9 skipped**, final build **109 prerendered routes**, six distribution checks/one skip. [Exact-runtime CI34004442978](https://github.com/ahump20/Pitch-Atlas/actions/runs/34004442978) passed. All **19 hosted smoke checks** passed against preview37facf4b with installed Chrome. The first smoke invocation could not find the bundled Playwright browser; the configured Chrome run completed.
+
+- Web `2037c0d`: typecheck, lint and full suite passed: **995 tests passed, 9 skipped**. The preceding run's sole failure was a documentation slogan rejected by the current mission-copy test; the document was corrected and the test passed. No trust model was weakened.
+- Web `d4d4b43`: subsequent layout-only change passed **21 Sandbox tests**, typecheck and lint. Build passed with **109 prerendered routes**, six distribution checks passed and one existing skip.
+- Twelve viewport/route captures for Sandbox, Grips, Movement Map and Sources reported document width equal to viewport width (1440, 390 and 568). Source wrapping and phone map/library frames were directly inspected. These captures preceded the final Sandbox reorder; fresh reordered captures at all three sizes also have no document overflow, and the 390px control-to-ball composition was inspected.
+- Scoped source review accepted the seven earlier web learning files and nine native learning files. Root separately reviewed the shared comparison links and layout-only Sandbox change.
+- Two earlier Sandbox recordings are diagnostic: one lost the development server, another exposed the missing Cues study exit. They are not complete acceptance recordings.
+
+README mission, claim provenance/confidence, rights records, moderation safeguards and authoritative seam function are preserved. Rendering remains labeled a seam-informed schematic. No new pitch-data API, measured trajectory, source claim or native reference record was invented.
+
+## Current web runtime evidence
+
+All following artifacts are in `output/playwright/` in the living-media checkout:
+
+- `scope-hosted-card-seam-study.webm`: **32.28 seconds**, current hosted Chrome card selection, forward/reverse native scroll, leather-to-seam controls and staged study. No page errors. Root inspected `scope-hosted-seam-stage.png`; the rejected beige stage is absent. This is interaction evidence, not a physical-device frame-rate measurement.
+- `scope-accepted-sandbox-journey.webm`: **76.12 seconds**, continuous built-app Sandbox → grip → Fingers → zoom/reset/Escape → Back → second reference → Cues → second specimen → Back → Sandbox. Reference, tilt, pair and view retained; no page errors. `scope-accepted-compare-cues.png` and `scope-accepted-sandbox-return.png` were directly inspected.
+- `scope-hosted-acceptance/results.json`: current Cloudflare runtime passes desktop1440, mobile390 and short-landscape568 study/compare/zoom/Escape/overflow with Reduced Motion and WebGL disabled. Root inspected hosted homepage desktop/mobile and mobile study stills.
+- `scope-hosted-acceptance/page@41e9a9202f24fe6ad605412511c07c2a.webm`: actual current-hosted index selection → staged study → inspection → Back → comparison → specimen → Back. Browser checks confirm index search/scroll, pair, hand and orientation retention.
+- The same hosted run confirms a previously loaded specimen's text/schematic study works after an offline reload and the prerendered full notes remain readable with JavaScript disabled. Some photo/video and community requests fail offline; this is **not** a claim that all web media is cached or that web first-launch offline works.
+
+The failed `scope-final-sandbox-journey.webm` is also diagnostic: its automation used an exact label matcher that included option text. The accessible combobox-name matcher resolved correctly, and the accepted recording above completed without a product-label change.
+
+## Current native runtime evidence
+
+Artifacts: `/Users/AustinHumphrey/Pitch-Atlas/artifacts/native/archive-world/learning-continuity/`.
+
+- `continuous-learning-flow.mp4`: uninterrupted **662.29-second** Grips search → filed Four-seam → Gerrit Cole variant → Compare Two-seam/Cues → Two-seam specimen → native Back → retained comparison → Done/Back to retained Grips query/tray. The initial launch selected only the Grips tab. No route shortcut was used within the journey.
+- `learning-flow-edited-excerpt-4x.mp4`: **73.05-second edited, accelerated excerpt**, with intervals in `recording-ledger.md`. Both recordings precede the final presentation-only contrast correction and are not relabeled as final-color footage.
+- Final-build `grips-contrast-fixed.png`, `sources-provenance-contrast.png`, specimen chapter frames, `photo-100.png`, `photo-150.png` and `photo-reset-100.png` inspected. Actual Reset restored aspect-fit scale; Close exited to Grips. A later deliberate150%-zoom/right-pan/Reset/Close check also passed with root-inspected frames; see [native context evidence](NATIVE-CONTEXT-EVIDENCE.md). Spoken VoiceOver remains unverified.
+- Final-build `account-logged-out-current.png` and `craftsmen-hall-settled.png` inspected. Account was reached through actual Atlas navigation; the empty sign-in form remained untouched, and no authentication or community write occurred.
+- Maximum Dynamic Type specimen reflows and changes chapter navigation into a menu. Actual menu → Grip and reduced-preference readbacks captured. These are representative checks, not every screen at every text size.
+- Grips action contrast improved from4.184:1 to9.008:1. Secondhand/community provenance uses existing warm text at10.087:1 on neutral stock; explicit semantic labels remain. Global decorative sand was not changed.
+- Static Sources app CPU time increased0.01seconds across10.03seconds with no UI calls (about0.1% of one core); three `ps` samples read0.0%. This bounded simulator observation found no sustained idle rendering there, and does not establish physical-device60fps or thermal behavior.
+
+At the earlier53985e7 capture checkpoint, all ten changed native source/test files matched authoritative Air; among56 tracked Swift files, only the capture clone's documented three-line DEBUG `PA_COMPARE` overlay differs. Existing `PA_TAB`, `PA_PITCH` and `PA_CRAFTSMAN` are authoritative DEBUG hooks. Archives use clean source matching authoritative Air, never the capture overlay. The native PR carries [learning-continuity-evidence.md](https://github.com/ahump20/Pitch-Atlas-iOS/blob/53985e721e7f2fc9bae823399b0861d41d91f02b/docs/learning-continuity-evidence.md).
+
+## Subsequent package and navigation checks
+
+The separately requested island learning adapter is versioned at
+`0.1.0+60e837d` and handed to the host integration task after independent review
+and complete source/artifact hash verification. It exports canonical records,
+comparison state and seam functions without a renderer or app deployment.
+[Adapter documentation](ISLAND-LEARNING-ADAPTER.md) defines the maintenance and
+media boundaries. PR191 CI34008132380 passed on GitHub merge ref `c08060d` for
+head `60e837d`:1,002 tests/9 skips,109 prerendered routes,6 distribution checks/1
+skip and19 local-preview browser smoke checks. Hosted smoke was skipped in that
+CI because no hosted URL was exposed for the merge ref. The independently
+verified hosted app below remains `ad955dd`.
+
+Native Index source `6bb960c` adds pre-navigation row capture, covered-layout
+protection and header reversal handling. Eight focused tests passed; diagnostic
+runtime coordinates confirm Four-Seam and a deeper Split-Finger row are retained
+with their partial-row offset normalized. The initial wrong-row failure report
+was corrected after root image and coordinate inspection. Subsequent e486501 basic and related-pitch direct links passed the entire native
+Back chain; its14.9-second build and clean unsigned archive passed. Current CI and
+artifact custody are tracked in
+[native context evidence](NATIVE-CONTEXT-EVIDENCE.md).
+
+## Delivery boundary
+
+Current web runtime `ad955dd1953bef52deaf6f093a50c9bb1241c0a3` is deployed at [immutable preview37facf4b](https://37facf4b.pitch-atlas.pages.dev), with green exact-runtime CI34004442978 and19 hosted smoke checks. Earlier d4d4b43 runtime evidence above retains preview5fe32fee and its995-test boundary; the new softball recording and stills use ad955dd.
+
+Current native source `e48650169741f41bef978de95f2de8512c370a39` passed
+CI34009999020 on merge refa050710:83tests/0failures, build and content drift.
+Its final14.9-second simulator build, full basic/specimen/sibling/Back chain and
+clean unsigned arm64 archive passed. The archive at
+`/tmp/PitchAtlas-learning-e486501-Pro.xcarchive` is version1.1.0(11), iOS17 minimum;
+its74-file ledger matched after transfer to Air. [Native context evidence](NATIVE-CONTEXT-EVIDENCE.md)
+records current source and artifact hashes. No new signing attempt followed.
+
+Earlier native source53985e7 has green75-test CI and a successful Pro unsigned archive at `/tmp/PitchAtlas-learning-53985e7-Pro.xcarchive`, arm64,1.1.0(11), minimum iOS17. The build receipt records exit0 and `ARCHIVE SUCCEEDED`. A74-file content ledger matched after transfer to Air. One development export then failed at codesign with `errSecInternalComponent`, exit70; no IPA was produced. The earlier Air asset-tool stall is diagnostic history and its owned processes are now absent. The paired iPhone16 is currently available and already contains com.pitchatlas.app1.1.0(11); its local data was preserved. No device installation, signed export, production or TestFlight/App Store delivery is claimed. [Release checklist](ARCHIVE-RELEASE-CHECKLIST.md) retains signing and physical acceptance requirements.
+
+The broader acceptance boundary remains visible: no current native softball bundle was added; standard native navigation has not been replaced with a shared card-to-detail morph; every authenticated/error state, spoken VoiceOver, native edge swipe and physical first-launch offline/performance scenario is not proven by representative captures. These limits do not undo the completed connected-learning implementation, and they prevent a claim that every condition of the full production plan has passed.
+
+## Files changed in this learning follow-up
+
+Web: `src/pages/SoftballPitchChapter.tsx`, `src/components/study/SoftballStudy.tsx`, `src/components/study/SoftballStudy.test.tsx`, `src/styles/softball-study.css`, `src/pages/SandboxPage.tsx`, `src/pages/SandboxPage.test.tsx`, `src/pages/GripsPage.tsx`, `src/components/sections/MovementMap.tsx`, `src/components/layout/Masthead.tsx`, `src/components/provenance/SourceBadge.tsx`, `src/pages/SourcesPage.tsx`, `src/pages/ComparePage.tsx`, `src/styles/compare.css`, `src/components/compare/compare.test.tsx`. Evidence/release documents record the observed runtime versions separately.
+
+Native, under `PitchAtlas/`: `Components/GripPhotoZoom.swift`, `Core/Theme/PitchAtlasTheme.swift`, `Features/Community/CommunityPanel.swift`, `Features/Craftsmen/CraftsmanDetailView.swift`, `Features/Grips/GripsView.swift`, `Features/Learn/KnowledgeWingView.swift`, `Features/LostPitches/LostPitchDetailView.swift`, `Features/PitchDetail/PitchDetailView.swift`, `Features/Study/CompareSelection.swift`; plus `PitchAtlasTests/CompareSelectionTests.swift` and `docs/learning-continuity-evidence.md`.

@@ -155,6 +155,14 @@ export function RefractorCard({
       {to ? (
         <Link
           to={to}
+          viewTransition
+          onClick={(event) => {
+            if (event.defaultPrevented || reduced || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+            const card = event.currentTarget
+            card.style.viewTransitionName = 'active-specimen'
+            // Also clear if navigation is interrupted and this element survives.
+            window.setTimeout(() => { card.style.viewTransitionName = '' }, 1000)
+          }}
           ref={tiltRef as Ref<HTMLAnchorElement>}
           {...handlers}
           className={`block ${cardClass}`}

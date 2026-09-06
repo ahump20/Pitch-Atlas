@@ -55,13 +55,12 @@ export function RepertoirePage() {
 
       <header className="pitch-index-header grid items-end gap-6 pb-4 md:grid-cols-[minmax(0,1fr)_300px] md:gap-10 md:pb-8">
         <div>
-          <h1 className="rfx-athletic rfx-skew rfx-stroke mt-3 text-bone" style={{ fontSize: 'clamp(40px,8vw,86px)' }}>
-            The Pitch <span className="rfx-holo">Index</span>
+          <h1 className="rfx-athletic rfx-skew mt-3 text-bone" style={{ fontSize: 'clamp(40px,7vw,72px)' }}>
+            The Pitch <span className="text-[#d1b58b]">Index</span>
           </h1>
           <p className="pitch-index-intro mt-4 max-w-[58ch] text-[15px] leading-relaxed text-bone-2">
-            Every accepted pitch by family, plus the honest edges: aliases, illusions, and banned
-            doctored balls. The shelf holds {INDEX_SCOPE.shelfLabel}; a filed pitch opens its full
-            specimen, and a basic file stays honest until evidence earns more.
+            Find the pitch you know, or follow a name you have never heard. Browse {INDEX_SCOPE.shelfLabel}:
+            filed specimens open into grip study; basic files preserve the account we have.
           </p>
         </div>
         <IndexLedger className="pitch-index-ledger hidden md:block" />
@@ -73,18 +72,14 @@ export function RepertoirePage() {
       </section>
 
       <div className="mx-auto max-w-[1240px] px-5 md:px-8">
-        <PitchIndex
-          afterControls={(
+        <PitchIndex />
+      </div>
             <ExternalMediaRail
               query={{ placement: 'repertoire', limit: 2 }}
               eyebrow="Filed conversation"
               title="Voices beside the taxonomy."
               intro="The index names the families. These credited lessons show how pitchers and teachers keep testing, describing, and handing the craft forward."
-              className="relative left-1/2 w-screen -translate-x-1/2"
             />
-          )}
-        />
-      </div>
 
       {/* the whole accepted catalog as one map, a complement to the searchable rows */}
       <LineageMap />

@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import type { PitchAtlasEntry } from '../../data/types'
 import { craftsmenForPitch } from '../../data/craftsmen'
 import { accentForSlug } from '../refractor/accents'
+import { ClaimProse } from '../provenance/ClaimProse'
+import { SeamSchematic } from '../fallback/SeamSchematic'
+import { compareUrl, EMPTY_SELECTION } from '../compare/selection'
 
 /*
   The connective tissue at the foot of a specimen: the arms who owned this pitch,
@@ -24,14 +27,20 @@ export function PitchConnections({
   siblings: PitchAtlasEntry[]
 }) {
   const masters = craftsmenForPitch(entry.display.slug)
+  const companion = siblings[0]
   if (masters.length === 0 && siblings.length === 0) return null
 
   return (
-    <section className="border-t border-bone/8 py-12 md:py-16" aria-label="Connections">
+    <section className="archive-connections border-t border-bone/8 py-12 md:py-16" aria-label="Connections">
+      <div className="archive-connection-heading"><p className="archive-eyebrow">Keep following the pitch</p><h2>A hold is a beginning.</h2><p>Set another grip beside it, meet a practitioner, or add what you noticed to the conversation.</p></div>
+      {companion && <div className="archive-companion">
+        <div className="archive-companion-drawing" aria-hidden="true"><SeamSchematic grip={companion.canonical.gripModel.status === 'filed' ? companion.canonical.gripModel.contacts : undefined} surface="stage" showAxis={false} showStitches={false} title="" /></div>
+        <div><p className="archive-eyebrow">Another {familyLabel.toLowerCase()} in the collection</p><h3>Set it beside the {companion.display.shortName.toLowerCase()}.</h3><ClaimProse claim={companion.canonical.grip} proseClassName="text-bone-2 text-[15px] leading-relaxed" /><Link className="archive-text-link" to={compareUrl({ ...EMPTY_SELECTION, a: entry.display.slug, b: companion.display.slug })}>Compare these two grips <span aria-hidden="true">→</span></Link></div>
+      </div>}
       {masters.length > 0 ? (
         <div className="mb-12">
           <p className="rfx-skick" style={{ color: accentColor }}>
-            {masters.length > 1 ? 'The arms who owned it' : 'The arm who owned it'}
+            {masters.length > 1 ? 'The people behind the pitch' : 'The person behind the pitch'}
           </p>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {masters.map((m) => {
@@ -45,10 +54,11 @@ export function PitchConnections({
                 >
                   <span className="mono-label text-ink-3">{m.specimenNo} · {m.era}</span>
                   <h3 className="rfx-platetitle text-2xl">{m.name}</h3>
+                  <p className="text-sm leading-relaxed text-bone-2">{m.tagline}</p>
                   <p className="mono-label mt-auto text-bone-2">
                     {m.signaturePitch}
                     <span className="ml-2 text-cyan transition-colors group-hover:text-bone">
-                      Open the file →
+                      Follow the story →
                     </span>
                   </p>
                 </Link>

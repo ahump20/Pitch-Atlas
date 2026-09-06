@@ -1,4 +1,4 @@
-import { orientedSeamPolyline } from './seam'
+import { orientedSeamPolyline, seamPolyline, type Vec3 } from './seam'
 
 /*
   Orthographic projection of the seam to 2D screen space. The single place the
@@ -13,8 +13,9 @@ interface P2 {
 }
 
 /** Project the oriented seam onto a circle of radius r centered at (cx, cy). */
-export function projectSeam(cx: number, cy: number, r: number, segments = 280): P2[] {
-  return orientedSeamPolyline(segments, 1).map((p) => ({
+export function projectSeam(cx: number, cy: number, r: number, segments = 280, rotate?: (point: Vec3) => Vec3): P2[] {
+  const points = rotate ? seamPolyline(segments, 1).map(rotate) : orientedSeamPolyline(segments, 1)
+  return points.map((p) => ({
     x: cx + p.x * r,
     y: cy - p.y * r, // screen y grows downward
     z: p.z,
@@ -82,4 +83,19 @@ export function buildStitches(points: P2[], every = 5, len = 6): Stitch[] {
     })
   }
   return out
+}
+
+/** Paired lacing for cover illustrations. Counts and spacing remain schematic. */
+export function buildLacing(points: P2[], every = 4, len = 6): Stitch[] {
+  return buildStitches(points, every, len).flatMap((stitch) => {
+    const dx = stitch.x2 - stitch.x1
+    const dy = stitch.y2 - stitch.y1
+    const cx = (stitch.x1 + stitch.x2) / 2
+    const cy = (stitch.y1 + stitch.y2) / 2
+    const tip = { x: cx - dy * .3, y: cy + dx * .3 }
+    return [
+      { x1: stitch.x1, y1: stitch.y1, x2: tip.x, y2: tip.y, front: stitch.front },
+      { x1: stitch.x2, y1: stitch.y2, x2: tip.x, y2: tip.y, front: stitch.front },
+    ]
+  })
 }

@@ -28,6 +28,7 @@ import 'react-tweet/theme.css'
 import './index.css'
 import { routes } from './routes'
 import { ServiceWorkerUpdateController } from './components/pwa/ServiceWorkerUpdateController'
+import { handleViewTransitionCancellation } from './lib/viewTransitions'
 
 /*
   The client entry. The archive is a multi-page site now: a data router holds the
@@ -42,6 +43,7 @@ const rootEl = document.getElementById('app')
 if (!rootEl) throw new Error('Pitch Atlas: mount element #app not found')
 
 const head = createHead()
+handleViewTransitionCancellation(document)
 const router = createBrowserRouter(routes)
 const root = createRoot(rootEl)
 
