@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p tsconfig.json && vite build && PITCH_ATLAS_CHECK_DIST=1 vitest run src/test/prerender-integrity.test.ts",
+    "build:island-learning": "node scripts/build-island-learning.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
