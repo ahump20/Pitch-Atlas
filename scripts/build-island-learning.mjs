@@ -44,6 +44,14 @@ for (const file of sourceFiles) {
 const version = `${packageJson.version}+${sourceCommit.slice(0, 7)}`
 const output = path.join(root, 'output', 'island-learning', version)
 const declarations = path.join(root, 'output', 'island-learning', '.declarations')
+const walkFiles = async (directory, prefix = '') => {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = await Promise.all(entries.map(async (entry) => {
+    const relative = path.posix.join(prefix, entry.name)
+    return entry.isDirectory() ? walkFiles(path.join(directory, entry.name), relative) : [relative]
+  }))
+  return files.flat().sort()
+}
 
 await rm(output, { recursive: true, force: true })
 await rm(declarations, { recursive: true, force: true })
@@ -69,17 +77,23 @@ const declarationEntry = path.join(output, 'index.d.ts')
 const declarationSource = await readFile(declarationEntry, 'utf8')
 await writeFile(declarationEntry, declarationSource.replaceAll("from '../", "from './"))
 
+const declarationFiles = (await walkFiles(output)).filter((file) => file.endsWith('.d.ts'))
+const declarationSet = new Set(declarationFiles)
+for (const file of declarationFiles) {
+  const absoluteFile = path.join(output, file)
+  const source = await readFile(absoluteFile, 'utf8')
+  const rewritten = source.replace(/(from\s+['"])(\.{1,2}\/[^'"]+)(['"])/g, (match, prefix, specifier, suffix) => {
+    const target = path.posix.normalize(path.posix.join(path.posix.dirname(file), specifier))
+    if (declarationSet.has(`${target}.d.ts`)) return `${prefix}${specifier}.js${suffix}`
+    if (declarationSet.has(`${target}/index.d.ts`)) return `${prefix}${specifier}/index.js${suffix}`
+    throw new Error(`Unresolved declaration import in ${file}: ${specifier}`)
+  })
+  if (rewritten !== source) await writeFile(absoluteFile, rewritten)
+}
+
 const sha256 = async (relativePath) => createHash('sha256')
   .update(await readFile(path.join(output, relativePath)))
   .digest('hex')
-const walkFiles = async (directory, prefix = '') => {
-  const entries = await readdir(directory, { withFileTypes: true })
-  const files = await Promise.all(entries.map(async (entry) => {
-    const relative = path.posix.join(prefix, entry.name)
-    return entry.isDirectory() ? walkFiles(path.join(directory, entry.name), relative) : [relative]
-  }))
-  return files.flat().sort()
-}
 
 const artifactPackage = {
   name: '@pitch-atlas/island-learning',
