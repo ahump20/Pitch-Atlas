@@ -46,3 +46,5 @@ README, source/confidence UI, canonical data model, source registry, grip/media 
 Earlier continuous web/native recordings demonstrate the unchanged learning behavior with the previous material styling. They remain baseline interaction evidence and are not relabeled as recordings of this palette. Earlier accessibility-size and reduced-preference native captures likewise precede this style-only correction.
 
 This is a preview and native source review. Production, signing/export, physical-device performance, full VoiceOver traversal, first-launch offline and swipe-back acceptance, and TestFlight/App Store delivery remain separate in the [release checklist](ARCHIVE-RELEASE-CHECKLIST.md). The existing unsigned native archive is from `1e2b854`, not this follow-up.
+
+The subsequent [full-app learning reconciliation](APP-SCOPE-RECONCILIATION.md) records the newer comparison, browsing and native learning repairs and their distinct runtime evidence. This document remains the earlier visual checkpoint.

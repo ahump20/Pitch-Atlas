@@ -1,6 +1,10 @@
 # Pitch Atlas — release checklist
 
-This is the separate release stage created by Austin's 2026-09-05 goal revision. These checks remain open and do not hold the completed implementation goal in a retry loop.
+This is the separate release stage created by Austin's 2026-09-05 goal revision. External checks remain separate from implementation. The full-app reconciliation also records any product or runtime verification gaps; this checklist does not declare the entire approved plan complete.
+
+## Learning continuity — 2026-09-05
+
+[Scope and runtime reconciliation](APP-SCOPE-RECONCILIATION.md) records web runtime `d4d4b43` at [preview5fe32fee](https://5fe32fee.pitch-atlas.pages.dev), green995-test CI and19 hosted smoke checks, plus current study/comparison/offline/no-JavaScript evidence. Native source `53985e721e7f2fc9bae823399b0861d41d91f02b` passed [CI34000133588](https://github.com/ahump20/Pitch-Atlas-iOS/actions/runs/34000133588):75 tests/0 failures, build and bundled-content drift. Actual search/study/variant/compare/return, chapter, photo controls, contrast and representative large-text/utility views were inspected. The single current unsigned archive stalled in asset-catalog compilation and was stopped; no accepted53985e7 archive exists. No production or store delivery is asserted.
 
 ## Selective-color refinement — 2026-09-05
 
@@ -27,6 +31,7 @@ The [identity refinement evidence](IDENTITY-REFINEMENT.md) records the current v
 
 | Requirement | Current evidence | Condition for the next action |
 | --- | --- | --- |
+| Current unsigned learning archive | Exact53985e7 attempt stalled in `actool`/`ibtoold` while CoreSimulator loaded runtime-profile metadata; build log and helper CPU stopped progressing. Only owned build processes were stopped, preserving diagnostics and partial output. | Resolve the asset-tool/runtime metadata read obstruction, then make one new exact-source archive. The existing1e2b archive is not the current learning build. |
 | Signed native archive and export | Fresh exact-head Air retry failed at CodeSign with `PitchAtlas.app: errSecInternalComponent`, exit 65; no signed archive was produced. Pro reports zero valid signing identities. | Make the existing Air signing key available in its interactive macOS session. Then archive final native source, validate/export, and inspect the IPA. No password or keychain-permission changes are part of this plan. |
 | Physical native inspection | The paired iPhone 16 was most recently reported `unavailable` by devicectl. Simulator evidence is retained separately. | Connect/unlock the available development device, install the signed build, and complete the study/compare/return journey. |
 | Native swipe-back | Source audit found standard NavigationStack/navigationDestination/NavigationLink behavior and no disabled or intercepted pop gesture. Automated edge gestures did not complete navigation; the tool capped travel and reported snapshot timeouts. A tap on Back is not treated as swipe evidence. | On the signed device build, select a pair, filter Index, open a specimen, complete and cancel an edge swipe, then verify search, scroll, and pair restoration. Repair an observed product defect if one appears. |
