@@ -1,12 +1,46 @@
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
-import { cp, mkdir, readFile, rm, writeFile } from 'node:fs/promises'
+import { cp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const packageJson = JSON.parse(await readFile(path.join(root, 'package.json'), 'utf8'))
 const sourceCommit = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim()
+const sourcePaths = [
+  'package.json',
+  'scripts/build-island-learning.mjs',
+  'src/island-learning',
+  'src/data/pitches',
+  'src/data/grips/index.ts',
+  'src/data/sources.ts',
+  'src/data/types.ts',
+  'src/components/compare/selection.ts',
+  'src/lib/seam.ts',
+  'src/lib/seam2d.ts',
+  'tsconfig.json',
+  'tsconfig.island-learning.json',
+  'vite.config.island-learning.ts',
+]
+const sourceStatus = () => execFileSync(
+  'git',
+  ['status', '--porcelain=v1', '--untracked-files=all', '--', ...sourcePaths],
+  { cwd: root, encoding: 'utf8' },
+).trim()
+const initialStatus = sourceStatus()
+if (initialStatus) {
+  throw new Error(`Island learning source inputs must match committed HEAD:\n${initialStatus}`)
+}
+const sourceFiles = execFileSync('git', ['ls-files', '--', ...sourcePaths], { cwd: root, encoding: 'utf8' })
+  .trim()
+  .split('\n')
+  .filter(Boolean)
+  .sort()
+for (const file of sourceFiles) {
+  const headBlob = execFileSync('git', ['rev-parse', `HEAD:${file}`], { cwd: root, encoding: 'utf8' }).trim()
+  const workingBlob = execFileSync('git', ['hash-object', file], { cwd: root, encoding: 'utf8' }).trim()
+  if (headBlob !== workingBlob) throw new Error(`${file} does not match ${sourceCommit}`)
+}
 const version = `${packageJson.version}+${sourceCommit.slice(0, 7)}`
 const output = path.join(root, 'output', 'island-learning', version)
 const declarations = path.join(root, 'output', 'island-learning', '.declarations')
@@ -38,6 +72,14 @@ await writeFile(declarationEntry, declarationSource.replaceAll("from '../", "fro
 const sha256 = async (relativePath) => createHash('sha256')
   .update(await readFile(path.join(output, relativePath)))
   .digest('hex')
+const walkFiles = async (directory, prefix = '') => {
+  const entries = await readdir(directory, { withFileTypes: true })
+  const files = await Promise.all(entries.map(async (entry) => {
+    const relative = path.posix.join(prefix, entry.name)
+    return entry.isDirectory() ? walkFiles(path.join(directory, entry.name), relative) : [relative]
+  }))
+  return files.flat().sort()
+}
 
 const artifactPackage = {
   name: '@pitch-atlas/island-learning',
@@ -56,6 +98,15 @@ const artifactPackage = {
 }
 await writeFile(path.join(output, 'package.json'), `${JSON.stringify(artifactPackage, null, 2)}\n`)
 
+if (sourceStatus()) throw new Error('Island learning source inputs changed during the build')
+const emittedFiles = (await walkFiles(output)).filter((file) => file !== 'receipt.json')
+const fileHashes = Object.fromEntries(
+  await Promise.all(emittedFiles.map(async (file) => [file, await sha256(file)])),
+)
+const sourceHashes = Object.fromEntries(
+  await Promise.all(sourceFiles.map(async (file) => [file, createHash('sha256').update(await readFile(path.join(root, file))).digest('hex')])),
+)
+
 const receipt = {
   schemaVersion: 1,
   artifact: '@pitch-atlas/island-learning',
@@ -64,14 +115,17 @@ const receipt = {
   sourceCommit,
   maintainedBy: artifactPackage.pitchAtlas.maintainedBy,
   generatedAt: new Date().toISOString(),
-  files: {
-    'index.js': await sha256('index.js'),
-    'index.js.map': await sha256('index.js.map'),
-    'index.d.ts': await sha256('index.d.ts'),
-    'index.d.ts.map': await sha256('index.d.ts.map'),
-    'package.json': await sha256('package.json'),
-  },
+  sourceFiles: sourceHashes,
+  files: fileHashes,
 }
 await writeFile(path.join(output, 'receipt.json'), `${JSON.stringify(receipt, null, 2)}\n`)
+const receiptFiles = Object.keys(receipt.files).sort()
+const actualFiles = (await walkFiles(output)).filter((file) => file !== 'receipt.json')
+if (JSON.stringify(receiptFiles) !== JSON.stringify(actualFiles)) {
+  throw new Error('Receipt file set does not match emitted artifact file set')
+}
+for (const [file, expected] of Object.entries(receipt.files)) {
+  if (await sha256(file) !== expected) throw new Error(`Receipt hash mismatch: ${file}`)
+}
 await rm(declarations, { recursive: true, force: true })
 process.stdout.write(`${output}\n`)

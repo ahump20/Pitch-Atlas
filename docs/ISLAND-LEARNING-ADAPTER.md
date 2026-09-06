@@ -8,7 +8,9 @@ and maintainer of the underlying record.
 Build it with `npm run build:island-learning`. The command writes outside the app
 deployment directory at `output/island-learning/<package-version>+<commit>/`.
 That folder contains bundled ESM, source maps, TypeScript declarations, package
-metadata, and `receipt.json` with the source commit and SHA-256 hashes. It is not
+metadata, and `receipt.json` with the source commit, committed input hashes, and
+SHA-256 hashes for every emitted file in the importable closure. The build refuses
+to attribute dirty or untracked adapter inputs to `HEAD`. It is not
 an npm publication and the normal Vite app build does not deploy it.
 
 The public entrypoint exports the canonical `PITCHES` array and `pitchBySlug`, the
@@ -16,7 +18,8 @@ unchanged data-model types (including `Claim`, `Source`, `ClaimConfidence`, and
 `RightsStatus`), `CONFIDENCE_META`, the comparison selection contract and helpers,
 and the shared 3D/2D seam functions. Vite bundles those original modules into the
 ESM artifact; there is no copied pitch registry or translated data layer. The
-entrypoint has no React, router, SEO, browser-global, network, or storage startup.
+entrypoint has no React, router, SEO, DOM, network, or storage startup. Its compare
+helpers intentionally use the standard `URLSearchParams` Web API, available in Node.
 
 Consumers should treat records as evidence-bearing material. Claims retain their
 source and confidence labels; visual references retain rights and attribution.
