@@ -1,0 +1,15 @@
+.softball-study{padding:32px 0 64px}
+.softball-study-layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:start;gap:28px}
+.softball-study-file{position:relative;padding:28px;background:radial-gradient(ellipse at 12% 0%,#414044,#202125 65%);border:1px solid #aaa18e66;border-radius:6px;color:#eee7dc;box-shadow:inset 0 0 0 5px #18191b,inset 0 0 0 6px #a99b7933,0 5px 0 -2px #59534a,0 10px 0 -5px #242326,0 18px 36px #0005}
+.softball-file-index{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font:11px/1.5 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:#c8b99d;border-bottom:1px solid #a99b7955;padding-bottom:18px}
+.softball-study-file h3{font:400 clamp(28px,3.2vw,42px)/1.15 var(--font-athletic,Anton,sans-serif);text-transform:uppercase;margin:24px 0}
+.softball-study-file .study-eyebrow{margin-bottom:14px;color:#c8b99d}
+.softball-file-note{margin-top:24px;padding-top:18px;border-top:1px solid #a99b7955;font-size:12px;line-height:1.7;color:#c5bdb1}
+.softball-study-reading{background:#1c1d21;padding:24px;border:1px solid #a99b7933;border-radius:4px}
+.softball-study .study-steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+.softball-study .study-steps button[aria-pressed=true]{background:#c5b18c22;border-color:#c5b18c}
+.softball-study .study-step-content{min-height:260px}
+.softball-study .study-step-content>.archive-text-link{display:inline-flex;margin-top:22px;min-height:44px;align-items:center}
+.softball-study .study-full-record h4{font:400 24px/1.2 var(--font-display,Georgia,serif);margin:24px 0 14px}
+@media(max-width:767px),(max-height:700px) and (orientation:landscape){.softball-study-layout{grid-template-columns:1fr;gap:24px}.softball-study-file{padding:24px}.softball-study-reading{padding:18px}.softball-study .study-step-content{min-height:0}.softball-study-file h3{margin-block:18px}}
+@media(prefers-reduced-motion:reduce){.softball-study *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

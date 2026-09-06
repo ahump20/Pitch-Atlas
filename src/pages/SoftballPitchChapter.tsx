@@ -10,6 +10,7 @@ import { StageTierMarker } from '../components/layout/StageTierMarker'
 import { ClaimProse } from '../components/provenance/ClaimProse'
 import { SoftballProvenanceRow } from '../components/provenance/SoftballProvenanceRow'
 import { FamilyRail } from '../components/pitch/FamilyRail'
+import { SoftballStudy } from '../components/study/SoftballStudy'
 import { ChapterSections } from '../components/study/ChapterSections'
 import { RefractorSource } from '../components/provenance/RefractorClaim'
 import { NotFound } from './NotFound'
@@ -120,36 +121,21 @@ export function SoftballPitchChapter() {
           </h1>
           <p className="mt-5 max-w-[56ch] text-lg leading-relaxed text-bone-2">{pitch.tagline}</p>
           <SoftballProvenanceRow
-            claimType="Movement"
-            claim={pitch.movement}
+            claimType="Grip"
+            claim={pitch.grip}
             openQuestion={pitch.openQuestion}
             className="mt-5 max-w-[72ch]"
           />
+          <a className="archive-action mt-6 inline-flex" href="#softball-grip">Study this grip →</a>
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+      <div className="mx-auto max-w-6xl px-5 pt-8 md:px-8">
+        <ChapterSections sections={[{ id: 'softball-grip', label: 'Grip' }, { id: 'softball-lessons', label: 'Lessons' }, { id: 'softball-discussion', label: 'Discussion' }, { id: 'softball-sources', label: 'Sources' }]} />
+        <SoftballStudy pitch={pitch} />
+      </div>
+      <section className="mx-auto max-w-6xl px-5 py-10 md:px-8">
         <p className="display max-w-[58ch] text-2xl leading-snug text-ink md:text-[1.75rem]">{pitch.intro}</p>
-      </section>
-
-      <div className="mx-auto max-w-6xl px-5 md:px-8"><ChapterSections sections={[{ id: 'softball-grip', label: 'Grip' }, { id: 'softball-lessons', label: 'Lessons' }, { id: 'softball-sources', label: 'Sources' }]} /></div>
-      <section id="softball-grip" className="study-anchor mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
-        <StageTierMarker index="01" label="Read the hold" />
-        <p className="mb-8 max-w-[64ch] text-ink-2">Start with the sourced grip, then follow its spin and movement. This file has no measured finger geometry or grip photograph; the written account is the specimen.</p>
-        <div className="grid grid-cols-1 gap-x-10 gap-y-8 md:grid-cols-3">
-          <div className="border-t border-ink/15 pt-4">
-            <div className="mono-label mb-3 text-ink-2">The grip</div>
-            <ClaimProse claim={pitch.grip} />
-          </div>
-          <div className="border-t border-ink/15 pt-4">
-            <div className="mono-label mb-3 text-ink-2">The spin</div>
-            <ClaimProse claim={pitch.spin} />
-          </div>
-          <div className="border-t border-ink/15 pt-4">
-            <div className="mono-label mb-3 text-ink-2">The movement</div>
-            <ClaimProse claim={pitch.movement} />
-          </div>
-        </div>
       </section>
 
       {pitch.physicsNote ? (
@@ -179,11 +165,6 @@ export function SoftballPitchChapter() {
         </p>
       </section>
 
-      <section id="softball-sources" className="study-anchor mx-auto max-w-6xl px-5 py-12 md:px-8">
-        <StageTierMarker index="04" label="Sources in this file" />
-        <ul className="grid gap-4">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
-      </section>
-
       <FamilyRail
         heading={`Others in the ${FAMILY_LABEL[pitch.family].toLowerCase()}`}
         items={familySiblings}
@@ -194,7 +175,12 @@ export function SoftballPitchChapter() {
         <h2>Follow the hold into the circle.</h2>
         <div className="mt-5 grid gap-5 md:grid-cols-2">{SOFTBALL_CRAFTSMEN.filter(person => person.signaturePitchSlug === pitch.slug).map(person => <div key={person.slug}><Link className="archive-text-link" to={`/softball/craftsmen/${person.slug}`}>{person.name} <span aria-hidden="true">→</span></Link><p className="mt-2 text-sm leading-relaxed text-bone-2">{person.tagline}</p></div>)}</div>
       </section>}
-      <DiscussionPanel topicKey={`softball:${pitch.slug}`} topicName={pitch.name} />
+      <div id="softball-discussion" className="study-anchor"><DiscussionPanel topicKey={`softball:${pitch.slug}`} topicName={pitch.name} /></div>
+
+      <section id="softball-sources" className="study-anchor mx-auto max-w-6xl px-5 py-12 md:px-8">
+        <StageTierMarker index="04" label="Sources in this file" />
+        <ul className="grid gap-4">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
+      </section>
 
       <ChapterNav prev={prev} next={next} />
     </>
