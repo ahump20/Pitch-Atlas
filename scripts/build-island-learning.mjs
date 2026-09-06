@@ -68,7 +68,6 @@ execFileSync(process.execPath, [path.join(root, 'node_modules', 'typescript', 'b
 })
 
 await cp(path.join(declarations, 'island-learning', 'index.d.ts'), path.join(output, 'index.d.ts'))
-await cp(path.join(declarations, 'island-learning', 'index.d.ts.map'), path.join(output, 'index.d.ts.map'))
 await cp(path.join(declarations, 'data'), path.join(output, 'data'), { recursive: true })
 await cp(path.join(declarations, 'lib'), path.join(output, 'lib'), { recursive: true })
 await cp(path.join(declarations, 'components'), path.join(output, 'components'), { recursive: true })

@@ -7,7 +7,7 @@ and maintainer of the underlying record.
 
 Build it with `npm run build:island-learning`. The command writes outside the app
 deployment directory at `output/island-learning/<package-version>+<commit>/`.
-That folder contains bundled ESM, source maps, TypeScript declarations, package
+That folder contains bundled ESM, its runtime source map, TypeScript declarations, package
 metadata, and `receipt.json` with the source commit, committed input hashes, and
 SHA-256 hashes for every emitted file in the importable closure. The build refuses
 to attribute dirty or untracked adapter inputs to `HEAD`. It is not
@@ -15,6 +15,9 @@ an npm publication and the normal Vite app build does not deploy it.
 Generated declaration imports use explicit `.js` ESM specifiers (and explicit
 `index.js` paths for declaration directories), so named canonical types resolve
 under both TypeScript `NodeNext` and `bundler` module resolution.
+Declaration maps are intentionally omitted because the emitted declaration
+specifiers are normalized after TypeScript emission; shipping the original maps
+would attach stale generated-column mappings to the portable declarations.
 
 The public entrypoint exports the canonical `PITCHES` array and `pitchBySlug`, the
 unchanged data-model types (including `Claim`, `Source`, `ClaimConfidence`, and
