@@ -2,6 +2,16 @@
 
 This is the separate release stage created by Austin's 2026-09-05 goal revision. External checks remain separate from implementation. The full-app reconciliation also records any product or runtime verification gaps; this checklist does not declare the entire approved plan complete.
 
+## Native Index continuity — 2026-09-06
+
+[Native context evidence](NATIVE-CONTEXT-EVIDENCE.md) records final source
+`e486501`, successful14.9-second simulator build and clean unsigned Pro archive.
+Observed row restoration, basic-file study/Back, header reversal and query/filter
+retention pass. Restoration aligns the retained row to the top rather than
+preserving its partial-row pixel offset. Final e486501 CI34009999020 passed83tests/0failures, build and content drift on
+GitHub merge refa050710. The related-family repair passed the full specimen→sibling→Back chain. The74-file archive ledger matched after transfer to Air.
+No signed export or physical acceptance follows from the unsigned archive.
+
 ## Softball study and native archive — 2026-09-06
 
 Web runtime `ad955dd` is deployed at [preview37facf4b](https://37facf4b.pitch-atlas.pages.dev). Exact CI34004442978,998 tests/9 skips,typecheck,lint,109-route build and19 hosted smoke checks passed. [Softball evidence](SOFTBALL-STUDY-EVIDENCE.md) includes three-size inspection, keyboard/Back/reduced-motion/no-JavaScript checks and an actual21.52-second hosted journey. Native exact53985e7 unsigned archive succeeded on Pro; one signed development export failed at codesign with `errSecInternalComponent`, exit70. The paired iPhone16 is available, with an existing Pitch Atlas installation preserved.
@@ -35,7 +45,7 @@ The [identity refinement evidence](IDENTITY-REFINEMENT.md) records the current v
 
 | Requirement | Current evidence | Condition for the next action |
 | --- | --- | --- |
-| Current unsigned learning archive | Clean Pro exact53985e7 archive succeeded, exit0, arm64,1.1.0(11), iOS17 minimum. Its74-file content ledger matched after transfer to Air. | Complete. Retain this source/archive custody for signing. The earlier Air asset-tool stall is historical. |
+| Current unsigned learning archive | Clean Pro exacte486501 archive succeeded, exit0, arm64,1.1.0(11), iOS17 minimum. Source, metadata and receipt hashes are recorded in native context evidence. | Unsigned preparation complete for this source. The earlier53985e7 transfer/export remains separately versioned; the final archive has not been signed or installed on a device. |
 | Signed native archive and export | One export of the successful Pro archive on Air failed at codesign with `errSecInternalComponent`, exit70; no IPA. Air enumerates five valid identities, Pro zero. | Resolve signing-key access in the existing authorized macOS session, then export and verify the IPA. Identity enumeration does not prove codesign can use a private key. No keychain/password/permission change was made. |
 | Physical native inspection | The paired iPhone16 currently reports available and contains com.pitchatlas.app1.1.0(11). Its existing local data was preserved. | After signed export succeeds, preserve device-local state during installation and complete the study/compare/return journey. Simulator evidence is separate. |
 | Native swipe-back | Source audit found standard NavigationStack/navigationDestination/NavigationLink behavior and no disabled or intercepted pop gesture. Automated edge gestures did not complete navigation; the tool capped travel and reported snapshot timeouts. A tap on Back is not treated as swipe evidence. | On the signed device build, select a pair, filter Index, open a specimen, complete and cancel an edge swipe, then verify search, scroll, and pair restoration. Repair an observed product defect if one appears. |
