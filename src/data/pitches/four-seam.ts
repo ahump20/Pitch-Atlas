@@ -182,7 +182,7 @@ export const fourSeam: PitchAtlasEntry = {
     heroSub: 'Read by feel, not by a gun.',
     heroIntro:
       'Pure backspin across the horseshoe. A Magnus force against the fall. This is how the pitch rides.',
-    foundationCaption: 'It rides less than a spinless ball. It never literally rises.',
+    foundationCaption: 'It drops less than a spinless ball. It never literally rises.',
     mastersIntro:
       'Three arms, one pitch, three ways to win with it. The visual is our own schematic of the four-seam reference. What sets each version apart is in the read, not a gauge.',
   },
