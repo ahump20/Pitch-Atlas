@@ -151,7 +151,7 @@ export function RefractorCard({
   const cardClass = `rfx-card${gold ? ' is-gold' : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
 
   return (
-    <div ref={viewRef} className="rfx-holder" style={{ perspective: '1500px', width: '100%', maxWidth }}>
+    <div ref={viewRef} className="rfx-holder" data-specimen={vnum} style={{ perspective: '1500px', width: '100%', maxWidth }}>
       {to ? (
         <Link
           to={to}
