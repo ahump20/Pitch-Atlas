@@ -1,0 +1,57 @@
+/* Neutral bezels keep enamel reds physically separated from the orange chase. */
+.rfx-holder[data-specimen="03"] { --finish-dark: #162b40; --finish-mid: #537f9f; --finish-light: #b9dced; --finish-ink: #8f3147; }
+.rfx-holder[data-specimen="02"] { --finish-dark: #172f31; --finish-mid: #5c8582; --finish-light: #c6ded5; --finish-ink: #ad8560; }
+.rfx-holder[data-specimen="01"] { --finish-dark: #30232c; --finish-mid: #866878; --finish-light: #d9cbd5; --finish-ink: #a8c8dd; }
+.rfx-holder[data-specimen="04"] { --finish-dark: #29121d; --finish-mid: #934459; --finish-light: #dbadbc; --finish-ink: #afd5e8; }
+.rfx-card:not(.is-gold) {
+  --foil: linear-gradient(125deg, #131920 0%, var(--finish-mid, var(--c2)) 17%, var(--finish-light, var(--c3)) 25%, #e3e8eb 28%, #273038 32%, var(--finish-dark, var(--c1)) 48%, var(--finish-mid, var(--c2)) 64%, #cdd6db 70%, #28343d 76%, var(--finish-light, var(--c3)) 94%);
+}
+.rfx-card:not(.is-gold) .rfx-head {
+  border-top: 2px solid var(--finish-ink, var(--c3));
+  padding-top: calc(var(--rfxu) * .83);
+  background: linear-gradient(110deg, color-mix(in srgb, var(--finish-mid, var(--c2)) 35%, transparent), transparent 80%);
+}
+.rfx-card:not(.is-gold) .rfx-field {
+  background-color: var(--finish-dark, var(--c1));
+  background-image: repeating-linear-gradient(120deg, transparent 0 13px, #dce9f408 13px 14px), linear-gradient(160deg, var(--finish-dark, var(--c1)), #0c1015 75%);
+}
+.rfx-card:not(.is-gold) .rfx-no { color: var(--finish-light, var(--c3)); }
+.rfx-card:not(.is-gold) .rfx-stage { outline: 1px solid #c5d1da77; outline-offset: 3px; }
+.rfx-holder[data-specimen="03"] .rfx-head,
+.rfx-holder[data-specimen="02"] .rfx-head {
+  background: linear-gradient(115deg, var(--finish-light), var(--finish-mid));
+  border-top: 2px solid var(--finish-ink);
+  box-shadow: 0 -2px 0 #10151b, inset 0 1px 0 #effaff88;
+  padding: 2px 6px 4px;
+  margin-bottom: 3px;
+}
+.rfx-holder:is([data-specimen="03"], [data-specimen="02"]) .rfx-head :is(.rfx-name, .rfx-no) { color: #101a24; text-shadow: 0 1px 0 #fff3; }
+.rfx-holder:is([data-specimen="03"], [data-specimen="02"]) .rfx-head :is(.rfx-overline, .rfx-filelabel) { color: #203846; }
+.brand-wordmark { position: relative; overflow: hidden; padding-block: 3px; }
+.brand-wordmark::after {
+  content: ''; position: absolute; inset: -20% -35%; pointer-events: none;
+  background: linear-gradient(110deg, transparent 40%, #d6eeff99 49%, #fff 50%, transparent 60%);
+  mix-blend-mode: soft-light; transform: translateX(-120%); opacity: 0;
+}
+.v2-cta:not(.is-ghost)::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; pointer-events: none;
+  background: linear-gradient(110deg, #b9d9ec, #657c8f 18%, #d6c9e2 30%, #f4f7fa 42%, #6eb8c4 54%, #171c26 62%, #bd865a 72%, #e5eaf1 85%, #b9d9ec);
+  background-size: 260% 100%;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+.v2-cta:not(.is-ghost):hover { box-shadow: 0 0 18px -8px #b6dcff99, inset 0 1px 0 #fff3; }
+@keyframes archive-word-light { 0% { transform: translateX(-100%); opacity: 0; } 20% { opacity: .7; } 80% { opacity: .7; } 100% { transform: translateX(100%); opacity: 0; } }
+@keyframes archive-edge-light { from { background-position: 100% 50%; } to { background-position: 0% 50%; } }
+@keyframes archive-rim-light { 0% { opacity: .2; } 45% { opacity: .85; } 100% { opacity: .46; } }
+@keyframes archive-editorial-in { from { transform: translateY(12px); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .brand-lockup.gleam-in-view .brand-wordmark::after { animation: archive-word-light 1.8s ease-in-out; }
+  a:hover .brand-wordmark::after, a:focus-visible .brand-wordmark::after { animation: archive-word-light 1.4s ease-in-out; }
+  .v2-cta.gleam-in-view::before { animation: archive-edge-light 2.4s ease-in-out; }
+  .v2-cta:hover::before, .v2-cta:focus-visible::before { animation: archive-edge-light 1.2s ease-in-out; }
+  .rfx-holder.gleam-in-view .rfx-card::before { animation: archive-rim-light 1.8s ease-in-out; }
+  main section h2.gleam-in-view { animation: archive-editorial-in 450ms cubic-bezier(.2,.8,.2,1); }
+}
+.gleam-paused .brand-wordmark::after, .gleam-paused .v2-cta::before,
+.gleam-paused .rfx-card::before, .gleam-paused main section h2 { animation-play-state: paused !important; }

@@ -9,16 +9,16 @@ describe('BrandMark', () => {
     expect(atlas).toHaveClass('rfx-holo')
     expect(atlas).toHaveAttribute('data-brand-material', 'rainbow-foil')
 
-    const mark = atlas.parentElement?.parentElement?.querySelector('svg')
-    expect(mark).toBeInTheDocument()
-    expect(mark?.querySelector('stop[stop-color="#9C7350"]')).toBeInTheDocument()
-    expect(mark?.querySelectorAll('ellipse[stroke="#5FE0EA"]')).toHaveLength(2)
+    const mark = atlas.parentElement?.parentElement?.querySelector('img')
+    expect(mark).toHaveAttribute('src', '/brand/atlas-emblem-v2.png')
+    expect(mark).toHaveAttribute('alt', '')
+
   })
 
   it('can render the mark without a wordmark', () => {
     const { container } = render(<BrandMark wordmark={false} />)
 
-    expect(container.querySelector('svg')).toBeInTheDocument()
+    expect(container.querySelector('img')).toBeInTheDocument()
     expect(screen.queryByText('Atlas')).not.toBeInTheDocument()
   })
 })
