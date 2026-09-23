@@ -11,7 +11,7 @@ import { describe, it, expect } from 'vitest'
   in `scripts/design-sync.mjs` instead. This file pins the invariants that can be
   checked from tracked source alone:
 
-  1. The ds barrel still re-exports the three components that live outside
+  1. The ds barrel still re-exports the components that live outside
      `srcDir`. They reach `window.PitchAtlas` only through that barrel, and when
      they fall out the build still prints success — the manifest is built from
      `cfg.componentSrcMap`, never from what actually bundled.
@@ -28,8 +28,8 @@ const BARREL = path.join(ROOT, 'src/components/ds/index.ts')
 const DIST_HTML = path.join(ROOT, 'dist/index.html')
 const shouldCheckDist = process.env.PITCH_ATLAS_CHECK_DIST === '1'
 
-/* Re-exported from brand/, provenance/ and refractor/ — all outside srcDir. */
-const OUT_OF_SRCDIR = ['BrandMark', 'ConfidenceDot', 'PitchSpecimenCard'] as const
+/* Re-exported from brand/, provenance/, refractor/, ball/ and fallback/ — all outside srcDir. */
+const OUT_OF_SRCDIR = ['BrandMark', 'ConfidenceDot', 'PitchSpecimenCard', 'BallStage', 'SeamSchematic'] as const
 
 const config = JSON.parse(readFileSync(CONFIG, 'utf8')) as { cssEntry?: string; srcDir?: string }
 

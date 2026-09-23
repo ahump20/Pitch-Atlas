@@ -1,48 +1,26 @@
-import { Toaster } from 'pitch-atlas'
+import { useEffect } from 'react'
+import { Kicker, toast, Toaster } from 'pitch-atlas'
 
-// A live <Toaster /> renders an empty container until toast() fires, so this
-// cell shows the static shape a success toast takes — matched to the real
-// popover tokens the Toaster uses — alongside the real (harmless) container.
-const stage = {
-  padding: '22px 24px',
-  display: 'flex',
-  gap: '14px',
-  flexWrap: 'wrap',
-  alignItems: 'center',
+// The toast the discussion forum raises after a report, held open so the card
+// shows it (the product's own dismisses on its default timer).
+const cell = {
+  background: 'var(--surface-page)',
+  color: 'var(--color-bone)',
+  padding: '28px',
+  minHeight: '100vh',
+  boxSizing: 'border-box',
 }
-const toast = {
-  display: 'flex',
-  gap: '12px',
-  alignItems: 'center',
-  background: 'var(--popover)',
-  color: 'var(--popover-foreground)',
-  border: '1px solid var(--border)',
-  borderRadius: 'var(--radius)',
-  padding: '12px 16px',
-  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-}
-const check = {
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '18px',
-  height: '18px',
-  borderRadius: '999px',
-  border: '1.5px solid #4ade80',
-  color: '#4ade80',
-  fontSize: '11px',
-  lineHeight: 1,
-}
+const heading = 'mt-3 mb-6 font-display text-[clamp(22px,3vw,30px)] leading-tight text-bone'
 
-// What a success toast looks like when a grip is saved.
-export function GripSaved() {
+export function ReportSent() {
+  useEffect(() => {
+    toast.success('Report sent', { id: 'report-sent', duration: Infinity })
+  }, [])
   return (
-    <div className="rfx-panel" style={stage}>
-      <div style={toast}>
-        <span style={check} aria-hidden="true">&#10003;</span>
-        <span>Grip saved to your bench.</span>
-      </div>
+    <section style={cell}>
+      <Kicker>Primitives</Kicker>
+      <h2 className={heading}>Toaster</h2>
       <Toaster />
-    </div>
+    </section>
   )
 }

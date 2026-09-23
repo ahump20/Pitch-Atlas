@@ -6,8 +6,8 @@
  * This is a parity-first consolidation, not a reskin — adoption swaps inline
  * duplication for these components without changing what a visitor sees.
  *
- * The three re-exports at the bottom are battle-tested components reused
- * verbatim (the signature objects are never reskinned).
+ * The re-exports at the bottom are battle-tested components reused verbatim
+ * (the signature objects are never reskinned).
  */
 export { Button, type ButtonProps, type ButtonVariant } from './Button'
 export { SearchField, type SearchFieldProps } from './SearchField'
@@ -26,3 +26,5 @@ export { Hairline, type HairlineProps } from './Hairline'
 export { ConfidenceDot } from '../provenance/RefractorClaim'
 export { BrandMark } from '../brand/BrandMark'
 export { PitchSpecimenCard } from '../refractor/PitchSpecimenCard'
+export { BallStage } from '../ball/BallStage'
+export { SeamSchematic } from '../fallback/SeamSchematic'

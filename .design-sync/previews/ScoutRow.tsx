@@ -1,59 +1,65 @@
-import { ScoutRow } from 'pitch-atlas'
+import { Kicker, PITCHES, ScoutRow } from 'pitch-atlas'
 
-// One sourced fact per row on the scout-file back: a mono key column and a value
-// column. A run of rows is wrapped in the product's .rfx-scout container; when a
-// row carries a tier, the provenance dot trails its value. Reads are qualitative
-// shape language only — no velocity, spin, or break figures.
-const stage = {
-  padding: '24px 26px',
+// Scout-file rows built only from filed records: the four-seam's own file (an
+// untiered family row, then its sourced claims at their tiers), then four
+// records whose claims sit at the four tiers the row badges.
+// Card grammar (docs/superpowers/specs/2026-07-24-ds-component-truth-and-motion-design.md):
+// one eyebrow and heading per card, ported from the in-product gallery's section
+// (src/pages/DesignSystemShowcase.tsx), on the first cell only; later cells carry
+// the specimen and its caption in the site's mono label.
+const cell = { background: 'var(--surface-page)', color: 'var(--color-bone)', padding: '28px' }
+const heading = 'mt-3 mb-6 font-display text-[clamp(22px,3vw,30px)] leading-tight text-bone'
+
+const bySlug = (slug) => PITCHES.find((p) => p.display.slug === slug)
+const TIER = {
+  'official-data': 'official',
+  'reputable-analysis': 'reputable',
+  'secondhand-attributed': 'secondhand',
+  unverified: 'unverified',
 }
 
-const scout = {
-  width: '100%',
-  maxWidth: '380px',
-}
-
-// A four-seam scout file: the family fact, the shape and read carrying their
-// source tiers, and the grip cue.
 export function ScoutFile() {
+  const four = PITCHES[0].canonical
   return (
-    <div className="rfx-panel" style={stage}>
-      <div className="rfx-scout" style={scout}>
-        <ScoutRow label="Family">Fastball</ScoutRow>
-        <ScoutRow label="Shape" tier="reputable">
-          Rides at the top of the zone
+    <section style={cell}>
+      <Kicker>Provenance</Kicker>
+      <h2 className={heading}>ScoutRow</h2>
+      <div className="rfx-scout max-w-[640px]">
+        <ScoutRow label="Family">
+          <span style={{ textTransform: 'capitalize' }}>{four.family}</span>
         </ScoutRow>
-        <ScoutRow label="Read" tier="secondhand">
-          Hitters keep swinging under it
+        <ScoutRow label="Grip" tier={TIER[four.grip.confidence]}>
+          {four.grip.value}
         </ScoutRow>
-        <ScoutRow label="Grip">Across the wide horseshoe</ScoutRow>
-        <ScoutRow label="Source" tier="official">
-          Statcast
+        <ScoutRow label="Voice" tier={TIER[four.voice.confidence]}>
+          {four.voice.value}
         </ScoutRow>
       </div>
-    </div>
+    </section>
   )
 }
 
-// The same row treatment carrying each source tier in turn, so the dot colors
-// read from official down to the honest unverified gap.
 export function Tiers() {
+  const rows = [
+    bySlug('circle-change'),
+    bySlug('four-seam'),
+    bySlug('eephus'),
+  ]
+  const claims = [
+    [rows[0], rows[0].canonical.gripDetails[2]],
+    [rows[1], rows[1].canonical.grip],
+    [rows[1], rows[1].canonical.voice],
+    [rows[2], rows[2].canonical.gripModel.provenance],
+  ]
   return (
-    <div className="rfx-panel" style={stage}>
-      <div className="rfx-scout" style={scout}>
-        <ScoutRow label="Shape" tier="official">
-          Backspin carry
-        </ScoutRow>
-        <ScoutRow label="Slot" tier="reputable">
-          Over the top, fingers behind
-        </ScoutRow>
-        <ScoutRow label="Cue" tier="secondhand">
-          Let it sling off the pads
-        </ScoutRow>
-        <ScoutRow label="Spacing" tier="unverified">
-          A finger-width apart
-        </ScoutRow>
+    <section style={cell}>
+      <div className="rfx-scout max-w-[640px]">
+        {claims.map(([entry, c], i) => (
+          <ScoutRow key={i} label={entry.display.shortName} tier={TIER[c.confidence]}>
+            {c.value}
+          </ScoutRow>
+        ))}
       </div>
-    </div>
+    </section>
   )
 }

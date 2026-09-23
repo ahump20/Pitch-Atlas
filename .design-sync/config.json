@@ -24,7 +24,9 @@
     "Select": "src/components/ui/select.tsx",
     "Dialog": "src/components/ui/dialog.tsx",
     "Tooltip": "src/components/ui/tooltip.tsx",
-    "Toaster": "src/components/ui/sonner.tsx"
+    "Toaster": "src/components/ui/sonner.tsx",
+    "BallStage": "src/components/ball/BallStage.tsx",
+    "SeamSchematic": "src/components/fallback/SeamSchematic.tsx"
   },
   "docsMap": {
     "Button": ".design-sync/doc-groups/Button.md",
@@ -44,20 +46,67 @@
     "Tooltip": ".design-sync/doc-groups/Tooltip.md",
     "Toaster": ".design-sync/doc-groups/Toaster.md"
   },
-  "cssEntry": "dist/assets/index-xQ_nvU0M.css",
+  "cssEntry": "dist/assets/index-TOJNtQx2.css",
   "extraEntries": [
     "./src/components/ui/select.tsx",
     "./src/components/ui/dialog.tsx",
     "./src/components/ui/tooltip.tsx",
     "./src/components/ui/sonner.tsx",
-    "./.design-sync/ds-router.tsx"
+    "./.design-sync/ds-router.tsx",
+    "./.design-sync/extra-exports.ts"
   ],
-  "provider": { "component": "DsRouter" },
+  "provider": {
+    "component": "DsRouter"
+  },
   "extraFonts": [
     "node_modules/@fontsource/anton/latin-400.css",
     "node_modules/@fontsource/martian-mono/latin-400.css",
     "node_modules/@fontsource/hanken-grotesk/latin-400.css",
     "node_modules/@fontsource/newsreader/latin-400.css"
   ],
-  "readmeHeader": ".design-sync/conventions.md"
+  "readmeHeader": ".design-sync/conventions.md",
+  "overrides": {
+    "Dialog": {
+      "cardMode": "single",
+      "viewport": "900x560"
+    },
+    "Select": {
+      "cardMode": "single",
+      "viewport": "720x440"
+    },
+    "Tooltip": {
+      "cardMode": "single",
+      "viewport": "720x300"
+    },
+    "Toaster": {
+      "cardMode": "single",
+      "viewport": "720x300"
+    },
+    "PitchSpecimenCard": {
+      "cardMode": "column"
+    }
+  },
+  "dtsPropsFor": {
+    "Button": "/** Element or component to render as; use 'a' or a router Link for navigation. The element's own props (href, onClick, disabled, type…) pass through. @default 'button' */\n  as?: React.ElementType;\n  /** Visual register: chrome = the primary action (.v2-cta, a matte face in a 1px foil rim) · ghost = .v2-cta.is-ghost · foil = the seam-red wax-seal .btn-foil · ink = .btn-foil.is-ink, for the cream register only · link = the quiet mono .ds-btn-link. @default 'chrome' */\n  variant?: 'chrome' | 'ghost' | 'foil' | 'ink' | 'link';\n  /** Append a decorative → glyph (aria-hidden). @default false */\n  arrow?: boolean;\n  className?: string;\n  children?: React.ReactNode;",
+    "Card": "/** Render the foil-edged panel (.rfx-panel-foil, which fills one bare inner div) instead of the default leather panel (.rfx-panel). @default false */\n  foil?: boolean;\n  className?: string;\n  style?: React.CSSProperties;\n  /** Placed as direct children: the panel's raking-light catch sits beneath them. Any div attribute also passes through. */\n  children?: React.ReactNode;",
+    "DiamondMark": "/** Glyph set upright inside the tilted diamond. @default 'PA' */\n  label?: string;\n  /** The 1/1 face via .is-gold. The name is historical: the material is the matte ember (var(--ember)). @default false */\n  gold?: boolean;\n  /** Square edge length in px, applied to width and height. @default 48 */\n  size?: number;\n  className?: string;\n  style?: React.CSSProperties;",
+    "Hairline": "/** The bone fade tuned for the dark stage (.hairline-stage); the default (.hairline) is the machined-brown fade for the cream field. @default false */\n  stage?: boolean;\n  className?: string;\n  style?: React.CSSProperties;",
+    "Input": "/** Optional mono field label (.mono-label) rendered above the input and wired to it by id (a generated id when none is passed). */\n  label?: string;\n  id?: string;\n  value?: string;\n  defaultValue?: string;\n  placeholder?: string;\n  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;\n  /** Any other input attribute (type, name, required, aria-*) passes through to the .rfx-input element. */\n  className?: string;",
+    "Kicker": "/** Reserved no-op: .rfx-skick always draws its leading rule and no no-rule modifier ships yet. @default true */\n  rule?: boolean;\n  className?: string;\n  children?: React.ReactNode;",
+    "ScoutRow": "/** The fact's name, in the mono key column. */\n  label: string;\n  /** Optional source tier; when set, the provenance dot trails the value. */\n  tier?: 'official' | 'reputable' | 'secondhand' | 'unverified';\n  /** The sourced value. Wrap a run of rows in the .rfx-scout container. */\n  children: React.ReactNode;\n  className?: string;",
+    "SearchField": "/** Called when Escape is pressed while the field is non-empty. */\n  onClear?: () => void;\n  /** Class applied to the outer field shell (the InputGroup). */\n  groupClassName?: string;\n  /** Controlled through the standard input props; any other input attribute passes through. */\n  value?: string;\n  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;\n  placeholder?: string;\n  'aria-label'?: string;\n  className?: string;",
+    "SegmentedToggle": "/** Segments: bare strings (value = label) or { value, label } pairs. */\n  options: Array<string | { value: string; label: string }>;\n  /** The selected option value (controlled). */\n  value?: string;\n  /** Called with the option value when a segment is clicked. */\n  onChange?: (value: string) => void;\n  /** Class merged onto the outer shell. */\n  className?: string;",
+    "SourceBadge": "/** Confidence tier: drives the dot color and the default wording. @default 'official' */\n  tier?: 'official' | 'reputable' | 'secondhand' | 'unverified' | 'pitcher-own-words' | 'coach-observed' | 'community-firsthand';\n  /** Show the actual source name in place of the tier's wording. */\n  label?: string;\n  /** Show the \"≈ approx\" pill: a real figure that is rounded or era-bound. @default false */\n  approximate?: boolean;\n  className?: string;",
+    "Stamp": "/** Ink and box ride currentColor: set color on the stamp or a parent. */\n  style?: React.CSSProperties;\n  className?: string;\n  children?: React.ReactNode;",
+    "Tag": "/** Element to render as; use 'button' for an interactive filter chip. @default 'span' */\n  as?: React.ElementType;\n  /** On-state; maps to aria-pressed, the chip's only on-state hook. Leave unset for a plain label. */\n  active?: boolean;\n  /** Decorative glyph before the label, kept a direct child (mark it aria-hidden). */\n  glyph?: React.ReactNode;\n  onClick?: (event: React.MouseEvent) => void;\n  className?: string;\n  children?: React.ReactNode;",
+    "BrandMark": "/** sm = masthead, md = default and footer, lg = hero. @default 'md' */\n  size?: 'sm' | 'md' | 'lg';\n  /** Show the athletic PITCH ATLAS wordmark beside the mark. @default true */\n  wordmark?: boolean;\n  className?: string;",
+    "ConfidenceDot": "/** The claim's tier; color and wording come from the canonical confidence metadata. */\n  confidence: 'official-data' | 'pitcher-own-words' | 'coach-observed' | 'reputable-analysis' | 'secondhand-attributed' | 'community-firsthand' | 'unverified';\n  /** Show the tier's wording beside the dot. @default true */\n  withLabel?: boolean;\n  className?: string;",
+    "PitchSpecimenCard": "/** A filed pitch record from PITCHES (window.PitchAtlas.PITCHES). Never hand-built: a specimen the atlas never filed is a fabrication. Specimen 00 renders as the ember 1/1. */\n  entry: PitchAtlasEntry;\n  /** Position in a set; staggers the reveal. @default 0 */\n  index?: number;\n  /** Card max width in px; the card sizes itself from its container, so give it a full-width block. @default 360 */\n  maxWidth?: number;\n  /** Mount the live WebGL foil (the hero card only). @default false */\n  foil?: boolean;\n  /** Paint the grip face eagerly (the page's hero card). @default false */\n  priority?: boolean;\n  /** Route-specific timing and framing for the real grip clip. sourceOverride passes the file and poster together, so the still and the loop show the same moment. */\n  clipPresentation?: { playback?: 'loop' | 'once'; start?: number; sourceOverride?: { mp4: string; webm: string; poster: string; alt: string }; mediaClassName?: string };\n  className?: string;",
+    "Select": "/** Radix Select root. Compose inside it: SelectTrigger (size 'sm' | 'default') › SelectValue, then SelectContent (position 'item-aligned' | 'popper') › SelectItem (value), with SelectGroup, SelectLabel and SelectSeparator for grouping. The list portals to <body>. */\n  value?: string;\n  defaultValue?: string;\n  onValueChange?: (value: string) => void;\n  open?: boolean;\n  defaultOpen?: boolean;\n  onOpenChange?: (open: boolean) => void;\n  name?: string;\n  disabled?: boolean;\n  required?: boolean;\n  children?: React.ReactNode;",
+    "Dialog": "/** Radix Dialog root. Compose inside it: DialogTrigger (asChild around a Button), then DialogContent (showCloseButton, default true) › DialogHeader › DialogTitle + DialogDescription, and DialogFooter with DialogClose. The content portals to <body>. */\n  open?: boolean;\n  defaultOpen?: boolean;\n  onOpenChange?: (open: boolean) => void;\n  modal?: boolean;\n  children?: React.ReactNode;",
+    "Tooltip": "/** Radix Tooltip root; must sit inside TooltipProvider (delayDuration defaults to 0). Compose TooltipTrigger (asChild around the trigger) and TooltipContent (side, sideOffset). The content portals to <body>. */\n  open?: boolean;\n  defaultOpen?: boolean;\n  onOpenChange?: (open: boolean) => void;\n  delayDuration?: number;\n  children?: React.ReactNode;",
+    "Toaster": "/** sonner's Toaster, preset to the dark theme and the popover tokens. Render it once; fire toasts with toast() / toast.success() (window.PitchAtlas.toast). */\n  position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';\n  expand?: boolean;\n  closeButton?: boolean;\n  richColors?: boolean;\n  duration?: number;\n  visibleToasts?: number;\n  className?: string;",
+    "BallStage": "/** One filed record from PITCHES. Its motion.spinAxis sets the turn; its gripModel seats the hand. */\n  entry: (typeof PITCHES)[number];\n  /** Seat the solved hand on the pitch's filed contacts. @default false */\n  grip?: boolean;\n  /** Which face of the hold turns to the camera. @default entry.canonical.gripModel.defaultView */\n  view?: 'top' | 'side' | 'thumb';\n  /** @default 'right' */\n  handedness?: 'right' | 'left';\n  /** 'stage' on the void, 'paper' on the cream field: the finger tone and the fallback drawing follow it. @default 'paper' */\n  surface?: 'paper' | 'stage';\n  /** Draw the spin-axis and Magnus vectors (the physics presentation; no page mounts it today). @default false */\n  vectors?: boolean;\n  /** Turn the hold toward the camera for study. @default false */\n  faceGrip?: boolean;\n  /** Turn slowly on the pitch's own spin axis; stops under reduced motion and off screen. @default true */\n  autoSpin?: boolean;\n  /** Drag to turn. Off inside a card window, where the card itself is the link. @default true */\n  interactive?: boolean;\n  /** Camera distance: pull back on square or card-shaped canvases so the whole hand stays in frame. */\n  distance?: number;\n  /** Mark one contact by its label. */\n  activeContact?: string;\n  className?: string;",
+    "SeamSchematic": "  /** Draw the pitch's spin axis, dashed, or as a dot for a gyro pitch. @default true */\n  showAxis?: boolean;\n  /** Draw the red lacing on the seam. @default true */\n  showStitches?: boolean;\n  /** Name each finger over its contact. @default true */\n  showLabels?: boolean;\n  /** The pitch's render-space spin axis (a record's motion.spinAxis). @default the four-seam's near-horizontal backspin */\n  spinAxis?: { x: number; y: number; z: number };\n  /** Gyro pitch (the slider): the axis points at the viewer and reads as a dot. @default false */\n  gyro?: boolean;\n  /** Grip contacts (a record's canonical.gripModel.contacts) drawn as solved finger silhouettes. */\n  grip?: (typeof PITCHES)[number]['canonical']['gripModel']['contacts'];\n  /** Which face of the hold the drawing turns toward the viewer. */\n  view?: 'top' | 'side' | 'thumb';\n  /** The contacts the view is solved against when the hand itself is not drawn. */\n  referenceContacts?: (typeof PITCHES)[number]['canonical']['gripModel']['contacts'];\n  /** @default 'right' */\n  handedness?: 'right' | 'left';\n  /** 'stage' on the void, 'paper' on the cream field: sets the finger tone. @default 'paper' */\n  surface?: 'paper' | 'stage';\n  /** The accessible name. An empty string marks a decorative use and hides the drawing from assistive tech. @default a four-seam description */\n  title?: string;\n  className?: string;"
+  }
 }

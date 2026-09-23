@@ -24,10 +24,10 @@ export interface KickerProps extends HTMLAttributes<HTMLParagraphElement> {
  * mono text with a short leading rule drawn by the class's `::before`. Renders the
  * exact element `SectionHero` uses for its eyebrow — a `<p className="rfx-skick">`.
  *
- * Color comes entirely from the class: leather ink on the cream field, re-toning to
- * the cyan glow inside a `.scene-coal` scene via the scoped `--kicker` token.
- * Override the tone with a `text-*` utility through `className` (as the app does
- * with `rfx-skick text-cyan`), never with a literal here.
+ * Color comes entirely from the class, through the `--kicker` token: cyan on the
+ * void (the `:root` value), leather ink inside a `.field-cream` block, which
+ * re-scopes it. Override the tone with a `text-*` utility through `className`
+ * (as the app does with `rfx-skick text-cyan`), never with a literal here.
  */
 export function Kicker({ children, rule: _rule = true, className, ...props }: KickerProps) {
   return (
