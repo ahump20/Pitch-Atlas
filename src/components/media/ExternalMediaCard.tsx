@@ -204,7 +204,7 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
             <button
               type="button"
               onClick={popOut}
-              className="rounded-sm border border-cyan/35 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.11em] text-cyan transition-colors hover:border-cyan hover:text-bone"
+              className="rounded-sm border border-cyan/35 px-3 py-2 pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.11em] text-cyan transition-colors hover:border-cyan hover:text-bone"
             >
               Watch Dock ↘
             </button>
@@ -213,7 +213,7 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
             href={item.canonicalUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="rounded-sm border border-bone/18 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.11em] text-bone-2 transition-colors hover:border-bone/40 hover:text-bone"
+            className="inline-flex items-center rounded-sm border border-bone/18 px-3 py-2 pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.11em] text-bone-2 transition-colors hover:border-bone/40 hover:text-bone"
           >
             Original post ↗
           </a>

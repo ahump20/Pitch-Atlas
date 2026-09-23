@@ -98,7 +98,7 @@ export function SiteFooter() {
         <button
           type="button"
           onClick={openIndex}
-          className="mono-label-stage w-fit whitespace-nowrap py-1.5 text-bone-2/75 underline decoration-bone-2/30 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan"
+          className="mono-label-stage w-fit whitespace-nowrap py-1.5 pointer-coarse:min-h-11 text-bone-2/75 underline decoration-bone-2/30 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan"
         >
           Hidden notes &middot; {count} of {total} found
         </button>

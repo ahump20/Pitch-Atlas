@@ -121,7 +121,7 @@ export function Masthead() {
       style={{ viewTransitionName: 'persistent-masthead' } as CSSProperties}
     >
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
-        <Link to="/" viewTransition aria-label={`${SITE.siteName}, home`}>
+        <Link to="/" viewTransition aria-label={`${SITE.siteName}, home`} className="flex min-h-11 items-center">
           <BrandMark size="sm" />
         </Link>
 

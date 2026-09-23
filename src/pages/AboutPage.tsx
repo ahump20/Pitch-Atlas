@@ -260,7 +260,7 @@ export function AboutPage() {
             <p className="mt-6">
               <Link
                 to="/grips"
-                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink"
+                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink pointer-coarse:py-[14px]"
               >
                 See the grip library <span aria-hidden="true">→</span>
               </Link>

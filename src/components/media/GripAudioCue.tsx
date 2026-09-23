@@ -25,7 +25,7 @@ export function GripAudioCue({ pitchSlug, accentColor }: { pitchSlug: string; ac
         </audio>
       </div>
       <details className="group mt-5 border-t border-bone/12 pt-4">
-        <summary className="cursor-pointer list-none font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2 hover:text-bone">
+        <summary className="cursor-pointer list-none pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2 hover:text-bone">
           Read synchronized transcript
         </summary>
         <p className="mt-3 max-w-[74ch] text-[13.5px] leading-relaxed text-bone-2">{cue.transcript}</p>

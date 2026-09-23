@@ -78,7 +78,7 @@ export function PitchConnections({
                 <Link
                   key={s.display.slug}
                   to={`/pitch/${s.display.slug}`}
-                  className="group inline-flex items-center gap-2.5 rounded-full border border-bone/15 py-2 pl-3 pr-4 transition-colors hover:border-bone/40"
+                  className="group inline-flex items-center gap-2.5 rounded-full border border-bone/15 py-2 pointer-coarse:min-h-11 pl-3 pr-4 transition-colors hover:border-bone/40"
                 >
                   <span
                     aria-hidden="true"

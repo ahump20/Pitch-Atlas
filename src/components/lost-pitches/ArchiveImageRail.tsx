@@ -44,7 +44,7 @@ function ArchiveImageCard({ image, variant = 'grid' }: { image: ArchiveImage; va
         </div>
         <Link
           to={`/lost-pitches/${image.relatedSlug}`}
-          className="mt-4 inline-flex mono-label text-bone-2 transition-colors hover:text-bone"
+          className="mt-4 inline-flex items-center mono-label text-bone-2 pointer-coarse:min-h-11 transition-colors hover:text-bone"
         >
           Open {image.relatedLabel} <span aria-hidden="true">→</span>
         </Link>

@@ -114,7 +114,7 @@ export function SoftballCraftsmanChapter() {
         {pitch ? (
           <Link
             to={`/softball/pitch/${pitch.slug}`}
-            className="mt-6 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
+            className="mt-6 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 pointer-coarse:min-h-11 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
           >
             Study the {pitch.name.toLowerCase()}
             <span aria-hidden="true">→</span>

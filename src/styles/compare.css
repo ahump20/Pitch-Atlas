@@ -87,7 +87,7 @@ body:has(.compare-tray) #main { padding-bottom:100px; }
   .archive-compare-header h1 { font-size:36px; }
   .archive-compare-header p { margin-top:10px; font-size:13px; }
   .archive-compare-header p br { display:none; }
-  .compare-pickers { grid-template-columns:minmax(0,1fr) minmax(0,1fr) 36px 36px; gap:6px; }
+  .compare-pickers { grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px 44px; gap:6px; }
   .compare-pickers label { min-width:0; }
   .compare-pickers label > span { font-size:10px; }
   .compare-pickers .rfx-select { font-size:13px; padding:8px; min-height:44px; }
@@ -118,3 +118,10 @@ body:has(.compare-tray) #main { padding-bottom:100px; }
 @media(max-height:500px) { .compare-tray { bottom:6px; padding:6px 10px; flex-wrap:nowrap; }.compare-tray-slots{width:auto;flex-basis:auto}.compare-tray>.archive-action{width:auto;min-height:36px}.compare-tray-slot{font-size:11px} }
 ::view-transition-group(active-specimen) { animation-duration:400ms; animation-timing-function:cubic-bezier(.16,1,.3,1); }
 @media(prefers-reduced-motion:reduce) { ::view-transition-group(active-specimen), ::view-transition-old(active-specimen), ::view-transition-new(active-specimen) { animation:none; } }
+/* Touch screens: every control here reaches 44px without resizing its type. Last, so it wins over the phone overrides above. */
+@media (pointer: coarse) {
+  .compare-button { min-height:44px; }
+  .archive-icon-action, .compare-tabs button { min-width:44px; }
+  .compare-toggles button { min-width:44px; min-height:44px; }
+  .archive-back { display:inline-flex; align-items:center; min-height:44px; }
+}
