@@ -8,7 +8,6 @@
   view-timeline-name: --archive-case;
   view-timeline-axis: block;
 }
-.archive-case::after { animation: none; }
 .archive-case .v2-hero-grid {
   max-width: 1400px;
   min-height: min(820px, calc(100svh - 72px));
@@ -16,7 +15,6 @@
   gap: 48px;
 }
 .archive-case .v2-hero-read { position: relative; z-index: 2; }
-.archive-case .v2-enter { animation: none; }
 .archive-case-title {
   margin: 0;
   font: 400 clamp(52px, 6.8vw, 98px)/.98 var(--font-display);
@@ -32,8 +30,15 @@
   content: ''; position: absolute; z-index: -1; inset: 12% -9% -4% 7%;
   background: #000; opacity: .65; filter: blur(28px); transform: rotate(-5deg); pointer-events: none;
 }
-.archive-case .v2-rim { animation: none; opacity: .32; }
-.archive-case .v2-rim::after { animation: none; }
+.archive-case .v2-rim { opacity: .32; }
+/* This hero keeps a quieter rim than the old stage, so it breathes around its own
+   floor; the specimen is the largest first paint, so it settles instead of fading. */
+@keyframes archive-rim-breathe { from { opacity: .27; } to { opacity: .38; } }
+@keyframes archive-card-settle { from { transform: translateY(12px) scale(.985); } }
+@media (prefers-reduced-motion: no-preference) {
+  .archive-case .v2-rim { animation-name: archive-rim-breathe; }
+  .archive-case .archive-case-card > .v2-enter { animation-name: archive-card-settle; }
+}
 .archive-case-light {
   pointer-events: none; position: absolute; z-index: 0; inset: -24px;
   background: radial-gradient(ellipse at 77% 24%, #c1976630, transparent 48%), linear-gradient(112deg, #090909ad 24%, transparent 65%);
@@ -153,10 +158,6 @@
 .archive-upload-status { padding: 14px; border: 1px solid #b8a17b55; color: #eadac0; font-size: 13px; }
 .archive-upload-status p + p { margin-top: 8px; color: #bcb09b; }
 .archive-upload-status progress { width: 100%; height: 6px; accent-color: #c8a56a; }
-/* Lighting stays authored at rest. Interaction and native-scroll effects move it. */
-.field-depth::before, .field-depth::after, .grain-overlay, .ambient-foil,
-.rfx-card:not(.is-foil-live):not(:hover) .rfx-field::after,
-.rfx-holo, .v2-rim, .v2-rim::after, .v2-tooth::after { animation: none; }
 .archive-specimen > .rfx-holder { transition: transform 160ms, filter 160ms; }
 .archive-specimen.is-selected > .rfx-holder { transform: translateY(-6px); }
 @media (prefers-reduced-motion: reduce) { .archive-specimen > .rfx-holder { transition: none; } }
@@ -171,8 +172,14 @@ html:has(.compare-tray) { scroll-padding-bottom: 150px; }
 .archive-wall-actions { position:relative; display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:360px; margin:12px auto 0; }
 .v2-mount.is-chase .archive-wall-actions { max-width:520px; }
 .v2-mount.is-selected .v2-flip { outline:1px solid #c8a35c; outline-offset:5px; border-radius:12px; box-shadow:0 18px 32px #0008; }
-/* Keep the toolbar's hit targets still; only the card participates in the deal. */
+/* Keep the toolbar's hit targets still; only the card participates in the deal
+   and the hover lift, so Source and Compare never move out from under a pointer. */
 .v2-mount, .v2-mount:hover, .v2-mount:focus-within { animation:none; transform:none; }
+@media (prefers-reduced-motion:no-preference) {
+  .v2-mount .v2-flip { transition:transform var(--pa-motion-short) var(--pa-ease-settle); }
+  .v2-mount:focus-within .v2-flip { transform:translateY(-4px); }
+  @media (hover:hover) { .v2-mount:hover .v2-flip { transform:translateY(-4px); } }
+}
 .v2-face:not(.v2-face-back) .rfx-strip { padding-left:14px; }
 @supports (animation-timeline:view()) {
   @media (prefers-reduced-motion:no-preference) {

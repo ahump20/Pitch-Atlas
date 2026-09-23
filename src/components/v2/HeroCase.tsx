@@ -41,7 +41,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
             <ChapterMark n="01" name="The Specimen" accent={accent.c3} />
           </div>
           <h1
-            className="archive-case-title"
+            className="archive-case-title v2-enter"
             style={{ '--i': 1 } as React.CSSProperties}
           >
             The pitch,<br />{' '}
