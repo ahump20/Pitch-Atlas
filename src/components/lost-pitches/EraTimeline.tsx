@@ -18,11 +18,11 @@ const DECADES = [1900, 1910, 1920, 1930, 1940, 1950]
 const ROW_H = 34 // px per stacked row within a tier lane
 const GAP = 14 // min % between two markers sharing a row (clears the code label at any width)
 
-// Tier dot colors, matching the provenance badge dots tuned for the dark field.
+// The same three trust tiers the provenance dots use: paper trail, thin, legend.
 const TIER_COLOR: Record<DocumentationTier, string> = {
-  documented: 'var(--color-ok-bright)',
-  partial: 'var(--color-amber-bright)',
-  legend: 'var(--color-sand-bright)',
+  documented: 'var(--color-tier-first)',
+  partial: 'var(--color-tier-relayed)',
+  legend: 'var(--color-tier-unverified)',
 }
 
 function pos(year: number): number {

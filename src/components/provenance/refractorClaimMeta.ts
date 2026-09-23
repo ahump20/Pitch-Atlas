@@ -1,26 +1,19 @@
 import type { ClaimConfidence } from '../../data/types'
 
+/* Three trust tiers, one color each (Austin, 2026-09-23): burnt orange for the
+   source itself (official data, the pitcher, a coach who saw it), powder blue for
+   anything relayed or analyzed, red for unverified. The label always prints, so
+   the tier is never read from hue alone. Tuned for the dark field; the cream plate
+   uses the deeper inks in CARD_INK. */
 export const CONFIDENCE_COLOR: Record<ClaimConfidence, string> = {
-  'official-data': 'var(--color-ok-bright)',
-  'pitcher-own-words': 'var(--color-cyan)',
-  'coach-observed': 'var(--color-teal-glow)',
-  'reputable-analysis': 'var(--color-amber-bright)',
-  'secondhand-attributed': 'var(--color-sand-bright)',
-  'community-firsthand': 'var(--color-sand-bright)',
-  unverified: 'var(--color-seam-bright)',
+  'official-data': 'var(--color-tier-first)',
+  'pitcher-own-words': 'var(--color-tier-first)',
+  'coach-observed': 'var(--color-tier-first)',
+  'reputable-analysis': 'var(--color-tier-relayed)',
+  'secondhand-attributed': 'var(--color-tier-relayed)',
+  'community-firsthand': 'var(--color-tier-relayed)',
+  unverified: 'var(--color-tier-unverified)',
 }
 
-/* Tier dots tuned to read on the matte-black register (card backs, the read
-   panel, the provenance ladder). The void/specimen palette above
-   (CONFIDENCE_COLOR) is tuned for the cream plate and sinks on matte black, so
-   these are deliberately muted-bright variants — not the same values. Worn by
-   the ChromeWall card backs. */
-export const STAGE_TIER_DOT: Record<ClaimConfidence, string> = {
-  'official-data': '#4FB286',
-  'pitcher-own-words': '#6CACE4',
-  'coach-observed': '#6CACE4',
-  'reputable-analysis': '#D8A24A',
-  'secondhand-attributed': '#C7B98F',
-  'community-firsthand': '#C7B98F',
-  unverified: '#FF4D5E',
-}
+/* The ChromeWall card backs sit on the same dark field, so they share the map. */
+export const STAGE_TIER_DOT = CONFIDENCE_COLOR

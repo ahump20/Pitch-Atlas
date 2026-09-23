@@ -18,6 +18,7 @@ import { SeamSchematic } from '../components/fallback/SeamSchematic'
 import { DiscussionPanel } from '../components/sections/DiscussionPanel'
 import { FamilyRail } from '../components/pitch/FamilyRail'
 import { NotFound } from './NotFound'
+import { FAMILY_ACCENT } from '../components/sections/family-accent'
 
 /*
   The basic detail page: every accepted pitch the atlas has not filed as a full
@@ -34,16 +35,6 @@ const FAMILY_EYEBROW: Record<RepertoireFamily, string> = {
   offspeed: 'Offspeed',
   specialty: 'Specialty',
   banned: 'Banned & doctored',
-}
-
-const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  // The same five families as FAMILY_ACCENT, printed at ink density for the cream
-  // field. Electric Burnt Chrome struck as ink rather than as a lift.
-  fastball: '#A83607', // burnt orange ink
-  offspeed: '#8A6420', // brass ink
-  breaking: '#1F6E78', // cyan ink
-  specialty: '#4E555B', // chromium ink
-  banned: '#8F2420', // seam ink
 }
 
 function HeroBadge({ entry }: { entry: RepertoireEntry }) {
@@ -167,7 +158,7 @@ export function RepertoireChapter() {
   if (redirectSlug) return <Navigate to={`/pitch/${redirectSlug}`} replace />
   if (!entry) return <NotFound />
 
-  const accentColor = isEdgeStatus(entry.status) ? '#C8102E' : FAMILY_ACCENT[entry.family]
+  const accentColor = isEdgeStatus(entry.status) ? FAMILY_ACCENT.banned : FAMILY_ACCENT[entry.family]
   const gripEntry = gripEntryFor(entry.id)
   // Others in this family — the cross-link the filed specimens get via
   // PitchConnections, brought to the basic files so they don't dead-end on
@@ -177,7 +168,7 @@ export function RepertoireChapter() {
     .map((e) => ({
       to: e.filedSlug ? `/pitch/${e.filedSlug}` : `/repertoire/${e.id}`,
       name: e.name,
-      accentColor: isEdgeStatus(e.status) ? '#C8102E' : FAMILY_ACCENT[e.family],
+      accentColor: isEdgeStatus(e.status) ? FAMILY_ACCENT.banned : FAMILY_ACCENT[e.family],
     }))
   const subParts = [
     entry.aka && entry.aka.length > 0 ? `aka ${entry.aka.join(' · ')}` : null,

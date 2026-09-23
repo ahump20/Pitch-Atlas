@@ -38,13 +38,13 @@ import { gripEntryFor } from '../../data/grips'
    never local: every badge reads its wording from CONFIDENCE_META, the one
    canonical seven-tier model. */
 export const CARD_INK: Record<ClaimConfidence, string> = {
-  'official-data': '#1E7A4A',
-  'reputable-analysis': '#8A6118',
-  'pitcher-own-words': '#2C5A8C',
-  'coach-observed': '#2C5A8C',
-  'secondhand-attributed': '#6E5E3A',
-  'community-firsthand': '#6E5E3A',
-  unverified: '#6E675A',
+  'official-data': 'var(--color-tier-first-ink)',
+  'pitcher-own-words': 'var(--color-tier-first-ink)',
+  'coach-observed': 'var(--color-tier-first-ink)',
+  'reputable-analysis': 'var(--color-tier-relayed-ink)',
+  'secondhand-attributed': 'var(--color-tier-relayed-ink)',
+  'community-firsthand': 'var(--color-tier-relayed-ink)',
+  unverified: 'var(--color-tier-unverified-ink)',
 }
 
 export interface SpecimenFace {

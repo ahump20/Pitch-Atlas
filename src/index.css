@@ -112,6 +112,8 @@
 }
 
 @layer base {
+  /* every field's hint text, not only .rfx-input: the browser default gray sat near 4.3:1 on the void */
+  ::placeholder { color: var(--ctl-placeholder, #8A90A2); opacity: 1; }
   :root {
     color-scheme: dark;
     --tracking-label: 0.18em;
@@ -658,6 +660,13 @@
   --color-ok-bright: #34E27E;     /* official-data dot, tuned for the dark field */
   --color-amber-bright: #FFC23C;  /* reputable-analysis dot, tuned for the dark field */
   --color-sand-bright: #CDBA8E;   /* secondhand / approximate */
+  /* the three trust tiers: from the source / relayed / unverified. -ink = cream plate. */
+  --color-tier-first: #FF6A29;
+  --color-tier-relayed: #8FBAD6;
+  --color-tier-unverified: #FF2D44;
+  --color-tier-first-ink: #A8430F;
+  --color-tier-relayed-ink: #3D6A8A;
+  --color-tier-unverified-ink: #C8102E;
   /* The interactive accent on the coal scene is the cyan glow again — the Pack
      Gold chrome experiment is retired. On the cream field the page chrome runs
      leather + seam instead; cyan is a dark-scene voice. */
@@ -1840,7 +1849,7 @@
     padding: 12px 16px; font-family: var(--font-prose); font-size: 15px; outline: none;
     transition: border-color .2s, box-shadow .2s, background-color .2s;
   }
-  .rfx-input::placeholder { color: var(--ctl-placeholder, #5C6473); }
+  .rfx-input::placeholder { color: var(--ctl-placeholder, #8A90A2); }
   /* focus deepens the field itself, not just the ring: the paper warms a step
      toward the accent and a soft inner pool says "writing here now". */
   .rfx-input:focus-visible {
@@ -2066,7 +2075,7 @@
   --kicker: var(--color-cyan);
   --ctl-bg: #0B0805;
   --ctl-text: var(--color-bone);
-  --ctl-placeholder: #7C8294;
+  --ctl-placeholder: #8A90A2;
   --ctl-border: color-mix(in srgb, var(--color-cyan) 40%, transparent);
   --ctl-accent: var(--color-cyan);
   --ctl-on-accent: #06121B;
@@ -2141,10 +2150,10 @@
   --focus-ring: var(--color-seam);
 
   /* provenance, semantic — the bright void tints */
-  --confidence-official: var(--color-ok-bright);
-  --confidence-reputable: var(--color-amber-bright);
-  --confidence-secondhand: var(--color-sand-bright);
-  --confidence-unverified: var(--color-bone-3);
+  --confidence-official: var(--color-tier-first);
+  --confidence-reputable: var(--color-tier-relayed);
+  --confidence-secondhand: var(--color-tier-relayed);
+  --confidence-unverified: var(--color-tier-unverified);
 
   /* lines */
   --border-card: rgba(246, 241, 230, 0.10);
@@ -2216,9 +2225,10 @@
   --text-fg: var(--color-ink);
   --text-fg-2: var(--color-ink-2);
   --text-fg-muted: var(--color-ink-3);
-  --confidence-official: var(--color-ok);
-  --confidence-reputable: var(--color-amber);
-  --confidence-secondhand: var(--color-sand);
+  --confidence-official: var(--color-tier-first-ink);
+  --confidence-reputable: var(--color-tier-relayed-ink);
+  --confidence-secondhand: var(--color-tier-relayed-ink);
+  --confidence-unverified: var(--color-tier-unverified-ink);
   --border-card: rgba(12, 35, 64, 0.14);
 }
 
