@@ -22,11 +22,13 @@ import type { RefractorAccent } from './RefractorCard'
 export const ACCENT: Record<string, RefractorAccent> = {
   'four-seam': { c1: '#0A141B', c2: '#3D6178', c3: '#B9D4E5' }, // powder ice — the reference
   'two-seam': { c1: '#061518', c2: '#125B63', c3: '#1F97A2' }, // deep cyan — runs and sinks
-  'circle-change': { c1: '#191510', c2: '#6E6350', c3: '#D8CFBB' }, // bone — soft, deceptive
-  'twelve-six': { c1: '#0A121A', c2: '#3A5F78', c3: '#8FBAD6' }, // powder blue — the big drop
+  // the two throwback frames on the home wall: red and powder blue on the curve, black,
+  // turquoise, red and white on the change. Uniform colors only, never a team mark.
+  'circle-change': { c1: '#191510', c2: '#6E6350', c3: '#D8CFBB', finish: 'teal' }, // bone — soft, deceptive
+  'twelve-six': { c1: '#0A121A', c2: '#3A5F78', c3: '#8FBAD6', finish: 'powder' }, // powder blue — the big drop
   slider: { c1: '#1C0806', c2: '#8F2420', c3: '#FF4D46' }, // seam red — sharp and late
   splitter: { c1: '#111417', c2: '#5A6165', c3: '#A7ADB0' }, // chromium — drops off the table
-  splinker: { c1: '#1A0A04', c2: '#A83607', c3: '#FF6A29' }, // electric burnt orange
+  splinker: { c1: '#1A0A04', c2: '#A83607', c3: '#BF5700' }, // burnt orange
   sweeper: { c1: '#061A1E', c2: '#1F8794', c3: '#5FE0EA' }, // cyan — the wide one
   cutter: { c1: '#0A1015', c2: '#3F5768', c3: '#7F97A8' }, // steel — small and hard
   knuckleball: { c1: '#0E1113', c2: '#3B434A', c3: '#6E757B' }, // chrome grey — no spin, no color
@@ -45,6 +47,17 @@ export const ACCENT: Record<string, RefractorAccent> = {
 }
 
 export const FALLBACK_ACCENT: RefractorAccent = { c1: '#0E1113', c2: '#3B434A', c3: '#A7ADB0' }
+
+/** Burnt orange, the one orange in the set. */
+export const BURNT = '#BF5700'
+
+/** The ink for small type that would take an accent color. Burnt orange measures
+    about 4.4:1 on the void and less on a tinted panel, under the 4.5:1 small text
+    needs, so it paints fills, marks, borders and display type, and small print
+    beside it goes bone. Every other accent passes through unchanged. */
+export function accentInk(color: string): string {
+  return color.toUpperCase() === BURNT ? 'var(--color-bone)' : color
+}
 
 /** The refractor accent triad for a filed specimen, by slug. Shared by the cards,
     the index plates, and the specimen chapter so a pitch wears the same world on

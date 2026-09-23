@@ -1,4 +1,5 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, type ReactNode, useEffect, useRef, useState } from 'react'
+import { accentInk } from '../refractor/accents'
 import { CompareButton } from '../compare/CompareButton'
 import { Link, useSearchParams } from 'react-router-dom'
 import type { GripView, VisualReference } from '../../data/types'
@@ -287,7 +288,7 @@ function EvidenceLane({
         background: `linear-gradient(135deg, color-mix(in srgb, ${accentColor} 8%, transparent), rgba(255,255,255,0.025))`,
       }}
     >
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentInk(accentColor) }}>
         {label}
       </p>
       <div className="mt-2 flex flex-col gap-2 text-[13.5px] leading-relaxed text-bone-2">{children}</div>
@@ -319,7 +320,7 @@ export function SpecimenGrips({
     >
       <div className="grid grid-cols-1 gap-x-12 gap-y-7 md:grid-cols-12">
         <div className="md:col-span-5">
-          <p className="rfx-skick" style={{ color: accentColor }}>
+          <p className="rfx-skick" style={{ color: accentInk(accentColor), '--skick-rule': accentColor } as CSSProperties}>
             Grip Evidence
           </p>
           <h2 id={`${entry.id}-grip-evidence-title`} className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">
@@ -351,7 +352,7 @@ export function SpecimenGrips({
             >
               {entry.id === 'circle-change' ? (
                 <>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentInk(accentColor) }}>
                     {CIRCLE_CHANGE_DISTINCTION.marker}
                   </p>
                   <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-bone-2">
@@ -360,7 +361,7 @@ export function SpecimenGrips({
                 </>
               ) : (
                 <>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentInk(accentColor) }}>
                     Empty gallery
                   </p>
                   <p className="mt-2 max-w-[56ch] text-[14px] leading-relaxed text-bone-2">

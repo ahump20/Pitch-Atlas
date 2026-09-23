@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { accentInk } from '../refractor/accents'
 import { usePip } from './pipContext'
 import { teachingClipForSlug, type TeachingClip } from '../../data/media/tiktok'
 
@@ -44,7 +45,7 @@ export function TikTokEmbed({ clip, accentColor }: { clip: TeachingClip; accentC
   return (
     <figure className="overflow-hidden rounded-lg border border-bone/15 bg-press">
       <figcaption className="flex flex-wrap items-center justify-between gap-2 border-b border-bone/10 px-5 py-3">
-        <span className="mono-label-stage" style={accentColor ? { color: accentColor } : undefined}>
+        <span className="mono-label-stage" style={accentColor ? { color: accentInk(accentColor) } : undefined}>
           See it taught · {clip.author} on TikTok
         </span>
         <span className="mono-label-stage opacity-70">Added {fmtDate(clip.retrievedAt)}</span>

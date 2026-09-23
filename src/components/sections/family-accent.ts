@@ -13,7 +13,7 @@ import type { RepertoireFamily } from '../../data/types'
   tunnel-plot family colors exactly, so a family wears one color everywhere.
 */
 export const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
-  fastball: '#FF6A29', // electric burnt orange — the fastball family burns
+  fastball: '#BF5700', // electric burnt orange — the fastball family burns
   offspeed: '#E4B45A', // brass
   breaking: '#5FE0EA', // cyan
   specialty: '#B9D4E5', // powder ice

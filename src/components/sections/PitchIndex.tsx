@@ -607,7 +607,7 @@ export function PitchIndex({ id, afterControls }: { id?: string; afterControls?:
               className="mb-4 flex items-baseline gap-3.5 border-b pb-2.5"
               style={{ borderColor: `color-mix(in srgb, ${accent} 36%, transparent)` }}
             >
-              <h2 className="rfx-athletic rfx-skew text-[clamp(22px,3.4vw,34px)]" style={{ color: accent }}>
+              <h2 className="rfx-athletic rfx-skew text-[clamp(24px,3.4vw,34px)]" style={{ color: accent }}>
                 {fam.label}
               </h2>
               <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">

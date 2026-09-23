@@ -19,7 +19,7 @@ import { CompareButton } from '../components/compare/CompareButton'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
 import { GripFace } from '../components/refractor/GripFace'
-import { accentForSlug } from '../components/refractor/accents'
+import { accentForSlug, accentInk } from '../components/refractor/accents'
 import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { ConfidenceDot, RefractorClaim, RefractorSource } from '../components/provenance/RefractorClaim'
@@ -99,7 +99,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
   const { canonical, motion, display, guide } = entry
   const accent = accentForSlug(display.slug)
   const isGold = display.specimenNo === '00'
-  const accentColor = isGold ? '#FF8C3A' : accent.c3
+  const accentColor = isGold ? '#BF5700' : accent.c3
   const shape = canonical.physics.shape
   const pills = [FAMILY_LABEL[canonical.family], guide?.family, motion.forceLabel].filter(
     (p, i, a): p is string => Boolean(p) && a.indexOf(p) === i,
@@ -123,7 +123,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         style={{
           viewTransitionName: 'active-specimen',
           background: isGold
-            ? 'radial-gradient(120% 100% at 50% 18%, rgba(255,140,58,0.20), transparent 60%), radial-gradient(120% 90% at 50% 30%, #2a1208, #050309 82%)'
+            ? 'radial-gradient(120% 100% at 50% 18%, rgba(191,87,0,0.22), transparent 60%), radial-gradient(120% 90% at 50% 30%, #2a1208, #050309 82%)'
             : `radial-gradient(120% 100% at 50% 18%, color-mix(in srgb, ${accentColor} 18%, transparent), transparent 60%), radial-gradient(120% 90% at 50% 30%, color-mix(in srgb, ${accent.c2} 50%, #000), #050309 82%)`,
           boxShadow: `0 30px 60px -26px #000, 0 0 0 1px color-mix(in srgb, ${accentColor} 30%, transparent) inset, 0 0 0 3px color-mix(in srgb, ${accentColor} 18%, transparent)`,
         }}
@@ -147,7 +147,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         />
         {isGold ? (
           <span
-            className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#1c0e02]"
+            className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-white"
             style={{ background: accentColor }}
           >
             Ember · 1 of 1 · Reference
@@ -172,7 +172,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
 
       {/* meta */}
       <div className="relative z-[1]">
-        <p className="rfx-athletic rfx-skew text-[18px]" style={{ color: accentColor }}>
+        <p className="rfx-athletic rfx-skew text-[18px]" style={{ color: accentInk(accentColor) }}>
           Archive file · Specimen No. {display.specimenNo}
         </p>
         <h1
@@ -181,7 +181,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         >
           <span className="rfx-holo">{canonical.name}</span>
         </h1>
-        <p className="rfx-athletic rfx-skew mt-2.5 text-[clamp(15px,2vw,19px)] leading-[1.18] [text-wrap:balance]" style={{ color: accentColor }}>
+        <p className="rfx-athletic rfx-skew mt-2.5 text-[clamp(15px,2vw,19px)] leading-[1.18] [text-wrap:balance]" style={{ color: accentInk(accentColor) }}>
           {guide?.tagline ?? display.heroSub}
         </p>
         <p className="mt-4 max-w-[50ch] border-l-2 pl-4 text-[13.5px] leading-relaxed text-bone-2" style={{ borderColor: `color-mix(in srgb, ${accentColor} 46%, transparent)` }}>
@@ -198,7 +198,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
             boxShadow: `inset 0 1px 0 color-mix(in srgb, ${accentColor} 22%, transparent)`,
           } as CSSProperties}
         >
-          <span className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentColor }}>
+          <span className="font-mono text-[10px] uppercase tracking-[0.14em]" style={{ color: accentInk(accentColor) }}>
             Shape read
           </span>
           <p className="rfx-athletic rfx-skew mt-2 max-w-[34ch] text-[clamp(22px,3vw,34px)] leading-[1.05] text-bone">
@@ -220,7 +220,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
               className="rounded-full px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
               style={
                 i === 0 && isGold
-                  ? { background: accentColor, color: '#1c0e02' }
+                  ? { background: accentColor, color: '#fff' }
                   : { color: 'var(--color-bone-2)', border: `1px solid color-mix(in srgb, ${accentColor} 40%, transparent)` }
               }
             >
@@ -242,7 +242,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
               scrollToId('grip-lab', true)
             }}
             className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
-            style={{ background: accentColor, boxShadow: `0 6px 20px -8px ${accentColor}` }}
+            style={{ background: accentColor, color: isGold ? '#fff' : undefined, boxShadow: `0 6px 20px -8px ${accentColor}` }}
           >
             Open the grip file <span aria-hidden="true">↓</span>
           </a>
@@ -273,7 +273,7 @@ function SectionHead({
 }) {
   return (
     <div>
-      <p className="rfx-skick" style={{ color: accentColor }}>
+      <p className="rfx-skick" style={{ color: accentInk(accentColor), '--skick-rule': accentColor } as CSSProperties}>
         {kicker}
       </p>
       <h2 className="rfx-stitle mt-3 text-[clamp(26px,4.4vw,46px)]">{title}</h2>
@@ -308,7 +308,7 @@ function ReleaseSection({ entry, accentColor }: { entry: PitchAtlasEntry; accent
       <div className="mt-7 grid grid-cols-1 gap-3.5 sm:grid-cols-3">
         {sequence.map((s, i) => (
           <article key={s.label} className="rfx-panel rounded-[14px] p-5">
-            <span className="font-mono text-xs tabular-nums" style={{ color: accentColor }}>
+            <span className="font-mono text-xs tabular-nums" style={{ color: accentInk(accentColor) }}>
               0{i + 1}
             </span>
             <h3 className="rfx-athletic rfx-skew mt-2 text-xl text-bone">{s.label}</h3>
@@ -391,7 +391,7 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
           border: `1px solid color-mix(in srgb, ${accentColor} 26%, transparent)`,
         }}
       >
-        <p className="font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: accentColor }}>
+        <p className="font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: accentInk(accentColor) }}>
           The one teaching sentence
         </p>
         <p className="rfx-athletic rfx-skew mt-2.5 max-w-[40ch] text-[clamp(18px,2.4vw,26px)] leading-[1.05] text-bone">
@@ -606,7 +606,7 @@ export function PitchChapter() {
   if (slug && canonicalSlug && slug !== canonicalSlug) return <Navigate to={`/pitch/${canonicalSlug}`} replace />
 
   const isGold = entry.display.specimenNo === '00'
-  const accentColor = isGold ? '#FF8C3A' : accentForSlug(entry.display.slug).c3
+  const accentColor = isGold ? '#BF5700' : accentForSlug(entry.display.slug).c3
   const gripEntry = gripEntryFor(entry.display.slug)
   // siblings: every other filed specimen in the same family, in filed order
   const siblings = PITCHES.filter(

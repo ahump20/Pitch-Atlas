@@ -66,7 +66,7 @@
   align-items: center; gap: clamp(40px, 7vw, 100px); padding: 64px clamp(24px, 5vw, 64px);
 }
 .archive-bridge-read h2 { font: 400 clamp(42px,5vw,66px)/.99 var(--font-display); letter-spacing: -.04em; margin: 24px 0; }
-.archive-bridge-read h2 em { color: #d58b57; }
+.archive-bridge-read h2 em { color: #bf5700; }
 .archive-bridge-read p { max-width: 35ch; font-size: 16px; line-height: 1.7; color: #cac1b7; }
 .archive-bridge-read .archive-bridge-note { margin-top: 22px; font-size: 12px; color: #a79c8f; }
 .archive-bridge .archive-chapter-mark { font-size: 10px; max-width: none; }
@@ -90,7 +90,7 @@
 .archive-seam-controls { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 26px; }
 .archive-seam-controls button { min-height: 44px; padding: 10px 13px; border: 1px solid #9b775b77; border-radius: 3px; color: #cfc4b8; background: #211a15; font: 11px/1.4 var(--font-mono); cursor: pointer; }
 .archive-seam-controls button[aria-pressed='true'] { color: #ffe8d4; background: #723e20; border-color: #c7854f; }
-.archive-seam-controls button:focus-visible { outline: 2px solid #e9a570; outline-offset: 3px; }
+.archive-seam-controls button:focus-visible { outline: 2px solid #bf5700; outline-offset: 3px; }
 .archive-bridge[data-view='model'] .archive-seam-model[data-ready='true'] { opacity: 1; }
 .archive-bridge[data-view='diagram'] .archive-seam-model { opacity: 0; }
 @supports (animation-timeline: view()) {
@@ -211,7 +211,7 @@ html:has(.compare-tray) { scroll-padding-bottom: 150px; }
 .delivery-plate-title { font: 10px/1.5 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: #cdb48f; }
 .delivery-plate-credit { max-width: 58ch; margin-inline: auto; }
 .delivery-plate-credit a { color: #e0b285; text-decoration: underline; text-underline-offset: 3px; }
-.delivery-plate-credit a:focus-visible { outline: 2px solid #e9a570; outline-offset: 3px; border-radius: 2px; }
+.delivery-plate-credit a:focus-visible { outline: 2px solid #bf5700; outline-offset: 3px; border-radius: 2px; }
 /* a 44px tap area without loosening the caption's lines: the padding makes the
    box, the matching negative margin keeps the line box at its normal height */
 @media (any-pointer: coarse) { .delivery-plate-credit a { display: inline-block; padding-block: 13px; margin-block: -13px; } }

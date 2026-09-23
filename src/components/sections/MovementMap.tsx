@@ -25,7 +25,7 @@ const ROW = 132 // vertical zone offset (ride / drop)
 const CLAMP = 220 // axis-guide half-extent
 
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
-  fastball: { label: 'Fastball', color: '#FF6A29' },
+  fastball: { label: 'Fastball', color: '#BF5700' },
   breaking: { label: 'Breaking', color: '#5FE0EA' },
   offspeed: { label: 'Offspeed', color: '#E4B45A' },
 }
