@@ -36,7 +36,7 @@ export function RefractionBridge({ featured }: { featured: PitchAtlasEntry }) {
       style={{ '--c3': accent.c3 } as React.CSSProperties}>
       <div className="archive-bridge-inner">
         <div className="archive-bridge-read">
-          <ChapterMark n="02" name="Inside the cover" accent={accent.c3} className="archive-chapter-mark" />
+          <ChapterMark n="02" name="Inside the cover" accent={accent.c3} delivery={[1, 3]} className="archive-chapter-mark" />
           <h2>Follow<br />{' '}<em>the seam.</em></h2>
           <p>One seam, two ways to look. Inspect the leather and stitching, then bring the same seam into a clear drawing.</p>
           <p className="archive-bridge-note">Seam-informed schematic. Use the drawing to orient yourself; open the grip to see where the fingers rest.</p>

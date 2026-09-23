@@ -38,7 +38,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
               it out. Height-gated, not width-gated, so every portrait phone
               keeps the chapter sequence. */}
           <div className="v2-enter mb-4 [@media(max-height:420px)]:hidden" style={{ '--i': 0 } as React.CSSProperties}>
-            <ChapterMark n="01" name="The Specimen" accent={accent.c3} />
+            <ChapterMark n="01" name="The Specimen" accent={accent.c3} delivery={[1, 1]} />
           </div>
           <h1
             className="archive-case-title v2-enter"

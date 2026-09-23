@@ -2,6 +2,7 @@ import { existsSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { PRESENTATION_MEDIA } from './presentation'
+import { PLATE_273 } from './plate273'
 
 const HASHED_FILE = /-[a-f0-9]{8}\.(?:avif|webp|jpe?g|mp4|webm)$/
 
@@ -80,6 +81,8 @@ describe('presentation media provenance and budgets', () => {
         return [...stills, ...motion].filter((path) => path.startsWith('presentation/'))
       }),
     )
+    // the plate 273 silhouette sprite is declared with its own record
+    declared.add(PLATE_273.src.replace(/^\//, ''))
     const onDisk = readdirSync(join(process.cwd(), 'public/presentation')).map((file) => `presentation/${file}`)
     expect(new Set(onDisk)).toEqual(declared)
   })

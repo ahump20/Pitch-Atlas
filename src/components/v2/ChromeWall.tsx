@@ -183,7 +183,7 @@ export function ChromeWall() {
       <Descent />
       <div className="pa-atmo pa-atmo-index-shelf opacity-[0.16] md:opacity-[0.22]" aria-hidden="true" />
       <div className="relative z-[1] mx-auto max-w-[1320px] px-5 py-20 md:px-8 md:py-28">
-        <ChapterMark n="03" name="The Filed Set" accent={SCENE_TINT} className="mb-4" />
+        <ChapterMark n="03" name="The Filed Set" accent={SCENE_TINT} delivery={[3, 5]} className="mb-4" />
         <div className="flex flex-wrap items-end justify-between gap-4">
           <h2 className="rfx-athletic v2-display text-[clamp(30px,5vw,52px)] leading-[0.94]">
             The <span className="rfx-holo">filed set.</span>
