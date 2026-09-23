@@ -73,7 +73,7 @@ export function PitchConnections({
           <p className="rfx-skick">Others in the {familyLabel.toLowerCase()}</p>
           <div className="mt-5 flex flex-wrap gap-3">
             {siblings.map((s) => {
-              const sc = s.display.specimenNo === '00' ? '#caa14a' : accentForSlug(s.display.slug).c3
+              const sc = s.display.specimenNo === '00' ? '#FF8C3A' : accentForSlug(s.display.slug).c3
               return (
                 <Link
                   key={s.display.slug}

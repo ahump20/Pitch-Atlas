@@ -99,7 +99,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
   const { canonical, motion, display, guide } = entry
   const accent = accentForSlug(display.slug)
   const isGold = display.specimenNo === '00'
-  const accentColor = isGold ? '#caa14a' : accent.c3
+  const accentColor = isGold ? '#FF8C3A' : accent.c3
   const shape = canonical.physics.shape
   const pills = [FAMILY_LABEL[canonical.family], guide?.family, motion.forceLabel].filter(
     (p, i, a): p is string => Boolean(p) && a.indexOf(p) === i,
@@ -123,7 +123,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         style={{
           viewTransitionName: 'active-specimen',
           background: isGold
-            ? 'radial-gradient(120% 100% at 50% 18%, rgba(202,161,74,0.20), transparent 60%), radial-gradient(120% 90% at 50% 30%, #2a1d05, #050309 82%)'
+            ? 'radial-gradient(120% 100% at 50% 18%, rgba(255,140,58,0.20), transparent 60%), radial-gradient(120% 90% at 50% 30%, #2a1208, #050309 82%)'
             : `radial-gradient(120% 100% at 50% 18%, color-mix(in srgb, ${accentColor} 18%, transparent), transparent 60%), radial-gradient(120% 90% at 50% 30%, color-mix(in srgb, ${accent.c2} 50%, #000), #050309 82%)`,
           boxShadow: `0 30px 60px -26px #000, 0 0 0 1px color-mix(in srgb, ${accentColor} 30%, transparent) inset, 0 0 0 3px color-mix(in srgb, ${accentColor} 18%, transparent)`,
         }}
@@ -147,10 +147,10 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         />
         {isGold ? (
           <span
-            className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#2a1d05]"
+            className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#1c0e02]"
             style={{ background: accentColor }}
           >
-            Gold · 1 of 1 · Reference
+            Ember · 1 of 1 · Reference
           </span>
         ) : null}
         {heroClip ? (
@@ -220,7 +220,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
               className="rounded-full px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
               style={
                 i === 0 && isGold
-                  ? { background: accentColor, color: '#2a1d05' }
+                  ? { background: accentColor, color: '#1c0e02' }
                   : { color: 'var(--color-bone-2)', border: `1px solid color-mix(in srgb, ${accentColor} 40%, transparent)` }
               }
             >
@@ -606,7 +606,7 @@ export function PitchChapter() {
   if (slug && canonicalSlug && slug !== canonicalSlug) return <Navigate to={`/pitch/${canonicalSlug}`} replace />
 
   const isGold = entry.display.specimenNo === '00'
-  const accentColor = isGold ? '#caa14a' : accentForSlug(entry.display.slug).c3
+  const accentColor = isGold ? '#FF8C3A' : accentForSlug(entry.display.slug).c3
   const gripEntry = gripEntryFor(entry.display.slug)
   // siblings: every other filed specimen in the same family, in filed order
   const siblings = PITCHES.filter(

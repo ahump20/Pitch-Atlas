@@ -119,7 +119,7 @@ describe('Home card restraint', () => {
     expect(wall).not.toBeNull()
     expect(wall!.querySelectorAll('.rfx-card')).toHaveLength(featuredPitchSet().length)
     expect(wall!.querySelector('.rfx-grade')).toBeNull()
-    expect(screen.queryByText('Gold · 1 of 1')).not.toBeInTheDocument()
+    expect(screen.queryByText('Ember · 1 of 1')).not.toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: /to its sourced back/ })).toHaveLength(
       featuredPitchSet().length,
     )
