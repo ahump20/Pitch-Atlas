@@ -38,7 +38,10 @@ interface Plotted {
 }
 
 const LABELS: Record<string, { dx: number; dy: number; anchor: 'start' | 'middle' | 'end' }> = {
-  'two-seam': { dx: 0, dy: -24, anchor: 'middle' },
+  // four-seam and knuckleball sit on the vertical axis: set their labels off it
+  'four-seam': { dx: 14, dy: 0, anchor: 'start' },
+  knuckleball: { dx: -14, dy: -14, anchor: 'end' },
+  'two-seam': { dx: 0, dy: -14, anchor: 'middle' }, // under the forkball dot, not through it
   'circle-change': { dx: 10, dy: 2, anchor: 'start' },
   splitter: { dx: 16, dy: 18, anchor: 'start' },
   splinker: { dx: -16, dy: 22, anchor: 'end' },
