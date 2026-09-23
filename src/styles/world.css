@@ -25,6 +25,7 @@
 .archive-discovery-history { margin-top: 32px; padding-top: 24px; border-top: 1px solid #9f87544d; }
 .archive-discovery-history .archive-eyebrow { color: #d0a478; }
 .archive-discovery-history > a { display: flex; gap: 16px; justify-content: space-between; margin: 10px 0; align-items: baseline; }
+@media (any-pointer: coarse) { .archive-discovery-history > a { margin: 3px 0; padding-block: 7px; } }
 .archive-discovery-history h4 { font: 400 27px/1.12 var(--font-display); }
 .archive-discovery-history > p:last-child { max-width: 43ch; font-size: 14px; line-height: 1.6; color: #cbb6a3; }
 .archive-discovery-routes { display: grid; grid-template-columns: repeat(3,1fr); margin-top: 34px; border-block: 1px solid #b69a5b45; }
