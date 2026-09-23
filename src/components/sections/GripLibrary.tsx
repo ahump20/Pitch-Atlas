@@ -537,8 +537,8 @@ export function GripLibrary() {
             </p>
 
             {grip.movement ? (
-              <div className="mt-5 max-w-[74ch] rounded-[12px] border-l-2 border-amber/50 bg-press/50 px-4 py-3.5">
-                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-amber">How it moved</p>
+              <div className="mt-5 max-w-[74ch] rounded-[12px] border border-bone/12 bg-press/50 px-4 py-3.5">
+                <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-3">How it moved</p>
                 <p className="mt-1.5 text-[14px] leading-relaxed text-bone-2">{grip.movement}</p>
               </div>
             ) : null}
