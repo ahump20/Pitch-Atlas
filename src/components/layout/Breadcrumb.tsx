@@ -23,7 +23,7 @@ export function Breadcrumb({
   return (
     <nav
       aria-label="Breadcrumb"
-      className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-2"
+      className="mb-6 flex flex-wrap items-center gap-2 any-pointer-coarse:gap-y-8 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-2"
     >
       {trail.map((crumb, i) => {
         const last = i === trail.length - 1
