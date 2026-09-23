@@ -1,8 +1,9 @@
 # design-sync notes — Pitch Atlas
 
 **System of record (since 2026-09-18): the Design System artifact**
-https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — re-synced to main@4098cbd
-on 2026-09-22 (published as Version 10, bullet fix Version 11). The claude.ai/design
+https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — re-synced to main@8662056
+on 2026-09-23 (Version 19: one burnt orange #bf5700, the three trust-tier tokens, the
+r3f 9.7 scheduler fix below). The claude.ai/design
 project `e8154c97-53f1-4412-aa6b-9d019bc85e0c` is the legacy source it was migrated
 from; it is left untouched and no longer receives uploads. Two dead ids appear in
 older prose: `1f94fe08-…` and `aa4ea331-…`. Both are gone (`aa4ea331` 404s).
@@ -52,6 +53,16 @@ BallStage's boundary quietly shows the schematic instead, so nothing looks broke
 No capture without WebGL ever reaches that code: measured "production React is
 lighter" first, and it broke the 3D ball. `package.mjs` builds React 19 as a
 development IIFE for this reason.
+
+## r3f 9.7 named scheduler imports fold to `void 0` (fixed in package.mjs, 2026-09-23)
+@react-three/fiber 9.7 (the Dependabot batch, #203) imports `unstable_getCurrentPriorityLevel`,
+`unstable_scheduleCallback` and the priority constants from `scheduler` by NAME. The
+driver's throwing stub has no exports, so esbuild folds each to `void 0` and the scene
+throws "(void 0) is not a function" on its first frame; render-check shows `loading=2`
+with that error. `package.mjs` points the two folded call sites at `window.__paScheduler`
+and refuses to package while any `(void 0)(` call remains, so an r3f that moves those
+lines fails loudly: re-point the two strings then. In a full 23-card render-check run the
+software-GL ball can still read `loading=2` with no error (timing); run it alone to confirm.
 
 ## The driver stubs `scheduler` with a throw — the packager swaps it
 lib/bundle.mjs resolves any `scheduler` import to a stub that throws
