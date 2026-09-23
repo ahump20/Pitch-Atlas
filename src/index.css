@@ -527,9 +527,15 @@
 }
 
 /* Fitts on touch: real fingers get 44px rows and chips without resizing the type */
-@media (pointer: coarse) {
+@media (any-pointer: coarse) {
   .pi-toggle { min-height: 44px; }
   .disclosure-row { min-height: 44px; }
+  :is(.v2-cta, .btn-foil, .rfx-chip, .rfx-seg, .rfx-select,
+      [data-slot=button], [data-slot=input], [data-slot=select-trigger], [data-slot=select-item],
+      [data-slot=toggle], [data-slot=toggle-group-item], [data-slot=dialog-close]) { min-height: 44px; }
+  :is([data-slot=button], [data-slot=dialog-close]) { min-width: 44px; }
+  [data-slot=input-group] { height: auto; }
+  :is([data-slot=input-group-control], input[type=range]) { min-height: 44px; }
 }
 
 /* Phone chip rails: the Pitch Index filter/sort/status rows scroll horizontally

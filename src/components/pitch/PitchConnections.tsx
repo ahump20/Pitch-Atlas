@@ -73,12 +73,12 @@ export function PitchConnections({
           <p className="rfx-skick">Others in the {familyLabel.toLowerCase()}</p>
           <div className="mt-5 flex flex-wrap gap-3">
             {siblings.map((s) => {
-              const sc = s.display.specimenNo === '00' ? '#caa14a' : accentForSlug(s.display.slug).c3
+              const sc = s.display.specimenNo === '00' ? '#FF8C3A' : accentForSlug(s.display.slug).c3
               return (
                 <Link
                   key={s.display.slug}
                   to={`/pitch/${s.display.slug}`}
-                  className="group inline-flex items-center gap-2.5 rounded-full border border-bone/15 py-2 pl-3 pr-4 transition-colors hover:border-bone/40"
+                  className="group inline-flex items-center gap-2.5 rounded-full border border-bone/15 py-2 any-pointer-coarse:min-h-11 pl-3 pr-4 transition-colors hover:border-bone/40"
                 >
                   <span
                     aria-hidden="true"

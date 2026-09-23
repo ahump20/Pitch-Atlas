@@ -39,7 +39,7 @@ export function RefractorSource({ source, className = '' }: { source: Source; cl
       href={source.url}
       target="_blank"
       rel="noreferrer noopener"
-      className={`inline-flex min-w-0 max-w-full items-baseline gap-1 font-mono text-[10px] uppercase tracking-[0.06em] text-ink-3 underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan ${className}`}
+      className={`inline-flex min-w-0 max-w-full items-baseline gap-1 any-pointer-coarse:-my-[15px] any-pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.06em] text-ink-3 underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan ${className}`}
       title={`${source.label}${source.season ? ` / ${source.season}` : ''}. Opens in a new tab.`}
     >
       <span className="min-w-0 max-w-[28ch] truncate">{source.label}</span>

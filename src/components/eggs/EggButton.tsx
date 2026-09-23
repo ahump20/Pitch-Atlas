@@ -27,7 +27,7 @@ export function EggButton({
       type="button"
       onClick={() => reveal(tidbitId)}
       aria-label={label}
-      className={`cursor-pointer rounded-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan/70 ${
+      className={`cursor-pointer rounded-sm transition-colors any-pointer-coarse:min-w-11 any-pointer-coarse:-mx-2 any-pointer-coarse:-my-[17px] any-pointer-coarse:px-2 any-pointer-coarse:py-[17px] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan/70 ${
         found ? 'underline decoration-cyan/40 underline-offset-2' : ''
       } ${className}`}
     >

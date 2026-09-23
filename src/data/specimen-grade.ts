@@ -25,7 +25,7 @@ export interface SpecimenGrade {
 }
 
 const LABEL: Record<SpecimenGradeKey, string> = {
-  gold: 'Gold · 1 of 1',
+  gold: 'Ember · 1 of 1',
   'in-motion': 'First-party motion',
   'first-party': 'First-party grip',
   reference: 'Reference specimen',

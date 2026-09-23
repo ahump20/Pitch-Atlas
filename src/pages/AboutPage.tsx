@@ -95,7 +95,7 @@ const TRUTH_ROWS = [
 
 function ExternalLink({ href, children }: { href: string; children: string }) {
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="text-seam transition-colors hover:text-ink">
+    <a href={href} target="_blank" rel="noreferrer" className="inline-flex items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink">
       {children}
     </a>
   )
@@ -260,7 +260,7 @@ export function AboutPage() {
             <p className="mt-6">
               <Link
                 to="/grips"
-                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink"
+                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink any-pointer-coarse:py-[14px]"
               >
                 See the grip library <span aria-hidden="true">→</span>
               </Link>
@@ -362,7 +362,7 @@ export function AboutPage() {
             <p className="mt-6">
               <Link
                 to="/lost-pitches"
-                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink"
+                className="font-mono text-sm uppercase tracking-wide text-seam transition-colors hover:text-ink any-pointer-coarse:py-[14px]"
               >
                 Walk the lost-pitches wing <span aria-hidden="true">→</span>
               </Link>

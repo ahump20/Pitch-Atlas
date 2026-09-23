@@ -18,7 +18,7 @@ export function SourceBadge({
       href={source.url}
       target="_blank"
       rel="noreferrer noopener"
-      className={`mono-label min-w-0 max-w-full underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-ink hover:decoration-seam ${wrapLabel ? 'inline-block text-xs leading-relaxed [overflow-wrap:anywhere]' : 'inline-flex items-baseline gap-1'} ${className}`}
+      className={`mono-label min-w-0 max-w-full any-pointer-coarse:-my-[17px] any-pointer-coarse:py-[17px] underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-ink hover:decoration-seam ${wrapLabel ? 'inline-block text-xs leading-relaxed [overflow-wrap:anywhere]' : 'inline-flex items-baseline gap-1'} ${className}`}
       title={`${source.label}${source.season ? ` / ${source.season}` : ''}. Opens in a new tab.`}
     >
       <span className={wrapLabel ? 'whitespace-normal' : 'min-w-0 max-w-[26ch] truncate'}>{source.label}</span>

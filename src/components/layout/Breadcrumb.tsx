@@ -23,14 +23,14 @@ export function Breadcrumb({
   return (
     <nav
       aria-label="Breadcrumb"
-      className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-2"
+      className="mb-6 flex flex-wrap items-center gap-2 any-pointer-coarse:gap-y-8 font-mono text-[11px] uppercase tracking-[0.14em] text-ink-2"
     >
       {trail.map((crumb, i) => {
         const last = i === trail.length - 1
         return (
           <span key={`${crumb.label}-${i}`} className="flex items-center gap-2">
             {crumb.to && !last ? (
-              <Link to={crumb.to} className="link-stitch transition-colors hover:text-[var(--ctl-accent)]">
+              <Link to={crumb.to} className="link-stitch any-pointer-coarse:-my-[16px] any-pointer-coarse:py-[16px] any-pointer-coarse:bg-origin-content transition-colors hover:text-[var(--ctl-accent)]">
                 {crumb.label}
               </Link>
             ) : (

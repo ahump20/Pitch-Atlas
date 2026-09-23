@@ -556,7 +556,7 @@ export function PitchIndex({ id, afterControls }: { id?: string; afterControls?:
             <p className="max-w-[72ch] text-[11.5px] leading-snug text-bone-2">
               Documentation depth is how richly the atlas has preserved a grip, richest first:
               filmed in the pitcher's own hand, then a first-party still, then a filed reference.
-              The lone gold 1 of 1 is the four-seam, specimen 00.
+              The lone ember 1 of 1 is the four-seam, specimen 00.
             </p>
             <p className="mt-2 max-w-[72ch] text-[11.5px] leading-snug text-bone-2">
               Status is the atlas's filing label for an entry. Banned, alias, illusion, and

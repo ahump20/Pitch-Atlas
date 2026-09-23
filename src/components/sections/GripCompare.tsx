@@ -102,7 +102,7 @@ export function GripCompare() {
               <span className="mono-label mr-2" style={{ color: accentForSlug(entry.display.slug).c3 }}>{entry.canonical.family}</span>
               {entry.canonical.gripModel.releaseCue}
             </p>
-            <Link to={`/pitch/${entry.display.slug}`} className="mono-label mt-2 inline-block text-cyan transition-colors hover:text-bone">
+            <Link to={`/pitch/${entry.display.slug}`} className="mono-label mt-2 inline-flex items-center any-pointer-coarse:min-h-11 text-cyan transition-colors hover:text-bone">
               {entry.display.shortName} specimen →
             </Link>
           </div>

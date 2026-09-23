@@ -121,7 +121,7 @@ export function Masthead() {
       style={{ viewTransitionName: 'persistent-masthead' } as CSSProperties}
     >
       <div className="mx-auto flex h-16 max-w-[1320px] items-center justify-between gap-4 px-5 md:px-8">
-        <Link to="/" viewTransition aria-label={`${SITE.siteName}, home`}>
+        <Link to="/" viewTransition aria-label={`${SITE.siteName}, home`} className="flex min-h-11 items-center">
           <BrandMark size="sm" />
         </Link>
 
@@ -132,7 +132,7 @@ export function Masthead() {
               to={n.to}
               viewTransition
               aria-current={routeIsActive(pathname, n.to) ? (pathname === n.to ? 'page' : 'location') : undefined}
-              className={`link-stitch whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+              className={`link-stitch any-pointer-coarse:-mx-1 any-pointer-coarse:-my-[15px] any-pointer-coarse:px-1 any-pointer-coarse:py-[15px] any-pointer-coarse:bg-origin-content whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
                 routeIsActive(pathname, n.to) ? 'is-current text-cyan' : 'text-ink-2'
               }`}
             >
@@ -152,7 +152,7 @@ export function Masthead() {
                   pathname,
                 }))
               }
-              className={`link-stitch flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
+              className={`link-stitch any-pointer-coarse:-mx-1 any-pointer-coarse:-my-[15px] any-pointer-coarse:px-1 any-pointer-coarse:py-[15px] any-pointer-coarse:bg-origin-content flex items-center gap-1 whitespace-nowrap font-mono text-xs uppercase tracking-[0.1em] transition-colors hover:text-bone ${
                 moreActive ? 'is-current text-cyan' : 'text-ink-2'
               }`}
             >

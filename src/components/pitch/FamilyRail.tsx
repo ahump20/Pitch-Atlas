@@ -30,7 +30,7 @@ export function FamilyRail({ heading, items }: { heading: string; items: FamilyL
           <Link
             key={item.to}
             to={item.to}
-            className="group flex w-full items-center justify-between gap-2.5 rounded-full border border-ink/15 py-2 pl-3 pr-4 transition-colors hover:border-ink/40 md:inline-flex md:w-auto md:justify-start"
+            className="group flex w-full items-center justify-between gap-2.5 rounded-full border border-ink/15 py-2 any-pointer-coarse:min-h-11 pl-3 pr-4 transition-colors hover:border-ink/40 md:inline-flex md:w-auto md:justify-start"
           >
             <span className="flex min-w-0 items-center gap-2.5">
               <span

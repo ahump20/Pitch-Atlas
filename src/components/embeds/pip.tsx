@@ -92,14 +92,15 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
       role="dialog"
       aria-label={`Now playing: ${clip.title}`}
       data-resume-behavior="restart"
-      className="fixed inset-x-3 bottom-3 z-[80] mx-auto w-auto max-w-[330px] overflow-hidden rounded-lg border border-bone/20 bg-press shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:mx-0"
+      style={{ maxWidth: `min(330px, calc((100dvh - 9rem) * ${portrait ? '9 / 16' : '16 / 10'}))` }}
+      className="fixed inset-x-3 bottom-3 z-[80] mx-auto w-auto overflow-hidden rounded-lg border border-bone/20 bg-press shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:mx-0"
     >
       <div className="flex items-center justify-between gap-2 border-b border-bone/12 px-3 py-2">
         <a
           href={clip.authorUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mono-label-stage truncate transition-colors hover:text-bone"
+          className="mono-label-stage truncate any-pointer-coarse:py-[17px] transition-colors hover:text-bone"
         >
           {clip.author} · {provider}
         </a>
@@ -109,7 +110,7 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open on ${provider}`}
-            className="rounded-sm border border-bone/20 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/60 hover:text-bone"
+            className="inline-flex items-center rounded-sm border border-bone/20 px-2 py-1 any-pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/60 hover:text-bone"
           >
             Open ↗
           </a>
@@ -117,7 +118,7 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
             type="button"
             onClick={onClose}
             aria-label="Close player and return it to the page"
-            className="grid h-7 w-7 place-items-center rounded-sm border border-bone/20 text-bone-2 transition-colors hover:border-seam/60 hover:text-bone"
+            className="grid h-7 w-7 any-pointer-coarse:h-11 any-pointer-coarse:w-11 place-items-center rounded-sm border border-bone/20 text-bone-2 transition-colors hover:border-seam/60 hover:text-bone"
           >
             <span aria-hidden="true" className="text-base leading-none">×</span>
           </button>
