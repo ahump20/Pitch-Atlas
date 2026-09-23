@@ -527,7 +527,7 @@
 }
 
 /* Fitts on touch: real fingers get 44px rows and chips without resizing the type */
-@media (pointer: coarse) {
+@media (any-pointer: coarse) {
   .pi-toggle { min-height: 44px; }
   .disclosure-row { min-height: 44px; }
   :is(.v2-cta, .btn-foil, .rfx-chip, .rfx-seg, .rfx-select,

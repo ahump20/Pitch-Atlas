@@ -107,9 +107,9 @@ export function SoftballPitchChapter() {
         </div>
         <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
           <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
-            <Link to="/" className="pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-colors hover:text-bone">The Atlas</Link>
+            <Link to="/" className="any-pointer-coarse:-my-[14px] any-pointer-coarse:py-[14px] transition-colors hover:text-bone">The Atlas</Link>
             <span aria-hidden="true">/</span>
-            <Link to="/softball" className="pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-colors hover:text-bone">Softball</Link>
+            <Link to="/softball" className="any-pointer-coarse:-my-[14px] any-pointer-coarse:py-[14px] transition-colors hover:text-bone">Softball</Link>
             <span aria-hidden="true">/</span>
             <span className="text-bone-2">{pitch.name}</span>
           </nav>
@@ -179,7 +179,7 @@ export function SoftballPitchChapter() {
 
       <section id="softball-sources" className="study-anchor mx-auto max-w-6xl px-5 py-12 md:px-8">
         <StageTierMarker index="04" label="Sources in this file" />
-        <ul className="grid gap-4 pointer-coarse:gap-y-[30px]">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
+        <ul className="grid gap-4 any-pointer-coarse:gap-y-[30px]">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
       </section>
 
       <ChapterNav prev={prev} next={next} />

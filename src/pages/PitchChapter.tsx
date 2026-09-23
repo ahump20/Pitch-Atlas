@@ -518,7 +518,7 @@ function ColophonSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
       </SectionHead>
 
       <div className="rfx-panel mt-7 rounded-2xl p-[clamp(22px,3vw,32px)]">
-        <ol className="grid grid-cols-1 gap-2.5 pointer-coarse:gap-y-[30px] sm:grid-cols-2">
+        <ol className="grid grid-cols-1 gap-2.5 any-pointer-coarse:gap-y-[30px] sm:grid-cols-2">
           {sources.map((s, i) => (
             <li key={s.id} className="flex items-baseline gap-2.5 text-[12px] text-bone-2">
               <span className="font-mono text-[8px] text-ink-3">{String(i + 1).padStart(2, '0')}</span>

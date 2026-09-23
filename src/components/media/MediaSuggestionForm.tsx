@@ -27,7 +27,7 @@ export function MediaSuggestionForm({ pitchSlug }: { pitchSlug?: string }) {
 
   return (
     <details className="mt-6 rounded-[14px] border border-bone/12 bg-black/20 px-4 py-3">
-      <summary className="cursor-pointer pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2 transition-colors hover:text-cyan">
+      <summary className="cursor-pointer any-pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2 transition-colors hover:text-cyan">
         Know a pitching post that belongs here?
       </summary>
       <form onSubmit={submit} className="mt-4 grid gap-3 md:grid-cols-2">
@@ -39,7 +39,7 @@ export function MediaSuggestionForm({ pitchSlug }: { pitchSlug?: string }) {
             value={url}
             onChange={(event) => setUrl(event.target.value)}
             placeholder="https://x.com/… or Instagram, TikTok, YouTube"
-            className="pointer-coarse:min-h-11 mt-1.5 w-full rounded-md border border-bone/15 bg-black/35 px-3 py-2.5 text-sm text-bone outline-none transition-colors placeholder:text-[var(--ctl-placeholder,#8A90A2)] focus:border-cyan/60"
+            className="any-pointer-coarse:min-h-11 mt-1.5 w-full rounded-md border border-bone/15 bg-black/35 px-3 py-2.5 text-sm text-bone outline-none transition-colors placeholder:text-[var(--ctl-placeholder,#8A90A2)] focus:border-cyan/60"
           />
         </label>
         <label className="md:col-span-2">
@@ -58,7 +58,7 @@ export function MediaSuggestionForm({ pitchSlug }: { pitchSlug?: string }) {
           <button
             type="submit"
             disabled={busy}
-            className="rounded-sm border border-cyan/45 px-4 py-2 pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.12em] text-cyan transition-colors hover:border-cyan hover:text-bone disabled:cursor-wait disabled:opacity-50"
+            className="rounded-sm border border-cyan/45 px-4 py-2 any-pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.12em] text-cyan transition-colors hover:border-cyan hover:text-bone disabled:cursor-wait disabled:opacity-50"
           >
             {busy ? 'Filing…' : 'Send to review'}
           </button>

@@ -121,9 +121,9 @@ export function CraftsmanChapter() {
         </div>
         <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
           <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
-            <Link to="/" className="pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-colors hover:text-bone">The Atlas</Link>
+            <Link to="/" className="any-pointer-coarse:-my-[14px] any-pointer-coarse:py-[14px] transition-colors hover:text-bone">The Atlas</Link>
             <span aria-hidden="true">/</span>
-            <Link to="/craftsmen" className="pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-colors hover:text-bone">The Craftsmen</Link>
+            <Link to="/craftsmen" className="any-pointer-coarse:-my-[14px] any-pointer-coarse:py-[14px] transition-colors hover:text-bone">The Craftsmen</Link>
             <span aria-hidden="true">/</span>
             <EggButton
               tidbitId="curveball-claim"
@@ -163,7 +163,7 @@ export function CraftsmanChapter() {
               {pitch ? (
                 <Link
                   to={`/pitch/${pitch.display.slug}`}
-                  className="mt-6 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 pointer-coarse:min-h-11 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
+                  className="mt-6 inline-flex items-center gap-2 rounded-sm border border-seam/60 px-4 py-2.5 any-pointer-coarse:min-h-11 font-mono text-xs uppercase tracking-[0.12em] text-seam transition-colors hover:bg-seam/10"
                 >
                   Study the {pitch.canonical.name.toLowerCase()}
                   <span aria-hidden="true">→</span>

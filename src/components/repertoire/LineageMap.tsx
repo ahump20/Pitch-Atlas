@@ -38,7 +38,7 @@ function Node({ entry, accent }: { entry: RepertoireEntry; accent: string }) {
       to={to}
       title={`${entry.name} · ${STATUS_LABEL[entry.status]}${entry.filedSlug ? ' (filed specimen)' : ''}`}
       aria-label={`${entry.name}, ${STATUS_LABEL[entry.status]}${entry.filedSlug ? ', filed specimen' : ', basic file'}`}
-      className={`group inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 pointer-coarse:min-h-11 text-[12px] leading-none transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/70 ${
+      className={`group inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 any-pointer-coarse:min-h-11 text-[12px] leading-none transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan/70 ${
         edge
           ? 'border-dashed border-bone/20 text-bone-2/60 hover:text-bone-2'
           : filed

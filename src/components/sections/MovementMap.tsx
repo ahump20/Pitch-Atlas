@@ -235,7 +235,7 @@ export function MovementMap() {
             key={p.display.slug}
             to={`/pitch/${p.display.slug}`}
             viewTransition
-            className="mono-label inline-flex items-center pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink"
+            className="mono-label inline-flex items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink"
           >
             {p.display.shortName} →
           </Link>

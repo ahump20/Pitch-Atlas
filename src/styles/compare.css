@@ -119,7 +119,7 @@ body:has(.compare-tray) #main { padding-bottom:100px; }
 ::view-transition-group(active-specimen) { animation-duration:400ms; animation-timing-function:cubic-bezier(.16,1,.3,1); }
 @media(prefers-reduced-motion:reduce) { ::view-transition-group(active-specimen), ::view-transition-old(active-specimen), ::view-transition-new(active-specimen) { animation:none; } }
 /* Touch screens: every control here reaches 44px without resizing its type. Last, so it wins over the phone overrides above. */
-@media (pointer: coarse) {
+@media (any-pointer: coarse) {
   .compare-button { min-height:44px; }
   .archive-icon-action, .compare-tabs button { min-width:44px; }
   .compare-toggles button { min-width:44px; min-height:44px; }

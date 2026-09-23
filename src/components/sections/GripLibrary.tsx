@@ -474,7 +474,7 @@ export function GripLibraryIndex() {
           <a
             key={grip.id}
             href={`#grip-${grip.id}`}
-            className="inline-flex items-center rounded-full border border-bone/15 bg-black/20 px-3 py-2 pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/55 hover:text-bone"
+            className="inline-flex items-center rounded-full border border-bone/15 bg-black/20 px-3 py-2 any-pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/55 hover:text-bone"
           >
             {grip.label}
           </a>
@@ -521,7 +521,7 @@ export function GripLibrary() {
               {link ? (
                 <Link
                   to={link.to}
-                  className="font-mono text-[11px] uppercase tracking-[0.1em] text-cyan underline-offset-2 pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-opacity hover:opacity-70"
+                  className="font-mono text-[11px] uppercase tracking-[0.1em] text-cyan underline-offset-2 any-pointer-coarse:-my-[14px] any-pointer-coarse:py-[14px] transition-opacity hover:opacity-70"
                 >
                   {link.label} <span aria-hidden="true">→</span>
                 </Link>

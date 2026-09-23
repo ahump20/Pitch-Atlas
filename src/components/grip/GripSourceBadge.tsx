@@ -32,7 +32,7 @@ export function GripSourceBadge({
             href={provenance.source.url}
             target="_blank"
             rel="noreferrer"
-            className="block pointer-coarse:-my-[16px] pointer-coarse:py-[16px] font-mono text-[10px] leading-snug tracking-[0.04em] text-bone-2 underline decoration-bone/30 underline-offset-2 transition-colors hover:text-bone"
+            className="block any-pointer-coarse:-my-[16px] any-pointer-coarse:py-[16px] font-mono text-[10px] leading-snug tracking-[0.04em] text-bone-2 underline decoration-bone/30 underline-offset-2 transition-colors hover:text-bone"
           >
             <span className="line-clamp-2">{provenance.source.label}</span>
           </a>
