@@ -148,7 +148,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
         {isGold ? (
           <span
             className="absolute left-3.5 top-3.5 z-10 rounded-full px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#2a1d05]"
-            style={{ background: 'var(--gold)' }}
+            style={{ background: accentColor }}
           >
             Gold · 1 of 1 · Reference
           </span>
@@ -220,7 +220,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
               className="rounded-full px-2.5 py-1.5 font-mono text-[9px] uppercase tracking-[0.1em]"
               style={
                 i === 0 && isGold
-                  ? { background: 'var(--gold)', color: '#2a1d05' }
+                  ? { background: accentColor, color: '#2a1d05' }
                   : { color: 'var(--color-bone-2)', border: `1px solid color-mix(in srgb, ${accentColor} 40%, transparent)` }
               }
             >

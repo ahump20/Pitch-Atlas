@@ -97,9 +97,9 @@ export function specimenFace(
   const modelFace = model && modelled
 
   const faceSource = clip
-    ? { label: 'Austin video', color: '#7FC6FF' }
+    ? { label: 'Austin video', color: '#5FE0EA' }
     : photo
-      ? { label: 'Austin photo', color: '#7FC6FF' }
+      ? { label: 'Austin photo', color: '#5FE0EA' }
       : modelFace
         ? { label: 'Reference grip model', color: '#CDBA8E' }
         : { label: 'Reference schematic', color: '#CDBA8E' }
