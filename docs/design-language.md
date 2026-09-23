@@ -66,20 +66,30 @@ Three families, one job each. **Newsreader serif is retired from headings and ti
 
 ## 3. Color & accent
 
-- Text: `--color-bone` (#F6F1E6 primary), `--color-bone-2` (#C2C7D6 secondary),
-  `--color-ink-3` (#7C8294 muted). On the void only.
-- **Cyan is the interactive accent.** `--color-cyan` (#37D6FF): eyebrows, links, focus
-  rings, active chips/segments, nav. If it's clickable or focusable, cyan marks it.
+Values are what pitch-atlas.com paints (read in a browser, 2026-09-22). The full
+table, with contrast on each ground, is the Color section of the design system.
+
+- Text on the void: `--color-ink` / `--color-bone` (#F6F1E6 primary), `--color-ink-2`
+  (#C2C7D6 secondary), `--color-ink-3` (#7C8294 muted). Panels and plates switch the
+  `ink` names to the warm bone set: #F6F1E6, `--color-bone-2` #C9C2B0, #969080. The
+  `bone` names hold their value everywhere, so they read only on dark grounds.
+- **Cyan is the interactive accent.** `--color-cyan` (#5FE0EA): the section kicker,
+  inline links, active chips/segments, and the `ring` on fields and the Radix
+  primitives. The site-wide focus outline is seam red (`--color-seam`, 2px, 3px off
+  the edge). #37D6FF is the retired cyan; don't use it.
 - **Seam-bright** (`--color-seam-bright` #FF2D44): the leather seam, the "force"/velocity
-  emphasis, and the banned/lost tier. A graphic red, never body text.
+  emphasis, the banned/lost tier, and the unverified dot. A graphic red, never body text.
 - **Foil** (`--foil`) = showcase decoration only (card edges, the diamond mark, one-word
-  holo). **Gold** (`--gold`) = the 1/1 chase treatment (`.is-gold`), used sparingly for a
-  truly singular specimen.
+  holo). **Ember** (`--ember`) = the one-of-one: matte warm-black lacquer with
+  burnt-orange heat, for a single specimen. Its class keeps the old name `.is-gold`;
+  there is no `--gold` token.
 - **Family accents** drive per-pitch color. Cards take an accent triad `--c1/--c2/--c3`
   (see `accentForSlug` / `FAMILY_ACCENT`); rows take a single `--gc`. Always derive the
   accent from the pitch family — never hardcode a one-off color.
-- **Provenance dots** (status, not accents): `--color-ok-bright` (official),
-  `--color-amber-bright` (reputable analysis), `--color-sand-bright` (secondhand/approx).
+- **Provenance dots** (status, not accents, as `ConfidenceDot` paints them):
+  `--color-ok-bright` (official data), `--color-cyan` (pitcher's own words),
+  `--color-teal-glow` (coach-observed), `--color-amber-bright` (reputable analysis),
+  `--color-sand-bright` (secondhand and community), `--color-seam-bright` (unverified).
 
 ## 4. The card family — tiered, one DNA
 
@@ -97,13 +107,14 @@ A row is not a different species from a card — it's the same card at lower den
   the same family. Required DNA:
   - dark matte field (`var(--color-press)` / `rgba(5,7,12,.84)`), not `bg-paper`
   - a **left foil/accent edge** keyed to `--gc` (family accent), seam-bright when the item
-    is banned/edge/legend (mirror the `.rfx-entry.is-filed` gold treatment for filed)
+    is banned/edge/legend (for filed, mirror `.rfx-entry.is-filed`: a 2px family-accent top
+    edge on a warm bone border)
   - **Anton title** (`.rfx-stitle` or `font-athletic`), bone — never `.display`/serif/navy
   - **mono labels** for the eyebrow/meta line, a `.rfx-statpill` or `StatusBadge` for status
   - an "Open →" affordance in cyan (`text-cyan`) that warms on hover
   - corner ticks allowed but in `rgba(255,255,255,.12)`, not `border-navy/30`
 - **Tier C — Row** (`.rfx-entry`, existing). Dense directory listing, the Pitch Index
-  **Rows view** default. Family accent via `--gc`, filed = gold edge, hover lift.
+  **Rows view** default. Family accent via `--gc`, filed = 2px family-accent top edge, hover lift.
 
 There is exactly **one** `RefractorCard`. The duplicate `SpecimenCard` in
 `src/pages/PitchIndexPage.tsx` is retired — fold any better idea into `RefractorCard`.
