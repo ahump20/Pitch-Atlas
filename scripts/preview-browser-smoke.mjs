@@ -582,7 +582,9 @@ async function checkKnowledgeMarkerWrap(page) {
       const rect = heading?.getBoundingClientRect()
       return {
         label: heading?.textContent?.replace(/\s+/g, ' ').trim() ?? 'missing heading',
-        whiteSpace: heading ? getComputedStyle(heading).whiteSpace : 'missing',
+        // text-wrap-mode is the longhand that decides wrapping; the white-space
+        // shorthand serializes differently across Chromium builds, so it flaked in CI.
+        wrap: heading ? getComputedStyle(heading).textWrapMode || getComputedStyle(heading).whiteSpace : 'missing',
         left: rect?.left ?? -1,
         right: rect?.right ?? Number.POSITIVE_INFINITY,
         viewportWidth: document.documentElement.clientWidth,
@@ -592,7 +594,7 @@ async function checkKnowledgeMarkerWrap(page) {
 
   record(markers.length > 0, 'Canon mobile rendered no section markers')
   for (const marker of markers) {
-    record(marker.whiteSpace === 'normal', `Canon mobile marker does not wrap: ${marker.label}`)
+    record(marker.wrap === 'wrap' || marker.wrap === 'normal', `Canon mobile marker does not wrap (${marker.wrap}): ${marker.label}`)
     record(
       marker.left >= 0 && marker.right <= marker.viewportWidth + 2,
       `Canon mobile marker clips outside the viewport: ${marker.label}`,
