@@ -39,7 +39,7 @@ export function MediaSuggestionForm({ pitchSlug }: { pitchSlug?: string }) {
             value={url}
             onChange={(event) => setUrl(event.target.value)}
             placeholder="https://x.com/… or Instagram, TikTok, YouTube"
-            className="mt-1.5 w-full rounded-md border border-bone/15 bg-black/35 px-3 py-2.5 text-sm text-bone outline-none transition-colors placeholder:text-bone-2/45 focus:border-cyan/60"
+            className="mt-1.5 w-full rounded-md border border-bone/15 bg-black/35 px-3 py-2.5 text-sm text-bone outline-none transition-colors placeholder:text-[var(--ctl-placeholder,#8A90A2)] focus:border-cyan/60"
           />
         </label>
         <label className="md:col-span-2">
@@ -51,7 +51,7 @@ export function MediaSuggestionForm({ pitchSlug }: { pitchSlug?: string }) {
             value={rationale}
             onChange={(event) => setRationale(event.target.value)}
             placeholder="What grip, story, lesson, or piece of pitching heritage does it preserve?"
-            className="mt-1.5 min-h-24 w-full resize-y rounded-md border border-bone/15 bg-black/35 px-3 py-2.5 text-sm text-bone outline-none transition-colors placeholder:text-bone-2/45 focus:border-cyan/60"
+            className="mt-1.5 min-h-24 w-full resize-y rounded-md border border-bone/15 bg-black/35 px-3 py-2.5 text-sm text-bone outline-none transition-colors placeholder:text-[var(--ctl-placeholder,#8A90A2)] focus:border-cyan/60"
           />
         </label>
         <div className="md:col-span-2 flex flex-wrap items-center gap-3">

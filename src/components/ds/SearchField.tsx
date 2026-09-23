@@ -25,7 +25,7 @@ export function SearchField({ onClear, className, groupClassName, onKeyDown, ...
       </InputGroupAddon>
       <InputGroupInput
         type="search"
-        className={cn('h-full text-[15px] placeholder:text-ink-3', className)}
+        className={cn('h-full text-[15px] placeholder:text-[var(--ctl-placeholder,#8A90A2)]', className)}
         onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
           if (e.key === 'Escape' && e.currentTarget.value !== '') onClear?.()
           onKeyDown?.(e)
