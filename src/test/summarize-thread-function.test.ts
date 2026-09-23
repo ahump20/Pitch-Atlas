@@ -209,6 +209,22 @@ describe('summarize-thread Edge Function source contract', () => {
     expect(source).not.toContain('return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : null')
   })
 
+  it('enforces the summary shape with a strict schema and never returns raw model text', () => {
+    expect(source).toContain('response_format: { type: "json_schema", json_schema: SUMMARY_SCHEMA }')
+    expect(source).toContain('strict: true')
+    expect(source).toContain('additionalProperties: false')
+    expect(source).toContain('required: ["summary", "action_items", "sentiment"]')
+    expect(source).not.toContain('Return JSON with keys')
+
+    const parseStart = source.indexOf('function parseSummary(')
+    const parseEnd = source.indexOf('async function readCompletion(')
+    const parseSource = source.slice(parseStart, parseEnd)
+    expect(parseStart).toBeGreaterThan(-1)
+    expect(parseEnd).toBeGreaterThan(parseStart)
+    expect(parseSource).toMatch(/\} catch \{\s+return null;\s+\}/)
+    expect(parseSource).not.toContain('summary: content')
+  })
+
   it('keeps OpenAI transport and empty response failures in the JSON envelope', () => {
     expect(source).toContain('async function requestSummary(')
     expect(source).toContain('async function readCompletion(')

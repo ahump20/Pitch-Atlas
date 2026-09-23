@@ -1,8 +1,4 @@
 <!--
-  SUPERSEDED — historical record of the 2026-06-24 hand-off. Its commits, build
-  numbers and branch facts are stale; do not paste it into a new session. Current
-  rules live in CLAUDE.md / AGENTS.md and docs/NORTHSTAR.md.
-
   VERBATIM HANDOFF PROMPT — paste the block between the >>> markers into a fresh
   Fable 5 session to start the Pitch Atlas return wave. Everything above the first
   marker is operator notes, not part of the prompt.
@@ -11,7 +7,11 @@
   The depth lives in docs/fable5/RETURN-WAVE.md; this is the front door.
 -->
 
-# Fable 5 — Pitch Atlas Return Wave: copy-paste handoff
+# Fable 5 — Pitch Atlas Return Wave: copy-paste handoff (superseded)
+
+> **Superseded — do not paste.** This is the historical record of the 2026-06-24
+> hand-off; its commits, build numbers and branch facts are stale. Current rules
+> live in `CLAUDE.md` / `AGENTS.md` and `docs/NORTHSTAR.md`.
 
 Paste everything between the `>>> BEGIN PROMPT` and `>>> END PROMPT` lines into a
 fresh Fable 5 session, working from the repo root `/Users/AustinHumphrey/Pitch-Atlas`.
