@@ -281,3 +281,25 @@ Open items, none fixed here:
   9.5px, stamps 9px).
 - `DesignSystemShowcase.tsx` uses `text-bone-3`, which Tailwind never generates, so
   its variant labels lose their color.
+
+## Color, as the site paints it (audited 2026-09-22, live CSS/JS read in a browser)
+Token values match the live site exactly; the guidance had drifted because it was
+written from the semantic layer, which the site declares and never reads. The
+brand book's Color section (artifact Version 15) is now built from painted values.
+Open items on the site, none fixed here:
+- The semantic block (`surface-*`, `text-fg*`, `cta-*`, `focus-ring`,
+  `confidence-*`, `border-card`, `hairline-*`) and the chart/sidebar tokens are
+  never read. The `var()`-built aliases resolve on `:root`, so inside
+  `.field-cream` they keep their void values; the "auto-flips" comment is false.
+- Three tier color sets: ConfidenceDot (`CONFIDENCE_COLOR`), the cream stats plate
+  (`CARD_INK`), the home card backs (`STAGE_TIER_DOT`). `confidence-*` matches
+  none; `confidence-unverified` is gray while ConfidenceDot paints unverified red.
+- `/repertoire/:id` prints the cream-field family inks (`FAMILY_ACCENT`) on the
+  void: specialty #4e555b at 2.7:1 (under 3:1), the others 3.1–3.8:1.
+- `cta-text` white on #ff2d44 is 3.7:1 (unused today).
+- Retired cyan #37d6ff is hard-coded in the `.v2-cta` outer glow, ExternalMediaRail
+  (two gradients) and GripLibrary's loading shimmer, and is the `var(--gc|--c3)`
+  fallback in `.rfx-entry`, `.rfx-plate`, `.rfx-panel:before`, `.v2-rim`,
+  `.v2-flip-btn`; chart-1/2 and sidebar tokens still carry it.
+- Two secondary grays on the open page: `ink-2` #c2c7d6 (cool) and `bone-2`
+  #c9c2b0 (warm).
