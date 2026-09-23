@@ -92,7 +92,8 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
       role="dialog"
       aria-label={`Now playing: ${clip.title}`}
       data-resume-behavior="restart"
-      className="fixed inset-x-3 bottom-3 z-[80] mx-auto w-auto max-w-[330px] overflow-hidden rounded-lg border border-bone/20 bg-press shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:mx-0"
+      style={{ maxWidth: `min(330px, calc((100dvh - 9rem) * ${portrait ? '9 / 16' : '16 / 10'}))` }}
+      className="fixed inset-x-3 bottom-3 z-[80] mx-auto w-auto overflow-hidden rounded-lg border border-bone/20 bg-press shadow-[0_24px_60px_-18px_rgba(0,0,0,0.85)] sm:inset-x-auto sm:right-4 sm:bottom-4 sm:mx-0"
     >
       <div className="flex items-center justify-between gap-2 border-b border-bone/12 px-3 py-2">
         <a

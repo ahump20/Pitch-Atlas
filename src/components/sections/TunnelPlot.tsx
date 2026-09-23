@@ -334,13 +334,13 @@ export function TunnelPlot({ selection, hideControls = false }: { selection?: { 
       ) : null}
 
       <div className="flex flex-wrap gap-x-4 gap-y-2">
-        <Link to={`/pitch/${a.display.slug}`} className="mono-label text-seam transition-colors hover:text-ink">
+        <Link to={`/pitch/${a.display.slug}`} className="mono-label inline-flex items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink">
           {a.display.shortName} specimen →
         </Link>
-        <Link to={`/pitch/${b.display.slug}`} className="mono-label text-seam transition-colors hover:text-ink">
+        <Link to={`/pitch/${b.display.slug}`} className="mono-label inline-flex items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink">
           {b.display.shortName} specimen →
         </Link>
-        <Link to="/learn/sequencing" className="mono-label text-seam transition-colors hover:text-ink">
+        <Link to="/learn/sequencing" className="mono-label inline-flex items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink">
           Why tunneling works →
         </Link>
       </div>
