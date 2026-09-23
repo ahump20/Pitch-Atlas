@@ -125,5 +125,6 @@ body:has(.compare-tray) #main { padding-bottom:100px; }
   .compare-toggles button { min-width:44px; min-height:44px; }
   .compare-tray > .archive-action { min-height:44px; }
   .compare-tray-slot button { width:44px; height:44px; }
+  .compare-model-note summary { min-height:44px; padding-block:12px; }
   .archive-back { display:inline-flex; align-items:center; min-height:44px; }
 }

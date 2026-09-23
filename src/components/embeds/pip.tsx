@@ -99,7 +99,7 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
           href={clip.authorUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="mono-label-stage truncate transition-colors hover:text-bone"
+          className="mono-label-stage truncate any-pointer-coarse:py-[17px] transition-colors hover:text-bone"
         >
           {clip.author} · {provider}
         </a>
@@ -109,7 +109,7 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
             target="_blank"
             rel="noopener noreferrer"
             aria-label={`Open on ${provider}`}
-            className="rounded-sm border border-bone/20 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/60 hover:text-bone"
+            className="inline-flex items-center rounded-sm border border-bone/20 px-2 py-1 any-pointer-coarse:min-h-11 font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 transition-colors hover:border-cyan/60 hover:text-bone"
           >
             Open ↗
           </a>
@@ -117,7 +117,7 @@ function PipPlayer({ clip, onClose }: { clip: WatchItem | null; onClose: () => v
             type="button"
             onClick={onClose}
             aria-label="Close player and return it to the page"
-            className="grid h-7 w-7 place-items-center rounded-sm border border-bone/20 text-bone-2 transition-colors hover:border-seam/60 hover:text-bone"
+            className="grid h-7 w-7 any-pointer-coarse:h-11 any-pointer-coarse:w-11 place-items-center rounded-sm border border-bone/20 text-bone-2 transition-colors hover:border-seam/60 hover:text-bone"
           >
             <span aria-hidden="true" className="text-base leading-none">×</span>
           </button>
