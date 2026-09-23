@@ -144,6 +144,9 @@ describe('Pitch chapters', () => {
     expect(screen.getByAltText(/four-seam style/i)).toBeInTheDocument()
     expect(screen.getByText(/Shape read/i)).toBeInTheDocument()
     expect(screen.getByText('Master Files')).toBeInTheDocument()
+    // specimen 00 is the ember 1/1 (docs/design-language.md): never labelled gold
+    expect(screen.getByText('Ember · 1 of 1 · Reference')).toBeInTheDocument()
+    expect(screen.queryByText(/gold/i)).not.toBeInTheDocument()
   })
 
   it('renders the new splitter specimen with its pioneer master', async () => {
