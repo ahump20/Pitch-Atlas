@@ -36,7 +36,21 @@ const min = (code) => esbuild.transformSync(code, { minify: true, keepNames: tru
 const STUB = /"shim:scheduler-shim"\(\) \{\s*init_define_import_meta_env\(\);\s*throw new Error\("\[SCHEDULER_MISSING\][^"]*"\);\s*\}/g
 const stubs = src.match(STUB) || []
 if (stubs.length !== 1) throw new Error(`expected one scheduler stub in the bundle, found ${stubs.length}`)
-const patched = src.replace(STUB, '"shim:scheduler-shim"(exports, module) { module.exports = window.__paScheduler; if (!module.exports) throw new Error("[pa] scheduler missing: load components/lib/react.development.js before bundle.js"); }')
+let patched = src.replace(STUB, '"shim:scheduler-shim"(exports, module) { module.exports = window.__paScheduler; if (!module.exports) throw new Error("[pa] scheduler missing: load components/lib/react.development.js before bundle.js"); }')
+// @react-three/fiber 9.7 also takes NAMED imports from scheduler. The driver's stub
+// has no exports, so esbuild folds each one to `void 0` before the swap above can
+// help, and the scene throws "(void 0) is not a function" on its first frame. Point
+// the two folded call sites at the same scheduler, asserting each appears once.
+const S = 'window.__paScheduler'
+for (const [from, to] of [
+  ['(void 0)(void 0, handleDispose)', `${S}.unstable_scheduleCallback(${S}.unstable_IdlePriority, handleDispose)`],
+  ['switch ((void 0)()) {\n          case void 0:\n            return e;\n          case void 0:\n            return o2;\n          case void 0:\n          case void 0:\n            return r2;\n          case void 0:\n            return i$1;',
+   `switch (${S}.unstable_getCurrentPriorityLevel()) {\n          case ${S}.unstable_ImmediatePriority:\n            return e;\n          case ${S}.unstable_UserBlockingPriority:\n            return o2;\n          case ${S}.unstable_NormalPriority:\n          case ${S}.unstable_LowPriority:\n            return r2;\n          case ${S}.unstable_IdlePriority:\n            return i$1;`],
+]) {
+  if (patched.split(from).length !== 2) throw new Error(`expected one folded scheduler call: ${from.slice(0, 40)}`)
+  patched = patched.replace(from, () => to)
+}
+if (patched.includes('(void 0)(')) throw new Error('a folded (void 0)() call is still in the bundle')
 const bundle = header + '\n' + min(patched.slice(nl + 1))
 bad('bundle.js', bundle.slice(nl + 1))
 writeFileSync(join(OUT, 'components/bundle.js'), bundle)
