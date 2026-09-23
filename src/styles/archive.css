@@ -34,7 +34,7 @@
 /* This hero keeps a quieter rim than the old stage, so it breathes around its own
    floor; the specimen is the largest first paint, so it settles instead of fading. */
 @keyframes archive-rim-breathe { from { opacity: .27; } to { opacity: .38; } }
-@keyframes archive-card-settle { from { transform: translateY(12px) scale(.985); } }
+@keyframes archive-card-settle { from { transform: translateY(12px) scale(.985); } to { transform: none; } }
 @media (prefers-reduced-motion: no-preference) {
   .archive-case .v2-rim { animation-name: archive-rim-breathe; }
   .archive-case .archive-case-card > .v2-enter { animation-name: archive-card-settle; }
@@ -173,12 +173,14 @@ html:has(.compare-tray) { scroll-padding-bottom: 150px; }
 .v2-mount.is-chase .archive-wall-actions { max-width:520px; }
 .v2-mount.is-selected .v2-flip { outline:1px solid #c8a35c; outline-offset:5px; border-radius:12px; box-shadow:0 18px 32px #0008; }
 /* Keep the toolbar's hit targets still; only the card participates in the deal
-   and the hover lift, so Source and Compare never move out from under a pointer. */
+   and the lift, so Source and Compare never move out from under a pointer. The
+   lift answers a hovering pointer or keyboard focus, never a tap. */
 .v2-mount, .v2-mount:hover, .v2-mount:focus-within { animation:none; transform:none; }
 @media (prefers-reduced-motion:no-preference) {
-  .v2-mount .v2-flip { transition:transform var(--pa-motion-short) var(--pa-ease-settle); }
-  .v2-mount:focus-within .v2-flip { transform:translateY(-4px); }
-  @media (hover:hover) { .v2-mount:hover .v2-flip { transform:translateY(-4px); } }
+  /* translate, not transform: it composes with the deal below instead of losing to it */
+  .v2-mount .v2-flip { transition:translate var(--pa-motion-short) var(--pa-ease-settle); }
+  .v2-mount:has(:focus-visible) .v2-flip { translate:0 -4px; }
+  @media (hover:hover) { .v2-mount:hover .v2-flip { translate:0 -4px; } }
 }
 .v2-face:not(.v2-face-back) .rfx-strip { padding-left:14px; }
 @supports (animation-timeline:view()) {
