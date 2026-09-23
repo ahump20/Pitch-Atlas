@@ -334,7 +334,7 @@
 
   .blaze-companion[data-persona="scorecard"] .blaze-track {
     background:
-      linear-gradient(90deg, transparent, rgba(55, 214, 255, 0.38), transparent),
+      linear-gradient(90deg, transparent, rgba(95,224,234, 0.38), transparent),
       repeating-linear-gradient(90deg, rgba(246, 241, 230, 0.19) 0 3px, transparent 3px 18px);
   }
 

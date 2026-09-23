@@ -89,7 +89,7 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
             className="absolute inset-0 animate-pulse motion-reduce:animate-none"
             style={{
               background:
-                'linear-gradient(120deg, rgba(255,255,255,0.04), rgba(55,214,255,0.14), rgba(255,255,255,0.035))',
+                'linear-gradient(120deg, rgba(255,255,255,0.04), rgba(95,224,234,0.14), rgba(255,255,255,0.035))',
             }}
           />
         ) : null}
