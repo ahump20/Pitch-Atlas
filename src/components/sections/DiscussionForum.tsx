@@ -1,4 +1,5 @@
 import { useEffect, useId, useRef, useState, type CSSProperties } from 'react'
+import { accentInk } from '../refractor/accents'
 import { FlagIcon, ImagePlusIcon, MessageCircleIcon, RefreshCwIcon, Trash2Icon } from 'lucide-react'
 import { toast } from 'sonner'
 import { useDiscussion, type SubmitInput, type SubmitProgress, type SubmitResult } from '../../hooks/useDiscussion'
@@ -51,7 +52,7 @@ function timeAgo(iso: string): string {
   return `${Math.floor(s / 86400)}d ago`
 }
 
-const SPECIMEN_ACCENTS = ['#B9D4E5', '#FF6A29', '#E4B45A', '#5FE0EA', '#A7ADB0'] as const
+const SPECIMEN_ACCENTS = ['#B9D4E5', '#BF5700', '#E4B45A', '#5FE0EA', '#A7ADB0'] as const
 
 function hashString(input: string): number {
   let hash = 0
@@ -147,7 +148,7 @@ function MediaItem({
     return (
       <figure
         className="community-specimen"
-        style={{ '--spec-accent': accent } as CSSProperties}
+        style={{ '--spec-accent': accent, '--spec-ink': accentInk(accent) } as CSSProperties}
       >
         <div className="community-specimen-stage">{media}</div>
         <figcaption className="community-specimen-caption">
@@ -163,7 +164,7 @@ function MediaItem({
   return (
     <figure
       className="community-specimen is-motion"
-      style={{ '--spec-accent': accent } as CSSProperties}
+      style={{ '--spec-accent': accent, '--spec-ink': accentInk(accent) } as CSSProperties}
     >
       <div className="community-specimen-stage">{media}</div>
       <figcaption className="community-specimen-caption">

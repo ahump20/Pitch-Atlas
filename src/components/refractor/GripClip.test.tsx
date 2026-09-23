@@ -2,7 +2,8 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { gripEntryFor } from '../../data/grips'
-import { RefractorCard } from './RefractorCard'
+import { RefractorCard, type RefractorAccent } from './RefractorCard'
+import { ACCENT, accentInk } from './accents'
 import { GripClip } from './GripClip'
 
 const clip = gripEntryFor('four-seam')?.clip
@@ -54,5 +55,31 @@ describe('RefractorCard editorial hierarchy', () => {
     expect(screen.getByText('Grip tell')).toBeInTheDocument()
     expect(screen.getByText('Grip / release / shape')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Four-seam specimen' })).toBeInTheDocument()
+  })
+})
+
+describe('RefractorCard throwback finishes', () => {
+  const card = (accent: RefractorAccent, gold = false) =>
+    render(
+      <MemoryRouter>
+        <RefractorCard to="/pitch/x" accent={accent} gold={gold} vnum="03" name="Card" face={<span>Grip face</span>} />
+      </MemoryRouter>,
+    ).container.querySelector('.rfx-card')
+
+  it('frames the 12-6 curve in powder and the circle change in teal', () => {
+    expect(card(ACCENT['twelve-six'])).toHaveClass('is-powder')
+    expect(card(ACCENT['circle-change'])).toHaveClass('is-teal')
+    expect(card(ACCENT.slider)?.className).not.toMatch(/is-(powder|teal)/)
+  })
+
+  it('keeps the ember 1/1 on its own material', () => {
+    const ember = card(ACCENT['twelve-six'], true)
+    expect(ember).toHaveClass('is-gold')
+    expect(ember).not.toHaveClass('is-powder')
+  })
+
+  it('prints small type in bone where the accent is burnt orange', () => {
+    expect(accentInk('#bf5700')).toBe('var(--color-bone)')
+    expect(accentInk('#8FBAD6')).toBe('#8FBAD6')
   })
 })

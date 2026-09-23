@@ -1,4 +1,5 @@
 import { gripAudioCueFor } from '../../data/media/grip-cues'
+import { accentInk } from '../refractor/accents'
 
 export function GripAudioCue({ pitchSlug, accentColor }: { pitchSlug: string; accentColor: string }) {
   const cue = gripAudioCueFor(pitchSlug)
@@ -8,7 +9,7 @@ export function GripAudioCue({ pitchSlug, accentColor }: { pitchSlug: string; ac
     <aside className="rfx-panel mt-7 rounded-[14px] p-5" aria-labelledby={`${cue.pitchSlug}-audio-title`}>
       <div className="grid gap-5 md:grid-cols-[minmax(0,0.8fr)_minmax(280px,1.2fr)] md:items-center">
         <div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: accentColor }}>
+          <p className="font-mono text-[10px] uppercase tracking-[0.16em]" style={{ color: accentInk(accentColor) }}>
             Optional narrated cue · {cue.durationSeconds.toFixed(1)} seconds
           </p>
           <h3 id={`${cue.pitchSlug}-audio-title`} className="rfx-athletic rfx-skew mt-2 text-2xl text-bone">

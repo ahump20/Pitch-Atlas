@@ -1,3 +1,4 @@
+import { accentInk } from './accents'
 import { lazy, Suspense, useEffect, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
 import { useCardTilt } from '../../hooks/useCardTilt'
@@ -12,7 +13,14 @@ import { SpecimenBoundary } from '../ball/SpecimenBoundary'
   shape, family, grade, and source records live on the back or in the specimen.
 */
 
-export type RefractorAccent = { c1: string; c2: string; c3: string }
+export type RefractorAccent = {
+  c1: string
+  c2: string
+  c3: string
+  /** A throwback-uniform frame for a standard card: the foil ramp and bezel ring
+      change, the stock and print stay the set's. Ignored on the ember 1/1. */
+  finish?: 'powder' | 'teal'
+}
 
 const FoilLayer = lazy(() => import('./foil/FoilLayer'))
 
@@ -74,6 +82,8 @@ export function RefractorCard({
     '--c1': accent.c1,
     '--c2': accent.c2,
     '--c3': accent.c3,
+    // small print on the card tints from this; burnt orange hands it bone instead
+    '--c3-ink': accentInk(accent.c3),
     '--i': index,
   } as CSSProperties
 
@@ -148,7 +158,7 @@ export function RefractorCard({
     </div>
   )
 
-  const cardClass = `rfx-card${gold ? ' is-gold' : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
+  const cardClass = `rfx-card${gold ? ' is-gold' : accent.finish ? ` is-${accent.finish}` : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
 
   return (
     <div ref={viewRef} className="rfx-holder" style={{ perspective: '1500px', width: '100%', maxWidth }}>

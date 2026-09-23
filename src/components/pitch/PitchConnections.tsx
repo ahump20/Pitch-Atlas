@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { PitchAtlasEntry } from '../../data/types'
 import { craftsmenForPitch } from '../../data/craftsmen'
-import { accentForSlug } from '../refractor/accents'
+import { accentForSlug, accentInk } from '../refractor/accents'
 import { ClaimProse } from '../provenance/ClaimProse'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { compareUrl, EMPTY_SELECTION } from '../compare/selection'
@@ -39,7 +39,7 @@ export function PitchConnections({
       </div>}
       {masters.length > 0 ? (
         <div className="mb-12">
-          <p className="rfx-skick" style={{ color: accentColor }}>
+          <p className="rfx-skick" style={{ color: accentInk(accentColor), '--skick-rule': accentColor } as CSSProperties}>
             {masters.length > 1 ? 'The people behind the pitch' : 'The person behind the pitch'}
           </p>
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -73,7 +73,7 @@ export function PitchConnections({
           <p className="rfx-skick">Others in the {familyLabel.toLowerCase()}</p>
           <div className="mt-5 flex flex-wrap gap-3">
             {siblings.map((s) => {
-              const sc = s.display.specimenNo === '00' ? '#FF8C3A' : accentForSlug(s.display.slug).c3
+              const sc = s.display.specimenNo === '00' ? '#BF5700' : accentForSlug(s.display.slug).c3
               return (
                 <Link
                   key={s.display.slug}

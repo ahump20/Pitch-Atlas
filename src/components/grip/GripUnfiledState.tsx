@@ -1,4 +1,5 @@
 import { SeamSchematic } from '../fallback/SeamSchematic'
+import { accentInk } from '../refractor/accents'
 import { GripSourceBadge } from './GripSourceBadge'
 import type { PitchAtlasEntry } from '../../data/types'
 
@@ -42,7 +43,7 @@ export function GripUnfiledState({
         <span
           className="absolute left-3.5 top-3.5 rounded-full border px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.14em]"
           style={{
-            color: accentColor,
+            color: accentInk(accentColor),
             borderColor: `color-mix(in srgb, ${accentColor} 45%, transparent)`,
             background: 'var(--color-stage, #08060e)',
           }}
@@ -63,7 +64,7 @@ export function GripUnfiledState({
           className="mt-4 border-l-2 pl-3.5 text-[13px] leading-relaxed text-bone-2"
           style={{ borderColor: `color-mix(in srgb, ${accentColor} 40%, transparent)` }}
         >
-          <span className="mr-2 font-mono text-[9px] uppercase tracking-[0.12em]" style={{ color: accentColor }}>
+          <span className="mr-2 font-mono text-[9px] uppercase tracking-[0.12em]" style={{ color: accentInk(accentColor) }}>
             Read this instead
           </span>
           {gm.releaseCue}

@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PITCHES } from '../../data/pitches'
 import { BallStage } from '../ball/BallStage'
-import { accentForSlug } from '../refractor/accents'
+import { accentForSlug, accentInk } from '../refractor/accents'
 import type { GripView, Handedness } from '../../data/types'
 
 /*
@@ -99,7 +99,7 @@ export function GripCompare() {
             </figure>
 
             <p className="mt-3 text-sm leading-relaxed text-bone">
-              <span className="mono-label mr-2" style={{ color: accentForSlug(entry.display.slug).c3 }}>{entry.canonical.family}</span>
+              <span className="mono-label mr-2" style={{ color: accentInk(accentForSlug(entry.display.slug).c3) }}>{entry.canonical.family}</span>
               {entry.canonical.gripModel.releaseCue}
             </p>
             <Link to={`/pitch/${entry.display.slug}`} className="mono-label mt-2 inline-flex items-center any-pointer-coarse:min-h-11 text-cyan transition-colors hover:text-bone">

@@ -88,7 +88,7 @@ table, with contrast on each ground, is the Color section of the design system.
   accent from the pitch family — never hardcode a one-off color.
 - **Provenance dots: three trust tiers** (Austin, 2026-09-23). One map
   (`CONFIDENCE_COLOR`) paints every dot, the lost-pitches timeline uses the same three:
-  burnt orange `--color-tier-first` #FF6A29 (official data, pitcher's own words,
+  burnt orange `--color-tier-first` #BF5700 (official data, pitcher's own words,
   coach-observed; documented), powder blue `--color-tier-relayed` #8FBAD6 (reputable
   analysis, secondhand, community; partial), red `--color-tier-unverified` #FF2D44
   (unverified; legend). On the cream plate use the `-ink` variants. The label always
