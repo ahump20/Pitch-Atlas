@@ -1,4 +1,8 @@
 <!--
+  SUPERSEDED — historical record of the 2026-06-24 hand-off. Its commits, build
+  numbers and branch facts are stale; do not paste it into a new session. Current
+  rules live in CLAUDE.md / AGENTS.md and docs/NORTHSTAR.md.
+
   VERBATIM HANDOFF PROMPT — paste the block between the >>> markers into a fresh
   Fable 5 session to start the Pitch Atlas return wave. Everything above the first
   marker is operator notes, not part of the prompt.

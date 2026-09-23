@@ -42,7 +42,7 @@ its full specimen and an unfiled pitch to a basic file (sourced one-liners + a
 plain-language lede + an honest "fuller breakdown coming" marker). Filed
 specimens carry the deep 3D treatment.
 
-Community is now LIVE (the earlier "not in v1" exclusion is superseded, 2026-06-06):
+Community is live:
 every pitch and topic carries a **discussion** layer — Supabase-backed, anonymous
 sign-in, one-level replies, and native photo/video uploads behind a mandatory
 safety floor (own-the-rights terms gate, magic-byte type validation, per-kind size
@@ -53,7 +53,7 @@ list of deferred limits live in `docs/community-media-moderation.md`. Tables:
 `supabase/migrations/20260606005149_discussion_forum.sql`); the structured
 `field_notes` grip-tweak engine stays alongside it, dormant.
 
-Still excluded on purpose (these have NOT changed):
+Excluded on purpose:
 
 - fake community posts, fake adoption counts, fake verified-pro badges (community
   content is real, contributor-supplied, and source-labeled — never seeded)
@@ -137,12 +137,11 @@ Wikipedia, or any source. Paraphrase and cite.
 
 Do not make medical, injury-prevention, workload, or youth-prescription claims.
 
-The community discussion layer is live (2026-06-06) with the safeguards it always
-promised: a standing safety note (grip/technique only — no medical, injury,
-workload, or youth-training prescription), source labels, anonymous sign-in, an
-own-the-rights upload-terms gate, and report-driven auto-hide. Make no medical,
-injury, workload, or youth-prescription claims in product copy or community
-guardrails.
+The community discussion layer ships with these safeguards: a standing safety
+note (grip/technique only — no medical, injury, workload, or youth-training
+prescription), source labels, anonymous sign-in, an own-the-rights upload-terms
+gate, and report-driven auto-hide. Make no medical, injury, workload, or
+youth-prescription claims in product copy or community guardrails.
 
 ## Seam accuracy
 
@@ -173,5 +172,5 @@ npm run preview
 `dist/`.) If any command fails, fix it or document the exact blocker.
 
 Final handoff must include: files changed; commands run and results; deployed or
-local preview URL; known limitations; and confirmation that the README, UI copy,
-and data model all still hold the sourced-not-corrected principle.
+local preview URL; known limitations; and confirmation that the README and UI copy
+still carry the mission and the data model still carries provenance underneath it.
