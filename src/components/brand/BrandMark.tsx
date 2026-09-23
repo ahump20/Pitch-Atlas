@@ -52,7 +52,7 @@ export function BrandMark({
   })
 
   return (
-    <span className={`inline-flex items-center gap-3 ${className ?? ''}`}>
+    <span className={`brand-lockup inline-flex items-center gap-3 ${className ?? ''}`}>
       <svg
         width={px}
         height={px}
@@ -88,7 +88,7 @@ export function BrandMark({
         </g>
       </svg>
       {wordmark ? (
-        <span className="rfx-athletic rfx-skew leading-none text-bone" style={{ fontSize: WORDMARK_SIZE[size] }}>
+        <span className="brand-wordmark rfx-athletic rfx-skew leading-none text-bone" style={{ fontSize: WORDMARK_SIZE[size] }}>
           Pitch <span className="rfx-holo" data-brand-material="rainbow-foil">Atlas</span>
         </span>
       ) : null}

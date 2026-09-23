@@ -10,6 +10,7 @@ import { WingsNav } from '../components/v2/WingsNav'
 import { CloseCta } from '../components/v2/CloseCta'
 import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
 import { ArchiveDiscovery } from '../components/v2/ArchiveDiscovery'
+import { useArchiveGleam } from '../hooks/useArchiveGleam'
 
 /*
   The Refractor Case — the home. Five deliberate beats: specimen, seam, filed set,
@@ -23,6 +24,7 @@ export function AtlasHomeV2() {
   // the room follows the chapter: each section below tags its accent with
   // data-scene-tint; this publishes the active one to the far stratum.
   useSceneTint()
+  useArchiveGleam()
 
   useSeoMeta({
     // The published home: indexable, canonical at / (RootLayout sets the canonical

@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "./styles/world.css";
+@import "./styles/gleam.css";
 /*
   ---break---
 */
@@ -1884,9 +1885,9 @@
     position: relative; isolation: isolate; overflow: hidden;
     display: flex; gap: 13px; align-items: flex-start; padding: 15px 16px; border-radius: 14px;
     background:
-      radial-gradient(140% 100% at 0% 0%, color-mix(in srgb, var(--gc, #37D6FF) 18%, transparent), transparent 44%),
+      radial-gradient(140% 100% at 0% 0%, color-mix(in srgb, var(--gc, #5FE0EA) 18%, transparent), transparent 44%),
       linear-gradient(135deg, rgba(255,255,255,.05), transparent 28%),
-      linear-gradient(120deg, color-mix(in srgb, var(--gc, #37D6FF) 10%, var(--color-press)), var(--color-press));
+      linear-gradient(120deg, color-mix(in srgb, var(--gc, #5FE0EA) 10%, var(--color-press)), var(--color-press));
     border: 1px solid rgba(255,255,255,.09);
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,.08),
@@ -1898,16 +1899,16 @@
     content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .13; mix-blend-mode: screen;
     background:
       repeating-linear-gradient(45deg, rgba(246,241,230,.75) 0 1px, transparent 1px 8px),
-      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--gc, #37D6FF) 60%, transparent) 0 1px, transparent 1px 18px);
+      repeating-linear-gradient(-45deg, color-mix(in srgb, var(--gc, #5FE0EA) 60%, transparent) 0 1px, transparent 1px 18px);
   }
   .rfx-entry:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--gc, #37D6FF) 50%, transparent);
+    border-color: color-mix(in srgb, var(--gc, #5FE0EA) 50%, transparent);
     box-shadow:
       inset 0 1px 0 rgba(255,255,255,.12),
       inset 0 -10px 24px -22px rgba(0,0,0,.9),
       0 22px 34px -24px rgba(0,0,0,.9),
-      0 0 32px -22px color-mix(in srgb, var(--gc, #37D6FF) 80%, transparent);
+      0 0 32px -22px color-mix(in srgb, var(--gc, #5FE0EA) 80%, transparent);
   }
   /* filed entries already wear a bone-tinted edge + paper wash; add a 2px family-accent
      top rule (--gc, set inline in PitchIndex) so the grid scans as "specimens vs stubs".
@@ -1918,7 +1919,7 @@
     border-top: 2px solid var(--gc);
     border-top-left-radius: 0; border-top-right-radius: 0;
     background:
-      radial-gradient(140% 100% at 0% 0%, color-mix(in srgb, var(--gc, #37D6FF) 16%, transparent), transparent 44%),
+      radial-gradient(140% 100% at 0% 0%, color-mix(in srgb, var(--gc, #5FE0EA) 16%, transparent), transparent 44%),
       linear-gradient(120deg, rgba(216,207,184,.13), var(--color-press));
   }
   .rfx-entry.is-filed:hover { border-color: color-mix(in srgb, #D8CFB8 70%, transparent); border-top-color: var(--gc); }
@@ -1938,18 +1939,18 @@
      (seam — a banned/alias/illusion/lost item), is-dashed (a may-not-exist / showman
      frame). The card sets --gc inline from accentForSlug(). */
   .rfx-plate {
-    --plate-edge: color-mix(in srgb, var(--gc, #37D6FF) 78%, transparent);
+    --plate-edge: color-mix(in srgb, var(--gc, #5FE0EA) 78%, transparent);
     position: relative; display: flex; flex-direction: column; gap: 14px; height: 100%;
     border-radius: 13px; padding: 20px;
-    background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #37D6FF) 8%, #1A140C), #100C07);
+    background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #5FE0EA) 8%, #1A140C), #100C07);
     border: 1px solid rgba(0, 0, 0, .55);
     box-shadow: inset 0 3px 0 var(--plate-edge), inset 0 -2px 6px rgba(0,0,0,.45), 0 16px 30px -22px rgba(0,0,0,.8);
     transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
   }
   .rfx-plate:hover {
     transform: translateY(-2px);
-    border-color: color-mix(in srgb, var(--gc, #37D6FF) 38%, rgba(0, 0, 0, .55));
-    background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #37D6FF) 14%, #1D1610), #100C07);
+    border-color: color-mix(in srgb, var(--gc, #5FE0EA) 38%, rgba(0, 0, 0, .55));
+    background: linear-gradient(160deg, color-mix(in srgb, var(--gc, #5FE0EA) 14%, #1D1610), #100C07);
     box-shadow: inset 0 3px 0 var(--plate-edge), inset 0 -2px 6px rgba(0,0,0,.45), 0 20px 34px -22px rgba(0,0,0,.85);
   }
   .rfx-plate.is-filed {
@@ -1983,7 +1984,7 @@
     transition: border-color .2s, box-shadow .2s;
   }
   .scene-coal .rfx-select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%2337D6FF' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' stroke='%235FE0EA' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   }
   /* a thin light catch along the top lip — the same raking-light read as the
      card and the buttons, so the select reads as cut from the same stock. The
@@ -1995,7 +1996,7 @@
     box-shadow: inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #C8102E) 22%, transparent);
   }
   .scene-coal .rfx-select:focus-visible {
-    box-shadow: inset 0 1px 0 rgba(246,241,230,.2), 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #37D6FF) 22%, transparent);
+    box-shadow: inset 0 1px 0 rgba(246,241,230,.2), 0 0 0 3px color-mix(in srgb, var(--ctl-accent, #5FE0EA) 22%, transparent);
   }
   .rfx-select option { background: var(--ctl-bg, #FFFDF6); color: var(--ctl-text, #14161B); }
 
@@ -2094,7 +2095,7 @@
   --border: rgba(246, 241, 230, 0.12);
   --input: rgba(246, 241, 230, 0.14);
   --ring: #5FE0EA;
-  --chart-1: #37D6FF;
+  --chart-1: #5FE0EA;
   --chart-2: #34E27E;
   --chart-3: #FFC23C;
   --chart-4: #8A6BFF;
@@ -2102,12 +2103,12 @@
   --radius: 0.625rem;
   --sidebar: #0e0b15;
   --sidebar-foreground: #F6F1E6;
-  --sidebar-primary: #37D6FF;
+  --sidebar-primary: #5FE0EA;
   --sidebar-primary-foreground: #06121B;
   --sidebar-accent: #16121f;
   --sidebar-accent-foreground: #F6F1E6;
   --sidebar-border: rgba(246, 241, 230, 0.12);
-  --sidebar-ring: #37D6FF;
+  --sidebar-ring: #5FE0EA;
 }
 
 /* ── design-system semantic vocabulary (additive) ───────────────────────
@@ -3008,7 +3009,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     background: linear-gradient(101deg, transparent 0 6%, rgba(246,241,230,.16) 20%, transparent 40%);
     mix-blend-mode: screen; opacity: .55;
     /* the accent rim: a hairline of the surface's own --c3/--gc around the edge */
-    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gc, var(--c3, #37D6FF)) 16%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gc, var(--c3, #5FE0EA)) 16%, transparent);
   }
   /* the plate already lays its content in normal flow; keep it above the catch */
   .rfx-panel > *, .rfx-plate > *, .rfx-readplate > * { position: relative; z-index: 1; }
@@ -3203,7 +3204,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     position: absolute; inset: -12% -18%; z-index: 0; pointer-events: none;
     background:
       radial-gradient(58% 54% at 58% 34%,
-        color-mix(in srgb, var(--c3, #37D6FF) 22%, transparent) 0%, transparent 70%),
+        color-mix(in srgb, var(--c3, #5FE0EA) 22%, transparent) 0%, transparent 70%),
       radial-gradient(46% 46% at 22% 80%, rgba(0, 0, 0, .32), transparent 72%);
     opacity: .5;
   }
@@ -3299,7 +3300,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     min-width: 44px; min-height: 44px; padding: 7px 12px; border-radius: 999px;
     font-family: var(--font-mono); font-size: 9px; letter-spacing: .12em; text-transform: uppercase;
     color: var(--color-bone); background: color-mix(in srgb, #0a0908 82%, transparent);
-    border: 1px solid color-mix(in srgb, var(--c3, #37D6FF) 42%, var(--color-bone) 18%);
+    border: 1px solid color-mix(in srgb, var(--c3, #5FE0EA) 42%, var(--color-bone) 18%);
     box-shadow: 0 8px 18px -12px rgba(0,0,0,.9), inset 0 1px 0 rgba(255,255,255,.12);
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
     cursor: pointer; transition: border-color .18s ease, transform .12s ease;
@@ -3315,7 +3316,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   }
   .v2-face:not(.v2-face-back) .rfx-serial { display: none; }
   .v2-flip-btn--inline { position: static; flex: none; min-width: 44px; min-height: 44px; padding: 7px 10px; }
-  .v2-flip-btn:hover { border-color: color-mix(in srgb, var(--c3, #37D6FF) 60%, transparent); }
+  .v2-flip-btn:hover { border-color: color-mix(in srgb, var(--c3, #5FE0EA) 60%, transparent); }
   .v2-flip-btn:active { transform: scale(.95); }
   .v2-flip-btn:focus-visible { outline: 2px solid var(--color-bone); outline-offset: 2px; }
   .rfx-strip .rfx-open { transition: color .16s ease-out; }
@@ -3416,7 +3417,7 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     transition: transform var(--pa-motion-tiny) var(--pa-ease-settle),
       box-shadow var(--pa-motion-short) var(--pa-ease-settle);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, .16), inset 0 -1px 1px rgba(0, 0, 0, .7),
-      0 8px 22px -14px rgba(0, 0, 0, .9), 0 0 24px -18px #37D6FF;
+      0 8px 22px -14px rgba(0, 0, 0, .9), 0 0 24px -18px var(--color-cyan);
   }
   .v2-cta.is-ghost {
     color: var(--color-bone); background: color-mix(in srgb, #0a0908 55%, transparent);
