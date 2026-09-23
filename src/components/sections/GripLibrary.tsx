@@ -436,7 +436,7 @@ export function AttackPlan() {
               >
                 <span
                   className="rfx-athletic rfx-skew text-2xl leading-none"
-                  style={{ color: last ? 'var(--color-cyan)' : 'var(--color-amber)' }}
+                  style={{ color: last ? 'var(--color-cyan)' : 'var(--color-orange)' }}
                 >
                   {String(i + 1).padStart(2, '0')}
                 </span>

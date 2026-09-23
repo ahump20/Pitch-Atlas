@@ -33,7 +33,7 @@ export const ACCENT: Record<string, RefractorAccent> = {
   cutter: { c1: '#0A1015', c2: '#3F5768', c3: '#7F97A8' }, // steel — small and hard
   knuckleball: { c1: '#0E1113', c2: '#3B434A', c3: '#6E757B' }, // chrome grey — no spin, no color
   forkball: { c1: '#08121A', c2: '#2E4D5E', c3: '#5B7F96' }, // slate
-  eephus: { c1: '#1A1206', c2: '#8A6420', c3: '#E4B45A' }, // brass — the slow arc
+  eephus: { c1: '#16120F', c2: '#6E5A50', c3: '#FFE9DE' }, // warm white — the slow arc
 
   // The softball wing. Distinct from the baseball slugs (no c3 collisions): the rise
   // wears climbing ice, the drop a grounded burnt amber, the breakers the cold/warm
