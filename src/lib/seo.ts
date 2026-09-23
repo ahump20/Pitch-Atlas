@@ -99,7 +99,7 @@ export function siteJsonLd(home: boolean = true) {
       name: SITE.siteName,
       url: `${SITE.canonicalDomain}/`,
       description:
-        'A grip-first archive for pitch craft, variants, craftsmen, lost pitches, and sourced community notes.',
+        'A grip-first museum of pitch craft, variants, craftsmen, lost pitches, and sourced community notes.',
       inLanguage: 'en',
       publisher: { '@id': `${SITE.canonicalDomain}/#org` },
       potentialAction: {
@@ -113,12 +113,12 @@ export function siteJsonLd(home: boolean = true) {
   if (home) {
     graph.push({
       '@type': 'CreativeWork',
-      '@id': `${SITE.canonicalDomain}/#living-archive`,
-      name: `${SITE.siteName}: The Living Archive of Pitching Craft`,
+      '@id': `${SITE.canonicalDomain}/#living-museum`,
+      name: `${SITE.siteName}: The Living Museum of Pitching Craft`,
       url: `${SITE.canonicalDomain}/`,
       headline: 'Preserve and progress the art of the pitch.',
       abstract:
-        'Grip-first archive for pitch specimens, variants, craftsmen, lost pitches, and community field notes.',
+        'Grip-first museum of pitch specimens, variants, craftsmen, lost pitches, and community field notes.',
       isAccessibleForFree: true,
       inLanguage: 'en',
       creator: { '@id': `${SITE.canonicalDomain}/#org` },
