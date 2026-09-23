@@ -86,10 +86,13 @@ table, with contrast on each ground, is the Color section of the design system.
 - **Family accents** drive per-pitch color. Cards take an accent triad `--c1/--c2/--c3`
   (see `accentForSlug` / `FAMILY_ACCENT`); rows take a single `--gc`. Always derive the
   accent from the pitch family — never hardcode a one-off color.
-- **Provenance dots** (status, not accents, as `ConfidenceDot` paints them):
-  `--color-ok-bright` (official data), `--color-cyan` (pitcher's own words),
-  `--color-teal-glow` (coach-observed), `--color-amber-bright` (reputable analysis),
-  `--color-sand-bright` (secondhand and community), `--color-seam-bright` (unverified).
+- **Provenance dots: three trust tiers** (Austin, 2026-09-23). One map
+  (`CONFIDENCE_COLOR`) paints every dot, the lost-pitches timeline uses the same three:
+  burnt orange `--color-tier-first` #FF6A29 (official data, pitcher's own words,
+  coach-observed; documented), powder blue `--color-tier-relayed` #8FBAD6 (reputable
+  analysis, secondhand, community; partial), red `--color-tier-unverified` #FF2D44
+  (unverified; legend). On the cream plate use the `-ink` variants. The label always
+  prints next to the dot.
 
 ## 4. The card family — tiered, one DNA
 
