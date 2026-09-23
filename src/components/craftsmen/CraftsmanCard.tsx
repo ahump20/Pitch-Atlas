@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import type { Craftsman } from '../../data/types'
 import { pitchBySlug } from '../../data/pitches'
-import { accentForSlug } from '../refractor/accents'
+import { accentForSlug, accentInk } from '../refractor/accents'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { parseEra } from '../../lib/era'
 import { EraBand } from './EraBand'
@@ -39,7 +39,7 @@ export function CraftsmanCard({ craftsman }: { craftsman: Craftsman }) {
       <span aria-hidden="true" className="absolute right-2.5 top-2.5 h-3 w-3 border-r border-t border-white/15" />
 
       <div className="flex items-center justify-between gap-3">
-        <span className="mono-label" style={{ color: isLegend ? 'var(--color-teal-glow)' : gc }}>
+        <span className="mono-label" style={{ color: isLegend ? 'var(--color-teal-glow)' : accentInk(gc) }}>
           {isLegend ? 'Legend' : 'Master'} · {craftsman.specimenNo}
         </span>
         <span className="mono-label text-ink-3">{craftsman.era}</span>

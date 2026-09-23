@@ -19,7 +19,7 @@ import { CompareButton } from '../components/compare/CompareButton'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
 import { GripFace } from '../components/refractor/GripFace'
-import { accentForSlug, accentInk } from '../components/refractor/accents'
+import { accentForSlug, accentInk, BURNT } from '../components/refractor/accents'
 import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { ConfidenceDot, RefractorClaim, RefractorSource } from '../components/provenance/RefractorClaim'
@@ -242,7 +242,7 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
               scrollToId('grip-lab', true)
             }}
             className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
-            style={{ background: accentColor, color: isGold ? '#fff' : undefined, boxShadow: `0 6px 20px -8px ${accentColor}` }}
+            style={{ background: accentColor, color: accentColor.toUpperCase() === BURNT ? '#fff' : undefined, boxShadow: `0 6px 20px -8px ${accentColor}` }}
           >
             Open the grip file <span aria-hidden="true">↓</span>
           </a>
