@@ -173,5 +173,5 @@ npm run preview
 `dist/`.) If any command fails, fix it or document the exact blocker.
 
 Final handoff must include: files changed; commands run and results; deployed or
-local preview URL; known limitations; and confirmation that the README, UI copy,
-and data model all still hold the sourced-not-corrected principle.
+local preview URL; known limitations; and confirmation that the README and UI copy
+still carry the mission and the data model still carries provenance underneath it.

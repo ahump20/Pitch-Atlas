@@ -4,8 +4,7 @@
   per section to public/og/<section>.png. Nothing here is licensed or scraped:
   the cards are drawn from elements the atlas already owns — the Anton wordmark
   (the project's own OFL @fontsource face, served from public/brand), the
-  heritage palette, the baseball-seam motif, and the standing "Sourced, not
-  corrected" principle. No pitch-behavior number ever appears on a card (the
+  heritage palette, the baseball-seam motif, and the living-museum name. No pitch-behavior number ever appears on a card (the
   doctrine holds for share art too).
 
   Engine: headless Chromium via playwright-core (already installed for the test
@@ -48,9 +47,9 @@ const C = {
 const SECTIONS = [
   {
     name: 'home',
-    eyebrow: 'The living field manual',
+    eyebrow: 'The living museum of pitching craft',
     line: 'Pitch Atlas',
-    sub: 'Every pitch, gripped and sourced.',
+    sub: 'The heritage, history, and art of pitching.',
     accent: C.seam,
   },
   {
@@ -185,7 +184,7 @@ function cardHtml(section, fontDataUri) {
       <div class="line">${esc(line)}</div>
       <div class="sub">${esc(sub)}</div>
     </div>
-    <div class="stamp">Sourced, not corrected · pitch-atlas.com</div>
+    <div class="stamp">pitch-atlas.com</div>
   </div>
 </body></html>`
 }
