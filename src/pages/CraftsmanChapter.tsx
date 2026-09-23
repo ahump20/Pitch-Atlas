@@ -121,9 +121,9 @@ export function CraftsmanChapter() {
         </div>
         <div className="relative mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
           <nav aria-label="Breadcrumb" className="mb-6 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.14em] text-bone-2/80">
-            <Link to="/" className="transition-colors hover:text-bone">The Atlas</Link>
+            <Link to="/" className="pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-colors hover:text-bone">The Atlas</Link>
             <span aria-hidden="true">/</span>
-            <Link to="/craftsmen" className="transition-colors hover:text-bone">The Craftsmen</Link>
+            <Link to="/craftsmen" className="pointer-coarse:-my-[14px] pointer-coarse:py-[14px] transition-colors hover:text-bone">The Craftsmen</Link>
             <span aria-hidden="true">/</span>
             <EggButton
               tidbitId="curveball-claim"

@@ -30,7 +30,7 @@ export function Breadcrumb({
         return (
           <span key={`${crumb.label}-${i}`} className="flex items-center gap-2">
             {crumb.to && !last ? (
-              <Link to={crumb.to} className="link-stitch transition-colors hover:text-[var(--ctl-accent)]">
+              <Link to={crumb.to} className="link-stitch pointer-coarse:-my-[16px] pointer-coarse:py-[16px] pointer-coarse:bg-origin-content transition-colors hover:text-[var(--ctl-accent)]">
                 {crumb.label}
               </Link>
             ) : (

@@ -34,7 +34,7 @@ export function RotatingQuote({
             href={q.claim.source.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="link-stitch transition-colors hover:text-bone"
+            className="link-stitch pointer-coarse:-my-[16px] pointer-coarse:py-[16px] pointer-coarse:bg-origin-content transition-colors hover:text-bone"
           >
             {q.attribution}
           </a>

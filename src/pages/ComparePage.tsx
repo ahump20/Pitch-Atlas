@@ -42,7 +42,7 @@ export function ComparePage() {
     </header>
     <div className="compare-controls">
       <div className="compare-pickers">
-        {(['a', 'b'] as const).map((slot, i) => <label key={slot}><span id={`compare-label-${slot}`}>{i === 0 ? 'First pitch' : 'Second pitch'}</span><select aria-labelledby={`compare-label-${slot}`} className="rfx-select" value={selection[slot] ?? ''} onChange={(e) => update({ [slot]: e.target.value || null })}><option value="">Choose a filed pitch</option>{PITCHES.map((entry) => <option key={entry.display.slug} value={entry.display.slug} disabled={selection[slot === 'a' ? 'b' : 'a'] === entry.display.slug}>{entry.display.shortName}</option>)}</select></label>)}
+        {(['a', 'b'] as const).map((slot, i) => <label key={slot}><span id={`compare-label-${slot}`}>{i === 0 ? 'First pitch' : 'Second pitch'}</span><select aria-labelledby={`compare-label-${slot}`} className="rfx-select" value={selection[slot] ?? ''} onChange={(e) => update({ [slot]: e.target.value || null })}><option value="">Choose…</option>{PITCHES.map((entry) => <option key={entry.display.slug} value={entry.display.slug} disabled={selection[slot === 'a' ? 'b' : 'a'] === entry.display.slug}>{entry.display.shortName}</option>)}</select></label>)}
         <button className="archive-icon-action" aria-label="Swap pitches" disabled={!a || !b} onClick={() => update({ a: selection.b, b: selection.a })}><ArrowLeftRight size={20} /></button>
         <button className="archive-icon-action" aria-label="Clear comparison" onClick={() => update({ a: null, b: null })}><RotateCcw size={18} /></button>
       </div>

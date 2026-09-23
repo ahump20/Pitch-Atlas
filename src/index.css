@@ -534,6 +534,8 @@
       [data-slot=button], [data-slot=input], [data-slot=select-trigger], [data-slot=select-item],
       [data-slot=toggle], [data-slot=toggle-group-item], [data-slot=dialog-close]) { min-height: 44px; }
   :is([data-slot=button][data-size^=icon], [data-slot=dialog-close]) { min-width: 44px; }
+  [data-slot=input-group] { height: auto; }
+  :is([data-slot=input-group-control], input[type=range]) { min-height: 44px; }
 }
 
 /* Phone chip rails: the Pitch Index filter/sort/status rows scroll horizontally
