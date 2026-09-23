@@ -16,7 +16,7 @@ import type { DocumentationTier, LostPitch } from '../../data/types'
 const AXIS = { start: 1898, end: 1960 }
 const DECADES = [1900, 1910, 1920, 1930, 1940, 1950]
 const ROW_H = 34 // px per stacked row within a tier lane
-const GAP = 14 // min % between two markers sharing a row (clears the code label at any width)
+const GAP = 18 // min % between two markers sharing a row: at 360px that is ~50px, which clears dot + code label
 
 // The same three trust tiers the provenance dots use: paper trail, thin, legend.
 const TIER_COLOR: Record<DocumentationTier, string> = {
