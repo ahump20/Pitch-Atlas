@@ -179,7 +179,7 @@ export function SoftballPitchChapter() {
 
       <section id="softball-sources" className="study-anchor mx-auto max-w-6xl px-5 py-12 md:px-8">
         <StageTierMarker index="04" label="Sources in this file" />
-        <ul className="grid gap-4">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
+        <ul className="grid gap-4 pointer-coarse:gap-y-[30px]">{Array.from(new Map([pitch.grip, pitch.spin, pitch.movement, pitch.physicsNote].flatMap(c => c?.source ? [[c.source.id, c.source] as const] : [])).values()).map(source => <li key={source.id}><RefractorSource source={source} /></li>)}</ul>
       </section>
 
       <ChapterNav prev={prev} next={next} />

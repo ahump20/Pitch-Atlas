@@ -27,7 +27,7 @@ export function MediaSuggestionForm({ pitchSlug }: { pitchSlug?: string }) {
 
   return (
     <details className="mt-6 rounded-[14px] border border-bone/12 bg-black/20 px-4 py-3">
-      <summary className="cursor-pointer pointer-coarse:py-[7px] font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2 transition-colors hover:text-cyan">
+      <summary className="cursor-pointer pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.12em] text-bone-2 transition-colors hover:text-cyan">
         Know a pitching post that belongs here?
       </summary>
       <form onSubmit={submit} className="mt-4 grid gap-3 md:grid-cols-2">

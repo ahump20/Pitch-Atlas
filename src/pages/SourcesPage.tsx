@@ -114,7 +114,7 @@ export function SourcesPage() {
 
           <div className="md:col-span-7">
             <h2 className="rfx-skick mb-6">The citation registry</h2>
-            <ul className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
+            <ul className="grid grid-cols-1 gap-x-8 gap-y-3 pointer-coarse:gap-y-[34px] sm:grid-cols-2">
               {sources.map((s) => (
                 <li key={s.id}>
                   <SourceBadge source={s} wrapLabel />
