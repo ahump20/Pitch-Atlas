@@ -1,6 +1,7 @@
 import { createElement } from 'react'
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from 'react'
+import type { ComponentPropsWithoutRef, ElementType, PointerEvent, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
+import { rosinPuff } from '@/lib/rosinPuff'
 
 /**
  * Pitch Atlas Button — one component over the app's existing, proven button
@@ -41,9 +42,18 @@ export function Button<E extends ElementType = 'button'>({
   ...rest
 }: ButtonProps<E>) {
   const Comp = (as ?? 'button') as ElementType
+  // the primary action takes a pinch of rosin when pressed
+  const { onPointerDown } = rest as { onPointerDown?: (event: PointerEvent<Element>) => void }
+  const pointerDown =
+    variant === 'chrome'
+      ? (event: PointerEvent<Element>) => {
+          rosinPuff(event.clientX, event.clientY)
+          onPointerDown?.(event)
+        }
+      : onPointerDown
   return createElement(
     Comp,
-    { className: cn(VARIANT_CLASS[variant], className), ...rest },
+    { className: cn(VARIANT_CLASS[variant], className), ...rest, onPointerDown: pointerDown },
     children,
     arrow ? (
       <span aria-hidden="true" key="arrow">

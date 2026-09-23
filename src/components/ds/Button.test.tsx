@@ -1,5 +1,9 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { vi } from 'vitest'
+import { rosinPuff } from '@/lib/rosinPuff'
 import { Button } from './Button'
+
+vi.mock('@/lib/rosinPuff', () => ({ rosinPuff: vi.fn() }))
 
 describe('ds/Button', () => {
   it('renders the chrome CTA by default', () => {
@@ -42,5 +46,21 @@ describe('ds/Button', () => {
     const el = screen.getByRole('link', { name: 'Mission' })
     expect(el).toHaveAttribute('href', '/about')
     expect(el.className).toContain('is-ghost')
+  })
+
+  it('chrome leaves rosin at the press point and still runs the caller handler', () => {
+    const onPointerDown = vi.fn()
+    render(<Button onPointerDown={onPointerDown}>Open the Index</Button>)
+    fireEvent.pointerDown(screen.getByRole('button'), { clientX: 12, clientY: 34 })
+    expect(rosinPuff).toHaveBeenCalledWith(12, 34)
+    expect(onPointerDown).toHaveBeenCalledTimes(1)
+  })
+
+  it('the other variants leave no rosin', () => {
+    const onPointerDown = vi.fn()
+    render(<Button variant="ghost" onPointerDown={onPointerDown}>Read the mission</Button>)
+    fireEvent.pointerDown(screen.getByRole('button'))
+    expect(rosinPuff).not.toHaveBeenCalled()
+    expect(onPointerDown).toHaveBeenCalledTimes(1)
   })
 })

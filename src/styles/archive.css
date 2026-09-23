@@ -69,7 +69,7 @@
 .archive-bridge-read h2 em { color: #d58b57; }
 .archive-bridge-read p { max-width: 35ch; font-size: 16px; line-height: 1.7; color: #cac1b7; }
 .archive-bridge-read .archive-bridge-note { margin-top: 22px; font-size: 12px; color: #a79c8f; }
-.archive-bridge .archive-chapter-mark { font-size: 10px; }
+.archive-bridge .archive-chapter-mark { font-size: 10px; max-width: none; }
 .archive-bridge .archive-chapter-mark > span:nth-child(2), .archive-bridge .archive-chapter-mark > span:last-child { color: #c09b79; }
 .archive-bridge .archive-chapter-mark .cm-rule { background: #aa785655; }
 .archive-bridge-read > :first-child { color: #c09b79; }
@@ -188,3 +188,37 @@ html:has(.compare-tray) { scroll-padding-bottom: 150px; }
     .v2-mount .v2-flip { animation:v2-mount-deal linear backwards; animation-timeline:view(); animation-range:entry 2% cover 30%; }
   }
 }
+
+/* Plate 273. The chapter tick is Muybridge's pitcher, one phase of the delivery
+   per chapter; the close lays the ten lateral frames out the way the 1887 plate
+   did: a pale figure on the gridded black backdrop, five to a row on phones.
+   When the plate comes into view the frames expose left to right, like his
+   battery of shutters firing. */
+.delivery-figure { display: inline-block; flex: none; width: 26px; height: 26px; margin-block: -6px; }
+.delivery-figure svg { display: block; width: 100%; height: 100%; }
+.delivery-plate { max-width: 640px; margin: 0 auto 56px; }
+.delivery-plate-strip {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 3px; padding: 3px;
+  background: #2b2824; border-radius: 2px;
+}
+.delivery-plate-frame {
+  display: block; width: 100%; height: auto; aspect-ratio: 1; padding: 10% 8% 4%;
+  color: #e6dccb; background-color: #151412;
+  background-image: linear-gradient(90deg, #efe6d514 1px, transparent 1px), linear-gradient(#efe6d514 1px, transparent 1px);
+  background-size: calc(100% / 9) calc(100% / 9);
+}
+.delivery-plate figcaption { display: grid; gap: 8px; margin-top: 14px; font-size: 12px; line-height: 1.6; color: #a99e8f; }
+.delivery-plate-title { font: 10px/1.5 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: #cdb48f; }
+.delivery-plate-credit { max-width: 58ch; margin-inline: auto; }
+.delivery-plate-credit a { color: #e0b285; text-decoration: underline; text-underline-offset: 3px; }
+.delivery-plate-credit a:focus-visible { outline: 2px solid #e9a570; outline-offset: 3px; border-radius: 2px; }
+/* a 44px tap area without loosening the caption's lines: the padding makes the
+   box, the matching negative margin keeps the line box at its normal height */
+@media (any-pointer: coarse) { .delivery-plate-credit a { display: inline-block; padding-block: 13px; margin-block: -13px; } }
+@media (min-width: 640px) { .delivery-plate-strip { grid-template-columns: repeat(10, 1fr); } }
+@keyframes plate-expose { 0% { opacity: .16; } 30% { opacity: 1; filter: brightness(1.7); } 100% { opacity: 1; } }
+@media (prefers-reduced-motion: no-preference) {
+  .delivery-plate-frame { opacity: .16; }
+  .delivery-plate.is-landed .delivery-plate-frame { animation: plate-expose 460ms var(--pa-ease-settle) calc(var(--i) * 90ms) both; }
+}
+
