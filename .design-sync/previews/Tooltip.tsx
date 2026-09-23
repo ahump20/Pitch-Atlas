@@ -1,16 +1,24 @@
-import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from 'pitch-atlas'
+import {
+  CONFIDENCE_META,
+  Kicker,
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from 'pitch-atlas'
 
-// Each provenance tier explains itself on hover. The mono label is the trigger;
-// at rest the card shows just that label, which is the point.
-const stage = {
-  padding: '22px 24px',
-  display: 'flex',
-  gap: '18px',
-  flexWrap: 'wrap',
-  alignItems: 'center',
+// A provenance tier explained on hover: the trigger is the tier's own label and
+// the tip its one-line meaning, both from CONFIDENCE_META, the product's only
+// wording for them.
+const cell = {
+  background: 'var(--surface-page)',
+  color: 'var(--color-bone)',
+  padding: '28px',
+  minHeight: '100vh',
+  boxSizing: 'border-box',
 }
-const tierLabel = {
-  fontFamily: 'Martian Mono, monospace',
+const heading = 'mt-3 mb-6 font-display text-[clamp(22px,3vw,30px)] leading-tight text-bone'
+const tier = {
   fontSize: '12px',
   letterSpacing: '0.06em',
   color: 'var(--color-cyan)',
@@ -22,38 +30,21 @@ const tierLabel = {
   textUnderlineOffset: '4px',
 }
 
-// The top tier: explain what "official-data" actually certifies.
 export function ProvenanceTier() {
   return (
-    <div className="rfx-panel" style={stage}>
+    <section style={cell}>
+      <Kicker>Primitives</Kicker>
+      <h2 className={heading}>Tooltip</h2>
       <TooltipProvider>
-        <Tooltip>
+        <Tooltip defaultOpen>
           <TooltipTrigger asChild>
-            <button style={tierLabel}>official-data</button>
+            <button type="button" style={tier}>
+              {CONFIDENCE_META['official-data'].label}
+            </button>
           </TooltipTrigger>
-          <TooltipContent>
-            Measured and published by a tracking system — the highest tier in the atlas.
-          </TooltipContent>
+          <TooltipContent side="right">{CONFIDENCE_META['official-data'].meaning}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-    </div>
-  )
-}
-
-// The honest floor: a claim no source corroborates is shown, but flagged.
-export function Unverified() {
-  return (
-    <div className="rfx-panel" style={stage}>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button style={tierLabel}>unverified</button>
-          </TooltipTrigger>
-          <TooltipContent>
-            No source corroborates this yet. It carries a note and stays labeled.
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
+    </section>
   )
 }

@@ -27,9 +27,9 @@ export function AtlasHomeV2() {
   useSeoMeta({
     // The published home: indexable, canonical at / (RootLayout sets the canonical
     // link from the pathname), and the only homepage now the editorial home is gone.
-    title: `${SITE.siteName}: The Living Archive of Pitching Craft`,
+    title: `${SITE.siteName}: The Living Museum of Pitching Craft`,
     description: truncateForMeta(
-      'A grip-first archive for preserving and progressing pitch craft: grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
+      'A grip-first museum for preserving and progressing pitch craft: grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
     ),
     ogTitle: `${SITE.siteName}: ${SITE.brandLine}`,
     ogDescription: 'Every pitch struck as a sourced specimen: grip first, lineage intact, no invented certainty.',

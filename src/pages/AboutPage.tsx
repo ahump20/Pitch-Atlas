@@ -81,7 +81,7 @@ const LAYER_ROWS = ['Baseball', 'Pitching', 'Pitch craft', 'Grip', 'Individual s
 const TRUTH_ROWS = [
   {
     label: 'Known',
-    text: 'Pitch Atlas is a living archive for grips, pitch variants, craftsmen, lost pitches, and shape language. The live pages carry source and confidence labels.',
+    text: 'Pitch Atlas is a living museum of grips, pitch variants, craftsmen, lost pitches, and shape language. The live pages carry source and confidence labels.',
   },
   {
     label: 'Unknown',
@@ -103,11 +103,11 @@ function ExternalLink({ href, children }: { href: string; children: string }) {
 
 export function AboutPage() {
   useSeoMeta({
-    title: `About ${SITE.siteName}: The Living Archive of Pitching Craft`,
+    title: `About ${SITE.siteName}: The Living Museum of Pitching Craft`,
     description:
       'Pitch Atlas preserves and progresses the art of the pitch by cataloging grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
     ogTitle: `About ${SITE.siteName}: preserve and progress the art of the pitch`,
-    ogDescription: 'The living archive of pitching craft.',
+    ogDescription: SITE.positioning,
     ogUrl: canonicalUrl('/about'),
     twitterCard: 'summary_large_image',
   })
@@ -118,7 +118,7 @@ export function AboutPage() {
         graph={contentJsonLd({
           type: 'CreativeWork',
           url: canonicalUrl('/about'),
-          name: 'About Pitch Atlas: The Living Archive of Pitching Craft',
+          name: 'About Pitch Atlas: The Living Museum of Pitching Craft',
           description:
             'Pitch Atlas preserves and progresses the art of the pitch by cataloging grips, variants, feel cues, forgotten experiments, master examples, and field notes.',
           breadcrumb: [{ name: 'Pitch Atlas', to: '/' }, { name: 'About' }],

@@ -1,31 +1,33 @@
-import { Input } from 'pitch-atlas'
+import { Input, Kicker } from 'pitch-atlas'
 
-const panel = { padding: '22px 24px', display: 'grid', gap: '10px', maxWidth: '420px' }
+// The labelled text field, empty with its placeholder (the in-product gallery's),
+// then filled: the field-notes "Evidence label" holding the example its own
+// placeholder offers (src/components/sections/FieldNotes.tsx).
+// Card grammar (docs/superpowers/specs/2026-07-24-ds-component-truth-and-motion-design.md):
+// one eyebrow and heading per card, ported from the in-product gallery's section
+// (src/pages/DesignSystemShowcase.tsx), on the first cell only; later cells carry
+// the specimen and its caption in the site's mono label.
+const cell = { background: 'var(--surface-page)', color: 'var(--color-bone)', padding: '28px' }
+const heading = 'mt-3 mb-6 font-display text-[clamp(22px,3vw,30px)] leading-tight text-bone'
 
-// The archival text field on the dark control tokens. Its `label` prop renders a
-// mono field-label wired to the input.
-export function Field() {
+export function Labelled() {
   return (
-    <div className="rfx-panel" style={panel}>
-      <Input label="Source URL" placeholder="Where did you learn this grip?" />
-    </div>
+    <section style={cell}>
+      <Kicker>Input</Kicker>
+      <h2 className={heading}>Input</h2>
+      <div className="max-w-[520px]">
+        <Input label="Contributor handle" placeholder="@you" />
+      </div>
+    </section>
   )
 }
 
-// The error state: `aria-invalid` carries the semantics; the seam-red edge and
-// note make it visible. Every claim has to name a source we can check.
-export function Invalid() {
+export function Filled() {
   return (
-    <div className="rfx-panel" style={panel}>
-      <Input
-        label="Source URL"
-        defaultValue="heard it somewhere"
-        aria-invalid="true"
-        style={{ borderColor: 'var(--color-seam)' }}
-      />
-      <div style={{ fontFamily: 'Martian Mono, monospace', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--color-seam)' }}>
-        Add a source we can check
+    <section style={cell}>
+      <div className="max-w-[520px]">
+        <Input label="Evidence label" defaultValue="Bullpen clip" />
       </div>
-    </div>
+    </section>
   )
 }

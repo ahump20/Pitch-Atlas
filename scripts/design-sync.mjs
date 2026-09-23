@@ -8,11 +8,12 @@
   `.design-sync/NOTES.md` stop being prose and start being enforced.
 
   Trap 1 — `--entry` is optional in the driver (`if (flag('entry'))`), and
-  omitting it silently drops the three components the ds barrel re-exports
-  from outside `srcDir`: BrandMark, ConfidenceDot, PitchSpecimenCard. The
-  build still prints success and the manifest still lists all 19, because the
-  manifest comes from `cfg.componentSrcMap` and never from what bundled. We
-  always pass `--entry`, and we fail if the barrel is not on disk.
+  omitting it silently drops the five components the ds barrel re-exports
+  from outside `srcDir`: BrandMark, ConfidenceDot, PitchSpecimenCard,
+  BallStage, SeamSchematic. The build still prints success and the manifest
+  still lists all of them, because the manifest comes from
+  `cfg.componentSrcMap` and never from what bundled. We always pass `--entry`,
+  and we fail if the barrel is not on disk.
 
   Trap 2 — `cfg.cssEntry` is a hashed dist filename. The hash changes on every
   `vite build`, so any stored value is one build away from pointing at nothing.
@@ -67,17 +68,17 @@ if (!existsSync(resolve(REPO, DRIVER))) {
 if (!existsSync(resolve(REPO, ENTRY))) {
   die(
     `${ENTRY} not found — this is the ds barrel that --entry points at. ` +
-      `Without it the bundle silently loses BrandMark, ConfidenceDot and PitchSpecimenCard.`,
+      `Without it the bundle silently loses every component re-exported from outside srcDir.`,
   )
 }
 ok(`ds barrel present: ${ENTRY}`)
 
-/* Trap 1, second half: those three are re-exported from outside srcDir, which is
+/* Trap 1, second half: these are re-exported from outside srcDir, which is
    exactly why they are the ones that vanish. If the barrel stops re-exporting one,
    --entry will not save it, and the failure looks identical. Check the cause, not
    just the flag. */
 const barrel = readFileSync(resolve(REPO, ENTRY), 'utf8')
-const FRAGILE = ['BrandMark', 'ConfidenceDot', 'PitchSpecimenCard']
+const FRAGILE = ['BrandMark', 'ConfidenceDot', 'PitchSpecimenCard', 'BallStage', 'SeamSchematic']
 const missing = FRAGILE.filter((name) => !new RegExp(`\\b${name}\\b`).test(barrel))
 if (missing.length) {
   die(

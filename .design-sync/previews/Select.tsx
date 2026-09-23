@@ -1,61 +1,32 @@
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'pitch-atlas'
+import { Kicker, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'pitch-atlas'
 
-// Choosing how to file a pitch. The trigger renders closed with a real value
-// already selected; the options stay sourced to the families the atlas uses.
-const stage = {
-  padding: '22px 24px',
-  display: 'flex',
-  gap: '14px',
-  flexWrap: 'wrap',
-  alignItems: 'center',
+// The Radix select, shown open over its trigger with one family chosen. Its list
+// portals to <body>; the cell is tall enough to hold it.
+const cell = {
+  background: 'var(--surface-page)',
+  color: 'var(--color-bone)',
+  padding: '28px',
+  minHeight: '100vh',
+  boxSizing: 'border-box',
 }
-const field = { display: 'grid', gap: '8px' }
-const mono = {
-  fontFamily: 'Martian Mono, monospace',
-  fontSize: '11px',
-  letterSpacing: '0.06em',
-  color: 'var(--color-bone-3)',
-}
+const heading = 'mt-3 mb-6 font-display text-[clamp(22px,3vw,30px)] leading-tight text-bone'
 
-// Pick a family. Closed trigger shows the selected value.
 export function PitchFamily() {
   return (
-    <div className="rfx-panel" style={stage}>
-      <div style={field}>
-        <span style={mono}>PITCH FAMILY</span>
-        <Select defaultValue="breaking">
-          <SelectTrigger style={{ width: '220px' }}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="fastball">Fastball</SelectItem>
-            <SelectItem value="breaking">Breaking</SelectItem>
-            <SelectItem value="offspeed">Offspeed</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
-  )
-}
-
-// Narrow to a specimen. Closed trigger shows the selected pitch.
-export function SpecificPitch() {
-  return (
-    <div className="rfx-panel" style={stage}>
-      <div style={field}>
-        <span style={mono}>SPECIMEN</span>
-        <Select defaultValue="slider">
-          <SelectTrigger style={{ width: '220px' }}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="four-seam">Four-seam fastball</SelectItem>
-            <SelectItem value="slider">Slider</SelectItem>
-            <SelectItem value="curveball">Curveball</SelectItem>
-            <SelectItem value="changeup">Changeup</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-    </div>
+    <section style={cell}>
+      <Kicker>Primitives</Kicker>
+      <h2 className={heading}>Select</h2>
+      <Select defaultValue="breaking" defaultOpen>
+        <SelectTrigger aria-label="Pitch family" style={{ width: '240px' }}>
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent position="popper">
+          <SelectItem value="fastball">Fastball</SelectItem>
+          <SelectItem value="breaking">Breaking</SelectItem>
+          <SelectItem value="offspeed">Offspeed</SelectItem>
+          <SelectItem value="specialty">Specialty</SelectItem>
+        </SelectContent>
+      </Select>
+    </section>
   )
 }

@@ -245,7 +245,7 @@ async function checkHomeMobileMenu(page) {
     await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined)
   })
 
-  assert.equal(await page.title(), 'Pitch Atlas: The Living Archive of Pitching Craft')
+  assert.equal(await page.title(), 'Pitch Atlas: The Living Museum of Pitching Craft')
   const body = await pageText(page)
   record(includesText(body, /pitch atlas/i), 'Home body did not render')
   record(messages.length === 0, `Home mobile console warnings/errors: ${messages.join(' | ')}`)
