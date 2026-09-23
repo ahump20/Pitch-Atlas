@@ -25,7 +25,7 @@ export function ExternalMediaRail({
 
   return (
     <section className={`relative border-y border-bone/8 bg-[#090807] ${className}`} aria-busy={loading || undefined}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(55,214,255,0.07),transparent_28%),radial-gradient(circle_at_88%_82%,rgba(213,49,45,0.08),transparent_30%)]" aria-hidden="true" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_20%,rgba(95,224,234,0.07),transparent_28%),radial-gradient(circle_at_88%_82%,rgba(213,49,45,0.08),transparent_30%)]" aria-hidden="true" />
       <div className="relative mx-auto max-w-[1240px] px-5 py-14 md:px-8 md:py-20">
         <div className="grid gap-5 md:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] md:items-end">
           <div>

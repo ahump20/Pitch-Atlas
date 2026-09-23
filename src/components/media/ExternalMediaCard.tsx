@@ -121,7 +121,7 @@ export function ExternalMediaCard({ item }: { item: ExternalContentItem }) {
       </header>
 
       <div
-        className="archive-media-player relative overflow-hidden border-b border-bone/10 bg-[radial-gradient(circle_at_50%_30%,rgba(55,214,255,0.14),transparent_48%),#050505]"
+        className="archive-media-player relative overflow-hidden border-b border-bone/10 bg-[radial-gradient(circle_at_50%_30%,rgba(95,224,234,0.14),transparent_48%),#050505]"
         style={{ aspectRatio: requested && !inDock ? (portrait ? '9 / 13' : '16 / 10') : undefined }}
       >
         {inDock ? (
