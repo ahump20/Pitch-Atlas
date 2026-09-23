@@ -52,7 +52,7 @@ function timeAgo(iso: string): string {
   return `${Math.floor(s / 86400)}d ago`
 }
 
-const SPECIMEN_ACCENTS = ['#B9D4E5', '#BF5700', '#E4B45A', '#5FE0EA', '#A7ADB0'] as const
+const SPECIMEN_ACCENTS = ['#B9D4E5', '#BF5700', '#D8CFBB', '#5FE0EA', '#A7ADB0'] as const
 
 function hashString(input: string): number {
   let hash = 0

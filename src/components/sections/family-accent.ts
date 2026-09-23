@@ -14,7 +14,7 @@ import type { RepertoireFamily } from '../../data/types'
 */
 export const FAMILY_ACCENT: Record<RepertoireFamily, string> = {
   fastball: '#BF5700', // electric burnt orange — the fastball family burns
-  offspeed: '#E4B45A', // brass
+  offspeed: '#D8CFBB', // bone — soft, like the change that leads it
   breaking: '#5FE0EA', // cyan
   specialty: '#B9D4E5', // powder ice
   banned: '#FF4D46', // seam red

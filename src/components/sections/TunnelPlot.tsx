@@ -40,7 +40,7 @@ const TUNNEL_Y = CY - 150
 const FAMILY_META: Record<PitchFamily, { label: string; color: string }> = {
   fastball: { label: 'Fastball', color: '#BF5700' },
   breaking: { label: 'Breaking', color: '#5FE0EA' },
-  offspeed: { label: 'Offspeed', color: '#E4B45A' },
+  offspeed: { label: 'Offspeed', color: '#D8CFBB' },
 }
 
 interface Spot {
