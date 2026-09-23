@@ -55,7 +55,7 @@ export function DeliveryPlate() {
         <span className="delivery-plate-credit">
           {PLATE_273.maker} photographed this delivery for <cite>{PLATE_273.work}</cite>. The pitcher at each
           chapter mark above is traced from it. Public domain.{' '}
-          <a href={PLATE_273.sourceUrl} target="_blank" rel="noreferrer">
+          <a href={PLATE_273.source.url} title={PLATE_273.source.label} target="_blank" rel="noreferrer">
             Source<span aria-hidden="true"> ↗</span>
             <span className="sr-only"> (opens in a new tab)</span>
           </a>

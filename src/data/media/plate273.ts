@@ -1,3 +1,5 @@
+import { src } from '../sources'
+
 /*
   Plate 273, "Baseball, pitching": Eadweard Muybridge's Animal Locomotion (1887),
   photographed at the University of Pennsylvania. The side-view sequence is ten
@@ -19,7 +21,5 @@ export const PLATE_273 = {
   work: 'Animal Locomotion',
   year: 1887,
   rights: 'public-domain',
-  sourceUrl:
-    'https://commons.wikimedia.org/wiki/File:Nude_man_playing_baseball,_pitching_(rbm-QP301M8-1887-273).jpg',
-  retrievedAt: '2026-09-23',
+  source: src('commons-muybridge-plate-273'),
 } as const

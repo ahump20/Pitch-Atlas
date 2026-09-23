@@ -42,6 +42,9 @@ const RETRIEVED_10 = '2026-07-04'
 // and adversarially re-verified in a 2026-07-05 research pass; its own constant
 // keeps the colophon "as of" line honest without backdating the older wings.
 const RETRIEVED_11 = '2026-07-05'
+// Muybridge's plate 273 frames were pulled from Wikimedia Commons for the home
+// page's chapter-mark pitcher on 2026-09-23.
+const RETRIEVED_12 = '2026-09-23'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1857,6 +1860,13 @@ export const SOURCES = {
     label: 'Wikimedia Commons, 1912 Lincoln Giants team photograph',
     url: 'https://commons.wikimedia.org/wiki/File:1912_Lincoln_Giants.jpg',
     retrievedAt: RETRIEVED_9,
+    season: 'public domain image source',
+  },
+  'commons-muybridge-plate-273': {
+    id: 'commons-muybridge-plate-273',
+    label: 'Wikimedia Commons, Eadweard Muybridge, Animal Locomotion plate 273, Baseball, pitching (1887)',
+    url: 'https://commons.wikimedia.org/wiki/File:Nude_man_playing_baseball,_pitching_(rbm-QP301M8-1887-273).jpg',
+    retrievedAt: RETRIEVED_12,
     season: 'public domain image source',
   },
   'loc-baseball-films-collection': {

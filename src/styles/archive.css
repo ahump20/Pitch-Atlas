@@ -212,8 +212,9 @@ html:has(.compare-tray) { scroll-padding-bottom: 150px; }
 .delivery-plate-credit { max-width: 58ch; margin-inline: auto; }
 .delivery-plate-credit a { color: #e0b285; text-decoration: underline; text-underline-offset: 3px; }
 .delivery-plate-credit a:focus-visible { outline: 2px solid #e9a570; outline-offset: 3px; border-radius: 2px; }
-/* a 44px tap area without loosening the caption's lines */
-@media (any-pointer: coarse) { .delivery-plate-credit a { padding-block: 12px; } }
+/* a 44px tap area without loosening the caption's lines: the padding makes the
+   box, the matching negative margin keeps the line box at its normal height */
+@media (any-pointer: coarse) { .delivery-plate-credit a { display: inline-block; padding-block: 13px; margin-block: -13px; } }
 @media (min-width: 640px) { .delivery-plate-strip { grid-template-columns: repeat(10, 1fr); } }
 @keyframes plate-expose { 0% { opacity: .16; } 30% { opacity: 1; filter: brightness(1.7); } 100% { opacity: 1; } }
 @media (prefers-reduced-motion: no-preference) {
