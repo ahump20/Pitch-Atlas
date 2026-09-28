@@ -10,8 +10,9 @@ second palette authority. The approved burnt orange is `#BF5700` in
 four-seam's one-of-one finish is ember (`--ember`); the old gold gradient is
 retired. Offspeed uses bone `#D8CFBB`, the eephus uses warm white, and the home
 wall gives the twelve-six a powder-blue frame and the circle change a teal frame.
-Use `src/index.css` and `src/components/refractor/accents.ts` for current
-implementation values; the Design System artifact is a downstream copy of them.
+Use `src/index.css`, `src/components/sections/family-accent.ts`, and
+`src/components/refractor/accents.ts` for current implementation values; the
+Design System artifact is a downstream copy of them.
 
 ---
 
