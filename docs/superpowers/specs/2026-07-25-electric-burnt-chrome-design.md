@@ -4,6 +4,16 @@
 **Status:** Palette + frame landed; card face and hand solver landed in the addenda below
 **Decisions taken by Austin:** foil ramp **B (Full Refractor)**; accents **pulled fully into the metal family**
 
+**Current-state correction (2026-09-28):** This is the July decision record, not a
+second palette authority. The approved burnt orange is `#BF5700` in
+`--ebc-orange`, `--color-orange`, `--primary`, and the first trust tier. The
+four-seam's one-of-one finish is ember (`--ember`); the old gold gradient is
+retired. Offspeed uses bone `#D8CFBB`, the eephus uses warm white, and the home
+wall gives the twelve-six a powder-blue frame and the circle change a teal frame.
+Use `src/index.css`, `src/components/sections/family-accent.ts`, and
+`src/components/refractor/accents.ts` for current implementation values; the
+Design System artifact is a downstream copy of them.
+
 ---
 
 ## The brief
@@ -46,19 +56,21 @@ opacity. Cards sit on a surface. They do not emit light.
 
 ## The palette
 
-Not invented. Recovered from `tmp/electric-burnt-chrome/Electric Burnt Chrome.dc.html`,
-designed 2026-07-07, transferred to staging, and never landed — the product carried zero
-burnt-orange tokens. Now named in `src/index.css` as `--ebc-*`:
+The direction was recovered from `tmp/electric-burnt-chrome/Electric Burnt Chrome.dc.html`,
+designed 2026-07-07 and transferred to staging. The table below records the
+current named values in `src/index.css`; the original proposal was revised before
+becoming the approved palette:
 
 | Token | Value | Role |
 |---|---|---|
-| `--ebc-orange` | `#ff6a29` | electric burnt orange — the hero note |
-| `--ebc-burnt-1/2/3` | `#d24309` `#7e2909` `#140a05` | its shadow ladder |
+| `--ebc-orange` | `#BF5700` | the one approved burnt orange — the hero note |
+| `--ebc-burnt-2/3` | `#7e2909` `#140a05` | its shadow ladder |
+| `--ebc-warm-hi` | `#ffe9de` | warm-white high note |
 | `--ebc-ice` | `#b9d4e5` | powder ice |
 | `--ebc-powder` | `#8fbad6` | powder blue |
 | `--ebc-cyan` / `-2` / `-3` | `#5fe0ea` `#1f97a2` `#274253` | the cold arc |
 | `--ebc-chrome-1/2/3` | `#a7adb0` `#6e757b` `#2a3035` | the chromium ladder |
-| `--ebc-brass` | `#e4b45a` | the vintage note |
+| `--ebc-seam` | `#ff4d46` | the seam-red note |
 | `--ebc-specular` | `#fff3ec` | the one narrow white-hot stop |
 | `--ebc-black` / `-2` | `#08090a` `#0a0b0c` | the mirror, and the horizon band |
 
@@ -78,15 +90,17 @@ Twenty-one stops. What makes it read as metal, in order of importance:
 > Fourteen CSS rules and two components consume `--foil`; a change re-skins the wordmark,
 > the primary CTA rim, and every specimen card at once.
 
-`--gold` stays the separate 1/1 register and never goes rainbow. Warmed to the EBC brass so
-the two metals sit in one world.
+The one-of-one four-seam now uses `--ember`: matte warm-black lacquer with burnt-orange
+heat under the surface. The historical `is-gold` class name remains, but `--gold`
+is retired from the product.
 
 ### The accents
 
 All eighteen triads moved into the palette. Identity survives: the fastball family stays
 warm, the breaking family goes cold, and no two pitches share a `c3`. Selected examples —
 four-seam powder ice, two-seam deep cyan, circle change bone, slider seam red, splitter
-chromium, splinker electric burnt orange, knuckleball chrome grey, eephus brass.
+chromium, splinker burnt orange, knuckleball chrome grey, eephus warm white. On the home
+wall, the twelve-six gets a powder-blue frame and the circle change a teal frame.
 
 ## The frame
 
@@ -97,7 +111,7 @@ Black → foil → black → field. Fully opaque on the blacks.
 - The 48px / 104px blooms are gone, replaced by a cast shadow (`0 26px 42px -20px`) so the
   card sits on the void instead of hovering over it.
 - The gloss sweep narrowed from a 340px/.58 wash at .72 opacity to 190px/.5 at .46.
-- The 1/1 still outshines the run — by frame weight and brass density, not by bloom.
+- The 1/1 stays distinct from the run by frame weight and ember heat, not by bloom.
 
 The cracked-ice hatch, the woven check, and the worn-matte turbulence pass are **kept**.
 They were good and they are period-correct.

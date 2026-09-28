@@ -10,7 +10,7 @@ import type { RefractorAccent } from './RefractorCard'
 */
 /*
   Every triad lives inside Electric Burnt Chrome — burnt orange, powder ice, cyan,
-  the chromium ladder, brass, and seam red, on near-black. The set used to carry
+  the chromium ladder, bone, warm white, and seam red, on near-black. The set used to carry
   eighteen fully-saturated neons (#1CF0A6, #7CFF52, #FF6FB3, #8A6BFF); because a
   pitch wears its accent on its card, its index plate AND its chapter, that
   saturation reached every surface and was half of why the product read cartoonish.
