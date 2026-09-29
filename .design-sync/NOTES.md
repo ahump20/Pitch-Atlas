@@ -1,12 +1,18 @@
 # design-sync notes — Pitch Atlas
 
 **System of record (since 2026-09-18): the Design System artifact**
-https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — re-synced to main@8662056
-on 2026-09-23 (Version 19: one burnt orange #bf5700, the three trust-tier tokens, the
-r3f 9.7 scheduler fix below). The claude.ai/design
-project `e8154c97-53f1-4412-aa6b-9d019bc85e0c` is the legacy source it was migrated
-from; it is left untouched and no longer receives uploads. Two dead ids appear in
-older prose: `1f94fe08-…` and `aa4ea331-…`. Both are gone (`aa4ea331` 404s).
+https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — deliberately re-synced
+from main@c5aed55 on 2026-09-28 (published as Version 24, revision
+`1790644258-8550`). This sync carries the one approved burnt orange `#BF5700`
+instead of `#FF6A29`, bone offspeed `#D8CFBB`, warm-white eephus `#FFE9DE`,
+the powder twelve-six and teal circle-change throwback finishes, the three
+trust-tier tokens, and the r3f 9.7 scheduler fix below. The page can save
+later versions of itself, so read the live artifact before editing it.
+
+The claude.ai/design project `e8154c97-53f1-4412-aa6b-9d019bc85e0c` is the
+legacy source it was migrated from; it is left untouched and no longer receives
+uploads. Two dead ids appear in older prose: `1f94fe08-…` and `aa4ea331-…`.
+Both are gone (`aa4ea331` 404s).
 
 Canonical checkout: `~/Pitch-Atlas/Pitch-Atlas-living-media` (this repo). The
 folder above it, `~/Pitch-Atlas`, is an unversioned older copy whose
