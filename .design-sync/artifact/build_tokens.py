@@ -1,13 +1,76 @@
-"""Build tokens.json twice: B (the clean-up pass: every carried name and value kept,
-usage notes and collision-free type styles added) and D (the re-sync to the site's
-code at main@4098cbd: measured values, retired junk themes, motion and radius
-additions, every font face the site loads, provenance meta)."""
-import copy, json, pathlib, re, sys
+"""Build the carried B pass and the measured, current-source D token table.
+
+From the repository root, pass the same verified main commit to both steps:
+  node .design-sync/artifact/resolve-tokens.mjs carried.json resolved.json --source-ref main@c5aed55
+  python3 .design-sync/artifact/build_tokens.py carried.json b.json d.json \
+    --source-ref main@c5aed55 --synced 2026-09-28
+"""
+import argparse
+import copy
+from datetime import date, datetime
+import hashlib
+import json
+import pathlib
+import re
+import subprocess
+from zoneinfo import ZoneInfo
 from usage import COLOR, OTHER_FAMILIES
 
-carried = json.load(open(sys.argv[1]))
-resolved = json.load(open('resolved.json'))['default']
-out_b, out_d = sys.argv[2], sys.argv[3]
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('carried')
+parser.add_argument('out_b')
+parser.add_argument('out_d')
+parser.add_argument('--source-ref', required=True, help='main@<verified commit hash>')
+parser.add_argument('--synced', required=True, help='ISO date the artifact was synced')
+args = parser.parse_args()
+
+repo_root = pathlib.Path(__file__).resolve().parents[2]
+source = re.fullmatch(r'main@([0-9a-f]{7,40})', args.source_ref)
+if not source:
+    parser.error('--source-ref must be main@ followed by a 7- to 40-character lowercase commit hash')
+if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', args.synced):
+    parser.error('--synced must be an ISO date (YYYY-MM-DD)')
+try:
+    synced_date = date.fromisoformat(args.synced)
+except ValueError:
+    parser.error('--synced must be a real calendar date')
+if synced_date > datetime.now(ZoneInfo('America/Chicago')).date():
+    parser.error('--synced cannot be after the current America/Chicago date')
+
+def git(*command):
+    return subprocess.run(['git', '-C', str(repo_root), *command],
+                          text=True, capture_output=True)
+
+commit = git('rev-parse', '--verify', f'{source.group(1)}^{{commit}}')
+if commit.returncode or not commit.stdout.strip().startswith(source.group(1)):
+    parser.error('--source-ref does not resolve to the stated commit in this repository')
+commit_sha = commit.stdout.strip()
+if git('merge-base', '--is-ancestor', commit_sha, 'refs/remotes/origin/main').returncode:
+    parser.error('--source-ref is not on the verified origin/main history')
+source_files = ('src/index.css', 'src/components/sections/family-accent.ts',
+                'src/components/refractor/accents.ts', 'src/main.tsx',
+                '.design-sync/config.json', 'vite.config.ts', 'package.json', 'package-lock.json')
+if git('diff', '--quiet', '--no-ext-diff', commit_sha, '--', *source_files).returncode:
+    parser.error('token source files differ from --source-ref; rebuild from a matching checkout')
+commit_date = git('show', '-s', '--format=%cs', commit_sha)
+if commit_date.returncode or synced_date < date.fromisoformat(commit_date.stdout.strip()):
+    parser.error('--synced precedes the source commit date')
+
+carried_bytes = pathlib.Path(args.carried).read_bytes()
+carried = json.loads(carried_bytes)
+resolved_doc = json.load(open('resolved.json'))
+if resolved_doc.get('sourceRef') != args.source_ref:
+    parser.error('resolved.json sourceRef must exactly match --source-ref')
+if resolved_doc.get('carriedSha256') != hashlib.sha256(carried_bytes).hexdigest():
+    parser.error('resolved.json carriedSha256 does not match the carried input')
+bundle_path = repo_root / 'ds-bundle/_ds_bundle.css'
+if not bundle_path.is_file():
+    parser.error('the measured ds-bundle/_ds_bundle.css is missing')
+bundle_hash = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
+if resolved_doc.get('bundleCssSha256') != bundle_hash:
+    parser.error('resolved.json bundleCssSha256 does not match the current CSS bundle')
+resolved = resolved_doc['default']
+out_b, out_d = args.out_b, args.out_d
 
 def note(name):
     n = COLOR.get(name) or OTHER_FAMILIES.get(name)
@@ -107,10 +170,10 @@ d['motion']['tokens'] += [{'name': n, 'value': v, 'usage': note(n)} for n, v in 
 # Radius: the base and the pill the site declares at :root.
 d['radius']['tokens'] += [{'name': 'radius', 'value': '0.625rem', 'usage': note('radius')},
                           {'name': 'radius-pill', 'value': '999px', 'usage': note('radius-pill')}]
-# The foil is 21 stops, longer than a token value can hold; the site's own
-# declaration in components/bundle.css is the live one. Keeping the old eight-stop
-# value here would repaint every preview in the retired rainbow.
-d['other']['tokens'] = [t for t in d['other']['tokens'] if t['name'] != 'foil']
+# The foil, type foil, and ember gradients are too long for token values. The
+# stylesheet owns them. The carried gold gradient is retired, not an active
+# token: keeping it here would teach previews a material the site never paints.
+d['other']['tokens'] = [t for t in d['other']['tokens'] if t['name'] not in ('foil', 'gold')]
 # Fonts: every face the site loads (src/main.tsx), Latin subset, from @fontsource.
 FACES = [('Newsreader', 'newsreader', '400', 'normal'), ('Newsreader', 'newsreader', '400', 'italic'),
          ('Newsreader', 'newsreader', '500', 'normal'), ('Newsreader', 'newsreader', '600', 'normal'),
@@ -123,12 +186,12 @@ FACES = [('Newsreader', 'newsreader', '400', 'normal'), ('Newsreader', 'newsread
 d['type']['fonts'] = [{'family': fam, 'file': f'fonts/{slug}-latin-{w}-{s}.woff2', 'weight': w, 'style': s}
                       for fam, slug, w, s in FACES]
 d['meta'] = {
-    'source': 'github', 'repo': 'ahump20/Pitch-Atlas', 'ref': 'main@4098cbd',
+    'source': 'github', 'repo': 'ahump20/Pitch-Atlas', 'ref': args.source_ref,
     'paths': {'tokens': ['src/index.css', 'src/components/sections/family-accent.ts'],
               'fonts': ['src/main.tsx', 'node_modules/@fontsource'],
               'docs': ['docs/design-language.md', 'docs/NORTHSTAR.md', 'src/pages/DesignSystemShowcase.tsx']},
-    'components': json.load(open(pathlib.Path(__file__).resolve().parents[2] / '.design-sync/config.json'))['componentSrcMap'],
-    'synced': '2026-09-22',
+    'components': json.load(open(repo_root / '.design-sync/config.json'))['componentSrcMap'],
+    'synced': args.synced,
 }
 json.dump(d, open(out_d, 'w'), indent=2, ensure_ascii=False)
 print('value changes vs the page list:', len(changed))
