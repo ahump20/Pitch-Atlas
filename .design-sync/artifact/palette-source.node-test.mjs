@@ -5,8 +5,7 @@ import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
-import { fileURLToPath } from 'node:url'
-import { sourceInputDigest } from './source-provenance.mjs'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const path = (name) => join(root, name)
@@ -40,9 +39,24 @@ test('tracked palette and provenance match the documented source', () => {
   assert.doesNotMatch(conventions, /rainbow|gold glint|golden glint/i)
 })
 
-test('token builder drops carried gold and foil while retaining the other tokens', () => {
+test('token builder drops carried gold and foil while retaining the other tokens', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'pa-palette-'))
+  const fixtureRoot = join(dir, 'source')
+  let fixtureAdded = false
   try {
+    // The artifact deliberately names a historic main commit. Exercise its
+    // builder against that exact source tree, rather than rejecting every app PR
+    // merely because the current checkout has legitimately moved on.
+    const added = spawnSync('git', ['-C', root, 'worktree', 'add', '--detach',
+      fixtureRoot, source[1].slice('main@'.length)], { encoding: 'utf8' })
+    assert.equal(added.status, 0, added.stderr)
+    fixtureAdded = true
+    for (const name of ['build_tokens.py', 'usage.py', 'source-provenance.mjs']) {
+      writeFileSync(join(fixtureRoot, '.design-sync/artifact', name),
+        readFileSync(path('.design-sync/artifact/' + name)))
+    }
+    const { sourceInputDigest } = await import(pathToFileURL(
+      join(fixtureRoot, '.design-sync/artifact/source-provenance.mjs')).href)
     const carried = structuredClone(tokens)
     carried.other.tokens.push({ name: 'gold', value: 'retired' })
     carried.other.tokens.push({ name: 'foil', value: 'retired' })
@@ -65,7 +79,7 @@ test('token builder drops carried gold and foil while retaining the other tokens
     writeFileSync(input, carriedJson)
     const resolvedPath = join(dir, 'resolved.json')
     writeFileSync(resolvedPath, JSON.stringify(resolved))
-    const args = [path('.design-sync/artifact/build_tokens.py'), input, b, d,
+    const args = [join(fixtureRoot, '.design-sync/artifact/build_tokens.py'), input, b, d,
       '--resolved', resolvedPath, '--bundle-css', bundlePath,
       '--bundle-manifest', manifestPath, '--source-ref', source[1], '--synced', source[2]]
     const built = spawnSync('python3', args, { cwd: dir, encoding: 'utf8', env: pythonEnv })
@@ -76,6 +90,16 @@ test('token builder drops carried gold and foil while retaining the other tokens
     assert.equal(current.meta.ref, source[1])
     assert.equal(current.meta.synced, source[2])
     assert.deepEqual(current.meta.components, tokens.meta.components)
+
+    // The strict source check remains mandatory: reject changed source even
+    // when CSS, manifest and declared main ref are otherwise well-formed.
+    const fixtureVite = join(fixtureRoot, 'vite.config.ts')
+    const originalVite = readFileSync(fixtureVite)
+    writeFileSync(fixtureVite, Buffer.concat([originalVite, Buffer.from('\n// changed test source\n')]))
+    const stale = spawnSync('python3', args, { cwd: dir, encoding: 'utf8', env: pythonEnv })
+    assert.notEqual(stale.status, 0)
+    assert.match(stale.stderr, /Token source files differ from --source-ref/)
+    writeFileSync(fixtureVite, originalVite)
 
     const missingResolved = spawnSync('python3', [...args, '--resolved', join(dir, 'missing.json')],
       { cwd: dir, encoding: 'utf8', env: pythonEnv })
@@ -139,6 +163,11 @@ test('token builder drops carried gold and foil while retaining the other tokens
     assert.equal(staleSource.status, 2)
     assert.match(staleSource.stderr, /Token source files differ from --source-ref/)
   } finally {
+    if (fixtureAdded) {
+      const removed = spawnSync('git', ['-C', root, 'worktree', 'remove', '--force', fixtureRoot],
+        { encoding: 'utf8' })
+      assert.equal(removed.status, 0, removed.stderr)
+    }
     rmSync(dir, { recursive: true, force: true })
   }
 })

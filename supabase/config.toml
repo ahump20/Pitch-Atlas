@@ -14,3 +14,10 @@ entrypoint = "./functions/summarize-thread/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/gc-orphan-discussion-media/index.ts"
+
+[functions.validate-discussion-media]
+enabled = true
+# The handler verifies the bearer with Auth getUser before any privileged read.
+# Application verification supports the project's ES256 signing key.
+verify_jwt = false
+entrypoint = "./functions/validate-discussion-media/index.ts"

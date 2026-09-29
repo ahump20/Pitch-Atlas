@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import { ensureSession, getSessionUserId } from './community'
 import { DISCUSSION_LIMITS } from '../data/discussion'
+import { detectMediaType, type DetectedMediaType } from '../../supabase/functions/_shared/media-type.ts'
 
 /*
   The discussion-forum data layer. Pure functions over Supabase; React lives in the
@@ -110,43 +111,13 @@ export function friendlyReadError(error: { message?: string } | null): string {
 
 /* ------------------------------------------------------------------ media */
 
-interface SniffedMediaType {
-  kind: MediaKind
-  mime: string
-  extension: string
-}
-
-const MAGIC: { sig: number[]; offset: number; type: SniffedMediaType }[] = [
-  { sig: [0xff, 0xd8, 0xff], offset: 0, type: { kind: 'image', mime: 'image/jpeg', extension: 'jpg' } },
-  { sig: [0x89, 0x50, 0x4e, 0x47], offset: 0, type: { kind: 'image', mime: 'image/png', extension: 'png' } },
-  { sig: [0x47, 0x49, 0x46, 0x38], offset: 0, type: { kind: 'image', mime: 'image/gif', extension: 'gif' } },
-  { sig: [0x52, 0x49, 0x46, 0x46], offset: 0, type: { kind: 'image', mime: 'image/webp', extension: 'webp' } },
-  { sig: [0x66, 0x74, 0x79, 0x70], offset: 4, type: { kind: 'video', mime: 'video/mp4', extension: 'mp4' } },
-  { sig: [0x1a, 0x45, 0xdf, 0xa3], offset: 0, type: { kind: 'video', mime: 'video/webm', extension: 'webm' } },
-]
-
 /**
  * Sniff the real file type from its leading bytes, so a renamed .exe or an SVG
  * (an XSS vector, deliberately excluded) is rejected regardless of its extension
  * or declared type. Returns the detected kind, or null if nothing matches.
  */
-export async function sniffMediaType(file: File): Promise<SniffedMediaType | null> {
-  const buf = new Uint8Array(await file.slice(0, 16).arrayBuffer())
-  for (const m of MAGIC) {
-    if (m.sig.every((b, i) => buf[m.offset + i] === b)) {
-      if (m.type.mime === 'image/webp') {
-        // RIFF container: confirm it is WEBP at offset 8
-        const webp = [0x57, 0x45, 0x42, 0x50]
-        if (!webp.every((b, i) => buf[8 + i] === b)) continue
-      }
-      if (m.type.mime === 'video/mp4') {
-        const brand = String.fromCharCode(...buf.slice(8, 12))
-        if (brand === 'qt  ') return { kind: 'video', mime: 'video/quicktime', extension: 'mov' }
-      }
-      return m.type
-    }
-  }
-  return null
+export async function sniffMediaType(file: File): Promise<DetectedMediaType | null> {
+  return detectMediaType(new Uint8Array(await file.slice(0, 16).arrayBuffer()))
 }
 
 export async function sniffMediaKind(file: File): Promise<MediaKind | null> {
@@ -233,7 +204,8 @@ function isDefiniteWriteRejection(status: number | undefined, code: string | und
 /**
  * Validate a file against the same rules the DB enforces, then upload to the
  * owner's folder and record the row. Order matters: reserve the new path, upload
- * the Storage object, then finalize its row. The insert transaction consumes the
+ * the Storage object, validate its actual bytes on the server, then finalize its
+ * row. The insert transaction consumes the
  * reservation. Still images are re-encoded first to drop EXIF/GPS metadata before
  * any bytes leave the device.
  */
@@ -289,13 +261,34 @@ export async function uploadMedia(postId: string, topicKey: string, file: File):
     throw new Error(friendlyError(upErr))
   }
 
+  const { data: validated, error: validationError } = await supabase.functions.invoke(
+    'validate-discussion-media', { body: { storagePath: path } },
+  )
+  if (validationError) {
+    // Only a concrete rejection releases the claim; interrupted validation can
+    // still be running. Keep rowless bytes private and let expiry/GC settle it.
+    const response = validationError.context
+    if (response instanceof Response && response.status >= 400 && response.status < 500) {
+      const result = await response.json().catch(() => null)
+      if (typeof result?.error === 'string') {
+        await releaseFailedMediaReservation(path)
+        throw new Error(friendlyError({ message: result.error }))
+      }
+    }
+    throw new Error('Could not check that upload just now. Try again.')
+  }
+  if (validated?.ok !== true || validated.byteSize !== payload.size
+    || validated.kind !== kind || typeof validated.mimeType !== 'string') {
+    throw new Error('Could not check that upload just now. Try again.')
+  }
+
   const { error, status: insertStatus } = await supabase.from('discussion_media').insert({
     post_id: postId,
     topic_key: topicKey,
     storage_path: path,
-    mime_type: mime,
-    kind,
-    byte_size: payload.size,
+    mime_type: validated.mimeType,
+    kind: validated.kind,
+    byte_size: validated.byteSize,
     width: dims.width,
     height: dims.height,
   })

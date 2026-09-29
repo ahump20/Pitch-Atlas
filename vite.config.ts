@@ -132,6 +132,7 @@ export default defineConfig({
         ],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
+        importScripts: ['sw-private-cache-cleanup.js'],
         clientsClaim: true,
         runtimeCaching: [
           {
@@ -159,16 +160,10 @@ export default defineConfig({
             },
           },
           {
-            // Grip data you've already loaded survives offline, labels intact.
+            // Supabase reads depend on the viewer and live moderation state.
             urlPattern: ({ url, request }) =>
               request.method === 'GET' && /supabase\.(co|in)$/.test(url.hostname),
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'pa-supabase-reads',
-              networkTimeoutSeconds: 5,
-              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 },
-              cacheableResponse: { statuses: [200] },
-            },
+            handler: 'NetworkOnly',
           },
           {
             // Same-origin images and posters only. The repository media guard

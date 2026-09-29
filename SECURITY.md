@@ -12,6 +12,13 @@ The publishable Supabase key ships in the client by design. Row-level security, 
 
 Community media uses the `discussion-media` bucket. Uploads must stay behind the own-the-rights terms gate, magic-byte validation, size caps, storage-path ownership checks, and report-driven hide/takedown behavior documented in `docs/community-media-moderation.md`.
 
+The `validate-discussion-media` Edge Function verifies the bearer session through
+Auth before any privileged download. Service-only RPCs bind actual byte validation
+to a private object UUID; the insert trigger verifies that identity through commit.
+Client replacement of discussion objects is denied. Raw Storage admissions enforce
+terms and an hourly quota independent of later deletion. Supabase responses are
+excluded from service-worker caching.
+
 Account deletion is handled by the Supabase Edge Function `delete-account`, with `verify_jwt = true` in `supabase/config.toml`. The function must only delete the caller's own account data, never accept a user id from the request body.
 
 If implementation adds new data collection, auth surfaces, uploads, analytics, payments, or third-party services, update this file before shipping.
