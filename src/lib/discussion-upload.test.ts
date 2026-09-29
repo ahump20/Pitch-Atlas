@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   from: vi.fn(),
   storageFrom: vi.fn(),
   rpc: vi.fn(),
+  invoke: vi.fn(),
   upload: vi.fn(),
   remove: vi.fn(),
   insert: vi.fn(),
@@ -30,6 +31,7 @@ vi.mock('./supabase', () => ({
   supabase: {
     from: mocks.from,
     rpc: mocks.rpc,
+    functions: { invoke: mocks.invoke },
     storage: { from: mocks.storageFrom },
   },
 }))
@@ -43,6 +45,11 @@ beforeEach(() => {
   mocks.ensureSession.mockResolvedValue('user-1')
   mocks.rpc.mockResolvedValue({ error: null })
   mocks.upload.mockResolvedValue({ error: null })
+  mocks.invoke.mockImplementation(async () => {
+    const [, payload, options] = mocks.upload.mock.calls.at(-1)!
+    return { data: { ok: true, byteSize: payload.size, mimeType: options.contentType,
+      kind: options.contentType.startsWith('image/') ? 'image' : 'video' }, error: null }
+  })
   mocks.remove.mockResolvedValue({ error: null })
   mocks.insert.mockResolvedValue({ error: null })
   mocks.mediaIn.mockResolvedValue({ data: [], error: null })
@@ -78,6 +85,9 @@ describe('uploadMedia', () => {
       p_storage_path: path,
     })
     expect(mocks.rpc.mock.invocationCallOrder[0]).toBeLessThan(mocks.upload.mock.invocationCallOrder[0])
+    expect(mocks.invoke).toHaveBeenCalledWith('validate-discussion-media', { body: { storagePath: path } })
+    expect(mocks.upload.mock.invocationCallOrder[0]).toBeLessThan(mocks.invoke.mock.invocationCallOrder[0])
+    expect(mocks.invoke.mock.invocationCallOrder[0]).toBeLessThan(mocks.insert.mock.invocationCallOrder[0])
 
     expect(mocks.insert).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -103,6 +113,46 @@ describe('uploadMedia', () => {
     expect(mocks.upload).not.toHaveBeenCalled()
     expect(mocks.insert).not.toHaveBeenCalled()
     expect(mocks.remove).not.toHaveBeenCalled()
+  })
+
+  it('attaches the server-detected MIME instead of the original declaration', async () => {
+    mocks.invoke.mockResolvedValueOnce({ data: {
+      ok: true, byteSize: 8, kind: 'video', mimeType: 'video/mp4',
+    }, error: null })
+    await uploadMedia('post-1', 'pitch:four-seam',
+      fileFrom([0x1a, 0x45, 0xdf, 0xa3, 0x93, 0x42, 0x82, 0x88], 'clip.webm', 'video/webm'))
+    expect(mocks.insert).toHaveBeenCalledWith(expect.objectContaining({ mime_type: 'video/mp4' }))
+  })
+
+  it('releases a rejected validation without attaching bytes or granting cleanup access', async () => {
+    mocks.invoke.mockResolvedValueOnce({ data: null, error: { context: Response.json(
+      { error: 'media_blocked: actual file type is not allowed' }, { status: 400 },
+    ) } })
+    await expect(uploadMedia('post-1', 'pitch:four-seam',
+      fileFrom([0x1a, 0x45, 0xdf, 0xa3], 'clip.webm', 'video/webm'))).rejects.toThrow(
+      'actual file type is not allowed',
+    )
+    expect(mocks.insert).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).toHaveBeenCalledWith('release_discussion_media_upload', {
+      p_storage_path: mocks.upload.mock.calls[0][0],
+    })
+  })
+
+  it.each([
+    { data: null, error: { message: 'Failed to fetch' } },
+    { data: null, error: { context: Response.json({ error: 'validation_unavailable' }, { status: 502 }) } },
+    { data: { ok: false }, error: null },
+    { data: { ok: true, byteSize: 1, kind: 'video', mimeType: 'video/webm' }, error: null },
+  ])('retains the claim and never attaches after an uncertain validation: %j', async (result) => {
+    mocks.invoke.mockResolvedValueOnce(result)
+    await expect(uploadMedia('post-1', 'pitch:four-seam',
+      fileFrom([0x1a, 0x45, 0xdf, 0xa3], 'clip.webm', 'video/webm'))).rejects.toThrow(
+      'Could not check that upload',
+    )
+    expect(mocks.insert).not.toHaveBeenCalled()
+    expect(mocks.remove).not.toHaveBeenCalled()
+    expect(mocks.rpc).not.toHaveBeenCalledWith('release_discussion_media_upload', expect.anything())
   })
 
   it('releases the reservation after a concrete Storage 4xx without granting client cleanup access', async () => {

@@ -20,7 +20,9 @@
     "test": "vitest run --reporter dot && node --test .design-sync/artifact/*.node-test.mjs",
     "test:preview:browser": "node scripts/preview-browser-smoke.mjs",
     "test:watch": "vitest",
-    "test:archive:browser": "node scripts/archive-browser-acceptance.mjs"
+    "test:archive:browser": "node scripts/archive-browser-acceptance.mjs",
+    "test:security:postgres": "node scripts/security-postgres-regression.mjs",
+    "test:security:cache": "node scripts/security-cache-browser.mjs"
   },
   "dependencies": {
     "@fontsource/anton": "^5.2.7",

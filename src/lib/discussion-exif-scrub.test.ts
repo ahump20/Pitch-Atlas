@@ -23,6 +23,7 @@ const mocks = vi.hoisted(() => ({
   from: vi.fn(),
   storageFrom: vi.fn(),
   rpc: vi.fn(),
+  invoke: vi.fn(),
   upload: vi.fn(),
   remove: vi.fn(),
   insert: vi.fn(),
@@ -38,6 +39,7 @@ vi.mock('./supabase', () => ({
   supabase: {
     from: mocks.from,
     rpc: mocks.rpc,
+    functions: { invoke: mocks.invoke },
     storage: { from: mocks.storageFrom },
   },
 }))
@@ -72,6 +74,11 @@ beforeEach(() => {
   mocks.ensureSession.mockResolvedValue('user-1')
   mocks.rpc.mockResolvedValue({ error: null })
   mocks.upload.mockResolvedValue({ error: null })
+  mocks.invoke.mockImplementation(async () => {
+    const [, payload, options] = mocks.upload.mock.calls.at(-1)!
+    return { data: { ok: true, byteSize: payload.size, mimeType: options.contentType,
+      kind: options.contentType.startsWith('image/') ? 'image' : 'video' }, error: null }
+  })
   mocks.remove.mockResolvedValue({ error: null })
   mocks.insert.mockResolvedValue({ error: null })
   mocks.storageFrom.mockReturnValue({ upload: mocks.upload, remove: mocks.remove })

@@ -9,24 +9,37 @@ it safe, and the honest list of what is deferred.
 
 - **Own-folder writes.** Storage RLS pins every upload under `{auth.uid()}/...`; the
   publishable key cannot write into another account's folder.
-- **Type + size.** The bucket allowlist, the client magic-byte sniff, and the
-  `enforce_discussion_media_limits()` trigger each reject anything that is not an
-  allowed image/video, or is over 8 MB (image) / 50 MB (video). SVG is excluded
-  deliberately (script-in-image XSS vector).
-- **Terms gate.** No media inserts until the account has a `media_terms_accepted_at`
-  timestamp (own-the-rights / no copyrighted footage / no minors / community
-  standards). Enforced in the trigger, so a crafted client cannot bypass it.
+- **Type + size.** After upload, `validate-discussion-media` verifies the caller,
+  downloads the private object's actual bytes, checks its leading signature and
+  actual size (8 MB image / 50 MB video), and records a service-only attestation.
+  Finalization requires that attestation to match the current object UUID, owner,
+  path, size, MIME and kind. SVG is excluded. This is signature validation, not a
+  full decoder, malware scanner or content moderation service.
+- **Terms gate.** Both raw Storage admission and media finalization require a
+  permanent account with a row in `discussion_media_terms` (own-the-rights / no
+  copyrighted footage / no minors / community standards).
 - **Report → auto-hide.** A post hides at **3** distinct reporters; a media item at
   **2** (media is the higher-exposure surface). The instant a `discussion_media`
   row flips `is_hidden = true`, the storage read policy stops issuing new signed
   URLs because it joins to a visible row. A URL issued before the hide can remain
   valid for its one-hour TTL, then expires. Hiding is reversible.
-- **Rate limits.** 15 posts/hour and 20 media/hour per account.
+- **Rate limits.** 15 posts/hour, 20 accepted Storage uploads/hour and at most 20
+  active reservations per account. A private admission ledger survives object
+  deletion and reservation release. Validation permits 40 attempts/hour per account.
+- **Reply deletion.** Deleting a parent or its author's account detaches replies
+  from other contributors instead of deleting them. They retain their media and
+  topic, and remain hidden if the deleted parent was hidden. Same-author replies
+  still cascade with their parent.
+- **Private reads.** Supabase requests require the network. Service-worker
+  activation deletes the previous `pa-supabase-reads` cache; static atlas pages and
+  assets retain offline support. Changing accounts cannot replay a cached private
+  response, and moderation reads stay current when online.
 - **Banned terms.** Post body and display name run through the shared
   `text_has_banned_term()` matcher on insert and on edit.
 - **EXIF / GPS scrub.** Still images (JPEG/PNG/WebP) are re-encoded through a
-  canvas in the client before upload, so camera and location metadata is dropped
-  before any bytes leave the device (`src/lib/discussion.ts` `scrubImageMetadata`).
+  canvas in the client before upload when decoding/encoding succeeds. This is a
+  best-effort privacy measure: failures retain the original file
+  (`src/lib/discussion.ts` `scrubImageMetadata`).
   GIF passes through (it carries no EXIF, and a re-encode would flatten the
   animation); video container metadata is still out of scope (see deferred).
 - **Orphan-object sweep.** An hourly cron calls the service-only
@@ -51,8 +64,11 @@ it safe, and the honest list of what is deferred.
   The hourly sweep removes any bytes left behind after the age and reservation gates
   clear.
 
-  Legacy and iOS clients can keep their upload-first order without the reservation
-  RPC. Their media row must finalize within 23 hours of Storage object creation.
+  Upload-first clients may omit the reservation RPC, but must invoke
+  `validate-discussion-media` with `{ storagePath }` before inserting metadata,
+  using the returned `byteSize`, `mimeType` and `kind`. Their media row must
+  finalize within 23 hours of Storage object creation. Older web/native clients
+  without validation cannot attach new media after enforcement; they must update.
   Garbage collection does not consider the object until 24 hours, leaving a full
   hour in which unreserved late finalization is closed before deletion can start.
   Production must seed the environment-specific `pitch_atlas_project_url` Vault
@@ -123,8 +139,8 @@ remove bytes); do both for a hard takedown.
 2. **No bot protection (Turnstile).** Anonymous accounts are cheap, so the rate
    limits are priced in accounts, not humans. Turnstile is the next hardening step.
 3. **No in-app moderator role/UI.** Review is service-role / dashboard only.
-4. **No video container-metadata scrub.** Still-image EXIF/GPS is stripped on
-   upload (see the automatic floor); video container metadata is not yet scrubbed.
+4. **No guaranteed metadata scrub.** Still-image EXIF/GPS removal is best-effort
+   in the browser; video container metadata is not scrubbed.
 5. **Medical-claim detection is by form, not by filter.** The banned-term filter
    catches words, not a medical *claim*; the standing safety note and the lack of
    any medical field are what hold that line.
