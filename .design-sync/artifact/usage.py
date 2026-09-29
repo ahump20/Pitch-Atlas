@@ -1,6 +1,6 @@
-# Usage notes for every token, written from the site's stylesheet (src/index.css at
-# main@4098cbd) and measured in a browser: the value at the top level, and what
-# changes inside `.field-cream`, the one cream scope.
+# Usage notes for carried tokens and the current table. Recheck painted values
+# against the explicit source ref passed to build_tokens.py when regenerating;
+# these notes distinguish top-level values from the `.field-cream` scope.
 CREAM = 'inside `.field-cream` it is'
 
 COLOR = {
@@ -178,7 +178,7 @@ OTHER_FAMILIES = {
     'aspect-video': 'The 16:9 video frame ratio.',
     'lightningcss-dark': 'Compiler switch for dark color-scheme values; not a design token.',
     'foil': 'The foil: electric burnt chrome, the only metallic. Clips into the ATLAS wordmark, filed-specimen names and a few headings, and rims the chrome button.',
-    'gold': 'Retired: the old gold 1/1 gradient. The site no longer declares or reads it; the 1/1 is `ember`, which lives in components/bundle.css.',
+    'gold': 'Historical B pass only: the retired gold 1/1 gradient is removed from the current D table. The site declares `--ember` in src/index.css for the 1/1; `.is-gold` is only a legacy class name.',
     'tracking-tight': 'Tight tracking for large display type.',
     'tracking-wide': 'Slightly open tracking for small caps.',
     'tracking-label': 'The micro-label tracking (0.18em) every mono label uses.',

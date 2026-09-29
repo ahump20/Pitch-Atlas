@@ -71,10 +71,34 @@ for (const name of comps) {
     cyan: getComputedStyle(document.documentElement).getPropertyValue('--color-cyan').trim(),
     paper: getComputedStyle(document.documentElement).getPropertyValue('--color-paper').trim(),
   }))
+  // Playwright's screenshot repeats document.fonts.ready after preparing the page;
+  // that second wait can stall on the animated 3D stage even when fonts are ready.
+  const fontsReady = await page.waitForFunction(() => document.fonts.status === 'loaded', null, { timeout: 10000 })
+    .then(() => true).catch(() => false)
+  if (!fontsReady) errors.push('fonts did not finish loading before screenshot')
+  process.env.PW_TEST_SCREENSHOT_NO_FONTS_READY = '1'
   await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: true })
-  results[name] = { marker, ...m, errors: errors.filter((e) => !/Failed to load resource/.test(e)).slice(0, 3) }
+  results[name] = { marker, ...m, errors: errors.slice(0, 3) }
   await page.close()
 }
 await browser.close()
 writeFileSync(join(SHOTS, 'results.json'), JSON.stringify(results, null, 1))
-for (const [n, r] of Object.entries(results)) console.log(`${n.padEnd(18)} h=${String(r.h).padEnd(5)} content=${String(r.content).padEnd(5)} empty=${r.empty} err=${r.errText} primary=${r.primary} cyan=${r.cyan} paper=${r.paper} overflowX=${r.overflowX} canvases=${r.canvases} loading=${r.stageLoading} ${r.errors.length ? 'ERRORS ' + JSON.stringify(r.errors) : ''}`)
+const failures = []
+for (const [n, r] of Object.entries(results)) {
+  console.log(`${n.padEnd(18)} h=${String(r.h).padEnd(5)} content=${String(r.content).padEnd(5)} empty=${r.empty} err=${r.errText} primary=${r.primary} cyan=${r.cyan} paper=${r.paper} overflowX=${r.overflowX} canvases=${r.canvases} loading=${r.stageLoading} ${r.errors.length ? 'ERRORS ' + JSON.stringify(r.errors) : ''}`)
+  if (r.errors.length) failures.push(`${n}: ${r.errors.length} page/console error(s)`)
+  if (r.empty) failures.push(`${n}: empty preview root`)
+  if (r.errText) failures.push(`${n}: preview rendered an error message`)
+  if (n === 'BallStage' && process.env.WEBGL) {
+    if (r.canvases !== 2) failures.push(`${n}: expected 2 canvases, found ${r.canvases}`)
+    if (r.stageLoading !== 0) failures.push(`${n}: expected loading=0, found ${r.stageLoading}`)
+  }
+}
+if (!comps.length) failures.push('no matching component previews found')
+for (const name of only || []) {
+  if (!comps.includes(name)) failures.push(`requested component preview not found: ${name}`)
+}
+if (failures.length) {
+  console.error(`Render check failed:\n${failures.map((failure) => `- ${failure}`).join('\n')}`)
+  process.exitCode = 1
+}

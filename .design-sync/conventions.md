@@ -6,13 +6,13 @@ is a living museum of pitches, and the visual language runs **dark by default**:
 a cool near-black void (`#070509`), bone-cream type, and a trading-card refractor
 identity read on top of it.
 
-The load-bearing material is the **rainbow foil** (`var(--foil)`), struck as
-electric burnt chrome: graphite shoulders, burnt orange, a blown cream-white
-highlight, powder ice, cyan and teal, steel, and a gold glint. It is the brand,
-not a card-only effect: it clips into the ATLAS wordmark, filed-specimen names,
-and a few load-bearing headings, and it forms the 1px rim that identifies the
-primary CTA. It is the only metallic in the set. Do not flatten it to solid gold
-or steel — that changes the brand system.
+The load-bearing material is the **burnt-orange foil** (`var(--foil)`), struck as
+electric burnt chrome: graphite shoulders, burnt orange, a narrow cream-white
+highlight, powder ice and cyan, and chromium grey. It is the brand, not a
+card-only effect: the lifted `var(--foil-type)` ramp clips into the ATLAS
+wordmark, filed-specimen names, and a few load-bearing headings; `var(--foil)`
+forms the 1px rim that identifies the primary CTA. It is the only metallic in
+the set. Do not flatten it to a single orange or grey swatch.
 
 **Ember** (`var(--ember)`) is the separate 1/1 register: the one-of-one specimen
 is the one card in the case that does not shine — matte warm-black lacquer with a
@@ -76,7 +76,7 @@ cream go on cream: `Button variant="ink"` and the default `Hairline` sit inside 
 Variant vocabulary (use these exact values):
 
 - `Button` — `variant`: `chrome` (the primary action: a matte dark face cut inside
-  a 1px rainbow-foil rim — the spectrum is what marks it primary) · `ghost` ·
+  a 1px burnt-orange foil rim) · `ghost` ·
   `foil` (the wax-seal seam-red button) · `ink` (cream register) · `link`;
   optional `arrow`
 - `Card` — `foil` for the holographic grail-card edge
@@ -112,12 +112,12 @@ There are two motion classes here, and mixing them is the mistake to avoid.
 reveal — supports orientation or feedback and then decays into stillness. It is
 one-shot, it animates transforms and opacity only, and it never loops.
 
-**Ambient material motion** is the exception, and it is deliberate: the rainbow
-foil breathes. The wordmark's spectrum slides slowly, and the grain, the ambient
-foil, and the card rake drift on long cycles. These loops are slow, low-contrast,
-and non-informational — the surface behaving like foil under a moving light, not
-an interface asking for attention. Do not add a fast or high-contrast loop, and
-do not put a loop on anything a reader is trying to read.
+**Ambient material motion** is the exception, and it is deliberate: the
+burnt-orange foil breathes. The wordmark's light pass slides slowly, and the
+grain, the ambient foil, and the card rake drift on long cycles. These loops are
+slow, low-contrast, and non-informational — the surface behaving like foil under
+a moving light, not an interface asking for attention. Do not add a fast or
+high-contrast loop, and do not put a loop on anything a reader is trying to read.
 
 Never animate long prose, and never animate a source badge or confidence label in
 a way that hurts reading; provenance gets one settle on first reveal and then

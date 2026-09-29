@@ -2,12 +2,17 @@
 
 **System of record (since 2026-09-18): the Design System artifact**
 https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — deliberately re-synced
-from main@c5aed55 on 2026-09-28 (published as Version 24, revision
-`1790644258-8550`). This sync carries the one approved burnt orange `#BF5700`
+from main@c5aed55 on 2026-09-28 (current Version 31, revision
+`1790655721-94da`). This sync carries the one approved burnt orange `#BF5700`
 instead of `#FF6A29`, bone offspeed `#D8CFBB`, warm-white eephus `#FFE9DE`,
 the powder twelve-six and teal circle-change throwback finishes, the three
-trust-tier tokens, and the r3f 9.7 scheduler fix below. The page can save
-later versions of itself, so read the live artifact before editing it.
+trust-tier tokens, and the r3f 9.7 scheduler fix below. The later palette audit
+removed the active `other.gold` swatch, replaced gold and old-rainbow guidance
+in the brand devices and templates, and rebuilt the generated `tokens.css` and
+`api/tokens.md` from the token table. The site's historical `.is-gold` class,
+`gold` prop, and `cb-gold-ink` token remain; they do not paint a gold 1/1.
+The page can save later versions of itself, so read the live artifact before
+editing it.
 
 The claude.ai/design project `e8154c97-53f1-4412-aa6b-9d019bc85e0c` is the
 legacy source it was migrated from; it is left untouched and no longer receives
@@ -48,6 +53,30 @@ book (`project/README.md`) lives only in the artifact: read it there, edit it,
 republish it. Keep every bullet on ONE line: the page's renderer splits a list
 item at its first line break, so a hard-wrapped bullet renders as a bullet plus a
 stray paragraph.
+
+Before token regeneration, run `npm run design-sync` without `--skip-build`.
+That full build writes `ds-bundle/.source-provenance.json` only after the sync
+succeeds; the resolver and builder reject a stale CSS bundle or a site source
+tree that differs from the stated `main@<commit>`. Pass the resolver output to
+`build_tokens.py --resolved <path>`. The source checks cover the complete app
+input tree, including imported CSS, and require the verified `origin/main`
+history. The bundle and manifest are ignored local outputs, not source files
+to publish. The main ref identifies site/design inputs; the manifest separately
+binds current packaging guidance and tooling.
+
+The artifact's generated `tokens.css` and `api/tokens.md` did not regenerate
+when files were published through the Artifact tool. A real token-editor save
+rebuilt them; Version 31 restored the tracked `tokens.json` layout afterward and
+read back both generated sheets. They contain no `--gold` or retired rainbow
+`--foil`, and the token table's hex colours match the stylesheet. Do not edit an
+older artifact tab: it can save its stale token table over the current version.
+Close the stale tab, open a fresh one, and verify the frame revision first.
+
+The render-check script now exits nonzero on page errors, empty/error cards,
+missing requested previews, and WebGL BallStage readiness. A local software-WebGL
+BallStage run during this audit captured both canvases but retained one loading
+marker (`canvases=2 loading=1`, no page errors), so that specific 3D readiness
+check remains open rather than being recorded as a pass.
 
 ## The bundle is a DEVELOPMENT build — pair it with React's development build
 The driver bundles with `NODE_ENV=development` (lib/bundle.mjs, contract surface —
