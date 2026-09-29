@@ -126,3 +126,10 @@ test('font readiness timeout writes diagnostics and fails the gate', () => {
   assert.deepEqual(run.results.Card.errors, ['fonts did not finish loading before screenshot'])
   assert.match(run.stderr, /Card: 1 page\/console error\(s\)/)
 })
+
+test('failed font or other resource stays in the gate even after fonts report loaded', () => {
+  const run = runPreview('Card', { consoleError: 'Failed to load resource: net::ERR_FILE_NOT_FOUND' })
+  assert.equal(run.status, 1, run.stderr)
+  assert.deepEqual(run.results.Card.errors, ['Failed to load resource: net::ERR_FILE_NOT_FOUND'])
+  assert.match(run.stderr, /Card: 1 page\/console error\(s\)/)
+})

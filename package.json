@@ -17,7 +17,7 @@
     "fetch:tweet": "node scripts/fetch-tweet.mjs",
     "design-sync": "node scripts/design-sync.mjs",
     "design-sync:check": "node scripts/design-sync.mjs --check",
-    "test": "vitest run --reporter dot",
+    "test": "vitest run --reporter dot && node --test .design-sync/artifact/*.node-test.mjs",
     "test:preview:browser": "node scripts/preview-browser-smoke.mjs",
     "test:watch": "vitest",
     "test:archive:browser": "node scripts/archive-browser-acceptance.mjs"

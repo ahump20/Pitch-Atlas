@@ -3,7 +3,10 @@
 From the repository root, pass the same verified main commit to both steps:
   node .design-sync/artifact/resolve-tokens.mjs carried.json resolved.json --source-ref main@c5aed55
   python3 .design-sync/artifact/build_tokens.py carried.json b.json d.json \
-    --source-ref main@c5aed55 --synced 2026-09-28
+    --resolved resolved.json --source-ref main@c5aed55 --synced 2026-09-28
+
+Run npm run design-sync without --skip-build first to regenerate the measured
+CSS bundle and its source manifest from the same working tree.
 """
 import argparse
 import copy
@@ -20,6 +23,9 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('carried')
 parser.add_argument('out_b')
 parser.add_argument('out_d')
+parser.add_argument('--resolved', default='resolved.json', help='output of resolve-tokens.mjs')
+parser.add_argument('--bundle-css', help='measured CSS bundle (defaults to ds-bundle/_ds_bundle.css)')
+parser.add_argument('--bundle-manifest', help='source manifest written by npm run design-sync')
 parser.add_argument('--source-ref', required=True, help='main@<verified commit hash>')
 parser.add_argument('--synced', required=True, help='ISO date the artifact was synced')
 args = parser.parse_args()
@@ -41,34 +47,34 @@ def git(*command):
     return subprocess.run(['git', '-C', str(repo_root), *command],
                           text=True, capture_output=True)
 
-commit = git('rev-parse', '--verify', f'{source.group(1)}^{{commit}}')
-if commit.returncode or not commit.stdout.strip().startswith(source.group(1)):
-    parser.error('--source-ref does not resolve to the stated commit in this repository')
-commit_sha = commit.stdout.strip()
-if git('merge-base', '--is-ancestor', commit_sha, 'refs/remotes/origin/main').returncode:
-    parser.error('--source-ref is not on the verified origin/main history')
-source_files = ('src/index.css', 'src/components/sections/family-accent.ts',
-                'src/components/refractor/accents.ts', 'src/main.tsx',
-                '.design-sync/config.json', 'vite.config.ts', 'package.json', 'package-lock.json')
-if git('diff', '--quiet', '--no-ext-diff', commit_sha, '--', *source_files).returncode:
-    parser.error('token source files differ from --source-ref; rebuild from a matching checkout')
+bundle_path = pathlib.Path(args.bundle_css) if args.bundle_css else repo_root / 'ds-bundle/_ds_bundle.css'
+manifest_path = pathlib.Path(args.bundle_manifest) if args.bundle_manifest else repo_root / 'ds-bundle/.source-provenance.json'
+verified = subprocess.run(
+    ['node', str(repo_root / '.design-sync/artifact/source-provenance.mjs'),
+     'verify', args.source_ref, str(bundle_path), str(manifest_path)],
+    text=True, capture_output=True)
+if verified.returncode:
+    parser.error(verified.stderr.strip() or 'CSS bundle source verification failed')
+provenance = json.loads(verified.stdout)
+commit_sha = provenance['sourceCommit']
 commit_date = git('show', '-s', '--format=%cs', commit_sha)
 if commit_date.returncode or synced_date < date.fromisoformat(commit_date.stdout.strip()):
     parser.error('--synced precedes the source commit date')
 
 carried_bytes = pathlib.Path(args.carried).read_bytes()
 carried = json.loads(carried_bytes)
-resolved_doc = json.load(open('resolved.json'))
+resolved_path = pathlib.Path(args.resolved)
+if not resolved_path.is_file():
+    parser.error(f'{resolved_path} is missing; run resolve-tokens.mjs first')
+resolved_doc = json.loads(resolved_path.read_text())
 if resolved_doc.get('sourceRef') != args.source_ref:
     parser.error('resolved.json sourceRef must exactly match --source-ref')
 if resolved_doc.get('carriedSha256') != hashlib.sha256(carried_bytes).hexdigest():
     parser.error('resolved.json carriedSha256 does not match the carried input')
-bundle_path = repo_root / 'ds-bundle/_ds_bundle.css'
-if not bundle_path.is_file():
-    parser.error('the measured ds-bundle/_ds_bundle.css is missing')
-bundle_hash = hashlib.sha256(bundle_path.read_bytes()).hexdigest()
-if resolved_doc.get('bundleCssSha256') != bundle_hash:
+if resolved_doc.get('bundleCssSha256') != provenance['bundleCssSha256']:
     parser.error('resolved.json bundleCssSha256 does not match the current CSS bundle')
+if resolved_doc.get('sourceInputsSha256') != provenance['sourceInputsSha256']:
+    parser.error('resolved.json sourceInputsSha256 does not match the verified source manifest')
 resolved = resolved_doc['default']
 out_b, out_d = args.out_b, args.out_d
 

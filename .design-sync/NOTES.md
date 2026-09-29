@@ -54,6 +54,16 @@ republish it. Keep every bullet on ONE line: the page's renderer splits a list
 item at its first line break, so a hard-wrapped bullet renders as a bullet plus a
 stray paragraph.
 
+Before token regeneration, run `npm run design-sync` without `--skip-build`.
+That full build writes `ds-bundle/.source-provenance.json` only after the sync
+succeeds; the resolver and builder reject a stale CSS bundle or a site source
+tree that differs from the stated `main@<commit>`. Pass the resolver output to
+`build_tokens.py --resolved <path>`. The source checks cover the complete app
+input tree, including imported CSS, and require the verified `origin/main`
+history. The bundle and manifest are ignored local outputs, not source files
+to publish. The main ref identifies site/design inputs; the manifest separately
+binds current packaging guidance and tooling.
+
 The artifact's generated `tokens.css` and `api/tokens.md` did not regenerate
 when files were published through the Artifact tool. A real token-editor save
 rebuilt them; Version 31 restored the tracked `tokens.json` layout afterward and

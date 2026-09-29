@@ -30,6 +30,7 @@
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { recordBundleProvenance } from '../.design-sync/artifact/source-provenance.mjs'
 
 const REPO = process.cwd()
 const CONFIG = '.design-sync/config.json'
@@ -163,4 +164,12 @@ const args = [
 ]
 console.error(`› node ${args.join(' ')}`)
 const run = spawnSync('node', args, { cwd: REPO, stdio: 'inherit' })
+if (run.status === 0 && !SKIP_BUILD) {
+  try {
+    const manifest = recordBundleProvenance()
+    ok(`CSS bundle bound to source inputs: ${manifest.sourceInputsSha256}`)
+  } catch (error) {
+    die(`could not record CSS bundle provenance: ${error.message}`)
+  }
+}
 process.exit(run.status ?? 1)

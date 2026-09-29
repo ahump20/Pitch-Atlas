@@ -78,7 +78,7 @@ for (const name of comps) {
   if (!fontsReady) errors.push('fonts did not finish loading before screenshot')
   process.env.PW_TEST_SCREENSHOT_NO_FONTS_READY = '1'
   await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: true })
-  results[name] = { marker, ...m, errors: errors.filter((e) => !/Failed to load resource/.test(e)).slice(0, 3) }
+  results[name] = { marker, ...m, errors: errors.slice(0, 3) }
   await page.close()
 }
 await browser.close()

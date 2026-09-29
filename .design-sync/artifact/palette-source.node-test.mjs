@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
+import { sourceInputDigest } from './source-provenance.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const path = (name) => join(root, name)
@@ -26,6 +27,7 @@ test('tracked palette and provenance match the documented source', () => {
 
   const css = read('src/index.css')
   const guide = read('.design-sync/guidelines/colors-metallics.card.html')
+  const conventions = read('.design-sync/conventions.md')
   for (const name of ['foil', 'foil-type', 'ember']) {
     assert.match(css, new RegExp(`--${name}:\\s*linear-gradient\\(`))
     assert.ok(guide.includes(`var(--${name})`), `guide must demonstrate --${name}`)
@@ -33,6 +35,9 @@ test('tracked palette and provenance match the documented source', () => {
   assert.doesNotMatch(css, /--gold\s*:/)
   assert.doesNotMatch(guide, /var\(--gold\)|#ff2d6e|#caa14a/i)
   assert.match(guide, /there is no\s*<code>--gold<\/code> token/)
+  assert.match(conventions, /burnt-orange foil/)
+  assert.match(conventions, /var\(--foil-type\)/)
+  assert.doesNotMatch(conventions, /rainbow|gold glint|golden glint/i)
 })
 
 test('token builder drops carried gold and foil while retaining the other tokens', () => {
@@ -41,10 +46,17 @@ test('token builder drops carried gold and foil while retaining the other tokens
     const carried = structuredClone(tokens)
     carried.other.tokens.push({ name: 'gold', value: 'retired' })
     carried.other.tokens.push({ name: 'foil', value: 'retired' })
-    const bundleCssSha256 = createHash('sha256').update(readFileSync(path('ds-bundle/_ds_bundle.css'))).digest('hex')
+    const bundlePath = join(dir, 'bundle.css')
+    const manifestPath = join(dir, 'source-manifest.json')
+    const bundleCss = ':root { --color-orange: #BF5700; }'
+    writeFileSync(bundlePath, bundleCss)
+    const bundleCssSha256 = createHash('sha256').update(bundleCss).digest('hex')
+    const sourceInputsSha256 = sourceInputDigest()
+    const manifest = { format: 1, sourceInputsSha256, bundleCssSha256 }
+    writeFileSync(manifestPath, JSON.stringify(manifest))
     const carriedJson = JSON.stringify(carried)
     const carriedSha256 = createHash('sha256').update(carriedJson).digest('hex')
-    const resolved = { sourceRef: source[1], bundleCssSha256, carriedSha256,
+    const resolved = { sourceRef: source[1], bundleCssSha256, sourceInputsSha256, carriedSha256,
       default: Object.fromEntries(carried.color.tokens.map(({ name, value }) =>
       [name, { raw: value, color: '' }])) }
     const input = join(dir, 'carried.json')
@@ -54,7 +66,8 @@ test('token builder drops carried gold and foil while retaining the other tokens
     const resolvedPath = join(dir, 'resolved.json')
     writeFileSync(resolvedPath, JSON.stringify(resolved))
     const args = [path('.design-sync/artifact/build_tokens.py'), input, b, d,
-      '--source-ref', source[1], '--synced', source[2]]
+      '--resolved', resolvedPath, '--bundle-css', bundlePath,
+      '--bundle-manifest', manifestPath, '--source-ref', source[1], '--synced', source[2]]
     const built = spawnSync('python3', args, { cwd: dir, encoding: 'utf8', env: pythonEnv })
     assert.equal(built.status, 0, built.stderr)
     const current = JSON.parse(readFileSync(d, 'utf8'))
@@ -63,6 +76,11 @@ test('token builder drops carried gold and foil while retaining the other tokens
     assert.equal(current.meta.ref, source[1])
     assert.equal(current.meta.synced, source[2])
     assert.deepEqual(current.meta.components, tokens.meta.components)
+
+    const missingResolved = spawnSync('python3', [...args, '--resolved', join(dir, 'missing.json')],
+      { cwd: dir, encoding: 'utf8', env: pythonEnv })
+    assert.notEqual(missingResolved.status, 0)
+    assert.match(missingResolved.stderr, /is missing; run resolve-tokens\.mjs first/)
 
     writeFileSync(resolvedPath, JSON.stringify({ ...resolved, sourceRef: 'main@deadbee' }))
     const mismatch = spawnSync('python3', args,
@@ -76,29 +94,37 @@ test('token builder drops carried gold and foil while retaining the other tokens
     assert.notEqual(staleBundle.status, 0)
     assert.match(staleBundle.stderr, /bundleCssSha256 does not match/)
 
+    writeFileSync(resolvedPath, JSON.stringify(resolved))
+    writeFileSync(manifestPath, JSON.stringify({ ...manifest, sourceInputsSha256: '0'.repeat(64) }))
+    const staleManifest = spawnSync('python3', args,
+      { cwd: dir, encoding: 'utf8', env: pythonEnv })
+    assert.notEqual(staleManifest.status, 0)
+    assert.match(staleManifest.stderr, /source manifest is stale/)
+    writeFileSync(manifestPath, JSON.stringify(manifest))
+
     writeFileSync(resolvedPath, JSON.stringify({ ...resolved, carriedSha256: '0'.repeat(64) }))
     const staleCarried = spawnSync('python3', args,
       { cwd: dir, encoding: 'utf8', env: pythonEnv })
     assert.notEqual(staleCarried.status, 0)
     assert.match(staleCarried.stderr, /carriedSha256 does not match/)
 
-    const futureDate = spawnSync('python3', [...args.slice(0, -2), '--synced', '9999-12-31'],
+    const futureDate = spawnSync('python3', [...args, '--synced', '9999-12-31'],
       { cwd: dir, encoding: 'utf8', env: pythonEnv })
     assert.notEqual(futureDate.status, 0)
     assert.match(futureDate.stderr, /cannot be after the current America\/Chicago date/)
 
-    const invalid = spawnSync('python3', [...args.slice(0, -4),
-      '--source-ref', 'main@deadbee', '--synced', source[2]],
+    const invalid = spawnSync('python3', [...args,
+      '--source-ref', 'main@deadbee'],
       { cwd: dir, encoding: 'utf8', env: pythonEnv })
     assert.notEqual(invalid.status, 0)
     assert.match(invalid.stderr, /does not resolve/)
 
     writeFileSync(resolvedPath, JSON.stringify({ ...resolved, sourceRef: 'main@4098cbd' }))
-    const staleBuildSource = spawnSync('python3', [...args.slice(0, -4),
-      '--source-ref', 'main@4098cbd', '--synced', source[2]],
+    const staleBuildSource = spawnSync('python3', [...args,
+      '--source-ref', 'main@4098cbd'],
       { cwd: dir, encoding: 'utf8', env: pythonEnv })
     assert.notEqual(staleBuildSource.status, 0)
-    assert.match(staleBuildSource.stderr, /token source files differ from --source-ref/)
+    assert.match(staleBuildSource.stderr, /token source files differ from --source-ref/i)
 
     const missingRef = spawnSync('node',
       [path('.design-sync/artifact/resolve-tokens.mjs'), input, resolvedPath],
