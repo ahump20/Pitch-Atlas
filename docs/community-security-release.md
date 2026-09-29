@@ -7,6 +7,9 @@ Use the reviewed task commit and the production project identified by
 1. Apply `20260929223000_discussion_security_primitives.sql`. This prepares the
    service-only validation RPCs and enforces upload admission, deletion and report
    protections. Existing published rows remain intact.
+   Also apply `20260929223200_discussion_media_storage_read_boundary.sql`; it
+   repairs Storage download/signing under the existing column grants while
+   preserving hidden-content and mutual-block filtering.
 2. Deploy `validate-discussion-media` with its `deno.json`, lockfile, handler and
    shared signature module. Verify unauthenticated requests fail and a permanent
    test account can validate a newly uploaded object. An anonymous account must
@@ -39,6 +42,8 @@ emulating the Supabase Auth and Storage schemas. It reproduces the old failures
 before asserting fixed behavior, including overlapping report transactions.
 Upload admission also emulates Storage's caller-role permission probe/rollback
 followed by its service-role commit, retaining the verified object owner.
+It also checks Storage reads with the real client column grants: visible uploads
+remain readable, while hidden media, hidden parents and mutual blocks deny access.
 It does not replace a live Storage API upload test. Server validation checks
 leading signatures and size, rather than decoding or scanning the entire file.
 Account creation remains outside these per-account quotas.

@@ -25,6 +25,11 @@ create table auth.users (id uuid primary key, is_anonymous boolean not null defa
 create table public.profiles (
   id uuid primary key references auth.users(id) on delete cascade, is_admin boolean not null default false
 );
+create table public.blocked_users (
+  blocker_id uuid references auth.users(id) on delete cascade,
+  blocked_id uuid references auth.users(id) on delete cascade,
+  primary key (blocker_id, blocked_id)
+);
 create table storage.buckets (
   id text primary key, name text, public boolean, file_size_limit bigint, allowed_mime_types text[]
 );

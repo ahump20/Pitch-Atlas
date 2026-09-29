@@ -53,6 +53,9 @@ function reset(patched) {
   sql(read('supabase/migrations/20260606005149_discussion_forum.sql'))
   sql(read('supabase/migrations/20260606011014_discussion_forum_access_fix.sql'))
   sql(read('supabase/migrations/20260615095000_storage_media_permanent_users.sql'))
+  for (const name of ['private.is_admin', 'private.blocked_between']) {
+    sql(fn('supabase/migrations/20260615212500_initplan_admin_block_helpers.sql', name))
+  }
   for (const name of ['public.enforce_discussion_media_limits', 'public.on_discussion_report', 'public.on_note_report_autohide']) {
     sql(fn(sourcePinned, name))
   }
@@ -68,6 +71,7 @@ function reset(patched) {
   if (patched) {
     sql(read('supabase/migrations/20260929223000_discussion_security_primitives.sql'))
     sql(read('supabase/migrations/20260929223100_verified_discussion_media.sql'))
+    sql(read('supabase/migrations/20260929223200_discussion_media_storage_read_boundary.sql'))
   }
 }
 
@@ -221,4 +225,56 @@ console.log('Patched: durable upload quota and privileged validation quota pass'
 reset(true)
 await reports(true)
 console.log('Patched: concurrent thresholds, distinct reporters, dismissed reports and author rollup pass')
+
+// Real client column ACLs matter: broad fixture SELECT grants hid a production
+// Storage policy failure. Reproduce it, then test the exact visibility boundary.
+reset(true)
+const visible = user(1) + '/visible.webm'
+sql(post(1) + asUser(1) + object(1, visible))
+sql(attest(1, visible))
+sql(read('supabase/migrations/20260615022000_discussion_read_column_grants.sql'))
+sql(read('supabase/migrations/20260703160000_discussion_media_read_policy_grant.sql'))
+sql(`revoke insert on public.discussion_media from authenticated;
+  grant insert(post_id,topic_key,storage_path,mime_type,kind,byte_size,width,height,duration_s)
+    on public.discussion_media to authenticated;
+  grant usage on schema private to anon,authenticated;
+  revoke all on function private.is_admin() from public;
+  revoke all on function private.blocked_between(uuid,uuid) from public;
+  grant execute on function private.is_admin(),private.blocked_between(uuid,uuid) to anon,authenticated;
+  grant select on storage.objects to anon;
+  insert into storage.buckets(id,name,public) values ('other','other',false);
+  insert into storage.objects(bucket_id,name) values ('other','other-private');`)
+sql(asUser(1) + `insert into public.discussion_media
+  (post_id,topic_key,storage_path,mime_type,kind,byte_size)
+  values ('${id(1)}','pitch:four-seam','${visible}','video/webm','video',8);`)
+rejects(asUser(1) + `select owner_id,is_hidden from public.discussion_media;`, /permission denied/)
+// Use the repository's previous policy, including both mutual-block checks.
+const preflight = read('supabase/migrations/20260609031936_ios_app_store_preflight.sql')
+const policyStart = preflight.indexOf('drop policy if exists discussion_media_object_read')
+const policyEnd = preflight.indexOf(';', preflight.indexOf('create policy discussion_media_object_read', policyStart))
+sql(preflight.slice(policyStart, policyEnd + 1))
+const readVisible = (n) => asUser(n) + `select count(*) from storage.objects where name='${visible}';`
+rejects(readVisible(1), /permission denied for table discussion_media/)
+sql(read('supabase/migrations/20260929223200_discussion_media_storage_read_boundary.sql'))
+assert.equal(sql(readVisible(1)).split('\n').at(-1), '1')
+assert.equal(sql(readVisible(2)).split('\n').at(-1), '1')
+assert.equal(sql("set role anon; select set_config('request.jwt.claims','{}',false);" +
+  `select count(*) from storage.objects where name='${visible}';`).split('\n').at(-1), '1')
+assert.equal(sql(asUser(1) + "select count(*) from storage.objects where bucket_id='other';").split('\n').at(-1), '0')
+sql(`update public.discussion_media set is_hidden=true where storage_path='${visible}';`)
+assert.equal(sql(readVisible(1)).split('\n').at(-1), '0')
+sql(`update public.discussion_media set is_hidden=false where storage_path='${visible}';
+  update public.discussion_posts set is_hidden=true where id='${id(1)}';`)
+assert.equal(sql(readVisible(1)).split('\n').at(-1), '0')
+sql(`update public.discussion_posts set is_hidden=false where id='${id(1)}';
+  insert into public.blocked_users values ('${user(2)}','${user(1)}');`)
+assert.equal(sql(readVisible(2)).split('\n').at(-1), '0')
+sql(`delete from public.blocked_users;
+  insert into public.blocked_users values ('${user(1)}','${user(2)}');`)
+assert.equal(sql(readVisible(2)).split('\n').at(-1), '0')
+sql(`delete from public.blocked_users; update public.discussion_posts set author_id='${user(3)}' where id='${id(1)}';
+  insert into public.blocked_users values ('${user(2)}','${user(3)}');`)
+assert.equal(sql(readVisible(2)).split('\n').at(-1), '0')
+rejects(asUser(1) + `select owner_id,is_hidden from public.discussion_media;`, /permission denied/)
+console.log('Patched: real column grants allow publication/Storage reads; private metadata, hidden rows and mutual blocks remain protected')
 console.log('PostgreSQL security regressions PASS (actual migration functions; emulated Supabase auth/storage)')
