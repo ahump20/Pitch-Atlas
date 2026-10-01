@@ -50,7 +50,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps note reports write-only for public client roles', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260614233000_note_reports_insert_only_client_role.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260614232828_note_reports_insert_only_client_role.sql'),
       'utf8',
     )
 
@@ -61,7 +61,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps community inserts limited to contributor-authored columns', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260614235500_community_insert_column_grants.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260614235917_community_insert_column_grants.sql'),
       'utf8',
     )
 
@@ -112,7 +112,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps block-list inserts limited to the target user', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615002500_blocked_users_insert_column_grant.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615002651_blocked_users_insert_column_grant.sql'),
       'utf8',
     )
 
@@ -127,7 +127,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps media terms acceptance timestamp database-owned', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615005000_media_terms_insert_column_grant.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615005354_media_terms_insert_column_grant.sql'),
       'utf8',
     )
 
@@ -139,7 +139,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps discussion media deletes tied to parent post deletion', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615012500_discussion_media_delete_via_posts.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615012451_discussion_media_delete_via_posts.sql'),
       'utf8',
     )
 
@@ -150,7 +150,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps block relationship checks scoped to the current viewer', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615015000_blocked_between_current_user_guard.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615015541_blocked_between_current_user_guard.sql'),
       'utf8',
     )
 
@@ -163,7 +163,7 @@ describe('community safety database policy contracts', () => {
 
   it('pins admin and block helpers to empty search paths', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615200500_pin_admin_helper_search_paths.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615191248_pin_admin_helper_search_paths.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -183,7 +183,7 @@ describe('community safety database policy contracts', () => {
 
   it('pins internal trigger helpers to empty search paths', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615203500_pin_internal_trigger_search_paths.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615194527_pin_internal_trigger_search_paths.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -226,7 +226,7 @@ describe('community safety database policy contracts', () => {
 
   it('pins service-only invoker helpers to empty search paths', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615205500_pin_remaining_helper_search_paths.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615204244_pin_remaining_helper_search_paths.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -265,7 +265,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps discussion reads limited to rendered thread columns', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615022000_discussion_read_column_grants.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615022622_discussion_read_column_grants.sql'),
       'utf8',
     )
 
@@ -306,7 +306,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps field note reads limited to rendered note columns', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615030000_field_notes_read_column_grants.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615025743_field_notes_read_column_grants.sql'),
       'utf8',
     )
 
@@ -399,7 +399,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps viewer engagement reads limited to current-client columns', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615032000_viewer_engagement_read_column_grants.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615032710_viewer_engagement_read_column_grants.sql'),
       'utf8',
     )
 
@@ -425,7 +425,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps viewer engagement reads behind an RPC', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615102000_viewer_engagement_rpc.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615102433_viewer_engagement_rpc.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -441,7 +441,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps media terms policies authenticated-only', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615092000_media_terms_policies_authenticated.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615091130_media_terms_policies_authenticated.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -456,7 +456,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps media terms policies closed to anonymous Supabase sessions', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615093000_media_terms_permanent_users.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615091933_media_terms_permanent_users.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -473,7 +473,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps media terms behind RPCs instead of direct table grants', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615094500_media_terms_rpc_gate.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615093407_media_terms_rpc_gate.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -490,7 +490,7 @@ describe('community safety database policy contracts', () => {
 
   it('runs current-user RPCs as invoker with narrow authenticated column grants', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615193000_rpc_invoker_current_user_grants.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615181807_rpc_invoker_current_user_grants.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -518,7 +518,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps block-list reads limited to the target user', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615035000_blocked_users_read_column_grant.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615035541_blocked_users_read_column_grant.sql'),
       'utf8',
     )
 
@@ -532,7 +532,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps block-list reads closed to direct clients', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615105500_blocked_users_read_closed.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615105150_blocked_users_read_closed.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -544,7 +544,7 @@ describe('community safety database policy contracts', () => {
 
   it('routes native blocking through authenticated security-definer RPCs', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260622213000_block_user_rpcs.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260624194451_block_user_rpcs.sql'),
       'utf8',
     )
     const executableSql = stripSqlLineComments(migration)
@@ -567,11 +567,11 @@ describe('community safety database policy contracts', () => {
 
   it('keeps unused client deletes closed to normal roles', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615053500_close_unused_delete_grants.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615053325_close_unused_delete_grants.sql'),
       'utf8',
     )
     const policyCleanup = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615071000_drop_unused_delete_policies.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615070951_drop_unused_delete_policies.sql'),
       'utf8',
     )
 
@@ -585,7 +585,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps reaction deletes limited to signed-in contributors', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615055632_reaction_deletes_authenticated_only.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615060427_reaction_deletes_authenticated_only.sql'),
       'utf8',
     )
 
@@ -598,7 +598,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps discussion media storage mutations signed-in only', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615063056_storage_mutations_authenticated_only.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615063627_storage_mutations_authenticated_only.sql'),
       'utf8',
     )
 
@@ -620,7 +620,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps discussion media storage mutations off anonymous sessions', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615095000_storage_media_permanent_users.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615094824_storage_media_permanent_users.sql'),
       'utf8',
     )
 
@@ -636,7 +636,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps dormant direct-message policies removed', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615074000_drop_dormant_dm_policies.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615074308_drop_dormant_dm_policies.sql'),
       'utf8',
     )
 
@@ -671,7 +671,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps dormant direct-message tables explicitly closed without client-role policies', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615114500_dormant_dm_internal_policy_marker.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615112542_dormant_dm_internal_policy_marker.sql'),
       'utf8',
     )
 
@@ -706,7 +706,7 @@ describe('community safety database policy contracts', () => {
 
   it('keeps consensus view reads limited to aggregate columns', () => {
     const migration = readFileSync(
-      resolve(process.cwd(), 'supabase/migrations/20260615042000_note_consensus_read_column_grant.sql'),
+      resolve(process.cwd(), 'supabase/migrations/20260615042526_note_consensus_read_column_grant.sql'),
       'utf8',
     )
 
