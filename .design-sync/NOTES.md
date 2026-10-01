@@ -3,7 +3,7 @@
 **System of record (since 2026-09-18): the Design System artifact**
 https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — deliberately re-synced
 from the main commit and date in `meta` of `.design-sync/artifact/tokens.json`
-(current Version 31, revision `1790655721-94da`). This sync carries the one approved burnt orange `#BF5700`
+(current Version 32, revision `1790879323-a3e4`). This sync carries the one approved burnt orange `#BF5700`
 instead of `#FF6A29`, bone offspeed `#D8CFBB`, warm-white eephus `#FFE9DE`,
 the powder twelve-six and teal circle-change throwback finishes, the three
 trust-tier tokens, and the r3f 9.7 scheduler fix below. The later palette audit
@@ -12,7 +12,11 @@ in the brand devices and templates, and rebuilt the generated `tokens.css` and
 `api/tokens.md` from the token table. The site's historical `.is-gold` class,
 `gold` prop, and `cb-gold-ink` token remain; they do not paint a gold 1/1.
 The page can save later versions of itself, so read the live artifact before
-editing it.
+editing it. Version 32 (2026-10-01) changed only the brand book: it
+points at the token table's `meta` instead of quoting the source commit, and
+says `color-dim`, `ease-in` and `blur-2xl` are unread (`color-dim` is still
+declared). Before a "re-sync", diff the site inputs against `meta.ref`: when
+only test scripts moved, the converter would rebuild the same bundle, so skip it.
 
 The claude.ai/design project `e8154c97-53f1-4412-aa6b-9d019bc85e0c` is the
 legacy source it was migrated from; it is left untouched and no longer receives
