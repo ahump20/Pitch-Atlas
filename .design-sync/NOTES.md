@@ -4,7 +4,7 @@
 (since 2026-10-01; the artifact was the record from 2026-09-18 until then)
 https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — deliberately re-synced
 from the main commit and date in `meta` of `.design-sync/artifact/tokens.json`
-(current Version 32, revision `1790879323-a3e4`). This sync carries the one approved burnt orange `#BF5700`
+(current Version 34, revision `1790884706-7d35`). This sync carries the one approved burnt orange `#BF5700`
 instead of `#FF6A29`, bone offspeed `#D8CFBB`, warm-white eephus `#FFE9DE`,
 the powder twelve-six and teal circle-change throwback finishes, the three
 trust-tier tokens, and the r3f 9.7 scheduler fix below. The later palette audit
@@ -13,11 +13,25 @@ in the brand devices and templates, and rebuilt the generated `tokens.css` and
 `api/tokens.md` from the token table. The site's historical `.is-gold` class,
 `gold` prop, and `cb-gold-ink` token remain; they do not paint a gold 1/1.
 The page can save later versions of itself, so read the live artifact before
-editing it. Version 32 (2026-10-01) changed only the brand book: it
-points at the token table's `meta` instead of quoting the source commit, and
-says `color-dim`, `ease-in` and `blur-2xl` are unread (`color-dim` is still
-declared). Before a "re-sync", diff the site inputs against `meta.ref`: when
-only test scripts moved, the converter would rebuild the same bundle, so skip it.
+editing it. Version 33 (2026-10-01, revision `1790884684-3e1e`) is the first
+sync generated from this repo end to end: the #228 build (deployed to
+pitch-atlas.com), its bundle, previews and component guides, the brand book and
+Not synced from `.design-sync/artifact/`, and the 15 doc sections from `docs/`
+via `docs.mjs`. Version 34 sent only the index's `lastChange`. Token values did
+not change; only `meta` and the `color-bone-3` note did. The page-generated
+`api/tokens.md` still carries the old `bone-3` note: generated sheets rebuild on
+the next edit made in the page, not on a tool publish. Before a "re-sync", diff
+the site inputs against `meta.ref`: when only test scripts moved, the converter
+would rebuild the same bundle, so skip it.
+
+Each `npm run design-sync` re-points `cssEntry` in `config.json`, which is a site
+input, so the token table cannot name the main commit the build came from until
+that one line is on main too. Land the re-point first (its own small PR), then
+measure with `--source-ref` at that merge. The "carried" input to
+`resolve-tokens.mjs` and `build_tokens.py` is the table before the D pass: the
+tracked `tokens.json` minus the six `pa-*` motion tokens and `radius` /
+`radius-pill`, which the D pass appends itself. Feeding the finished table back
+in duplicates them.
 
 The claude.ai/design project `e8154c97-53f1-4412-aa6b-9d019bc85e0c` is the
 legacy source it was migrated from; it is left untouched and no longer receives
@@ -97,10 +111,12 @@ older artifact tab: it can save its stale token table over the current version.
 Close the stale tab, open a fresh one, and verify the frame revision first.
 
 The render-check script now exits nonzero on page errors, empty/error cards,
-missing requested previews, and WebGL BallStage readiness. A local software-WebGL
-BallStage run during this audit captured both canvases but retained one loading
-marker (`canvases=2 loading=1`, no page errors), so that specific 3D readiness
-check remains open rather than being recorded as a pass.
+missing requested previews, and WebGL BallStage readiness. The Version 33 run
+passed all 21 cards under software WebGL, BallStage included (`canvases=2
+loading=0`). The one allowed failure is the specimen card's grip loop: it streams
+`/grips/<name>.mp4|.webm` from the site, which no preview reaches (Not synced
+says so), and its poster is inlined and shows. Any other failed resource still
+fails the gate.
 
 ## The bundle is a DEVELOPMENT build — pair it with React's development build
 The driver bundles with `NODE_ENV=development` (lib/bundle.mjs, contract surface —
@@ -383,7 +399,7 @@ Open items on the site:
 - Two secondary grays on the open page: `ink-2` #c2c7d6 (cool) and `bone-2`
   #c9c2b0 (warm).
 
-## Legacy files in the artifact (to archive in the next version)
+## Legacy files in the artifact (archive awaits the owner)
 The 2026-09-18 migration carried the standalone project's files over whole. This
 artifact type renders only `components/<Comp>/preview.html` cards, the README and
 other `*.md` as prose sections, so the legacy files were either invisible or, for
@@ -394,13 +410,18 @@ token vocabulary the site never declares (`--space-N`, `--text-hero`,
 `--shadow-lift`, `--glow-cyan`, `--inset-mount`, `.pa-*` classes) and linked a
 `../styles.css` that does not exist; the voice card staged provenance as a motto,
 the mark card redrew the logo in retired cyan, and the motion card looped at rest.
-They, `ui_kits/**`, the legacy `tokens/*.css` sheets, `docs/_ds_bundle.*` and
-`docs/_vendor/**` (superseded by `components/bundle.*`), `brand-motion/**` and
-`Pitch Atlas - Merged Home.html` go to `archived/<old path>` in the next
-published version, which the page keeps but leaves out of Overview, search, the
-api/ cards and manifest.json. Grep the files that stay for every archived path
-first; the record of the move lands with that version. The
-starter template, `assets/notes/**` (the migration report) and
-`reference/PitchAtlasTheme.swift` stay. The repo's copy of
+The `Index` card (`components/Index/**`) is the iOS kit's showcase page and
+still paints retired cyan and the old green "official" tier. The proposal: move
+those cards, `ui_kits/**`, `components/Index/**`, the legacy `tokens/*.css`
+sheets, `docs/_ds_bundle.*` and `docs/_vendor/**` (superseded by
+`components/bundle.*`), `brand-motion/**` and `Pitch Atlas - Merged Home.html` to
+`archived/<old path>`, which the page keeps but leaves out of Overview, search,
+the api/ cards and manifest.json. Version 33 did NOT move them: the type's
+clean-up reference (`artifact-type/reference/migrated-upgrading.md`) says the
+migrated showcase pages are the author's only copies and moving one is the
+owner's call. Checked 2026-10-01: none of the files that stay loads an archived
+path (the holo-foil starter's loader already points at root `_ds_bundle.*` files
+that do not exist). The starter template, `assets/notes/**` (the migration
+report) and `reference/PitchAtlasTheme.swift` stay either way. The repo's copy of
 `ios-token-parity.card.html` was deleted for the same reason: it quoted retired
 cyan and the old per-claim tier colors as current iOS parity; git history has it.

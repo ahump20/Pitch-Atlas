@@ -13,7 +13,7 @@ const cleanMetrics = {
   canvases: 2, stageLoading: 0, primary: '', cyan: '', paper: '',
 }
 
-function runPreview(name, { webgl = false, metrics = {}, consoleError = null, fontsReady = true, only = name } = {}) {
+function runPreview(name, { webgl = false, metrics = {}, consoleError = null, consoleUrl = '', fontsReady = true, only = name } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'pitch-atlas-render-check-'))
   try {
     const project = join(dir, 'project')
@@ -33,6 +33,7 @@ const Module = require('node:module')
 const originalLoad = Module._load
 const metrics = ${JSON.stringify({ ...cleanMetrics, ...metrics })}
 const consoleError = ${JSON.stringify(consoleError)}
+const consoleUrl = ${JSON.stringify(consoleUrl)}
 const fontsReady = ${JSON.stringify(fontsReady)}
 Module._load = function (request, parent, isMain) {
   if (request === 'playwright') return { chromium: { launch: async () => ({
@@ -41,7 +42,7 @@ Module._load = function (request, parent, isMain) {
       return {
         on: (type, handler) => { handlers[type] = handler },
         goto: async () => {
-          if (consoleError) handlers.console({ type: () => 'error', text: () => consoleError })
+          if (consoleError) handlers.console({ type: () => 'error', text: () => consoleError, location: () => ({ url: consoleUrl }) })
         },
         waitForTimeout: async () => {},
         waitForFunction: async (predicate) => {
@@ -132,4 +133,15 @@ test('failed font or other resource stays in the gate even after fonts report lo
   assert.equal(run.status, 1, run.stderr)
   assert.deepEqual(run.results.Card.errors, ['Failed to load resource: net::ERR_FILE_NOT_FOUND'])
   assert.match(run.stderr, /Card: 1 page\/console error\(s\)/)
+})
+
+test('only the specimen card\'s unreachable grip loop may fail to load', () => {
+  const missing = 'Failed to load resource: net::ERR_FILE_NOT_FOUND'
+  const loop = runPreview('PitchSpecimenCard', { consoleError: missing, consoleUrl: 'file:///grips/four-seam-grip.webm' })
+  assert.equal(loop.status, 0, loop.stderr)
+  assert.deepEqual(loop.results.PitchSpecimenCard.errors, [])
+  for (const url of ['file:///grips/four-seam-grip-poster.webp', 'file:///fonts/anton.woff2', 'file:///x/grips/a.mp4.js']) {
+    const run = runPreview('PitchSpecimenCard', { consoleError: missing, consoleUrl: url })
+    assert.equal(run.status, 1, `${url} should stay in the gate`)
+  }
 })

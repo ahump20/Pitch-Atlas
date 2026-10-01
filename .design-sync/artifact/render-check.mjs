@@ -47,6 +47,11 @@ const comps = readdirSync(join(ROOT, 'components'), { withFileTypes: true })
 // that second wait can stall on the animated 3D stage even when fonts are ready.
 // Each page waits for fonts itself below, so skip the repeat.
 process.env.PW_TEST_SCREENSHOT_NO_FONTS_READY = '1'
+// The specimen card streams its grip loop from the site's /grips/ path, which no
+// preview can reach (the brand book's Not synced section says so); its poster is
+// inlined and shows instead. Only those two video files may fail to load.
+const GRIP_LOOP = /\/grips\/[\w-]+\.(mp4|webm)$/
+
 for (const name of comps) {
   const raw = readFileSync(join(ROOT, 'components', name, 'preview.html'), 'utf8')
   const marker = raw.split('\n', 1)[0]
@@ -59,7 +64,11 @@ for (const name of comps) {
   const page = await browser.newPage({ viewport: { width: name === 'Cover' ? 960 : (+process.env.W || 900), height: vh } })
   const errors = []
   page.on('pageerror', (e) => errors.push(String(e.message || e)))
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()) })
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return
+    if (/^Failed to load resource/.test(m.text()) && GRIP_LOOP.test(m.location?.()?.url ?? '')) return
+    errors.push(m.text())
+  })
   await page.goto('file://' + file)
   await page.waitForTimeout(2500)
   // The 3D stage keeps its schematic overlay until the scene reports its first frame.
