@@ -37,8 +37,15 @@ const packageBuildFields = [
   'sideEffects', 'imports', 'exports',
 ]
 
+// Variables that pick a repository override `-C`; a caller inside a git hook
+// (where GIT_DIR is set) would otherwise read its own repo instead of `root`.
+const REPO_LOCATION = ['GIT_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE', 'GIT_COMMON_DIR',
+  'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES', 'GIT_PREFIX', 'GIT_NAMESPACE']
+
 function git(root, args) {
-  return spawnSync('git', ['-C', root, ...args], { encoding: null })
+  const env = { ...process.env }
+  for (const key of REPO_LOCATION) delete env[key]
+  return spawnSync('git', ['-C', root, ...args], { encoding: null, env })
 }
 
 function gitText(root, args) {

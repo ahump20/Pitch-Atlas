@@ -28,6 +28,20 @@ test('a commit on origin/main resolves to its full hash', (t) => {
   assert.equal(resolveSourceCommit(repo.sourceRef, repo.root), repo.git('rev-parse', 'HEAD'))
 })
 
+test('an inherited GIT_DIR, as inside a git hook, does not redirect the checks', (t) => {
+  const repo = setup(t)
+  const other = createFixtureRepo()
+  t.after(other.cleanup)
+  other.write('src/decoy.css', ':root {}\n') // the decoy tracks an input this repo lacks
+  other.commit('decoy input')
+  const digest = sourceInputDigest(repo.root) // before any git sees GIT_DIR
+  assert.notEqual(sourceInputDigest(other.root), digest)
+  process.env.GIT_DIR = join(other.root, '.git')
+  process.env.GIT_WORK_TREE = other.root
+  t.after(() => { delete process.env.GIT_DIR; delete process.env.GIT_WORK_TREE })
+  assert.equal(sourceInputDigest(repo.root), digest)
+})
+
 test('a source ref must name a commit that is on origin/main', async (t) => {
   const cases = [
     ['not main@<commit>', (repo) => repo.sourceRef.replace('main@', ''), /must be main@<commit>/],
