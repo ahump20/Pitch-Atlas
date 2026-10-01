@@ -99,9 +99,8 @@ export function verifyBundleProvenance(sourceRef, bundlePath = defaultBundle, ma
   if (!packageBuildFields.every((field) => isDeepStrictEqual(packageAtCommit[field], packageNow[field]))) {
     throw new Error('Package build inputs differ from --source-ref; use the current main commit')
   }
-  const untrackedSite = gitPaths(['ls-files', '--others', '--exclude-standard', '--', ...siteInputs])
-  if (untrackedSite.length) throw new Error(`Untracked site source input: ${untrackedSite[0]}`)
 
+  // sourceInputDigest() rejects untracked inputs; bundleInputs already covers siteInputs.
   const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'))
   if (manifest.format !== 1 || manifest.sourceInputsSha256 !== sourceInputDigest()) {
     throw new Error('Design-sync bundle source manifest is stale; run npm run design-sync without --skip-build')

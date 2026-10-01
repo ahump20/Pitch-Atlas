@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
-import { sourceInputDigest } from './source-provenance.mjs'
+import { recordBundleProvenance } from './source-provenance.mjs'
 
 const root = fileURLToPath(new URL('../..', import.meta.url))
 const path = (name) => join(root, name)
@@ -48,12 +48,9 @@ test('token builder drops carried gold and foil while retaining the other tokens
     carried.other.tokens.push({ name: 'foil', value: 'retired' })
     const bundlePath = join(dir, 'bundle.css')
     const manifestPath = join(dir, 'source-manifest.json')
-    const bundleCss = ':root { --color-orange: #BF5700; }'
-    writeFileSync(bundlePath, bundleCss)
-    const bundleCssSha256 = createHash('sha256').update(bundleCss).digest('hex')
-    const sourceInputsSha256 = sourceInputDigest()
-    const manifest = { format: 1, sourceInputsSha256, bundleCssSha256 }
-    writeFileSync(manifestPath, JSON.stringify(manifest))
+    writeFileSync(bundlePath, ':root { --color-orange: #BF5700; }')
+    const manifest = recordBundleProvenance(bundlePath, manifestPath)
+    const { bundleCssSha256, sourceInputsSha256 } = manifest
     const carriedJson = JSON.stringify(carried)
     const carriedSha256 = createHash('sha256').update(carriedJson).digest('hex')
     const resolved = { sourceRef: source[1], bundleCssSha256, sourceInputsSha256, carriedSha256,

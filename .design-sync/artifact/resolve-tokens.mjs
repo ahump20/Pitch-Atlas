@@ -20,9 +20,7 @@ try {
 }
 const require = createRequire(`${REPO_ROOT}/.ds-sync/package.json`)
 const { chromium } = require('playwright')
-const cssBytes = readFileSync(defaultBundle)
-const bundleCssSha256 = provenance.bundleCssSha256
-const css = cssBytes.toString('utf8')
+const css = readFileSync(defaultBundle, 'utf8')
 const carriedBytes = readFileSync(tokensPath)
 const carriedSha256 = createHash('sha256').update(carriedBytes).digest('hex')
 const tokens = JSON.parse(carriedBytes.toString('utf8'))
@@ -54,7 +52,7 @@ const read = (scope) => page.evaluate(({ fams, colorNames, extra, scope }) => {
   }
   return out
 }, { fams, colorNames, extra, scope })
-const result = { sourceRef, bundleCssSha256, sourceInputsSha256: provenance.sourceInputsSha256, carriedSha256, default: await read(''), 'field-cream': await read('field-cream') }
+const result = { sourceRef, bundleCssSha256: provenance.bundleCssSha256, sourceInputsSha256: provenance.sourceInputsSha256, carriedSha256, default: await read(''), 'field-cream': await read('field-cream') }
 for (const t of ['scene-coal', 'rfx-card', 'rfx-plate']) result[t] = await read(t)
 await browser.close()
 writeFileSync(outputPath, JSON.stringify(result, null, 1))
