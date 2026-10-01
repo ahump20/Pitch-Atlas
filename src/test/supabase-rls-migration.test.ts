@@ -241,7 +241,7 @@ describe('Supabase RLS migration contracts', () => {
 
   it('keeps the unused Supabase GraphQL API disabled without changing table reads', () => {
     const migration = readFileSync(
-      resolve(migrationsDir, '20260615133500_disable_unused_pg_graphql.sql'),
+      resolve(migrationsDir, '20260615133718_disable_unused_pg_graphql.sql'),
       'utf8',
     )
     const sql = stripSqlComments(migration)
