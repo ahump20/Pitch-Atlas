@@ -64,6 +64,14 @@ history. The bundle and manifest are ignored local outputs, not source files
 to publish. The main ref identifies site/design inputs; the manifest separately
 binds current packaging guidance and tooling.
 
+`npm test` exercises these checks against a throwaway repository
+(`.design-sync/artifact/provenance-fixture.mjs`), so it needs no real history
+and passes in a shallow clone. The one check that does need history, that the
+token table's recorded source commit is on `origin/main`, lives in
+`npm run design-sync:check`; it is skipped with a note where `origin/main` is
+missing or shallow (`git fetch origin main`, plus `--unshallow` in a shallow
+clone).
+
 The artifact's generated `tokens.css` and `api/tokens.md` did not regenerate
 when files were published through the Artifact tool. A real token-editor save
 rebuilt them; Version 31 restored the tracked `tokens.json` layout afterward and
