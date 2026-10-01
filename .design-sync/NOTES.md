@@ -340,8 +340,11 @@ and dialog close ring cyan; measuring before the 0.2s transition finishes reads 
 Touch size (site bar 44px), re-measured 2026-10-01 on the built site at 390px WITH
 touch emulation (`isMobile`, `hasTouch`): the site grows controls with
 `any-pointer-coarse` rules, so the 2026-09-22 figures below were mouse-pointer
-sizes. On touch every control on 13 main routes is 44px+ except the scout card
-back's source links (25px) and inline text links (WCAG-exempt). Under a mouse:
+sizes. On touch every control on 13 main routes, and every button in the open
+compare dialog (close included), is 44px+ except the scout card back's source
+links (25px) and inline text links (WCAG-exempt). `SelectItem` and the dialog
+close gained `any-pointer-coarse` sizing the same day; no route-level Select was
+opened (they sit behind Supabase forms). Under a mouse:
 buttons 41–42px, segments 34, chips 30, select options and the dialog close 28,
 compare tray remove 32×36 — all over WCAG's 24px floor. An axe WCAG 2.2 AA run over
 16 routes at 1280px is clean as of the same date (violations only; text over foil
@@ -376,7 +379,7 @@ Open items on the site:
 - Two secondary grays on the open page: `ink-2` #c2c7d6 (cool) and `bone-2`
   #c9c2b0 (warm).
 
-## Legacy files in the artifact (archived 2026-10-01)
+## Legacy files in the artifact (to archive in the next version)
 The 2026-09-18 migration carried the standalone project's files over whole. This
 artifact type renders only `components/<Comp>/preview.html` cards, the README and
 other `*.md` as prose sections, so the legacy files were either invisible or, for
@@ -389,8 +392,10 @@ token vocabulary the site never declares (`--space-N`, `--text-hero`,
 the mark card redrew the logo in retired cyan, and the motion card looped at rest.
 They, `ui_kits/**`, the legacy `tokens/*.css` sheets, `docs/_ds_bundle.*` and
 `docs/_vendor/**` (superseded by `components/bundle.*`), `brand-motion/**` and
-`Pitch Atlas - Merged Home.html` moved to `archived/<old path>`, which the page
-keeps but leaves out of Overview, search, the api/ cards and manifest.json. The
+`Pitch Atlas - Merged Home.html` go to `archived/<old path>` in the next
+published version, which the page keeps but leaves out of Overview, search, the
+api/ cards and manifest.json. Grep the files that stay for every archived path
+first; the record of the move lands with that version. The
 starter template, `assets/notes/**` (the migration report) and
 `reference/PitchAtlasTheme.swift` stay. The repo's copy of
 `ios-token-parity.card.html` was deleted for the same reason: it quoted retired
