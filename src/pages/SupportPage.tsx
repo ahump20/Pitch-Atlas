@@ -97,11 +97,11 @@ export function SupportPage() {
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
             Report issues through the in-product Report flow on any note or post. Every report is
             reviewed. For how the archive handles your data, read the{' '}
-            <Link to="/privacy" className="text-seam transition-colors hover:text-ink">
+            <Link to="/privacy" className="text-seam underline decoration-seam/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-current">
               privacy policy
             </Link>
             ; for how archive claims are sourced, read the{' '}
-            <Link to="/sources" className="text-seam transition-colors hover:text-ink">
+            <Link to="/sources" className="text-seam underline decoration-seam/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-current">
               source registry
             </Link>
             .
