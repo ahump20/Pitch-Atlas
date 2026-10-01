@@ -19,7 +19,7 @@ import { CompareButton } from '../components/compare/CompareButton'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
 import { GripFace } from '../components/refractor/GripFace'
-import { accentForSlug, accentInk, BURNT } from '../components/refractor/accents'
+import { accentButton, accentForSlug, accentInk } from '../components/refractor/accents'
 import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { ConfidenceDot, RefractorClaim, RefractorSource } from '../components/provenance/RefractorClaim'
@@ -241,8 +241,8 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
               e.preventDefault()
               scrollToId('grip-lab', true)
             }}
-            className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide text-[#06121b] transition-transform active:translate-y-px"
-            style={{ background: accentColor, color: accentColor.toUpperCase() === BURNT ? '#fff' : undefined, boxShadow: `0 6px 20px -8px ${accentColor}` }}
+            className="inline-flex items-center gap-2 rounded-md px-5 py-3 font-mono text-sm font-bold uppercase tracking-wide transition-transform active:translate-y-px"
+            style={{ ...accentButton(accentColor), boxShadow: `0 6px 20px -8px ${accentColor}` }}
           >
             Open the grip file <span aria-hidden="true">↓</span>
           </a>
@@ -356,7 +356,7 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
             {p.shape.source ? (
               <>
                 <span aria-hidden="true" className="text-ink-3">/</span>
-                <RefractorSource source={p.shape.source} />
+                <RefractorSource source={p.shape.source} tone="panel" />
               </>
             ) : null}
           </div>
@@ -371,7 +371,7 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
               {p.spinAxis.source ? (
                 <>
                   <span aria-hidden="true" className="text-ink-3">/</span>
-                  <RefractorSource source={p.spinAxis.source} />
+                  <RefractorSource source={p.spinAxis.source} tone="panel" />
                 </>
               ) : null}
             </div>
@@ -402,7 +402,7 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
           {p.teaching.source ? (
             <>
               <span aria-hidden="true" className="text-ink-3">/</span>
-              <RefractorSource source={p.teaching.source} />
+              <RefractorSource source={p.teaching.source} tone="panel" />
             </>
           ) : null}
         </div>

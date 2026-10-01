@@ -65,3 +65,42 @@ export function accentInk(color: string): string {
 export function accentForSlug(slug: string): RefractorAccent {
   return ACCENT[slug] ?? FALLBACK_ACCENT
 }
+
+const CTA_DARK = '#06121B'
+const CTA_LIGHT = '#FFFFFF'
+
+function channels(hex: string): number[] {
+  return [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+}
+
+function luminance(hex: string): number {
+  const [r, g, b] = channels(hex).map((v) => {
+    const c = v / 255
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4
+  })
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+
+export function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x)
+  return (hi + 0.05) / (lo + 0.05)
+}
+
+function towardWhite(hex: string, amount: number): string {
+  return `#${channels(hex)
+    .map((v) => Math.round(v + (255 - v) * amount).toString(16).padStart(2, '0'))
+    .join('')}`.toUpperCase()
+}
+
+/** The accent-filled action button: dark ink while it reads at 4.5:1, white
+    where white does (burnt orange), else the fill lifts toward white in 5% steps
+    until the dark ink passes. Slate and chrome-grey accents need the lift. */
+export function accentButton(fill: string): { background: string; color: string } {
+  if (!/^#[0-9a-f]{6}$/i.test(fill)) return { background: fill, color: CTA_DARK }
+  for (let step = 0; step <= 20; step++) {
+    const background = step ? towardWhite(fill, step * 0.05) : fill
+    if (contrast(CTA_DARK, background) >= 4.5) return { background, color: CTA_DARK }
+    if (step === 0 && contrast(CTA_LIGHT, background) >= 4.5) return { background, color: CTA_LIGHT }
+  }
+  return { background: CTA_LIGHT, color: CTA_DARK }
+}

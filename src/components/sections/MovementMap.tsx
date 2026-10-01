@@ -126,7 +126,7 @@ export function MovementMap() {
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="w-full min-w-[640px]"
-        role="img"
+        role="group"
         aria-label={`Shape map of the filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch sits in the direction it breaks (ride up top, drop below, arm-side and glove-side across) against a spinless ball at center. A map of direction, not a measured magnitude.`}
         xmlns="http://www.w3.org/2000/svg"
       >
@@ -171,8 +171,10 @@ export function MovementMap() {
                 onFocus={() => setActive(slug)}
                 onBlur={() => setActive((s) => (s === slug ? null : s))}
               >
-                {/* a comfortable, invisible hit + touch target around the 7px dot */}
-                <circle cx={x} cy={y} r="16" fill="transparent" />
+                {/* the invisible hit target around the 7px dot: r=19 meets the 38-unit
+                    fan spacing exactly, so neighbours never overlap and no tap opens the
+                    wrong pitch. The link row below is the 44px touch equivalent. */}
+                <circle cx={x} cy={y} r="19" fill="transparent" />
                 <circle className="mm-focus-ring" cx={x} cy={y} r="12" fill="none" stroke="var(--color-seam)" strokeWidth="2" />
                 <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
                 <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />
@@ -238,7 +240,7 @@ export function MovementMap() {
             key={p.display.slug}
             to={`/pitch/${p.display.slug}`}
             viewTransition
-            className="mono-label inline-flex items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink"
+            className="mono-label inline-flex min-h-6 items-center any-pointer-coarse:min-h-11 text-seam transition-colors hover:text-ink"
           >
             {p.display.shortName} →
           </Link>

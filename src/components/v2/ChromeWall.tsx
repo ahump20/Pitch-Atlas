@@ -125,7 +125,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                       target="_blank"
                       rel="noreferrer noopener"
                       tabIndex={flipped ? 0 : -1}
-                      className="block max-w-full truncate font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone"
+                      className="block max-w-full truncate any-pointer-coarse:-my-[5px] any-pointer-coarse:py-[5px] font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone"
                     >
                       Grip: {gripCue.source.label} <span aria-hidden="true">↗</span>
                     </a>
@@ -136,7 +136,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                       target="_blank"
                       rel="noreferrer noopener"
                       tabIndex={flipped ? 0 : -1}
-                      className="block max-w-full truncate font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone"
+                      className="block max-w-full truncate any-pointer-coarse:-my-[5px] any-pointer-coarse:py-[5px] font-mono text-[10px] uppercase tracking-[0.1em] text-bone-2 underline decoration-bone-2/40 underline-offset-2 transition-colors hover:text-bone"
                     >
                       Shape: {shape.source.label} <span aria-hidden="true">↗</span>
                     </a>
@@ -145,7 +145,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
                     <Link
                       to={`/pitch/${display.slug}`}
                       tabIndex={flipped ? 0 : -1}
-                      className="inline-block min-w-0 truncate font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-bone-2"
+                      className="inline-block min-w-0 truncate any-pointer-coarse:-my-[5px] any-pointer-coarse:py-[5px] font-mono text-[10px] uppercase tracking-[0.14em] text-bone transition-colors hover:text-bone-2"
                     >
                       Open the full file <span aria-hidden="true">→</span>
                     </Link>

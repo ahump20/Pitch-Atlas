@@ -54,7 +54,7 @@ export function MovementMapPage() {
             A schematic arranged by each pitch's sourced shape language, not a measured trajectory. To
             read the poles (what ride, drop, run, and sweep mean, and why a tilt of the spin axis produces
             them), see{' '}
-            <a href="/learn/spin" className="text-seam underline-offset-2 hover:underline">
+            <a href="/learn/spin" className="text-seam underline decoration-seam/40 underline-offset-2 hover:decoration-current">
               Spin &amp; Movement
             </a>
             .
@@ -62,15 +62,15 @@ export function MovementMapPage() {
           <p className="mt-4 max-w-[72ch] text-sm leading-relaxed text-ink-2">
             Want the tracked version: induced break, spin rates, the numbers this page refuses to fake?
             That craft has its own keepers:{' '}
-            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
+            <a href="https://baseballsavant.mlb.com" target="_blank" rel="noreferrer noopener" className="text-seam underline decoration-seam/40 underline-offset-2 hover:decoration-current">
               Baseball Savant ↗
             </a>{' '}
             and the{' '}
-            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-seam underline-offset-2 hover:underline">
+            <a href="https://library.fangraphs.com/pitching/stuff-location-and-pitching-primer/" target="_blank" rel="noreferrer noopener" className="text-seam underline decoration-seam/40 underline-offset-2 hover:decoration-current">
               FanGraphs model primer ↗
             </a>
             . How to read them without losing the feel is its own wing:{' '}
-            <a href="/learn/metrics" className="text-seam underline-offset-2 hover:underline">
+            <a href="/learn/metrics" className="text-seam underline decoration-seam/40 underline-offset-2 hover:decoration-current">
               Reading Models
             </a>
             .

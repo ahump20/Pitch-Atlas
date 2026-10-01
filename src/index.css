@@ -663,6 +663,7 @@
                                      Now the global page field, not scoped. */
   --color-bone: #F6F1E6;          /* refined cream text (overrides the earlier #F2ECDD) */
   --color-bone-2: #C9C2B0;        /* warm secondary on the coal scene */
+  --color-bone-3: #969080;        /* muted ink on panels and plates (5.2:1 on press) */
   --color-ok-bright: #34E27E;     /* official-data dot, tuned for the dark field */
   --color-amber-bright: #FFC23C;  /* reputable-analysis dot, tuned for the dark field */
   --color-sand-bright: #CDBA8E;   /* secondhand / approximate */
@@ -1633,6 +1634,7 @@
   .rfx-grip-twin { float: left; width: clamp(38px, 22%, 44px); aspect-ratio: 1 / 1; margin: 0 9px 2px 0; }
   .rfx-grip-twin svg { display: block; width: 100%; height: 100%; }
   .rfx-scout-foot { margin-top: auto; padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  @media (any-pointer: coarse) { .rfx-scout-foot { gap: 12px; } }
   .rfx-scout-edition { font-family: var(--font-mono); font-size: 8px; letter-spacing: .16em; text-transform: uppercase; color: var(--color-bone);
     padding: 2px 7px; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--c3,#B9D4E5) 40%, rgba(246,241,230,.16)); white-space: nowrap; }
   .is-chase .rfx-scout-edition { color: #FFCC9E; border-color: rgba(191,87,0,.6); }
@@ -2159,11 +2161,11 @@
 /* ── design-system semantic vocabulary (additive) ───────────────────────
    One named vocabulary over the existing base tokens. Aliases resolve on the
    void by default and flip inside .field-cream where the meaning inverts.
-   Nothing is renamed; these only add names. New base values: --color-press-2
-   (foil-panel interior), --color-bone-3 (tertiary ink on the void). */
+   Nothing is renamed; these only add names. New base value: --color-press-2
+   (foil-panel interior); --color-bone-3 lives in the refractor @theme so
+   Tailwind generates text-bone-3. */
 :root {
   --color-press-2: #16130F;
-  --color-bone-3: #969080;
 
   /* surfaces */
   --surface-page: var(--color-void);
@@ -2255,8 +2257,9 @@
   --input: rgba(20, 22, 27, 0.18);
   --ring: #1F6E78;
 
-  /* design-system vocabulary — cream-context overrides (only the aliases whose
-     meaning inverts on cream; --cta-bg/-hover auto-flip via --color-seam) */
+  /* design-system vocabulary — cream-context overrides. var()-built aliases
+     resolve on :root, so --cta-bg/-hover and --focus-ring keep their void
+     values in here; nothing reads any of these names today. */
   --surface-card: var(--color-paper-2);
   --text-fg: var(--color-ink);
   --text-fg-2: var(--color-ink-2);

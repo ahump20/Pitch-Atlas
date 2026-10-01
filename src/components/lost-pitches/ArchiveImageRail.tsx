@@ -38,7 +38,7 @@ function ArchiveImageCard({ image, variant = 'grid' }: { image: ArchiveImage; va
           {image.source ? (
             <>
               <span aria-hidden="true" className="text-ink-3">/</span>
-              <RefractorSource source={image.source} />
+              <RefractorSource source={image.source} tone="panel" />
             </>
           ) : null}
         </div>

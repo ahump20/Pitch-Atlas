@@ -15,7 +15,8 @@ import type { DocumentationTier, LostPitch } from '../../data/types'
 
 const AXIS = { start: 1898, end: 1960 }
 const DECADES = [1900, 1910, 1920, 1930, 1940, 1950]
-const ROW_H = 34 // px per stacked row within a tier lane
+/* px per stacked row within a tier lane, set as --row-h on the lane: 34 under a
+   mouse, 44 on touch so every marker is a full 44px target. */
 const GAP = 18 // min % between two markers sharing a row: at 360px that is ~50px, which clears dot + code label
 
 // The same three trust tiers the provenance dots use: paper trail, thin, legend.
@@ -78,15 +79,18 @@ function Lane({ tier, label }: { tier: DocumentationTier; label: string }) {
         </span>
       </div>
 
-      <div className="relative mt-2" style={{ height: rows * ROW_H }}>
+      <div
+        className="relative mt-2 [--row-h:34px] any-pointer-coarse:[--row-h:44px]"
+        style={{ height: `calc(${rows} * var(--row-h))` }}
+      >
         {placed.map(({ pitch, year, left, row }) => (
           <Link
             key={pitch.slug}
             to={`/lost-pitches/${pitch.slug}`}
             title={`${pitch.name} (${pitch.era})`}
             aria-label={`${pitch.name}, ${label.toLowerCase()}, ${pitch.era}`}
-            className="group absolute flex items-center gap-1.5 rounded-sm py-2 outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan/80"
-            style={{ top: row * ROW_H, left: `${left}%` }}
+            className="group absolute flex h-(--row-h) items-center gap-1.5 rounded-sm outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan/80"
+            style={{ top: `calc(${row} * var(--row-h))`, left: `${left}%` }}
           >
             <span
               className="h-2.5 w-2.5 shrink-0 rounded-full ring-2 ring-transparent transition-[box-shadow] group-hover:ring-white/25"

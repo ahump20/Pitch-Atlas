@@ -25,15 +25,22 @@
     node scripts/design-sync.mjs            # preflight, build, re-point, sync
     node scripts/design-sync.mjs --check    # preflight only; no build, no sync
     node scripts/design-sync.mjs --skip-build   # sync against the current dist
+
+  --check also proves the token table's source commit is on origin/main. That
+  needs history, so it runs only where origin/main is fully fetched; `npm test`
+  never depends on it.
 */
 
 import { spawnSync } from 'node:child_process'
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { recordBundleProvenance } from '../.design-sync/artifact/source-provenance.mjs'
+import {
+  hasMainHistory, recordBundleProvenance, resolveSourceCommit,
+} from '../.design-sync/artifact/source-provenance.mjs'
 
 const REPO = process.cwd()
 const CONFIG = '.design-sync/config.json'
+const TOKENS = '.design-sync/artifact/tokens.json'
 const DRIVER = '.ds-sync/resync.mjs'
 const ENTRY = './src/components/ds/index.ts'
 const NODE_MODULES = 'node_modules'
@@ -149,6 +156,20 @@ if (cfg.cssEntry !== cssEntry) {
 }
 
 if (CHECK_ONLY) {
+  const { ref } = JSON.parse(readFileSync(resolve(REPO, TOKENS), 'utf8')).meta
+  if (hasMainHistory(REPO)) {
+    try {
+      resolveSourceCommit(ref, REPO)
+    } catch (error) {
+      die(`token table source ${ref}: ${error.message}`)
+    }
+    ok(`token table source ${ref} is on origin/main`)
+  } else {
+    console.error(
+      `· token table source ${ref} not checked: needs origin/main with full history ` +
+        `(git fetch origin main; add --unshallow in a shallow clone)`,
+    )
+  }
   ok('preflight clean (no build, no sync)')
   process.exit(0)
 }
