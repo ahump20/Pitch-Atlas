@@ -46,7 +46,9 @@ test('tracked token table matches the site palette', () => {
     assert.ok(guide.includes(`var(--${name})`), `guide must demonstrate --${name}`)
   }
   assert.doesNotMatch(css, /--gold\s*:/)
-  assert.doesNotMatch(guide, /var\(--gold\)|#ff2d6e|#caa14a/i)
+  assert.doesNotMatch(guide, /var\(--gold\)/)
+  // Every colour on the card is a token, so it follows the palette instead of copying it.
+  assert.doesNotMatch(guide, /[^&\w]#[0-9a-f]{3,8}\b|\brgba?\(/i, 'guide colours must be tokens')
   assert.match(guide, /there is no\s*<code>--gold<\/code> token/)
   assert.match(conventions, /burnt-orange foil/)
   assert.match(conventions, /var\(--foil-type\)/)
