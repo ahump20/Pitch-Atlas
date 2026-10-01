@@ -342,13 +342,17 @@ touch emulation (`isMobile`, `hasTouch`): the site grows controls with
 `any-pointer-coarse` rules, so the 2026-09-22 figures below were mouse-pointer
 sizes. On touch every control on 13 main routes, and every button in the open
 compare dialog (close included), is 44px+ except the scout card back's source
-links (25px) and inline text links (WCAG-exempt). `SelectItem` and the dialog
+links (25px), the movement map's dots (38px: r=19 hit circles on a 38-unit fan
+never overlap, so no tap opens the wrong pitch; the link row below is the 44px
+equivalent) and inline text links (WCAG-exempt). `SelectItem` and the dialog
 close gained `any-pointer-coarse` sizing the same day; no route-level Select was
 opened (they sit behind Supabase forms). Under a mouse:
 buttons 41–42px, segments 34, chips 30, select options and the dialog close 28,
 compare tray remove 32×36 — all over WCAG's 24px floor. An axe WCAG 2.2 AA run over
-16 routes at 1280px is clean as of the same date (violations only; text over foil
-and gradients lands in axe's "incomplete" bucket and is unchecked).
+16 routes at 1280px is clean as of the same date, and so is a second run over
+every filed specimen with every `<details>` and `aria-expanded` disclosure opened
+(violations only; text over foil and gradients lands in axe's "incomplete" bucket
+and is unchecked).
 Open items:
 - Tooltip: a tap never opens it (Radix), so touch readers never see its text.
 - SegmentedToggle: takes no `aria-label` and draws no group; on a phone a

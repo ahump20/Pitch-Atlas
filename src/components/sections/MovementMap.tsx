@@ -171,8 +171,10 @@ export function MovementMap() {
                 onFocus={() => setActive(slug)}
                 onBlur={() => setActive((s) => (s === slug ? null : s))}
               >
-                {/* a comfortable, invisible hit + touch target around the 7px dot */}
-                <circle cx={x} cy={y} r="22" fill="transparent" />
+                {/* the invisible hit target around the 7px dot: r=19 meets the 38-unit
+                    fan spacing exactly, so neighbours never overlap and no tap opens the
+                    wrong pitch. The link row below is the 44px touch equivalent. */}
+                <circle cx={x} cy={y} r="19" fill="transparent" />
                 <circle className="mm-focus-ring" cx={x} cy={y} r="12" fill="none" stroke="var(--color-seam)" strokeWidth="2" />
                 <circle cx={x} cy={y} r="7" fill={c} fillOpacity="0.9" />
                 <circle cx={x} cy={y} r="7" fill="none" stroke="var(--color-void)" strokeWidth="1" />

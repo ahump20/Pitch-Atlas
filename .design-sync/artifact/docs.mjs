@@ -7,12 +7,15 @@
   - project/README.md: the authored head becomes brand-book.md, then
     not-synced.md; everything from the section after "Not synced" on (the
     page's Starters, Migrated and generated sections) is kept as published.
-  - project/guidelines/docs/<name>.md: each DOC_SECTIONS file, copied from docs/.
+  - project/guidelines/docs/<name>.md: each DOC_SECTIONS file from docs/, with
+    each hard-wrapped bullet joined onto one line. The page splits a list item at
+    its first line break, so a wrapped bullet would render as a bullet plus a
+    stray paragraph; docs/ keeps its wrapping for reading in git.
 
   Run it on a working copy of the live project/ folder, after reading the
   artifact, and publish what it changes.
 */
-import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -30,6 +33,35 @@ export const DOC_SECTIONS = [
 
 const NOT_SYNCED = '## Not synced'
 
+const FENCE = /^\s*(```|~~~)/
+const ITEM = /^\s*([-*+]|\d+[.)])\s/
+const BLOCK = /^\s*(#|\||>)/
+
+// Index of each line that continues the list item above it (outside fences).
+export function wrappedBulletLines(md) {
+  const hits = []
+  let fence = false
+  let item = false
+  md.split('\n').forEach((line, i) => {
+    if (FENCE.test(line)) { fence = !fence; item = false; return }
+    if (fence) return
+    if (ITEM.test(line)) { item = true; return }
+    if (item && line.trim() && !BLOCK.test(line)) { hits.push(i); return }
+    item = false
+  })
+  return hits
+}
+
+export function unwrapBullets(md) {
+  const join = new Set(wrappedBulletLines(md))
+  const out = []
+  md.split('\n').forEach((line, i) => {
+    if (join.has(i)) out[out.length - 1] = `${out[out.length - 1].trimEnd()} ${line.trim()}`
+    else out.push(line)
+  })
+  return out.join('\n')
+}
+
 export function assembleReadme(published, brandBook, notSynced) {
   const start = published.indexOf(`\n${NOT_SYNCED}\n`)
   if (start < 0) throw new Error(`published README has no "${NOT_SYNCED}" section`)
@@ -46,7 +78,9 @@ export function writeDocs(project, root = repoRoot) {
     read('.design-sync/artifact/brand-book.md'), read('.design-sync/artifact/not-synced.md')))
   const out = join(project, 'guidelines', 'docs')
   mkdirSync(out, { recursive: true })
-  for (const name of DOC_SECTIONS) copyFileSync(join(root, 'docs', name), join(out, name))
+  for (const name of DOC_SECTIONS) {
+    writeFileSync(join(out, name), unwrapBullets(readFileSync(join(root, 'docs', name), 'utf8')))
+  }
   return ['README.md', ...DOC_SECTIONS.map((name) => `guidelines/docs/${name}`)]
 }
 
