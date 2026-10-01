@@ -1,9 +1,12 @@
 """Build the carried B pass and the measured, current-source D token table.
 
 From the repository root, pass the same verified main commit to both steps:
-  node .design-sync/artifact/resolve-tokens.mjs carried.json resolved.json --source-ref main@c5aed55
+  node .design-sync/artifact/resolve-tokens.mjs carried.json resolved.json --source-ref main@<commit>
   python3 .design-sync/artifact/build_tokens.py carried.json b.json d.json \
-    --resolved resolved.json --source-ref main@c5aed55 --synced 2026-09-28
+    --resolved resolved.json --source-ref main@<commit> --synced <YYYY-MM-DD>
+
+The D table's meta.ref and meta.synced are the only record of the source commit
+and sync date; nothing else in the repository restates them.
 
 Run npm run design-sync without --skip-build first to regenerate the measured
 CSS bundle and its source manifest from the same working tree.

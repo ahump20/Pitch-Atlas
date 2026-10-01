@@ -12,17 +12,27 @@ const root = fileURLToPath(new URL('../..', import.meta.url))
 const path = (name) => join(root, name)
 const read = (name) => readFileSync(path(name), 'utf8')
 const tokens = JSON.parse(read('.design-sync/artifact/tokens.json'))
-const notes = read('.design-sync/NOTES.md')
-const source = notes.match(/from (main@[0-9a-f]{7,40}) on (\d{4}-\d{2}-\d{2})/)
 const pythonEnv = { ...process.env, PYTHONDONTWRITEBYTECODE: '1' }
 const builder = path('.design-sync/artifact/build_tokens.py')
 const ZERO = '0'.repeat(64)
 const sha256 = (text) => createHash('sha256').update(text).digest('hex')
 
-test('tracked palette and provenance match the documented source', () => {
-  assert.ok(source, 'design-sync notes must state a source commit and sync date')
-  assert.equal(tokens.meta.ref, source[1])
-  assert.equal(tokens.meta.synced, source[2])
+test('tokens.json is the only copy of the sync ref and date', () => {
+  assert.match(tokens.meta.ref, /^main@[0-9a-f]{7,40}$/)
+  assert.match(tokens.meta.synced, /^\d{4}-\d{2}-\d{2}$/)
+  // Docs point at tokens.json instead of quoting it. guides.py also names a main
+  // commit, but that is where its prose was written from, a different fact. NOTES
+  // dates its own audits, so only the ref is checked there.
+  const quotesNoRef = ['.design-sync/NOTES.md', '.design-sync/artifact/not-synced.md', '.design-sync/artifact/build_tokens.py']
+  for (const file of quotesNoRef) {
+    assert.doesNotMatch(read(file), /main@[0-9a-f]{7,40}\b/, `${file} quotes a sync ref`)
+  }
+  for (const file of quotesNoRef.slice(1)) {
+    assert.ok(!read(file).includes(tokens.meta.synced), `${file} quotes the sync date`)
+  }
+})
+
+test('tracked token table matches the site palette', () => {
   assert.deepEqual(tokens.meta.components,
     JSON.parse(read('.design-sync/config.json')).componentSrcMap)
   assert.equal(tokens.other.tokens.some(({ name }) => name === 'gold'), false)

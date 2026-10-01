@@ -2,8 +2,8 @@
 
 **System of record (since 2026-09-18): the Design System artifact**
 https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — deliberately re-synced
-from main@c5aed55 on 2026-09-28 (current Version 31, revision
-`1790655721-94da`). This sync carries the one approved burnt orange `#BF5700`
+from the main commit and date in `meta` of `.design-sync/artifact/tokens.json`
+(current Version 31, revision `1790655721-94da`). This sync carries the one approved burnt orange `#BF5700`
 instead of `#FF6A29`, bone offspeed `#D8CFBB`, warm-white eephus `#FFE9DE`,
 the powder twelve-six and teal circle-change throwback finishes, the three
 trust-tier tokens, and the r3f 9.7 scheduler fix below. The later palette audit
@@ -48,7 +48,10 @@ back here.
    tab never paints) and read the cover, the brand book and the cards.
 
 `tokens.json` here is the published token table; `build_tokens.py` + `usage.py`
-regenerate it (`resolve-tokens.mjs` measures the values in a browser). The brand
+regenerate it (`resolve-tokens.mjs` measures the values in a browser). Its
+`meta.ref` and `meta.synced`, set from `--source-ref` and `--synced`, are the
+only record of which main commit and date the table came from. Do not restate
+them in prose; a test fails if these docs quote a `main@<commit>`. The brand
 book (`project/README.md`) lives only in the artifact: read it there, edit it,
 republish it. Keep every bullet on ONE line: the page's renderer splits a list
 item at its first line break, so a hard-wrapped bullet renders as a bullet plus a
