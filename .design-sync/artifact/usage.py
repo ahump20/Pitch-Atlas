@@ -100,7 +100,7 @@ COLOR = {
     'sidebar-border': 'shadcn sidebar default. Declared but read by nothing the site ships.',
     'sidebar-ring': 'shadcn sidebar default, the site cyan #5fe0ea. Declared but read by nothing the site ships.',
     'color-press-2': 'Deeper press (#16130f). Only `surface-card-2` names it, and nothing on the site paints either.',
-    'color-bone-3': 'Tertiary bone. Nothing on the site paints it by this name (its `text-bone-3` class has no rule behind it), but the same hex is what `color-ink-3` turns to inside panels and plates (5.2:1 on `color-press`).',
+    'color-bone-3': 'Tertiary bone, the muted ink on panels and plates (5.2:1 on `color-press`). `text-bone-3` paints source links on a press panel and the design-system showcase labels, and `color-ink-3` turns to the same hex inside `.rfx-panel` and its kin.',
     'surface-page': 'Semantic alias of `color-void`, the page ground. Nothing on the site reads it; pages paint `color-void`.',
     'surface-stage': 'Semantic alias of `color-stage`, the ground for heroes and the colophon. Nothing on the site reads it.',
     'surface-card': 'Semantic alias of `color-press`, the raised card ground; inside `.field-cream` it is #eae2d2. Nothing on the site reads it; `.rfx-panel` paints `color-press`.',
