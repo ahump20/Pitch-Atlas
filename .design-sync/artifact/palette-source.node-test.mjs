@@ -23,7 +23,8 @@ test('tokens.json is the only copy of the sync ref and date', () => {
   // Docs point at tokens.json instead of quoting it. guides.py also names a main
   // commit, but that is where its prose was written from, a different fact. NOTES
   // dates its own audits, so only the ref is checked there.
-  const quotesNoRef = ['.design-sync/NOTES.md', '.design-sync/artifact/not-synced.md', '.design-sync/artifact/build_tokens.py']
+  const quotesNoRef = ['.design-sync/NOTES.md', '.design-sync/artifact/not-synced.md',
+    '.design-sync/artifact/brand-book.md', '.design-sync/artifact/build_tokens.py']
   for (const file of quotesNoRef) {
     assert.doesNotMatch(read(file), /main@[0-9a-f]{7,40}\b/, `${file} quotes a sync ref`)
   }

@@ -1,6 +1,7 @@
 # design-sync notes — Pitch Atlas
 
-**System of record (since 2026-09-18): the Design System artifact**
+**System of record: this repo. Published mirror: the Design System artifact**
+(since 2026-10-01; the artifact was the record from 2026-09-18 until then)
 https://claude.ai/artifact/JCrrMN5H3gQz5VhQNkB9RA — deliberately re-synced
 from the main commit and date in `meta` of `.design-sync/artifact/tokens.json`
 (current Version 32, revision `1790879323-a3e4`). This sync carries the one approved burnt orange `#BF5700`
@@ -37,7 +38,8 @@ back here.
    versions of itself, so build on what is published, never on a local copy.
 3. From a working copy of the artifact's `project/` folder:
    `python3 .design-sync/artifact/guides.py <project>` (component READMEs, `.d.ts`,
-   groups), `node .design-sync/artifact/package.mjs <project> <tokens.json>`
+   groups), `node .design-sync/artifact/docs.mjs <project>` (the brand book, Not
+   synced and the doc sections), `node .design-sync/artifact/package.mjs <project> <tokens.json>`
    (bundle, React lib, stylesheet, previews with `height=__H__`, fonts),
    `WEBGL=1 node .design-sync/artifact/render-check.mjs <project> <tokens.json> <shots>`
    (must show no errors, `canvases=2 loading=0` for BallStage), then write each
@@ -55,11 +57,18 @@ back here.
 regenerate it (`resolve-tokens.mjs` measures the values in a browser). Its
 `meta.ref` and `meta.synced`, set from `--source-ref` and `--synced`, are the
 only record of which main commit and date the table came from. Do not restate
-them in prose; a test fails if these docs quote a `main@<commit>`. The brand
-book (`project/README.md`) lives only in the artifact: read it there, edit it,
-republish it. Keep every bullet on ONE line: the page's renderer splits a list
-item at its first line break, so a hard-wrapped bullet renders as a bullet plus a
-stray paragraph.
+them in prose; a test fails if these docs quote a `main@<commit>`. Every word
+of prose the artifact shows comes from here: the brand book's authored part is
+`.design-sync/artifact/brand-book.md`, its Not synced section is
+`.design-sync/artifact/not-synced.md`, and its doc sections are the `docs/` files
+`docs.mjs` names (`DOC_SECTIONS`). `docs.mjs` writes all three into a working copy
+of `project/` and keeps the page's own sections (Starters, Migrated, the generated
+tail) as published. Edit the repo copy, never the artifact's README head: a page
+edit there is lost on the next publish. Before 2026-10-01 the brand book lived only
+in the artifact and its doc sections were hand-copied, so NORTHSTAR there had
+fallen 258 lines behind `docs/`. Keep every bullet on ONE line (a test enforces
+it): the page's renderer splits a list item at its first line break, so a
+hard-wrapped bullet renders as a bullet plus a stray paragraph.
 
 Before token regeneration, run `npm run design-sync` without `--skip-build`.
 That full build writes `ds-bundle/.source-provenance.json` only after the sync
@@ -328,10 +337,16 @@ fallback; the artifact render uses Martian Mono. Capture-only.
 Focus is visible everywhere once the transition settles (text field, search field
 and dialog close ring cyan; measuring before the 0.2s transition finishes reads as
 "no focus" — wait ~600ms). Escape closes the dialog and focus stays trapped inside.
-Open items, none fixed here:
-- Touch size (site bar 44px): buttons 41–42px tall, segments 34, a specimen card's
-  Compare link 36, chips 30, select options and the dialog close 28; compare tray
-  remove 32×36 (CSS). All clear WCAG's 24px floor.
+Touch size (site bar 44px), re-measured 2026-10-01 on the built site at 390px WITH
+touch emulation (`isMobile`, `hasTouch`): the site grows controls with
+`any-pointer-coarse` rules, so the 2026-09-22 figures below were mouse-pointer
+sizes. On touch every control on 13 main routes is 44px+ except the scout card
+back's source links (25px) and inline text links (WCAG-exempt). Under a mouse:
+buttons 41–42px, segments 34, chips 30, select options and the dialog close 28,
+compare tray remove 32×36 — all over WCAG's 24px floor. An axe WCAG 2.2 AA run over
+16 routes at 1280px is clean as of the same date (violations only; text over foil
+and gradients lands in axe's "incomplete" bucket and is unchecked).
+Open items:
 - Tooltip: a tap never opens it (Radix), so touch readers never see its text.
 - SegmentedToggle: takes no `aria-label` and draws no group; on a phone a
   four-option toggle wraps its labels ("A–Z" splits).
@@ -340,27 +355,43 @@ Open items, none fixed here:
   path (arrows switch view, F flips the hand, H lifts it). Other mounts need one.
 - Provenance labels render at 8–10px (ScoutRow row labels 8px, badges 10px, chips
   9.5px, stamps 9px).
-- `DesignSystemShowcase.tsx` uses `text-bone-3`, which Tailwind never generates, so
-  its variant labels lose their color.
 
 ## Color, as the site paints it (audited 2026-09-22, live CSS/JS read in a browser)
 Token values match the live site exactly; the guidance had drifted because it was
 written from the semantic layer, which the site declares and never reads. The
 brand book's Color section (artifact Version 15) is now built from painted values.
-Open items on the site, none fixed here:
+Open items on the site:
 - The semantic block (`surface-*`, `text-fg*`, `cta-*`, `focus-ring`,
   `confidence-*`, `border-card`, `hairline-*`) and the chart/sidebar tokens are
   never read. The `var()`-built aliases resolve on `:root`, so inside
-  `.field-cream` they keep their void values; the "auto-flips" comment is false.
+  `.field-cream` they keep their void values (the stylesheet comment now says so).
 - Three tier color sets: ConfidenceDot (`CONFIDENCE_COLOR`), the cream stats plate
   (`CARD_INK`), the home card backs (`STAGE_TIER_DOT`). `confidence-*` matches
   none; `confidence-unverified` is gray while ConfidenceDot paints unverified red.
-- `/repertoire/:id` prints the cream-field family inks (`FAMILY_ACCENT`) on the
-  void: specialty #4e555b at 2.7:1 (under 3:1), the others 3.1–3.8:1.
 - `cta-text` white on #ff2d44 is 3.7:1 (unused today).
-- Retired cyan #37d6ff is hard-coded in the `.v2-cta` outer glow, ExternalMediaRail
-  (two gradients) and GripLibrary's loading shimmer, and is the `var(--gc|--c3)`
-  fallback in `.rfx-entry`, `.rfx-plate`, `.rfx-panel:before`, `.v2-rim`,
-  `.v2-flip-btn`; chart-1/2 and sidebar tokens still carry it.
+- Fixed since the audit (checked 2026-10-01): retired cyan #37d6ff is gone from
+  `src/` outside test fixtures, `FAMILY_ACCENT` now prints the bright family
+  accents on the void, and `text-bone-3` is generated (`--color-bone-3` moved
+  into the refractor `@theme`).
 - Two secondary grays on the open page: `ink-2` #c2c7d6 (cool) and `bone-2`
   #c9c2b0 (warm).
+
+## Legacy files in the artifact (archived 2026-10-01)
+The 2026-09-18 migration carried the standalone project's files over whole. This
+artifact type renders only `components/<Comp>/preview.html` cards, the README and
+other `*.md` as prose sections, so the legacy files were either invisible or, for
+the ui_kit READMEs, published as prose that contradicted the brand book (the
+retired "Preserving & Progressing" line, "Sourced, not corrected" staged as a
+motto, a gold 1/1). The 12 `guidelines/*.card.html` cards were written against a
+token vocabulary the site never declares (`--space-N`, `--text-hero`,
+`--shadow-lift`, `--glow-cyan`, `--inset-mount`, `.pa-*` classes) and linked a
+`../styles.css` that does not exist; the voice card staged provenance as a motto,
+the mark card redrew the logo in retired cyan, and the motion card looped at rest.
+They, `ui_kits/**`, the legacy `tokens/*.css` sheets, `docs/_ds_bundle.*` and
+`docs/_vendor/**` (superseded by `components/bundle.*`), `brand-motion/**` and
+`Pitch Atlas - Merged Home.html` moved to `archived/<old path>`, which the page
+keeps but leaves out of Overview, search, the api/ cards and manifest.json. The
+starter template, `assets/notes/**` (the migration report) and
+`reference/PitchAtlasTheme.swift` stay. The repo's copy of
+`ios-token-parity.card.html` was deleted for the same reason: it quoted retired
+cyan and the old per-claim tier colors as current iOS parity; git history has it.
