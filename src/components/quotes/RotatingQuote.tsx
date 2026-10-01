@@ -41,7 +41,7 @@ export function RotatingQuote({
         ) : (
           q.attribution
         )}
-        {q.context ? <span className="text-bone-2/45"> &middot; {q.context}</span> : null}
+        {q.context ? <span> &middot; {q.context}</span> : null}
       </figcaption>
     </figure>
   )

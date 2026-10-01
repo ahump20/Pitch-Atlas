@@ -1,6 +1,6 @@
 ## Not synced
 
-The published system was re-synced from the site's code (ahump20/Pitch-Atlas, main@c5aed55) on 2026-09-28. The site build is bundled for the artifact; publication and preview checks are separate steps. What this page cannot carry the way the site does:
+The published system was re-synced from the site's code (ahump20/Pitch-Atlas); the commit and date are in `meta` of `tokens.json`. The site build is bundled for the artifact; publication and preview checks are separate steps. What this page cannot carry the way the site does:
 
 - The foil, readable type foil, and ember gradients run longer than a token value holds, so they live in the bundled stylesheet rather than the token table. Use `var(--foil)` for material and rims, `var(--foil-type)` for clipped text, and `var(--ember)` for the 1/1. The historical `.is-gold` class and `gold` prop remain site-compatible names; there is no active `gold` token.
 - Three tokens the site no longer reads stay listed for anything that still names them: `color-dim`, `ease-in`, `blur-2xl`.

@@ -33,17 +33,32 @@ export function ConfidenceDot({
   )
 }
 
-export function RefractorSource({ source, className = '' }: { source: Source; className?: string }) {
+/* `tone` follows the ground: ink-3 reads 5.3:1 on the void but 4.3:1 on a
+   press panel, where the muted ink is bone-3 (5.2:1). */
+const SOURCE_TONE = {
+  void: 'text-ink-3 decoration-ink-3/40',
+  panel: 'text-bone-3 decoration-bone-3/40',
+} as const
+
+export function RefractorSource({
+  source,
+  className = '',
+  tone = 'void',
+}: {
+  source: Source
+  className?: string
+  tone?: keyof typeof SOURCE_TONE
+}) {
   return (
     <a
       href={source.url}
       target="_blank"
       rel="noreferrer noopener"
-      className={`inline-flex min-w-0 max-w-full items-baseline gap-1 any-pointer-coarse:-my-[15px] any-pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.06em] text-ink-3 underline decoration-ink-3/40 decoration-1 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan ${className}`}
+      className={`inline-flex min-w-0 max-w-full items-baseline gap-1 any-pointer-coarse:-my-[15px] any-pointer-coarse:py-[15px] font-mono text-[10px] uppercase tracking-[0.06em] ${SOURCE_TONE[tone]} underline decoration-1 underline-offset-2 transition-colors hover:text-bone hover:decoration-cyan ${className}`}
       title={`${source.label}${source.season ? ` / ${source.season}` : ''}. Opens in a new tab.`}
     >
       <span className="min-w-0 max-w-[28ch] truncate">{source.label}</span>
-      {source.season ? <span className="opacity-70">/ {source.season}</span> : null}
+      {source.season ? <span>/ {source.season}</span> : null}
       <span aria-hidden="true">↗</span>
     </a>
   )

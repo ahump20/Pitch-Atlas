@@ -31,7 +31,6 @@ jobs:
         uses: actions/checkout@v7
         with:
           persist-credentials: false
-          fetch-depth: 0 # artifact provenance tests compare a recorded main commit
 
       - name: Download actionlint
         id: get_actionlint

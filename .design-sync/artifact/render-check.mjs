@@ -43,6 +43,10 @@ const results = {}
 const comps = readdirSync(join(ROOT, 'components'), { withFileTypes: true })
   .filter((d) => d.isDirectory() && existsSync(join(ROOT, 'components', d.name, 'preview.html')))
   .map((d) => d.name).filter((n) => !only || only.includes(n))
+// Playwright's screenshot repeats document.fonts.ready after preparing the page;
+// that second wait can stall on the animated 3D stage even when fonts are ready.
+// Each page waits for fonts itself below, so skip the repeat.
+process.env.PW_TEST_SCREENSHOT_NO_FONTS_READY = '1'
 for (const name of comps) {
   const raw = readFileSync(join(ROOT, 'components', name, 'preview.html'), 'utf8')
   const marker = raw.split('\n', 1)[0]
@@ -71,12 +75,11 @@ for (const name of comps) {
     cyan: getComputedStyle(document.documentElement).getPropertyValue('--color-cyan').trim(),
     paper: getComputedStyle(document.documentElement).getPropertyValue('--color-paper').trim(),
   }))
-  // Playwright's screenshot repeats document.fonts.ready after preparing the page;
-  // that second wait can stall on the animated 3D stage even when fonts are ready.
-  const fontsReady = await page.waitForFunction(() => document.fonts.status === 'loaded', null, { timeout: 10000 })
-    .then(() => true).catch(() => false)
-  if (!fontsReady) errors.push('fonts did not finish loading before screenshot')
-  process.env.PW_TEST_SCREENSHOT_NO_FONTS_READY = '1'
+  try {
+    await page.waitForFunction(() => document.fonts.status === 'loaded', null, { timeout: 10000 })
+  } catch {
+    errors.push('fonts did not finish loading before screenshot')
+  }
   await page.screenshot({ path: join(SHOTS, `${name}.png`), fullPage: true })
   results[name] = { marker, ...m, errors: errors.slice(0, 3) }
   await page.close()

@@ -189,11 +189,11 @@ export function PrivacyPage() {
             Report a problem with any note or post through its in-product Report action. That is
             the fastest route to a human review. Questions about how the archive itself is built and
             sourced are answered on the{' '}
-            <Link to="/about" className="text-seam transition-colors hover:text-ink">
+            <Link to="/about" className="text-seam underline decoration-seam/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-current">
               About page
             </Link>{' '}
             and the{' '}
-            <Link to="/sources" className="text-seam transition-colors hover:text-ink">
+            <Link to="/sources" className="text-seam underline decoration-seam/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-current">
               source registry
             </Link>
             .

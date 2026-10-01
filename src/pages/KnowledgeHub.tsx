@@ -151,7 +151,7 @@ export function KnowledgeHub() {
             <EggButton
               tidbitId="sixty-six"
               label="Reveal a hidden note about why the pitching rubber sits 60 feet 6 inches away"
-              className="mono-label text-ink-3/55"
+              className="mono-label text-ink-3"
             >
               60&prime;&thinsp;6&Prime;
             </EggButton>
