@@ -2068,7 +2068,6 @@
   100% { opacity: 0; background-position: -20% 0; }
 }
 @keyframes rfx-reveal { from { opacity: 0; transform: translateY(26px) scale(.96); } }
-@keyframes rfx-drift { 0% { background-position: 0 0,0 0,12% 16%; } 100% { background-position: 0 0,0 0,82% 70%; } }
 @keyframes rfx-spin { to { transform: rotate(360deg); } }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2753,24 +2752,42 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
   to { transform: translateY(44px) scale(0.92) rotate(-2.5deg); opacity: 0.88; }
 }
 
-/* ── the live foil layer (FoilLayer.tsx): a canvas behind the card's DOM
-   content. It fades in on its first real frame and the CSS gradient stand-ins
-   mute, so there is never double glare; if GL never arrives, the CSS card
-   simply keeps standing. The spring writes the tilt per-frame, so the card's
-   own transform transition steps aside while the tilt is live. ── */
+/* ── the live card material (material/MaterialLayer.tsx): one canvas the size
+   of the card, sitting between the stock and the print. z-index 2 puts it over the
+   field and the media and under the header, the cue plate and the strip, so the rim
+   and the field carry the foil and only a thin glaze crosses the window. While the
+   material is live the print leaves its own stacking context (.rfx-inner drops its
+   z-index) so that order can hold, the CSS bezel steps aside for the shader's, and
+   the gradient stand-ins mute so there is never double glare. If GL never arrives
+   the CSS card simply keeps standing. The spring writes the tilt per-frame, so the
+   card's own transform transition steps aside while the tilt is live. ── */
 @layer components {
   .rfx-foil-canvas {
-    position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%;
+    position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%;
     pointer-events: none; opacity: 0; transition: opacity .3s ease;
-    border-radius: 16px;
+    border-radius: 9px; clip-path: inset(0 round 9px);
   }
   .is-foil-live .rfx-foil-canvas { opacity: 1; }
-  .is-foil-live .rfx-field::before { opacity: .06; }
-  .is-foil-live .rfx-field::after { opacity: .08; }
-  .rfx-card.is-foil-live:hover .rfx-field::after { opacity: .08; }
+  .rfx-card .rfx-head { position: relative; z-index: 9; }
+  .rfx-card.is-foil-live .rfx-inner { z-index: auto; }
+  .rfx-card.is-foil-live .rfx-field { box-shadow: none; }
+  .rfx-card.is-foil-live .rfx-field::before,
+  .rfx-card.is-foil-live .rfx-field::after { display: none; }
   .rfx-card.is-live-tilt { transition: none; }
   /* horizontal drags rock the card; vertical swipes stay the page's scroll */
   .rfx-card.has-foil { touch-action: pan-y; }
+  /* the inspector grabs on both axes, so it owns the whole gesture */
+  .rfx-card.is-inspector { touch-action: none; cursor: grab; }
+  .rfx-card.is-inspector:active { cursor: grabbing; }
+  /* the back (SpecimenBack.tsx) is its own card: it tilts on its own engine and its
+     quiet material sits under the record, never over it */
+  .v2-face-back { perspective: 1500px; }
+  .v2-back { transform: rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg)); transition: transform .4s cubic-bezier(.2,.8,.2,1); }
+  .v2-back.is-live-tilt { transition: none; }
+  /* `.v2-back > *` lifts the record to position:relative; the canvas must stay out of flow */
+  .v2-back > .rfx-foil-canvas { position: absolute; z-index: 0; border-radius: var(--radius-md); clip-path: inset(0 round var(--radius-md)); }
+  .v2-back.is-foil-live::before { display: none; }
+  @media (prefers-reduced-motion: reduce) { .v2-back { transform: none !important; transition: none; } }
 }
 
 /* ============================================================

@@ -1,16 +1,25 @@
 import { accentInk } from './accents'
-import { lazy, Suspense, useEffect, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
-import { useCardTilt } from '../../hooks/useCardTilt'
+import { useCardTilt, type TiltMode } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useInView } from '../../hooks/useInView'
 import { SpecimenBoundary } from '../ball/SpecimenBoundary'
+import { hexToTriple, type MaterialIdentity } from './material/cardMaterialProgram'
+import { presetForEntry, type CardMaterial } from './material/materialPresets'
+import { useAmbientMotion } from './material/useAmbientMotion'
 
 /*
   The front-of-card job is narrow: name, grip face, one sourced cue, and the
-  route into the full file. The foil and spring tilt stay decorative. Detailed
-  shape, family, grade, and source records live on the back or in the specimen.
+  route into the full file. Detailed shape, family, grade, and source records
+  live on the back or in the specimen.
+
+  The material is the card's whole face. One canvas the size of the card sits
+  between the stock and the print — under the header, the cue plate and the
+  strip, over the field and the media — so the rim and the field carry the foil
+  and only a thin lamination glaze crosses the window. Without WebGL2 the CSS
+  ramp underneath is the same material at rest.
 */
 
 export type RefractorAccent = {
@@ -22,7 +31,7 @@ export type RefractorAccent = {
   finish?: 'powder' | 'teal'
 }
 
-const FoilLayer = lazy(() => import('./foil/FoilLayer'))
+const MaterialLayer = lazy(() => import('./material/MaterialLayer'))
 
 export interface RefractorCardProps {
   to?: string
@@ -37,8 +46,25 @@ export interface RefractorCardProps {
   cue?: string
   confidence?: { label: string; color: string; approx?: boolean }
   maxWidth?: number
+  /** Mount the live material (hero, the filed set, the inspector). */
   foil?: boolean
+  /** How the card is handled: `hero` turns slowly on its own, `inspector` can be grabbed on both axes. */
+  mode?: TiltMode
+  /** The finish; defaults to the pitch's own preset. */
+  material?: CardMaterial
   className?: string
+}
+
+const BONE = hexToTriple('#f6f1e6')
+
+/** The bezel ring the CSS draws with box-shadow, as the shader's colour. */
+function ringTriple(accent: RefractorAccent, gold: boolean): [number, number, number] {
+  if (gold) return hexToTriple('#bf5700')
+  if (accent.finish === 'powder') return hexToTriple('#c41e3a')
+  if (accent.finish === 'teal') return hexToTriple('#00b2a9')
+  const c3 = hexToTriple(accent.c3)
+  // color-mix(in srgb, c3 42%, rgba(246,241,230,.5)) composited over the near-black field
+  return [0, 1, 2].map((i) => c3[i] * 0.42 + BONE[i] * 0.29 + 0.03 * 0.29) as [number, number, number]
 }
 
 export function RefractorCard({
@@ -54,13 +80,17 @@ export function RefractorCard({
   confidence,
   maxWidth = 360,
   foil = false,
+  mode = 'rest',
+  material,
   className,
 }: RefractorCardProps) {
-  const { ref: tiltRef, handlers, store } = useCardTilt<HTMLElement>()
+  const { ref: tiltRef, handlers, store, engine } = useCardTilt<HTMLElement>(mode)
   const webgl = useWebGLSupport()
   const reduced = useReducedMotion()
   const { ref: viewRef, inView } = useInView<HTMLDivElement>()
   const [foilArmed, setFoilArmed] = useState(false)
+
+  useAmbientMotion(engine, { active: foil && mode === 'hero', inView, reduced })
 
   useEffect(() => {
     if (!foil || foilArmed) return
@@ -78,6 +108,15 @@ export function RefractorCard({
     return () => window.clearTimeout(timeout)
   }, [foil, foilArmed, inView, viewRef])
 
+  const resolvedMaterial = useMemo(
+    () => material ?? presetForEntry({ gold, finish: accent.finish }),
+    [material, gold, accent.finish],
+  )
+  const identity = useMemo<MaterialIdentity>(
+    () => ({ c2: hexToTriple(accent.c2), c3: hexToTriple(accent.c3), ring: ringTriple(accent, gold), seed: index }),
+    [accent, gold, index],
+  )
+
   const cardStyle = {
     '--c1': accent.c1,
     '--c2': accent.c2,
@@ -87,78 +126,83 @@ export function RefractorCard({
     '--i': index,
   } as CSSProperties
 
+  // reduced motion still mounts the material: it draws its one rest frame and holds
+  const liveMaterial = foil && webgl && inView && foilArmed
+
   const inner = (
-    <div className="rfx-field">
-      {foil && webgl && !reduced && inView && foilArmed ? (
+    <>
+      {liveMaterial ? (
         <SpecimenBoundary fallback={null}>
           <Suspense fallback={null}>
-            <FoilLayer store={store} accent={accent} gold={gold} />
+            <MaterialLayer store={store} material={resolvedMaterial} identity={identity} />
           </Suspense>
         </SpecimenBoundary>
       ) : null}
-      <div className="rfx-inner">
-        <header className="rfx-head">
-          <span className="rfx-titlelock">
-            <span className="rfx-overline">Filed specimen</span>
-            <span className="rfx-name">{name}</span>
-          </span>
-          <span className="rfx-head-meta">
-            {vnum ? <><span className="rfx-filelabel">File</span><b className="rfx-no">{vnum}</b></> : null}
-          </span>
-        </header>
-
-        <div className="rfx-stage">
-          <div className="rfx-halftone" aria-hidden="true" />
-          {face}
-          {faceSource ? (
-            <span className="rfx-gripchip">
-              <i
-                className="rfx-dot"
-                style={{ background: faceSource.color, color: faceSource.color }}
-                aria-hidden="true"
-              />
-              {faceSource.label}
+      <div className="rfx-field">
+        <div className="rfx-inner">
+          <header className="rfx-head">
+            <span className="rfx-titlelock">
+              <span className="rfx-overline">Filed specimen</span>
+              <span className="rfx-name">{name}</span>
             </span>
-          ) : null}
-        </div>
+            <span className="rfx-head-meta">
+              {vnum ? <><span className="rfx-filelabel">File</span><b className="rfx-no">{vnum}</b></> : null}
+            </span>
+          </header>
 
-        {cue || confidence ? (
-          <div className="rfx-read">
-            <div className="rfx-readmeta" aria-hidden="true">
-              <span>Grip tell</span>
-              <span>{vnum ? `PA—${vnum}` : 'Pitch Atlas'}</span>
-            </div>
-            {cue ? <p className="rfx-cue">{cue}</p> : null}
-            {confidence ? (
-              <ul className="rfx-facts">
-                <li className="rfx-fact">
-                  <i
-                    className="rfx-dot"
-                    style={{ background: confidence.color, color: confidence.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="sr-only">Source: </span>
-                  {confidence.label}
-                  {confidence.approx ? <span className="rfx-approx">≈ approx</span> : null}
-                </li>
-              </ul>
+          <div className="rfx-stage">
+            <div className="rfx-halftone" aria-hidden="true" />
+            {face}
+            {faceSource ? (
+              <span className="rfx-gripchip">
+                <i
+                  className="rfx-dot"
+                  style={{ background: faceSource.color, color: faceSource.color }}
+                  aria-hidden="true"
+                />
+                {faceSource.label}
+              </span>
             ) : null}
           </div>
-        ) : null}
 
-        {to ? (
-          <div className="rfx-strip">
-            <span className="rfx-serial" aria-hidden="true">Grip / release / shape</span>
-            <span className="rfx-open">
-              Open specimen <i aria-hidden="true">→</i>
-            </span>
-          </div>
-        ) : null}
+          {cue || confidence ? (
+            <div className="rfx-read">
+              <div className="rfx-readmeta" aria-hidden="true">
+                <span>Grip tell</span>
+                <span>{vnum ? `PA—${vnum}` : 'Pitch Atlas'}</span>
+              </div>
+              {cue ? <p className="rfx-cue">{cue}</p> : null}
+              {confidence ? (
+                <ul className="rfx-facts">
+                  <li className="rfx-fact">
+                    <i
+                      className="rfx-dot"
+                      style={{ background: confidence.color, color: confidence.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="sr-only">Source: </span>
+                    {confidence.label}
+                    {confidence.approx ? <span className="rfx-approx">≈ approx</span> : null}
+                  </li>
+                </ul>
+              ) : null}
+            </div>
+          ) : null}
+
+          {to ? (
+            <div className="rfx-strip">
+              <span className="rfx-serial" aria-hidden="true">Grip / release / shape</span>
+              <span className="rfx-open">
+                Open specimen <i aria-hidden="true">→</i>
+              </span>
+            </div>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   )
 
-  const cardClass = `rfx-card${gold ? ' is-gold' : accent.finish ? ` is-${accent.finish}` : ''}${foil ? ' has-foil' : ''} ${className ?? ''}`
+  const cardClass = `rfx-card${gold ? ' is-gold' : accent.finish ? ` is-${accent.finish}` : ''}${foil ? ' has-foil' : ''}${mode !== 'rest' ? ` is-${mode}` : ''} ${className ?? ''}`
 
   return (
     <div ref={viewRef} className="rfx-holder" style={{ perspective: '1500px', width: '100%', maxWidth }}>
