@@ -2,6 +2,9 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 import type { PitchAtlasEntry } from '../../data/types'
 import type { TiltEngine } from '../../hooks/useCardTilt'
 import type { CardMaterial } from '../refractor/material/materialPresets'
+import { exportEligibility } from './export/eligibility'
+import { downloadBlob, exportFilename, exportSpecimenPng } from './export/exportPng'
+import { exportSpecimenWebm, webmSupport } from './export/exportWebm'
 import type { Eligibility, ExportBackdrop, ExportFace, ExportRequest, WebmSupport } from './export/types'
 
 /*
@@ -38,33 +41,10 @@ export function ExportPanel({
 }) {
   const [backdrop, setBackdrop] = useState<ExportBackdrop>('void')
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
-  const [webm, setWebm] = useState<WebmSupport | null>(null)
-  const [eligibility, setEligibility] = useState<Eligibility | null>(null)
+  // support is a property of the browser, read once; eligibility is a property of the face
+  const [webm] = useState<WebmSupport>(() => webmSupport())
+  const eligibility: Eligibility = exportEligibility(entry, face)
   const abort = useRef<AbortController | null>(null)
-
-  useEffect(() => {
-    let alive = true
-    import('./export/exportWebm').then((m) => {
-      if (alive) setWebm(m.webmSupport())
-    }, () => {
-      if (alive) setWebm({ ok: false, reason: 'The export module could not be loaded.' })
-    })
-    return () => {
-      alive = false
-    }
-  }, [])
-
-  useEffect(() => {
-    let alive = true
-    import('./export/eligibility').then((m) => {
-      if (alive) setEligibility(m.exportEligibility(entry, face))
-    }, () => {
-      if (alive) setEligibility({ exportable: false, attribution: '', reason: 'The export module could not be loaded.' })
-    })
-    return () => {
-      alive = false
-    }
-  }, [entry, face])
 
   useEffect(() => () => abort.current?.abort(), [])
 
@@ -89,10 +69,9 @@ export function ExportPanel({
     if (!req) return
     setStatus({ kind: 'working', what: 'png', fraction: 0.2, phase: 'Composing' })
     try {
-      const m = await import('./export/exportPng')
-      const blob = await m.exportSpecimenPng(req)
-      const name = m.exportFilename(entry, face, 'png')
-      m.downloadBlob(blob, name)
+      const blob = await exportSpecimenPng(req)
+      const name = exportFilename(entry, face, 'png')
+      downloadBlob(blob, name)
       setStatus({ kind: 'done', message: `Saved ${name}.` })
     } catch (error) {
       setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'The PNG could not be made.' })
@@ -101,16 +80,12 @@ export function ExportPanel({
 
   async function exportWebm() {
     const req = request()
-    if (!req || !webm?.ok) return
+    if (!req || !webm.ok) return
     const controller = new AbortController()
     abort.current = controller
     onBusy(true)
     setStatus({ kind: 'working', what: 'webm', fraction: 0, phase: 'Preparing' })
     try {
-      const [{ exportSpecimenWebm }, { downloadBlob, exportFilename }] = await Promise.all([
-        import('./export/exportWebm'),
-        import('./export/exportPng'),
-      ])
       const blob = await exportSpecimenWebm(
         req,
         (p) => setStatus({ kind: 'working', what: 'webm', fraction: p.fraction, phase: p.phase === 'encoding' ? 'Encoding' : p.phase === 'rendering' ? 'Rendering frames' : 'Preparing' }),
@@ -129,7 +104,7 @@ export function ExportPanel({
   }
 
   const working = status.kind === 'working'
-  const blocked = eligibility ? !eligibility.exportable : false
+  const blocked = !eligibility.exportable
 
   return (
     <section className="specimen-export" aria-label="Export">
@@ -142,7 +117,7 @@ export function ExportPanel({
         <button type="button" className="specimen-action" onClick={exportPng} disabled={working || blocked || !engine}>
           Export PNG
         </button>
-        <button type="button" className="specimen-action" onClick={exportWebm} disabled={working || blocked || !engine || !webm?.ok}>
+        <button type="button" className="specimen-action" onClick={exportWebm} disabled={working || blocked || !engine || !webm.ok}>
           Export WebM, 7 s loop
         </button>
         {working ? (
@@ -159,13 +134,13 @@ export function ExportPanel({
       ) : null}
       {status.kind === 'done' ? <p className="specimen-export-status" aria-live="polite">{status.message}</p> : null}
       {status.kind === 'error' ? <p className="specimen-export-status" data-tone="error" role="alert">{status.message}</p> : null}
-      {eligibility && !eligibility.exportable ? (
+      {!eligibility.exportable ? (
         <p className="specimen-export-status" data-tone="error">{eligibility.reason ?? 'This face cannot be exported.'}</p>
       ) : null}
-      {eligibility?.exportable && eligibility.attribution ? (
+      {eligibility.exportable && eligibility.attribution ? (
         <p className="specimen-export-note">Caption: {eligibility.attribution}</p>
       ) : null}
-      {webm && !webm.ok ? <p className="specimen-export-note">{webm.reason}</p> : null}
+      {!webm.ok ? <p className="specimen-export-note">{webm.reason}</p> : null}
     </section>
   )
 }

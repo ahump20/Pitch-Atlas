@@ -12,7 +12,8 @@ export function useInspectorParam(): InspectorApi {
   const [params, setParams] = useSearchParams()
   const navigate = useNavigate()
   const raw = params.get('inspect')
-  const slug = raw && pitchBySlug(raw) ? raw : null
+  // a filed pitch only: the entry's own slug must match, so no crafted key is honoured
+  const slug = raw && pitchBySlug(raw)?.display?.slug === raw ? raw : null
   const pushed = useRef(false)
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export function useInspectorParam(): InspectorApi {
 
   const open = useCallback(
     (next: string) => {
-      if (!pitchBySlug(next)) return
+      if (pitchBySlug(next)?.display?.slug !== next) return
       const p = new URLSearchParams(params)
       p.set('inspect', next)
       pushed.current = true

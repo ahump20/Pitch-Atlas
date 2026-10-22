@@ -130,3 +130,13 @@ describe('InspectButton', () => {
     expect(screen.getByRole('button', { name: /Inspect card/ })).toHaveAttribute('aria-haspopup', 'dialog')
   })
 })
+
+describe('the inspect parameter', () => {
+  it('ignores a crafted key that is not a filed pitch', async () => {
+    render(<Harness start="/?inspect=constructor" />)
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 50))
+    })
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+})
