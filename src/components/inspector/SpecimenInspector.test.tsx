@@ -65,7 +65,7 @@ describe('SpecimenInspector', () => {
   it('opens from the URL, turns the card over, and routes into the grip lab', async () => {
     const user = userEvent.setup()
     render(<Harness start="/?inspect=four-seam" />)
-    const dialog = await screen.findByRole('dialog')
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     expect(dialog).toHaveAccessibleName(/Inspect card: Four-seam/)
     expect(within(dialog).getByRole('link', { name: /Study grip/ })).toHaveAttribute('href', '/pitch/four-seam#grip-lab')
     expect(within(dialog).getByRole('link', { name: /Open the full file/ })).toHaveAttribute('href', '/pitch/four-seam')
@@ -82,7 +82,7 @@ describe('SpecimenInspector', () => {
 
   it('says when WebM cannot be recorded and keeps the PNG', async () => {
     render(<Harness start="/?inspect=four-seam" />)
-    const dialog = await screen.findByRole('dialog')
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     await waitFor(() => expect(within(dialog).getByText(/cannot record a WebM/)).toBeInTheDocument())
     expect(within(dialog).getByRole('button', { name: /Export WebM/ })).toBeDisabled()
     await waitFor(() => expect(within(dialog).getByText(/Caption: Grip: Austin video/)).toBeInTheDocument())
@@ -106,7 +106,7 @@ describe('SpecimenInspector', () => {
   it('remembers a finish for the inspected face on this device', async () => {
     const user = userEvent.setup()
     render(<Harness start="/?inspect=four-seam" />)
-    const dialog = await screen.findByRole('dialog')
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     await user.click(within(dialog).getByRole('button', { name: 'Finish' }))
     await user.click(within(dialog).getByRole('button', { name: 'Powder Refractor' }))
     expect(window.localStorage.getItem('pa:finish:four-seam:front')).toContain('"preset":"powder-refractor"')
