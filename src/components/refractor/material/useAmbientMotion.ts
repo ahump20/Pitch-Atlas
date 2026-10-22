@@ -22,22 +22,30 @@ const FRAME_MS = 1000 / 30
 
 const easeInOut = (k: number) => (k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2)
 
-/** The drift pose at time t (seconds). Pure, exported for tests. */
-export function ambientPose(t: number): { rx: number; ry: number; mx: number; my: number } {
-  const rx = 3.5 * Math.sin((TWO_PI * t) / 11)
-  const ry = 2.5 * Math.sin((TWO_PI * t) / 7.333 + 1.1)
+/** The drift pose at time t (seconds); `amplitude` scales the tilt, `speed` the clocks. Pure, exported for tests. */
+export function ambientPose(t: number, amplitude = 1, speed = 1): { rx: number; ry: number; mx: number; my: number } {
+  const u = t * speed
+  const rx = 3.5 * amplitude * Math.sin((TWO_PI * u) / 11)
+  const ry = 2.5 * amplitude * Math.sin((TWO_PI * u) / 7.333 + 1.1)
   return {
     rx,
     ry,
-    mx: 50 + (rx / 14) * 42 + 12 * Math.cos((TWO_PI * t) / 17),
-    my: 32 + (ry / 14) * 30 + 9 * Math.sin((TWO_PI * t) / 13),
+    mx: 50 + (rx / 14) * 42 + 12 * Math.cos((TWO_PI * u) / 17),
+    my: 32 + (ry / 14) * 30 + 9 * Math.sin((TWO_PI * u) / 13),
   }
 }
 
-export function useAmbientMotion(
-  engine: TiltEngine,
-  { active, inView, reduced }: { active: boolean; inView: boolean; reduced: boolean },
-) {
+export interface AmbientOptions {
+  active: boolean
+  inView: boolean
+  reduced: boolean
+  /** tilt amplitude multiplier, 0..2 */
+  amplitude?: number
+  /** clock multiplier, 0.25..3 */
+  speed?: number
+}
+
+export function useAmbientMotion(engine: TiltEngine, { active, inView, reduced, amplitude = 1, speed = 1 }: AmbientOptions) {
   const paused = useMotionPref() === 'paused'
   const introDone = useRef(false)
 
@@ -55,7 +63,7 @@ export function useAmbientMotion(
       last = now
       if (engine.isEngaged() || engine.idleMs() < IDLE_MS) return
       const t = (now - start) / 1000
-      const pose = ambientPose(t)
+      const pose = ambientPose(t, amplitude, speed)
       if (!introDone.current) {
         const k = (now - start) / INTRO_MS
         if (k >= 1) {
@@ -74,5 +82,5 @@ export function useAmbientMotion(
     return () => {
       cancelAnimationFrame(raf)
     }
-  }, [engine, active, inView, reduced, paused])
+  }, [engine, active, inView, reduced, paused, amplitude, speed])
 }

@@ -28,7 +28,7 @@ function stubProgram() {
 }
 
 const tiltStore: TiltStore = {
-  get: () => ({ rx: 0, ry: 0, mx: 50, my: 32, lightHeight: 0.8, lightStrength: 1, source: 'rest' }),
+  get: () => ({ rx: 0, ry: 0, mx: 50, my: 32, lightHeight: 0.8, lightStrength: 1, lightOffsetX: 0, lightOffsetY: 0, source: 'rest' }),
   subscribe: () => () => {},
   nudge: () => {},
 }

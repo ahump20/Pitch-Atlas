@@ -1,0 +1,132 @@
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, render, screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { MemoryRouter, useLocation } from 'react-router-dom'
+import { CompareProvider } from '../compare/CompareProvider'
+import { SpecimenInspectorHost } from './SpecimenInspectorHost'
+import { InspectButton } from './InspectButton'
+
+/*
+  The inspector's contract: ?inspect=<slug> opens it, the rail turns the card over
+  and routes into the grip lab, Escape closes it and clears the URL, and where the
+  browser cannot record WebM the export panel says so instead of failing quietly.
+  jsdom has no WebGL and no MediaRecorder, which is the fallback path under test.
+*/
+
+function Probe() {
+  const location = useLocation()
+  return <output data-testid="search">{location.search}</output>
+}
+
+function Harness({ start }: { start: string }) {
+  return (
+    <MemoryRouter initialEntries={[start]}>
+      <CompareProvider>
+        <SpecimenInspectorHost>
+          <InspectButton slug="twelve-six" />
+          <Probe />
+        </SpecimenInspectorHost>
+      </CompareProvider>
+    </MemoryRouter>
+  )
+}
+
+beforeEach(() => {
+  Object.defineProperty(window, 'matchMedia', {
+    configurable: true,
+    writable: true,
+    value: (query: string) => ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    }),
+  })
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe() {}
+      unobserve() {}
+      disconnect() {}
+    },
+  )
+})
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+  window.localStorage.clear()
+})
+
+describe('SpecimenInspector', () => {
+  it('opens from the URL, turns the card over, and routes into the grip lab', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog')
+    expect(dialog).toHaveAccessibleName(/Inspect card: Four-seam/)
+    expect(within(dialog).getByRole('link', { name: /Study grip/ })).toHaveAttribute('href', '/pitch/four-seam#grip-lab')
+    expect(within(dialog).getByRole('link', { name: /Open the full file/ })).toHaveAttribute('href', '/pitch/four-seam')
+
+    const front = dialog.querySelector('.v2-face:not(.v2-face-back)')
+    const back = dialog.querySelector('.v2-face-back')
+    expect(back).toHaveAttribute('inert')
+    expect(front).not.toHaveAttribute('inert')
+    await user.click(within(dialog).getByRole('button', { name: 'Sources' }))
+    expect(front).toHaveAttribute('inert')
+    expect(back).not.toHaveAttribute('inert')
+    expect(within(dialog).getAllByRole('link', { name: /Open the full file/ }).length).toBeGreaterThan(0)
+  })
+
+  it('says when WebM cannot be recorded and keeps the PNG', async () => {
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(() => expect(within(dialog).getByText(/cannot record a WebM/)).toBeInTheDocument())
+    expect(within(dialog).getByRole('button', { name: /Export WebM/ })).toBeDisabled()
+    await waitFor(() => expect(within(dialog).getByText(/Caption: Grip: Austin video/)).toBeInTheDocument())
+  })
+
+  it('opens from the Inspect button, adds to the comparison, and Escape closes it and clears the URL', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/" />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: /Inspect card/ }))
+    expect(screen.getByTestId('search')).toHaveTextContent('?inspect=twelve-six')
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const compare = within(dialog).getByRole('button', { name: /Compare twelve six/ })
+    await user.click(compare)
+    expect(within(dialog).getByRole('button', { name: /Selected twelve six/ })).toHaveAttribute('aria-pressed', 'true')
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    expect(screen.getByTestId('search')).toHaveTextContent('')
+  })
+
+  it('remembers a finish for the inspected face on this device', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog')
+    await user.click(within(dialog).getByRole('button', { name: 'Finish' }))
+    await user.click(within(dialog).getByRole('button', { name: 'Powder Refractor' }))
+    expect(window.localStorage.getItem('pa:finish:four-seam:front')).toContain('"preset":"powder-refractor"')
+    await user.click(within(dialog).getByRole('button', { name: /Reset this face/ }))
+    expect(window.localStorage.getItem('pa:finish:four-seam:front')).toBeNull()
+  })
+})
+
+describe('InspectButton', () => {
+  it('does not render where there is no inspector to open', () => {
+    render(
+      <MemoryRouter>
+        <InspectButton slug="four-seam" />
+      </MemoryRouter>,
+    )
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+  it('is a real button even before the dialog opens', () => {
+    render(<Harness start="/" />)
+    act(() => undefined)
+    expect(screen.getByRole('button', { name: /Inspect card/ })).toHaveAttribute('aria-haspopup', 'dialog')
+  })
+})

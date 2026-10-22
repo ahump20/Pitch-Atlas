@@ -9,7 +9,7 @@ import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 import { accentForSlug } from './accents'
 import { hexToTriple, type MaterialIdentity } from './material/cardMaterialProgram'
-import { backMaterial } from './material/materialPresets'
+import { backMaterial, type CardMaterial } from './material/materialPresets'
 
 /*
   The sourced back of a specimen: the dark scout record. Name and number, the
@@ -33,6 +33,7 @@ export function SpecimenBack({
   flipped,
   foil = false,
   seed = 0,
+  material: tuned,
 }: {
   entry: PitchAtlasEntry
   /** Whether this face is the one showing; links are tabbable only then. */
@@ -40,6 +41,8 @@ export function SpecimenBack({
   /** Mount the live material while the back is showing. */
   foil?: boolean
   seed?: number
+  /** A finish other than Quiet Ink & Bone (the inspector). */
+  material?: CardMaterial
 }) {
   const { canonical, motion, display } = entry
   const accent = accentForSlug(display.slug)
@@ -48,7 +51,7 @@ export function SpecimenBack({
   const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
   const { ref, handlers, store } = useCardTilt<HTMLDivElement>('rest')
   const webgl = useWebGLSupport()
-  const material = useMemo(() => backMaterial(), [])
+  const material = useMemo(() => tuned ?? backMaterial(), [tuned])
   const identity = useMemo<MaterialIdentity>(
     () => ({ c2: hexToTriple(accent.c2), c3: hexToTriple(accent.c3), ring: BACK_RING, seed: seed + 11 }),
     [accent, seed],

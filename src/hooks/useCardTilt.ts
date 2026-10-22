@@ -42,6 +42,9 @@ export interface TiltState {
   lightHeight: number
   /** key light strength, 0..2 */
   lightStrength: number
+  /** the visitor's own offset to the light's position, in percent of the card */
+  lightOffsetX: number
+  lightOffsetY: number
   /** who last moved the card */
   source: TiltSource
 }
@@ -107,8 +110,10 @@ export interface TiltEngine {
   isEngaged(): boolean
   /** milliseconds since the last real pointer interaction */
   idleMs(): number
-  setLight(light: { height?: number; strength?: number }): void
+  setLight(light: { height?: number; strength?: number; offsetX?: number; offsetY?: number }): void
   setMode(mode: TiltMode): void
+  /** a keyboard step: the target moves by a few degrees and the ambient driver waits */
+  nudge(drx: number, dry: number): void
   /** spring home */
   reset(): void
   dispose(): void
@@ -124,7 +129,7 @@ function reducedMotion(): boolean {
 
 export function createTiltEngine(initialMode: TiltMode = 'rest'): TiltEngine {
   const ref: { current: HTMLElement | null } = { current: null }
-  const state: TiltState = { ...REST, lightHeight: 1.1, lightStrength: 1, source: 'rest' }
+  const state: TiltState = { ...REST, lightHeight: 1.1, lightStrength: 1, lightOffsetX: 0, lightOffsetY: 0, source: 'rest' }
   const vel = { rx: 0, ry: 0 }
   let mode: TiltMode = initialMode
   let target: { rx: number; ry: number; mx: number; my: number; source: TiltSource } = { ...REST, source: 'rest' }
@@ -310,10 +315,21 @@ export function createTiltEngine(initialMode: TiltMode = 'rest'): TiltEngine {
     },
     isEngaged: () => engaged || dragging !== null,
     idleMs: () => performance.now() - lastInteraction,
-    setLight({ height, strength }) {
+    setLight({ height, strength, offsetX, offsetY }) {
       if (height !== undefined) state.lightHeight = height
       if (strength !== undefined) state.lightStrength = strength
+      if (offsetX !== undefined) state.lightOffsetX = offsetX
+      if (offsetY !== undefined) state.lightOffsetY = offsetY
       apply()
+    },
+    nudge(drx, dry) {
+      if (dragging || reducedMotion()) return
+      const max = limits().drag
+      const rx = clamp(target.rx + drx, max)
+      const ry = clamp(target.ry + dry, max)
+      lastInteraction = performance.now()
+      target = { rx, ry, ...lightFromTilt(rx, ry), source: 'pointer' }
+      wake()
     },
     setMode(next) {
       mode = next

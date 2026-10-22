@@ -7,6 +7,7 @@ import { RefractorCard } from './RefractorCard'
 import { ACCENT, FALLBACK_ACCENT } from './accents'
 import type { CardMaterial } from './material/materialPresets'
 import { PauseMotionButton } from './PauseMotionButton'
+import { InspectButton } from '../inspector/InspectButton'
 import { specimenFace, type ClipPresentation } from './specimenFace'
 
 /*
@@ -74,6 +75,7 @@ export function PitchSpecimenCard({
       className={className}
     />
     <div className="archive-specimen-actions">
+      <InspectButton slug={display.slug} />
       <CompareButton slug={display.slug} className="archive-specimen-compare" />
       {mode === 'hero' && foil && !reduced ? <PauseMotionButton /> : null}
     </div>

@@ -9,6 +9,7 @@ import { featuredPitchSet } from '../../data/featured'
 import { accentForSlug } from '../refractor/accents'
 import { RefractorCard } from '../refractor/RefractorCard'
 import { SpecimenBack } from '../refractor/SpecimenBack'
+import { InspectButton } from '../inspector/InspectButton'
 import { specimenFace } from '../refractor/specimenFace'
 import { Descent } from '../motion/Descent'
 import { ChapterMark } from './ChapterMark'
@@ -76,6 +77,7 @@ function WallCard({ entry, chase, i }: { entry: PitchAtlasEntry; chase: boolean;
           onClick={() => setFlipped((current) => !current)}>
           <span aria-hidden="true">↺</span> {flipped ? 'Card' : 'Source'}
         </button>
+        <InspectButton slug={display.slug} />
         <CompareButton slug={display.slug} />
       </div>
     </div>

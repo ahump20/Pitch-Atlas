@@ -1,7 +1,7 @@
 import { accentInk } from './accents'
 import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties, type ReactNode, type Ref } from 'react'
 import { Link } from 'react-router-dom'
-import { useCardTilt, type TiltMode } from '../../hooks/useCardTilt'
+import { useCardTilt, type TiltEngine, type TiltMode } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useInView } from '../../hooks/useInView'
@@ -52,6 +52,13 @@ export interface RefractorCardProps {
   mode?: TiltMode
   /** The finish; defaults to the pitch's own preset. */
   material?: CardMaterial
+  /** Slow ambient turn. Defaults on for the hero; the inspector decides for itself. */
+  ambient?: boolean
+  /** Ambient tuning (the inspector's Finish panel). */
+  ambientAmplitude?: number
+  ambientSpeed?: number
+  /** Hands the tilt engine to a parent that needs to drive it (the inspector's rail). */
+  onEngine?: (engine: TiltEngine) => void
   className?: string
 }
 
@@ -82,6 +89,10 @@ export function RefractorCard({
   foil = false,
   mode = 'rest',
   material,
+  ambient,
+  ambientAmplitude = 1,
+  ambientSpeed = 1,
+  onEngine,
   className,
 }: RefractorCardProps) {
   const { ref: tiltRef, handlers, store, engine } = useCardTilt<HTMLElement>(mode)
@@ -90,7 +101,17 @@ export function RefractorCard({
   const { ref: viewRef, inView } = useInView<HTMLDivElement>()
   const [foilArmed, setFoilArmed] = useState(false)
 
-  useAmbientMotion(engine, { active: foil && mode === 'hero', inView, reduced })
+  useAmbientMotion(engine, {
+    active: foil && (ambient ?? mode === 'hero'),
+    inView,
+    reduced,
+    amplitude: ambientAmplitude,
+    speed: ambientSpeed,
+  })
+
+  useEffect(() => {
+    onEngine?.(engine)
+  }, [engine, onEngine])
 
   useEffect(() => {
     if (!foil || foilArmed) return

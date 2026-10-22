@@ -129,6 +129,7 @@ export default defineConfig({
           '**/three-core-*.js',
           '**/react-three-*.js',
           '**/three-support-*.js',
+          '**/specimen-inspector-*.js',
         ],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
@@ -208,6 +209,11 @@ export default defineConfig({
               name: 'react-three',
               test: /node_modules[\\/]@react-three[\\/]/,
               priority: 25,
+            },
+            {
+              name: 'specimen-inspector',
+              test: /src[\\/]components[\\/]inspector[\\/]/,
+              priority: 15,
             },
             {
               name: 'three-support',

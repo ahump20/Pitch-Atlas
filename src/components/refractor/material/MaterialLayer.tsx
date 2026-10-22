@@ -74,7 +74,12 @@ export default function MaterialLayer({
         identity: live.current.identity,
         material: live.current.material,
         tilt: { rx: s.rx, ry: s.ry },
-        light: { x: s.mx / 100, y: s.my / 100, height: s.lightHeight, strength: s.lightStrength },
+        light: {
+          x: (s.mx + s.lightOffsetX) / 100,
+          y: (s.my + s.lightOffsetY) / 100,
+          height: s.lightHeight,
+          strength: s.lightStrength,
+        },
       })
       lastDraw = performance.now()
       card.classList.add('is-foil-live')
