@@ -24,6 +24,8 @@ import {
 
 const css = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8')
 const squash = (s: string) => s.replace(/\s+/g, '')
+/** Every regex metacharacter escaped, backslash included, so a selector matches literally. */
+const escapeRegExp = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 function cssVar(name: string): string {
   const m = new RegExp(`${name}:\\s*(linear-gradient\\([^;]*\\));`).exec(css)
@@ -32,7 +34,7 @@ function cssVar(name: string): string {
 }
 
 function cardFoil(selector: string): string {
-  const m = new RegExp(`${selector.replace(/\./g, '\\.')}\\s*\\{[^}]*?--card-foil:\\s*(linear-gradient\\([^;]*\\));`).exec(css)
+  const m = new RegExp(`${escapeRegExp(selector)}\\s*\\{[^}]*?--card-foil:\\s*(linear-gradient\\([^;]*\\));`).exec(css)
   if (!m) throw new Error(`${selector} --card-foil not found in index.css`)
   return m[1]
 }
