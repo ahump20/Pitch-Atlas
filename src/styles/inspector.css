@@ -42,9 +42,21 @@
 /* in the dark room the cream plate steps down a little, so the grip stays the
    brightest thing in view; the print itself, and every export, keep the true plate */
 .specimen-rig .rfx-read { filter: brightness(.88); }
-/* a card this small keeps its grip tell readable: the cue holds a type floor */
+/* a phone-sized card in the viewer: the one line that teaches the grip is the most
+   readable text on it, and may take two lines; the source chip tucks into the window's
+   corner, tighter, so it covers less of the hand it labels. The page cards and every
+   export keep the true card. */
+@container (width <= 420px) {
+  .specimen-rig .rfx-cue { font-size: max(14px, calc(var(--rfxu) * 3.9)); line-height: 1.25; -webkit-line-clamp: 2; }
+}
+@container (width <= 340px) {
+  .specimen-rig .rfx-gripchip { left: calc(var(--rfxu) * 2.2); bottom: calc(var(--rfxu) * 2.2); gap: var(--rfxu); padding: calc(var(--rfxu) * .6) calc(var(--rfxu) * 1.6); font-size: max(7px, calc(var(--rfxu) * 2)); letter-spacing: .06em; }
+}
+/* smaller still (a phone on its side): "Grip tell" and "Filed specimen" step aside, their
+   type would be under 7px, and the cue takes the plate */
 @container (width <= 240px) {
-  .specimen-rig .rfx-cue { font-size: max(10px, calc(var(--rfxu) * 3.9)); }
+  .specimen-rig .rfx-cue { font-size: max(12px, calc(var(--rfxu) * 3.9)); }
+  .specimen-rig .rfx-readmeta, .specimen-rig .rfx-overline { display: none; }
 }
 .specimen-rig .rfx-card { rotate: 0deg; }
 .specimen-rig .v2-face-back { perspective: 1600px; }
