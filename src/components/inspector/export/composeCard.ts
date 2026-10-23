@@ -138,12 +138,15 @@ function wrapLines(ctx: Ctx, text: string, maxWidth: number, maxLines: number): 
 }
 
 /** The DOM's object-fit: cover crop of a media box into the window. */
+/** The media framed the way the page frames it: covered, placed at its focus, then
+    zoomed by the element's own transform about the window's centre. */
 function coverDraw(ctx: Ctx, source: CanvasImageSource, sw: number, sh: number, box: { x: number; y: number; w: number; h: number }, focusY: number, scale: number) {
-  const ratio = Math.max(box.w / sw, box.h / sh) * scale
-  const dw = sw * ratio
-  const dh = sh * ratio
+  const cover = Math.max(box.w / sw, box.h / sh)
+  const dw = sw * cover * scale
+  const dh = sh * cover * scale
+  const framedTop = (box.h - sh * cover) * focusY
   const dx = box.x + (box.w - dw) / 2
-  const dy = box.y + (box.h - dh) * focusY
+  const dy = box.y + box.h / 2 + (framedTop - box.h / 2) * scale
   ctx.drawImage(source, dx, dy, dw, dh)
 }
 
@@ -188,13 +191,60 @@ export interface StageMedia {
   filter?: string
 }
 
-/** The vertical point an object-fit crop keeps, 0 to 1, from the element's object-position. */
-function focusYOf(el: HTMLElement): number | undefined {
+/** One position term as a percentage plus pixels: `42%`, `120px`, `calc(30% + 20px)` or a keyword. */
+function positionTerm(term: string): { pct: number; px: number } | undefined {
+  const keyword = ({ top: 0, center: 50, bottom: 100, left: 0, right: 100 } as Record<string, number | undefined>)[term]
+  if (keyword !== undefined) return { pct: keyword, px: 0 }
+  const inner = /^calc\((.*)\)$/.exec(term)?.[1] ?? term
+  const parts = inner.replace(/\s+/g, '').match(/[+-]?[^+-]+/g)
+  if (!parts) return undefined
+  const sum = { pct: 0, px: 0 }
+  for (const part of parts) {
+    const m = /^([+-]?\d*\.?\d+)(%|px)$/.exec(part)
+    if (!m) return undefined
+    if (m[2] === '%') sum.pct += Number(m[1])
+    else sum.px += Number(m[1])
+  }
+  return sum
+}
+
+/**
+ * The vertical point an object-fit: cover crop keeps, as a share of the height the
+ * cover leaves spare (0 the top, 1 the bottom), from an object-position however it is
+ * written. Pixels count against that spare height, so `calc(30% + 20px)` keeps what the
+ * page keeps; a clip with no spare height has nothing to frame.
+ */
+export function focusFraction(position: string, box: { w: number; h: number }, media: { w: number; h: number }): number | undefined {
+  // split on the spaces between terms, never inside a calc()
+  const terms = position.trim().match(/(?:[^\s(]+|\([^)]*\))+/g) ?? []
+  if (terms.length === 0) return undefined
+  let term: string
+  let fromBottom = false
+  const edge = terms.findIndex((t) => t === 'top' || t === 'bottom')
+  if (edge >= 0) {
+    // an edge keyword, optionally followed by its offset ("bottom 20%", "top 10px")
+    const offset = terms[edge + 1]
+    const offsetIsTerm = offset !== undefined && !['left', 'right', 'center', 'top', 'bottom'].includes(offset)
+    fromBottom = terms[edge] === 'bottom' && offsetIsTerm
+    term = offsetIsTerm ? offset : terms[edge]
+  } else {
+    // one term is the horizontal (the vertical centres); two are horizontal then
+    // vertical; three or four with no top or bottom edge put the vertical at its centre
+    term = terms.length === 2 ? terms[1] : 'center'
+  }
+  const value = positionTerm(term)
+  if (!value) return undefined
+  const cover = Math.max(box.w / media.w, box.h / media.h)
+  const spare = box.h - media.h * cover
+  if (value.px !== 0 && !(Math.abs(spare) >= 0.5)) return 0.5
+  const share = value.pct / 100 + (value.px !== 0 ? value.px / spare : 0)
+  return fromBottom ? 1 - share : share
+}
+
+/** The vertical point an object-fit crop keeps, from the element's object-position. */
+function focusYOf(el: HTMLElement, mediaW: number, mediaH: number): number | undefined {
   const computed = typeof getComputedStyle === 'function' ? getComputedStyle(el).objectPosition : ''
-  const y = (computed || el.style.objectPosition).trim().split(/\s+/)[1]
-  if (!y) return undefined
-  if (y.endsWith('%')) return Number.parseFloat(y) / 100
-  return ({ top: 0, center: 0.5, bottom: 1 } as Record<string, number | undefined>)[y]
+  return focusFraction(computed || el.style.objectPosition || '', { w: el.clientWidth, h: el.clientHeight }, { w: mediaW, h: mediaH })
 }
 
 /** The zoom an element's own transform applies: a computed matrix in a browser, the
@@ -241,11 +291,11 @@ export async function resolveStageMedia(
     for (;;) {
       if (video && videoReady(video)) {
         const [w, h] = mediaSize(video)
-        return { kind: 'video', source: video, width: w, height: h, focusY: focusYOf(video), scale: zoomOf(video), filter: filterOf(video) }
+        return { kind: 'video', source: video, width: w, height: h, focusY: focusYOf(video, w, h), scale: zoomOf(video), filter: filterOf(video) }
       }
       if (img && imageReady(img)) {
         const [w, h] = mediaSize(img)
-        return { kind: 'image', source: img, width: w, height: h, focusY: focusYOf(img), scale: zoomOf(img), filter: filterOf(img) }
+        return { kind: 'image', source: img, width: w, height: h, focusY: focusYOf(img, w, h), scale: zoomOf(img), filter: filterOf(img) }
       }
       if (Date.now() >= deadline) throw new Error(MEDIA_NOT_READY)
       await new Promise<void>((resolve) => window.setTimeout(resolve, MEDIA_POLL_MS))
