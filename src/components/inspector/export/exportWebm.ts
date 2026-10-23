@@ -199,7 +199,16 @@ export async function exportSpecimenWebm(
   onProgress?.({ phase: 'preparing', fraction: 0 })
   await loadCardFonts()
   const media = req.face === 'front' ? await resolveStageMedia(req.stage) : null
-  const mb = typeof VideoEncoder === 'function' ? await loadEncoder() : null
+  let mb: Mediabunny | null = null
+  if (typeof VideoEncoder === 'function') {
+    try {
+      mb = await loadEncoder()
+    } catch (error) {
+      // the live recorder can still make the loop; with no recorder either, the
+      // failed download is the reason to give, and no GL context is taken for it
+      if (!recorderMimeType()) throw error
+    }
+  }
   if (signal?.aborted) throw cancelled()
   const composer = createComposer({
     entry: req.entry,
