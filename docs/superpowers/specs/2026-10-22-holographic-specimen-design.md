@@ -70,13 +70,14 @@ on the device and never touch a record or any page surface.
 
 **Export.** A 1500-pixel PNG, composed natively from the record (media, bezel, chip,
 header, plate, strip), posed in perspective with a stock edge, contact and cast shadows,
-a dark or transparent backdrop and an attribution caption; and a 7-second, 30 fps,
-1200-pixel WebM whose pose and light run one closed cycle so the last frame hands off to
-the first. Each WebM frame goes to the browser's own encoder (WebCodecs, written into
+a dark or transparent backdrop and an attribution caption; and a 7-second, 30 fps WebM
+of the 1200-pixel card face, posed into a 1440×2010 frame, whose pose and light run one
+closed cycle so the last frame hands off to the first. Each WebM frame goes to the browser's own encoder (WebCodecs, written into
 WebM by mediabunny) stamped with its time, and the next is drawn only when the encoder
 can take it, so the file always holds all 210 frames; a live recorder, which keeps only
 the frames its encoder has time for, is the fallback. A transparent backdrop keeps its
-alpha. Where the browser cannot make a WebM the panel says so and the PNG still works.
+alpha. Where the browser cannot make a WebM the panel says so before the click, and the
+PNG still works.
 Faces filed under terms that do not allow a copy to leave the page are refused with the
 reason.
 
@@ -87,11 +88,21 @@ they were.
 
 ## Not done, on purpose
 
-- A WebM needs a browser that can encode VP9 or VP8 (or record WebM); older Safari may
-  have neither, and the inspector says so. Not yet tried on Safari.
-- The WebM takes about 40 seconds to make on an M3 laptop (76 with a transparent
-  backdrop): VP9 at 1440×2010 is the slow part, and its realtime mode was no faster on a
-  card's detail. The progress bar moves frame by frame and Cancel stops the encoder.
+- A WebM needs a browser whose encoder writes VP9 or VP8 at the export's frame, or a
+  recorder that records WebM. The inspector asks the browser before the click and, where
+  neither answers, leaves the button off and says why.
+- Safari, checked 2026-10-23 on the M3 laptop with an unattended local probe: Safari
+  27.2's encoder writes VP9 and VP8 at 1440×2010 and refuses an alpha channel, which does
+  not matter here, because the encoder library carries transparency as its own second
+  stream. The library's full loop of 210 frames came back at exactly 7 seconds, dark and
+  transparent (transparency on all 210). The card painter and the panel themselves have
+  not been driven in Safari.
+- The WebM takes about 40 seconds to make in Chrome on the M3 laptop (76 with a
+  transparent backdrop). Both times are for the 1440×2010 posed frame, made from the
+  1200 px card face: VP9 in software is the slow part, and its realtime mode was no faster
+  on a card's detail. Safari's encoder ran the same size of loop, on simpler test frames,
+  in 5 seconds (9 transparent). The progress bar moves frame by frame and Cancel stops
+  the encoder.
 - The exported back leaves out the spin-direction dial the page's back carries.
 - A face whose page media is the live 3D grip model exports as the seam-informed
   schematic twin, labelled "Reference schematic".

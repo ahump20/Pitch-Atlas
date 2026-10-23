@@ -6,20 +6,21 @@ import { poseCard, poseDimensions } from './poseCard'
 import type { ExportLight, ExportPose, ExportProgress, ExportRequest, WebmSupport } from './types'
 
 /*
-  The WebM: seven seconds, thirty frames a second, 1200 pixels wide, a closed loop.
-  The pose and the light each run one closed cycle around the request's own values,
-  so the last frame hands off to the first without a jump.
+  The WebM: seven seconds, thirty frames a second, a closed loop of the 1200-pixel
+  card face posed into a 1440x2010 frame. The pose and the light each run one closed
+  cycle around the request's own values, so the last frame hands off to the first
+  without a jump.
 
   Every frame is composed and posed offscreen, then handed to the browser's own video
   encoder (WebCodecs, written into WebM by mediabunny) stamped with its place on the
   timeline: frame i at i/30 s. The next frame is drawn only once the encoder can take
   it, so the file holds all 210 frames and runs exactly seven seconds however long
-  the machine needs (about forty seconds on an M3 laptop; VP9 at this size is the
-  slow part, and its realtime mode was no faster on a card's detail). A live
+  the machine needs (about forty seconds in Chrome on an M3 laptop; VP9 in software is
+  the slow part, and its realtime mode was no faster on a card's detail). A live
   recorder (MediaRecorder) keeps only the frames its encoder has time for; at this
   size that was 57 of 211 on the same laptop, a choppy clip over a second short that
   did not close its loop. It stays as the fallback for a browser with no WebM encoder
-  of its own. Where neither exists the support check says so, in words.
+  of its own. Where neither exists the support check says so before the click, in words.
 
   mediabunny is the heaviest thing here, so it is its own chunk, fetched on the first
   WebM rather than with the inspector.
