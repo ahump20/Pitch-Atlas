@@ -90,10 +90,10 @@
 /* everything else: two equal columns, one right edge */
 .specimen-rail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .specimen-rail-actions > * { width: 100%; min-height: 40px; }
-/* the export's two buttons size to their words and share the row, and stack whole
-   rather than break a label where the rail is narrow */
-.specimen-export .specimen-rail-actions { display: flex; flex-wrap: wrap; }
-.specimen-export .specimen-rail-actions > * { flex: 1 1 auto; width: auto; white-space: nowrap; }
+/* the export's two buttons are two equal halves like every pair above them; the loop's
+   length lives in the note under them, so neither label outgrows its half. Cancel,
+   while a loop is being made, takes the row beneath. */
+.specimen-cancel { grid-column: 1 / -1; }
 .specimen-chevron { transition: rotate 160ms; }
 .specimen-action[aria-expanded=true] .specimen-chevron { rotate: 180deg; }
 /* the file: one link under one underline, the arrow inside it */
@@ -110,9 +110,12 @@
 
 .specimen-finish, .specimen-export { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid #a38a5e2e; }
 .specimen-finish h3, .specimen-export h3 { margin: 0; font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; color: #c4a777; }
+/* the Finish panel's choices: squared to the buttons' corner, and a chosen one lit and
+   keyed in gold with a dot, never filled cream (the cream is Study grip's alone) */
 .specimen-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.specimen-chip { min-height: 32px; padding: 5px 10px; border: 1px solid #8a7a5e80; border-radius: 999px; background: transparent; color: #d9ccb3; font: 600 11px/1 var(--font-prose); cursor: pointer; }
-.specimen-chip[aria-pressed=true] { background: #e7d7b5; color: #211c16; border-color: #c8a35c; }
+.specimen-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 5px 10px; border: 1px solid #8a7a5e80; border-radius: 6px; background: transparent; color: #d9ccb3; font: 600 11px/1 var(--font-prose); cursor: pointer; }
+.specimen-chip[aria-pressed=true] { background: #2a241c; color: #f6f1e6; border-color: #c8a35c; }
+.specimen-chip[aria-pressed=true]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #c8a35c; }
 .specimen-chip:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; }
 .specimen-finish-list { display: flex; flex-direction: column; gap: 6px; }
 .specimen-finish-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: center; }
@@ -125,7 +128,8 @@
 .specimen-export progress { width: 100%; height: 6px; accent-color: #c8a56a; }
 .specimen-export-status { margin: 0; font: 12px/1.5 var(--font-prose); color: #cfc2a8; }
 .specimen-export-status[data-tone=error] { color: #ffb1a8; }
-.specimen-export-note { margin: 0; font: 11px/1.5 var(--font-mono); color: #9b8f7a; }
+/* the notes read as sentences: the prose face, wrapped so no word is left alone on a line */
+.specimen-export-note { margin: 0; font: 12px/1.5 var(--font-prose); color: #a89c86; text-wrap: pretty; }
 .specimen-caption { display: grid; gap: 2px; }
 .specimen-caption-label { font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; color: #c4a777; }
 

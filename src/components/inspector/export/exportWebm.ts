@@ -3,7 +3,7 @@ import { exportEligibility } from './eligibility'
 import { CARD_ASPECT } from './cardLayout'
 import { captionFor } from './exportPng'
 import { poseCard, poseDimensions } from './poseCard'
-import type { ExportLight, ExportPose, ExportProgress, ExportRequest, WebmResult, WebmSupport } from './types'
+import type { ExportLight, ExportPose, ExportProgress, ExportRequest, WebmResult, WebmSupport, WebmVerdict } from './types'
 
 /*
   The WebM: seven seconds, thirty frames a second, a closed loop of the 1200-pixel
@@ -47,6 +47,7 @@ export function webmFrameSize(faceWidth = WEBM_WIDTH, faceHeight = Math.round(WE
   the library itself, so a new frame size that needs a new level fails there first.
 */
 export const WEBM_PROBE_CODECS = ['vp09.00.50.08', 'vp8'] as const
+const PROBE_CODEC_NAMES: Record<(typeof WEBM_PROBE_CODECS)[number], 'vp9' | 'vp8'> = { 'vp09.00.50.08': 'vp9', vp8: 'vp8' }
 
 /** The pose at `phase` 0..1 of the loop; `loopPose(b, 0)` equals `loopPose(b, 1)`. */
 export function loopPose(base: ExportPose, phase: number): ExportPose {
@@ -84,8 +85,9 @@ export function webmSupport(): WebmSupport {
 }
 
 /**
- * The real answer: an encoder only counts if it writes a WebM codec at the export's
- * frame size, rate and bitrate; otherwise the recorder's WebM types decide.
+ * The real answer, and how: an encoder only counts if it writes a WebM codec at the
+ * export's frame size, rate and bitrate; otherwise the recorder's WebM types decide.
+ * The export takes this verdict as it stands rather than asking the browser again.
  */
 export async function probeWebmSupport(): Promise<WebmSupport> {
   if (typeof VideoEncoder === 'function' && typeof VideoEncoder.isConfigSupported === 'function') {
@@ -95,10 +97,11 @@ export async function probeWebmSupport(): Promise<WebmSupport> {
         (answer) => Boolean(answer.supported),
         () => false,
       )
-      if (supported) return { ok: true }
+      if (supported) return { ok: true, via: { path: 'encoder', codec: PROBE_CODEC_NAMES[codec] } }
     }
   }
-  return recorderMimeType() ? { ok: true } : { ok: false, reason: UNSUPPORTED }
+  const mimeType = recorderMimeType()
+  return mimeType ? { ok: true, via: { path: 'recorder', mimeType } } : { ok: false, reason: UNSUPPORTED }
 }
 
 type Mediabunny = typeof import('./webmEncoder')
@@ -109,16 +112,6 @@ async function loadEncoder(): Promise<Mediabunny> {
   } catch {
     throw new Error('The video encoder did not download. Check the connection, then export again.')
   }
-}
-
-/** The WebM codec the browser's own encoder can write at this size, VP9 first. */
-async function encoderCodec(mb: Mediabunny, width: number, height: number): Promise<'vp9' | 'vp8' | null> {
-  for (const codec of ['vp9', 'vp8'] as const) {
-    const quality = new mb.Quality({ bitrate: WEBM_BITRATE })
-    const ok = await mb.canEncodeVideo(codec, { width, height, frameRate: WEBM_FPS, quality }).catch(() => false)
-    if (ok) return codec
-  }
-  return null
 }
 
 const sleep = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms))
@@ -225,8 +218,15 @@ export async function exportSpecimenWebm(
   onProgress?: (p: ExportProgress) => void,
   signal?: AbortSignal,
 ): Promise<WebmResult> {
-  const support = webmSupport()
-  if (!support.ok) throw new Error(support.reason)
+  // the support check asked the browser before the click; it is asked here only when
+  // the request came without its answer
+  let via: WebmVerdict | undefined = req.via
+  if (!via) {
+    const support = await probeWebmSupport()
+    if (!support.ok) throw new Error(support.reason)
+    via = support.via
+  }
+  if (!via) throw new Error(UNSUPPORTED)
   const eligibility = exportEligibility(req.entry, req.face)
   if (!eligibility.exportable) throw new Error(eligibility.reason ?? 'This face cannot be exported.')
 
@@ -234,13 +234,15 @@ export async function exportSpecimenWebm(
   await loadCardFonts()
   const media = req.face === 'front' ? await resolveStageMedia(req.stage) : null
   let mb: Mediabunny | null = null
-  if (typeof VideoEncoder === 'function') {
+  if (via.path === 'encoder') {
     try {
       mb = await loadEncoder()
     } catch (error) {
       // the live recorder can still make the loop; with no recorder either, the
       // failed download is the reason to give, and no GL context is taken for it
-      if (!recorderMimeType()) throw error
+      const mimeType = recorderMimeType()
+      if (!mimeType) throw error
+      via = { path: 'recorder', mimeType }
     }
   }
   if (signal?.aborted) throw cancelled()
@@ -274,11 +276,9 @@ export async function exportSpecimenWebm(
       poseCard(outCtx, face, { pose, backdrop: req.backdrop, caption, gold })
     }
 
-    const codec = mb ? await encoderCodec(mb, out.width, out.height) : null
-    const mimeType = codec ? null : recorderMimeType()
     let result: WebmResult
-    if (mb && codec) result = { blob: await encodeFrames(mb, out, paint, codec, req.backdrop === 'transparent', onProgress, signal), path: 'encoder' }
-    else if (mimeType) result = { blob: await recordLive(out, paint, mimeType, onProgress, signal), path: 'recorder' }
+    if (via.path === 'encoder' && mb) result = { blob: await encodeFrames(mb, out, paint, via.codec, req.backdrop === 'transparent', onProgress, signal), path: 'encoder' }
+    else if (via.path === 'recorder') result = { blob: await recordLive(out, paint, via.mimeType, onProgress, signal), path: 'recorder' }
     else throw new Error(UNSUPPORTED)
     onProgress?.({ phase: 'done', fraction: 1 })
     return result

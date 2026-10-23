@@ -64,6 +64,8 @@ function request(): ExportRequest {
     pose: { rx: 3, ry: -2 },
     light: { x: 0.6, y: 0.4, height: 1.1, strength: 1 },
     backdrop: 'void',
+    // the support check found the browser's encoder; its library is what fails to arrive
+    via: { path: 'encoder', codec: 'vp9' },
   }
 }
 
