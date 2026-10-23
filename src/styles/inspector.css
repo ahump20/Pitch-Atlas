@@ -7,7 +7,8 @@
   border: 1px solid #a38a5e40; box-shadow: 0 40px 90px -30px #000, inset 0 1px 0 #f6f1e614;
   max-height: calc(100dvh - 2rem); overflow: auto; gap: 0;
 }
-.specimen-inspector-grid { display: grid; grid-template-columns: minmax(0, 1fr) 344px; height: min(820px, calc(100dvh - 2rem)); }
+/* the grid fills the dialog inside its 1px border, so the dialog itself never scrolls */
+.specimen-inspector-grid { display: grid; grid-template-columns: minmax(0, 1fr) 344px; height: min(820px, calc(100dvh - 2rem - 2px)); }
 .specimen-stage {
   position: relative; display: grid; place-items: center; padding: clamp(24px, 4vw, 56px); min-height: 0;
   background: radial-gradient(ellipse at 50% 38%, #1c1814 0%, #0b0a09 72%); outline: none;
@@ -67,8 +68,16 @@
   .specimen-inspector-grid { grid-template-columns: 1fr; height: auto; }
   .specimen-rail { overflow: visible; }
   .specimen-stage { border-radius: 14px 14px 0 0; padding: 22px 16px 10px; }
-  .specimen-rig { max-width: min(440px, calc((100dvh - 330px) * 5 / 7), 100%); }
+  /* sized to fit the screen's height, never below a card you can read; past that the dialog scrolls */
+  .specimen-rig { max-width: min(440px, 100%, max(220px, calc((100dvh - 330px) * 5 / 7))); }
   .specimen-rail { border-left: 0; border-top: 1px solid #a38a5e2e; border-radius: 0 0 14px 14px; padding: 20px 16px 28px; }
+}
+/* a phone on its side: the card beside the rail, sized to the height it has */
+@media (max-width: 899px) and (max-height: 520px) and (orientation: landscape) {
+  .specimen-inspector-grid { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); height: calc(100dvh - 2rem - 2px); }
+  .specimen-stage { border-radius: 14px 0 0 14px; padding: 12px; }
+  .specimen-rig { max-width: max(150px, calc((100dvh - 2rem - 40px) * 5 / 7)); }
+  .specimen-rail { overflow-y: auto; gap: 12px; border-top: 0; border-left: 1px solid #a38a5e2e; border-radius: 0 14px 14px 0; padding: 16px 14px 20px; }
 }
 @media (max-height: 520px) and (min-width: 900px) { .specimen-rig { max-width: calc((100dvh - 120px) * 5 / 7); } }
 @media (any-pointer: coarse) { .specimen-seg button, .specimen-chip, .specimen-advanced summary { min-height: 44px; } .specimen-range input[type=range] { min-height: 44px; } }
