@@ -121,19 +121,23 @@ describe('SpecimenInspector', () => {
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     const front = dialog.querySelector('.v2-face:not(.v2-face-back) .rfx-card') as HTMLElement
     const pose = () => `${front.style.getPropertyValue('--rx')} ${front.style.getPropertyValue('--ry')}`
-    const holdsStill = async () => {
-      const before = pose()
-      await new Promise((resolve) => window.setTimeout(resolve, 250))
-      expect(pose()).toBe(before)
+    const degrees = () => [front.style.getPropertyValue('--rx'), front.style.getPropertyValue('--ry')].map((v) => parseFloat(v || '0'))
+    /** How far the front turns over `ms`, in degrees summed over both axes. */
+    const turnOver = async (ms: number) => {
+      const [rx0, ry0] = degrees()
+      await new Promise((resolve) => window.setTimeout(resolve, ms))
+      const [rx1, ry1] = degrees()
+      return Math.abs(rx1 - rx0) + Math.abs(ry1 - ry0)
     }
 
     const atOpen = pose()
     await waitFor(() => expect(pose()).not.toBe(atOpen), { timeout: 3000 })
 
     await user.click(within(dialog).getByRole('button', { name: 'Sources' }))
-    // the spring finishes its last step, then the hidden front holds still
-    await waitFor(holdsStill, { timeout: 4000 })
-    await holdsStill()
+    // the spring lets go of its last target, then the hidden front stays put. A live
+    // drift covers at least a quarter of a degree in 800ms wherever it is in its cycle.
+    await waitFor(async () => expect(await turnOver(300)).toBeLessThan(0.01), { timeout: 5000 })
+    expect(await turnOver(800)).toBeLessThan(0.05)
 
     await user.click(within(dialog).getByRole('button', { name: 'Front' }))
     const atReturn = pose()
