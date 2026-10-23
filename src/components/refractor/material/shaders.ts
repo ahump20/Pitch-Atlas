@@ -182,11 +182,16 @@ void main() {
   vec3 col = stock * (0.88 + 0.95 * diff * uSheen) + vec3(0.16, 0.18, 0.19) * fres * 0.45;
 
   // ── micro-structure → one lobe, one phase, one tooth multiplier
+  // The finishes are laid out on a 360px card and enlarge with a bigger one, so a card
+  // shown larger, or exported, keeps the finish the visitor tuned: measured in pixels,
+  // a 1500px export carried four times the pillar columns of the card on screen. A
+  // smaller card keeps the finish at its finest legible pitch rather than going finer.
+  vec2 pf = p * min(1.0, 360.0 / uSize.x);
   float lobe = 0.0, weight = 0.0, phase = 0.0, toothMul = 1.0, spark = 0.0;
   float edgeDark = 1.0;
   vec2 tHair = rot2(vec2(1.0, 0.0), radians(uAngle));
   vec2 perp = vec2(-tHair.y, tHair.x);
-  float streak = 0.72 + 0.56 * vnoise(vec2(dot(p, perp) * 0.7 * uScale, dot(p, tHair) * 0.012));
+  float streak = 0.72 + 0.56 * vnoise(vec2(dot(pf, perp) * 0.7 * uScale, dot(pf, tHair) * 0.012));
 
   if (uFinish[0] > 0.0) { // brushed hairline
     lobe += uFinish[0] * anisoLobe(tHair, H, shinA) * streak;
@@ -194,13 +199,13 @@ void main() {
   }
   if (uFinish[1] > 0.0) { // pillar columns
     float colW = 21.0 / uScale;
-    float colI = floor(p.x / colW);
+    float colI = floor(pf.x / colW);
     vec2 hc = hash22(vec2(colI, 3.7));
     vec3 nP = normalize(vec3((hc.x - 0.5) * 0.46, (hc.y - 0.5) * 0.1, 1.0));
     lobe += uFinish[1] * isoLobe(nP, H, shinI) * 1.15;
     phase += uFinish[1] * (hc.x - 0.5) * 0.9;
     weight += uFinish[1];
-    float seam = min(fract(p.x / colW), 1.0 - fract(p.x / colW)) * colW;
+    float seam = min(fract(pf.x / colW), 1.0 - fract(pf.x / colW)) * colW;
     edgeDark *= 1.0 - uFinish[1] * 0.28 * (1.0 - smoothstep(0.0, 1.2, seam));
   }
   if (uFinish[2] > 0.0) { // crosshatch
@@ -210,7 +215,7 @@ void main() {
     weight += uFinish[2];
   }
   if (uFinish[3] > 0.0) { // cracked ice
-    vec2 g = p / (88.0 / uScale);
+    vec2 g = pf / (88.0 / uScale);
     vec2 ig = floor(g), fg = fract(g);
     float md = 8.0, md2 = 8.0;
     vec2 mc = ig;
@@ -230,7 +235,7 @@ void main() {
   }
   if (uFinish[4] > 0.0) { // glitter
     float cell = 7.5 / (max(uGlint.z, 0.05) * uScale);
-    vec2 gi = floor(p / cell), gf = fract(p / cell);
+    vec2 gi = floor(pf / cell), gf = fract(pf / cell);
     vec2 o = 0.2 + 0.6 * hash22(gi + 5.0);
     float present = step(0.5, hash21(gi + 9.0));
     float site = present * (1.0 - smoothstep(0.0, 0.07 + 0.2 * uGlint.y, length(gf - o)));
@@ -239,7 +244,7 @@ void main() {
     spark += uFinish[4] * site * isoLobe(nG, H, 260.0) * 3.2 * uGlint.x;
   }
   if (uFinish[5] > 0.0) { // ripple
-    vec2 w = 0.2 * vec2(cos(p.x * 0.07 * uScale + p.y * 0.025), cos(p.y * 0.06 * uScale - p.x * 0.02 + 1.7));
+    vec2 w = 0.2 * vec2(cos(pf.x * 0.07 * uScale + pf.y * 0.025), cos(pf.y * 0.06 * uScale - pf.x * 0.02 + 1.7));
     vec3 nR = normalize(vec3(w, 1.0));
     lobe += uFinish[5] * isoLobe(nR, H, shinI) * 1.1;
     phase += uFinish[5] * w.x * 0.8;
