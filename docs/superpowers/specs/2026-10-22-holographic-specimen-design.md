@@ -72,9 +72,13 @@ on the device and never touch a record or any page surface.
 header, plate, strip), posed in perspective with a stock edge, contact and cast shadows,
 a dark or transparent backdrop and an attribution caption; and a 7-second, 30 fps,
 1200-pixel WebM whose pose and light run one closed cycle so the last frame hands off to
-the first. Where the browser cannot record WebM the panel says so and the PNG still
-works. Faces filed under terms that do not allow a copy to leave the page are refused
-with the reason.
+the first. Each WebM frame goes to the browser's own encoder (WebCodecs, written into
+WebM by mediabunny) stamped with its time, and the next is drawn only when the encoder
+can take it, so the file always holds all 210 frames; a live recorder, which keeps only
+the frames its encoder has time for, is the fallback. A transparent backdrop keeps its
+alpha. Where the browser cannot make a WebM the panel says so and the PNG still works.
+Faces filed under terms that do not allow a copy to leave the page are refused with the
+reason.
 
 **Floors kept.** Reduced motion mounts the material and draws exactly one still frame;
 no WebGL2 leaves the CSS card standing (the same ramp at rest); keyboard reaches
@@ -83,7 +87,12 @@ they were.
 
 ## Not done, on purpose
 
-- WebM recording is unavailable on Safari before 18.4; the inspector says so.
+- A WebM needs a browser that can encode VP9 or VP8 (or record WebM); older Safari may
+  have neither, and the inspector says so. Not yet tried on Safari.
+- The WebM takes about 40 seconds to make on an M3 laptop (76 with a transparent
+  backdrop): VP9 at 1440×2010 is the slow part, and its realtime mode was no faster on a
+  card's detail. The progress bar moves frame by frame and Cancel stops the encoder.
+- The exported back leaves out the spin-direction dial the page's back carries.
 - A face whose page media is the live 3D grip model exports as the seam-informed
   schematic twin, labelled "Reference schematic".
 - Device-orientation tilt is off by the site's own Permissions-Policy.

@@ -28,8 +28,9 @@ tree was left exactly as found.
 ## Phase 4: export
 - `src/components/inspector/export/`: `types.ts`, `eligibility.ts`, `cardLayout.ts`,
   `composeCard.ts`, `poseCard.ts`, `exportPng.ts`, `exportWebm.ts` (+ tests).
-- Vite: the inspector and the compositor travel as the `specimen-inspector` chunk,
-  excluded from the PWA precache.
+- Vite: the inspector and the compositor travel in the `SpecimenInspector` chunk that
+  React.lazy splits off, and the WebM encoder (mediabunny) in its own `webmEncoder`
+  chunk fetched on the first WebM; both are excluded from the PWA precache.
 
 ## Phase 5: verify and deliver
 - Full gate set, production build, preview smoke, browser verification at desktop,
@@ -48,3 +49,19 @@ tree was left exactly as found.
   releases whatever has scrolled away.
 - The export subagent could not run (API authentication failed); the module was written
   in-session against the same contract.
+- The WebM is encoded frame by frame through WebCodecs and written by mediabunny
+  instead of a MediaRecorder capture: at 1440×2010 the recorder kept 57 of 211 frames on
+  an M3 laptop, a 5.9-second clip that did not close its loop. The approved plan named
+  mediabunny for the case where the loop boundary proved imperfect, and it did. The
+  recorder stays as the fallback.
+
+## Review round, after the PR opened
+Copilot, CodeRabbit and CodeQL findings, each checked against the code and fixed:
+the keys, Reset, light and export follow the face that is showing, and the front's slow
+turn rests while it is turned away; every finish switch has a name and the Pause
+controls name their action; the inspected card fits a phone on its side; a lost or
+torn-down material layer stays down; a remembered finish is rebuilt field by field;
+exports wait for the grip media and release the GPU whatever fails; a failed inspector
+download leaves the page standing; the ramp parity test escapes the whole selector.
+Browser verification of both export faces then found the back exporting with the
+front's open window (fixed) and the WebM dropping frames (re-encoded as above).
