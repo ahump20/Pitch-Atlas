@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { DiscussionPanel } from './DiscussionPanel'
 import { useDiscussion, type UseDiscussion } from '../../hooks/useDiscussion'
+import { friendlyReadError } from '../../lib/discussion'
 
 const toast = vi.hoisted(() => ({
   error: vi.fn(),
@@ -57,20 +58,34 @@ describe('DiscussionPanel', () => {
     expect(screen.getByText(/Start the file with a grip cue/)).toBeInTheDocument()
   })
 
-  it('renders the error state with a retry action', async () => {
-    vi.mocked(useDiscussion).mockReturnValue({
-      ...baseDiscussion,
-      status: 'error',
-      error: 'Supabase unavailable',
-    })
+  it('says one honest thing when the discussion cannot load', async () => {
+    const refresh = vi.fn()
+    // What the data layer hands the view when Supabase cannot be reached. It may
+    // not reach the visitor.
+    const failure = friendlyReadError({ message: 'TypeError: Failed to fetch' })
+    vi.mocked(useDiscussion).mockReturnValue({ ...baseDiscussion, status: 'error', error: failure, refresh })
 
     render(<DiscussionPanel topicKey="pitch:four-seam" topicName="Four-seam fastball" />)
     await userEvent.click(screen.getByRole('button', { name: /discussion/i }))
 
-    // Await the lazy forum chunk, then assert its error state.
-    expect(await screen.findByText('Could not load the discussion.', {}, LAZY_FORUM)).toBeInTheDocument()
-    expect(screen.getByText('Supabase unavailable')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument()
+    // Await the lazy forum chunk, then read its error state.
+    const alert = await screen.findByRole('alert', {}, LAZY_FORUM)
+
+    // One heading, and the failure said once.
+    expect(within(alert).getByText('Could not load the discussion.')).toBeInTheDocument()
+    expect(alert.textContent?.match(/could(?:n't| not) load/gi)).toHaveLength(1)
+
+    // One short sentence: no echo of the error, no guess at cause or duration,
+    // no doubled period, no "Try again" competing with the button below it.
+    const description = alert.querySelector('[data-slot="alert-description"]')?.textContent?.trim() ?? ''
+    expect(description).toMatch(/^[A-Z].*\.$/)
+    expect(description.split(/(?<=[.!?])\s+/)).toHaveLength(1)
+    expect(description).not.toContain('..')
+    expect(description).not.toMatch(/hiccup|usually|passing|try again/i)
+    expect(alert.textContent).not.toContain(failure)
+
+    await userEvent.click(within(alert).getByRole('button', { name: /try again/i }))
+    expect(refresh).toHaveBeenCalledOnce()
   })
 
   it('shows delete failures from the discussion data layer', async () => {
