@@ -16,6 +16,7 @@ const h = vi.hoisted(() => ({
   rendered: [] as MaterialLayout[],
   coverages: [] as string[],
   ops: [] as string[],
+  filters: [] as string[],
   calls: [] as Array<{ name: string; args: unknown[] }>,
 }))
 
@@ -38,7 +39,8 @@ const { createComposer, resolveStageMedia } = await import('./composeCard')
 
 /** A 2D context that accepts every call, remembers each one, and remembers compositing changes. */
 function recordingContext(): CanvasRenderingContext2D {
-  const state: Record<string | symbol, unknown> = {}
+  // a canvas filter, as every current browser's 2D context has
+  const state: Record<string | symbol, unknown> = { filter: 'none' }
   return new Proxy(state, {
     get(target, prop) {
       if (prop in target) return target[prop]
@@ -51,6 +53,7 @@ function recordingContext(): CanvasRenderingContext2D {
     },
     set(target, prop, value) {
       if (prop === 'globalCompositeOperation') h.ops.push(String(value))
+      if (prop === 'filter') h.filters.push(String(value))
       target[prop] = value
       return true
     },
@@ -72,6 +75,7 @@ beforeEach(() => {
   h.rendered.length = 0
   h.coverages.length = 0
   h.ops.length = 0
+  h.filters.length = 0
   h.calls.length = 0
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => recordingContext() as unknown as RenderingContext)
 })
@@ -125,6 +129,40 @@ describe('createComposer', () => {
     }
     // a higher focus point shows more of the top of the frame
     expect(dyFor(0.2)).toBeGreaterThan(dyFor(0.8))
+  })
+
+  it('draws the clip at the zoom and with the colour the page shows it in', () => {
+    const entry = pitchBySlug('four-seam')
+    if (!entry) throw new Error('four-seam is filed')
+    const source = document.createElement('canvas')
+    const drawn = (scale: number) => {
+      h.calls.length = 0
+      h.filters.length = 0
+      const filter = `brightness(${scale})`
+      const media = { kind: 'video' as const, source, width: 900, height: 1600, focusY: 0.5, scale, filter }
+      const composer = createComposer({ entry, face: 'front', material: PRESETS['ember-chrome'], width: 600, media })
+      composer.draw(recordingContext(), { rx: 0, ry: 0 }, { x: 0.5, y: 0.5, height: 1.1, strength: 1 })
+      const call = h.calls.find((c) => c.name === 'drawImage' && c.args[0] === source)
+      if (!call) throw new Error('the clip was not drawn')
+      expect(h.filters).toContain(filter)
+      return call.args[3] as number
+    }
+    // the card window shows its clip at 1.16; the home hero's curated cut at 1.02
+    expect(drawn(1.16) / drawn(1.02)).toBeCloseTo(1.16 / 1.02, 6)
+  })
+
+  it('reads the zoom and colour off the element the visitor is looking at', async () => {
+    const stage = document.createElement('div')
+    const video = document.createElement('video')
+    video.style.transform = 'scale(1.16)'
+    video.style.filter = 'saturate(0.8) contrast(1.08) brightness(0.88)'
+    for (const [k, v] of [['readyState', 4], ['videoWidth', 900], ['videoHeight', 1600]] as const) Object.defineProperty(video, k, { value: v })
+    stage.append(video)
+    await expect(resolveStageMedia(stage, { waitMs: 50 })).resolves.toMatchObject({
+      kind: 'video',
+      scale: 1.16,
+      filter: 'saturate(0.8) contrast(1.08) brightness(0.88)',
+    })
   })
 
   it('reads the framing off the element the visitor is looking at', async () => {

@@ -182,6 +182,10 @@ export interface StageMedia {
   height: number
   /** where the page's crop sits down the frame, 0 to 1, read off the element itself */
   focusY?: number
+  /** the zoom the page shows the media at, read off the element's transform */
+  scale?: number
+  /** the colour treatment the page gives the media, read off the element's filter */
+  filter?: string
 }
 
 /** The vertical point an object-fit crop keeps, 0 to 1, from the element's object-position. */
@@ -191,6 +195,23 @@ function focusYOf(el: HTMLElement): number | undefined {
   if (!y) return undefined
   if (y.endsWith('%')) return Number.parseFloat(y) / 100
   return ({ top: 0, center: 0.5, bottom: 1 } as Record<string, number | undefined>)[y]
+}
+
+/** The zoom an element's own transform applies: a computed matrix in a browser, the
+    declared scale() where the styles are not computed (tests). */
+function zoomOf(el: HTMLElement): number | undefined {
+  const t = (typeof getComputedStyle === 'function' ? getComputedStyle(el).transform : '') || el.style.transform
+  if (!t || t === 'none') return t === 'none' ? 1 : undefined
+  const args = (t.match(/\(([^)]*)\)/)?.[1] ?? '').split(',').map((n) => Number.parseFloat(n))
+  if (t.startsWith('matrix') && args.length >= 2) return Math.hypot(args[0], args[1])
+  if (t.startsWith('scale') && Number.isFinite(args[0])) return args[0]
+  return undefined
+}
+
+/** The element's colour treatment, as a canvas filter string. */
+function filterOf(el: HTMLElement): string | undefined {
+  const f = (typeof getComputedStyle === 'function' ? getComputedStyle(el).filter : '') || el.style.filter
+  return f || undefined
 }
 
 const MEDIA_WAIT_MS = 8000
@@ -220,11 +241,11 @@ export async function resolveStageMedia(
     for (;;) {
       if (video && videoReady(video)) {
         const [w, h] = mediaSize(video)
-        return { kind: 'video', source: video, width: w, height: h, focusY: focusYOf(video) }
+        return { kind: 'video', source: video, width: w, height: h, focusY: focusYOf(video), scale: zoomOf(video), filter: filterOf(video) }
       }
       if (img && imageReady(img)) {
         const [w, h] = mediaSize(img)
-        return { kind: 'image', source: img, width: w, height: h, focusY: focusYOf(img) }
+        return { kind: 'image', source: img, width: w, height: h, focusY: focusYOf(img), scale: zoomOf(img), filter: filterOf(img) }
       }
       if (Date.now() >= deadline) throw new Error(MEDIA_NOT_READY)
       await new Promise<void>((resolve) => window.setTimeout(resolve, MEDIA_POLL_MS))
@@ -395,10 +416,11 @@ function paintFrontUnder(ctx: Ctx, l: CardLayout, accent: { c2: string; c3: stri
       ctx.drawImage(media.source, w.x + (w.w - media.width * s) / 2, w.y + (w.h - media.height * s) / 2, media.width * s, media.height * s)
     } else {
       ctx.save()
-      if ('filter' in ctx) ctx.filter = 'saturate(.88) contrast(1.05) brightness(.96)'
-      // the crop the page shows: the element's own focus point when it has one
+      // the colour, crop and zoom the page shows, read off the element itself; the
+      // constants are only for media handed in without an element behind it
+      if ('filter' in ctx) ctx.filter = media.filter ?? 'saturate(.88) contrast(1.05) brightness(.96)'
       const focusY = media.focusY ?? (media.kind === 'video' ? 0.56 : 0.42)
-      coverDraw(ctx, media.source, media.width, media.height, w, focusY, media.kind === 'video' ? 1.02 : 1.16)
+      coverDraw(ctx, media.source, media.width, media.height, w, focusY, media.scale ?? (media.kind === 'video' ? 1.02 : 1.16))
       ctx.restore()
       // the DOM's vignette over the hand
       const v = ctx.createRadialGradient(w.x + w.w / 2, w.y + w.h * 0.44, w.w * 0.3, w.x + w.w / 2, w.y + w.h * 0.44, w.w * 0.95)
