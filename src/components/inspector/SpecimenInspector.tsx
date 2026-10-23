@@ -142,7 +142,8 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
       <DialogContent
         className="specimen-inspector"
         overlayClassName="specimen-inspector-overlay"
-        showCloseButton
+        // the close button sits in the rail's header, beside the name (InspectorRail)
+        showCloseButton={false}
         // focus lands on the dialog itself, not on the stage, so opening never paints a
         // focus ring around the card; Tab reaches the stage and the rail in order
         onOpenAutoFocus={(event) => {

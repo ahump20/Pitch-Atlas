@@ -172,22 +172,26 @@ describe('SpecimenInspector', () => {
     await waitFor(() => expect(within(dialog).getByRole('group', { name: /sources showing/ })).toBeInTheDocument())
   })
 
-  it('heads the rail with what the card does not say: the full name, and no family it already names', async () => {
+  it('heads the viewer with what the card does not say, outside the scrolling rail, beside its one close button', async () => {
     render(<Harness start="/?inspect=four-seam" />)
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
-    const rail = within(dialog).getByRole('complementary', { name: 'Inspector controls' })
-    expect(within(rail).getByRole('heading', { level: 2 })).toHaveTextContent('Four-seam fastball')
+    const heading = within(dialog).getByRole('heading', { level: 2, name: 'Four-seam fastball' })
+    const head = heading.closest('header')
+    if (!head) throw new Error('the name sits in a header')
+    // the header stays put while the rail scrolls, and on a phone it takes the top strip
+    expect(within(dialog).getByRole('complementary', { name: 'Inspector controls' })).not.toContainElement(heading)
+    expect(within(head).getByRole('button', { name: 'Close' })).toBeInTheDocument()
+    expect(within(dialog).getAllByRole('button', { name: 'Close' })).toHaveLength(1)
     // "Fastball" over "Four-seam fastball" said fastball twice
-    expect(within(rail).queryByText('Fastball')).not.toBeInTheDocument()
-    expect(within(rail).queryByText(/Filed specimen/)).not.toBeInTheDocument()
+    expect(within(head).queryByText('Fastball')).not.toBeInTheDocument()
+    expect(within(head).queryByText(/Filed specimen/)).not.toBeInTheDocument()
   })
 
   it('names the family over a name that does not say it', async () => {
     render(<Harness start="/?inspect=slider" />)
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
-    const rail = within(dialog).getByRole('complementary', { name: 'Inspector controls' })
-    expect(within(rail).getByRole('heading', { level: 2 })).toHaveTextContent('Slider')
-    expect(within(rail).getByText('Breaking')).toBeInTheDocument()
+    const heading = within(dialog).getByRole('heading', { level: 2, name: 'Slider' })
+    expect(within(heading.closest('header') as HTMLElement).getByText('Breaking')).toBeInTheDocument()
   })
 
   it('gives the rail one primary action, and Finish says whether its panel is open', async () => {
