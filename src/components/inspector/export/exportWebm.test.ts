@@ -70,7 +70,7 @@ vi.mock('./poseCard', async (importOriginal) => ({
   poseCard: () => undefined,
 }))
 
-const { exportSpecimenWebm, webmSupport, WEBM_FPS, WEBM_FRAMES } = await import('./exportWebm')
+const { exportSpecimenWebm, probeWebmSupport, webmFrameSize, webmSupport, WEBM_FPS, WEBM_FRAMES } = await import('./exportWebm')
 
 function request(): ExportRequest {
   const entry = pitchBySlug('four-seam')
@@ -139,6 +139,50 @@ describe('exportSpecimenWebm with the browser encoder', () => {
 describe('the WebM support check', () => {
   it('counts the browser encoder as a way to make a WebM', () => {
     expect(webmSupport().ok).toBe(true)
+  })
+
+  /** A VideoEncoder stand-in whose answers this test chooses, and which remembers what it was asked. */
+  function encoderAnswering(supported: (codec: string) => boolean) {
+    const asked: VideoEncoderConfig[] = []
+    const Encoder = function VideoEncoder() {} as unknown as { isConfigSupported: (c: VideoEncoderConfig) => Promise<VideoEncoderSupport> }
+    Encoder.isConfigSupported = async (config) => {
+      asked.push(config)
+      return { supported: supported(config.codec), config }
+    }
+    vi.stubGlobal('VideoEncoder', Encoder)
+    return asked
+  }
+
+  it('asks the encoder for a WebM codec at the frame size the export writes', async () => {
+    const asked = encoderAnswering((codec) => codec.startsWith('vp09'))
+    await expect(probeWebmSupport()).resolves.toEqual({ ok: true })
+    expect(asked[0]).toMatchObject({ codec: 'vp09.00.50.08', ...webmFrameSize(), framerate: WEBM_FPS, bitrate: 9_000_000 })
+    expect(webmFrameSize()).toEqual({ width: 1440, height: 2010 })
+  })
+
+  it('tries VP8 when VP9 is refused', async () => {
+    const asked = encoderAnswering((codec) => codec === 'vp8')
+    await expect(probeWebmSupport()).resolves.toEqual({ ok: true })
+    expect(asked.map((c) => c.codec)).toEqual(['vp09.00.50.08', 'vp8'])
+  })
+
+  it('says so before the click when the encoder writes no WebM and there is no recorder', async () => {
+    encoderAnswering(() => false)
+    await expect(probeWebmSupport()).resolves.toEqual({
+      ok: false,
+      reason: expect.stringMatching(/cannot record a WebM[\s\S]*PNG export still works/),
+    })
+  })
+
+  it('counts the live recorder when the encoder writes no WebM', async () => {
+    encoderAnswering(() => false)
+    vi.stubGlobal('MediaRecorder', { isTypeSupported: (type: string) => type === 'video/webm' })
+    Object.defineProperty(HTMLCanvasElement.prototype, 'captureStream', { configurable: true, writable: true, value: () => null })
+    try {
+      await expect(probeWebmSupport()).resolves.toEqual({ ok: true })
+    } finally {
+      delete (HTMLCanvasElement.prototype as { captureStream?: unknown }).captureStream
+    }
   })
 
   it('says so in words when the encoder cannot write WebM and there is no recorder', async () => {

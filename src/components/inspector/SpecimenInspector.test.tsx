@@ -88,6 +88,19 @@ describe('SpecimenInspector', () => {
     await waitFor(() => expect(within(dialog).getByText(/Caption: Grip: Austin video/)).toBeInTheDocument())
   })
 
+  it('asks before the click: an encoder that writes no WebM leaves the button off and says why', async () => {
+    vi.stubGlobal(
+      'VideoEncoder',
+      Object.assign(function VideoEncoder() {}, {
+        isConfigSupported: async (config: VideoEncoderConfig) => ({ supported: false, config }),
+      }),
+    )
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    await waitFor(() => expect(within(dialog).getByText(/cannot record a WebM/)).toBeInTheDocument())
+    expect(within(dialog).getByRole('button', { name: /Export WebM/ })).toBeDisabled()
+  })
+
   it('opens from the Inspect button, adds to the comparison, and Escape closes it and clears the URL', async () => {
     const user = userEvent.setup()
     render(<Harness start="/" />)

@@ -4,7 +4,7 @@ import type { TiltEngine } from '../../hooks/useCardTilt'
 import type { CardMaterial } from '../refractor/material/materialPresets'
 import { exportEligibility } from './export/eligibility'
 import { downloadBlob, exportFilename, exportSpecimenPng } from './export/exportPng'
-import { exportSpecimenWebm, webmSupport } from './export/exportWebm'
+import { exportSpecimenWebm, probeWebmSupport, webmSupport } from './export/exportWebm'
 import type { Eligibility, ExportBackdrop, ExportFace, ExportRequest, WebmSupport } from './export/types'
 
 /*
@@ -41,12 +41,22 @@ export function ExportPanel({
 }) {
   const [backdrop, setBackdrop] = useState<ExportBackdrop>('void')
   const [status, setStatus] = useState<Status>({ kind: 'idle' })
-  // support is a property of the browser, read once; eligibility is a property of the face
-  const [webm] = useState<WebmSupport>(() => webmSupport())
+  // support is a property of the browser: the quick answer at once, then the probe's,
+  // which asks for a WebM codec rather than trusting any encoder. Eligibility is the face's.
+  const [webm, setWebm] = useState<WebmSupport>(() => webmSupport())
   const eligibility: Eligibility = exportEligibility(entry, face)
   const abort = useRef<AbortController | null>(null)
 
   useEffect(() => () => abort.current?.abort(), [])
+  useEffect(() => {
+    let live = true
+    void probeWebmSupport().then((answer) => {
+      if (live) setWebm(answer)
+    })
+    return () => {
+      live = false
+    }
+  }, [])
 
   function request(): ExportRequest | null {
     if (!engine) return null

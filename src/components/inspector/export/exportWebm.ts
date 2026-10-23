@@ -1,5 +1,6 @@
 import { createComposer, loadCardFonts, resolveStageMedia } from './composeCard'
 import { exportEligibility } from './eligibility'
+import { CARD_ASPECT } from './cardLayout'
 import { captionFor } from './exportPng'
 import { poseCard, poseDimensions } from './poseCard'
 import type { ExportLight, ExportPose, ExportProgress, ExportRequest, WebmSupport } from './types'
@@ -28,9 +29,23 @@ export const WEBM_WIDTH = 1200
 export const WEBM_FPS = 30
 export const WEBM_SECONDS = 7
 export const WEBM_FRAMES = WEBM_FPS * WEBM_SECONDS
+export const WEBM_BITRATE = 9_000_000
 
-const BITRATE = 9_000_000
 const TWO_PI = Math.PI * 2
+
+/** The posed frame the WebM is written at: the card face plus the pose's margin and caption, evened for every encoder. */
+export function webmFrameSize(faceWidth = WEBM_WIDTH, faceHeight = Math.round(WEBM_WIDTH * CARD_ASPECT)): { width: number; height: number } {
+  const dims = poseDimensions(faceWidth, faceHeight)
+  return { width: dims.width + (dims.width % 2), height: dims.height + (dims.height % 2) }
+}
+
+/*
+  What the support check asks the browser before the visitor clicks, without
+  downloading the encoder library: VP9 the way that library names it for this frame
+  (profile 0, level 5 for 1440x2010 at 9 Mbps, 8-bit), then VP8. A parity test runs
+  the library itself, so a new frame size that needs a new level fails there first.
+*/
+export const WEBM_PROBE_CODECS = ['vp09.00.50.08', 'vp8'] as const
 
 /** The pose at `phase` 0..1 of the loop; `loopPose(b, 0)` equals `loopPose(b, 1)`. */
 export function loopPose(base: ExportPose, phase: number): ExportPose {
@@ -49,7 +64,7 @@ export function loopLight(base: ExportLight, phase: number): ExportLight {
   }
 }
 
-const UNSUPPORTED = 'This browser cannot record a WebM from a canvas. Safari before 18.4 is the usual case. The PNG export still works.'
+const UNSUPPORTED = 'This browser cannot record a WebM of the card. The PNG export still works.'
 
 /** The live recorder's WebM type, when this browser has one. */
 function recorderMimeType(): string | null {
@@ -61,10 +76,28 @@ function recorderMimeType(): string | null {
   return null
 }
 
-/** Whether a WebM can be made here at all: by the browser's encoder, or failing that its recorder. */
+/** The quick answer, before the probe: is there an encoder or a recorder at all. */
 export function webmSupport(): WebmSupport {
   if (typeof VideoEncoder === 'function' || recorderMimeType()) return { ok: true }
   return { ok: false, reason: UNSUPPORTED }
+}
+
+/**
+ * The real answer: an encoder only counts if it writes a WebM codec at the export's
+ * frame size, rate and bitrate; otherwise the recorder's WebM types decide.
+ */
+export async function probeWebmSupport(): Promise<WebmSupport> {
+  if (typeof VideoEncoder === 'function' && typeof VideoEncoder.isConfigSupported === 'function') {
+    const { width, height } = webmFrameSize()
+    for (const codec of WEBM_PROBE_CODECS) {
+      const supported = await VideoEncoder.isConfigSupported({ codec, width, height, framerate: WEBM_FPS, bitrate: WEBM_BITRATE }).then(
+        (answer) => Boolean(answer.supported),
+        () => false,
+      )
+      if (supported) return { ok: true }
+    }
+  }
+  return recorderMimeType() ? { ok: true } : { ok: false, reason: UNSUPPORTED }
 }
 
 type Mediabunny = typeof import('./webmEncoder')
@@ -80,7 +113,7 @@ async function loadEncoder(): Promise<Mediabunny> {
 /** The WebM codec the browser's own encoder can write at this size, VP9 first. */
 async function encoderCodec(mb: Mediabunny, width: number, height: number): Promise<'vp9' | 'vp8' | null> {
   for (const codec of ['vp9', 'vp8'] as const) {
-    const quality = new mb.Quality({ bitrate: BITRATE })
+    const quality = new mb.Quality({ bitrate: WEBM_BITRATE })
     const ok = await mb.canEncodeVideo(codec, { width, height, frameRate: WEBM_FPS, quality }).catch(() => false)
     if (ok) return codec
   }
@@ -104,7 +137,7 @@ async function encodeFrames(
 ): Promise<Blob> {
   const target = new mb.BufferTarget()
   const output = new mb.Output({ format: new mb.WebMOutputFormat(), target })
-  const source = new mb.CanvasSource(out, { codec, quality: new mb.Quality({ bitrate: BITRATE }), alpha: alpha ? 'keep' : 'discard' })
+  const source = new mb.CanvasSource(out, { codec, quality: new mb.Quality({ bitrate: WEBM_BITRATE }), alpha: alpha ? 'keep' : 'discard' })
   output.addVideoTrack(source, { frameRate: WEBM_FPS })
   try {
     await output.start()
@@ -145,7 +178,7 @@ async function recordLive(
     const stream = out.captureStream(0)
     track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack | undefined
     if (!track) throw new Error('This browser could not capture the canvas for recording.')
-    const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: BITRATE })
+    const rec = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: WEBM_BITRATE })
     recorder = rec
     const chunks: Blob[] = []
     rec.ondataavailable = (event) => {
@@ -224,11 +257,10 @@ export async function exportSpecimenWebm(
     face.width = composer.layout.width
     face.height = composer.layout.height
     const faceCtx = face.getContext('2d')
-    const dims = poseDimensions(face.width, face.height)
+    const frame = webmFrameSize(face.width, face.height)
     const out = document.createElement('canvas')
-    // even dimensions keep every encoder happy
-    out.width = dims.width + (dims.width % 2)
-    out.height = dims.height + (dims.height % 2)
+    out.width = frame.width
+    out.height = frame.height
     const outCtx = out.getContext('2d')
     if (!faceCtx || !outCtx) throw new Error('A drawing surface could not be created.')
 
