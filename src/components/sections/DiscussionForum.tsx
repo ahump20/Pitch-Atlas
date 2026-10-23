@@ -572,7 +572,8 @@ export default function DiscussionForum({
     return (
       <Alert variant="destructive" className="bg-card">
         <AlertTitle>Could not load the discussion.</AlertTitle>
-        <AlertDescription>{d.error}</AlertDescription>
+        {/* The hook's error text stays out: it repeats the title or carries server detail. */}
+        <AlertDescription>The server didn't answer.</AlertDescription>
         <Button onClick={d.refresh} variant="outline" size="sm" className="mt-3 w-fit">
           <RefreshCwIcon data-icon="inline-start" />
           Try again
