@@ -303,7 +303,8 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
         program.render({
           layout: stockLayout,
           identity,
-          material: face === 'back' ? { ...material, coverage: 'frame' } : material,
+          // the visitor's coverage holds on both faces, as on the page
+          material,
           tilt: { rx: pose.rx, ry: pose.ry },
           light,
         })
