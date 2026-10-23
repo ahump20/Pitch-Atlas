@@ -103,6 +103,55 @@ describe('SpecimenInspector', () => {
     expect(screen.getByTestId('search')).toHaveTextContent('')
   })
 
+  it('turns the face that is showing: on the sources, the arrow keys tilt the back', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    await user.click(within(dialog).getByRole('button', { name: 'Sources' }))
+    const stage = within(dialog).getByRole('group', { name: /sources showing/ })
+    stage.focus()
+    await user.keyboard('{ArrowRight}{ArrowRight}')
+    const back = dialog.querySelector('.v2-back') as HTMLElement
+    await waitFor(() => expect(parseFloat(back.style.getPropertyValue('--rx') || '0')).toBeGreaterThan(1))
+  })
+
+  it('rests the slow turn while the front is turned away, and picks it up again', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const front = dialog.querySelector('.v2-face:not(.v2-face-back) .rfx-card') as HTMLElement
+    const pose = () => `${front.style.getPropertyValue('--rx')} ${front.style.getPropertyValue('--ry')}`
+    const holdsStill = async () => {
+      const before = pose()
+      await new Promise((resolve) => window.setTimeout(resolve, 250))
+      expect(pose()).toBe(before)
+    }
+
+    const atOpen = pose()
+    await waitFor(() => expect(pose()).not.toBe(atOpen), { timeout: 3000 })
+
+    await user.click(within(dialog).getByRole('button', { name: 'Sources' }))
+    // the spring finishes its last step, then the hidden front holds still
+    await waitFor(holdsStill, { timeout: 4000 })
+    await holdsStill()
+
+    await user.click(within(dialog).getByRole('button', { name: 'Front' }))
+    const atReturn = pose()
+    await waitFor(() => expect(pose()).not.toBe(atReturn), { timeout: 3000 })
+  })
+
+  it('names every finish switch', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    await user.click(within(dialog).getByRole('button', { name: 'Finish' }))
+    const switches = within(dialog).getAllByRole('checkbox')
+    expect(switches).toHaveLength(8)
+    for (const box of switches) expect(box).toHaveAccessibleName(/ finish$/)
+    // the four-seam's ember chrome carries the houndstooth
+    expect(within(dialog).getByRole('checkbox', { name: 'Houndstooth finish' })).toBeChecked()
+  })
+
   it('remembers a finish for the inspected face on this device', async () => {
     const user = userEvent.setup()
     render(<Harness start="/?inspect=four-seam" />)

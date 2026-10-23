@@ -125,6 +125,7 @@ export function FinishPanel({
               <input
                 type="checkbox"
                 id={`${id}-${name}`}
+                aria-label={`${FINISH_LABELS[name]} finish`}
                 checked={strength > 0}
                 onChange={(e) => set({ finishes: { [name]: e.target.checked ? Math.max(strength, 0.6) : 0 } })}
               />

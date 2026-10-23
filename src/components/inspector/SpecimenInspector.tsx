@@ -23,6 +23,11 @@ import '../../styles/inspector.css'
   the inner wrapper and the tilt turns the card, so the two transforms never share
   an element. Keyboard: arrows tilt, F flips, Space pauses the turn, R resets.
 
+  Each face keeps its own tilt engine. The keys, Reset and the export read the face
+  that is showing; the light belongs to the room, so it is set on both. The slow turn
+  belongs to the front alone and rests while the sources are showing, so a face no one
+  can see never draws.
+
   Finish choices are remembered per card face on this device and never touch the
   pitch record or any other surface.
 */
@@ -44,7 +49,8 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
   const [face, setFace] = useState<FinishFace>('front')
   const [tuneFace, setTuneFace] = useState<FinishFace>('front')
   const [finishOpen, setFinishOpen] = useState(false)
-  const [engine, setEngine] = useState<TiltEngine | null>(null)
+  const [frontEngine, setFrontEngine] = useState<TiltEngine | null>(null)
+  const [backEngine, setBackEngine] = useState<TiltEngine | null>(null)
   const [light, setLight] = useState<LightSettings>({ height: 1.1, strength: 1, offsetX: 0, offsetY: 0 })
   const [ambient, setAmbient] = useState<AmbientSettings>({ amplitude: 1, speed: 1 })
   const [exporting, setExporting] = useState(false)
@@ -69,31 +75,39 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
     [slug, frontDefault, backDefault],
   )
 
+  // the face that is showing is the one the keys turn and the export reads
+  const engine = face === 'front' ? frontEngine : backEngine
+
   const applyLight = useCallback(
     (patch: Partial<LightSettings>) => {
       setLight((prev) => {
         const next = { ...prev, ...patch }
-        engine?.setLight(next)
+        frontEngine?.setLight(next)
+        backEngine?.setLight(next)
         return next
       })
     },
-    [engine],
+    [frontEngine, backEngine],
   )
 
   useEffect(() => {
-    engine?.setLight(light)
-    // the light settings outlive an engine swap; the engine is the dependency on purpose
+    frontEngine?.setLight(light)
+    backEngine?.setLight(light)
+    // the light settings outlive an engine swap; the engines are the dependency on purpose
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [engine])
+  }, [frontEngine, backEngine])
 
   const flip = useCallback(() => setFace((f) => (f === 'front' ? 'back' : 'front')), [])
   const togglePaused = useCallback(() => setMotionPref(paused ? 'live' : 'paused'), [paused])
   const reset = useCallback(() => {
-    engine?.reset()
-    setLight({ height: 1.1, strength: 1, offsetX: 0, offsetY: 0 })
-    engine?.setLight({ height: 1.1, strength: 1, offsetX: 0, offsetY: 0 })
+    const home = { height: 1.1, strength: 1, offsetX: 0, offsetY: 0 }
+    for (const e of [frontEngine, backEngine]) {
+      e?.reset()
+      e?.setLight(home)
+    }
+    setLight(home)
     setAmbient({ amplitude: 1, speed: 1 })
-  }, [engine])
+  }, [frontEngine, backEngine])
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) return
@@ -163,15 +177,16 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
                     foil
                     mode="inspector"
                     material={front}
-                    ambient={!paused && !exporting}
+                    // the drift runs only while the front is the face showing
+                    ambient={!paused && !exporting && face === 'front'}
                     ambientAmplitude={ambient.amplitude}
                     ambientSpeed={ambient.speed}
-                    onEngine={setEngine}
+                    onEngine={setFrontEngine}
                     className="is-inspected"
                   />
                 </div>
                 <div className="v2-face v2-face-back" inert={face === 'front' ? true : undefined} aria-hidden={face === 'front'}>
-                  <SpecimenBack entry={entry} flipped={face === 'back'} foil seed={INSPECTOR_SEED} material={back} />
+                  <SpecimenBack entry={entry} flipped={face === 'back'} foil seed={INSPECTOR_SEED} material={back} onEngine={setBackEngine} />
                 </div>
               </div>
             </div>

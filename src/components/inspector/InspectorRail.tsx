@@ -58,7 +58,8 @@ export function InspectorRail({
         <button type="button" className="specimen-action" aria-expanded={finishOpen} aria-controls="specimen-finish" onClick={onToggleFinish}>
           Finish
         </button>
-        <button type="button" className="specimen-action" aria-pressed={paused} onClick={onTogglePaused} disabled={!motionAvailable}>
+        {/* the label names the next action, so no pressed state rides on top of it */}
+        <button type="button" className="specimen-action" data-state={paused ? 'paused' : 'live'} onClick={onTogglePaused} disabled={!motionAvailable}>
           {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
           {paused ? 'Resume' : 'Pause'}
         </button>

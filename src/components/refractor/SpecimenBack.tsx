@@ -1,7 +1,7 @@
-import { lazy, Suspense, useMemo, type CSSProperties } from 'react'
+import { lazy, Suspense, useEffect, useMemo, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../data/types'
-import { useCardTilt } from '../../hooks/useCardTilt'
+import { useCardTilt, type TiltEngine } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { SpecimenBoundary } from '../ball/SpecimenBoundary'
 import { SeamSchematic } from '../fallback/SeamSchematic'
@@ -21,7 +21,10 @@ import { backMaterial, type CardMaterial } from './material/materialPresets'
   Its material is Quiet Ink & Bone: the chromium ladder, one bone specular, no colour,
   so the back reads as matte stock against the front's foil. The layer mounts only
   while the back is showing, so a face nobody can see never holds a GPU context. The
-  back answers the hand like the front does; its tilt engine is its own.
+  back answers the hand like the front does; its tilt engine is its own, and a parent
+  that steers the visible face (the inspector's keys, light and export) asks for it
+  through onEngine. It stays in the gentle hover mode even there, because a grab that
+  captured the pointer would swallow clicks on the source links it carries.
 */
 
 const MaterialLayer = lazy(() => import('./material/MaterialLayer'))
@@ -34,6 +37,7 @@ export function SpecimenBack({
   foil = false,
   seed = 0,
   material: tuned,
+  onEngine,
 }: {
   entry: PitchAtlasEntry
   /** Whether this face is the one showing; links are tabbable only then. */
@@ -43,13 +47,18 @@ export function SpecimenBack({
   seed?: number
   /** A finish other than Quiet Ink & Bone (the inspector). */
   material?: CardMaterial
+  /** Hands the back's tilt engine to a parent that steers it (the inspector). */
+  onEngine?: (engine: TiltEngine) => void
 }) {
   const { canonical, motion, display } = entry
   const accent = accentForSlug(display.slug)
   const shape = canonical.physics.shape
   const gripCue = canonical.gripDetails[0] ?? canonical.grip
   const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
-  const { ref, handlers, store } = useCardTilt<HTMLDivElement>('rest')
+  const { ref, handlers, store, engine } = useCardTilt<HTMLDivElement>('rest')
+  useEffect(() => {
+    onEngine?.(engine)
+  }, [engine, onEngine])
   const webgl = useWebGLSupport()
   const material = useMemo(() => tuned ?? backMaterial(), [tuned])
   const identity = useMemo<MaterialIdentity>(

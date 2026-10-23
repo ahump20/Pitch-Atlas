@@ -12,7 +12,7 @@
 .archive-specimen-actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:.65rem; }
 .archive-specimen-actions .archive-specimen-compare { margin-top:0; }
 .specimen-action { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:36px; padding:.4rem .8rem; border:1px solid #8a7a5e80; border-radius:6px; background:transparent; color:#d9ccb3; font:600 12px/1.25 var(--font-prose); cursor:pointer; transition:background 140ms, border-color 140ms, color 140ms; }
-.specimen-action:hover, .specimen-action[aria-pressed=true] { border-color:#c8a35c; color:var(--color-bone); background:#f6f1e60d; }
+.specimen-action:hover, .specimen-action[aria-pressed=true], .specimen-action[data-state=paused] { border-color:#c8a35c; color:var(--color-bone); background:#f6f1e60d; }
 .specimen-action:focus-visible { outline:2px solid var(--color-cyan); outline-offset:3px; }
 .archive-specimen.is-selected > .rfx-holder { filter:drop-shadow(0 10px 18px #0009); outline:1px solid #c8a35c; outline-offset:5px; border-radius:12px; }
 .archive-index-entry { position:relative; display:flex; flex-wrap:wrap; align-content:flex-start; gap:.6rem; }
