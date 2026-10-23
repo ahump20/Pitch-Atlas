@@ -1,0 +1,125 @@
+{
+  "browser": "154.0.8037.57",
+  "preview": "http://127.0.0.1:4173",
+  "checks": [
+    {
+      "label": "hero material responds to pointer tilt",
+      "evidence": {
+        "rx": "7.153deg",
+        "ry": "4.087deg"
+      }
+    },
+    {
+      "label": "inspector retains real media and grip route",
+      "evidence": "/pitch/four-seam#grip-lab"
+    },
+    {
+      "label": "front",
+      "evidence": {
+        "width": 1800,
+        "height": 2513,
+        "bytes": 4697484
+      }
+    },
+    {
+      "label": "independent sources face",
+      "evidence": [
+        "https://en.wikipedia.org/wiki/Four-seam_fastball",
+        "https://www.mlb.com/glossary/statcast/induced-vertical-break"
+      ]
+    },
+    {
+      "label": "keys tilt the visible back",
+      "evidence": 2.776
+    },
+    {
+      "label": "back",
+      "evidence": {
+        "width": 1800,
+        "height": 2513,
+        "bytes": 5112896
+      }
+    },
+    {
+      "label": "finish choice stays a per-face device preference",
+      "evidence": "pa:finish:four-seam:front"
+    },
+    {
+      "label": "Escape restores opener focus",
+      "evidence": "Inspect card four seam"
+    },
+    {
+      "label": "browser Back restores opener focus",
+      "evidence": true
+    },
+    {
+      "label": "filed set keeps Ember, powder and turquoise finishes",
+      "evidence": [
+        "rfx-card is-gold has-foil is-foil-live",
+        "rfx-card is-powder has-foil is-foil-live",
+        "rfx-card is-teal has-foil is-foil-live"
+      ]
+    },
+    {
+      "label": "Study grip enters the existing Grip Lab",
+      "evidence": "http://127.0.0.1:4173/pitch/twelve-six#grip-lab"
+    },
+    {
+      "label": "inspector 390x844",
+      "evidence": {
+        "width": 324,
+        "height": 454,
+        "overflow": false,
+        "closeUncovered": true
+      }
+    },
+    {
+      "label": "inspector 667x375",
+      "evidence": {
+        "width": 224,
+        "height": 313,
+        "overflow": false,
+        "closeUncovered": true
+      }
+    },
+    {
+      "label": "inspector 568x320",
+      "evidence": {
+        "width": 184,
+        "height": 258,
+        "overflow": false,
+        "closeUncovered": true
+      }
+    },
+    {
+      "label": "static card swipe: old gesture rule blocks, fix scrolls",
+      "evidence": {
+        "before": 0,
+        "after": 211
+      }
+    },
+    {
+      "label": "no-WebGL card remains readable and linked to Grip Lab",
+      "evidence": "/pitch/four-seam#grip-lab"
+    }
+  ],
+  "errors": [
+    "Error: THREE.WebGLRenderer: Error creating WebGL context."
+  ],
+  "exports": [
+    {
+      "name": "front",
+      "target": "/tmp/pitch-atlas-handoff/front.png",
+      "width": 1800,
+      "height": 2513,
+      "bytes": 4697484
+    },
+    {
+      "name": "back",
+      "target": "/tmp/pitch-atlas-handoff/back.png",
+      "width": 1800,
+      "height": 2513,
+      "bytes": 5112896
+    }
+  ]
+}

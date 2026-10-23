@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ReactNode } from 'react'
+import { lazy, Suspense, useCallback, useRef, type ReactNode } from 'react'
 import { pitchBySlug } from '../../data/pitches'
 import { SpecimenBoundary } from '../ball/SpecimenBoundary'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '../ui/dialog'
@@ -17,10 +17,10 @@ import { useInspectorParam } from './useInspector'
 */
 const SpecimenInspector = lazy(() => import('./SpecimenInspector'))
 
-function InspectorUnavailable({ onClose }: { onClose: () => void }) {
+function InspectorUnavailable({ onClose, onCloseAutoFocus }: { onClose: () => void; onCloseAutoFocus: (event: Event) => void }) {
   return (
     <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-      <DialogContent className="compare-replacement">
+      <DialogContent className="compare-replacement" onCloseAutoFocus={onCloseAutoFocus}>
         <DialogTitle>The inspector did not load</DialogTitle>
         <DialogDescription>
           It downloads the first time a card is opened, and that download failed. Check the connection, then reload the page to try again.
@@ -38,14 +38,28 @@ function InspectorUnavailable({ onClose }: { onClose: () => void }) {
 
 export function SpecimenInspectorHost({ children }: { children: ReactNode }) {
   const api = useInspectorParam()
+  const openerRef = useRef<HTMLElement | null>(null)
+  const open = (slug: string, opener?: HTMLElement) => {
+    openerRef.current = opener ?? null
+    api.open(slug)
+  }
+  // These URL-driven dialogs have no Radix DialogTrigger. Keep the actual card's
+  // button so Escape, Close and browser Back return to the collection in place.
+  // A study link unmounts that button; it must never pull focus off the new route.
+  const restoreFocus = useCallback((event: Event) => {
+    const opener = openerRef.current
+    if (!opener?.isConnected) return
+    event.preventDefault()
+    opener.focus({ preventScroll: true })
+  }, [])
   const entry = api.slug ? pitchBySlug(api.slug) : undefined
   return (
-    <InspectorContext.Provider value={api}>
+    <InspectorContext.Provider value={{ ...api, open }}>
       {children}
       {entry ? (
-        <SpecimenBoundary key={entry.display.slug} fallback={<InspectorUnavailable onClose={api.close} />}>
+        <SpecimenBoundary key={entry.display.slug} fallback={<InspectorUnavailable onClose={api.close} onCloseAutoFocus={restoreFocus} />}>
           <Suspense fallback={null}>
-            <SpecimenInspector entry={entry} onClose={api.close} />
+            <SpecimenInspector entry={entry} onClose={api.close} onCloseAutoFocus={restoreFocus} />
           </Suspense>
         </SpecimenBoundary>
       ) : null}
