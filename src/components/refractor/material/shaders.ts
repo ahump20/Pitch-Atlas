@@ -256,16 +256,21 @@ void main() {
     weight += uFinish[6];
   }
   float parity = 0.0;
+  // a small card's weave is quieter: at phone size its full contrast out-shone the grip
+  // clip it frames. About half below 280px of card, whole from 440px up, so the
+  // inspector on a wide screen and every export (1200px or wider) keep the full weave.
+  float weaveGain = mix(0.5, 1.0, smoothstep(280.0, 440.0, uSize.x));
   if (uFinish[7] > 0.0) { // houndstooth: two interleaved groove populations
     // one cell count across the card at every size; a count that varied across the
     // card folded the pattern back on itself near the far edge, a jagged band
     vec2 ht = houndstoothAA(p / (uSize.x / 52.0 / uScale));
     parity = ht.y;
     vec2 tA = normalize(vec2(1.0, 1.0)), tB = normalize(vec2(1.0, -1.0));
-    float hl = mix(anisoLobe(tB, H, shinA), anisoLobe(tA, H, shinA), parity);
+    float lobeA = anisoLobe(tA, H, shinA), lobeB = anisoLobe(tB, H, shinA);
+    float hl = mix(0.5 * (lobeA + lobeB), mix(lobeB, lobeA, parity), weaveGain);
     lobe += uFinish[7] * hl;
     weight += uFinish[7];
-    toothMul = mix(1.0, mix(0.74, 1.0, ht.x), uFinish[7]);
+    toothMul = mix(1.0, mix(1.0 - 0.26 * weaveGain, 1.0, ht.x), uFinish[7]);
   }
   float smoothLobe = isoLobe(nFlat, H, mix(22.0, 6.0, uRough)) * 0.9;
   float broad = isoLobe(nFlat, H, 4.0);
@@ -278,7 +283,7 @@ void main() {
 
   // ── interference colour from the brand ramp, leaned toward a prism
   float film = dot(q, normalize(vec2(1.0, 0.62))) * 1.35 + uTilt.x * 0.045 + uTilt.y * 0.025
-             + (1.0 - max(dot(nFlat, V), 0.0)) * 2.0 + phase * (1.0 - 0.6 * inField) + parity * 0.08 * (1.0 - inField) + uSeed * 0.11;
+             + (1.0 - max(dot(nFlat, V), 0.0)) * 2.0 + phase * (1.0 - 0.6 * inField) + parity * 0.08 * weaveGain * (1.0 - inField) + uSeed * 0.11;
   vec3 rampCol = (texture(uRamp, vec2(fract(film - 0.018), 0.5)).rgb
                 + texture(uRamp, vec2(fract(film), 0.5)).rgb * 1.4
                 + texture(uRamp, vec2(fract(film + 0.018), 0.5)).rgb) / 3.4;
