@@ -240,7 +240,7 @@ export function RefractorCard({
           }}
           ref={tiltRef as Ref<HTMLAnchorElement>}
           {...handlers}
-          className={`block ${cardClass}`}
+          className={cardClass}
           aria-label={`${name} specimen`}
           style={cardStyle}
         >

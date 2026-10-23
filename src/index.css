@@ -938,6 +938,10 @@
   .rfx-card {
     --mx: 50%; --my: 32%;
     position: relative; width: 100%; aspect-ratio: 5/7; border-radius: 9px; padding: 13px;
+    /* the field fills the card as its one grid cell, never by height:100%: Safari
+       resolves a percentage height inside an aspect-ratio box against the wrong box,
+       which stretched every card 2 x its padding past 5:7 there */
+    display: grid; grid-template: minmax(0, 1fr) / minmax(0, 1fr);
     transform: rotateX(var(--ry,0deg)) rotateY(var(--rx,0deg)); transform-style: preserve-3d;
     rotate: calc(sin((var(--i, 0) + 1) * 2.1) * 0.45deg);
     transition: transform .4s cubic-bezier(.2,.8,.2,1);
@@ -1072,7 +1076,7 @@
     --card-ring-in: rgba(0,178,169,.3);
   }
   .rfx-field {
-    position: relative; height: 100%; border-radius: 4px; overflow: hidden;
+    position: relative; border-radius: 4px; overflow: hidden;
     padding: calc(var(--rfxu) * 3.06) calc(var(--rfxu) * 3.06) calc(var(--rfxu) * 2.5);
     display: flex; flex-direction: column;
     /* the chrome bezel: a dark hairline, a bright accent ring, then a dark separator.
