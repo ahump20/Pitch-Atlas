@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { act, render, screen, waitFor, within } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { CompareProvider } from '../compare/CompareProvider'
@@ -142,6 +142,21 @@ describe('SpecimenInspector', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Front' }))
     const atReturn = pose()
     await waitFor(() => expect(pose()).not.toBe(atReturn), { timeout: 3000 })
+  })
+
+  it('leaves modified keys to the browser: Cmd+R reloads and Ctrl+F finds, the card stays put', async () => {
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const stage = within(dialog).getByRole('group', { name: /front showing/ })
+    stage.focus()
+    // fireEvent returns false when a handler called preventDefault
+    expect(fireEvent.keyDown(stage, { key: 'r', metaKey: true })).toBe(true)
+    expect(fireEvent.keyDown(stage, { key: 'f', ctrlKey: true })).toBe(true)
+    expect(fireEvent.keyDown(stage, { key: 'F', altKey: true })).toBe(true)
+    expect(within(dialog).getByRole('group', { name: /front showing/ })).toBe(stage)
+    // the plain key still turns the card over
+    expect(fireEvent.keyDown(stage, { key: 'f' })).toBe(false)
+    await waitFor(() => expect(within(dialog).getByRole('group', { name: /sources showing/ })).toBeInTheDocument())
   })
 
   it('names every finish switch', async () => {

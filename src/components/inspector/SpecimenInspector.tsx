@@ -111,6 +111,8 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) return
+    // a held modifier means the browser's shortcut (Cmd+R reloads, Ctrl+F finds), never the card's
+    if (event.ctrlKey || event.metaKey || event.altKey) return
     switch (event.key) {
       case 'ArrowLeft': engine?.nudge(-NUDGE, 0); break
       case 'ArrowRight': engine?.nudge(NUDGE, 0); break
