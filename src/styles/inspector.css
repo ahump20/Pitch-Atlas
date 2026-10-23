@@ -7,6 +7,11 @@
   border: 1px solid #a38a5e40; box-shadow: 0 40px 90px -30px #000, inset 0 1px 0 #f6f1e614;
   max-height: calc(100dvh - 2rem); overflow: auto; gap: 0;
 }
+/* Close rides above the stage. On an upright phone the card fills the top of the dialog,
+   and beneath it the button took no taps (a finger there grabbed the card); the dark
+   disc keeps the cross legible over the foil. */
+.specimen-inspector [data-slot="dialog-close"] { z-index: 4; background: #0b0a09cc; border-radius: 999px; }
+.specimen-inspector [data-slot="dialog-close"]:hover { background: #1c1814; }
 /* the grid fills the dialog inside its 1px border, so the dialog itself never scrolls */
 .specimen-inspector-grid { display: grid; grid-template-columns: minmax(0, 1fr) 344px; height: min(820px, calc(100dvh - 2rem - 2px)); }
 .specimen-stage {
