@@ -16,8 +16,10 @@ import { buildBreak, tiltClock, describeShape, ANCHOR_NOTE, type BreakInputs } f
 import type { PitchMotion } from '../data/types'
 
 /*
-  Shape Lab. Set the spin tilt and watch the same seam ball and catcher's-eye plot
-  translate it into shape language. No rpm, no speed, no inch output.
+  Shape Lab. Set the spin tilt and watch the same seam ball and shape plot translate it
+  into shape language. No rpm, no speed, no inch output. There is no hand toggle: 3:00
+  is arm side and lands on the right, which is a right-hander's view from the mound (a
+  catcher would see it mirrored), so the copy names that view.
 */
 
 const PRESETS: { label: string; inputs: BreakInputs }[] = [
@@ -164,7 +166,7 @@ export function SandboxPage() {
   useSeoMeta({
     title: `Shape Lab: the spin-axis sandbox | ${SITE.siteName}`,
     description:
-      'Set a pitch’s spin tilt and watch the ball and catcher’s-eye shape redraw live. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
+      'Set a pitch’s spin tilt and watch the ball and its shape redraw live, as the pitcher sees it. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
     ogTitle: `Shape Lab | ${SITE.siteName}`,
     ogDescription: 'The spin-axis sandbox. Turn the clock and read the shape.',
     ogUrl: canonicalUrl('/sandbox'),
@@ -178,7 +180,7 @@ export function SandboxPage() {
           url: canonicalUrl('/sandbox'),
           name: 'Shape Lab: the spin-axis sandbox',
           description:
-            'Set a pitch’s spin tilt and watch the ball and catcher’s-eye shape redraw live. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
+            'Set a pitch’s spin tilt and watch the ball and its shape redraw live, as the pitcher sees it. A teaching model for ride, drop, run, and sweep, with no fabricated movement numbers.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Shape Lab' }],
         })}
       />
@@ -190,7 +192,8 @@ export function SandboxPage() {
         sub={
           <>
             Spin is what gives the pitch its direction. Turn the clock and watch the seam ball and
-            catcher&rsquo;s-eye plot redraw as ride, drop, arm-side run, or glove-side sweep.
+            the plot redraw as ride, drop, arm-side run, or glove-side sweep, the way a
+            right-handed pitcher sees it from the mound.
           </>
         }
       />
@@ -253,7 +256,7 @@ export function SandboxPage() {
               </figure>
               <figure className="rfx-panel flex flex-col items-center justify-center p-3">
                 <MovementPlot className="w-full" motion={motion} pitchName="custom pitch" />
-                <figcaption className="mono-label mt-1">Catcher&rsquo;s eye</figcaption>
+                <figcaption className="mono-label mt-1">Pitcher&rsquo;s eye</figcaption>
               </figure>
             </div>
 
