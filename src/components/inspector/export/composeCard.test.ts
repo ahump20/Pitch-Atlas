@@ -16,6 +16,7 @@ const h = vi.hoisted(() => ({
   rendered: [] as MaterialLayout[],
   coverages: [] as string[],
   ops: [] as string[],
+  calls: [] as Array<{ name: string; args: unknown[] }>,
 }))
 
 vi.mock('../../refractor/material/cardMaterialProgram', async (importOriginal) => ({
@@ -35,15 +36,18 @@ vi.mock('../../refractor/material/cardMaterialProgram', async (importOriginal) =
 
 const { createComposer } = await import('./composeCard')
 
-/** A 2D context that accepts every call and remembers compositing changes. */
+/** A 2D context that accepts every call, remembers each one, and remembers compositing changes. */
 function recordingContext(): CanvasRenderingContext2D {
   const state: Record<string | symbol, unknown> = {}
   return new Proxy(state, {
     get(target, prop) {
       if (prop in target) return target[prop]
+      const name = String(prop)
       if (prop === 'createLinearGradient' || prop === 'createRadialGradient') return () => ({ addColorStop: () => undefined })
       if (prop === 'measureText') return (text: string) => ({ width: text.length * 6 })
-      return () => undefined
+      return (...args: unknown[]) => {
+        h.calls.push({ name, args })
+      }
     },
     set(target, prop, value) {
       if (prop === 'globalCompositeOperation') h.ops.push(String(value))
@@ -68,6 +72,7 @@ beforeEach(() => {
   h.rendered.length = 0
   h.coverages.length = 0
   h.ops.length = 0
+  h.calls.length = 0
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockImplementation(() => recordingContext() as unknown as RenderingContext)
 })
 
@@ -104,5 +109,25 @@ describe('createComposer', () => {
     h.webgl = false
     compose('front')
     expect(h.ops).toContain('destination-out')
+  })
+
+  it('paints the movement wheel on the back, above the rows, as the page back carries it', () => {
+    compose('back')
+    const arcs = h.calls.filter((c) => c.name === 'arc').map((c) => c.args as number[])
+    // the target: three rings around one centre, in the page wheel's proportions
+    const centre = arcs.find(([x, y]) => arcs.filter(([x2, y2]) => x2 === x && y2 === y).length >= 3)
+    expect(centre).toBeDefined()
+    const [cx, cy] = centre!
+    const radii = arcs.filter(([x, y]) => x === cx && y === cy).map(([, , r]) => r).sort((a, b) => b - a)
+    expect(radii[1] / radii[0]).toBeCloseTo(0.62, 5)
+    expect(radii[2] / radii[0]).toBeCloseTo(0.28, 5)
+    // the spin axis is the dashed line
+    expect(h.calls.some((c) => c.name === 'setLineDash' && (c.args[0] as number[]).length > 0)).toBe(true)
+    // its caption, and the first row starting below the wheel
+    const texts = h.calls.filter((c) => c.name === 'fillText').map((c) => ({ text: String(c.args[0]).replace(/\s+/g, ''), y: c.args[2] as number }))
+    expect(texts.some((t) => t.text === 'RIDES')).toBe(true)
+    const gripRow = texts.find((t) => t.text === 'GRIPCUE')
+    expect(gripRow).toBeDefined()
+    expect(gripRow!.y).toBeGreaterThan(cy + radii[0])
   })
 })

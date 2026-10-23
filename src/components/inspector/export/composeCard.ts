@@ -3,6 +3,7 @@ import { gripEntryFor } from '../../../data/grips'
 import { accentForSlug, accentInk } from '../../refractor/accents'
 import { createCardMaterialProgram, EMPTY_RECT, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
 import { CARD_INK } from '../../refractor/specimenFace'
+import { movementWheel, WHEEL_CENTER, WHEEL_VIEW, type WheelLine } from '../../sections/movementWheel'
 import type { CardMaterial } from '../../refractor/material/materialPresets'
 import { cardLayout, type CardLayout } from './cardLayout'
 import type { ExportFace, ExportLight, ExportPose } from './types'
@@ -591,6 +592,101 @@ function spaced(text: string, em: number): string {
   return text.split('').join(hair)
 }
 
+function rgbaHex(hex: string, alpha: number): string {
+  const [r, g, b] = hexToTriple(hex).map((c) => Math.round(c * 255))
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+const WHEEL_RINGS = ['rgba(246,241,230,.16)', 'rgba(246,241,230,.10)', 'rgba(246,241,230,.08)']
+
+/*
+  The movement wheel from the one geometry the page's SVG reads, scaled from its
+  200-unit box to the page's own size rule (36% of the column, between 80 and 134 px
+  at the 360 px reference), with its two caption lines. Direction only: the arrow
+  has one length whatever the pitch. Returns the y below the caption's margin.
+*/
+function paintWheel(ctx: Ctx, entry: PitchAtlasEntry, accent: { c3: string }, x: number, top: number, w: number, s: number): number {
+  const wheel = movementWheel(entry.motion)
+  const size = Math.min(134 * s, Math.max(80 * s, w * 0.36))
+  const k = size / WHEEL_VIEW
+  const ox = x + (w - size) / 2
+  const px = (vx: number) => ox + vx * k
+  const py = (vy: number) => top + vy * k
+  const stroke = (l: WheelLine) => {
+    ctx.beginPath()
+    ctx.moveTo(px(l.x1), py(l.y1))
+    ctx.lineTo(px(l.x2), py(l.y2))
+    ctx.stroke()
+  }
+  const dot = (vx: number, vy: number, r: number, fill: string) => {
+    ctx.fillStyle = fill
+    ctx.beginPath()
+    ctx.arc(px(vx), py(vy), r * k, 0, Math.PI * 2)
+    ctx.fill()
+  }
+
+  ctx.save()
+  // the empty wheel sits back, as the page dims it
+  if (!wheel.filed) ctx.globalAlpha = 0.48
+  ctx.lineCap = 'butt'
+  ctx.lineWidth = k
+  wheel.rings.forEach((r, i) => {
+    ctx.strokeStyle = WHEEL_RINGS[i]
+    ctx.beginPath()
+    ctx.arc(px(WHEEL_CENTER), py(WHEEL_CENTER), r * k, 0, Math.PI * 2)
+    ctx.stroke()
+  })
+  ctx.strokeStyle = 'rgba(246,241,230,.28)'
+  ctx.lineWidth = 1.4 * k
+  wheel.ticks.forEach(stroke)
+  if (wheel.axis) {
+    ctx.strokeStyle = rgbaHex(accent.c3, 0.42)
+    ctx.setLineDash([4 * k, 4 * k])
+    stroke(wheel.axis)
+    ctx.setLineDash([])
+  }
+  for (const p of wheel.scatter) dot(p.x, p.y, 3.4, rgbaHex(accent.c3, 0.7))
+  ctx.lineCap = 'round'
+  if (wheel.arrow) {
+    ctx.strokeStyle = accent.c3
+    ctx.lineWidth = 3.2 * k
+    stroke(wheel.arrow.shaft)
+    wheel.arrow.head.forEach(stroke)
+  }
+  if (wheel.flatLine) {
+    ctx.strokeStyle = rgbaHex(accent.c3, 0.28)
+    ctx.lineWidth = 2.2 * k
+    stroke(wheel.flatLine)
+  }
+  if (wheel.centerDot) dot(WHEEL_CENTER, WHEEL_CENTER, wheel.centerDot, accent.c3)
+  if (wheel.gyro) {
+    dot(WHEEL_CENTER, WHEEL_CENTER, 6.5, '#FF2433')
+    ctx.strokeStyle = 'rgba(255,255,255,.9)'
+    ctx.lineWidth = 1.1 * k
+    ctx.beginPath()
+    ctx.arc(px(WHEEL_CENTER), py(WHEEL_CENTER), 6.5 * k, 0, Math.PI * 2)
+    ctx.stroke()
+  }
+  ctx.restore()
+
+  // the caption: the direction in the accent's ink, then the force, quieter
+  const cxText = x + w / 2
+  let y = top + size + 4 * s
+  ctx.save()
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'top'
+  ctx.font = `400 ${10 * s}px "Martian Mono"`
+  ctx.fillStyle = wheel.filed ? mixHex(accent.c3, BONE, 0.64) : rgbaHex(BONE_2, 0.78)
+  ctx.fillText(spaced(wheel.label.toUpperCase(), 0.12), cxText, y)
+  y += 10 * s * 1.25 + s
+  ctx.font = `400 ${7.5 * s}px "Martian Mono"`
+  ctx.fillStyle = rgbaHex(BONE_2, 0.7)
+  ctx.fillText(spaced(wheel.note.toUpperCase(), 0.12), cxText, y)
+  y += 7.5 * s * 1.25
+  ctx.restore()
+  return y + 2 * s
+}
+
 /* ── the back ── */
 function paintBackUnder(ctx: Ctx, l: CardLayout, accent: { c3: string }) {
   const g = ctx.createRadialGradient(l.width / 2, 0, 0, l.width / 2, 0, l.height)
@@ -626,6 +722,8 @@ function paintBackOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent: 
   ctx.lineTo(x + w, y)
   ctx.stroke()
   y += 9 * s
+  // the movement wheel, as the page back carries it on a wide screen
+  y = paintWheel(ctx, entry, accent, x, y, w, s) + 9 * s
   // rows
   const rowsTop = y
   ctx.font = `400 ${12 * s}px "Hanken Grotesk"`

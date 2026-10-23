@@ -68,8 +68,11 @@ Sources, Study grip (into `/pitch/<slug>#grip-lab`), Compare, Finish, Export, Pa
 Reset. `?inspect=<slug>` carries the state. Finish choices are remembered per card face
 on the device and never touch a record or any page surface.
 
-**Export.** A 1500-pixel PNG, composed natively from the record (media, bezel, chip,
-header, plate, strip), posed in perspective with a stock edge, contact and cast shadows,
+**Export.** A PNG of the 1500-pixel card face posed into an 1800×2513 frame, composed
+natively from the record (the front: media, bezel, chip, header, plate, strip; the back:
+name and number, the movement wheel from the same geometry the page's SVG draws, the grip
+and shape rows with their tiers, the sources), posed in perspective with a stock edge,
+contact and cast shadows,
 a dark or transparent backdrop and an attribution caption; and a 7-second, 30 fps WebM
 of the 1200-pixel card face, posed into a 1440×2010 frame, whose pose and light run one
 closed cycle so the last frame hands off to the first. Each WebM frame goes to the browser's own encoder (WebCodecs, written into
@@ -103,7 +106,6 @@ they were.
   on a card's detail. Safari's encoder ran the same size of loop, on simpler test frames,
   in 5 seconds (9 transparent). The progress bar moves frame by frame and Cancel stops
   the encoder.
-- The exported back leaves out the spin-direction dial the page's back carries.
 - A face whose page media is the live 3D grip model exports as the seam-informed
   schematic twin, labelled "Reference schematic".
 - Device-orientation tilt is off by the site's own Permissions-Policy.
