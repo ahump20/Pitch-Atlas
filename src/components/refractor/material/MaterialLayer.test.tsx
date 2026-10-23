@@ -119,6 +119,83 @@ describe('MaterialLayer', () => {
     expect(createCardMaterialProgram).toHaveBeenCalledTimes(2)
   })
 
+  it('stays down when the retried context dies too: no frame, no live class', () => {
+    const listeners = new Set<() => void>()
+    const store: TiltStore = { ...tiltStore, subscribe: (fn) => (listeners.add(fn), () => listeners.delete(fn)) }
+    const progs: Array<ReturnType<typeof stubProgram>> = []
+    createCardMaterialProgram.mockImplementation(() => {
+      const prog = stubProgram()
+      progs.push(prog)
+      return prog
+    })
+    const { container } = render(
+      <div className="rfx-card">
+        <MaterialLayer store={store} material={PRESETS['base-chrome']} identity={identity} />
+      </div>,
+    )
+    const card = container.querySelector('.rfx-card') as HTMLElement
+    lose(container.querySelector('canvas') as HTMLCanvasElement)
+    act(() => {
+      vi.advanceTimersByTime(160)
+    })
+    expect(progs).toHaveLength(2)
+    // the fresh canvas paints its rest frame on the next tick
+    act(() => {
+      vi.advanceTimersByTime(5)
+    })
+    expect(card).toHaveClass('is-foil-live')
+    lose(container.querySelector('canvas') as HTMLCanvasElement)
+    expect(card).not.toHaveClass('is-foil-live')
+    const drawsBefore = progs[1].render.mock.calls.length
+    // the hero's ambient drift keeps publishing frames after the loss
+    act(() => {
+      listeners.forEach((fn) => fn())
+      vi.advanceTimersByTime(100)
+    })
+    expect(progs[1].render).toHaveBeenCalledTimes(drawsBefore)
+    expect(card).not.toHaveClass('is-foil-live')
+  })
+
+  it('ignores a font load that lands after the layer is gone', async () => {
+    let resolveFonts: () => void = () => {}
+    const ready = new Promise<void>((resolve) => {
+      resolveFonts = resolve
+    })
+    Object.defineProperty(document, 'fonts', { configurable: true, value: { ready } })
+    const prog = stubProgram()
+    createCardMaterialProgram.mockImplementation(() => prog)
+    function Card({ live }: { live: boolean }) {
+      return (
+        <div className="rfx-card">
+          {live ? <MaterialLayer store={tiltStore} material={PRESETS['base-chrome']} identity={identity} /> : null}
+        </div>
+      )
+    }
+    try {
+      const { container, rerender } = render(<Card live />)
+      const card = container.querySelector('.rfx-card') as HTMLElement
+      act(() => {
+        vi.advanceTimersByTime(5)
+      })
+      expect(card).toHaveClass('is-foil-live')
+      // the card scrolls away before its fonts arrive
+      rerender(<Card live={false} />)
+      expect(card).not.toHaveClass('is-foil-live')
+      const resizes = prog.resize.mock.calls.length
+      const draws = prog.render.mock.calls.length
+      await act(async () => {
+        resolveFonts()
+        await ready
+        vi.advanceTimersByTime(50)
+      })
+      expect(prog.resize).toHaveBeenCalledTimes(resizes)
+      expect(prog.render).toHaveBeenCalledTimes(draws)
+      expect(card).not.toHaveClass('is-foil-live')
+    } finally {
+      Reflect.deleteProperty(document, 'fonts')
+    }
+  })
+
   it('measures the print rects along the offset chain of the card', () => {
     const { container } = mount()
     const card = container.querySelector('.rfx-card') as HTMLElement

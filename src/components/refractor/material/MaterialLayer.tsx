@@ -21,6 +21,9 @@ import { measureLayout } from './measureLayout'
 
   Context loss gets one second chance, as before: wait ~150ms for a neighbour to free
   a slot, swap in a fresh canvas once, and if that dies too the CSS card stands.
+  Once a layer is lost or torn down it is stopped for good: nothing it scheduled
+  (a late font load, the hero's ambient drift) may draw again or mark the card live
+  over a canvas that can no longer paint.
 */
 
 const AMBIENT_MIN_INTERVAL = 1000 / 30
@@ -65,9 +68,11 @@ export default function MaterialLayer({
     let raf = 0
     let timer = 0
     let lastDraw = 0
+    let stopped = false
 
     const draw = () => {
       raf = 0
+      if (stopped) return
       const s = store.get()
       prog.render({
         layout,
@@ -85,7 +90,7 @@ export default function MaterialLayer({
       card.classList.add('is-foil-live')
     }
     const schedule = () => {
-      if (raf || timer) return
+      if (stopped || raf || timer) return
       const wait = store.get().source === 'ambient' ? AMBIENT_MIN_INTERVAL - (performance.now() - lastDraw) : 0
       if (wait > 4) {
         timer = window.setTimeout(() => {
@@ -97,6 +102,7 @@ export default function MaterialLayer({
       raf = requestAnimationFrame(draw)
     }
     const remeasure = () => {
+      if (stopped) return
       layout = measureLayout(card)
       prog.resize(card.offsetWidth, card.offsetHeight, window.devicePixelRatio || 1)
       schedule()
@@ -119,6 +125,7 @@ export default function MaterialLayer({
     let retryTimer = 0
     const onLost = (e: Event) => {
       e.preventDefault()
+      stopped = true
       card.classList.remove('is-foil-live')
       if (epoch > 0 || retryTimer) return // one retry, ever
       retryTimer = window.setTimeout(() => setEpoch(1), 150)
@@ -129,6 +136,7 @@ export default function MaterialLayer({
     remeasure() // the one rest-pose frame
 
     return () => {
+      stopped = true
       unsubscribe()
       ro.disconnect()
       document.removeEventListener('visibilitychange', onVisible)
