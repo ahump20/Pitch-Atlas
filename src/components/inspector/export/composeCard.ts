@@ -1,7 +1,7 @@
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../../data/types'
 import { gripEntryFor } from '../../../data/grips'
 import { accentForSlug, accentInk } from '../../refractor/accents'
-import { createCardMaterialProgram, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
+import { createCardMaterialProgram, EMPTY_RECT, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
 import { CARD_INK } from '../../refractor/specimenFace'
 import type { CardMaterial } from '../../refractor/material/materialPresets'
 import { cardLayout, type CardLayout } from './cardLayout'
@@ -248,6 +248,9 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
   const accent = accentForSlug(display.slug)
   const layout = cardLayout({ width, gold, strip: face === 'front' })
   const { height } = layout
+  // The back has no media window, header or strip, so its stock covers the whole
+  // field, as it does on the page; with the front's window it showed a dark hole.
+  const stockLayout: CardLayout = face === 'back' ? { ...layout, window: EMPTY_RECT, head: EMPTY_RECT, strip: EMPTY_RECT } : layout
 
   const glCanvas = document.createElement('canvas')
   let program: CardMaterialProgram | null = null
@@ -286,7 +289,7 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
   fallbackStock.width = layout.width
   fallbackStock.height = height
   const fc = fallbackStock.getContext('2d')
-  if (fc && !program) paintFallbackStock(fc, layout, accent, gold)
+  if (fc && !program) paintFallbackStock(fc, stockLayout, accent, gold)
 
   return {
     layout,
@@ -298,7 +301,7 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
       target.drawImage(under, 0, 0)
       if (program) {
         program.render({
-          layout,
+          layout: stockLayout,
           identity,
           material: face === 'back' ? { ...material, coverage: 'frame' } : material,
           tilt: { rx: pose.rx, ry: pose.ry },
@@ -334,8 +337,9 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
     fg.addColorStop(1, '#070503')
     ctx.fillStyle = fg
     ctx.fill()
-    // the window is left open for the media
+    // the window is left open for the media, on a face that has one
     const w = l.window
+    if (w.w <= 0 || w.h <= 0) return
     ctx.save()
     ctx.globalCompositeOperation = 'destination-out'
     roundRectPath(ctx, w.x, w.y, w.w, w.h, [l.windowRadius[0], l.windowRadius[0], l.windowRadius[1], l.windowRadius[1]])
