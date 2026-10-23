@@ -202,8 +202,6 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
             onFace={setFace}
             finishOpen={finishOpen}
             onToggleFinish={() => setFinishOpen((open) => !open)}
-            paused={paused}
-            onTogglePaused={togglePaused}
             motionAvailable={!reduced}
             onReset={reset}
             onStudy={onStudy}

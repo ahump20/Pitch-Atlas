@@ -3,6 +3,7 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter, useLocation } from 'react-router-dom'
 import { CompareProvider } from '../compare/CompareProvider'
+import { PITCHES } from '../../data/pitches'
 import { SpecimenInspectorHost } from './SpecimenInspectorHost'
 import { InspectButton } from './InspectButton'
 
@@ -68,7 +69,8 @@ describe('SpecimenInspector', () => {
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     expect(dialog).toHaveAccessibleName(/Inspect card: Four-seam/)
     expect(within(dialog).getByRole('link', { name: /Study grip/ })).toHaveAttribute('href', '/pitch/four-seam#grip-lab')
-    expect(within(dialog).getByRole('link', { name: /Open the full file/ })).toHaveAttribute('href', '/pitch/four-seam')
+    // Study grip already opens the file at its grip lab; the rail's other link says what else it holds
+    expect(within(dialog).getByRole('link', { name: /Master files and sources/ })).toHaveAttribute('href', '/pitch/four-seam#variants')
 
     const front = dialog.querySelector('.v2-face:not(.v2-face-back)')
     const back = dialog.querySelector('.v2-face-back')
@@ -207,11 +209,48 @@ describe('SpecimenInspector', () => {
     expect(finish).toHaveAttribute('aria-expanded', 'true')
   })
 
-  it('sets the keys as key chips at the foot of the rail, and labels the caption', async () => {
+  it('promises master files only where every filed pitch has them', () => {
+    for (const entry of PITCHES) expect(entry.masterVariants.length, entry.display.slug).toBeGreaterThan(0)
+  })
+
+  it('sets the view controls beside the face switch: Pause and Reset as quiet icon buttons that say what they do', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const view = within(dialog).getByRole('group', { name: 'View' })
+    expect(within(view).getByRole('group', { name: 'Face' })).toBeInTheDocument()
+    expect(within(view).getByRole('button', { name: 'Reset view' })).toBeInTheDocument()
+    // they steer the view, not the card, so the card's own actions no longer carry them
+    const actions = dialog.querySelector('.specimen-rail > .specimen-rail-actions') as HTMLElement
+    expect(within(actions).queryByRole('button', { name: /Pause|Resume|Reset/ })).not.toBeInTheDocument()
+    await user.click(within(view).getByRole('button', { name: 'Pause motion' }))
+    await user.click(within(view).getByRole('button', { name: 'Resume motion' }))
+    expect(within(view).getByRole('button', { name: 'Pause motion' })).toBeInTheDocument()
+  })
+
+  it('leaves Pause out where reduced motion leaves nothing to pause', async () => {
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes('reduce'),
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    })) as unknown as typeof window.matchMedia
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const view = within(dialog).getByRole('group', { name: 'View' })
+    expect(within(view).queryByRole('button', { name: /motion/ })).not.toBeInTheDocument()
+    expect(within(view).getByRole('button', { name: 'Reset view' })).toBeInTheDocument()
+  })
+
+  it('sets the keys as key chips under the rail, the arrows as one, and labels the caption', async () => {
     render(<Harness start="/?inspect=four-seam" />)
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     const keys = [...dialog.querySelectorAll('.specimen-rail-keys kbd')].map((k) => k.textContent)
-    expect(keys).toEqual(expect.arrayContaining(['F', 'Space', 'R']))
+    expect(keys).toEqual(['←→↑↓', 'F', 'Space', 'R'])
     await waitFor(() => expect(within(dialog).getByText('Caption')).toBeInTheDocument())
     expect(within(dialog).getByText(/^Grip: Austin video/)).toBeInTheDocument()
   })
