@@ -94,12 +94,14 @@ they were.
 - A WebM needs a browser whose encoder writes VP9 or VP8 at the export's frame, or a
   recorder that records WebM. The inspector asks the browser before the click and, where
   neither answers, leaves the button off and says why.
-- Safari, checked 2026-10-23 on the M3 laptop with an unattended local probe: Safari
-  27.2's encoder writes VP9 and VP8 at 1440×2010 and refuses an alpha channel, which does
-  not matter here, because the encoder library carries transparency as its own second
-  stream. The library's full loop of 210 frames came back at exactly 7 seconds, dark and
-  transparent (transparency on all 210). The card painter and the panel themselves have
-  not been driven in Safari.
+- Safari, checked 2026-10-23 on the M3 laptop with an unattended local probe, on a
+  pre-release build: Safari 27.2 from Apple's beta program (macOS 27.2, build 26B118),
+  not the Safari 27 that shipped. Its encoder writes VP9 and VP8 at 1440×2010 and refuses
+  an alpha channel, which does not matter here, because the encoder library carries
+  transparency as its own second stream. The library's full loop of 210 frames came back
+  at exactly 7 seconds, dark and transparent (transparency on all 210). The shipped Safari
+  has not been probed, and the card painter and the panel themselves have not been driven
+  in Safari.
 - The WebM takes about 40 seconds to make in Chrome on the M3 laptop (76 with a
   transparent backdrop). Both times are for the 1440×2010 posed frame, made from the
   1200 px card face: VP9 in software is the slow part, and its realtime mode was no faster
