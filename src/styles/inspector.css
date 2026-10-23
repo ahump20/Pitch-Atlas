@@ -6,7 +6,12 @@
      the insets come off the size, and the box shifts away from the larger one */
   --safe-x: calc(env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
   --safe-y: calc(env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
-  width: 100%; max-width: min(1180px, calc(100% - 2rem - var(--safe-x))); padding: 0;
+  /* on a wide screen the room is as wide as the card it holds, an even margin either
+     side of it and the rail, so the card never floats in an empty stage; the card is as
+     large as the screen's height allows */
+  --card-w: min(560px, calc((100dvh - 220px) * 5 / 7));
+  --room-gutter: clamp(56px, 7vw, 104px);
+  width: 100%; max-width: min(1180px, calc(100% - 2rem - var(--safe-x)), calc(var(--card-w) + 2 * var(--room-gutter) + 344px)); padding: 0;
   margin-left: calc((env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
   margin-top: calc((env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) / 2);
   background: #0b0a09; color: #efe6d6; border-radius: 14px;
@@ -35,9 +40,13 @@
 .specimen-stage:focus-visible { box-shadow: inset 0 0 0 2px var(--color-cyan); }
 /* the room: the page behind dims and softens until nothing reads through it */
 .specimen-inspector-overlay { background: #050403e0; -webkit-backdrop-filter: blur(10px) saturate(.7); backdrop-filter: blur(10px) saturate(.7); }
-.specimen-rig { position: relative; width: 100%; max-width: min(560px, calc((100dvh - 220px) * 5 / 7)); perspective: 1600px; margin: auto; }
-/* the floor: a soft ellipse the card stands over, still while the card turns */
-.specimen-rig::before { content: ''; position: absolute; left: 12%; right: 12%; bottom: -4%; height: 8%; border-radius: 50%; background: radial-gradient(closest-side, #000000b8, #00000000); filter: blur(6px); pointer-events: none; }
+.specimen-rig { position: relative; width: 100%; max-width: var(--card-w); perspective: 1600px; margin: auto; }
+/* the floor: a tight, dark contact shadow at the card's foot, still while the card turns,
+   over a faint warm floor light it can read against in the dark room */
+.specimen-rig::before { content: ''; position: absolute; left: 15%; right: 15%; bottom: -2.5%; height: 5%; border-radius: 50%; background: radial-gradient(closest-side, #000000f2, #00000000); filter: blur(4px); pointer-events: none; }
+/* it reaches at most 14px under the card, inside every stage's padding, so it never adds
+   to what the dialog scrolls */
+.specimen-rig::after { content: ''; position: absolute; z-index: -1; left: -8%; right: -8%; bottom: max(-6%, -14px); height: 14%; border-radius: 50%; background: radial-gradient(closest-side, #e9d3a614, #e9d3a600); pointer-events: none; }
 .specimen-rig .rfx-holder { max-width: none; }
 /* in the dark room the cream plate steps down a little, so the grip stays the
    brightest thing in view; the print itself, and every export, keep the true plate */
@@ -75,15 +84,16 @@
    Every control in it stands one height (--rail-control), 44px wherever a finger is the pointer. */
 .specimen-rail { --rail-control: 40px; grid-area: rail; display: flex; flex-direction: column; gap: 16px; padding: 16px 24px 32px; background: #110f0d; border-radius: 0 0 14px 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a38a5e66 transparent;
   /* a control reached by Tab stops above the fade, never inside it */
-  scroll-padding-bottom: 40px; }
+  scroll-padding-bottom: 32px; }
 /* more follows: whatever scrolls fades at its foot until the last of it is in view.
    The fade rides the scroll position, so it is gone at the end and absent where
    nothing scrolls; a browser without scroll timelines shows no fade, never a stuck one. */
 @property --specimen-fade { syntax: '<length>'; inherits: false; initial-value: 0px; }
-@keyframes specimen-fade-out { 0%, 88% { --specimen-fade: 40px; } 100% { --specimen-fade: 0px; } }
+@keyframes specimen-fade-out { 0%, 88% { --specimen-fade: 24px; } 100% { --specimen-fade: 0px; } }
+/* short, and never fully clear, so a control under it still reads as a control */
 @supports (animation-timeline: scroll()) {
   .specimen-rail {
-    mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0000);
+    mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0006);
     animation: specimen-fade-out linear both; animation-timeline: scroll(self);
   }
 }
@@ -179,10 +189,10 @@
   .specimen-rail { border-radius: 0 0 14px 14px; padding: 20px 16px 28px; }
   /* here the dialog is what scrolls, so the fade (and the room Tab keeps above it)
      rides the dialog, and the rail, which no longer scrolls, carries no mask */
-  .specimen-inspector { scroll-padding-bottom: 40px; }
+  .specimen-inspector { max-width: min(1180px, calc(100% - 2rem - var(--safe-x))); scroll-padding-bottom: 32px; }
   @supports (animation-timeline: scroll()) {
     .specimen-inspector {
-      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0000);
+      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0006);
       animation: specimen-fade-out linear both; animation-timeline: scroll(self);
     }
     .specimen-rail { mask-image: none; animation: none; }
@@ -191,16 +201,17 @@
 /* a phone on its side: the card beside the rail, sized to the height it has */
 @media (max-width: 899px) and (max-height: 520px) and (orientation: landscape) {
   .specimen-inspector-grid { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "stage head" "stage rail"; height: calc(100dvh - 2rem - 2px - var(--safe-y)); }
-  .specimen-stage { border-radius: 14px 0 0 14px; padding: 10px; }
+  /* the card clears the dialog's edges: a little more room below, for its slab and its shadow */
+  .specimen-stage { border-radius: 14px 0 0 14px; padding: 12px 10px 22px; }
   .specimen-stage::after { top: 12px; bottom: 12px; left: auto; right: 0; width: 1px; height: auto; }
-  .specimen-rig { max-width: max(150px, calc((100dvh - 2rem - 2px - 28px - var(--safe-y)) * 5 / 7)); }
+  .specimen-rig { max-width: max(150px, calc((100dvh - 2rem - 2px - 34px - var(--safe-y)) * 5 / 7)); }
   .specimen-rail-head { padding: 10px 8px 2px 14px; background: #110f0d; border-radius: 0 14px 0 0; }
   .specimen-rail { overflow-y: auto; gap: 12px; border-radius: 0 0 14px 0; padding: 10px 14px 20px; }
   /* on its side the rail scrolls again, so the fade returns to it */
   @supports (animation-timeline: scroll()) {
     .specimen-inspector { mask-image: none; animation: none; }
     .specimen-rail {
-      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0000);
+      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0006);
       animation: specimen-fade-out linear both; animation-timeline: scroll(self);
     }
   }
@@ -208,7 +219,7 @@
   .specimen-rail-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
   .specimen-rail-head h2 { font-size: 20px; }
 }
-@media (max-height: 520px) and (min-width: 900px) { .specimen-rig { max-width: calc((100dvh - 120px) * 5 / 7); } }
+@media (max-height: 520px) and (min-width: 900px) { .specimen-inspector { --card-w: calc((100dvh - 120px) * 5 / 7); } }
 @media (any-pointer: coarse) {
   .specimen-rail { --rail-control: 44px; }
   /* the switch holds the 44px line as a whole: its halves fill it */
