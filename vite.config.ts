@@ -130,8 +130,8 @@ export default defineConfig({
           '**/react-three-*.js',
           '**/three-support-*.js',
           // the specimen inspector and its export compositor load only when a card is
-          // opened; React.lazy already gives them their own chunk
-          '**/SpecimenInspector-*.js',
+          // opened; React.lazy already gives them their own chunk and stylesheet
+          '**/SpecimenInspector-*.{js,css}',
         ],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
