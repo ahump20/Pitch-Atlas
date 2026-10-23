@@ -85,7 +85,7 @@ describe('SpecimenInspector', () => {
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     await waitFor(() => expect(within(dialog).getByText(/cannot record a WebM/)).toBeInTheDocument())
     expect(within(dialog).getByRole('button', { name: /Export WebM/ })).toBeDisabled()
-    await waitFor(() => expect(within(dialog).getByText(/Caption: Grip: Austin video/)).toBeInTheDocument())
+    await waitFor(() => expect(within(dialog).getByText(/^Grip: Austin video/)).toBeInTheDocument())
   })
 
   it('asks before the click: an encoder that writes no WebM leaves the button off and says why', async () => {
@@ -170,6 +170,37 @@ describe('SpecimenInspector', () => {
     // the plain key still turns the card over
     expect(fireEvent.keyDown(stage, { key: 'f' })).toBe(false)
     await waitFor(() => expect(within(dialog).getByRole('group', { name: /sources showing/ })).toBeInTheDocument())
+  })
+
+  it('heads the rail with what the card does not say: the family and the full name', async () => {
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const rail = within(dialog).getByRole('complementary', { name: 'Inspector controls' })
+    expect(within(rail).getByRole('heading', { level: 2 })).toHaveTextContent('Four-seam fastball')
+    expect(within(rail).getByText('Fastball')).toBeInTheDocument()
+    expect(within(rail).queryByText(/Filed specimen/)).not.toBeInTheDocument()
+  })
+
+  it('gives the rail one primary action, and Finish says whether its panel is open', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    expect(within(dialog).getByRole('link', { name: /Study grip/ })).toHaveClass('specimen-primary')
+    expect(dialog.querySelectorAll('.specimen-rail .specimen-primary')).toHaveLength(1)
+    const finish = within(dialog).getByRole('button', { name: 'Finish' })
+    expect(finish.querySelector('.specimen-chevron')).not.toBeNull()
+    expect(finish).toHaveAttribute('aria-expanded', 'false')
+    await user.click(finish)
+    expect(finish).toHaveAttribute('aria-expanded', 'true')
+  })
+
+  it('sets the keys as key chips at the foot of the rail, and labels the caption', async () => {
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const keys = [...dialog.querySelectorAll('.specimen-rail-keys kbd')].map((k) => k.textContent)
+    expect(keys).toEqual(expect.arrayContaining(['F', 'Space', 'R']))
+    await waitFor(() => expect(within(dialog).getByText('Caption')).toBeInTheDocument())
+    expect(within(dialog).getByText(/^Grip: Austin video/)).toBeInTheDocument()
   })
 
   it('names every finish switch', async () => {

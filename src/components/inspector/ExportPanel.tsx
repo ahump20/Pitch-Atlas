@@ -148,7 +148,10 @@ export function ExportPanel({
         <p className="specimen-export-status" data-tone="error">{eligibility.reason ?? 'This face cannot be exported.'}</p>
       ) : null}
       {eligibility.exportable && eligibility.attribution ? (
-        <p className="specimen-export-note">Caption: {eligibility.attribution}</p>
+        <p className="specimen-export-note specimen-caption">
+          <span className="specimen-caption-label">Caption</span>
+          <span>{eligibility.attribution}</span>
+        </p>
       ) : null}
       {!webm.ok ? <p className="specimen-export-note">{webm.reason}</p> : null}
     </section>

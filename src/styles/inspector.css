@@ -38,16 +38,42 @@
 
 /* the rail scrolls on its own; the card stays put while the Finish panel is open */
 .specimen-rail { display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 32px; border-left: 1px solid #a38a5e2e; background: #110f0d; border-radius: 0 14px 14px 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a38a5e66 transparent; }
-.specimen-rail header .archive-eyebrow { color: #c4a777; }
-.specimen-rail h2 { margin: 6px 0 0; font: 400 clamp(26px, 2.4vw, 34px)/1.05 var(--font-display); letter-spacing: -.02em; color: #f3ecdd; }
-.specimen-seg { display: inline-flex; width: fit-content; padding: 3px; border: 1px solid #a38a5e45; border-radius: 6px; }
-.specimen-seg button { min-height: 36px; padding: 6px 14px; border-radius: 4px; font: 600 12px/1 var(--font-prose); color: #cfc2a8; cursor: pointer; }
-.specimen-seg button[aria-pressed=true] { background: #e7d7b5; color: #211c16; }
+/* the header says what the card does not: the family, then the full name; it keeps
+   clear of the close disc in the corner */
+.specimen-rail-head { display: grid; gap: 6px; padding-right: 44px; }
+.specimen-rail-head .archive-eyebrow { margin: 0; color: #c4a777; }
+.specimen-rail h2 { margin: 0; font: 400 clamp(26px, 2.4vw, 34px)/1.05 var(--font-display); letter-spacing: -.02em; color: #f3ecdd; text-wrap: balance; }
+/* Front / Sources: a mode switch the width of the rail, two equal halves, as tall as
+   the buttons. The face showing is lit and keyed in gold; the solid cream belongs to
+   the one action below it. */
+.specimen-seg { display: grid; grid-template-columns: 1fr 1fr; padding: 2px; border: 1px solid #a38a5e45; border-radius: 7px; background: #0b0a09; }
+.specimen-seg button { min-height: 34px; padding: 6px 14px; border-radius: 5px; font: 600 12px/1 var(--font-prose); color: #b7ab93; cursor: pointer; transition: background 140ms, color 140ms, box-shadow 140ms; }
+.specimen-seg button:hover { color: #efe6d6; background: #f6f1e60d; }
+.specimen-seg button[aria-pressed=true] { background: #2a241c; color: #f6f1e6; box-shadow: inset 0 0 0 1px #c8a35c; }
 .specimen-seg button:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; }
-.specimen-rail-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.specimen-rail-actions .v2-cta { min-height: 36px; padding-block: 8px; font-size: 11px; }
-.specimen-rail-file { color: #dda775; }
-.specimen-rail-hint { margin: 0; font: 11px/1.6 var(--font-mono); letter-spacing: .04em; color: #9b8f7a; }
+/* the one primary: into the grip lab, solid, in the archive's own action language */
+.specimen-primary { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 44px; padding: 10px 16px; border: 1px solid #a38a5e; border-radius: 6px; background: #e9ddc2; color: #211c16; font: 600 13px/1.2 var(--font-prose); text-decoration: none; transition: background 140ms, box-shadow 140ms; }
+.specimen-primary:hover { background: #f4ead4; box-shadow: 0 0 0 1px #c8a35c; }
+.specimen-primary:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 3px; }
+/* everything else: two equal columns, one right edge */
+.specimen-rail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.specimen-rail-actions > * { width: 100%; min-height: 40px; }
+/* the export's two buttons size to their words and share the row, and stack whole
+   rather than break a label where the rail is narrow */
+.specimen-export .specimen-rail-actions { display: flex; flex-wrap: wrap; }
+.specimen-export .specimen-rail-actions > * { flex: 1 1 auto; width: auto; white-space: nowrap; }
+.specimen-chevron { transition: rotate 160ms; }
+.specimen-action[aria-expanded=true] .specimen-chevron { rotate: 180deg; }
+/* the file: one link under one underline, the arrow inside it */
+.specimen-rail-file { display: inline-block; align-self: flex-start; padding-block: 11px; color: #dda775; font: 600 15px/22px var(--font-prose); text-decoration: underline; text-underline-offset: 5px; text-decoration-color: #a68a5966; }
+.specimen-rail-file:hover { text-decoration-color: currentColor; }
+.specimen-rail-file:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; border-radius: 2px; }
+/* the keys, as keys, waiting at the rail's foot */
+.specimen-rail-keys { margin-top: auto; display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid #a38a5e1f; }
+.specimen-rail-keys p { margin: 0; font: 11px/1.6 var(--font-mono); letter-spacing: .04em; color: #9b8f7a; }
+.specimen-hint-keys { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.specimen-hint-keys > span { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; }
+.specimen-rail-keys kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border: 1px solid #a38a5e55; border-bottom-width: 2px; border-radius: 4px; background: #17140f; color: #e7dcc6; font: 600 10px/1 var(--font-mono); }
 .specimen-action:disabled { opacity: .45; cursor: default; }
 
 .specimen-finish, .specimen-export { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid #a38a5e2e; }
@@ -68,6 +94,8 @@
 .specimen-export-status { margin: 0; font: 12px/1.5 var(--font-prose); color: #cfc2a8; }
 .specimen-export-status[data-tone=error] { color: #ffb1a8; }
 .specimen-export-note { margin: 0; font: 11px/1.5 var(--font-mono); color: #9b8f7a; }
+.specimen-caption { display: grid; gap: 2px; }
+.specimen-caption-label { font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; color: #c4a777; }
 
 @media (max-width: 899px) {
   .specimen-inspector-grid { grid-template-columns: 1fr; height: auto; }
@@ -76,6 +104,8 @@
   /* sized to fit the screen's height, never below a card you can read; past that the dialog scrolls */
   .specimen-rig { max-width: min(440px, 100%, max(220px, calc((100dvh - 330px) * 5 / 7))); }
   .specimen-rail { border-left: 0; border-top: 1px solid #a38a5e2e; border-radius: 0 0 14px 14px; padding: 20px 16px 28px; }
+  .specimen-rail-head { gap: 4px; }
+  .specimen-rail h2 { font-size: 26px; }
 }
 /* a phone on its side: the card beside the rail, sized to the height it has */
 @media (max-width: 899px) and (max-height: 520px) and (orientation: landscape) {
@@ -83,7 +113,18 @@
   .specimen-stage { border-radius: 14px 0 0 14px; padding: 12px; }
   .specimen-rig { max-width: max(150px, calc((100dvh - 2rem - 40px) * 5 / 7)); }
   .specimen-rail { overflow-y: auto; gap: 12px; border-top: 0; border-left: 1px solid #a38a5e2e; border-radius: 0 14px 14px 0; padding: 16px 14px 20px; }
+  /* one line: the family beside the name, so the controls start sooner */
+  .specimen-rail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .specimen-rail h2 { font-size: 20px; }
 }
 @media (max-height: 520px) and (min-width: 900px) { .specimen-rig { max-width: calc((100dvh - 120px) * 5 / 7); } }
-@media (any-pointer: coarse) { .specimen-seg button, .specimen-chip, .specimen-advanced summary { min-height: 44px; } .specimen-range input[type=range] { min-height: 44px; } }
-@media (prefers-reduced-motion: reduce) { .specimen-rig .v2-flip-inner { transition: none; } }
+@media (any-pointer: coarse) {
+  /* the switch holds the 44px line as a whole: its halves fill it */
+  .specimen-seg { padding: 0; }
+  .specimen-seg button { min-height: 42px; }
+  .specimen-chip, .specimen-advanced summary, .specimen-rail-actions > * { min-height: 44px; }
+  .specimen-range input[type=range] { min-height: 44px; }
+}
+/* a touch-only screen has no keys to show */
+@media (hover: none) and (pointer: coarse) { .specimen-hint-keys { display: none; } }
+@media (prefers-reduced-motion: reduce) { .specimen-rig .v2-flip-inner, .specimen-chevron { transition: none; } }
