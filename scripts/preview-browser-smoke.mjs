@@ -473,9 +473,9 @@ async function checkHomeCardBacks(page, viewport) {
   }
 }
 
-async function checkFourSeam(page) {
-  // Exercise the promised no-WebGL path and keep the deep-route data check from
-  // competing with software-rendered Three.js in headless Chromium.
+async function disableWebGL(page) {
+  // Data, focus and scrolling checks do not need software-rendered Three.js.
+  // The material itself is checked separately in a browser with WebGL.
   await page.addInitScript(() => {
     const getContext = HTMLCanvasElement.prototype.getContext
     HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
@@ -483,6 +483,11 @@ async function checkFourSeam(page) {
       return getContext.call(this, type, ...args)
     }
   })
+}
+
+async function checkFourSeam(page) {
+  // Exercise the promised no-WebGL path for this deep-route data check.
+  await disableWebGL(page)
   await page.setViewportSize({ width: 1280, height: 900 })
   const publicNotesResponse = page
     .waitForResponse(
@@ -576,6 +581,62 @@ async function checkInspectorClose(page, viewport) {
   record(!new URL(page.url()).searchParams.has('inspect'), `${label} closing left ?inspect= in the address`)
 }
 
+async function checkInspectorReturnFocus(page) {
+  await disableWebGL(page)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
+  const opener = page.getByRole('button', { name: 'Inspect card four seam' }).first()
+  await opener.focus()
+  const scrollY = await page.evaluate(() => window.scrollY)
+  for (const close of ['Escape', 'Back']) {
+    await opener.press('Enter')
+    await page.getByRole('dialog').waitFor({ state: 'visible' })
+    if (close === 'Escape') await page.keyboard.press('Escape')
+    else await page.goBack()
+    await page.getByRole('dialog').waitFor({ state: 'detached' })
+    const focused = await page.waitForFunction(() =>
+      document.activeElement?.matches('#case button[aria-haspopup="dialog"]'),
+      undefined, { timeout: 5_000 },
+    ).then(() => true, () => false)
+    record(focused, `Inspector ${close} did not return focus to its opener`)
+    record(Math.abs(await page.evaluate(() => window.scrollY) - scrollY) <= 2,
+      `Inspector ${close} scrolled the collection while returning focus`)
+  }
+}
+
+async function checkReducedMotionInspectorScroll(page) {
+  await disableWebGL(page)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto(route('/?inspect=four-seam'), { waitUntil: 'domcontentloaded' })
+  const card = page.locator('.specimen-inspector .rfx-card').first()
+  await card.waitFor({ state: 'visible', timeout: 20_000 })
+  const box = await card.boundingBox()
+  assert(box, 'Reduced-motion inspector card has no box')
+  const dialog = page.getByRole('dialog')
+  const before = await dialog.evaluate((el) => el.scrollTop)
+  const session = await page.context().newCDPSession(page)
+  try {
+    await session.send('Emulation.setTouchEmulationEnabled', { enabled: true })
+    const x = box.x + box.width / 2
+    const y = Math.min(600, box.y + box.height * 0.75)
+    await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+    for (let step = 1; step <= 10; step++) {
+      await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y: y - step * 18 }] })
+      await page.waitForTimeout(16)
+    }
+    await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+    const scrolled = await page.waitForFunction((initial) =>
+      (document.querySelector('.specimen-inspector')?.scrollTop ?? 0) > initial + 20,
+      before, { timeout: 5_000 },
+    ).then(() => true, () => false)
+    record(scrolled, 'A swipe over the static reduced-motion card did not scroll the inspector')
+  } finally {
+    await session.detach()
+  }
+}
+
 async function checkSupportAndPrivacy(page, viewport) {
   await page.setViewportSize(viewport)
 
@@ -634,17 +695,21 @@ async function checkKnowledgeMarkerWrap(page) {
   await assertNoHorizontalOverflow(page, 'Canon mobile')
 }
 
-// An explicit channel lets local verification use installed Chrome when the
+// An explicit channel or executable lets local verification use installed Chrome when the
 // bundled headless shell stalls during WebGL page teardown. CI keeps its
 // bundled browser unless the caller opts into a channel.
-const browser = await chromium.launch({ headless: true, channel: process.env.PLAYWRIGHT_CHANNEL || undefined })
+const browser = await chromium.launch({
+  headless: true,
+  channel: process.env.PLAYWRIGHT_CHANNEL || undefined,
+  executablePath: process.env.PLAYWRIGHT_EXECUTABLE_PATH || undefined,
+})
 
 let smokeStep = 0
 async function withPage(callback) {
   const page = await browser.newPage()
   page.setDefaultTimeout(15_000)
   page.setDefaultNavigationTimeout(30_000)
-  console.log(`Smoke ${++smokeStep}/21: ${callback.name || "responsive route"}`)
+  console.log(`Smoke ${++smokeStep}/23: ${callback.name || "responsive route"}`)
   try {
     const priorFailures = failures.length
     await callback(page)
@@ -673,6 +738,8 @@ try {
   await withPage(checkFourSeam)
   await withPage((page) => checkInspectorClose(page, { width: 390, height: 844 }))
   await withPage((page) => checkInspectorClose(page, { width: 1280, height: 900 }))
+  await withPage(checkInspectorReturnFocus)
+  await withPage(checkReducedMotionInspectorScroll)
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 390, height: 844 }))
   await withPage(checkKnowledgeMarkerWrap)

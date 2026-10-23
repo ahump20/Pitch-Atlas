@@ -186,4 +186,9 @@
 }
 /* a touch-only screen has no keys to show */
 @media (hover: none) and (pointer: coarse) { .specimen-hint-keys { display: none; } }
-@media (prefers-reduced-motion: reduce) { .specimen-rig .v2-flip-inner, .specimen-chevron { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .specimen-rig .v2-flip-inner, .specimen-chevron { transition: none; }
+  /* A static card has no tilt gesture to capture. Let a swipe over it scroll the
+     upright phone's dialog, just as a swipe over the surrounding stage does. */
+  .specimen-rig .rfx-card.is-inspector { touch-action: pan-y; cursor: auto; }
+}
