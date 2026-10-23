@@ -1,7 +1,7 @@
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../../data/types'
 import { gripEntryFor } from '../../../data/grips'
 import { accentForSlug, accentInk } from '../../refractor/accents'
-import { createCardMaterialProgram, EMPTY_RECT, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
+import { BACK_RING_HEX, BACK_SEED_OFFSET, createCardMaterialProgram, EMPTY_RECT, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
 import { CARD_INK } from '../../refractor/specimenFace'
 import { movementWheel, WHEEL_CENTER, WHEEL_VIEW, type WheelLine } from '../../sections/movementWheel'
 import type { CardMaterial } from '../../refractor/material/materialPresets'
@@ -24,6 +24,10 @@ const INK_FACT = '#4A443A'
 const INK_META = '#746B5D'
 
 export const FONT_FAMILIES = ['Anton', 'Martian Mono', 'Newsreader', 'Hanken Grotesk'] as const
+
+/** The material seed the inspector strikes its card with. The export strikes the same one
+    (and the back's offset from it), so a downloaded face carries the pattern on screen. */
+export const INSPECTOR_SEED = 7
 
 export async function loadCardFonts(): Promise<void> {
   if (typeof document === 'undefined' || !document.fonts?.load) return
@@ -297,8 +301,8 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
   const identity: MaterialIdentity = {
     c2: hexToTriple(accent.c2),
     c3: hexToTriple(accent.c3),
-    ring: face === 'back' ? hexToTriple('#6e757b') : ringTriple(accent, gold),
-    seed: 7,
+    ring: face === 'back' ? hexToTriple(BACK_RING_HEX) : ringTriple(accent, gold),
+    seed: face === 'back' ? INSPECTOR_SEED + BACK_SEED_OFFSET : INSPECTOR_SEED,
   }
 
   // the layers that never change between frames

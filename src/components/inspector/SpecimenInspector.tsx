@@ -10,6 +10,7 @@ import { RefractorCard } from '../refractor/RefractorCard'
 import { SpecimenBack } from '../refractor/SpecimenBack'
 import { specimenFace } from '../refractor/specimenFace'
 import { ExportPanel } from './ExportPanel'
+import { INSPECTOR_SEED } from './export/composeCard'
 import { FinishPanel, type AmbientSettings, type LightSettings } from './FinishPanel'
 import { materialFor, writeFinishPref, type FinishFace } from './finishPrefs'
 import { InspectorRail } from './InspectorRail'
@@ -31,7 +32,6 @@ import '../../styles/inspector.css'
   Finish choices are remembered per card face on this device and never touch the
   pitch record or any other surface.
 */
-const INSPECTOR_SEED = 7
 const NUDGE = 4
 
 export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtlasEntry; onClose: () => void }) {

@@ -34,6 +34,12 @@ export interface Rect {
 
 export const EMPTY_RECT: Rect = { x: 0, y: 0, w: 0, h: 0 }
 
+/** A card's back is struck from its front's seed plus this offset, so the two faces never
+    share a pattern, on its stock's own steel rim. The live back and the export both read
+    these, so a downloaded back carries the pattern the visitor saw. */
+export const BACK_SEED_OFFSET = 11
+export const BACK_RING_HEX = '#6e757b'
+
 /** The card's print geometry in CSS pixels of the card box, measured from the DOM. */
 export interface MaterialLayout {
   width: number

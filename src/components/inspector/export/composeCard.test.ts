@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { pitchBySlug } from '../../../data/pitches'
 import { PRESETS } from '../../refractor/material/materialPresets'
-import type { MaterialLayout } from '../../refractor/material/cardMaterialProgram'
+import type { MaterialIdentity, MaterialLayout } from '../../refractor/material/cardMaterialProgram'
 
 /*
   The composer lays the material over the print the way the page does. The front's
@@ -14,6 +14,7 @@ import type { MaterialLayout } from '../../refractor/material/cardMaterialProgra
 const h = vi.hoisted(() => ({
   webgl: true,
   rendered: [] as MaterialLayout[],
+  identities: [] as MaterialIdentity[],
   coverages: [] as string[],
   ops: [] as string[],
   filters: [] as string[],
@@ -26,8 +27,9 @@ vi.mock('../../refractor/material/cardMaterialProgram', async (importOriginal) =
     if (!h.webgl) throw new Error('no WebGL2 here')
     return {
       resize: () => undefined,
-      render: ({ layout, material }: { layout: MaterialLayout; material: { coverage: string } }) => {
+      render: ({ layout, material, identity }: { layout: MaterialLayout; material: { coverage: string }; identity: MaterialIdentity }) => {
         h.rendered.push(layout)
+        h.identities.push(identity)
         h.coverages.push(material.coverage)
       },
       dispose: () => undefined,
@@ -35,7 +37,8 @@ vi.mock('../../refractor/material/cardMaterialProgram', async (importOriginal) =
   },
 }))
 
-const { createComposer, resolveStageMedia } = await import('./composeCard')
+const { createComposer, resolveStageMedia, INSPECTOR_SEED } = await import('./composeCard')
+const { BACK_RING_HEX, BACK_SEED_OFFSET, hexToTriple } = await import('../../refractor/material/cardMaterialProgram')
 
 /** A 2D context that accepts every call, remembers each one, and remembers compositing changes. */
 function recordingContext(): CanvasRenderingContext2D {
@@ -73,6 +76,7 @@ function compose(face: 'front' | 'back', coverage?: 'full' | 'window' | 'frame')
 beforeEach(() => {
   h.webgl = true
   h.rendered.length = 0
+  h.identities.length = 0
   h.coverages.length = 0
   h.ops.length = 0
   h.filters.length = 0
@@ -101,6 +105,15 @@ describe('createComposer', () => {
   it("keeps the coverage the visitor tuned for the back, as the page does", () => {
     compose('back', 'window')
     expect(h.coverages[0]).toBe('window')
+  })
+
+  it('strikes each face with the seed and rim the inspector shows it with', () => {
+    // the shader seeds the interference colour and the finish's random geometry; a back
+    // exported on the front's seed downloaded with a different pattern than it showed
+    compose('front')
+    compose('back')
+    expect(h.identities.map((identity) => identity.seed)).toEqual([INSPECTOR_SEED, INSPECTOR_SEED + BACK_SEED_OFFSET])
+    expect(h.identities[1].ring).toEqual(hexToTriple(BACK_RING_HEX))
   })
 
   it('cuts no window into the flat stock of a back without WebGL', () => {

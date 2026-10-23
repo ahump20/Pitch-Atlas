@@ -8,7 +8,7 @@ import { SeamSchematic } from '../fallback/SeamSchematic'
 import { ScoutMovementWheel } from '../sections/ScoutMovementWheel'
 import { STAGE_TIER_DOT } from '../provenance/refractorClaimMeta'
 import { accentForSlug } from './accents'
-import { hexToTriple, type MaterialIdentity } from './material/cardMaterialProgram'
+import { BACK_RING_HEX, BACK_SEED_OFFSET, hexToTriple, type MaterialIdentity } from './material/cardMaterialProgram'
 import { backMaterial, type CardMaterial } from './material/materialPresets'
 
 /*
@@ -29,7 +29,7 @@ import { backMaterial, type CardMaterial } from './material/materialPresets'
 
 const MaterialLayer = lazy(() => import('./material/MaterialLayer'))
 
-const BACK_RING = hexToTriple('#6e757b')
+const BACK_RING = hexToTriple(BACK_RING_HEX)
 
 export function SpecimenBack({
   entry,
@@ -62,7 +62,7 @@ export function SpecimenBack({
   const webgl = useWebGLSupport()
   const material = useMemo(() => tuned ?? backMaterial(), [tuned])
   const identity = useMemo<MaterialIdentity>(
-    () => ({ c2: hexToTriple(accent.c2), c3: hexToTriple(accent.c3), ring: BACK_RING, seed: seed + 11 }),
+    () => ({ c2: hexToTriple(accent.c2), c3: hexToTriple(accent.c3), ring: BACK_RING, seed: seed + BACK_SEED_OFFSET }),
     [accent, seed],
   )
 
