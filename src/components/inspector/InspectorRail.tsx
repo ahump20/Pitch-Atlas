@@ -1,6 +1,7 @@
 import { ChevronDown, Pause, Play, RotateCcw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { familyOverline } from '../../data/family'
 import type { PitchAtlasEntry } from '../../data/types'
 import { CompareButton } from '../compare/CompareButton'
 import type { FinishFace } from './finishPrefs'
@@ -40,11 +41,11 @@ export function InspectorRail({
   children: ReactNode
 }) {
   const { display, canonical } = entry
-  const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
+  const overline = familyOverline(entry)
   return (
     <aside className="specimen-rail" aria-label="Inspector controls">
       <header className="specimen-rail-head">
-        <p className="archive-eyebrow">{familyLabel}</p>
+        {overline ? <p className="archive-eyebrow">{overline}</p> : null}
         <h2>{canonical.name}</h2>
       </header>
 

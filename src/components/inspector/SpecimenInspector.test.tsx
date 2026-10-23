@@ -172,13 +172,22 @@ describe('SpecimenInspector', () => {
     await waitFor(() => expect(within(dialog).getByRole('group', { name: /sources showing/ })).toBeInTheDocument())
   })
 
-  it('heads the rail with what the card does not say: the family and the full name', async () => {
+  it('heads the rail with what the card does not say: the full name, and no family it already names', async () => {
     render(<Harness start="/?inspect=four-seam" />)
     const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
     const rail = within(dialog).getByRole('complementary', { name: 'Inspector controls' })
     expect(within(rail).getByRole('heading', { level: 2 })).toHaveTextContent('Four-seam fastball')
-    expect(within(rail).getByText('Fastball')).toBeInTheDocument()
+    // "Fastball" over "Four-seam fastball" said fastball twice
+    expect(within(rail).queryByText('Fastball')).not.toBeInTheDocument()
     expect(within(rail).queryByText(/Filed specimen/)).not.toBeInTheDocument()
+  })
+
+  it('names the family over a name that does not say it', async () => {
+    render(<Harness start="/?inspect=slider" />)
+    const dialog = await screen.findByRole('dialog', {}, { timeout: 4000 })
+    const rail = within(dialog).getByRole('complementary', { name: 'Inspector controls' })
+    expect(within(rail).getByRole('heading', { level: 2 })).toHaveTextContent('Slider')
+    expect(within(rail).getByText('Breaking')).toBeInTheDocument()
   })
 
   it('gives the rail one primary action, and Finish says whether its panel is open', async () => {

@@ -1,5 +1,6 @@
 import { lazy, Suspense, useEffect, useMemo, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { familyLabel } from '../../data/family'
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../data/types'
 import { useCardTilt, type TiltEngine } from '../../hooks/useCardTilt'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
@@ -54,7 +55,6 @@ export function SpecimenBack({
   const accent = accentForSlug(display.slug)
   const shape = canonical.physics.shape
   const gripCue = canonical.gripDetails[0] ?? canonical.grip
-  const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
   const { ref, handlers, store, engine } = useCardTilt<HTMLDivElement>('rest')
   useEffect(() => {
     onEngine?.(engine)
@@ -83,7 +83,7 @@ export function SpecimenBack({
       <div className="rfx-scout">
         <div className="rfx-scout-head">
           <span className="rfx-scout-name">{display.shortName}</span>
-          <span className="rfx-scout-no">No. {display.specimenNo} · {familyLabel}</span>
+          <span className="rfx-scout-no">No. {display.specimenNo} · {familyLabel(canonical.family)}</span>
         </div>
 
         <ScoutMovementWheel motion={motion} accent={accent} />

@@ -1,4 +1,5 @@
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../../data/types'
+import { familyLabel } from '../../../data/family'
 import { gripEntryFor } from '../../../data/grips'
 import { accentForSlug, accentInk } from '../../refractor/accents'
 import { BACK_RING_HEX, BACK_SEED_OFFSET, createCardMaterialProgram, EMPTY_RECT, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
@@ -85,10 +86,9 @@ export function backText(entry: PitchAtlasEntry): BackText {
   const { canonical, display } = entry
   const gripCue = canonical.gripDetails[0] ?? canonical.grip
   const shape = canonical.physics.shape
-  const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
   return {
     name: display.shortName,
-    number: `No. ${display.specimenNo} · ${familyLabel}`,
+    number: `No. ${display.specimenNo} · ${familyLabel(canonical.family)}`,
     rows: [
       { key: 'Grip cue', value: gripCue.value, confidence: CONFIDENCE_META[gripCue.confidence].label, approx: Boolean(gripCue.approximate), source: gripCue.source ? `Grip: ${gripCue.source.label}` : undefined },
       { key: 'Shape', value: shape.value, confidence: CONFIDENCE_META[shape.confidence].label, approx: Boolean(shape.approximate), source: shape.source ? `Shape: ${shape.source.label}` : undefined },
