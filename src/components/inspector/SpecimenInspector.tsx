@@ -141,6 +141,7 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
     <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent
         className="specimen-inspector"
+        overlayClassName="specimen-inspector-overlay"
         showCloseButton
         // focus lands on the dialog itself, not on the stage, so opening never paints a
         // focus ring around the card; Tab reaches the stage and the rail in order

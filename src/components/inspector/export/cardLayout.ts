@@ -60,7 +60,8 @@ export function cardLayout({ width, gold, strip = true, plateContentU }: CardLay
   const plateH = Math.max(plateMin, stripRect.y - plateTop)
   const plate: Rect = { x: inner.x, y: plateTop, w: inner.w, h: plateH }
   const chipH = 0.83 * 2 * u + 2.22 * u
-  const chip: Rect = { x: window.x + 2.5 * u, y: window.y + window.h - 2.5 * u - chipH, w: 0, h: chipH }
+  // 3.5u in from the window's corner, where the bezel curves, as the page sets it
+  const chip: Rect = { x: window.x + 3.5 * u, y: window.y + window.h - 3.5 * u - chipH, w: 0, h: chipH }
   const numberBox: Rect = { x: head.x + head.w - 10.56 * u, y: head.y + 0.83 * u, w: 10.56 * u, h: 7.2 * u }
 
   return {

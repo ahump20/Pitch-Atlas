@@ -123,6 +123,12 @@ vec2 houndstooth(vec2 p) {
   float cover = clamp(solid + bite * (1.0 - solid) * 0.85, 0.0, 1.0);
   return vec2(cover, parity);
 }
+// four sub-pixel samples of the weave, averaged, so its tooth edges stay smooth in
+// both directions and do not shimmer as the card turns
+vec2 houndstoothAA(vec2 p) {
+  vec2 ox = dFdx(p) * 0.25, oy = dFdy(p) * 0.25;
+  return 0.25 * (houndstooth(p + ox + oy) + houndstooth(p - ox + oy) + houndstooth(p + ox - oy) + houndstooth(p - ox - oy));
+}
 // brushed-metal lobe for a groove direction t in the card plane (Kajiya-Kay)
 float anisoLobe(vec2 t, vec3 h, float shin) {
   float th = dot(vec3(t, 0.0), h);
@@ -246,14 +252,15 @@ void main() {
   }
   float parity = 0.0;
   if (uFinish[7] > 0.0) { // houndstooth: two interleaved groove populations
-    float facet = 34.0 + 8.0 * sin(vUv.x * 7.0 + vUv.y * 5.0);
-    vec2 ht = houndstooth(p / (uSize.x / facet / uScale));
+    // one cell count across the card at every size; a count that varied across the
+    // card folded the pattern back on itself near the far edge, a jagged band
+    vec2 ht = houndstoothAA(p / (uSize.x / 52.0 / uScale));
     parity = ht.y;
     vec2 tA = normalize(vec2(1.0, 1.0)), tB = normalize(vec2(1.0, -1.0));
     float hl = mix(anisoLobe(tB, H, shinA), anisoLobe(tA, H, shinA), parity);
     lobe += uFinish[7] * hl;
     weight += uFinish[7];
-    toothMul = mix(1.0, mix(0.62, 1.0, ht.x), uFinish[7]);
+    toothMul = mix(1.0, mix(0.74, 1.0, ht.x), uFinish[7]);
   }
   float smoothLobe = isoLobe(nFlat, H, mix(22.0, 6.0, uRough)) * 0.9;
   float broad = isoLobe(nFlat, H, 4.0);

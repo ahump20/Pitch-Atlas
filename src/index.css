@@ -1240,7 +1240,7 @@
   }
   /* face-source chip: whose media the grip stage shows, or that it is a schematic. */
   .rfx-gripchip {
-    position: absolute; left: calc(var(--rfxu) * 2.5); bottom: calc(var(--rfxu) * 2.5); z-index: 4;
+    position: absolute; left: calc(var(--rfxu) * 3.5); bottom: calc(var(--rfxu) * 3.5); z-index: 4;
     display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.39); padding: calc(var(--rfxu) * 0.83) calc(var(--rfxu) * 2.22); border-radius: 999px;
     background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,.12);

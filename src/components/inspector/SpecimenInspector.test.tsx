@@ -203,6 +203,12 @@ describe('SpecimenInspector', () => {
     expect(within(dialog).getByText(/^Grip: Austin video/)).toBeInTheDocument()
   })
 
+  it('dims the page behind it with its own overlay, not the shared light one', async () => {
+    render(<Harness start="/?inspect=four-seam" />)
+    await screen.findByRole('dialog', {}, { timeout: 4000 })
+    expect(document.querySelector('[data-slot="dialog-overlay"]')).toHaveClass('specimen-inspector-overlay')
+  })
+
   it('names every finish switch', async () => {
     const user = userEvent.setup()
     render(<Harness start="/?inspect=four-seam" />)
