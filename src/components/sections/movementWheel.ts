@@ -2,8 +2,9 @@ import { v, SEAM_VIEW_TILT } from '../../lib/seam'
 import type { PitchMotion } from '../../data/types'
 
 /*
-  The movement wheel's geometry, in its 200-unit view box: a catcher's-eye target that
-  plots the pitch's break DIRECTION and its spin axis, both straight off the sourced
+  The movement wheel's geometry, in its 200-unit view box: a target seen from the mound,
+  the way a right-hander sees his own pitch (arm side right, ride up), that plots the
+  pitch's break DIRECTION and its spin axis, both straight off the sourced
   PitchMotion record. The SVG on the page back (ScoutMovementWheel) and the export's
   canvas back draw this one geometry, so the wheel a visitor saves is the wheel they
   turned over. It is a direction read, never a magnitude: the arrow has one fixed length
@@ -93,8 +94,9 @@ export function movementWheel(motion: PitchMotion | undefined): MovementWheelGeo
     return { x1: cx + Math.sin(a) * (R - 6), y1: cy - Math.cos(a) * (R - 6), x2: cx + Math.sin(a) * R, y2: cy - Math.cos(a) * R }
   })
 
-  // break direction from the categorical enums at a fixed length: arm-side points
-  // right, ride points up (the catcher's-eye orientation), never how far it moves
+  // break direction from the categorical enums at a fixed length: arm side points
+  // right and ride points up, as seen from the mound (a catcher facing a right-hander
+  // would see arm side on his left), never how far it moves
   let dx = horz.dx
   let dy = vert.dy
   const mag = Math.hypot(dx, dy)

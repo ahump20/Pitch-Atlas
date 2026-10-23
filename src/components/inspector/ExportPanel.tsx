@@ -15,6 +15,11 @@ import type { Eligibility, ExportBackdrop, ExportFace, ExportRequest, WebmSuppor
   attributed under a licence that allows it cannot be exported, and the panel says why.
 */
 
+/** A file's size the way the Finder counts it. */
+function fileSize(bytes: number): string {
+  return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`
+}
+
 type Status =
   | { kind: 'idle' }
   | { kind: 'working'; what: 'png' | 'webm'; fraction: number; phase: string }
@@ -82,7 +87,7 @@ export function ExportPanel({
       const blob = await exportSpecimenPng(req)
       const name = exportFilename(entry, face, 'png')
       downloadBlob(blob, name)
-      setStatus({ kind: 'done', message: `Saved ${name}.` })
+      setStatus({ kind: 'done', message: `Saved ${name} (${fileSize(blob.size)}).` })
     } catch (error) {
       setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'The PNG could not be made.' })
     }
@@ -103,7 +108,7 @@ export function ExportPanel({
       )
       const name = exportFilename(entry, face, 'webm')
       downloadBlob(blob, name)
-      setStatus({ kind: 'done', message: `Saved ${name}: a 7 second loop.` })
+      setStatus({ kind: 'done', message: `Saved ${name} (${fileSize(blob.size)}): a 7 second loop.` })
     } catch (error) {
       if (controller.signal.aborted) setStatus({ kind: 'idle' })
       else setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'The WebM could not be recorded.' })
@@ -136,6 +141,9 @@ export function ExportPanel({
           </button>
         ) : null}
       </div>
+      {eligibility.exportable && webm.ok && !working ? (
+        <p className="specimen-export-note">The loop can take a minute or more to make.</p>
+      ) : null}
       {working ? (
         <>
           <progress max={1} value={status.fraction} aria-label={status.phase} />

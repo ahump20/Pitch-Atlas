@@ -2,8 +2,8 @@ import type { PitchMotion } from '../../data/types'
 import { movementWheel, WHEEL_CENTER, WHEEL_VIEW } from './movementWheel'
 
 /*
-  The movement wheel on the scout-file back. A catcher's-eye target that plots the
-  pitch's break DIRECTION and its spin axis — both straight off the sourced
+  The movement wheel on the scout-file back. A target seen from the mound, arm side
+  right, that plots the pitch's break DIRECTION and its spin axis — both straight off the sourced
   PitchMotion record: the verticalShape / horizontalDir enums and the render-only
   spin-axis vector that already drives the 3D ball. It is a DIRECTION read, never a
   magnitude — the arrow points where the pitch breaks at a fixed length, because the
@@ -48,7 +48,7 @@ export function ScoutMovementWheel({
   return (
     <figure className="rfx-wheel">
       <svg viewBox={`0 0 ${WHEEL_VIEW} ${WHEEL_VIEW}`} role="img" aria-label={w.ariaLabel}>
-        {/* catcher's-eye target rings */}
+        {/* target rings */}
         {rings}
         {/* clock ticks at 12 / 3 / 6 / 9 */}
         {w.ticks.map((t, i) => (
