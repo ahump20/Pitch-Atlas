@@ -13,7 +13,7 @@ import { ExportPanel } from './ExportPanel'
 import { INSPECTOR_SEED } from './export/composeCard'
 import { FinishPanel, type AmbientSettings, type LightSettings } from './FinishPanel'
 import { materialFor, writeFinishPref, type FinishFace } from './finishPrefs'
-import { InspectorRail } from './InspectorRail'
+import { InspectorHeader, InspectorRail } from './InspectorRail'
 import '../../styles/inspector.css'
 
 /*
@@ -156,6 +156,8 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
           An enlarged specimen you can turn in the light. Drag or use the arrow keys to tilt it, F flips it to its sources, Space pauses the turn, R resets it.
         </DialogDescription>
         <div className="specimen-inspector-grid">
+          {/* first in the page, as an upright phone draws it: the name and Close, then the card */}
+          <InspectorHeader entry={entry} />
           <div
             ref={stageRef}
             className={`specimen-stage${gold ? ' is-ember' : ''}`}
