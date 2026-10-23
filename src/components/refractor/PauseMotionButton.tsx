@@ -21,7 +21,7 @@ export function PauseMotionButton({ className = '' }: { className?: string }) {
       onClick={() => setMotionPref(paused ? 'live' : 'paused')}
     >
       {paused ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
-      {paused ? 'Resume motion' : 'Pause motion'}
+      <span className="specimen-action-label">{paused ? 'Resume motion' : 'Pause motion'}</span>
     </button>
   )
 }

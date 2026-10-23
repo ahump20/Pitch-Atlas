@@ -172,12 +172,16 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           </div>
         )}
         {heroClip || heroPhoto ? (
-          <span className="absolute bottom-3.5 left-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
-            <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
-            Austin&rsquo;s grip{clipState}
-          </span>
+          // one bar along the foot: the chip on the left, Pause on the right; where they
+          // cannot share a line the control rises above the chip rather than covering it
+          <div className="pa-media-bar absolute inset-x-3.5 bottom-3.5 z-10 flex flex-wrap-reverse items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
+              <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
+              Austin&rsquo;s grip{clipState}
+            </span>
+            {heroClip && !reduced ? <PauseMotionButton className="is-on-media ml-auto" /> : null}
+          </div>
         ) : null}
-        {heroClip && !reduced ? <PauseMotionButton className="is-on-media absolute bottom-3.5 right-3.5 z-10" /> : null}
       </div>
 
       {/* meta */}
