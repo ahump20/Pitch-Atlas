@@ -40,7 +40,7 @@ export interface ExportProgress {
   fraction: number
 }
 
-export type WebmSupport = { ok: true; mimeType: string } | { ok: false; reason: string }
+export type WebmSupport = { ok: true } | { ok: false; reason: string }
 
 export interface Eligibility {
   exportable: boolean

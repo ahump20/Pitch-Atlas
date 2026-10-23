@@ -130,8 +130,10 @@ export default defineConfig({
           '**/react-three-*.js',
           '**/three-support-*.js',
           // the specimen inspector and its export compositor load only when a card is
-          // opened; React.lazy already gives them their own chunk and stylesheet
+          // opened; React.lazy already gives them their own chunk and stylesheet. The
+          // WebM encoder library is a chunk of its own, fetched on the first WebM.
           '**/SpecimenInspector-*.{js,css}',
+          '**/webmEncoder-*.js',
         ],
         navigateFallback: null,
         cleanupOutdatedCaches: true,
