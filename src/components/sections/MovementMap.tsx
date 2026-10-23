@@ -5,10 +5,16 @@ import type { PitchAtlasEntry, PitchFamily } from '../../data/types'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
 
 /*
-  The global shape map: every filed specimen on one catcher's-eye quadrant, placed by
-  the DIRECTION it breaks — ride up top, drop below, arm-side and glove-side across —
-  against a spinless ball at the origin. Aggregated so the families separate visually:
-  fastballs ride, breaking balls drop and sweep, offspeed fades arm-side and down.
+  The global shape map: every filed specimen on one quadrant, drawn as the pitcher sees
+  it from the mound, placed by the DIRECTION it breaks — ride up top, drop below,
+  arm-side and glove-side across — against a spinless ball at the origin. Aggregated so
+  the families separate visually: fastballs ride, breaking balls drop and sweep,
+  offspeed fades arm-side and down.
+
+  Point of view: a right-hander's arm side is the third-base side, his right from the
+  mound and a catcher's left. So a right-hander's arm side lands on the right here, and
+  the page copy names the pitcher's view to match. A true catcher's view would mirror
+  every pitch: change the words and the drawing together, never one alone.
 
   This is a map of direction, never a measured magnitude. Pitches that break the same
   way fan out within their zone so each stays readable. Handedness is a mirror, not new
@@ -127,7 +133,7 @@ export function MovementMap() {
         viewBox={`0 0 ${W} ${H}`}
         className="w-full min-w-[640px]"
         role="group"
-        aria-label={`Shape map of the filed pitches from a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher's catcher's-eye view. Each pitch sits in the direction it breaks (ride up top, drop below, arm-side and glove-side across) against a spinless ball at center. A map of direction, not a measured magnitude.`}
+        aria-label={`Shape map of the filed pitches as a ${hand === 'RHP' ? 'right-handed' : 'left-handed'} pitcher sees them from the mound. Each pitch sits in the direction it breaks (ride up top, drop below, arm-side and glove-side across) against a spinless ball at center. A map of direction, not a measured magnitude.`}
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* axis guides */}
