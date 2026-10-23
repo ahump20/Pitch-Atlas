@@ -3,7 +3,7 @@ import { exportEligibility } from './eligibility'
 import { CARD_ASPECT } from './cardLayout'
 import { captionFor } from './exportPng'
 import { poseCard, poseDimensions } from './poseCard'
-import type { ExportLight, ExportPose, ExportProgress, ExportRequest, WebmSupport } from './types'
+import type { ExportLight, ExportPose, ExportProgress, ExportRequest, WebmResult, WebmSupport } from './types'
 
 /*
   The WebM: seven seconds, thirty frames a second, a closed loop of the 1200-pixel
@@ -224,7 +224,7 @@ export async function exportSpecimenWebm(
   req: ExportRequest,
   onProgress?: (p: ExportProgress) => void,
   signal?: AbortSignal,
-): Promise<Blob> {
+): Promise<WebmResult> {
   const support = webmSupport()
   if (!support.ok) throw new Error(support.reason)
   const eligibility = exportEligibility(req.entry, req.face)
@@ -276,12 +276,12 @@ export async function exportSpecimenWebm(
 
     const codec = mb ? await encoderCodec(mb, out.width, out.height) : null
     const mimeType = codec ? null : recorderMimeType()
-    let blob: Blob
-    if (mb && codec) blob = await encodeFrames(mb, out, paint, codec, req.backdrop === 'transparent', onProgress, signal)
-    else if (mimeType) blob = await recordLive(out, paint, mimeType, onProgress, signal)
+    let result: WebmResult
+    if (mb && codec) result = { blob: await encodeFrames(mb, out, paint, codec, req.backdrop === 'transparent', onProgress, signal), path: 'encoder' }
+    else if (mimeType) result = { blob: await recordLive(out, paint, mimeType, onProgress, signal), path: 'recorder' }
     else throw new Error(UNSUPPORTED)
     onProgress?.({ phase: 'done', fraction: 1 })
-    return blob
+    return result
   } finally {
     composer.dispose()
   }

@@ -12,17 +12,20 @@ import { ExportPanel } from './ExportPanel'
   here (their pixels are pinned in their own tests); a file of a known size comes back.
 */
 
+const png = vi.hoisted(() => ({ size: 1_520_000 }))
 vi.mock('./export/exportPng', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./export/exportPng')>()),
-  exportSpecimenPng: async () => ({ size: 1_520_000, type: 'image/png' }) as Blob,
+  exportSpecimenPng: async () => ({ size: png.size, type: 'image/png' }) as Blob,
   downloadBlob: () => undefined,
 }))
 
+// which of the two ways the loop was made: the browser's encoder, or the live recorder
+const made = vi.hoisted(() => ({ path: 'encoder' as 'encoder' | 'recorder' }))
 vi.mock('./export/exportWebm', async (importOriginal) => ({
   ...(await importOriginal<typeof import('./export/exportWebm')>()),
   webmSupport: () => ({ ok: true }),
   probeWebmSupport: async () => ({ ok: true }),
-  exportSpecimenWebm: async () => ({ size: 6_240_000, type: 'video/webm' }) as Blob,
+  exportSpecimenWebm: async () => ({ blob: { size: 6_240_000, type: 'video/webm' } as Blob, path: made.path }),
 }))
 
 function renderPanel() {
@@ -51,16 +54,37 @@ describe('ExportPanel', () => {
   })
 
   it('names the size of a finished PNG', async () => {
+    png.size = 1_520_000
     const user = userEvent.setup()
     renderPanel()
     await user.click(screen.getByRole('button', { name: 'Export PNG' }))
     expect(await screen.findByText(/^Saved .+\.png \(1\.5 MB\)\.$/)).toBeInTheDocument()
   })
 
+  it('names a file that rounds to a thousand kilobytes in megabytes', async () => {
+    png.size = 999_600
+    const user = userEvent.setup()
+    renderPanel()
+    await user.click(screen.getByRole('button', { name: 'Export PNG' }))
+    expect(await screen.findByText(/^Saved .+\.png \(1\.0 MB\)\.$/)).toBeInTheDocument()
+  })
+
   it('names the size of a finished loop', async () => {
+    made.path = 'encoder'
     const user = userEvent.setup()
     renderPanel()
     await user.click(screen.getByRole('button', { name: /Export WebM/ }))
     expect(await screen.findByText(/^Saved .+\.webm \(6\.2 MB\): a 7 second loop\.$/)).toBeInTheDocument()
+  })
+
+  it('does not promise seven seconds when the live recorder made the loop', async () => {
+    made.path = 'recorder'
+    const user = userEvent.setup()
+    renderPanel()
+    await user.click(screen.getByRole('button', { name: /Export WebM/ }))
+    expect(
+      await screen.findByText(/^Saved .+\.webm \(6\.2 MB\)\. Recorded live, so it may stutter and run short of seven seconds\.$/),
+    ).toBeInTheDocument()
+    expect(screen.queryByText(/a 7 second loop/)).not.toBeInTheDocument()
   })
 })

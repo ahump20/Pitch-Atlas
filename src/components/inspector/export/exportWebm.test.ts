@@ -104,7 +104,8 @@ afterEach(() => {
 
 describe('exportSpecimenWebm with the browser encoder', () => {
   it('hands the encoder every frame, stamped, for exactly seven seconds', async () => {
-    const blob = await exportSpecimenWebm(request())
+    const { blob, path } = await exportSpecimenWebm(request())
+    expect(path).toBe('encoder')
     expect(h.added).toHaveLength(WEBM_FRAMES)
     h.added.forEach(([timestamp, duration], i) => {
       expect(timestamp).toBeCloseTo(i / WEBM_FPS, 9)

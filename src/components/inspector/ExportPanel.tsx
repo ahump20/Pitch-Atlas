@@ -8,16 +8,18 @@ import { exportSpecimenWebm, probeWebmSupport, webmSupport } from './export/expo
 import type { Eligibility, ExportBackdrop, ExportFace, ExportRequest, WebmSupport } from './export/types'
 
 /*
-  Export: a PNG of the card as it stands (pose, light, finish), or a seven-second WebM
-  that loops without a jump. Both are composed offscreen from the record, so the
+  Export: a PNG of the card as it stands (pose, light, finish), or a WebM loop that
+  closes without a jump: seven seconds, every frame, where the browser has a WebM
+  encoder; recorded live, and only as long as it kept up, where it has only a
+  recorder. Both are composed offscreen from the record, so the
   visitor's presentation is untouched. Where a browser cannot record WebM the panel
   says so and the PNG still works. A face whose media is not first-party or
   attributed under a licence that allows it cannot be exported, and the panel says why.
 */
 
-/** A file's size the way the Finder counts it. */
+/** A file's size the way the Finder counts it; anything that would round to 1000 KB reads in MB. */
 function fileSize(bytes: number): string {
-  return bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`
+  return bytes >= 999_500 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`
 }
 
 type Status =
@@ -101,14 +103,22 @@ export function ExportPanel({
     onBusy(true)
     setStatus({ kind: 'working', what: 'webm', fraction: 0, phase: 'Preparing' })
     try {
-      const blob = await exportSpecimenWebm(
+      const { blob, path } = await exportSpecimenWebm(
         req,
         (p) => setStatus({ kind: 'working', what: 'webm', fraction: p.fraction, phase: p.phase === 'encoding' ? 'Encoding' : p.phase === 'rendering' ? 'Rendering frames' : 'Preparing' }),
         controller.signal,
       )
       const name = exportFilename(entry, face, 'webm')
       downloadBlob(blob, name)
-      setStatus({ kind: 'done', message: `Saved ${name} (${fileSize(blob.size)}): a 7 second loop.` })
+      // only the encoder's file is known to hold every frame; the live recorder keeps
+      // what it had time for, so its loop is not promised a length
+      setStatus({
+        kind: 'done',
+        message:
+          path === 'encoder'
+            ? `Saved ${name} (${fileSize(blob.size)}): a 7 second loop.`
+            : `Saved ${name} (${fileSize(blob.size)}). Recorded live, so it may stutter and run short of seven seconds.`,
+      })
     } catch (error) {
       if (controller.signal.aborted) setStatus({ kind: 'idle' })
       else setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'The WebM could not be recorded.' })

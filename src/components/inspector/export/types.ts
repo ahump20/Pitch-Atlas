@@ -42,6 +42,13 @@ export interface ExportProgress {
 
 export type WebmSupport = { ok: true } | { ok: false; reason: string }
 
+/** A finished loop and how it was made: the browser's encoder keeps every frame for
+    exactly seven seconds; the live recorder keeps the frames it had time for. */
+export interface WebmResult {
+  blob: Blob
+  path: 'encoder' | 'recorder'
+}
+
 export interface Eligibility {
   exportable: boolean
   attribution: string
