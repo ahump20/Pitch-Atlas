@@ -14,6 +14,9 @@
 .specimen-action { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; min-height:36px; padding:.4rem .8rem; border:1px solid #8a7a5e80; border-radius:6px; background:transparent; color:#d9ccb3; font:600 12px/1.25 var(--font-prose); cursor:pointer; transition:background 140ms, border-color 140ms, color 140ms; }
 .specimen-action:hover, .specimen-action[aria-pressed=true], .specimen-action[data-state=paused] { border-color:#c8a35c; color:var(--color-bone); background:#f6f1e60d; }
 .specimen-action:focus-visible { outline:2px solid var(--color-cyan); outline-offset:3px; }
+/* over a moving clip the control needs its own dark ground, like the caption chip beside it */
+.specimen-action.is-on-media { background:#0b0805b8; border-color:#f6f1e63d; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+.specimen-action.is-on-media:hover, .specimen-action.is-on-media[data-state=paused] { background:#0b0805e6; border-color:#c8a35c; }
 .archive-specimen.is-selected > .rfx-holder { filter:drop-shadow(0 10px 18px #0009); outline:1px solid #c8a35c; outline-offset:5px; border-radius:12px; }
 .archive-index-entry { position:relative; display:flex; flex-wrap:wrap; align-content:flex-start; gap:.6rem; }
 .archive-index-entry > .rfx-entry { flex:1 1 100%; min-width:0; }

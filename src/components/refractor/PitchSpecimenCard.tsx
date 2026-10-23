@@ -28,6 +28,7 @@ export function PitchSpecimenCard({
   material,
   priority = false,
   clipPresentation,
+  pauseControl = false,
   className,
 }: {
   entry: PitchAtlasEntry
@@ -44,6 +45,8 @@ export function PitchSpecimenCard({
   priority?: boolean
   /** Route-specific timing/framing for the same real clip used in the grip file. */
   clipPresentation?: ClipPresentation
+  /** The page's one motion control: offer Pause when this card's clip loops. */
+  pauseControl?: boolean
   /** Material treatment hook; the content contract stays shared. */
   className?: string
 }) {
@@ -54,6 +57,9 @@ export function PitchSpecimenCard({
   const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
   const gold = display.specimenNo === '00'
   const resolvedFace = specimenFace(entry, { priority, clipPresentation })
+  // the hero offers Pause for its turn; a card that is its page's motion control
+  // offers it for a looping clip. Under reduced motion nothing moves to pause.
+  const offersPause = !reduced && ((mode === 'hero' && foil) || (pauseControl && resolvedFace.loops))
 
   return (
     <div className={`archive-specimen ${selected ? 'is-selected' : ''}`} style={{ maxWidth: maxWidth ?? 360 }}>
@@ -77,7 +83,7 @@ export function PitchSpecimenCard({
     <div className="archive-specimen-actions">
       <InspectButton slug={display.slug} />
       <CompareButton slug={display.slug} className="archive-specimen-compare" />
-      {mode === 'hero' && foil && !reduced ? <PauseMotionButton /> : null}
+      {offersPause ? <PauseMotionButton /> : null}
     </div>
     </div>
   )

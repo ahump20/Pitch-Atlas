@@ -2,8 +2,10 @@ import { Pause, Play } from 'lucide-react'
 import { setMotionPref, useMotionPref } from './material/motionPref'
 
 /*
-  The visitor's switch on the hero's ambient turn, kept on the device and honoured by
-  every ambient driver on the page. The label names the action the press will take
+  The visitor's switch on ambient motion: the hero's turn and every looping grip clip.
+  It is kept on the device, so a Pause pressed on one page still holds the clips on
+  the next; every page that shows a loop carries one of these, so the way back is
+  always on the page. The label names the action the press will take
   ("Pause motion", then "Resume motion"), so the button carries no pressed state: a
   toggle whose name changes as well would announce "Resume motion, pressed". The
   paused look rides on data-state. Not shown under reduced motion, where there is

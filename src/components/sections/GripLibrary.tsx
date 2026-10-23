@@ -7,6 +7,8 @@ import { AUSTIN_GRIPS, ATTACK_PLAN, CIRCLE_CHANGE_DISTINCTION, GRIP_LIBRARY_INTR
 import type { GripLibraryEntry, GripClip } from '../../data/grips'
 import { ConfidenceDot } from '../provenance/RefractorClaim'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
+import { AutoplayVideo } from '../media/AutoplayVideo'
+import { PauseMotionButton } from '../refractor/PauseMotionButton'
 
 /*
   The visual grip library, refractor-native. Every card is a real photograph of
@@ -204,7 +206,9 @@ export function GripPhoto({ photo, className = '' }: { photo: VisualReference; c
 }
 
 /** A looping grip video, framed like a GripPhoto — the moving evidence for a
-    game-day pitch. Honors reduced motion by holding on the poster frame.
+    game-day pitch. Honors reduced motion by holding on the poster frame, and
+    plays through the same viewport-gated video as the card windows, so it stops
+    off screen and holds when the visitor pauses motion.
     `large` runs the clip at its native 9/16 portrait, uncropped, for the
     theater layout; the default 4/3 crop stays for inline card use. */
 export function GripMotion({
@@ -236,22 +240,22 @@ export function GripMotion({
             className={mediaClass}
           />
         ) : (
-          <video
+          <AutoplayVideo
+            clip={clip}
             className={mediaClass}
-            poster={clip.poster}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-label={clip.alt}
-            onLoadedData={() => setSettled(true)}
-            // a decode failure reveals the poster instead of holding the window dark
-            onError={() => setSettled(true)}
-          >
-            <source src={clip.mp4} type="video/mp4" />
-            <source src={clip.webm} type="video/webm" />
-          </video>
+            onSettled={() => setSettled(true)}
+            // autoplay refused (iOS Low Power Mode): the poster, not a play glyph
+            render={() => (
+              <img
+                src={clip.poster}
+                alt={clip.alt}
+                loading="lazy"
+                decoding="async"
+                onLoad={() => setSettled(true)}
+                className={mediaClass}
+              />
+            )}
+          />
         )}
         <span className="absolute left-2.5 top-2.5 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 font-mono text-[9px] uppercase tracking-[0.1em] text-bone backdrop-blur-sm">
           <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
@@ -303,12 +307,16 @@ export function SpecimenGrips({
   accentColor,
   className = '',
   includePhotos = true,
+  pauseControl = false,
 }: {
   entry?: GripLibraryEntry
   accentColor: string
   className?: string
   includePhotos?: boolean
+  /** The page's one motion control: offer Pause beside this section's clip. */
+  pauseControl?: boolean
 }) {
+  const reduced = useReducedMotion()
   if (!entry) return null
   const photos = includePhotos ? entry.photos : []
 
@@ -330,6 +338,7 @@ export function SpecimenGrips({
             This is the visual grip-reference layer for {entry.label}. It names visible placement and
             Austin's own feel notes, then stops before making measured claims.
           </p>
+          {pauseControl && entry.clip && !reduced ? <PauseMotionButton className="mt-4" /> : null}
         </div>
 
         <div className="md:col-span-7">
@@ -487,8 +496,11 @@ export function GripLibraryIndex() {
 
 export function GripLibrary() {
   const [params, setParams] = useSearchParams()
+  const reduced = useReducedMotion()
   const query = params.get('q') ?? ''
   const matches = AUSTIN_GRIPS.filter(grip => `${grip.label} ${grip.note}`.toLowerCase().includes(query.toLowerCase().trim()))
+  // the visitor's Pause holds every loop on the site; the library carries one while a shown grip moves
+  const loops = !reduced && matches.some((grip) => grip.clip)
   return (
     <div className="flex flex-col gap-12">
       <div className="flex flex-col gap-4">
@@ -507,6 +519,7 @@ export function GripLibrary() {
         }} />
         <p role="status">{matches.length} of {AUSTIN_GRIPS.length} grips</p>
         {!matches.length && <button type="button" className="study-button" onClick={() => { const next = new URLSearchParams(params); next.delete('q'); setParams(next, { replace: true, preventScrollReset: true }) }}>Clear search</button>}
+        {loops ? <PauseMotionButton className="mt-3" /> : null}
       </div>
       {matches.map((grip) => {
         const link = grip.specimenSlug
