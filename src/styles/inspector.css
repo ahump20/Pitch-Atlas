@@ -38,11 +38,9 @@
 /* in the dark room the cream plate steps down a little, so the grip stays the
    brightest thing in view; the print itself, and every export, keep the true plate */
 .specimen-rig .rfx-read { filter: brightness(.88); }
-/* a card this small keeps its grip tell readable: the cue holds a type floor and the
-   plate drops its serial (the file number already heads the card) */
+/* a card this small keeps its grip tell readable: the cue holds a type floor */
 @container (width <= 240px) {
   .specimen-rig .rfx-cue { font-size: max(10px, calc(var(--rfxu) * 3.9)); }
-  .specimen-rig .rfx-readmeta > span + span { display: none; }
 }
 .specimen-rig .rfx-card { rotate: 0deg; }
 .specimen-rig .v2-face-back { perspective: 1600px; }

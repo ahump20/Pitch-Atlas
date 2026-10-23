@@ -102,6 +102,25 @@ describe('createComposer', () => {
     for (const rect of [window, head, strip]) expect(rect.w * rect.h).toBe(0)
   })
 
+  it('paints the front as the inspector shows it: no strip, no second number, the plate to the foot', () => {
+    const composer = compose('front')
+    const texts = h.calls.filter((c) => c.name === 'fillText').map((c) => String(c.args[0]).replace(/\s+/g, ''))
+    expect(texts.some((t) => t.includes('OPENSPECIMEN'))).toBe(false)
+    expect(texts.some((t) => t.includes('GRIP/RELEASE'))).toBe(false)
+    expect(texts.some((t) => t.includes('PA—'))).toBe(false)
+    expect(texts).toContain('GRIPTELL')
+    const { strip, plate, inner } = composer.layout
+    expect(strip.h).toBe(0)
+    expect(plate.y + plate.h).toBeCloseTo(inner.y + inner.h, 5)
+  })
+
+  it('paints no link label on the back: its sources stay, the caption carries the address', () => {
+    compose('back')
+    const texts = h.calls.filter((c) => c.name === 'fillText').map((c) => String(c.args[0]).replace(/\s+/g, ''))
+    expect(texts.some((t) => t.includes('OPENTHEFULLFILE'))).toBe(false)
+    expect(texts.some((t) => t.startsWith('GRIP:'))).toBe(true)
+  })
+
   it("keeps the coverage the visitor tuned for the back, as the page does", () => {
     compose('back', 'window')
     expect(h.coverages[0]).toBe('window')

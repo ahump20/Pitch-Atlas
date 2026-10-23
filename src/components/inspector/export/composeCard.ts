@@ -12,8 +12,10 @@ import type { ExportFace, ExportLight, ExportPose } from './types'
   One face of the card, painted flat. The order is the DOM's: the media first,
   clipped to the window; the material over it (opaque stock and foil on the rim and
   the field, only a glaze inside the window); then the print — the window's bezel,
-  the source chip, the header, the cue plate, the strip. Every word comes from the
-  record. Text is painted natively, so it is as crisp as the canvas is large.
+  the source chip, the header, the cue plate. Every word comes from the record, and
+  only what the inspector's card prints: that card carries no link, so the image
+  carries no strip and no link label; the caption plate under it names the address.
+  Text is painted natively, so it is as crisp as the canvas is large.
 */
 
 const BONE = '#F6F1E6'
@@ -48,11 +50,9 @@ export interface FrontText {
   number: string
   chip: string
   readLabel: string
-  serial: string
   cue: string
   confidence: string
   approx: boolean
-  strip: [string, string]
 }
 
 export function frontText(entry: PitchAtlasEntry): FrontText {
@@ -69,11 +69,9 @@ export function frontText(entry: PitchAtlasEntry): FrontText {
     number: display.specimenNo,
     chip: grip?.clip ? 'Austin video' : grip && grip.photos.length > 0 ? 'Austin photo' : 'Reference schematic',
     readLabel: 'Grip tell',
-    serial: `PA—${display.specimenNo}`,
     cue,
     confidence: CONFIDENCE_META[tier].label,
     approx: own ? false : Boolean(referenceClaim.approximate),
-    strip: ['Grip / release / shape', 'Open specimen →'],
   }
 }
 
@@ -81,7 +79,6 @@ export interface BackText {
   name: string
   number: string
   rows: Array<{ key: string; value: string; confidence: string; approx: boolean; source?: string }>
-  file: string
 }
 
 export function backText(entry: PitchAtlasEntry): BackText {
@@ -96,7 +93,6 @@ export function backText(entry: PitchAtlasEntry): BackText {
       { key: 'Grip cue', value: gripCue.value, confidence: CONFIDENCE_META[gripCue.confidence].label, approx: Boolean(gripCue.approximate), source: gripCue.source ? `Grip: ${gripCue.source.label}` : undefined },
       { key: 'Shape', value: shape.value, confidence: CONFIDENCE_META[shape.confidence].label, approx: Boolean(shape.approximate), source: shape.source ? `Shape: ${shape.source.label}` : undefined },
     ],
-    file: 'Open the full file →',
   }
 }
 
@@ -283,7 +279,8 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
   const { display } = entry
   const gold = display.specimenNo === '00' && face === 'front'
   const accent = accentForSlug(display.slug)
-  const layout = cardLayout({ width, gold, strip: face === 'front' })
+  // the inspector's card links nowhere, so neither face prints the page card's strip
+  const layout = cardLayout({ width, gold, strip: false })
   const { height } = layout
   // The back has no media window, header or strip, so its stock covers the whole
   // field, as it does on the page; with the front's window it showed a dark hole.
@@ -555,9 +552,6 @@ function paintFrontOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent:
   ctx.fillStyle = INK_META
   ctx.textBaseline = 'top'
   ctx.fillText(spaced(text.readLabel.toUpperCase(), 0.15), px, y)
-  ctx.textAlign = 'right'
-  ctx.fillText(spaced(text.serial.toUpperCase(), 0.15), px + pw, y)
-  ctx.textAlign = 'left'
   y += metaH + 1.75 * u
   ctx.font = `italic 400 ${3.9 * u}px Newsreader`
   ctx.fillStyle = INK_CUE
@@ -594,25 +588,6 @@ function paintFrontOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent:
     ctx.fillText(label, lx, y)
   }
 
-  // the strip
-  const s = l.strip
-  if (s.h > 0) {
-    ctx.textBaseline = 'middle'
-    ctx.font = `400 ${Math.max(8 * (l.width / 360), 2.5 * u)}px "Martian Mono"`
-    ctx.shadowColor = 'rgba(0,0,0,.85)'
-    ctx.shadowOffsetY = 1
-    ctx.shadowBlur = 3
-    const sy = s.y + 1.67 * u + (s.h - 1.67 * u) / 2
-    ctx.fillStyle = mixHex(inkColor, '#D8CFB8', 0.58)
-    ctx.font = `400 ${Math.max(8 * (l.width / 360), 2.5 * u) * 0.86}px "Martian Mono"`
-    ctx.fillText(spaced(text.strip[0].toUpperCase(), 0.1), s.x, sy)
-    ctx.font = `400 ${Math.max(8 * (l.width / 360), 2.5 * u)}px "Martian Mono"`
-    ctx.fillStyle = BONE_2
-    ctx.textAlign = 'right'
-    ctx.fillText(spaced(text.strip[1].toUpperCase(), 0.08), s.x + s.w, sy)
-    ctx.textAlign = 'left'
-    ctx.shadowColor = 'transparent'
-  }
   ctx.textBaseline = 'alphabetic'
 }
 
@@ -806,13 +781,11 @@ function paintBackOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent: 
   roundRectPath(ctx, x, rowsTop, w, y - rowsTop, 7 * s)
   ctx.strokeStyle = 'rgba(246,241,230,.08)'
   ctx.stroke()
-  // foot: sources and the route into the file
+  // foot: the sources. The page back's route into the file is a link, which an image
+  // cannot follow; the caption plate under the card names the address instead.
   let fy = l.height - pad
   ctx.font = `400 ${10 * s}px "Martian Mono"`
   ctx.textBaseline = 'bottom'
-  ctx.fillStyle = BONE
-  ctx.fillText(spaced(text.file.toUpperCase(), 0.14), x, fy)
-  fy -= 10 * s * 1.6 + 8 * s
   ctx.fillStyle = BONE_2
   for (const row of [...text.rows].reverse()) {
     if (!row.source) continue

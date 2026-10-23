@@ -188,9 +188,9 @@ export function RefractorCard({
 
           {cue || confidence ? (
             <div className="rfx-read">
+              {/* the file number heads the card; the plate does not say it twice */}
               <div className="rfx-readmeta" aria-hidden="true">
                 <span>Grip tell</span>
-                <span>{vnum ? `PA—${vnum}` : 'Pitch Atlas'}</span>
               </div>
               {cue ? <p className="rfx-cue">{cue}</p> : null}
               {confidence ? (

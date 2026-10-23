@@ -38,7 +38,10 @@ describe('what the card prints', () => {
     expect(t.cue).toBe('Fingertips cross the seam path')
     expect(t.confidence).toBe("Pitcher's own words")
     expect(t.approx).toBe(false)
-    expect(t.strip[1]).toContain('Open specimen')
+    // the inspector's card carries no link and one number, so the export prints neither
+    // the "Open specimen" strip nor the plate's second number
+    expect('strip' in t).toBe(false)
+    expect('serial' in t).toBe(false)
   })
   it('reads the back rows with their claim tiers and sources', () => {
     const t = backText(fourSeam)
@@ -46,6 +49,8 @@ describe('what the card prints', () => {
     expect(t.rows[0].source).toMatch(/^Grip: /)
     expect(t.rows[1].source).toMatch(/^Shape: /)
     expect(t.rows.every((r) => r.confidence.length > 0)).toBe(true)
+    // a link label cannot work on a still image; the caption plate carries the address
+    expect('file' in t).toBe(false)
   })
 })
 
