@@ -58,7 +58,9 @@
   0 10px 16px -6px #000b, inset 0 2px 0 rgba(255,224,204,.4), inset 0 -14px 22px -14px rgba(0,0,0,.95), 0 0 40px -22px rgba(191,87,0,.6); }
 
 /* the rail scrolls on its own; the card stays put while the Finish panel is open */
-.specimen-rail { display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 32px; background: #110f0d; border-radius: 0 14px 14px 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a38a5e66 transparent; }
+.specimen-rail { display: flex; flex-direction: column; gap: 16px; padding: 28px 24px 32px; background: #110f0d; border-radius: 0 14px 14px 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a38a5e66 transparent;
+  /* a control reached by Tab stops above the fade, never inside it */
+  scroll-padding-bottom: 40px; }
 /* more follows: whatever scrolls fades at its foot until the last of it is in view.
    The fade rides the scroll position, so it is gone at the end and absent where
    nothing scrolls; a browser without scroll timelines shows no fade, never a stuck one. */
@@ -141,12 +143,15 @@
   .specimen-rail { border-radius: 0 0 14px 14px; padding: 20px 16px 28px; }
   .specimen-rail-head { gap: 4px; }
   .specimen-rail h2 { font-size: 26px; }
-  /* here the dialog is what scrolls, so the fade rides the dialog */
+  /* here the dialog is what scrolls, so the fade (and the room Tab keeps above it)
+     rides the dialog, and the rail, which no longer scrolls, carries no mask */
+  .specimen-inspector { scroll-padding-bottom: 40px; }
   @supports (animation-timeline: scroll()) {
     .specimen-inspector {
       mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0000);
       animation: specimen-fade-out linear both; animation-timeline: scroll(self);
     }
+    .specimen-rail { mask-image: none; animation: none; }
   }
 }
 /* a phone on its side: the card beside the rail, sized to the height it has */
@@ -158,8 +163,13 @@
   .specimen-inspector [data-slot="dialog-close"] { top: 8px; right: 8px; }
   .specimen-rig { max-width: max(150px, calc((100dvh - 2rem - 2px - 28px - var(--safe-y)) * 5 / 7)); }
   .specimen-rail { overflow-y: auto; gap: 12px; border-radius: 0 14px 14px 0; padding: 20px 14px 20px; }
+  /* on its side the rail scrolls again, so the fade returns to it */
   @supports (animation-timeline: scroll()) {
     .specimen-inspector { mask-image: none; animation: none; }
+    .specimen-rail {
+      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0000);
+      animation: specimen-fade-out linear both; animation-timeline: scroll(self);
+    }
   }
   /* one line: the family beside the name, so the controls start sooner */
   .specimen-rail-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
