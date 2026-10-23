@@ -63,6 +63,7 @@ export async function exportSpecimenWebm(
   onProgress?.({ phase: 'preparing', fraction: 0 })
   await loadCardFonts()
   const media = req.face === 'front' ? await resolveStageMedia(req.stage) : null
+  if (signal?.aborted) throw new DOMException('Export cancelled.', 'AbortError')
   const composer = createComposer({
     entry: req.entry,
     face: req.face,
@@ -70,39 +71,45 @@ export async function exportSpecimenWebm(
     width: WEBM_WIDTH,
     media,
   })
-  const face = document.createElement('canvas')
-  face.width = composer.layout.width
-  face.height = composer.layout.height
-  const faceCtx = face.getContext('2d')
-  const dims = poseDimensions(face.width, face.height)
-  const out = document.createElement('canvas')
-  // even dimensions keep every encoder happy
-  out.width = dims.width + (dims.width % 2)
-  out.height = dims.height + (dims.height % 2)
-  const outCtx = out.getContext('2d')
-  if (!faceCtx || !outCtx) {
-    composer.dispose()
-    throw new Error('A drawing surface could not be created.')
-  }
 
-  const caption = captionFor(req.entry, req.face)
-  const gold = req.entry.display.specimenNo === '00' && req.face === 'front'
-  const stream = out.captureStream(0)
-  const track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack
-  const recorder = new MediaRecorder(stream, { mimeType: support.mimeType, videoBitsPerSecond: 9_000_000 })
-  const chunks: Blob[] = []
-  recorder.ondataavailable = (event) => {
-    if (event.data.size > 0) chunks.push(event.data)
-  }
-  const stopped = new Promise<void>((resolve) => {
-    recorder.onstop = () => resolve()
-  })
-
+  // From here on the export holds a GL context and, once it exists, a capture track.
+  // One finally releases both, whatever throws: a recorder that refuses its MIME type
+  // at construction must not leave a context behind for every retry.
+  let track: CanvasCaptureMediaStreamTrack | undefined
+  let recorder: MediaRecorder | undefined
+  let stopped: Promise<void> | undefined
   try {
+    const face = document.createElement('canvas')
+    face.width = composer.layout.width
+    face.height = composer.layout.height
+    const faceCtx = face.getContext('2d')
+    const dims = poseDimensions(face.width, face.height)
+    const out = document.createElement('canvas')
+    // even dimensions keep every encoder happy
+    out.width = dims.width + (dims.width % 2)
+    out.height = dims.height + (dims.height % 2)
+    const outCtx = out.getContext('2d')
+    if (!faceCtx || !outCtx) throw new Error('A drawing surface could not be created.')
+
+    const caption = captionFor(req.entry, req.face)
+    const gold = req.entry.display.specimenNo === '00' && req.face === 'front'
+    const stream = out.captureStream(0)
+    track = stream.getVideoTracks()[0] as CanvasCaptureMediaStreamTrack | undefined
+    if (!track) throw new Error('This browser could not capture the canvas for recording.')
+    const rec = new MediaRecorder(stream, { mimeType: support.mimeType, videoBitsPerSecond: 9_000_000 })
+    recorder = rec
+    const chunks: Blob[] = []
+    rec.ondataavailable = (event) => {
+      if (event.data.size > 0) chunks.push(event.data)
+    }
+    stopped = new Promise<void>((resolve) => {
+      rec.onstop = () => resolve()
+    })
+
     // the first frame is drawn before the recorder starts so time zero is the card
     composer.draw(faceCtx, loopPose(req.pose, 0), loopLight(req.light, 0))
     poseCard(outCtx, face, { pose: loopPose(req.pose, 0), backdrop: req.backdrop, caption, gold })
-    recorder.start()
+    rec.start()
     track.requestFrame()
     const frameMs = 1000 / WEBM_FPS
     const t0 = performance.now()
@@ -121,18 +128,18 @@ export async function exportSpecimenWebm(
     }
     await sleep(frameMs * 2)
     onProgress?.({ phase: 'encoding', fraction: 0.96 })
-    recorder.stop()
+    rec.stop()
     await stopped
     onProgress?.({ phase: 'done', fraction: 1 })
     return new Blob(chunks, { type: support.mimeType.split(';')[0] })
   } catch (error) {
-    if (recorder.state !== 'inactive') {
+    if (recorder && recorder.state !== 'inactive') {
       recorder.stop()
       await stopped
     }
     throw error
   } finally {
-    track.stop()
+    track?.stop()
     composer.dispose()
   }
 }

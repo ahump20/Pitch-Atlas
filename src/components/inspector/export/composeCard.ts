@@ -181,18 +181,42 @@ export interface StageMedia {
   height: number
 }
 
-/** Pick the live media the visitor is looking at: the playing clip, its poster, or the drawn seam. */
-export async function resolveStageMedia(stage: HTMLElement | null | undefined): Promise<StageMedia | null> {
+const MEDIA_WAIT_MS = 8000
+const MEDIA_POLL_MS = 100
+
+/** What the export says when a clip or photo face has not arrived in time. */
+export const MEDIA_NOT_READY = 'The grip media has not finished loading. Give it a moment, then export again.'
+
+const videoReady = (v: HTMLVideoElement) => v.readyState >= 2 && v.videoWidth > 0
+const imageReady = (i: HTMLImageElement) => i.complete && i.naturalWidth > 0
+
+/**
+  Pick the live media the visitor is looking at: the playing clip, its poster, or the
+  drawn seam. A clip or photo face waits a few seconds for the moving frame or its
+  still to arrive, then refuses: an export never ships an empty window under the
+  media's credit.
+*/
+export async function resolveStageMedia(
+  stage: HTMLElement | null | undefined,
+  { waitMs = MEDIA_WAIT_MS }: { waitMs?: number } = {},
+): Promise<StageMedia | null> {
   if (!stage) return null
   const video = stage.querySelector<HTMLVideoElement>('video')
-  if (video && video.readyState >= 2 && video.videoWidth > 0) {
-    const [w, h] = mediaSize(video)
-    return { kind: 'video', source: video, width: w, height: h }
-  }
   const img = stage.querySelector<HTMLImageElement>('img.rfx-grip-img')
-  if (img && img.complete && img.naturalWidth > 0) {
-    const [w, h] = mediaSize(img)
-    return { kind: 'image', source: img, width: w, height: h }
+  if (video || img) {
+    const deadline = Date.now() + waitMs
+    for (;;) {
+      if (video && videoReady(video)) {
+        const [w, h] = mediaSize(video)
+        return { kind: 'video', source: video, width: w, height: h }
+      }
+      if (img && imageReady(img)) {
+        const [w, h] = mediaSize(img)
+        return { kind: 'image', source: img, width: w, height: h }
+      }
+      if (Date.now() >= deadline) throw new Error(MEDIA_NOT_READY)
+      await new Promise<void>((resolve) => window.setTimeout(resolve, MEDIA_POLL_MS))
+    }
   }
   const svg = stage.querySelector<SVGSVGElement>('svg')
   if (svg) {

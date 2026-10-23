@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { PITCHES, pitchBySlug } from '../../../data/pitches'
 import { cardLayout } from './cardLayout'
-import { backText, frontText } from './composeCard'
+import { backText, frontText, MEDIA_NOT_READY, resolveStageMedia } from './composeCard'
 import { exportEligibility } from './eligibility'
 import { captionFor, exportFilename } from './exportPng'
 import { loopLight, loopPose, webmSupport, WEBM_FRAMES } from './exportWebm'
@@ -130,5 +130,33 @@ describe('pose geometry', () => {
       expect(p.y).toBeGreaterThan(0)
       expect(p.y).toBeLessThan(dims.height)
     }
+  })
+})
+
+describe('resolveStageMedia', () => {
+  /** A stage holding the clip's still, loaded or not; the getters read the live flag. */
+  function stageWithStill(initiallyReady: boolean) {
+    let ready = initiallyReady
+    const stage = document.createElement('div')
+    const img = document.createElement('img')
+    img.className = 'rfx-grip-img rfx-grip-poster'
+    Object.defineProperty(img, 'complete', { configurable: true, get: () => ready })
+    Object.defineProperty(img, 'naturalWidth', { configurable: true, get: () => (ready ? 640 : 0) })
+    Object.defineProperty(img, 'naturalHeight', { configurable: true, get: () => (ready ? 480 : 0) })
+    stage.append(img)
+    return { stage, arrive: () => (ready = true) }
+  }
+
+  it('has nothing to read without a stage', async () => {
+    await expect(resolveStageMedia(null)).resolves.toBeNull()
+  })
+  it('waits for the still to arrive instead of exporting an empty window', async () => {
+    const s = stageWithStill(false)
+    window.setTimeout(s.arrive, 40)
+    await expect(resolveStageMedia(s.stage, { waitMs: 2000 })).resolves.toMatchObject({ kind: 'image', width: 640, height: 480 })
+  })
+  it('refuses, in words, when the clip and its still never arrive', async () => {
+    const s = stageWithStill(false)
+    await expect(resolveStageMedia(s.stage, { waitMs: 60 })).rejects.toThrow(MEDIA_NOT_READY)
   })
 })
