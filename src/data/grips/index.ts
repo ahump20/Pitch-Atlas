@@ -51,13 +51,19 @@ export interface GripClip {
    *  window opens on the grip, never the room. Loops still pass through the
    *  raise naturally mid-cycle. */
   start?: number
+  /** Where the grip sits in the frame, in percent across and down: the point a
+   *  card window's crop keeps in view. The clips are tall and the window is wide,
+   *  so it shows about half the frame's height; this keeps the fingertips on the
+   *  seams in that half. Set from each loop's own frames (2026-10-23). The poster,
+   *  the moving frame and the exported card all crop to it. */
+  focus?: { x: number; y: number }
 }
 
 /** Build a grip clip from a base name, e.g. `four-seam-grip` → mp4/webm + webp poster.
     The poster is the clip's own first visible frame; a route that wants a different
     frame passes a full sourceOverride (file + poster together) to GripClip, so the
     still and the moving frame can never show two different moments. */
-function clip(name: string, alt: string, caption?: string, start?: number): GripClip {
+function clip(name: string, alt: string, caption?: string, start?: number, focus?: GripClip['focus']): GripClip {
   return {
     mp4: `/grips/${name}.mp4`,
     webm: `/grips/${name}.webm`,
@@ -65,6 +71,7 @@ function clip(name: string, alt: string, caption?: string, start?: number): Grip
     alt,
     caption,
     start,
+    focus,
   }
 }
 
@@ -116,6 +123,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       "A looping close-up of Austin's four-seam grip: two fingertips laid across the seam, the ball held out toward the camera.",
       'The grip in motion: ball turned to the camera with index and middle fingertips riding the wide horseshoe, thumb seated underneath.',
       0.8,
+      { x: 50, y: 44 },
     ),
     photos: [
       shot(
@@ -157,6 +165,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       "A looping close-up of Austin's two-seam grip: two fingers running along the narrow seams like train tracks.",
       'The grip in motion: fingertips running with the narrow seams, the ball rolled so the finger pads show on the laces.',
       0.6,
+      { x: 50, y: 38 },
     ),
     photos: [
       shot(
@@ -198,6 +207,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       "A looping close-up of Austin's 12-6 curveball grip: two fingers tucked together and cornered against one seam.",
       'Setting the grip at the waist: the hand works the ball until the middle finger finds the long seam and the thumb rolls underneath.',
       2.2,
+      { x: 50, y: 46 },
     ),
     photos: [
       shot(
@@ -303,6 +313,7 @@ export const AUSTIN_GRIPS: GripLibraryEntry[] = [
       "A looping close-up of Austin's three-finger changeup grip: three fingers set close together across the top of the ball.",
       'Three fingers laid across the ball and extended to the camera. The face of the changeup a hitter never gets to read.',
       1.6,
+      { x: 50, y: 44 },
     ),
     photos: [
       shot(

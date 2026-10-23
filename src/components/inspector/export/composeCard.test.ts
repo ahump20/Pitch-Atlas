@@ -34,7 +34,7 @@ vi.mock('../../refractor/material/cardMaterialProgram', async (importOriginal) =
   },
 }))
 
-const { createComposer } = await import('./composeCard')
+const { createComposer, resolveStageMedia } = await import('./composeCard')
 
 /** A 2D context that accepts every call, remembers each one, and remembers compositing changes. */
 function recordingContext(): CanvasRenderingContext2D {
@@ -109,6 +109,31 @@ describe('createComposer', () => {
     h.webgl = false
     compose('front')
     expect(h.ops).toContain('destination-out')
+  })
+
+  it('crops the window to the focus point the page frames the clip on', () => {
+    const entry = pitchBySlug('four-seam')
+    if (!entry) throw new Error('four-seam is filed')
+    const source = document.createElement('canvas')
+    const dyFor = (focusY: number) => {
+      h.calls.length = 0
+      const composer = createComposer({ entry, face: 'front', material: PRESETS['ember-chrome'], width: 600, media: { kind: 'video', source, width: 900, height: 1600, focusY } })
+      composer.draw(recordingContext(), { rx: 0, ry: 0 }, { x: 0.5, y: 0.5, height: 1.1, strength: 1 })
+      const call = h.calls.find((c) => c.name === 'drawImage' && c.args[0] === source)
+      if (!call) throw new Error('the clip was not drawn')
+      return call.args[2] as number
+    }
+    // a higher focus point shows more of the top of the frame
+    expect(dyFor(0.2)).toBeGreaterThan(dyFor(0.8))
+  })
+
+  it('reads the framing off the element the visitor is looking at', async () => {
+    const stage = document.createElement('div')
+    const video = document.createElement('video')
+    video.style.objectPosition = '50% 34%'
+    for (const [k, v] of [['readyState', 4], ['videoWidth', 900], ['videoHeight', 1600]] as const) Object.defineProperty(video, k, { value: v })
+    stage.append(video)
+    await expect(resolveStageMedia(stage, { waitMs: 50 })).resolves.toMatchObject({ kind: 'video', width: 900, height: 1600, focusY: 0.34 })
   })
 
   it('paints the movement wheel on the back, above the rows, as the page back carries it', () => {
