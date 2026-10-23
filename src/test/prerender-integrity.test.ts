@@ -69,6 +69,23 @@ describe.runIf(shouldCheckDist)('prerender integrity (post-build)', () => {
     expect(offenders).toEqual([])
   })
 
+  it('ships every frosted blur to every browser, not only to Safari', () => {
+    // the CSS minifier keeps only the last of two backdrop-filter declarations when
+    // the prefixed one is written second, which leaves Chrome and Firefox no blur
+    const assets = path.join(DIST, 'assets')
+    const safariOnly: string[] = []
+    for (const file of readdirSync(assets).filter((f) => f.endsWith('.css'))) {
+      const css = readFileSync(path.join(assets, file), 'utf8')
+      for (const [, selector, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        // a declaration, not the property's name inside a transition list
+        if (/(^|;)-webkit-backdrop-filter:/.test(body) && !/(^|;)backdrop-filter:/.test(body)) {
+          safariOnly.push(`${file}: ${selector.trim().slice(0, 80)}`)
+        }
+      }
+    }
+    expect(safariOnly).toEqual([])
+  })
+
   it('keeps JavaScript chunks inside the explicit build budget', () => {
     const assets = path.join(DIST, 'assets')
     const jsFiles = readdirSync(assets).filter((file) => file.endsWith('.js'))

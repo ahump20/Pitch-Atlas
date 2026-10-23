@@ -1232,7 +1232,7 @@
   .rfx-seal-label {
     font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); line-height: 1; letter-spacing: .16em; text-transform: uppercase;
     color: var(--color-bone); padding: calc(var(--rfxu) * 0.56) calc(var(--rfxu) * 1.67); border-radius: 999px; background: rgba(5,7,12,.74);
-    backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,.1);
+    -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); border: 1px solid rgba(255,255,255,.1);
   }
   .rfx-card.is-gold .rfx-seal-coin {
     background: radial-gradient(circle at 50% 28%, #ffd9b8, #bf5700 60%, #4a2405);
@@ -1242,7 +1242,7 @@
   .rfx-gripchip {
     position: absolute; left: calc(var(--rfxu) * 3.5); bottom: calc(var(--rfxu) * 3.5); z-index: 4;
     display: inline-flex; align-items: center; gap: calc(var(--rfxu) * 1.39); padding: calc(var(--rfxu) * 0.83) calc(var(--rfxu) * 2.22); border-radius: 999px;
-    background: rgba(5,7,12,.8); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+    background: rgba(5,7,12,.8); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,.12);
     font-family: var(--font-mono); font-size: max(7px, calc(var(--rfxu) * 2.22)); line-height: 1; letter-spacing: .1em;
     text-transform: uppercase; color: var(--color-bone-2);
