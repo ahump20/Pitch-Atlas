@@ -299,7 +299,7 @@ export function SoftballFlightLabPage() {
               </div>
 
               {/* look for + the dock: under the stage on phones, over its foot on desktop */}
-              <div className="mt-5 flex flex-col gap-5 lg:pointer-events-none lg:absolute lg:inset-x-px lg:bottom-px lg:mt-0 lg:flex-row lg:items-end lg:justify-between lg:rounded-b-xl lg:bg-gradient-to-t lg:from-[#070509]/92 lg:via-[#070509]/70 lg:to-transparent lg:p-6 lg:pt-16">
+              <div className="mt-5 flex flex-col gap-5 lg:pointer-events-none lg:absolute lg:inset-x-px lg:bottom-px lg:z-30 lg:mt-0 lg:flex-row lg:items-end lg:justify-between lg:rounded-b-xl lg:bg-gradient-to-t lg:from-[#070509]/92 lg:via-[#070509]/70 lg:to-transparent lg:p-6 lg:pt-16">
                 <div className="min-w-0 lg:max-w-[46%]" aria-live="polite">
                   <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#FFC23C]">Look for</p>
                   <p className="mt-1 font-athletic text-[3.25rem] leading-none tabular-nums text-bone md:text-[4rem]" data-flight-lookfor="true">
