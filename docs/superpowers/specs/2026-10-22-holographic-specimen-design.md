@@ -63,15 +63,19 @@ its own tilt engine and the Quiet Ink & Bone material, mounted only while it sho
 Live material canvases are capped at eight; past the cap the CSS stand-in holds.
 
 **The inspector.** "Inspect card" (under the hero, on the discovery card, in the wall's
-action row) opens the specimen large in a dark room with a compact rail: Front /
-Sources, Study grip (into `/pitch/<slug>#grip-lab`), Compare, Finish, Export, Pause /
-Reset. `?inspect=<slug>` carries the state. Finish choices are remembered per card face
-on the device and never touch a record or any page surface.
+action row) opens the specimen large in a dark room, under a header that names the
+pitch (and its family where the name does not), beside a compact rail: a view row of
+Front / Sources with Pause and Reset as icon buttons, Study grip (into
+`/pitch/<slug>#grip-lab`), Compare, Finish, Export, then the master files and sources
+link and the keys. `?inspect=<slug>` carries the state. Finish choices are remembered
+per card face on the device and never touch a record or any page surface.
 
 **Export.** A PNG of the 1500-pixel card face posed into an 1800×2513 frame, composed
-natively from the record (the front: media, bezel, chip, header, plate, strip; the back:
-name and number, the movement wheel from the same geometry the page's SVG draws, the grip
-and shape rows with their tiers, the sources), posed in perspective with a stock edge,
+natively from the record, only what the inspector's card prints (the front: media,
+bezel, chip, header, plate, and no strip, since that card links nowhere; the back: name
+and number, the movement wheel from the same geometry the page's SVG draws, the grip and
+shape rows with their tiers, the sources, and no link label; the caption plate names the
+address), posed in perspective with a stock edge,
 contact and cast shadows,
 a dark or transparent backdrop and an attribution caption; and a 7-second, 30 fps WebM
 of the 1200-pixel card face, posed into a 1440×2010 frame, whose pose and light run one

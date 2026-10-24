@@ -137,7 +137,6 @@ function wrapLines(ctx: Ctx, text: string, maxWidth: number, maxLines: number): 
   return lines
 }
 
-/** The DOM's object-fit: cover crop of a media box into the window. */
 /** The media framed the way the page frames it: covered, placed at its focus, then
     zoomed by the element's own transform about the window's centre. */
 function coverDraw(ctx: Ctx, source: CanvasImageSource, sw: number, sh: number, box: { x: number; y: number; w: number; h: number }, focusY: number, scale: number) {
