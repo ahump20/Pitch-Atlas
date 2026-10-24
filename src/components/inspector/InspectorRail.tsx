@@ -75,7 +75,7 @@ export function InspectorRail({
         </div>
         {motionAvailable ? <PauseMotionButton className="specimen-icon-action" /> : null}
         <button type="button" className="specimen-action specimen-icon-action" onClick={onReset}>
-          <RotateCcw size={16} aria-hidden="true" />
+          <RotateCcw size={14} aria-hidden="true" />
           <span className="specimen-action-label">Reset view</span>
         </button>
       </div>

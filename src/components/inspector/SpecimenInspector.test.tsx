@@ -248,6 +248,8 @@ describe('SpecimenInspector', () => {
     await user.click(within(view).getByRole('button', { name: 'Pause motion' }))
     await user.click(within(view).getByRole('button', { name: 'Resume motion' }))
     expect(within(view).getByRole('button', { name: 'Pause motion' })).toBeInTheDocument()
+    // two square buttons side by side carry their icons at one size
+    expect(new Set([...view.querySelectorAll('button svg')].map((icon) => icon.getAttribute('width'))).size).toBe(1)
   })
 
   it('leaves Pause out where reduced motion leaves nothing to pause', async () => {
