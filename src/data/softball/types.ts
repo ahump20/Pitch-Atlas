@@ -1,4 +1,5 @@
 import type { Claim } from '../types'
+import type { ArcRule, LobParams, RuleKey, Stance } from '../../lib/slowpitch'
 
 /*
   The softball data model. A deliberately lighter record than the baseball
@@ -82,4 +83,52 @@ export interface FundamentalBlock {
 export interface SlowpitchNote {
   label: string
   claim: Claim<string>
+}
+
+/** A slow-pitch rulebook as the Flight Lab reads it. The numbers are the model's
+    inputs; every line a visitor reads is a sourced Claim. */
+export interface FlightLabRulebook {
+  key: RuleKey
+  name: string
+  short: string
+  /** The model's arc and strike-call inputs. */
+  arc: ArcRule
+  /** The legal arc, in plain words. */
+  arcText: Claim<string>
+  /** What a strike is under this book. */
+  zoneText: Claim<string>
+  /** What happens on an illegal arc. */
+  illegalText: Claim<string>
+}
+
+/** One of the lab's example lobs. The arc is set by hand, so it is labelled so. */
+export interface FlightLabLob {
+  key: 'belt' | 'low' | 'deep' | 'inside' | 'flat' | 'rainbow'
+  name: string
+  /** Swatch colour for the path and its list row. */
+  color: string
+  /** Peak, landing, side and the internal spin inputs (rpm is never shown). */
+  params: Claim<LobParams>
+}
+
+/** The proportions of the measured swing, as fractions of standing height
+    unless named in inches or degrees. */
+export interface MeasuredSwing {
+  landmarks: { knee: number; belt: number; chest: number; shoulder: number }
+  stanceDepthPerHeight: number
+  stridePerHeight: number
+  armReachPerHeight: number
+  handsFromKnobIn: number
+}
+
+/** The lab's default batter: one batter's measured swing, never named. */
+export interface MeasuredBatter {
+  /** Height, toes to plate, box and bat, as measured. */
+  stance: Claim<Stance>
+  /** Landmark ratios, stance depth, stride and reach. */
+  swing: Claim<MeasuredSwing>
+  /** The bat they swing: length and barrel diameter, inches. */
+  bat: Claim<{ lengthIn: number; diameterIn: number }>
+  /** Barrel angle below level at contact, degrees. */
+  barrelAngleDeg: Claim<number>
 }
