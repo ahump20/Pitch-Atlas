@@ -19,7 +19,6 @@ import {
   type Flight,
 } from '../../../lib/slowpitch'
 import {
-  RELEASE_FT,
   SLOW_RATE,
   fixed,
   nearPlateTimeScale,
@@ -1029,7 +1028,7 @@ function ArcMarks({ model }: { model: LabModel }) {
         {`Peak · ${fixed(f.apex[1] / 0.3048)} ft`}
       </Label>
       <Label position={[RELEASE.x, RELEASE.y, RELEASE.z]} anchor="start" dx={12} narrow={{ hide: true }}>
-        {`Release · ${fixed(RELEASE_FT)} ft`}
+        Release
       </Label>
     </group>
   )

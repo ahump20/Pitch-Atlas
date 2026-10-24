@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
@@ -17,12 +17,11 @@ import type { Claim } from '../data/types'
 import { BAT_DIAMETER_IN, type BoxPosition, type LobParams, type RuleKey } from '../lib/slowpitch'
 import { FlightLabStage } from '../components/flightlab/FlightLabStage'
 import { ArcGauge, FieldRow, ModelMark, Readout, SliderRow } from '../components/flightlab/controls'
-import { useLabSettings } from '../components/flightlab/labSettings'
+import { DEFAULT_SETTINGS, useLabSettings } from '../components/flightlab/labSettings'
 import {
   CAMERA_VIEWS,
   COMPARE_OPTIONS,
   HEIGHT_RANGE,
-  RELEASE_FT,
   TOES_RANGE,
   buildLabModel,
   defaultLobParams,
@@ -81,13 +80,28 @@ function useWide(): boolean {
   )
 }
 
-function RailSection({ id, title, action, children }: { id: string; title: string; action?: ReactNode; children: ReactNode }) {
+function RailSection({
+  id,
+  title,
+  action,
+  mark,
+  children,
+}: {
+  id: string
+  title: string
+  action?: ReactNode
+  mark?: 'Model' | 'Example'
+  children: ReactNode
+}) {
   return (
     <section aria-labelledby={id} className="border-t border-bone/12 pt-6 first:border-t-0 first:pt-0">
       <div className="mb-5 flex items-center justify-between gap-3">
-        <h2 id={id} className="rfx-skick">
-          {title}
-        </h2>
+        <div className="flex items-center gap-2">
+          <h2 id={id} className="rfx-skick">
+            {title}
+          </h2>
+          {mark ? <ModelMark kind={mark} /> : null}
+        </div>
         {action}
       </div>
       {children}
@@ -183,7 +197,18 @@ export function SoftballFlightLabPage() {
   const tuned = defaults ? JSON.stringify(defaults) !== JSON.stringify(params[selectedKey]) : false
   const measured = MEASURED_BATTER.stance.value
   const isMeasured =
-    settings.heightIn === measured.heightIn && settings.toesIn === measured.toesIn && settings.box === measured.box
+    settings.heightIn === measured.heightIn &&
+    settings.toesIn === measured.toesIn &&
+    settings.box === measured.box &&
+    settings.compareIn === DEFAULT_SETTINGS.compareIn
+
+  // one quiet announcement once the sliders settle, not one per tick
+  const statusText = `${sel.name}: ${verdict.word}. ${range ? `Look for ${range.replace('–', ' to ')} inches past the front of the plate.` : 'No landing spot reaches your barrel.'}`
+  const [announced, setAnnounced] = useState(statusText)
+  useEffect(() => {
+    const id = window.setTimeout(() => setAnnounced(statusText), 600)
+    return () => window.clearTimeout(id)
+  }, [statusText])
 
   const throwLobs = useCallback((indices: number[]) => {
     throwCount.current += 1
@@ -259,7 +284,7 @@ export function SoftballFlightLabPage() {
         <div className="mx-auto max-w-[1440px] px-4 py-6 md:px-6 md:py-8">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
             <span className="mono-label-stage text-xs">Rulebook</span>
-            <SegmentedToggle options={RULE_OPTIONS} value={rule} onChange={setRule} className="border-bone/25" />
+            <SegmentedToggle options={RULE_OPTIONS} value={rule} onChange={setRule} className="border-bone/25" aria-label="Rulebook" />
           </div>
 
           <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-10">
@@ -290,18 +315,22 @@ export function SoftballFlightLabPage() {
                   </p>
                   <h2
                     className={`display mt-1 text-[2.25rem] leading-[1.02] md:text-[3.25rem] ${TONE_CLASS[verdict.tone]}`}
-                    aria-live="polite"
                     data-flight-verdict="true"
                   >
                     {verdict.word}
                   </h2>
+                  <p className="sr-only" role="status">
+                    {announced}
+                  </p>
                 </div>
               </div>
 
               {/* look for + the dock: under the stage on phones, over its foot on desktop */}
               <div className="mt-5 flex flex-col gap-5 lg:pointer-events-none lg:absolute lg:inset-x-px lg:bottom-px lg:z-30 lg:mt-0 lg:flex-row lg:items-end lg:justify-between lg:rounded-b-xl lg:bg-gradient-to-t lg:from-[#070509]/92 lg:via-[#070509]/70 lg:to-transparent lg:p-6 lg:pt-16">
-                <div className="min-w-0 lg:max-w-[46%]" aria-live="polite">
-                  <p className="font-mono text-xs uppercase tracking-[0.14em] text-[#FFC23C]">Look for</p>
+                <div className="min-w-0 lg:max-w-[46%]">
+                  <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-[#FFC23C]">
+                    Look for <ModelMark kind="Model" />
+                  </p>
                   <p className="mt-1 font-athletic text-[3.25rem] leading-none tabular-nums text-bone md:text-[4rem]" data-flight-lookfor="true">
                     {range ?? 'Nothing'}
                     {range ? <span className="ml-2 align-baseline font-mono text-xl text-bone-2">in</span> : null}
@@ -330,6 +359,7 @@ export function SoftballFlightLabPage() {
                       value={view}
                       onChange={(v) => setView(v as CameraView)}
                       className="border-bone/25"
+                      aria-label="Camera"
                     />
                   ) : null}
                 </div>
@@ -377,6 +407,7 @@ export function SoftballFlightLabPage() {
                       value={settings.box}
                       onChange={(box) => updateSettings({ box: box as BoxPosition })}
                       className="border-bone/25"
+                      aria-label="Where you stand in the box"
                     />
                   </FieldRow>
                   <FieldRow label="Bat">
@@ -390,6 +421,7 @@ export function SoftballFlightLabPage() {
                       value={String(settings.compareIn)}
                       onChange={(v) => updateSettings({ compareIn: Number(v) })}
                       className="border-bone/25"
+                      aria-label="Compare with your old bat, inches"
                     />
                   </FieldRow>
                   {model.comparison ? (
@@ -466,7 +498,8 @@ export function SoftballFlightLabPage() {
                     label="Arc peak"
                     value={params[selectedKey].apex}
                     display={`${fixed(params[selectedKey].apex)} ft`}
-                    min={4}
+                    // the solver lifts any peak under release + 0.4 m, so the slider starts there
+                    min={4.2}
                     max={13}
                     step={0.1}
                     onChange={(v) => tune('apex', v)}
@@ -492,7 +525,7 @@ export function SoftballFlightLabPage() {
                 </div>
               </RailSection>
 
-              <RailSection id="fl-this" title="This pitch">
+              <RailSection id="fl-this" title="This pitch" mark="Model">
                 <dl className="grid grid-cols-2 gap-x-4 gap-y-4">
                   {[
                     { k: 'Arc peak', v: fixed(reading.apexFt), u: 'ft', show: true },
@@ -509,7 +542,6 @@ export function SoftballFlightLabPage() {
                       u: 'in',
                       show: true,
                     },
-                    { k: 'Release', v: fixed(RELEASE_FT), u: 'ft', show: true },
                   ].filter((s) => s.show).map((s) => (
                     <div key={s.k} className="min-w-0 border-t border-bone/12 pt-2">
                       <dt className="mono-label-stage text-xs leading-snug">{s.k}</dt>
