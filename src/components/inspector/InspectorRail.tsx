@@ -98,11 +98,12 @@ export function InspectorRail({
         Master files and sources <span aria-hidden="true">→</span>
       </Link>
 
-      {/* the dialog's description already says the keys to a screen reader */}
+      {/* the dialog's description already says the keys to a screen reader; under reduced
+          motion a drag and the arrows hold the card still, so only the keys that act show */}
       <footer className="specimen-rail-keys">
-        <p>Drag to turn the card.</p>
+        {motionAvailable ? <p>Drag to turn the card.</p> : null}
         <p className="specimen-hint-keys" aria-hidden="true">
-          <span><kbd className="specimen-key-arrows">←→↑↓</kbd> tilt</span>
+          {motionAvailable ? <span><kbd className="specimen-key-arrows">←→↑↓</kbd> tilt</span> : null}
           <span><kbd>F</kbd> flip</span>
           {motionAvailable ? <span><kbd>Space</kbd> pause</span> : null}
           <span><kbd>R</kbd> reset</span>

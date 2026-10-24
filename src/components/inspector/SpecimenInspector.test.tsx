@@ -266,6 +266,11 @@ describe('SpecimenInspector', () => {
     const view = within(dialog).getByRole('group', { name: 'View' })
     expect(within(view).queryByRole('button', { name: /motion/ })).not.toBeInTheDocument()
     expect(within(view).getByRole('button', { name: 'Reset view' })).toBeInTheDocument()
+    // under reduced motion a drag and the arrow keys hold the card still, so the help
+    // names only the keys that still act
+    const help = dialog.querySelector('.specimen-rail-keys') as HTMLElement
+    expect(within(help).queryByText(/Drag/)).not.toBeInTheDocument()
+    expect([...help.querySelectorAll('kbd')].map((k) => k.textContent)).toEqual(['F', 'R'])
   })
 
   it('sets the keys as key chips under the rail, the arrows as one, and labels the caption', async () => {
