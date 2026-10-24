@@ -112,8 +112,10 @@ afterEach(() => {
 
 describe('exportSpecimenWebm with the browser encoder', () => {
   it('hands the encoder every frame, stamped, for exactly seven seconds', async () => {
-    const { blob, path } = await exportSpecimenWebm(request())
+    const { blob, path, via } = await exportSpecimenWebm(request())
     expect(path).toBe('encoder')
+    // the result says how the loop was made, so the panel can word its next promise by it
+    expect(via).toEqual({ path: 'encoder', codec: 'vp9' })
     expect(h.added).toHaveLength(WEBM_FRAMES)
     h.added.forEach(([timestamp, duration], i) => {
       expect(timestamp).toBeCloseTo(i / WEBM_FPS, 9)

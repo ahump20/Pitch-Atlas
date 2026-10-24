@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { pitchBySlug } from '../../data/pitches'
 import type { TiltEngine } from '../../hooks/useCardTilt'
@@ -33,7 +33,8 @@ vi.mock('./export/exportWebm', async (importOriginal) => ({
   probeWebmSupport: async () => made.probe,
   exportSpecimenWebm: async (req: ExportRequest) => {
     made.requests.push(req)
-    return { blob: { size: 6_240_000, type: 'video/webm' } as Blob, path: made.path }
+    const via = made.path === 'encoder' ? ({ path: 'encoder', codec: 'vp9' } as const) : ({ path: 'recorder', mimeType: 'video/webm' } as const)
+    return { blob: { size: 6_240_000, type: 'video/webm' } as Blob, path: made.path, via }
   },
 }))
 
@@ -68,8 +69,28 @@ describe('ExportPanel', () => {
   it('does not promise seven seconds before the click where only the live recorder can make the loop', async () => {
     made.probe = { ok: true, via: { path: 'recorder', mimeType: 'video/webm' } }
     renderPanel()
-    expect(await screen.findByText('The WebM is recorded live, so it may stutter or run short. It can take a minute or more.')).toBeInTheDocument()
-    expect(screen.queryByText(/seven-second/)).not.toBeInTheDocument()
+    // recorded live, the loop takes about as long as it plays, so no time is promised either
+    expect(await screen.findByText('The WebM is recorded live, so it may stutter or run short.')).toBeInTheDocument()
+    expect(screen.queryByText(/seven-second|minute/)).not.toBeInTheDocument()
+  })
+
+  it('learns from a loop the recorder had to make: the note stops promising seven seconds', async () => {
+    // the check found the encoder, but its library did not download, so the recorder made it
+    made.probe = { ok: true, via: { path: 'encoder', codec: 'vp9' } }
+    made.path = 'recorder'
+    made.requests.length = 0
+    const user = userEvent.setup()
+    renderPanel()
+    await screen.findByText(/seven-second loop/)
+    await user.click(screen.getByRole('button', { name: 'Export WebM' }))
+    await screen.findByText(/^Saved .+ Recorded live/)
+    expect(screen.queryByText(/seven-second loop/)).not.toBeInTheDocument()
+    expect(screen.getByText('The WebM is recorded live, so it may stutter or run short.')).toBeInTheDocument()
+    // and the next loop goes straight to the recorder
+    await user.click(screen.getByRole('button', { name: 'Export WebM' }))
+    await waitFor(() => expect(made.requests).toHaveLength(2))
+    expect(made.requests[1].via).toEqual({ path: 'recorder', mimeType: 'video/webm' })
+    made.path = 'encoder'
   })
 
   it('hands the export what the support check found, so it does not ask again', async () => {

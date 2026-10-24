@@ -96,10 +96,11 @@ describe('exportSpecimenWebm when the encoder does not download', () => {
     vi.stubGlobal('MediaRecorder', FakeRecorder)
     const done = exportSpecimenWebm(request())
     await vi.runAllTimersAsync()
-    const { blob, path } = await done
+    const { blob, path, via } = await done
     expect(h.recorderStarted).toBe(true)
     expect(blob.type).toBe('video/webm')
     expect(path).toBe('recorder')
+    expect(via).toEqual({ path: 'recorder', mimeType: 'video/webm;codecs=vp9' })
     // frame 0, then frames 1..210 (the last closes the loop on the timeline)
     expect(h.draw).toHaveBeenCalledTimes(WEBM_FRAMES + 1)
     expect(h.dispose).toHaveBeenCalledTimes(1)

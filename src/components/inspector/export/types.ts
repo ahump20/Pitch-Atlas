@@ -50,10 +50,13 @@ export type WebmVerdict = { path: 'encoder'; codec: 'vp9' | 'vp8' } | { path: 'r
 export type WebmSupport = { ok: true; via?: WebmVerdict } | { ok: false; reason: string }
 
 /** A finished loop and how it was made: the browser's encoder keeps every frame for
-    exactly seven seconds; the live recorder keeps the frames it had time for. */
+    exactly seven seconds; the live recorder keeps the frames it had time for. `via` is
+    the way it was actually made, which can differ from the support check's verdict (an
+    encoder whose library did not download falls back to the recorder). */
 export interface WebmResult {
   blob: Blob
   path: 'encoder' | 'recorder'
+  via: WebmVerdict
 }
 
 export interface Eligibility {

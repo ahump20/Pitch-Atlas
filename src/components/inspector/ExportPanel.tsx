@@ -24,7 +24,8 @@ import type { Eligibility, ExportBackdrop, ExportFace, ExportRequest, WebmSuppor
 function loopNote(webm: WebmSupport): string | null {
   if (!webm.ok) return null
   if (webm.via?.path === 'encoder') return 'The WebM is a seven-second loop. It can take a minute or more to make.'
-  if (webm.via?.path === 'recorder') return 'The WebM is recorded live, so it may stutter or run short. It can take a minute or more.'
+  // recorded live, the loop takes about as long as it plays, so no time is promised
+  if (webm.via?.path === 'recorder') return 'The WebM is recorded live, so it may stutter or run short.'
   return 'The WebM can take a minute or more to make.'
 }
 
@@ -115,13 +116,15 @@ export function ExportPanel({
     onBusy(true)
     setStatus({ kind: 'working', what: 'webm', fraction: 0, phase: 'Preparing' })
     try {
-      const { blob, path } = await exportSpecimenWebm(
+      const { blob, path, via } = await exportSpecimenWebm(
         req,
         (p) => setStatus({ kind: 'working', what: 'webm', fraction: p.fraction, phase: p.phase === 'encoding' ? 'Encoding' : p.phase === 'rendering' ? 'Rendering frames' : 'Preparing' }),
         controller.signal,
       )
       const name = exportFilename(entry, face, 'webm')
       downloadBlob(blob, name)
+      // the next promise, and the next loop, follow how this one was really made
+      setWebm({ ok: true, via })
       // only the encoder's file is known to hold every frame; the live recorder keeps
       // what it had time for, so its loop is not promised a length
       setStatus({

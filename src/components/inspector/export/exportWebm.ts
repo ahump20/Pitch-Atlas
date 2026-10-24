@@ -277,8 +277,8 @@ export async function exportSpecimenWebm(
     }
 
     let result: WebmResult
-    if (via.path === 'encoder' && mb) result = { blob: await encodeFrames(mb, out, paint, via.codec, req.backdrop === 'transparent', onProgress, signal), path: 'encoder' }
-    else if (via.path === 'recorder') result = { blob: await recordLive(out, paint, via.mimeType, onProgress, signal), path: 'recorder' }
+    if (via.path === 'encoder' && mb) result = { blob: await encodeFrames(mb, out, paint, via.codec, req.backdrop === 'transparent', onProgress, signal), path: 'encoder', via }
+    else if (via.path === 'recorder') result = { blob: await recordLive(out, paint, via.mimeType, onProgress, signal), path: 'recorder', via }
     else throw new Error(UNSUPPORTED)
     onProgress?.({ phase: 'done', fraction: 1 })
     return result
