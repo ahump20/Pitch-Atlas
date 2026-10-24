@@ -114,6 +114,21 @@ async function loadEncoder(): Promise<Mediabunny> {
   }
 }
 
+/**
+ * The codec the encoder library agrees to write, starting from the support check's.
+ * The library asks the browser again before it agrees, and test-encodes a frame where a
+ * browser's own check is known to over-report, so a codec the check accepted but the
+ * browser cannot really write falls to the other one here rather than failing mid-loop.
+ */
+async function libraryCodec(mb: Mediabunny, first: 'vp9' | 'vp8'): Promise<'vp9' | 'vp8' | null> {
+  const { width, height } = webmFrameSize()
+  for (const codec of first === 'vp9' ? (['vp9', 'vp8'] as const) : (['vp8', 'vp9'] as const)) {
+    const quality = new mb.Quality({ bitrate: WEBM_BITRATE })
+    if (await mb.canEncodeVideo(codec, { width, height, frameRate: WEBM_FPS, quality }).catch(() => false)) return codec
+  }
+  return null
+}
+
 const sleep = (ms: number) => new Promise<void>((resolve) => window.setTimeout(resolve, ms))
 const cancelled = () => new DOMException('Export cancelled.', 'AbortError')
 
@@ -242,6 +257,17 @@ export async function exportSpecimenWebm(
       // failed download is the reason to give, and no GL context is taken for it
       const mimeType = recorderMimeType()
       if (!mimeType) throw error
+      via = { path: 'recorder', mimeType }
+    }
+  }
+  if (mb && via.path === 'encoder') {
+    // confirmed by the library before any GL context is taken: the check's codec, the
+    // other one, then the recorder
+    const codec = await libraryCodec(mb, via.codec)
+    if (codec) via = { path: 'encoder', codec }
+    else {
+      const mimeType = recorderMimeType()
+      if (!mimeType) throw new Error(UNSUPPORTED)
       via = { path: 'recorder', mimeType }
     }
   }

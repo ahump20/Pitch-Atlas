@@ -16,8 +16,8 @@ const h = vi.hoisted(() => ({
   added: [] as Array<[number, number]>,
   sourceConfig: null as unknown,
   outputs: [] as Array<{ state: string; cancel: () => Promise<void> }>,
-  canEncode: true,
-  canEncodeCalls: 0,
+  canEncode: true as boolean | ((codec: string) => boolean),
+  canEncodeCalls: [] as string[],
   dispose: vi.fn(),
   draw: vi.fn(),
 }))
@@ -57,9 +57,9 @@ vi.mock('mediabunny', () => {
       this.state = 'canceled'
     }
   }
-  const canEncodeVideo = async () => {
-    h.canEncodeCalls++
-    return h.canEncode
+  const canEncodeVideo = async (codec: string) => {
+    h.canEncodeCalls.push(codec)
+    return typeof h.canEncode === 'function' ? h.canEncode(codec) : h.canEncode
   }
   return { Quality, BufferTarget, WebMOutputFormat, CanvasSource, Output, canEncodeVideo }
 })
@@ -98,7 +98,7 @@ beforeEach(() => {
   h.outputs.length = 0
   h.sourceConfig = null
   h.canEncode = true
-  h.canEncodeCalls = 0
+  h.canEncodeCalls = []
   h.dispose.mockClear()
   h.draw.mockClear()
   vi.stubGlobal('VideoEncoder', function VideoEncoder() {})
@@ -129,13 +129,31 @@ describe('exportSpecimenWebm with the browser encoder', () => {
     expect(h.dispose).toHaveBeenCalledTimes(1)
   })
 
-  it("trusts the support check: a VP8 verdict writes VP8 and asks the browser nothing more", async () => {
-    // the encoder library would pick VP9 if it were asked again
+  it("starts from the support check's verdict: a VP8 verdict writes VP8, confirmed once by the encoder library", async () => {
+    // the library would pick VP9 if it were asked to choose from scratch
     h.canEncode = true
     const { path } = await exportSpecimenWebm({ ...request(), via: { path: 'encoder', codec: 'vp8' } })
     expect(path).toBe('encoder')
     expect(h.sourceConfig).toMatchObject({ codec: 'vp8' })
-    expect(h.canEncodeCalls).toBe(0)
+    expect(h.canEncodeCalls).toEqual(['vp8'])
+  })
+
+  it("falls back to the other codec where the library will not write the check's choice", async () => {
+    // some browsers' support check over-reports; the library test-encodes before it agrees
+    h.canEncode = (codec) => codec === 'vp8'
+    const { path, via } = await exportSpecimenWebm(request())
+    expect(path).toBe('encoder')
+    expect(via).toEqual({ path: 'encoder', codec: 'vp8' })
+    expect(h.sourceConfig).toMatchObject({ codec: 'vp8' })
+    expect(h.canEncodeCalls).toEqual(['vp9', 'vp8'])
+  })
+
+  it('says so in words, before taking a GL context, where the library writes neither codec and there is no recorder', async () => {
+    h.canEncode = false
+    await expect(exportSpecimenWebm(request())).rejects.toThrow(/PNG export still works/)
+    expect(h.added).toHaveLength(0)
+    expect(h.draw).not.toHaveBeenCalled()
+    expect(h.dispose).not.toHaveBeenCalled()
   })
 
   it('runs the support check itself when the request carries no verdict', async () => {
@@ -145,7 +163,7 @@ describe('exportSpecimenWebm with the browser encoder', () => {
     vi.stubGlobal('VideoEncoder', Encoder)
     await exportSpecimenWebm({ ...request(), via: undefined })
     expect(h.sourceConfig).toMatchObject({ codec: 'vp8' })
-    expect(h.canEncodeCalls).toBe(0)
+    expect(h.canEncodeCalls).toEqual(['vp8'])
   })
 
   it('keeps the transparency when the backdrop is transparent', async () => {
