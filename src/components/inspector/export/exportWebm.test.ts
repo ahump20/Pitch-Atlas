@@ -20,6 +20,7 @@ const h = vi.hoisted(() => ({
   canEncodeCalls: [] as string[],
   dispose: vi.fn(),
   draw: vi.fn(),
+  onFinalize: null as null | (() => void),
 }))
 
 vi.mock('mediabunny', () => {
@@ -50,6 +51,7 @@ vi.mock('mediabunny', () => {
       this.state = 'started'
     }
     async finalize() {
+      h.onFinalize?.()
       this.state = 'finalized'
       this.target.buffer = new ArrayBuffer(16)
     }
@@ -101,6 +103,7 @@ beforeEach(() => {
   h.canEncodeCalls = []
   h.dispose.mockClear()
   h.draw.mockClear()
+  h.onFinalize = null
   vi.stubGlobal('VideoEncoder', function VideoEncoder() {})
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({} as unknown as RenderingContext)
 })
@@ -180,6 +183,15 @@ describe('exportSpecimenWebm with the browser encoder', () => {
     await expect(done).rejects.toMatchObject({ name: 'AbortError' })
     expect(h.added.length).toBeLessThan(WEBM_FRAMES)
     expect(h.outputs[0].state).toBe('canceled')
+    expect(h.dispose).toHaveBeenCalledTimes(1)
+  })
+
+  it('honours a cancel that lands while the file is being finished', async () => {
+    const controller = new AbortController()
+    // the click arrives after the last frame, while finalize is still writing
+    h.onFinalize = () => controller.abort()
+    const done = exportSpecimenWebm(request(), undefined, controller.signal)
+    await expect(done).rejects.toMatchObject({ name: 'AbortError' })
     expect(h.dispose).toHaveBeenCalledTimes(1)
   })
 })

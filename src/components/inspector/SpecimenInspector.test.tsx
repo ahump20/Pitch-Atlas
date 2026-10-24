@@ -275,6 +275,31 @@ describe('SpecimenInspector', () => {
     expect([...help.querySelectorAll('kbd')].map((k) => k.textContent)).toEqual(['F', 'R'])
   })
 
+  it('under reduced motion, tells a screen reader only the keys that act, and leaves the arrows alone', async () => {
+    window.matchMedia = ((query: string) => ({
+      matches: query.includes('reduce'),
+      media: query,
+      onchange: null,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+      addListener: () => undefined,
+      removeListener: () => undefined,
+      dispatchEvent: () => false,
+    })) as unknown as typeof window.matchMedia
+    render(<Harness start="/?inspect=four-seam" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    const description = dialog.getAttribute('aria-describedby')
+    const said = description ? document.getElementById(description)?.textContent ?? '' : ''
+    expect(said).not.toMatch(/arrow|tilt|Space|pause/i)
+    expect(said).toMatch(/F flips/)
+    const stage = dialog.querySelector('.specimen-stage') as HTMLElement
+    expect(stage.getAttribute('aria-label')).not.toMatch(/Arrow|Space/)
+    // an arrow press is the page's to scroll, not swallowed by a card that cannot tilt
+    const press = new KeyboardEvent('keydown', { key: 'ArrowDown', bubbles: true, cancelable: true })
+    stage.dispatchEvent(press)
+    expect(press.defaultPrevented).toBe(false)
+  })
+
   it('sets the keys as key chips under the rail, the arrows as one, and labels the caption', async () => {
     render(<Harness start="/?inspect=four-seam" />)
     const dialog = await screen.findByRole('dialog', {}, OPEN)

@@ -162,6 +162,8 @@ async function encodeFrames(
     if (signal?.aborted) throw cancelled()
     onProgress?.({ phase: 'encoding', fraction: 0.96 })
     await output.finalize()
+    // a Cancel that lands while the file is being written still wins: no download follows
+    if (signal?.aborted) throw cancelled()
   } catch (error) {
     if (output.state === 'pending' || output.state === 'started') await output.cancel().catch(() => undefined)
     throw error
