@@ -213,7 +213,7 @@ export function SoftballFlightLabPage() {
 
   const whySentence = 'You judge a lob where it crosses the plate, but your barrel meets it out front, where a falling lob is still higher.'
   const insetTop = wide ? 108 : 92
-  const insetBottom = wide ? 150 : 0
+  const insetBottom = wide ? 250 : 0
 
   return (
     <>

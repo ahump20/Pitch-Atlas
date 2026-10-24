@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, type ReactNode, type RefObject } from 'react'
+import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode, type RefObject } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
@@ -93,35 +93,50 @@ function plateShape() {
 
 /* ── labels ────────────────────────────────────────────────────────────── */
 
+interface Placement {
+  anchor?: Anchor
+  dx?: number
+  dy?: number
+}
+
+function translate({ anchor = 'mid', dx = 0, dy = 0 }: Placement) {
+  const shift = anchor === 'start' ? '0%' : anchor === 'mid' ? '-50%' : '-100%'
+  return `translate(calc(${shift} + ${dx}px), calc(-50% + ${dy}px))`
+}
+
+/**
+ * A tag pinned to a point in the scene. `narrow` re-places it on a phone-width
+ * stage (below 640 px), or hides it there with `{ hide: true }`.
+ */
 function Label({
   position,
   anchor = 'mid',
   dx = 0,
   dy = 0,
+  narrow,
   tone = 'bone',
   children,
-}: {
+}: Placement & {
   position: [number, number, number]
-  anchor?: Anchor
-  dx?: number
-  dy?: number
+  narrow?: Placement & { hide?: boolean }
   tone?: 'bone' | 'amber' | 'bad' | 'plain'
   children: ReactNode
 }) {
-  const shift = anchor === 'start' ? '0%' : anchor === 'mid' ? '-50%' : '-100%'
+  const wide = translate({ anchor, dx, dy })
+  const small = narrow ? translate({ anchor, dx, dy, ...narrow }) : wide
   const toneClass =
     tone === 'amber'
-      ? 'text-[#FFC23C] border-[#FFC23C]/45'
+      ? 'bg-[rgba(7,5,9,0.8)] text-[#FFC23C] border-[#FFC23C]/45'
       : tone === 'bad'
-        ? 'text-[#FF5A6B] border-[#FF5A6B]/50'
+        ? 'bg-[rgba(7,5,9,0.8)] text-[#FF5A6B] border-[#FF5A6B]/50'
         : tone === 'plain'
-          ? 'text-bone border-transparent bg-transparent px-0'
-          : 'text-bone border-bone/30'
+          ? 'text-bone border-transparent px-0'
+          : 'bg-[rgba(7,5,9,0.8)] text-bone border-bone/30'
   return (
     <Html position={position} zIndexRange={[20, 0]} wrapperClass="pointer-events-none" style={{ pointerEvents: 'none' }}>
       <span
-        className={`fl-tag block select-none whitespace-nowrap rounded-[3px] border bg-[rgba(7,5,9,0.8)] px-2 py-[3px] font-mono text-[12px] uppercase leading-none tracking-[0.06em] ${toneClass}`}
-        style={{ transform: `translate(calc(${shift} + ${dx}px), calc(-50% + ${dy}px))` }}
+        className={`fl-tag ${narrow?.hide ? 'hidden sm:block' : 'block'} select-none whitespace-nowrap rounded-[3px] border px-2 py-[3px] font-mono text-[12px] uppercase leading-none tracking-[0.06em] [transform:var(--fl-tn)] sm:[transform:var(--fl-t)] ${toneClass}`}
+        style={{ '--fl-t': wide, '--fl-tn': small } as CSSProperties}
       >
         {children}
       </span>
@@ -489,12 +504,13 @@ function Ruler({ model }: { model: LabModel }) {
   const group = useRef<THREE.Group>(null)
   const { zone, marks } = model
   const top = Math.min(2, zone.top + 0.12)
+  // The spine at z = 0, ticks running right (toward the pitcher, -z).
   const ticks = useMemo(() => {
     const pts: THREE.Vector3[] = []
     pts.push(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, top, 0))
     for (let inch = 0; inch * IN <= top + 1e-6; inch++) {
       const len = inch % 6 === 0 ? 0.06 : inch % 3 === 0 ? 0.036 : 0.018
-      pts.push(new THREE.Vector3(0, inch * IN, 0), new THREE.Vector3(0, inch * IN, len))
+      pts.push(new THREE.Vector3(0, inch * IN, 0), new THREE.Vector3(0, inch * IN, -len))
     }
     return new THREE.BufferGeometry().setFromPoints(pts)
   }, [top])
@@ -506,28 +522,27 @@ function Ruler({ model }: { model: LabModel }) {
     const g = group.current
     if (!g) return
     const cam = camera as THREE.PerspectiveCamera
-    const half = Math.tan((cam.fov * Math.PI) / 360) * cam.position.x * (size.width / size.height)
-    g.position.set(0.03, 0, cam.position.z + half - 0.14)
+    // Keep the spine a fixed 48 px in from the stage's left edge.
+    const dist = Math.max(0.1, cam.position.x - 0.03)
+    const halfH = Math.tan((cam.fov * Math.PI) / 360) * dist
+    const perPx = (2 * halfH) / Math.max(1, size.height)
+    g.position.set(0.03, 0, cam.position.z + halfH * (size.width / Math.max(1, size.height)) - 48 * perPx)
   })
 
   const senior = model.rule === 'senior'
   const tag = (y: number, long: string, short: string, tone: 'bone' | 'amber') => (
-    <Label key={long} position={[0, y, -0.03]} anchor="start" tone={tone}>
+    <Label key={long} position={[0, y, 0]} anchor="start" dx={30} tone={tone}>
       <Two long={long} short={short} />
     </Label>
   )
   return (
     <group ref={group}>
-      <mesh position={[0, top / 2, 0.06]} rotation={[0, Math.PI / 2, 0]}>
-        <planeGeometry args={[0.2, top + 0.04]} />
-        <meshBasicMaterial color="#070509" transparent opacity={0.45} depthWrite={false} />
-      </mesh>
       <lineSegments geometry={ticks}>
         <lineBasicMaterial color={BONE} transparent opacity={0.9} toneMapped={false} />
       </lineSegments>
       {numbers.map((n) => (
-        <Label key={n} position={[0, n * IN, 0.075]} anchor="end" tone="plain">
-          <span className="text-[14px]">{n}</span>
+        <Label key={n} position={[0, n * IN, 0]} anchor="end" dx={-8} tone="plain">
+          <span className="text-[14px] [text-shadow:0_1px_3px_#000]">{n}</span>
         </Label>
       ))}
       {!senior ? tag(zone.top, `Shoulder · ${round(zone.top / IN)} in`, `Shoulder ${round(zone.top / IN)}`, 'bone') : null}
@@ -787,12 +802,12 @@ function GroundWindows({ model, view }: { model: LabModel; view: CameraView }) {
         </mesh>
       ) : null}
       {view === 'arc' && lane ? (
-        <Label position={[sideX, 0.02, (lane[0] + lane[1]) / 2]} anchor="start" dx={8}>
+        <Label position={[sideX, 0.02, (lane[0] + lane[1]) / 2]} anchor="end" dx={-10} dy={22} narrow={{ hide: true }}>
           {`Strike · ${round(reading.strikeWindowIn[0])}–${round(reading.strikeWindowIn[1])} in`}
         </Label>
       ) : null}
       {view === 'arc' && hot && reading.lookFor.hot ? (
-        <Label position={[-sideX, 0.02, (hot[0] + hot[1]) / 2]} anchor="end" dx={-8} tone="amber">
+        <Label position={[-sideX, 0.02, (hot[0] + hot[1]) / 2]} anchor="end" dx={-10} dy={-16} tone="amber">
           {`Your pitch · ${round(reading.lookFor.hot[0])}–${round(reading.lookFor.hot[1])} in`}
         </Label>
       ) : null}
@@ -820,7 +835,7 @@ function BarrelMarks({ model }: { model: LabModel }) {
             <spriteMaterial map={amber} transparent depthWrite={false} depthTest={false} toneMapped={false} />
           </sprite>
           {barrel ? (
-            <Label position={[contact.x, contact.y, contact.z]} anchor="start" dx={20} dy={-18} tone="amber">
+            <Label position={[contact.x, contact.y, contact.z]} anchor="end" dx={-22} dy={-20} narrow={{ anchor: 'mid', dx: 0, dy: -32 }} tone="amber">
               <Two
                 long={`Barrel · ${round(barrel.heightIn)} in high · ${round(barrel.outFrontIn)} in out front`}
                 short={`Barrel ${round(barrel.heightIn)} in`}
@@ -834,7 +849,7 @@ function BarrelMarks({ model }: { model: LabModel }) {
           <sprite position={[crossing.x, crossing.y, 0]} scale={[0.12, 0.12, 1]} renderOrder={10}>
             <spriteMaterial map={bone} transparent depthWrite={false} depthTest={false} toneMapped={false} />
           </sprite>
-          <Label position={[crossing.x, crossing.y, 0]} anchor="start" dx={16} dy={22}>
+          <Label position={[crossing.x, crossing.y, 0]} anchor="start" dx={16} dy={22} narrow={{ dx: 14, dy: -24 }}>
             <Two long={`Over the plate · ${round(crossing.y / IN)} in`} short={`Plate ${round(crossing.y / IN)}`} />
           </Label>
         </>
@@ -899,7 +914,7 @@ function HeatGrid({ model }: { model: LabModel }) {
     return { texture: tex, hotAt, jamAt }
   }, [heat, model.zone.bottom, model.zone.top])
   useEffect(() => () => texture.dispose(), [texture])
-  const sideX = PLATE.halfWidth + 0.3
+  const sideX = PLATE.halfWidth + 0.14
   return (
     <group>
       <mesh position={[(heat.x[0] + heat.x[1]) / 2, (heat.y[0] + heat.y[1]) / 2, 0]} renderOrder={7}>
@@ -908,8 +923,12 @@ function HeatGrid({ model }: { model: LabModel }) {
       </mesh>
       {model.rule !== 'senior' ? (
         <>
-          <Label position={[sideX, model.zone.top, 0]} anchor="start">{`Shoulder · ${round(model.zone.top / IN)} in`}</Label>
-          <Label position={[sideX, model.zone.bottom, 0]} anchor="start">{`Knee · ${round(model.zone.bottom / IN)} in`}</Label>
+          <Label position={[sideX, model.zone.top, 0]} anchor="start">
+            <Two long={`Shoulder · ${round(model.zone.top / IN)} in`} short={`Shoulder ${round(model.zone.top / IN)}`} />
+          </Label>
+          <Label position={[sideX, model.zone.bottom, 0]} anchor="start">
+            <Two long={`Knee · ${round(model.zone.bottom / IN)} in`} short={`Knee ${round(model.zone.bottom / IN)}`} />
+          </Label>
         </>
       ) : null}
       {hotAt ? (
@@ -974,7 +993,7 @@ function ReachArcs({ model }: { model: LabModel }) {
         </mesh>
       ) : null}
       {contact ? (
-        <Label position={[contact.x, 0.03, contact.z]} anchor="start" dx={16} tone="amber">
+        <Label position={[contact.x, 0.03, contact.z]} anchor="start" dx={16} narrow={{ anchor: 'end', dx: -14, dy: 20 }} tone="amber">
           Barrel meets it
         </Label>
       ) : null}
@@ -1009,7 +1028,7 @@ function ArcMarks({ model }: { model: LabModel }) {
       <Label position={[ax, ay, az]} anchor="start" dx={12} dy={-12}>
         {`Peak · ${fixed(f.apex[1] / 0.3048)} ft`}
       </Label>
-      <Label position={[RELEASE.x, RELEASE.y, RELEASE.z]} anchor="start" dx={12}>
+      <Label position={[RELEASE.x, RELEASE.y, RELEASE.z]} anchor="start" dx={12} narrow={{ hide: true }}>
         {`Release · ${fixed(RELEASE_FT)} ft`}
       </Label>
     </group>
@@ -1036,7 +1055,7 @@ function cameraTarget(view: CameraView, model: LabModel, aspect: number): CamTar
       const dist = 3.2
       const cz = model.selected.reading.contact.contact?.z ?? -0.7
       const far = Math.min(-0.45, cz - 0.3)
-      const near = 0.62
+      const near = portrait ? 0.4 : 0.62
       const halfW = (near - far) / 2
       const halfH = Math.max((top - bottom) / 2, halfW / Math.max(0.3, aspect), portrait ? 0 : 1.11)
       const midY = (top + bottom) / 2 + (portrait ? 0.16 * halfH : 0)
@@ -1051,8 +1070,8 @@ function cameraTarget(view: CameraView, model: LabModel, aspect: number): CamTar
     }
     case 'arc':
       return {
-        pos: new THREE.Vector3(portrait ? -30 : -27, 1.9, -6),
-        look: new THREE.Vector3(0, 3, -6),
+        pos: new THREE.Vector3(portrait ? -19 : -27, portrait ? 1.7 : 1.9, -6.5),
+        look: new THREE.Vector3(0, portrait ? 1.7 : 3, -6.5),
         up,
         fov: portrait ? 68 : 33,
         k: 3,

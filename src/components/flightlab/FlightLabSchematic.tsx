@@ -23,7 +23,7 @@ const BONE = '#F6F1E6'
 const BONE_DIM = 'rgba(246,241,230,0.55)'
 const PANEL = 'rgba(7,5,9,0.82)'
 /** Martian Mono's advance, as a fraction of the font size (for tag widths). */
-const MONO_ADVANCE = 0.66
+const MONO_ADVANCE = 0.8
 
 function tagWidth(text: string, size = 12) {
   return text.length * size * MONO_ADVANCE + 14
@@ -58,7 +58,7 @@ function Tag({
         fontSize={size}
         letterSpacing="0.04em"
       >
-        {text}
+        {text.toUpperCase()}
       </text>
     </g>
   )
@@ -162,15 +162,16 @@ export function FlightLabSchematic({
   const padL = rulerW + 4
   const padR = 18
   const padT = insetTop + 18
-  const padB = insetBottom + (narrow ? 64 : 58)
+  const padB = insetBottom + 66
   const s = Math.max(
     10,
     Math.min((W - padL - padR) / (zNear - zFar), (H - padT - padB) / yTop),
   )
   const plotW = (zNear - zFar) * s
-  // centre the plot in the room right of the ruler
+  // centre the plot in the room right of the ruler, and vertically in the room left
   const x0 = padL + Math.max(0, (W - padL - padR - plotW) / 2)
-  const groundY = H - padB
+  const spare = Math.max(0, H - padT - padB - yTop * s)
+  const groundY = H - padB - spare / 2
   const X = (z: number) => x0 + (zNear - z) * s
   const Y = (y: number) => groundY - y * s
   const xMin = X(zNear)
@@ -247,7 +248,7 @@ export function FlightLabSchematic({
       <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={label} className="block h-full w-full">
         <defs>
           <clipPath id={clipId}>
-            <rect x={xMin} y={0} width={xMax - xMin} height={groundY + 2} />
+            <rect x={xMin} y={0} width={Math.max(0, xMax - xMin)} height={Math.max(0, groundY + 2)} />
           </clipPath>
           <pattern id="fl-hatch" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
             <rect width="8" height="8" fill="rgba(246,241,230,0.10)" />
@@ -260,7 +261,7 @@ export function FlightLabSchematic({
         </defs>
 
         {/* ground */}
-        <rect x={0} y={groundY} width={W} height={H - groundY} fill="url(#fl-ground)" />
+        <rect x={0} y={groundY} width={W} height={Math.max(0, H - groundY)} fill="url(#fl-ground)" />
         <line x1={0} x2={W} y1={groundY} y2={groundY} stroke="rgba(246,241,230,0.25)" />
 
         {/* landmark lines across the view */}
@@ -320,13 +321,19 @@ export function FlightLabSchematic({
 
         {/* the strike lane and the look-for window, on the ground */}
         {lane ? (
-          <rect x={X(lane[1])} y={groundY + 8} width={Math.max(2, (lane[1] - lane[0]) * s)} height={7} fill="url(#fl-hatch)" />
+          <rect
+            x={Math.max(xMin, X(lane[1]))}
+            y={groundY + 8}
+            width={Math.max(2, Math.min(xMax, X(lane[0])) - Math.max(xMin, X(lane[1])))}
+            height={7}
+            fill="url(#fl-hatch)"
+          />
         ) : null}
         {model.hotZ ? (
           <rect
-            x={X(model.hotZ[1])}
+            x={Math.max(xMin, X(model.hotZ[1]))}
             y={groundY + 18}
-            width={Math.max(2, (model.hotZ[1] - model.hotZ[0]) * s)}
+            width={Math.max(2, Math.min(xMax, X(model.hotZ[0])) - Math.max(xMin, X(model.hotZ[1])))}
             height={7}
             fill={AMBER}
             fillOpacity={0.75}
@@ -364,7 +371,7 @@ export function FlightLabSchematic({
 
         {/* ruler */}
         <g>
-          <rect x={0} y={Y(rulerTop) - 6} width={rulerW} height={groundY - Y(rulerTop) + 6} fill="rgba(7,5,9,0.55)" />
+          <rect x={0} y={Y(rulerTop) - 6} width={rulerW} height={Math.max(0, groundY - Y(rulerTop) + 6)} fill="rgba(7,5,9,0.55)" />
           <line x1={rulerW} x2={rulerW} y1={Y(rulerTop)} y2={groundY} stroke={BONE} strokeOpacity={0.9} strokeWidth={1.5} />
           {ticks.map((t, i) => (
             <g key={i}>
@@ -399,27 +406,21 @@ export function FlightLabSchematic({
         ) : null}
         {contact && barrelText ? (
           <Tag
-            x={Math.min(X(contact.z) + 20, W - tagWidth(barrelText) - 6)}
-            y={Math.max(padT + 8, Y(contact.y) - 24)}
+            x={Math.min(W - 6 - tagWidth(barrelText) / 2, Math.max(x0 + 6 + tagWidth(barrelText) / 2, X(contact.z)))}
+            y={Math.max(padT + 8, Y(contact.y) - 32)}
             text={barrelText}
+            anchor="middle"
             color={AMBER}
           />
         ) : null}
-        {lane && !narrow ? (
-          <text x={X(lane[1])} y={groundY + 34} fill={BONE_DIM} fontFamily="var(--font-mono)" fontSize={12} dominantBaseline="hanging">
-            {`Strike · ${round(strike[0])}–${round(strike[1])} in`}
+        {lane ? (
+          <text x={x0 + 6} y={groundY + 34} fill={BONE_DIM} fontFamily="var(--font-mono)" fontSize={12} dominantBaseline="hanging">
+            {`STRIKE · ${round(strike[0])}–${round(strike[1])} IN`}
           </text>
         ) : null}
-        {hot && model.hotZ ? (
-          <text
-            x={Math.max(rulerW + 6, Math.min(X(model.hotZ[1]), W - 200))}
-            y={groundY + (narrow ? 34 : 50)}
-            fill={AMBER}
-            fontFamily="var(--font-mono)"
-            fontSize={12}
-            dominantBaseline="hanging"
-          >
-            {`Your pitch · ${round(hot[0])}–${round(hot[1])} in`}
+        {hot ? (
+          <text x={x0 + 6} y={groundY + (lane ? 50 : 34)} fill={AMBER} fontFamily="var(--font-mono)" fontSize={12} dominantBaseline="hanging">
+            {`YOUR PITCH · ${round(hot[0])}–${round(hot[1])} IN`}
           </text>
         ) : null}
       </svg>

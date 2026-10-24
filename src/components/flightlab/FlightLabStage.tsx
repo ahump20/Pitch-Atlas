@@ -53,6 +53,7 @@ export function FlightLabStage({
   /** Room the page's overlays take at the top and bottom of the stage, px (for the schematic). */
   insetTop?: number
   insetBottom?: number
+  /** Positioning classes for the stage box (it must be positioned); defaults to `relative`. */
   className?: string
 }) {
   const webgl = useWebGLSupport()
@@ -77,14 +78,14 @@ export function FlightLabStage({
 
   if (!webgl) {
     return (
-      <div className={`relative ${className}`} data-stage-mode="schematic">
+      <div className={className || 'relative'} data-stage-mode="schematic">
         {fallback}
       </div>
     )
   }
 
   return (
-    <div ref={ref} className={`relative ${className}`} data-stage-mode="scene" data-stage-ready={ready ? 'true' : 'false'}>
+    <div ref={ref} className={className || 'relative'} data-stage-mode="scene" data-stage-ready={ready ? 'true' : 'false'}>
       {!ready ? (
         <div className="absolute inset-0" data-stage-loading="true">
           <FlightLabSchematic model={model} insetTop={insetTop} insetBottom={insetBottom} />

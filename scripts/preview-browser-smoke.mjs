@@ -604,6 +604,57 @@ async function checkKnowledgeMarkerWrap(page) {
   await assertNoHorizontalOverflow(page, 'Canon mobile')
 }
 
+async function checkFlightLab(page, viewport, { webgl = true } = {}) {
+  // The slow-pitch Flight Lab: the verdict headline leads, Throw runs a lob,
+  // and with WebGL switched off the flat schematic is the whole stage.
+  if (!webgl) {
+    await page.addInitScript(() => {
+      const getContext = HTMLCanvasElement.prototype.getContext
+      HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
+        // 'experimental-webgl' too, or detection still finds a context
+        if (/webgl/i.test(String(type))) return null
+        return getContext.call(this, type, ...args)
+      }
+    })
+  }
+  await page.setViewportSize(viewport)
+  const label = `Flight Lab ${webgl ? '' : 'no-WebGL '}${viewport.width}x${viewport.height}`
+  const messages = await collectConsole(page, async () => {
+    await page.goto(route('/softball/flight-lab/'), { waitUntil: 'domcontentloaded' })
+    await page.locator('h1').waitFor({ state: 'attached' })
+    await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
+    // Poll rather than wait on selectors: the 3D chunk can be slow on a loaded runner.
+    await page
+      .waitForFunction(() => document.querySelector('[data-flight-verdict]')?.textContent?.trim(), undefined, { timeout: 30_000 })
+      .catch(() => undefined)
+    const throwButton = page.locator('[data-flight-throw]')
+    await throwButton.scrollIntoViewIfNeeded()
+    await throwButton.click()
+    await page
+      .waitForFunction(() => !document.querySelector('[data-flight-throw]')?.hasAttribute('disabled'), undefined, { timeout: 20_000 })
+      .catch(() => undefined)
+  })
+
+  const verdict = (await page.locator('[data-flight-verdict]').first().textContent())?.trim() ?? ''
+  record(/your pitch|jams you|too low|too high|illegal|ball|off the end/i.test(verdict), `${label} verdict headline missing (got "${verdict}")`)
+  const lookFor = (await page.locator('[data-flight-lookfor]').first().textContent())?.trim() ?? ''
+  record(/\d+\D+\d+/.test(lookFor), `${label} look-for window missing (got "${lookFor}")`)
+  const throwEnabled = await page.locator('[data-flight-throw]').isEnabled()
+  record(throwEnabled, `${label} Throw never finished`)
+  const mode = await page.locator('[data-stage-mode]').first().getAttribute('data-stage-mode')
+  if (!webgl) {
+    record(mode === 'schematic', `${label} did not fall back to the schematic (mode ${mode})`)
+    record((await page.locator('[data-flight-schematic] svg').count()) > 0, `${label} schematic did not render`)
+  }
+  const body = await pageText(page)
+  record(!/NaN|undefined|\[object Object\]|Loading\.\.\./.test(body), `${label} shows a failure signature`)
+  record(!/\brpm\b|\bmph\b/i.test(body), `${label} shows a spin or speed figure`)
+  const unexpected = messages.filter((m) => !m.includes('THREE.WebGLRenderer: Error creating WebGL context'))
+  record(unexpected.length === 0, `${label} console warnings/errors: ${unexpected.join(' | ')}`)
+  await assertRenderedVisible(page, 'h1', `${label} heading`)
+  await assertNoHorizontalOverflow(page, label)
+}
+
 // An explicit channel lets local verification use installed Chrome when the
 // bundled headless shell stalls during WebGL page teardown. CI keeps its
 // bundled browser unless the caller opts into a channel.
@@ -614,7 +665,7 @@ async function withPage(callback) {
   const page = await browser.newPage()
   page.setDefaultTimeout(15_000)
   page.setDefaultNavigationTimeout(30_000)
-  console.log(`Smoke ${++smokeStep}/19: ${callback.name || "responsive route"}`)
+  console.log(`Smoke ${++smokeStep}/22: ${callback.name || "responsive route"}`)
   try {
     const priorFailures = failures.length
     await callback(page)
@@ -644,6 +695,9 @@ try {
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 390, height: 844 }))
   await withPage(checkKnowledgeMarkerWrap)
+  await withPage((page) => checkFlightLab(page, { width: 1440, height: 900 }))
+  await withPage((page) => checkFlightLab(page, { width: 390, height: 844 }))
+  await withPage((page) => checkFlightLab(page, { width: 1280, height: 900 }, { webgl: false }))
 } finally {
   await browser.close()
 }
