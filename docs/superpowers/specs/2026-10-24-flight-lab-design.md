@@ -74,8 +74,9 @@ spots are their pitch.
 
 - Each rulebook line is a `Claim`:
   - USSSA: `official-data`.
-  - USA Softball's 6–12 ft arc: `secondhand-attributed` with a note, unless Rule 6
-    text is retrieved.
+  - USA Softball's 6–10 ft arc: `official-data` (2026 rule book, Rule 6C §3H, read
+    2026-10-24). The original app had 6–12 ft from a secondary source; 12 ft is the
+    Senior exception only, so the port corrects it.
   - USA Senior's mat strike: `official-data` if the rule text is retrieved.
 - Bat length (34 in max, USSSA rule 2): `official-data`.
 - "Slow-pitch bats are made at 34 in": `secondhand-attributed`.
