@@ -245,7 +245,7 @@ export function RepertoireChapter() {
         /* grip footage is viewed in the dark — the one coal band on the basic file */
         <div className="scene-coal">
           <div className="mx-auto max-w-6xl px-5 md:px-8">
-            <SpecimenGrips entry={gripEntry} accentColor={accentColor} className="border-t-0 pt-0" />
+            <SpecimenGrips entry={gripEntry} accentColor={accentColor} className="border-t-0 pt-0" pauseControl />
           </div>
         </div>
       ) : null}

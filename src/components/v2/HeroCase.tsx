@@ -81,6 +81,7 @@ export function HeroCase({ featured }: { featured: PitchAtlasEntry }) {
                 entry={featured}
                 maxWidth={460}
                 foil
+                mode="hero"
                 priority
                 className="is-hero-specimen"
                 clipPresentation={{

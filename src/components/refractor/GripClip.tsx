@@ -54,12 +54,16 @@ export function GripClip({
     start: start ?? (sourceOverride ? undefined : clip.start),
   }
   const mediaClass = mediaClassName ? ` ${mediaClassName}` : ''
+  // the library clip's own focus point; a curated override is a different cut with
+  // its own framing (its route's class), so the library's point does not carry over
+  const framing = !sourceOverride && clip.focus ? { objectPosition: `${clip.focus.x}% ${clip.focus.y}%` } : undefined
 
   const poster = (
     <img
       className={`rfx-grip-img rfx-grip-poster media-fade${posterLoaded ? ' is-loaded' : ''}${mediaClass}`}
       src={composedClip.poster}
       alt={composedClip.alt}
+      style={framing}
       // Hero clips paint their poster eagerly at high priority (the LCP element);
       // off-hero clips stay lazy. The video preload follows the same flag.
       loading={priority ? 'eager' : 'lazy'}
@@ -85,6 +89,7 @@ export function GripClip({
         <AutoplayVideo
           clip={composedClip}
           className={`rfx-grip-img media-fade${settled ? ' is-loaded' : ''}${mediaClass}`}
+          style={framing}
           priority={priority}
           loop={playback === 'loop'}
           onSettled={() => setSettled(true)}

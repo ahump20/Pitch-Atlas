@@ -54,6 +54,8 @@ export interface SpecimenFace {
   confidence: { label: string; color: string; approx?: boolean }
   /** True when the pitch carries a filed grip model — the gate for offering 3D. */
   modelled: boolean
+  /** True when the window plays a clip on a loop — the gate for offering Pause. */
+  loops: boolean
 }
 
 export interface ClipPresentation {
@@ -153,5 +155,6 @@ export function specimenFace(
       approx: austinGrip ? false : referenceGripClaim.approximate,
     },
     modelled,
+    loops: Boolean(clip) && (clipPresentation?.playback ?? 'loop') === 'loop',
   }
 }

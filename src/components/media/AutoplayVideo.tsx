@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef, type CSSProperties } from 'react'
 import type { GripClip } from '../../data/grips'
 import { useAutoplayGuard } from '../../hooks/useAutoplayGuard'
-import { autoplayDecision } from './autoplayDecision'
+import { useMotionPref } from '../refractor/material/motionPref'
+import { autoplayDecision, clipPlays } from './autoplayDecision'
 
 /*
   The viewport-gated <video> shared by GripClip (card window) and MediaStage
@@ -28,10 +29,14 @@ import { autoplayDecision } from './autoplayDecision'
       stays a plain, inert <video>.
     - `blocked` (autoplay refused, e.g. iOS Low Power Mode) bubbles up via the
       render callback so the parent can swap to its poster fallback.
+    - The visitor's Pause (the device's motion preference) holds the clip on its
+      frame wherever it is; Resume lets it run again once it is on screen. A loop
+      that would otherwise run for ever always has a way to stop.
 */
 export function AutoplayVideo({
   clip,
   className,
+  style,
   decorative = false,
   priority = false,
   loop = true,
@@ -40,6 +45,8 @@ export function AutoplayVideo({
 }: {
   clip: GripClip
   className: string
+  /** Inline framing for the frame (the clip's focus point), when its caller sets one. */
+  style?: CSSProperties
   /** Backdrop use: hide the clip from assistive tech. */
   decorative?: boolean
   /** Hero-of-the-page media: preload the file eagerly. */
@@ -53,6 +60,19 @@ export function AutoplayVideo({
 }) {
   const { ref, blocked, play, pause } = useAutoplayGuard<HTMLVideoElement>()
   const observerRef = useRef<IntersectionObserver | null>(null)
+  // The site's Pause holds every loop as well as the cards' turn. The observer says
+  // whether the clip is on screen; the visitor's preference says whether it may move.
+  const motion = useMotionPref()
+  const motionRef = useRef(motion)
+  const visibleRef = useRef(false)
+  const sync = useCallback(() => {
+    if (clipPlays(visibleRef.current, motionRef.current)) play()
+    else pause()
+  }, [play, pause])
+  useEffect(() => {
+    motionRef.current = motion
+    if (ref.current) sync()
+  }, [motion, ref, sync])
 
   // Open on the composed in-point. The grip clips start on the raise (ball low
   // or out of frame); seeking to clip.start before the first visible frame means
@@ -78,15 +98,17 @@ export function AutoplayVideo({
       if (el.readyState >= 1) seekToStart(el)
       if (typeof IntersectionObserver === 'undefined') {
         // No observer (jsdom/SSR): a single play attempt so the clip still
-        // autoplays rather than sitting paused.
-        play()
+        // autoplays rather than sitting paused, unless the visitor paused motion.
+        visibleRef.current = true
+        sync()
         return
       }
       const observer = new IntersectionObserver(
         (entries) => {
           const decision = autoplayDecision(entries)
-          if (decision === 'play') play()
-          else if (decision === 'pause') pause()
+          if (decision === 'none') return
+          visibleRef.current = decision === 'play'
+          sync()
         },
         // a sliver on screen counts as visible; start a touch early off the bottom
         { threshold: 0.01, rootMargin: '0px 0px 10% 0px' },
@@ -94,7 +116,7 @@ export function AutoplayVideo({
       observer.observe(el)
       observerRef.current = observer
     },
-    [ref, play, pause, seekToStart],
+    [ref, sync, seekToStart],
   )
 
   // Tear the observer down on unmount.
@@ -106,6 +128,7 @@ export function AutoplayVideo({
     <video
       ref={attach}
       className={className}
+      style={style}
       poster={clip.poster}
       muted
       loop={loop}
