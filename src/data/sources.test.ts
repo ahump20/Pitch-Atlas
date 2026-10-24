@@ -8,6 +8,7 @@ import { CONFIDENCE_META } from './types'
 import type { Claim, PitchAtlasEntry } from './types'
 import { CRAFTSMEN } from './craftsmen'
 import { SOFTBALL_CRAFTSMEN } from './softball/craftsmen'
+import { FLIGHT_LAB_RULEBOOKS, EXAMPLE_LOBS, MEASURED_BATTER, FLIGHT_LAB_NOTES } from './softball/flightLab'
 import { LOST_PITCHES } from './lost-pitches'
 import { LOST_PITCH_ARCHIVE_IMAGES, archiveImageForLostPitch } from './media/archive-images'
 import { REPERTOIRE } from './repertoire'
@@ -199,6 +200,10 @@ describe('provenance note invariant, all sourced data arrays', () => {
     { name: 'REPERTOIRE', data: REPERTOIRE },
     { name: 'QUOTES', data: QUOTES },
     { name: 'TIDBITS', data: TIDBITS },
+    { name: 'FLIGHT_LAB_RULEBOOKS', data: FLIGHT_LAB_RULEBOOKS },
+    { name: 'EXAMPLE_LOBS', data: EXAMPLE_LOBS },
+    { name: 'MEASURED_BATTER', data: [MEASURED_BATTER] },
+    { name: 'FLIGHT_LAB_NOTES', data: FLIGHT_LAB_NOTES },
   ]
   for (const { name, data } of ARRAYS) {
     describe(name, () => {

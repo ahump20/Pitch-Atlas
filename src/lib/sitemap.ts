@@ -37,6 +37,7 @@ export const STATIC_PATHS = [
   '/softball',
   '/softball/fastpitch',
   '/softball/slowpitch',
+  '/softball/flight-lab',
   '/about',
   '/privacy',
   '/support',

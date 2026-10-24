@@ -36,6 +36,7 @@ export const routes: RouteObject[] = [
       { path: 'softball', lazy: () => import('./pages/SoftballHub').then((m) => ({ Component: m.SoftballHub })) },
       { path: 'softball/fastpitch', lazy: () => import('./pages/SoftballFastpitchPage').then((m) => ({ Component: m.SoftballFastpitchPage })) },
       { path: 'softball/slowpitch', lazy: () => import('./pages/SoftballSlowpitchPage').then((m) => ({ Component: m.SoftballSlowpitchPage })) },
+      { path: 'softball/flight-lab', lazy: () => import('./pages/SoftballFlightLabPage').then((m) => ({ Component: m.SoftballFlightLabPage })) },
       { path: 'softball/pitch/:slug', lazy: () => import('./pages/SoftballPitchChapter').then((m) => ({ Component: m.SoftballPitchChapter })) },
       { path: 'softball/craftsmen/:slug', lazy: () => import('./pages/SoftballCraftsmanChapter').then((m) => ({ Component: m.SoftballCraftsmanChapter })) },
       { path: 'about', lazy: () => import('./pages/AboutPage').then((m) => ({ Component: m.AboutPage })) },

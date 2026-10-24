@@ -22,11 +22,17 @@ export interface SegmentedToggleProps {
   onChange?: (value: string) => void
   /** Class merged onto the outer shell. */
   className?: string
+  /** Names the group for assistive tech, so a bare "32" is read as "Compare, 32". */
+  'aria-label'?: string
 }
 
-export function SegmentedToggle({ options, value, onChange, className }: SegmentedToggleProps) {
+export function SegmentedToggle({ options, value, onChange, className, 'aria-label': ariaLabel }: SegmentedToggleProps) {
   return (
-    <div className={cn('inline-flex overflow-hidden rounded-lg border border-ink/25', className)}>
+    <div
+      role={ariaLabel ? 'group' : undefined}
+      aria-label={ariaLabel}
+      className={cn('inline-flex overflow-hidden rounded-lg border border-ink/25', className)}
+    >
       {options.map((option) => {
         const optionValue = typeof option === 'string' ? option : option.value
         const optionLabel = typeof option === 'string' ? option : option.label

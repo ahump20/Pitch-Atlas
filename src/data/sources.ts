@@ -45,6 +45,9 @@ const RETRIEVED_11 = '2026-07-05'
 // Muybridge's plate 273 frames were pulled from Wikimedia Commons for the home
 // page's chapter-mark pitcher on 2026-09-23.
 const RETRIEVED_12 = '2026-09-23'
+// The slow-pitch Flight Lab's rule books and references, each fetched and its
+// text read on 2026-10-24.
+const RETRIEVED_FLIGHT_LAB = '2026-10-24'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1654,6 +1657,49 @@ export const SOURCES = {
     label: 'USSSA — 2025 Slow Pitch Rule Book & By-Laws (PDF)',
     url: 'https://cms.usssa.net/wp-content/uploads/sites/2/2025/01/usssa-slowpitch-2025-rulebook-final.pdf',
     retrievedAt: RETRIEVED_6,
+  },
+
+  // --- Slow-pitch Flight Lab (each URL fetched and its text checked 2026-10-24) ---
+  'sb-usssa-slowpitch-rulebook-2026': {
+    id: 'sb-usssa-slowpitch-rulebook-2026',
+    label: 'USSSA — 2026 Slow Pitch Rule Book (PDF): Rule 6 Sec. 6 arc, the strike-zone definition, Rule 2 Sec. 2 official bat',
+    url: 'https://cms.usssa.net/wp-content/uploads/sites/2/2025/12/usssa-slowpitch-2026-rulebook-final.pdf',
+    retrievedAt: RETRIEVED_FLIGHT_LAB,
+    season: '2026',
+  },
+  'sb-usa-softball-rulebook-2026': {
+    id: 'sb-usa-softball-rulebook-2026',
+    label: 'USA Softball — 2026 Official Rules of Softball (PDF): Rule 6C slow-pitch arc, Senior strike mat, slow-pitch strike zone',
+    url: 'https://www.usasoftball.com/wp-content/uploads/sites/120/2026/01/1-12-2026-Rule-Book.pdf',
+    retrievedAt: RETRIEVED_FLIGHT_LAB,
+    season: '2026',
+  },
+  'sb-baseballmonkey-slowpitch-bats': {
+    id: 'sb-baseballmonkey-slowpitch-bats',
+    label: 'Baseball Monkey — Slowpitch Softball Bat Guide (all slowpitch bats are 34 in)',
+    url: 'https://www.baseballmonkey.com/learn/slowpitch-softball-bat-guide',
+    retrievedAt: RETRIEVED_FLIGHT_LAB,
+  },
+  'sb-russell-sweetspot': {
+    id: 'sb-russell-sweetspot',
+    label: 'Daniel A. Russell, Penn State — What (and where) is the sweet spot of a baseball/softball bat?',
+    url: 'https://www.acs.psu.edu/drussell/bats/sweetspot.html',
+    retrievedAt: RETRIEVED_FLIGHT_LAB,
+  },
+  'sb-flight-lab-measured-swing': {
+    id: 'sb-flight-lab-measured-swing',
+    // First-party, like the grip library: one batter's swing, measured from
+    // their own video and calibrated off home plate. Never named. The URL is the
+    // lab page the swing drives.
+    label: 'Pitch Atlas — one batter’s measured swing (their own video, calibrated off home plate)',
+    url: 'https://pitch-atlas.com/softball/flight-lab',
+    retrievedAt: RETRIEVED_FLIGHT_LAB,
+  },
+  'sb-kensrud-thesis': {
+    id: 'sb-kensrud-thesis',
+    label: 'Jeffrey R. Kensrud, Determining Aerodynamic Properties of Sports Balls in Situ (M.S. thesis, Washington State University)',
+    url: 'https://baseball.physics.illinois.edu/kensrudthesis.pdf',
+    retrievedAt: RETRIEVED_FLIGHT_LAB,
   },
 
   // --- Softball craftsmen: the legends + the new wave ---
