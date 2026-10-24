@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MediaStage } from './MediaStage'
-import { autoplayDecision } from './autoplayDecision'
+import { autoplayDecision, clipPlays } from './autoplayDecision'
 import { gripEntryFor } from '../../data/grips'
 import * as reducedMotion from '../../hooks/useReducedMotion'
 
@@ -41,6 +41,15 @@ describe('MediaStage', () => {
     expect(img).toHaveAttribute('src', clip.poster)
     // reduced motion never mounts the clip at all
     expect(screen.queryByLabelText(clip.alt)).toBeNull()
+  })
+})
+
+describe('clipPlays (the visitor can hold every clip)', () => {
+  it('plays a clip only while it is on screen and motion is not paused', () => {
+    expect(clipPlays(true, 'live')).toBe(true)
+    expect(clipPlays(true, 'paused')).toBe(false)
+    expect(clipPlays(false, 'live')).toBe(false)
+    expect(clipPlays(false, 'paused')).toBe(false)
   })
 })
 

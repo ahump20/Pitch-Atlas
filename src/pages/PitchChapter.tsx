@@ -4,9 +4,9 @@ import { useSeoMeta } from '@unhead/react'
 import type {
   MasterVariantRecord,
   PitchAtlasEntry,
-  PitchFamily,
   Source,
 } from '../data/types'
+import { FAMILY_LABEL } from '../data/family'
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
@@ -19,6 +19,9 @@ import { CompareButton } from '../components/compare/CompareButton'
 import { RefractorBall } from '../components/refractor/RefractorBall'
 import { GripClip } from '../components/refractor/GripClip'
 import { GripFace } from '../components/refractor/GripFace'
+import { PauseMotionButton } from '../components/refractor/PauseMotionButton'
+import { useMotionPref } from '../components/refractor/material/motionPref'
+import { useReducedMotion } from '../hooks/useReducedMotion'
 import { accentButton, accentForSlug, accentInk } from '../components/refractor/accents'
 import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
@@ -42,12 +45,6 @@ import { NotFound } from './NotFound'
   No player likeness ever; the ball is the subject. Foil is decoration; every
   reading is sourced.
 */
-
-const FAMILY_LABEL: Record<PitchFamily, string> = {
-  fastball: 'Fastball',
-  breaking: 'Breaking',
-  offspeed: 'Offspeed',
-}
 
 const PITCH_SLUG_ALIASES: Record<string, string> = {
   'twelve-six-curveball': 'twelve-six',
@@ -109,6 +106,12 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
   const grip = gripEntryFor(display.slug)
   const heroClip = grip?.clip
   const heroPhoto = !heroClip ? grip?.photos[0] : undefined
+  // The visitor's Pause is kept on the device and holds every loop on the site, so
+  // the clip carries the way back here, and the chip says what the clip is doing.
+  // Reduced motion shows the poster frame, so there is nothing to pause.
+  const reduced = useReducedMotion()
+  const held = useMotionPref() === 'paused'
+  const clipState = !heroClip || reduced ? '' : held ? ' · held' : ' · in motion'
 
   return (
     <section className="relative grid grid-cols-1 items-center gap-[clamp(24px,4vw,52px)] overflow-hidden pt-3 pb-[clamp(34px,5vw,56px)] md:grid-cols-[0.92fr_1.08fr]">
@@ -163,10 +166,15 @@ function ChapterHero({ entry }: { entry: PitchAtlasEntry }) {
           </div>
         )}
         {heroClip || heroPhoto ? (
-          <span className="absolute bottom-3.5 left-3.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
-            <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
-            Austin&rsquo;s grip{heroClip ? ' · in motion' : ''}
-          </span>
+          // one bar along the foot: the chip on the left, Pause on the right; where they
+          // cannot share a line the control rises above the chip rather than covering it
+          <div className="pa-media-bar absolute inset-x-3.5 bottom-3.5 z-10 flex flex-wrap-reverse items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-bone backdrop-blur-sm">
+              <i className="h-1.5 w-1.5 rounded-full bg-cyan" aria-hidden="true" />
+              Austin&rsquo;s grip{clipState}
+            </span>
+            {heroClip && !reduced ? <PauseMotionButton className="is-on-media ml-auto" /> : null}
+          </div>
         ) : null}
       </div>
 

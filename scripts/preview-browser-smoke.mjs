@@ -546,6 +546,36 @@ async function checkFourSeam(page) {
   await assertNoHorizontalOverflow(page, 'Four-seam desktop')
 }
 
+// A phone has no Escape key, so the inspector's close button has to be the thing under
+// a finger at its own centre, whatever the layout puts beside or beneath it.
+async function checkInspectorClose(page, viewport) {
+  await page.setViewportSize(viewport)
+  const label = `Inspector ${viewport.width}x${viewport.height}`
+  await page.goto(route('/?inspect=four-seam'), { waitUntil: 'domcontentloaded' })
+  await page.locator('.specimen-inspector .rfx-card').first().waitFor({ state: 'visible', timeout: 20_000 })
+  const close = page.getByRole('dialog').getByRole('button', { name: 'Close' })
+  const reach = await close
+    .evaluate((button) => {
+      const r = button.getBoundingClientRect()
+      const hit = document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)
+      return {
+        inView: r.top >= 0 && r.left >= 0 && r.bottom <= innerHeight && r.right <= innerWidth,
+        onTop: hit === button || button.contains(hit),
+      }
+    })
+    .catch(() => ({ inView: false, onTop: false }))
+  record(reach.inView, `${label} close button is not in the first viewport`)
+  record(reach.onTop, `${label} close button is covered by another element`)
+  if (!reach.onTop) return
+  await close.click()
+  const closed = await page
+    .getByRole('dialog')
+    .waitFor({ state: 'detached', timeout: 5_000 })
+    .then(() => true, () => false)
+  record(closed, `${label} close button does not close the inspector`)
+  record(!new URL(page.url()).searchParams.has('inspect'), `${label} closing left ?inspect= in the address`)
+}
+
 async function checkSupportAndPrivacy(page, viewport) {
   await page.setViewportSize(viewport)
 
@@ -614,7 +644,7 @@ async function withPage(callback) {
   const page = await browser.newPage()
   page.setDefaultTimeout(15_000)
   page.setDefaultNavigationTimeout(30_000)
-  console.log(`Smoke ${++smokeStep}/19: ${callback.name || "responsive route"}`)
+  console.log(`Smoke ${++smokeStep}/21: ${callback.name || "responsive route"}`)
   try {
     const priorFailures = failures.length
     await callback(page)
@@ -641,6 +671,8 @@ try {
   await withPage((page) => checkHomeCardBacks(page, { width: 1280, height: 900 }))
   await withPage(checkHomeMobileMenu)
   await withPage(checkFourSeam)
+  await withPage((page) => checkInspectorClose(page, { width: 390, height: 844 }))
+  await withPage((page) => checkInspectorClose(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 390, height: 844 }))
   await withPage(checkKnowledgeMarkerWrap)

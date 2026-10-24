@@ -11,6 +11,7 @@ import { CloseCta } from '../components/v2/CloseCta'
 import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
 import { ArchiveDiscovery } from '../components/v2/ArchiveDiscovery'
 import { useArchiveGleam } from '../hooks/useArchiveGleam'
+import { SpecimenInspectorHost } from '../components/inspector/SpecimenInspectorHost'
 
 /*
   The Refractor Case — the home. Five deliberate beats: specimen, seam, filed set,
@@ -40,7 +41,7 @@ export function AtlasHomeV2() {
   })
 
   return (
-    <>
+    <SpecimenInspectorHost>
       <HeroCase featured={featured} />
       <ArchiveDiscovery />
       <RefractionBridge featured={featured} />
@@ -54,6 +55,6 @@ export function AtlasHomeV2() {
       />
       <WingsNav />
       <CloseCta />
-    </>
+    </SpecimenInspectorHost>
   )
 }

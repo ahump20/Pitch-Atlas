@@ -1,5 +1,4 @@
 /* The archive folio: the collectible object and the account it opens. */
-.archive-case .is-foil-live .rfx-foil-canvas { opacity: .28; }
 .archive-eyebrow { font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; }
 .archive-text-link { display: inline-flex; align-items: center; gap: 18px; min-height: 44px; color: inherit; font: 600 15px/1.4 var(--font-prose); text-decoration: underline; text-underline-offset: 5px; text-decoration-color: #a68a5966; }
 .archive-text-link:hover { text-decoration-color: currentColor; }
