@@ -186,7 +186,7 @@ export function DesignSystemShowcase() {
 
       <Section eyebrow="Signature" title="The specimen card">
         <div className="max-w-[340px]">
-          <PitchSpecimenCard entry={featured} maxWidth={340} foil={false} />
+          <PitchSpecimenCard entry={featured} maxWidth={340} foil={false} pauseControl />
         </div>
       </Section>
     </main>

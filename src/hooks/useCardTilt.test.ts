@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import type React from 'react'
 import { stepSpring, clamp, lightFromTilt, createTiltEngine } from './useCardTilt'
-import { backingSize, hexToTriple, DPR_CAP } from '../components/refractor/foil/foilProgram'
+import { backingSize, hexToTriple, DPR_CAP } from '../components/refractor/material/cardMaterialProgram'
 
 /*
   The foil card's physics and packing math, tested as pure functions — no GL

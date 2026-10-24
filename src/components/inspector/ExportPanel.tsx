@@ -1,0 +1,191 @@
+import { useEffect, useRef, useState, type RefObject } from 'react'
+import type { PitchAtlasEntry } from '../../data/types'
+import type { TiltEngine } from '../../hooks/useCardTilt'
+import type { CardMaterial } from '../refractor/material/materialPresets'
+import { exportEligibility } from './export/eligibility'
+import { downloadBlob, exportFilename, exportSpecimenPng } from './export/exportPng'
+import { exportSpecimenWebm, probeWebmSupport, webmSupport } from './export/exportWebm'
+import type { Eligibility, ExportBackdrop, ExportFace, ExportRequest, WebmSupport } from './export/types'
+
+/*
+  Export: a PNG of the card as it stands (pose, light, finish), or a WebM loop that
+  closes without a jump: seven seconds, every frame, where the browser has a WebM
+  encoder; recorded live, and only as long as it kept up, where it has only a
+  recorder. The note under the buttons says which, before the click, from the support
+  check, and the export is handed that check's answer rather than asking again. Both
+  are composed offscreen from the record, so the visitor's presentation is untouched.
+  Where a browser cannot record WebM the panel says so and the PNG still works. A face
+  whose media is not first-party or attributed under a licence that allows it cannot
+  be exported, and the panel says why. The backdrop is a two-part switch, the same
+  control as Front / Sources, so the rail's one solid cream stays Study grip's.
+*/
+
+/** What the loop will be, said before the click; the length is promised only where every frame is kept. */
+function loopNote(webm: WebmSupport): string | null {
+  if (!webm.ok) return null
+  if (webm.via?.path === 'encoder') return 'The WebM is a seven-second loop. It can take a minute or more to make.'
+  // recorded live, the loop takes about as long as it plays, so no time is promised
+  if (webm.via?.path === 'recorder') return 'The WebM is recorded live, so it may stutter or run short.'
+  return 'The WebM can take a minute or more to make.'
+}
+
+/** A file's size the way the Finder counts it; anything that would round to 1000 KB reads in MB. */
+function fileSize(bytes: number): string {
+  return bytes >= 999_500 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`
+}
+
+type Status =
+  | { kind: 'idle' }
+  | { kind: 'working'; what: 'png' | 'webm'; fraction: number; phase: string }
+  | { kind: 'done'; message: string }
+  | { kind: 'error'; message: string }
+
+export function ExportPanel({
+  entry,
+  face,
+  front,
+  back,
+  engine,
+  stageRef,
+  onBusy,
+}: {
+  entry: PitchAtlasEntry
+  face: ExportFace
+  front: CardMaterial
+  back: CardMaterial
+  engine: TiltEngine | null
+  stageRef: RefObject<HTMLElement | null>
+  /** encoding runs for a few seconds; the live card holds still meanwhile */
+  onBusy: (busy: boolean) => void
+}) {
+  const [backdrop, setBackdrop] = useState<ExportBackdrop>('void')
+  const [status, setStatus] = useState<Status>({ kind: 'idle' })
+  // support is a property of the browser: the quick answer at once, then the probe's,
+  // which asks for a WebM codec rather than trusting any encoder. Eligibility is the face's.
+  const [webm, setWebm] = useState<WebmSupport>(() => webmSupport())
+  const eligibility: Eligibility = exportEligibility(entry, face)
+  const abort = useRef<AbortController | null>(null)
+
+  useEffect(() => () => abort.current?.abort(), [])
+  useEffect(() => {
+    let live = true
+    void probeWebmSupport().then((answer) => {
+      if (live) setWebm(answer)
+    })
+    return () => {
+      live = false
+    }
+  }, [])
+
+  function request(): ExportRequest | null {
+    if (!engine) return null
+    const s = engine.store.get()
+    const stage = stageRef.current?.querySelector<HTMLElement>('.v2-face:not(.v2-face-back) .rfx-stage') ?? null
+    return {
+      entry,
+      face,
+      material: front,
+      backMaterial: back,
+      pose: { rx: s.rx, ry: s.ry },
+      light: { x: (s.mx + s.lightOffsetX) / 100, y: (s.my + s.lightOffsetY) / 100, height: s.lightHeight, strength: s.lightStrength },
+      backdrop,
+      stage,
+      via: webm.ok ? webm.via : undefined,
+    }
+  }
+
+  async function exportPng() {
+    const req = request()
+    if (!req) return
+    setStatus({ kind: 'working', what: 'png', fraction: 0.2, phase: 'Composing' })
+    try {
+      const blob = await exportSpecimenPng(req)
+      const name = exportFilename(entry, face, 'png')
+      downloadBlob(blob, name)
+      setStatus({ kind: 'done', message: `Saved ${name} (${fileSize(blob.size)}).` })
+    } catch (error) {
+      setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'The PNG could not be made.' })
+    }
+  }
+
+  async function exportWebm() {
+    const req = request()
+    if (!req || !webm.ok) return
+    const controller = new AbortController()
+    abort.current = controller
+    onBusy(true)
+    setStatus({ kind: 'working', what: 'webm', fraction: 0, phase: 'Preparing' })
+    try {
+      const { blob, path, via } = await exportSpecimenWebm(
+        req,
+        (p) => setStatus({ kind: 'working', what: 'webm', fraction: p.fraction, phase: p.phase === 'encoding' ? 'Encoding' : p.phase === 'rendering' ? 'Rendering frames' : 'Preparing' }),
+        controller.signal,
+      )
+      const name = exportFilename(entry, face, 'webm')
+      downloadBlob(blob, name)
+      // the next promise, and the next loop, follow how this one was really made
+      setWebm({ ok: true, via })
+      // only the encoder's file is known to hold every frame; the live recorder keeps
+      // what it had time for, so its loop is not promised a length
+      setStatus({
+        kind: 'done',
+        message:
+          path === 'encoder'
+            ? `Saved ${name} (${fileSize(blob.size)}): a seven-second loop.`
+            : `Saved ${name} (${fileSize(blob.size)}). Recorded live, so it may stutter and run short of seven seconds.`,
+      })
+    } catch (error) {
+      if (controller.signal.aborted) setStatus({ kind: 'idle' })
+      else setStatus({ kind: 'error', message: error instanceof Error ? error.message : 'The WebM could not be recorded.' })
+    } finally {
+      onBusy(false)
+      abort.current = null
+    }
+  }
+
+  const working = status.kind === 'working'
+  const blocked = !eligibility.exportable
+  const note = eligibility.exportable && !working ? loopNote(webm) : null
+
+  return (
+    <section className="specimen-export" aria-label="Export">
+      <h3>Export</h3>
+      <div className="specimen-seg" role="group" aria-label="Backdrop">
+        <button type="button" aria-pressed={backdrop === 'void'} onClick={() => setBackdrop('void')}>Dark</button>
+        <button type="button" aria-pressed={backdrop === 'transparent'} onClick={() => setBackdrop('transparent')}>Transparent</button>
+      </div>
+      <div className="specimen-rail-actions">
+        <button type="button" className="specimen-action" onClick={exportPng} disabled={working || blocked || !engine}>
+          Export PNG
+        </button>
+        <button type="button" className="specimen-action" onClick={exportWebm} disabled={working || blocked || !engine || !webm.ok}>
+          Export WebM
+        </button>
+        {working ? (
+          <button type="button" className="specimen-action specimen-cancel" onClick={() => abort.current?.abort()} disabled={status.what !== 'webm'}>
+            Cancel
+          </button>
+        ) : null}
+      </div>
+      {note ? <p className="specimen-export-note">{note}</p> : null}
+      {working ? (
+        <>
+          <progress max={1} value={status.fraction} aria-label={status.phase} />
+          <p className="specimen-export-status" aria-live="polite">{status.phase}…</p>
+        </>
+      ) : null}
+      {status.kind === 'done' ? <p className="specimen-export-status" aria-live="polite">{status.message}</p> : null}
+      {status.kind === 'error' ? <p className="specimen-export-status" data-tone="error" role="alert">{status.message}</p> : null}
+      {!eligibility.exportable ? (
+        <p className="specimen-export-status" data-tone="error">{eligibility.reason ?? 'This face cannot be exported.'}</p>
+      ) : null}
+      {eligibility.exportable && eligibility.attribution ? (
+        <p className="specimen-export-note specimen-caption">
+          <span className="specimen-caption-label">Caption</span>
+          <span>{eligibility.attribution}</span>
+        </p>
+      ) : null}
+      {!webm.ok ? <p className="specimen-export-note">{webm.reason}</p> : null}
+    </section>
+  )
+}

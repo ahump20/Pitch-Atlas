@@ -1,0 +1,235 @@
+/* The inspector: a dark room for one enlarged specimen and a compact rail.
+   Unlayered on purpose, like archive.css, so it overrides the dialog primitive's
+   utility classes without !important. */
+.specimen-inspector {
+  /* the room keeps clear of a notch, a sensor housing or a home bar on any side:
+     the insets come off the size, and the box shifts away from the larger one */
+  --safe-x: calc(env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
+  --safe-y: calc(env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+  /* on a wide screen the room is as wide as the card it holds, an even margin either
+     side of it and the rail, so the card never floats in an empty stage; the card is as
+     large as the screen's height allows */
+  --card-w: min(560px, calc((100dvh - 220px) * 5 / 7));
+  --room-gutter: clamp(56px, 7vw, 104px);
+  width: 100%; max-width: min(1180px, calc(100% - 2rem - var(--safe-x)), calc(var(--card-w) + 2 * var(--room-gutter) + 344px)); padding: 0;
+  margin-left: calc((env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
+  margin-top: calc((env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)) / 2);
+  background: #0b0a09; color: #efe6d6; border-radius: 14px;
+  /* bright enough that the box holds its sides against the dimmed page */
+  border: 1px solid #a38a5e66; box-shadow: 0 40px 90px -30px #000, inset 0 1px 0 #f6f1e614;
+  max-height: calc(100dvh - 2rem - var(--safe-y)); overflow: auto; gap: 0;
+}
+/* the grid fills the dialog inside its 1px border, so the dialog itself never scrolls.
+   Three cells: the stage, the header, the rail. On a wide screen and a phone on its
+   side the header sits over the rail beside the stage; on an upright phone it runs
+   across the top, then the stage, then the rail. */
+.specimen-inspector-grid {
+  display: grid; grid-template-columns: minmax(0, 1fr) 344px; grid-template-rows: auto minmax(0, 1fr);
+  grid-template-areas: "stage head" "stage rail";
+  height: min(820px, calc(100dvh - 2rem - 2px - var(--safe-y)));
+}
+.specimen-stage {
+  grid-area: stage;
+  position: relative; display: grid; place-items: center; padding: clamp(24px, 4vw, 56px); min-height: 0;
+  background: radial-gradient(ellipse at 50% 38%, #1c1814 0%, #0b0a09 72%); outline: none;
+  border-radius: 14px 0 0 14px;
+}
+/* the divider between the room and the rail stops short of the dialog's edges */
+.specimen-stage::after { content: ''; position: absolute; top: 12px; bottom: 12px; right: 0; width: 1px; background: #a38a5e2e; pointer-events: none; }
+.specimen-stage.is-ember { background: radial-gradient(ellipse at 50% 38%, #1f130b 0%, #0b0a09 72%); }
+.specimen-stage:focus-visible { box-shadow: inset 0 0 0 2px var(--color-cyan); }
+/* the room: the page behind dims and softens until nothing reads through it */
+.specimen-inspector-overlay { background: #050403e0; -webkit-backdrop-filter: blur(10px) saturate(.7); backdrop-filter: blur(10px) saturate(.7); }
+.specimen-rig { position: relative; width: 100%; max-width: var(--card-w); perspective: 1600px; margin: auto; }
+/* the floor: a tight, dark contact shadow at the card's foot, still while the card turns,
+   over a faint warm floor light it can read against in the dark room */
+.specimen-rig::before { content: ''; position: absolute; left: 15%; right: 15%; bottom: -2.5%; height: 5%; border-radius: 50%; background: radial-gradient(closest-side, #000000f2, #00000000); filter: blur(4px); pointer-events: none; }
+/* it reaches at most 14px under the card, inside every stage's padding, so it never adds
+   to what the dialog scrolls */
+.specimen-rig::after { content: ''; position: absolute; z-index: -1; left: -8%; right: -8%; bottom: max(-6%, -14px); height: 14%; border-radius: 50%; background: radial-gradient(closest-side, #e9d3a614, #e9d3a600); pointer-events: none; }
+.specimen-rig .rfx-holder { max-width: none; }
+/* in the dark room the cream plate steps down a little, so the grip stays the
+   brightest thing in view; the print itself, and every export, keep the true plate */
+.specimen-rig .rfx-read { filter: brightness(.88); }
+/* a phone-sized card in the viewer: the one line that teaches the grip is the most
+   readable text on it, and may take two lines; the source chip tucks into the window's
+   corner, tighter, so it covers less of the hand it labels. The page cards and every
+   export keep the true card. */
+@container (width <= 420px) {
+  .specimen-rig .rfx-cue { font-size: max(14px, calc(var(--rfxu) * 3.9)); line-height: 1.25; -webkit-line-clamp: 2; }
+}
+@container (width <= 340px) {
+  .specimen-rig .rfx-gripchip { left: calc(var(--rfxu) * 2.2); bottom: calc(var(--rfxu) * 2.2); gap: var(--rfxu); padding: calc(var(--rfxu) * .6) calc(var(--rfxu) * 1.6); font-size: max(7px, calc(var(--rfxu) * 2)); letter-spacing: .06em; }
+}
+/* smaller still (a phone on its side): "Grip tell" and "Filed specimen" step aside, their
+   type would be under 7px, and the cue takes the plate */
+@container (width <= 240px) {
+  .specimen-rig .rfx-cue { font-size: max(12px, calc(var(--rfxu) * 3.9)); }
+  .specimen-rig .rfx-readmeta, .specimen-rig .rfx-overline { display: none; }
+}
+.specimen-rig .rfx-card { rotate: 0deg; }
+.specimen-rig .v2-face-back { perspective: 1600px; }
+/* the room's floor: a soft contact shadow under the card that follows its tilt */
+.specimen-rig .rfx-card.is-inspected { box-shadow:
+  0 0 0 1px #b9c6cc66, 0 0 0 3px #09090b, 0 3px 0 3px #35383c, 0 5px 0 3px #101114, 0 7px 0 3px #42464b, 0 9px 0 3px #08090b,
+  calc(var(--rx, 0deg) / 1deg * -1.2px) calc(36px + var(--ry, 0deg) / 1deg * 1px) 54px -18px #000d,
+  0 10px 16px -6px #000b, inset 0 1px 1px #e7edf277, inset 0 -3px 5px #000c; }
+.specimen-rig .rfx-card.is-gold.is-inspected { box-shadow:
+  0 0 0 3px #000, 0 0 0 4px color-mix(in srgb, #bf5700 62%, #1c0e02), 0 0 0 6px #000, 0 0 0 7px color-mix(in srgb, #bf5700 30%, transparent),
+  0 4px 0 6px #46240e, 0 7px 0 6px #130b05,
+  calc(var(--rx, 0deg) / 1deg * -1.2px) calc(38px + var(--ry, 0deg) / 1deg * 1px) 60px -20px #000e,
+  0 10px 16px -6px #000b, inset 0 2px 0 rgba(255,224,204,.4), inset 0 -14px 22px -14px rgba(0,0,0,.95), 0 0 40px -22px rgba(191,87,0,.6); }
+
+/* the rail scrolls on its own, under its header; the card stays put while the Finish panel is open.
+   Every control in it stands one height (--rail-control), 44px wherever a finger is the pointer. */
+.specimen-rail { --rail-control: 40px; grid-area: rail; display: flex; flex-direction: column; gap: 16px; padding: 16px 24px 32px; background: #110f0d; border-radius: 0 0 14px 0; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #a38a5e66 transparent;
+  /* a control reached by Tab stops above the fade, never inside it */
+  scroll-padding-bottom: 32px; }
+/* more follows: whatever scrolls fades at its foot until the last of it is in view.
+   The fade rides the scroll position, so it is gone at the end and absent where
+   nothing scrolls; a browser without scroll timelines shows no fade, never a stuck one. */
+@property --specimen-fade { syntax: '<length>'; inherits: false; initial-value: 0px; }
+@keyframes specimen-fade-out { 0%, 88% { --specimen-fade: 24px; } 100% { --specimen-fade: 0px; } }
+/* short, and never fully clear, so a control under it still reads as a control */
+@supports (animation-timeline: scroll()) {
+  .specimen-rail {
+    mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0006);
+    animation: specimen-fade-out linear both; animation-timeline: scroll(self);
+  }
+}
+/* the header says what the card does not: the full name, and the family where the name
+   does not say it. The close disc is its last item, so the name keeps a margin from it
+   at every size; at 32px the longest name, "Four-seam fastball", holds one line. */
+.specimen-rail-head { grid-area: head; display: flex; align-items: center; gap: 20px; padding: 24px 16px 4px 24px; background: #110f0d; border-radius: 0 14px 0 0; }
+.specimen-rail-title { flex: 1; min-width: 0; display: grid; gap: 6px; }
+.specimen-rail-head .archive-eyebrow { margin: 0; color: #c4a777; }
+.specimen-rail-head h2 { margin: 0; font: 400 clamp(26px, 2.2vw, 32px)/1.05 var(--font-display); letter-spacing: -.02em; color: #f3ecdd; text-wrap: balance; }
+/* Close: a dark disc with a faint gold ring, so its whole target shows on the dark room */
+.specimen-close { flex: none; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 999px; background: #0b0a09cc; color: #d9ccb3; box-shadow: inset 0 0 0 1px #a38a5e59; cursor: pointer; transition: background 140ms, color 140ms, box-shadow 140ms; }
+.specimen-close:hover { background: #1c1814; color: #f6f1e6; box-shadow: inset 0 0 0 1px #c8a35c99; }
+.specimen-close:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; }
+/* the view row: which face shows, then the two controls that steer the view rather
+   than the card (the turn's pause and the reset), as quiet square icon buttons */
+/* a column for each button that is there: under reduced motion there is no Pause, and an
+   empty column would leave the row 8px short of the rail's edge */
+.specimen-view { display: grid; grid-template-columns: minmax(0, 1fr); grid-auto-flow: column; grid-auto-columns: auto; gap: 8px; }
+.specimen-icon-action { width: var(--rail-control); min-height: var(--rail-control); padding: 0; border-color: #8a7a5e59; color: #b7ab93; }
+.specimen-icon-action .specimen-action-label { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+/* Front / Sources (and the export's Dark / Transparent): two equal halves the height of
+   every other control. Both halves have a surface, so each reads as a button; the face
+   showing is lit and keyed in gold. The gold fill belongs to the one action below it. */
+.specimen-seg { display: grid; grid-template-columns: 1fr 1fr; height: var(--rail-control); padding: 2px; border: 1px solid #a38a5e45; border-radius: 7px; background: #0b0a09; }
+.specimen-seg button { min-height: 0; padding: 0 14px; border-radius: 5px; background: #f6f1e608; font: 600 12px/1 var(--font-prose); color: #b7ab93; cursor: pointer; transition: background 140ms, color 140ms, box-shadow 140ms; }
+.specimen-seg button:hover { color: #efe6d6; background: #f6f1e614; }
+.specimen-seg button[aria-pressed=true] { background: #3a3125; color: #fff8ea; box-shadow: inset 0 0 0 1px #c8a35c; }
+.specimen-seg button:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; }
+/* the one primary: into the grip lab, solid, in the switch's gold, so the cream stays
+   the card's plate (#1d1710 on #d6b26e, about 8.9:1) */
+.specimen-primary { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: var(--rail-control); padding: 8px 16px; border: 1px solid #c8a35c; border-radius: 6px; background: #d6b26e; color: #1d1710; font: 600 13px/1.2 var(--font-prose); text-decoration: none; transition: background 140ms, box-shadow 140ms; }
+.specimen-primary:hover { background: #e2c182; box-shadow: 0 0 0 1px #e9cf95; }
+.specimen-primary:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 3px; }
+/* everything else: two equal columns, one right edge */
+.specimen-rail-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.specimen-rail-actions > * { width: 100%; min-height: var(--rail-control); }
+/* the export's two buttons are two equal halves like every pair above them; the loop's
+   length lives in the note under them, so neither label outgrows its half. Cancel,
+   while a loop is being made, takes the row beneath. */
+.specimen-cancel { grid-column: 1 / -1; }
+.specimen-chevron { transition: rotate 160ms; }
+.specimen-action[aria-expanded=true] .specimen-chevron { rotate: 180deg; }
+/* the file: one link under one underline, the arrow inside it */
+.specimen-rail-file { display: inline-block; align-self: flex-start; padding-block: 11px; color: #dda775; font: 600 15px/22px var(--font-prose); text-decoration: underline; text-underline-offset: 5px; text-decoration-color: #a68a5966; }
+.specimen-rail-file:hover { text-decoration-color: currentColor; }
+.specimen-rail-file:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; border-radius: 2px; }
+/* the keys, as keys, right under the last link (pinned to the rail's foot they left a
+   dead band in the middle), as an even two-by-two grid, the four arrows one chip */
+.specimen-rail-keys { display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid #a38a5e1f; }
+.specimen-rail-keys p { margin: 0; font: 11px/1.6 var(--font-mono); letter-spacing: .04em; color: #9b8f7a; }
+.specimen-hint-keys { display: grid; grid-template-columns: repeat(2, max-content); gap: 8px 28px; }
+.specimen-hint-keys > span { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.specimen-key-arrows { letter-spacing: .28em; padding-right: 3px; }
+.specimen-rail-keys kbd { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border: 1px solid #a38a5e55; border-bottom-width: 2px; border-radius: 4px; background: #17140f; color: #e7dcc6; font: 600 10px/1 var(--font-mono); }
+.specimen-action:disabled { opacity: .45; cursor: default; }
+
+.specimen-finish, .specimen-export { display: flex; flex-direction: column; gap: 12px; padding-top: 14px; border-top: 1px solid #a38a5e2e; }
+.specimen-finish h3, .specimen-export h3 { margin: 0; font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; color: #c4a777; }
+/* the Finish panel's choices: squared to the buttons' corner, and a chosen one lit and
+   keyed in gold with a dot, never filled cream (the cream is Study grip's alone) */
+.specimen-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.specimen-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 32px; padding: 5px 10px; border: 1px solid #8a7a5e80; border-radius: 6px; background: transparent; color: #d9ccb3; font: 600 11px/1 var(--font-prose); cursor: pointer; }
+.specimen-chip[aria-pressed=true] { background: #2a241c; color: #f6f1e6; border-color: #c8a35c; }
+.specimen-chip[aria-pressed=true]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #c8a35c; }
+.specimen-chip:focus-visible { outline: 2px solid var(--color-cyan); outline-offset: 2px; }
+.specimen-finish-list { display: flex; flex-direction: column; gap: 6px; }
+.specimen-finish-row { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: center; }
+.specimen-finish-row input[type=checkbox] { width: 16px; height: 16px; accent-color: #bf5700; }
+.specimen-range { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; font: 12px/1.3 var(--font-prose); color: #cfc2a8; }
+.specimen-range input[type=range] { grid-column: 1 / -1; width: 100%; min-height: 28px; accent-color: #bf5700; }
+.specimen-range output { font: 11px/1 var(--font-mono); color: #9b8f7a; }
+.specimen-advanced summary { cursor: pointer; min-height: 36px; display: flex; align-items: center; font: 600 12px/1 var(--font-prose); color: #d9ccb3; }
+.specimen-advanced-body { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+.specimen-export progress { width: 100%; height: 6px; accent-color: #c8a56a; }
+.specimen-export-status { margin: 0; font: 12px/1.5 var(--font-prose); color: #cfc2a8; }
+.specimen-export-status[data-tone=error] { color: #ffb1a8; }
+/* the notes read as sentences: the prose face, wrapped so no word is left alone on a line */
+.specimen-export-note { margin: 0; font: 12px/1.5 var(--font-prose); color: #a89c86; text-wrap: pretty; }
+.specimen-caption { display: grid; gap: 2px; }
+.specimen-caption-label { font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; color: #c4a777; }
+
+@media (max-width: 899px) {
+  .specimen-inspector-grid { grid-template-columns: 1fr; grid-template-rows: auto auto auto; grid-template-areas: "head" "stage" "rail"; height: auto; }
+  .specimen-rail { overflow: visible; }
+  /* the top strip says what this is, beside the close disc; the card sits centred in
+     its room below it (beneath the card the disc took no taps: a finger there grabbed the card) */
+  .specimen-rail-head { padding: 12px 8px 4px 16px; background: transparent; border-radius: 14px 14px 0 0; }
+  .specimen-rail-title { gap: 4px; }
+  .specimen-rail-head h2 { font-size: 26px; }
+  .specimen-stage { border-radius: 0; padding: 16px; }
+  .specimen-stage::after { top: auto; bottom: 0; left: 12px; right: 12px; width: auto; height: 1px; }
+  /* sized to fit the screen's height, never below a card you can read; past that the dialog scrolls */
+  .specimen-rig { max-width: min(440px, 100%, max(220px, calc((100dvh - 390px - var(--safe-y)) * 5 / 7))); }
+  .specimen-rail { border-radius: 0 0 14px 14px; padding: 20px 16px 28px; }
+  /* here the dialog is what scrolls, so the fade (and the room Tab keeps above it)
+     rides the dialog, and the rail, which no longer scrolls, carries no mask */
+  .specimen-inspector { max-width: min(1180px, calc(100% - 2rem - var(--safe-x))); scroll-padding-bottom: 32px; }
+  @supports (animation-timeline: scroll()) {
+    .specimen-inspector {
+      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0006);
+      animation: specimen-fade-out linear both; animation-timeline: scroll(self);
+    }
+    .specimen-rail { mask-image: none; animation: none; }
+  }
+}
+/* a phone on its side: the card beside the rail, sized to the height it has */
+@media (max-width: 899px) and (max-height: 520px) and (orientation: landscape) {
+  .specimen-inspector-grid { grid-template-columns: minmax(0, 1fr) minmax(220px, 300px); grid-template-rows: auto minmax(0, 1fr); grid-template-areas: "stage head" "stage rail"; height: calc(100dvh - 2rem - 2px - var(--safe-y)); }
+  /* the card clears the dialog's edges: a little more room below, for its slab and its shadow */
+  .specimen-stage { border-radius: 14px 0 0 14px; padding: 12px 10px 22px; }
+  .specimen-stage::after { top: 12px; bottom: 12px; left: auto; right: 0; width: 1px; height: auto; }
+  .specimen-rig { max-width: max(150px, calc((100dvh - 2rem - 2px - 34px - var(--safe-y)) * 5 / 7)); }
+  .specimen-rail-head { padding: 10px 8px 2px 14px; background: #110f0d; border-radius: 0 14px 0 0; }
+  .specimen-rail { overflow-y: auto; gap: 12px; border-radius: 0 0 14px 0; padding: 10px 14px 20px; }
+  /* on its side the rail scrolls again, so the fade returns to it */
+  @supports (animation-timeline: scroll()) {
+    .specimen-inspector { mask-image: none; animation: none; }
+    .specimen-rail {
+      mask-image: linear-gradient(#000 calc(100% - var(--specimen-fade)), #0006);
+      animation: specimen-fade-out linear both; animation-timeline: scroll(self);
+    }
+  }
+  /* one line: the family beside the name, so the controls start sooner */
+  .specimen-rail-title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; }
+  .specimen-rail-head h2 { font-size: 20px; }
+}
+@media (max-height: 520px) and (min-width: 900px) { .specimen-inspector { --card-w: calc((100dvh - 120px) * 5 / 7); } }
+@media (any-pointer: coarse) {
+  .specimen-rail { --rail-control: 44px; }
+  /* the switch holds the 44px line as a whole: its halves fill it */
+  .specimen-seg { padding: 0; }
+  .specimen-chip, .specimen-advanced summary { min-height: 44px; }
+  .specimen-range input[type=range] { min-height: 44px; }
+  .specimen-close { width: 44px; height: 44px; }
+}
+/* a touch-only screen has no keys to show */
+@media (hover: none) and (pointer: coarse) { .specimen-hint-keys { display: none; } }
+@media (prefers-reduced-motion: reduce) { .specimen-rig .v2-flip-inner, .specimen-chevron { transition: none; } }

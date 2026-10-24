@@ -1,10 +1,12 @@
-import { describe, it, expect } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { afterEach, describe, it, expect } from 'vitest'
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import { createHead, UnheadProvider } from '@unhead/react/client'
 import { routes } from './routes'
 import { PITCHES } from './data/pitches'
 import { featuredPitchSet } from './data/featured'
+import { AUSTIN_GRIPS } from './data/grips'
+import { setMotionPref } from './components/refractor/material/motionPref'
 
 /*
   Multi-page smoke tests. jsdom has no WebGL, so every page renders through its
@@ -453,5 +455,37 @@ describe('Comparison evidence boundary', () => {
     expect(await screen.findByText('No canonical grip on file', {}, COLD_LOAD)).toBeInTheDocument()
     expect(container.querySelector('[data-grip-unfiled]')).not.toBeNull()
     expect(container.querySelectorAll('[data-grip-source-badge]')).toHaveLength(2)
+  })
+})
+
+describe('A way to stop every looping grip clip', () => {
+  // Pause is kept on the device and holds every loop on the site, so a page whose
+  // clip it can hold must also carry the way back, one per page
+  afterEach(() => setMotionPref('live'))
+  const motionControls = () => screen.queryAllByRole('button', { name: /^(Pause|Resume) motion$/ })
+  const clipRoutes = AUSTIN_GRIPS.flatMap((grip) =>
+    grip.clip ? [grip.specimenSlug ? `/pitch/${grip.specimenSlug}` : `/repertoire/${grip.repertoireId}`] : [],
+  )
+
+  it.each([...clipRoutes, '/grips', '/craftsmen/adam-wainwright'])('%s offers one Pause control', async (path) => {
+    renderRoute(path)
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+    await waitFor(() => expect(motionControls()).toHaveLength(1))
+  })
+
+  it('offers none on a page where nothing loops', async () => {
+    renderRoute('/craftsmen/bob-gibson')
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+    expect(motionControls()).toHaveLength(0)
+  })
+
+  it('lets a visitor resume, on the pitch page, a clip they paused on another page', async () => {
+    setMotionPref('paused')
+    renderRoute('/pitch/four-seam')
+    const resume = await screen.findByRole('button', { name: 'Resume motion' }, COLD_LOAD)
+    expect(screen.getByText(/Austin’s grip · held/)).toBeInTheDocument()
+    fireEvent.click(resume)
+    expect(screen.getByRole('button', { name: 'Pause motion' })).toBeInTheDocument()
+    expect(screen.getByText(/Austin’s grip · in motion/)).toBeInTheDocument()
   })
 })

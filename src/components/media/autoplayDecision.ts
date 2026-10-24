@@ -25,3 +25,12 @@ export function autoplayDecision(entries: AutoplayObserverEntry[]): 'play' | 'pa
 
   return latest.isIntersecting ? 'play' : 'pause'
 }
+
+/**
+ * Whether a clip should be moving: on screen, and the visitor has not paused
+ * motion. The site's Pause control holds every looping clip as well as the card's
+ * turn, so a loop that would run for ever always has a way to stop.
+ */
+export function clipPlays(visible: boolean, motion: 'live' | 'paused'): boolean {
+  return visible && motion === 'live'
+}
