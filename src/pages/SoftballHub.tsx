@@ -157,7 +157,7 @@ export function SoftballHub() {
 
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
         <StageTierMarker index="00" label="Start here" />
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <StartPlate
             to="/softball/fastpitch"
             eyebrow="Fastpitch · fundamentals"
@@ -171,6 +171,13 @@ export function SoftballHub() {
             title="Arc, spin, and placement"
             blurb="No windmill and no riseball shape, but a real craft of arc height, deadening spin, and placement to the mat. Filed honestly and lighter."
             gc="var(--color-seam-bright)"
+          />
+          <StartPlate
+            to="/softball/flight-lab"
+            eyebrow="Slowpitch · flight lab"
+            title="Your zone, at your height"
+            blurb="For the batter: drop a lob through a strike zone set to your height and stance, see where your barrel meets it, and learn which landing spots are your pitch."
+            gc="var(--color-amber-bright)"
           />
         </div>
       </section>

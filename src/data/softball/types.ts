@@ -3,9 +3,10 @@ import type { ArcRule, LobParams, RuleKey, Stance } from '../../lib/slowpitch'
 
 /*
   The softball data model. A deliberately lighter record than the baseball
-  `PitchAtlasEntry` — no baseball seam geometry, no 3D render space — because the
-  underhand windmill game is a different craft and the soft launch leads with the
-  honest words and the sourced movement, not a 12" ball rebuilt in WebGL. It reuses
+  `PitchAtlasEntry` (no baseball seam geometry) because the underhand windmill
+  game is a different craft and the soft launch leads with the honest words and
+  the sourced movement. The slow-pitch Flight Lab's 3D scene reads its own model
+  in `src/lib/slowpitch`, not these records. It reuses
   the sport-agnostic provenance engine (`Claim` + `Source` + confidence) so every
   figure on a softball page is sourced exactly like the baseball wing. Depth — full
   grip geometry, a 12" seam, master variants — comes later.

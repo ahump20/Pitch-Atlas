@@ -269,6 +269,7 @@ describe('Meta copy discipline', () => {
     '/softball',
     '/softball/fastpitch',
     '/softball/slowpitch',
+    '/softball/flight-lab',
   ]
 
   it.each(META_ROUTES)('keeps the sourcing principle out of the %s social/search description', async (path) => {

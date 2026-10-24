@@ -1690,10 +1690,9 @@ export const SOURCES = {
     id: 'sb-flight-lab-measured-swing',
     // First-party, like the grip library: one batter's swing, measured from
     // their own video and calibrated off home plate. Never named. The URL is the
-    // slow-pitch wing the lab hangs off; point it at /softball/flight-lab once
-    // that page is live.
+    // lab page the swing drives.
     label: 'Pitch Atlas — one batter’s measured swing (their own video, calibrated off home plate)',
-    url: 'https://pitch-atlas.com/softball/slowpitch',
+    url: 'https://pitch-atlas.com/softball/flight-lab',
     retrievedAt: RETRIEVED_FLIGHT_LAB,
   },
   'sb-kensrud-thesis': {
