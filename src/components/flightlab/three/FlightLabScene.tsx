@@ -453,9 +453,12 @@ function Mat({ model }: { model: LabModel }) {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.011, MAT.length / 2]}>
         <planeGeometry args={[MAT.halfWidth * 2, MAT.length]} />
-        <meshBasicMaterial color="#1f3a28" />
+        <meshBasicMaterial color="#3E6B4C" />
       </mesh>
       <DashedLoop points={outline} color="#f0ead6" dash={10} gap={0} />
+      <Label position={[0, 0.02, MAT.length]} dy={18}>
+        Strike mat
+      </Label>
     </group>
   )
 }
@@ -1055,7 +1058,8 @@ function cameraTarget(view: CameraView, model: LabModel, aspect: number): CamTar
       const dist = 3.2
       const cz = model.selected.reading.contact.contact?.z ?? -0.7
       const far = Math.min(-0.45, cz - 0.3)
-      const near = portrait ? 0.4 : 0.62
+      // under Senior rules the strike is called on the mat, so the frame runs past its back edge
+      const near = Math.max(portrait ? 0.4 : 0.62, model.rule === 'senior' ? MAT.length + 0.12 : 0)
       const halfW = (near - far) / 2
       const halfH = Math.max((top - bottom) / 2, halfW / Math.max(0.3, aspect), portrait ? 0 : 1.11)
       const midY = (top + bottom) / 2 + (portrait ? 0.16 * halfH : 0)

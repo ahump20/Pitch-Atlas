@@ -174,6 +174,9 @@ export function SoftballFlightLabPage() {
   const [view, setView] = useState<CameraView>('zone')
   const [slow, setSlow] = useState(false)
   const [playing, setPlaying] = useState(false)
+  // the camera buttons only move the 3D scene; if it fails, the schematic has no cameras
+  const [sceneLost, setSceneLost] = useState(false)
+  const markSceneLost = useCallback(() => setSceneLost(true), [])
   const [throwRequest, setThrowRequest] = useState<ThrowRequest | undefined>(undefined)
   const throwCount = useRef(0)
 
@@ -300,6 +303,7 @@ export function SoftballFlightLabPage() {
                   slow={slow}
                   throwRequest={throwRequest}
                   onPlaying={setPlaying}
+                  onSceneLost={markSceneLost}
                   insetTop={insetTop}
                   insetBottom={insetBottom}
                   className="absolute inset-0"
@@ -353,7 +357,7 @@ export function SoftballFlightLabPage() {
                       Slow
                     </button>
                   </div>
-                  {webgl ? (
+                  {webgl && !sceneLost ? (
                     <SegmentedToggle
                       options={CAMERA_VIEWS}
                       value={view}
@@ -556,6 +560,11 @@ export function SoftballFlightLabPage() {
                   Strike window and look-for are landing spots, in inches past the front of the plate.
                   {hot ? '' : ' At this arc no landing spot reaches your barrel.'}
                 </p>
+                {sel.flight.converged ? null : (
+                  <p className="mt-2 text-xs leading-snug text-[#FF5A6B]" data-flight-unsolved="true">
+                    No throw in this model peaks and lands exactly there. The path shown is the closest it gets.
+                  </p>
+                )}
               </RailSection>
 
               <RailSection id="fl-rules" title={`${model.rulebook.name} rules`}>

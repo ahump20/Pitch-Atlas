@@ -41,6 +41,7 @@ export function FlightLabStage({
   slow,
   throwRequest,
   onPlaying,
+  onSceneLost,
   insetTop = 0,
   insetBottom = 0,
   className = '',
@@ -50,6 +51,8 @@ export function FlightLabStage({
   slow: boolean
   throwRequest?: ThrowRequest
   onPlaying?: (playing: boolean) => void
+  /** Called once if the 3D scene throws and the schematic takes its place. */
+  onSceneLost?: () => void
   /** Room the page's overlays take at the top and bottom of the stage, px (for the schematic). */
   insetTop?: number
   insetBottom?: number
@@ -62,6 +65,10 @@ export function FlightLabStage({
   const { ref, inView } = useInView<HTMLDivElement>()
   const [ready, setReady] = useState(false)
   const markReady = useCallback(() => setReady(true), [])
+  const markLost = useCallback(() => {
+    setReady(true)
+    onSceneLost?.()
+  }, [onSceneLost])
 
   // The schematic as the page: it throws, and reports when the ball is in the air.
   const fallback = (
@@ -92,7 +99,7 @@ export function FlightLabStage({
         </div>
       ) : null}
       <div className="relative h-full w-full" style={{ opacity: ready ? 1 : 0 }}>
-        <SpecimenBoundary fallback={<ReadyOnMount onReady={markReady}>{fallback}</ReadyOnMount>}>
+        <SpecimenBoundary fallback={<ReadyOnMount onReady={markLost}>{fallback}</ReadyOnMount>}>
           <Suspense fallback={null}>
             <FlightLabScene
               model={model}
