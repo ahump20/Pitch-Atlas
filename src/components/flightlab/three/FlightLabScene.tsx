@@ -453,9 +453,12 @@ function Mat({ model }: { model: LabModel }) {
     <group>
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.011, MAT.length / 2]}>
         <planeGeometry args={[MAT.halfWidth * 2, MAT.length]} />
-        <meshBasicMaterial color="#1f3a28" />
+        <meshBasicMaterial color="#3E6B4C" />
       </mesh>
       <DashedLoop points={outline} color="#f0ead6" dash={10} gap={0} />
+      <Label position={[0, 0.02, MAT.length]} dy={18}>
+        Strike mat
+      </Label>
     </group>
   )
 }
@@ -517,7 +520,7 @@ function Ruler({ model }: { model: LabModel }) {
   const numbers: number[] = []
   for (let inch = 6; inch * IN <= top + 1e-6; inch += 6) numbers.push(inch)
 
-  useFrame(({ camera, size }) => {
+  useFrame(({ camera, size, invalidate }) => {
     const g = group.current
     if (!g) return
     const cam = camera as THREE.PerspectiveCamera
@@ -525,7 +528,11 @@ function Ruler({ model }: { model: LabModel }) {
     const dist = Math.max(0.1, cam.position.x - 0.03)
     const halfH = Math.tan((cam.fov * Math.PI) / 360) * dist
     const perPx = (2 * halfH) / Math.max(1, size.height)
-    g.position.set(0.03, 0, cam.position.z + halfH * (size.width / Math.max(1, size.height)) - 48 * perPx)
+    const z = cam.position.z + halfH * (size.width / Math.max(1, size.height)) - 48 * perPx
+    // The tags place themselves before this moves the group, so a move asks for
+    // one more frame; otherwise they freeze a step behind once the camera settles.
+    if (Math.abs(g.position.z - z) > 1e-5 || g.position.x !== 0.03) invalidate()
+    g.position.set(0.03, 0, z)
   })
 
   const senior = model.rule === 'senior'
@@ -542,7 +549,7 @@ function Ruler({ model }: { model: LabModel }) {
       {numbers.map((n) => (
         <Label key={n} position={[0, n * IN, 0]} anchor="end" dx={-8} tone="plain">
           {/* on desktop the look-for panel covers the stage's foot, so the lowest mark steps aside */}
-          <span className={`text-[14px] [text-shadow:0_1px_3px_#000]${n < 12 ? ' lg:hidden' : ''}`}>{n}</span>
+          <span className={`text-[14px] [text-shadow:0_1px_3px_#000]${n < 12 ? ' xl:hidden' : ''}`}>{n}</span>
         </Label>
       ))}
       {!senior ? tag(zone.top, `Shoulder · ${round(zone.top / IN)} in`, `Shoulder ${round(zone.top / IN)}`, 'bone') : null}
@@ -1045,7 +1052,13 @@ interface CamTarget {
   k: number
 }
 
-function cameraTarget(view: CameraView, model: LabModel, aspect: number): CamTarget {
+/** Fractions of the stage height the page's overlays cover, top and bottom. */
+interface Inset {
+  top: number
+  bottom: number
+}
+
+function cameraTarget(view: CameraView, model: LabModel, aspect: number, inset: Inset = { top: 0, bottom: 0 }): CamTarget {
   const portrait = aspect < 1
   const up = new THREE.Vector3(0, 1, 0)
   switch (view) {
@@ -1055,10 +1068,22 @@ function cameraTarget(view: CameraView, model: LabModel, aspect: number): CamTar
       const dist = 3.2
       const cz = model.selected.reading.contact.contact?.z ?? -0.7
       const far = Math.min(-0.45, cz - 0.3)
-      const near = portrait ? 0.4 : 0.62
+      // under Senior rules the strike is called on the mat, so the frame runs past its back edge
+      const near = Math.max(portrait ? 0.4 : 0.62, model.rule === 'senior' ? MAT.length + 0.12 : 0)
       const halfW = (near - far) / 2
-      const halfH = Math.max((top - bottom) / 2, halfW / Math.max(0.3, aspect), portrait ? 0 : 1.11)
-      const midY = (top + bottom) / 2 + (portrait ? 0.16 * halfH : 0)
+      let halfH = Math.max((top - bottom) / 2, halfW / Math.max(0.3, aspect), portrait ? 0 : 1.11)
+      let midY = (top + bottom) / 2 + (portrait ? 0.16 * halfH : 0)
+      if (inset.bottom > 0) {
+        // A panel covers the stage's foot (the desktop look-for): fit the zone, from
+        // the knee (the ground under Senior rules, for the mat) to the shoulder, into
+        // the band the overlays leave clear.
+        const lo = model.rule === 'senior' ? -0.1 : model.zone.bottom - 0.1
+        const hi = model.zone.top + 0.12
+        const clear = Math.max(0.3, 1 - inset.top - inset.bottom)
+        halfH = Math.max(halfH, (hi - lo) / 2 / clear)
+        const bandMid = (inset.top + 1 - inset.bottom) / 2
+        midY = (hi + lo) / 2 - (0.5 - bandMid) * 2 * halfH
+      }
       const midZ = (near + far) / 2
       return {
         pos: new THREE.Vector3(dist, midY, midZ),
@@ -1122,6 +1147,8 @@ function Director({
   throwStateRef,
   ballScaleRef,
   onPlaying,
+  insetTop,
+  insetBottom,
 }: {
   model: LabModel
   view: CameraView
@@ -1132,21 +1159,25 @@ function Director({
   throwStateRef: RefObject<ThrowState>
   ballScaleRef: RefObject<number>
   onPlaying?: (playing: boolean) => void
+  insetTop: number
+  insetBottom: number
 }) {
   const invalidate = useThree((s) => s.invalidate)
   const size = useThree((s) => s.size)
   const cam = useRef<{ pos: THREE.Vector3; look: THREE.Vector3; up: THREE.Vector3; fov: number } | null>(null)
   const playingCb = useRef(onPlaying)
   const live = useRef({ model, view, slow, active })
+  const insetRef = useRef<Inset>({ top: 0, bottom: 0 })
   useEffect(() => {
     playingCb.current = onPlaying
     live.current = { model, view, slow, active }
+    insetRef.current = { top: insetTop / Math.max(1, size.height), bottom: insetBottom / Math.max(1, size.height) }
   })
 
   // Snap to the first framing, then ease from there.
   useEffect(() => {
     if (cam.current) return
-    const t = cameraTarget(view, model, size.width / Math.max(1, size.height))
+    const t = cameraTarget(view, model, size.width / Math.max(1, size.height), insetRef.current)
     cam.current = { pos: t.pos.clone(), look: t.look.clone(), up: t.up.clone(), fov: t.fov }
     ballScaleRef.current = view === 'zone' ? BALL_RADIUS : BALL_SHOW
   }, [view, model, size, ballScaleRef])
@@ -1211,7 +1242,7 @@ function Director({
       moving = true
     }
 
-    const target = cameraTarget(v, m, size.width / Math.max(1, size.height))
+    const target = cameraTarget(v, m, size.width / Math.max(1, size.height), insetRef.current)
     const k = 1 - Math.exp(-delta * target.k)
     const before = c.pos.distanceTo(target.pos) + c.look.distanceTo(target.look) + c.up.distanceTo(target.up) + Math.abs(c.fov - target.fov) * 0.01
     c.pos.lerp(target.pos, k)
@@ -1272,6 +1303,8 @@ export default function FlightLabScene({
   throwRequest,
   onPlaying,
   onReady,
+  insetTop = 0,
+  insetBottom = 0,
 }: {
   model: LabModel
   view: CameraView
@@ -1282,6 +1315,9 @@ export default function FlightLabScene({
   throwRequest?: ThrowRequest
   onPlaying?: (playing: boolean) => void
   onReady?: () => void
+  /** Room the page's overlays take at the top and bottom of the stage, px. */
+  insetTop?: number
+  insetBottom?: number
 }) {
   const throwStateRef = useRef<ThrowState>({ id: 0, indices: new Set(), playhead: 0, playing: false, hold: 0 })
   const ballScaleRef = useRef<number>(BALL_RADIUS)
@@ -1329,6 +1365,8 @@ export default function FlightLabScene({
         throwStateRef={throwStateRef}
         ballScaleRef={ballScaleRef}
         onPlaying={onPlaying}
+        insetTop={insetTop}
+        insetBottom={insetBottom}
       />
       <FirstFrame onReady={onReady} />
     </Canvas>

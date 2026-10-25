@@ -85,3 +85,15 @@ describe('path lookups', () => {
     expect(descentDepthAtHeight(f, 99)).toBeNull()
   })
 })
+
+describe('solveLob, when it cannot find the throw', () => {
+  it('says the belt-high lob was solved', () => {
+    expect(solveLob(BELT).converged).toBe(true)
+  })
+
+  it('says so when no throw peaks and lands where asked', () => {
+    // Landing hundreds of feet to the side off a 4 ft peak: no lob does that.
+    const f = solveLob({ apex: 4.2, land: 36, side: 10000, rpm: 110, push: 0 })
+    expect(f.converged).toBe(false)
+  })
+})

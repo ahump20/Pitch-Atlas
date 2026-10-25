@@ -211,6 +211,9 @@ export interface Flight {
   spinCarryIn: number
   /** How far spin moved the landing spot across the plate, inches. */
   spinDriftIn: number
+  /** False when no throw the solver found peaks and lands where asked; the
+      path drawn is the closest it got. */
+  converged: boolean
 }
 
 /**
@@ -233,9 +236,15 @@ export function solveLob(params: LobParams): Flight {
     return [r.end[0] - landX, r.apexHeight - apexY, r.end[2] - landZ]
   }
 
+  const TOLERANCE = 4e-4
+  const worst = (f: Vec3) => Math.max(Math.abs(f[0]), Math.abs(f[1]), Math.abs(f[2]))
+  let converged = false
   for (let iter = 0; iter < 12; iter++) {
     const f = miss(v0)
-    if (Math.max(Math.abs(f[0]), Math.abs(f[1]), Math.abs(f[2])) < 4e-4) break
+    if (worst(f) < TOLERANCE) {
+      converged = true
+      break
+    }
     const jac: number[][] = [[], [], []]
     const h = 0.02
     for (let c = 0; c < 3; c++) {
@@ -248,6 +257,8 @@ export function solveLob(params: LobParams): Flight {
     if (!step) break
     for (let c = 0; c < 3; c++) v0[c] += Math.max(-1.5, Math.min(1.5, step[c]))
   }
+  // The last step may have landed it; anything still off by more than a few mm is a miss.
+  if (!converged) converged = worst(miss(v0)) < 2 * TOLERANCE
 
   const spin = spinVector(v0, params)
   const path = integrateToGround(v0, spin, true)
@@ -300,6 +311,7 @@ export function solveLob(params: LobParams): Flight {
     crossing,
     spinCarryIn: (path.end[2] - still.end[2]) / IN,
     spinDriftIn: (path.end[0] - still.end[0]) / IN,
+    converged,
   }
 }
 
