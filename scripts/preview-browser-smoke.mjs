@@ -605,6 +605,38 @@ async function checkInspectorReturnFocus(page) {
   }
 }
 
+// The desktop room has a height cap. A tall viewport must not grow the card past
+// that room, and opening the independently scrolling Finish rail must keep it put.
+async function checkInspectorCardFits(page) {
+  await disableWebGL(page)
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  for (const viewport of [{ width: 1280, height: 900 }, { width: 1440, height: 1000 }, { width: 1920, height: 1080 }, { width: 1280, height: 450 }]) {
+    await page.setViewportSize(viewport)
+    const label = `Inspector card ${viewport.width}x${viewport.height}`
+    await page.goto(route('/?inspect=four-seam'), { waitUntil: 'domcontentloaded' })
+    const dialog = page.getByRole('dialog')
+    const rig = dialog.locator('.specimen-rig')
+    await rig.waitFor({ state: 'visible', timeout: 20_000 })
+    const before = await rig.boundingBox()
+    for (const face of ['Front', 'Sources']) {
+      await dialog.getByRole('button', { name: face, exact: true }).click()
+      const bounds = await dialog.evaluate((room) => {
+        const card = room.querySelector('.specimen-rig').getBoundingClientRect()
+        const box = room.getBoundingClientRect()
+        return {
+          contained: card.top >= box.top && card.left >= box.left && card.bottom <= box.bottom && card.right <= box.right,
+          overflow: room.scrollHeight - room.clientHeight,
+        }
+      })
+      record(bounds.contained, `${label} ${face} clips outside the room`)
+      record(bounds.overflow <= 1, `${label} ${face} makes the room scroll by ${bounds.overflow}px`)
+    }
+    await dialog.getByRole('button', { name: 'Finish', exact: true }).click()
+    const after = await rig.boundingBox()
+    record(before && after && ['x', 'y', 'width', 'height'].every((key) => Math.abs(before[key] - after[key]) <= 1), `${label} moved when Finish opened`)
+  }
+}
+
 async function checkReducedMotionInspectorScroll(page) {
   await disableWebGL(page)
   await page.emulateMedia({ reducedMotion: 'reduce' })
@@ -760,7 +792,7 @@ async function withPage(callback) {
   const page = await browser.newPage()
   page.setDefaultTimeout(15_000)
   page.setDefaultNavigationTimeout(30_000)
-  console.log(`Smoke ${++smokeStep}/26: ${callback.name || "responsive route"}`)
+  console.log(`Smoke ${++smokeStep}/27: ${callback.name || "responsive route"}`)
   try {
     const priorFailures = failures.length
     await callback(page)
@@ -791,6 +823,7 @@ try {
   await withPage((page) => checkInspectorClose(page, { width: 1280, height: 900 }))
   await withPage(checkInspectorReturnFocus)
   await withPage(checkReducedMotionInspectorScroll)
+  await withPage(checkInspectorCardFits)
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 390, height: 844 }))
   await withPage(checkKnowledgeMarkerWrap)

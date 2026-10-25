@@ -6,10 +6,12 @@
      the insets come off the size, and the box shifts away from the larger one */
   --safe-x: calc(env(safe-area-inset-left, 0px) + env(safe-area-inset-right, 0px));
   --safe-y: calc(env(safe-area-inset-top, 0px) + env(safe-area-inset-bottom, 0px));
+  --room-height: min(820px, calc(100dvh - 2rem - 2px - var(--safe-y)));
+  --stage-padding: clamp(24px, 4vw, 56px);
   /* on a wide screen the room is as wide as the card it holds, an even margin either
      side of it and the rail, so the card never floats in an empty stage; the card is as
-     large as the screen's height allows */
-  --card-w: min(560px, calc((100dvh - 220px) * 5 / 7));
+     large as the screen and the capped room allow, after the stage's padding */
+  --card-w: min(560px, calc((100dvh - 220px) * 5 / 7), calc((var(--room-height) - 2 * var(--stage-padding)) * 5 / 7));
   --room-gutter: clamp(56px, 7vw, 104px);
   width: 100%; max-width: min(1180px, calc(100% - 2rem - var(--safe-x)), calc(var(--card-w) + 2 * var(--room-gutter) + 344px)); padding: 0;
   margin-left: calc((env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)) / 2);
@@ -26,11 +28,11 @@
 .specimen-inspector-grid {
   display: grid; grid-template-columns: minmax(0, 1fr) 344px; grid-template-rows: auto minmax(0, 1fr);
   grid-template-areas: "stage head" "stage rail";
-  height: min(820px, calc(100dvh - 2rem - 2px - var(--safe-y)));
+  height: var(--room-height);
 }
 .specimen-stage {
   grid-area: stage;
-  position: relative; display: grid; place-items: center; padding: clamp(24px, 4vw, 56px); min-height: 0;
+  position: relative; display: grid; place-items: center; padding: var(--stage-padding); min-height: 0;
   background: radial-gradient(ellipse at 50% 38%, #1c1814 0%, #0b0a09 72%); outline: none;
   border-radius: 14px 0 0 14px;
 }
