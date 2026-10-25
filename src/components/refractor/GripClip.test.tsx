@@ -90,6 +90,25 @@ describe('RefractorCard editorial hierarchy', () => {
     expect(screen.getByText('Grip / release / shape')).toBeInTheDocument()
     expect(screen.getByRole('link', { name: 'Four-seam specimen' })).toBeInTheDocument()
   })
+
+  it('prints its file number once: the header carries it, the plate does not repeat it', () => {
+    render(
+      <MemoryRouter>
+        <RefractorCard
+          accent={{ c1: '#0A141B', c2: '#3D6178', c3: '#B9D4E5' }}
+          vnum="00"
+          name="Four-seam"
+          face={<span>Grip face</span>}
+          cue="Fingertips cross the seam path"
+          confidence={{ label: "Pitcher's own words", color: '#2C5A8C' }}
+        />
+      </MemoryRouter>,
+    )
+
+    expect(screen.getByText('00')).toBeInTheDocument()
+    expect(screen.getByText('Grip tell')).toBeInTheDocument()
+    expect(screen.queryByText(/PA—/)).not.toBeInTheDocument()
+  })
 })
 
 describe('RefractorCard throwback finishes', () => {

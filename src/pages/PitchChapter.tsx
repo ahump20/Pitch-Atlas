@@ -4,9 +4,9 @@ import { useSeoMeta } from '@unhead/react'
 import type {
   MasterVariantRecord,
   PitchAtlasEntry,
-  PitchFamily,
   Source,
 } from '../data/types'
+import { FAMILY_LABEL } from '../data/family'
 import { PITCHES, pitchBySlug } from '../data/pitches'
 import { SITE } from '../config/site'
 import { canonicalUrl, ogImageMeta, contentJsonLd, truncateForMeta } from '../lib/seo'
@@ -45,12 +45,6 @@ import { NotFound } from './NotFound'
   No player likeness ever; the ball is the subject. Foil is decoration; every
   reading is sourced.
 */
-
-const FAMILY_LABEL: Record<PitchFamily, string> = {
-  fastball: 'Fastball',
-  breaking: 'Breaking',
-  offspeed: 'Offspeed',
-}
 
 const PITCH_SLUG_ALIASES: Record<string, string> = {
   'twelve-six-curveball': 'twelve-six',

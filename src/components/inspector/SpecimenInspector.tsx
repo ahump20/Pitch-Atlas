@@ -13,7 +13,7 @@ import { ExportPanel } from './ExportPanel'
 import { INSPECTOR_SEED } from './export/composeCard'
 import { FinishPanel, type AmbientSettings, type LightSettings } from './FinishPanel'
 import { materialFor, writeFinishPref, type FinishFace } from './finishPrefs'
-import { InspectorRail } from './InspectorRail'
+import { InspectorHeader, InspectorRail } from './InspectorRail'
 import '../../styles/inspector.css'
 
 /*
@@ -113,6 +113,8 @@ export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: 
     if (event.target !== event.currentTarget) return
     // a held modifier means the browser's shortcut (Cmd+R reloads, Ctrl+F finds), never the card's
     if (event.ctrlKey || event.metaKey || event.altKey) return
+    // under reduced motion the card holds still, so the arrows stay the page's to scroll
+    if (reduced && event.key.startsWith('Arrow')) return
     switch (event.key) {
       case 'ArrowLeft': engine?.nudge(-NUDGE, 0); break
       case 'ArrowRight': engine?.nudge(NUDGE, 0); break
@@ -142,7 +144,8 @@ export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: 
       <DialogContent
         className="specimen-inspector"
         overlayClassName="specimen-inspector-overlay"
-        showCloseButton
+        // the close button sits in the rail's header, beside the name (InspectorRail)
+        showCloseButton={false}
         onCloseAutoFocus={onCloseAutoFocus}
         // focus lands on the dialog itself, not on the stage, so opening never paints a
         // focus ring around the card; Tab reaches the stage and the rail in order
@@ -153,15 +156,19 @@ export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: 
       >
         <DialogTitle className="sr-only">Inspect card: {display.shortName}</DialogTitle>
         <DialogDescription className="sr-only">
-          An enlarged specimen you can turn in the light. Drag or use the arrow keys to tilt it, F flips it to its sources, Space pauses the turn, R resets it.
+          {reduced
+            ? 'An enlarged specimen. F flips it to its sources, R resets it.'
+            : 'An enlarged specimen you can turn in the light. Drag or use the arrow keys to tilt it, F flips it to its sources, Space pauses the turn, R resets it.'}
         </DialogDescription>
         <div className="specimen-inspector-grid">
+          {/* first in the page, as an upright phone draws it: the name and Close, then the card */}
+          <InspectorHeader entry={entry} />
           <div
             ref={stageRef}
             className={`specimen-stage${gold ? ' is-ember' : ''}`}
             tabIndex={0}
             role="group"
-            aria-label={`${display.shortName} specimen, ${face === 'front' ? 'front' : 'sources'} showing. Arrow keys tilt, F flips, Space pauses, R resets.`}
+            aria-label={`${display.shortName} specimen, ${face === 'front' ? 'front' : 'sources'} showing. ${reduced ? 'F flips, R resets.' : 'Arrow keys tilt, F flips, Space pauses, R resets.'}`}
             onKeyDown={onKeyDown}
           >
             <div className={`v2-flip specimen-rig${face === 'back' ? ' is-flipped' : ''}`}>
@@ -202,8 +209,6 @@ export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: 
             onFace={setFace}
             finishOpen={finishOpen}
             onToggleFinish={() => setFinishOpen((open) => !open)}
-            paused={paused}
-            onTogglePaused={togglePaused}
             motionAvailable={!reduced}
             onReset={reset}
             onStudy={onStudy}

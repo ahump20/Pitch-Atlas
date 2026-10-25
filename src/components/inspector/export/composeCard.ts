@@ -1,4 +1,5 @@
 import { CONFIDENCE_META, type PitchAtlasEntry } from '../../../data/types'
+import { familyLabel } from '../../../data/family'
 import { gripEntryFor } from '../../../data/grips'
 import { accentForSlug, accentInk } from '../../refractor/accents'
 import { BACK_RING_HEX, BACK_SEED_OFFSET, createCardMaterialProgram, EMPTY_RECT, hexToTriple, type CardMaterialProgram, type MaterialIdentity } from '../../refractor/material/cardMaterialProgram'
@@ -12,8 +13,10 @@ import type { ExportFace, ExportLight, ExportPose } from './types'
   One face of the card, painted flat. The order is the DOM's: the media first,
   clipped to the window; the material over it (opaque stock and foil on the rim and
   the field, only a glaze inside the window); then the print — the window's bezel,
-  the source chip, the header, the cue plate, the strip. Every word comes from the
-  record. Text is painted natively, so it is as crisp as the canvas is large.
+  the source chip, the header, the cue plate. Every word comes from the record, and
+  only what the inspector's card prints: that card carries no link, so the image
+  carries no strip and no link label; the caption plate under it names the address.
+  Text is painted natively, so it is as crisp as the canvas is large.
 */
 
 const BONE = '#F6F1E6'
@@ -48,11 +51,9 @@ export interface FrontText {
   number: string
   chip: string
   readLabel: string
-  serial: string
   cue: string
   confidence: string
   approx: boolean
-  strip: [string, string]
 }
 
 export function frontText(entry: PitchAtlasEntry): FrontText {
@@ -69,11 +70,9 @@ export function frontText(entry: PitchAtlasEntry): FrontText {
     number: display.specimenNo,
     chip: grip?.clip ? 'Austin video' : grip && grip.photos.length > 0 ? 'Austin photo' : 'Reference schematic',
     readLabel: 'Grip tell',
-    serial: `PA—${display.specimenNo}`,
     cue,
     confidence: CONFIDENCE_META[tier].label,
     approx: own ? false : Boolean(referenceClaim.approximate),
-    strip: ['Grip / release / shape', 'Open specimen →'],
   }
 }
 
@@ -81,22 +80,19 @@ export interface BackText {
   name: string
   number: string
   rows: Array<{ key: string; value: string; confidence: string; approx: boolean; source?: string }>
-  file: string
 }
 
 export function backText(entry: PitchAtlasEntry): BackText {
   const { canonical, display } = entry
   const gripCue = canonical.gripDetails[0] ?? canonical.grip
   const shape = canonical.physics.shape
-  const familyLabel = canonical.family === 'breaking' ? 'Breaking' : canonical.family === 'offspeed' ? 'Offspeed' : 'Fastball'
   return {
     name: display.shortName,
-    number: `No. ${display.specimenNo} · ${familyLabel}`,
+    number: `No. ${display.specimenNo} · ${familyLabel(canonical.family)}`,
     rows: [
       { key: 'Grip cue', value: gripCue.value, confidence: CONFIDENCE_META[gripCue.confidence].label, approx: Boolean(gripCue.approximate), source: gripCue.source ? `Grip: ${gripCue.source.label}` : undefined },
       { key: 'Shape', value: shape.value, confidence: CONFIDENCE_META[shape.confidence].label, approx: Boolean(shape.approximate), source: shape.source ? `Shape: ${shape.source.label}` : undefined },
     ],
-    file: 'Open the full file →',
   }
 }
 
@@ -141,13 +137,15 @@ function wrapLines(ctx: Ctx, text: string, maxWidth: number, maxLines: number): 
   return lines
 }
 
-/** The DOM's object-fit: cover crop of a media box into the window. */
+/** The media framed the way the page frames it: covered, placed at its focus, then
+    zoomed by the element's own transform about the window's centre. */
 function coverDraw(ctx: Ctx, source: CanvasImageSource, sw: number, sh: number, box: { x: number; y: number; w: number; h: number }, focusY: number, scale: number) {
-  const ratio = Math.max(box.w / sw, box.h / sh) * scale
-  const dw = sw * ratio
-  const dh = sh * ratio
+  const cover = Math.max(box.w / sw, box.h / sh)
+  const dw = sw * cover * scale
+  const dh = sh * cover * scale
+  const framedTop = (box.h - sh * cover) * focusY
   const dx = box.x + (box.w - dw) / 2
-  const dy = box.y + (box.h - dh) * focusY
+  const dy = box.y + box.h / 2 + (framedTop - box.h / 2) * scale
   ctx.drawImage(source, dx, dy, dw, dh)
 }
 
@@ -192,13 +190,60 @@ export interface StageMedia {
   filter?: string
 }
 
-/** The vertical point an object-fit crop keeps, 0 to 1, from the element's object-position. */
-function focusYOf(el: HTMLElement): number | undefined {
+/** One position term as a percentage plus pixels: `42%`, `120px`, `calc(30% + 20px)` or a keyword. */
+function positionTerm(term: string): { pct: number; px: number } | undefined {
+  const keyword = ({ top: 0, center: 50, bottom: 100, left: 0, right: 100 } as Record<string, number | undefined>)[term]
+  if (keyword !== undefined) return { pct: keyword, px: 0 }
+  const inner = /^calc\((.*)\)$/.exec(term)?.[1] ?? term
+  const parts = inner.replace(/\s+/g, '').match(/[+-]?[^+-]+/g)
+  if (!parts) return undefined
+  const sum = { pct: 0, px: 0 }
+  for (const part of parts) {
+    const m = /^([+-]?\d*\.?\d+)(%|px)$/.exec(part)
+    if (!m) return undefined
+    if (m[2] === '%') sum.pct += Number(m[1])
+    else sum.px += Number(m[1])
+  }
+  return sum
+}
+
+/**
+ * The vertical point an object-fit: cover crop keeps, as a share of the height the
+ * cover leaves spare (0 the top, 1 the bottom), from an object-position however it is
+ * written. Pixels count against that spare height, so `calc(30% + 20px)` keeps what the
+ * page keeps; a clip with no spare height has nothing to frame.
+ */
+export function focusFraction(position: string, box: { w: number; h: number }, media: { w: number; h: number }): number | undefined {
+  // split on the spaces between terms, never inside a calc()
+  const terms = position.trim().match(/(?:[^\s(]+|\([^)]*\))+/g) ?? []
+  if (terms.length === 0) return undefined
+  let term: string
+  let fromBottom = false
+  const edge = terms.findIndex((t) => t === 'top' || t === 'bottom')
+  if (edge >= 0) {
+    // an edge keyword, optionally followed by its offset ("bottom 20%", "top 10px")
+    const offset = terms[edge + 1]
+    const offsetIsTerm = offset !== undefined && !['left', 'right', 'center', 'top', 'bottom'].includes(offset)
+    fromBottom = terms[edge] === 'bottom' && offsetIsTerm
+    term = offsetIsTerm ? offset : terms[edge]
+  } else {
+    // one term is the horizontal (the vertical centres); two are horizontal then
+    // vertical; three or four with no top or bottom edge put the vertical at its centre
+    term = terms.length === 2 ? terms[1] : 'center'
+  }
+  const value = positionTerm(term)
+  if (!value) return undefined
+  const cover = Math.max(box.w / media.w, box.h / media.h)
+  const spare = box.h - media.h * cover
+  if (value.px !== 0 && !(Math.abs(spare) >= 0.5)) return 0.5
+  const share = value.pct / 100 + (value.px !== 0 ? value.px / spare : 0)
+  return fromBottom ? 1 - share : share
+}
+
+/** The vertical point an object-fit crop keeps, from the element's object-position. */
+function focusYOf(el: HTMLElement, mediaW: number, mediaH: number): number | undefined {
   const computed = typeof getComputedStyle === 'function' ? getComputedStyle(el).objectPosition : ''
-  const y = (computed || el.style.objectPosition).trim().split(/\s+/)[1]
-  if (!y) return undefined
-  if (y.endsWith('%')) return Number.parseFloat(y) / 100
-  return ({ top: 0, center: 0.5, bottom: 1 } as Record<string, number | undefined>)[y]
+  return focusFraction(computed || el.style.objectPosition || '', { w: el.clientWidth, h: el.clientHeight }, { w: mediaW, h: mediaH })
 }
 
 /** The zoom an element's own transform applies: a computed matrix in a browser, the
@@ -245,11 +290,11 @@ export async function resolveStageMedia(
     for (;;) {
       if (video && videoReady(video)) {
         const [w, h] = mediaSize(video)
-        return { kind: 'video', source: video, width: w, height: h, focusY: focusYOf(video), scale: zoomOf(video), filter: filterOf(video) }
+        return { kind: 'video', source: video, width: w, height: h, focusY: focusYOf(video, w, h), scale: zoomOf(video), filter: filterOf(video) }
       }
       if (img && imageReady(img)) {
         const [w, h] = mediaSize(img)
-        return { kind: 'image', source: img, width: w, height: h, focusY: focusYOf(img), scale: zoomOf(img), filter: filterOf(img) }
+        return { kind: 'image', source: img, width: w, height: h, focusY: focusYOf(img, w, h), scale: zoomOf(img), filter: filterOf(img) }
       }
       if (Date.now() >= deadline) throw new Error(MEDIA_NOT_READY)
       await new Promise<void>((resolve) => window.setTimeout(resolve, MEDIA_POLL_MS))
@@ -283,7 +328,8 @@ export function createComposer({ entry, face, material, width, media }: ComposeO
   const { display } = entry
   const gold = display.specimenNo === '00' && face === 'front'
   const accent = accentForSlug(display.slug)
-  const layout = cardLayout({ width, gold, strip: face === 'front' })
+  // the inspector's card links nowhere, so neither face prints the page card's strip
+  const layout = cardLayout({ width, gold, strip: false })
   const { height } = layout
   // The back has no media window, header or strip, so its stock covers the whole
   // field, as it does on the page; with the front's window it showed a dark hole.
@@ -555,9 +601,6 @@ function paintFrontOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent:
   ctx.fillStyle = INK_META
   ctx.textBaseline = 'top'
   ctx.fillText(spaced(text.readLabel.toUpperCase(), 0.15), px, y)
-  ctx.textAlign = 'right'
-  ctx.fillText(spaced(text.serial.toUpperCase(), 0.15), px + pw, y)
-  ctx.textAlign = 'left'
   y += metaH + 1.75 * u
   ctx.font = `italic 400 ${3.9 * u}px Newsreader`
   ctx.fillStyle = INK_CUE
@@ -594,25 +637,6 @@ function paintFrontOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent:
     ctx.fillText(label, lx, y)
   }
 
-  // the strip
-  const s = l.strip
-  if (s.h > 0) {
-    ctx.textBaseline = 'middle'
-    ctx.font = `400 ${Math.max(8 * (l.width / 360), 2.5 * u)}px "Martian Mono"`
-    ctx.shadowColor = 'rgba(0,0,0,.85)'
-    ctx.shadowOffsetY = 1
-    ctx.shadowBlur = 3
-    const sy = s.y + 1.67 * u + (s.h - 1.67 * u) / 2
-    ctx.fillStyle = mixHex(inkColor, '#D8CFB8', 0.58)
-    ctx.font = `400 ${Math.max(8 * (l.width / 360), 2.5 * u) * 0.86}px "Martian Mono"`
-    ctx.fillText(spaced(text.strip[0].toUpperCase(), 0.1), s.x, sy)
-    ctx.font = `400 ${Math.max(8 * (l.width / 360), 2.5 * u)}px "Martian Mono"`
-    ctx.fillStyle = BONE_2
-    ctx.textAlign = 'right'
-    ctx.fillText(spaced(text.strip[1].toUpperCase(), 0.08), s.x + s.w, sy)
-    ctx.textAlign = 'left'
-    ctx.shadowColor = 'transparent'
-  }
   ctx.textBaseline = 'alphabetic'
 }
 
@@ -806,13 +830,11 @@ function paintBackOver(ctx: Ctx, l: CardLayout, entry: PitchAtlasEntry, accent: 
   roundRectPath(ctx, x, rowsTop, w, y - rowsTop, 7 * s)
   ctx.strokeStyle = 'rgba(246,241,230,.08)'
   ctx.stroke()
-  // foot: sources and the route into the file
+  // foot: the sources. The page back's route into the file is a link, which an image
+  // cannot follow; the caption plate under the card names the address instead.
   let fy = l.height - pad
   ctx.font = `400 ${10 * s}px "Martian Mono"`
   ctx.textBaseline = 'bottom'
-  ctx.fillStyle = BONE
-  ctx.fillText(spaced(text.file.toUpperCase(), 0.14), x, fy)
-  fy -= 10 * s * 1.6 + 8 * s
   ctx.fillStyle = BONE_2
   for (const row of [...text.rows].reverse()) {
     if (!row.source) continue

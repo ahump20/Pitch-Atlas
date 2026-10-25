@@ -33,6 +33,8 @@ export interface ExportRequest {
   backdrop: ExportBackdrop
   /** the live stage on the page, if any, so the exported frame shows the same media the visitor sees */
   stage?: HTMLElement | null
+  /** how the support check found the loop can be made, so the export does not ask the browser again */
+  via?: WebmVerdict
 }
 
 export interface ExportProgress {
@@ -40,13 +42,21 @@ export interface ExportProgress {
   fraction: number
 }
 
-export type WebmSupport = { ok: true } | { ok: false; reason: string }
+/** How a loop can be made in this browser: its own encoder with the WebM codec it accepted
+    at the export's frame size, or the live recorder with the WebM type it records. */
+export type WebmVerdict = { path: 'encoder'; codec: 'vp9' | 'vp8' } | { path: 'recorder'; mimeType: string }
+
+/** The quick answer carries no verdict (it has not asked the browser yet); the probe's always does. */
+export type WebmSupport = { ok: true; via?: WebmVerdict } | { ok: false; reason: string }
 
 /** A finished loop and how it was made: the browser's encoder keeps every frame for
-    exactly seven seconds; the live recorder keeps the frames it had time for. */
+    exactly seven seconds; the live recorder keeps the frames it had time for. `via` is
+    the way it was actually made, which can differ from the support check's verdict (an
+    encoder whose library did not download falls back to the recorder). */
 export interface WebmResult {
   blob: Blob
   path: 'encoder' | 'recorder'
+  via: WebmVerdict
 }
 
 export interface Eligibility {

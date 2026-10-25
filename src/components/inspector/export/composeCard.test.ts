@@ -37,7 +37,7 @@ vi.mock('../../refractor/material/cardMaterialProgram', async (importOriginal) =
   },
 }))
 
-const { createComposer, resolveStageMedia, INSPECTOR_SEED } = await import('./composeCard')
+const { createComposer, focusFraction, resolveStageMedia, INSPECTOR_SEED } = await import('./composeCard')
 const { BACK_RING_HEX, BACK_SEED_OFFSET, hexToTriple } = await import('../../refractor/material/cardMaterialProgram')
 
 /** A 2D context that accepts every call, remembers each one, and remembers compositing changes. */
@@ -102,6 +102,25 @@ describe('createComposer', () => {
     for (const rect of [window, head, strip]) expect(rect.w * rect.h).toBe(0)
   })
 
+  it('paints the front as the inspector shows it: no strip, no second number, the plate to the foot', () => {
+    const composer = compose('front')
+    const texts = h.calls.filter((c) => c.name === 'fillText').map((c) => String(c.args[0]).replace(/\s+/g, ''))
+    expect(texts.some((t) => t.includes('OPENSPECIMEN'))).toBe(false)
+    expect(texts.some((t) => t.includes('GRIP/RELEASE'))).toBe(false)
+    expect(texts.some((t) => t.includes('PA—'))).toBe(false)
+    expect(texts).toContain('GRIPTELL')
+    const { strip, plate, inner } = composer.layout
+    expect(strip.h).toBe(0)
+    expect(plate.y + plate.h).toBeCloseTo(inner.y + inner.h, 5)
+  })
+
+  it('paints no link label on the back: its sources stay, the caption carries the address', () => {
+    compose('back')
+    const texts = h.calls.filter((c) => c.name === 'fillText').map((c) => String(c.args[0]).replace(/\s+/g, ''))
+    expect(texts.some((t) => t.includes('OPENTHEFULLFILE'))).toBe(false)
+    expect(texts.some((t) => t.startsWith('GRIP:'))).toBe(true)
+  })
+
   it("keeps the coverage the visitor tuned for the back, as the page does", () => {
     compose('back', 'window')
     expect(h.coverages[0]).toBe('window')
@@ -162,6 +181,43 @@ describe('createComposer', () => {
     }
     // the card window shows its clip at 1.16; the home hero's curated cut at 1.02
     expect(drawn(1.16) / drawn(1.02)).toBeCloseTo(1.16 / 1.02, 6)
+  })
+
+  it('zooms the clip about the window centre, as the page transform does', () => {
+    // the page frames the clip first (object-position on the cover size), then scales the
+    // element about its centre; the export once scaled first and framed second
+    const entry = pitchBySlug('four-seam')
+    if (!entry) throw new Error('four-seam is filed')
+    const source = document.createElement('canvas')
+    const media = { kind: 'video' as const, source, width: 900, height: 1600, focusY: 0.8, scale: 1.16 }
+    const composer = createComposer({ entry, face: 'front', material: PRESETS['ember-chrome'], width: 600, media })
+    composer.draw(recordingContext(), { rx: 0, ry: 0 }, { x: 0.5, y: 0.5, height: 1.1, strength: 1 })
+    const call = h.calls.find((c) => c.name === 'drawImage' && c.args[0] === source)
+    if (!call) throw new Error('the clip was not drawn')
+    const box = composer.layout.window
+    const cover = Math.max(box.w / 900, box.h / 1600)
+    const framedTop = (box.h - 1600 * cover) * 0.8
+    const expected = box.y + box.h / 2 + (framedTop - box.h / 2) * 1.16
+    expect(call.args[2] as number).toBeCloseTo(expected, 6)
+    expect(call.args[4] as number).toBeCloseTo(1600 * cover * 1.16, 6)
+  })
+
+  it('reads a framing however the page writes it: percentages, keywords, pixels and calc()', () => {
+    // a 300x270 window over a 900x1600 clip: covered at a third, 263.3px of the height spare
+    const box = { w: 300, h: 270 }
+    const media = { w: 900, h: 1600 }
+    const spare = 270 - 1600 * (300 / 900)
+    expect(focusFraction('50% 34%', box, media)).toBeCloseTo(0.34, 9)
+    expect(focusFraction('center top', box, media)).toBe(0)
+    expect(focusFraction('center', box, media)).toBe(0.5)
+    expect(focusFraction('50% 120px', box, media)).toBeCloseTo(120 / spare, 9)
+    expect(focusFraction('50% calc(30% + 20px)', box, media)).toBeCloseTo(0.3 + 20 / spare, 9)
+    expect(focusFraction('calc(50% - 4px) calc(60% - 10px)', box, media)).toBeCloseTo(0.6 - 10 / spare, 9)
+    expect(focusFraction('left 10px bottom 20%', box, media)).toBeCloseTo(0.8, 9)
+    expect(focusFraction('right 10px center', box, media)).toBe(0.5)
+    // a clip that fits the window's height has nothing to frame
+    expect(focusFraction('50% calc(30% + 20px)', { w: 300, h: 533.3333333333334 }, media)).toBe(0.5)
+    expect(focusFraction('', box, media)).toBeUndefined()
   })
 
   it('reads the zoom and colour off the element the visitor is looking at', async () => {

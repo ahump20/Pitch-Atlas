@@ -16,9 +16,11 @@ const h = vi.hoisted(() => ({
   added: [] as Array<[number, number]>,
   sourceConfig: null as unknown,
   outputs: [] as Array<{ state: string; cancel: () => Promise<void> }>,
-  canEncode: true,
+  canEncode: true as boolean | ((codec: string) => boolean),
+  canEncodeCalls: [] as string[],
   dispose: vi.fn(),
   draw: vi.fn(),
+  onFinalize: null as null | (() => void),
 }))
 
 vi.mock('mediabunny', () => {
@@ -49,6 +51,7 @@ vi.mock('mediabunny', () => {
       this.state = 'started'
     }
     async finalize() {
+      h.onFinalize?.()
       this.state = 'finalized'
       this.target.buffer = new ArrayBuffer(16)
     }
@@ -56,7 +59,11 @@ vi.mock('mediabunny', () => {
       this.state = 'canceled'
     }
   }
-  return { Quality, BufferTarget, WebMOutputFormat, CanvasSource, Output, canEncodeVideo: async () => h.canEncode }
+  const canEncodeVideo = async (codec: string) => {
+    h.canEncodeCalls.push(codec)
+    return typeof h.canEncode === 'function' ? h.canEncode(codec) : h.canEncode
+  }
+  return { Quality, BufferTarget, WebMOutputFormat, CanvasSource, Output, canEncodeVideo }
 })
 
 vi.mock('./composeCard', () => ({
@@ -83,6 +90,8 @@ function request(): ExportRequest {
     pose: { rx: 3, ry: -2 },
     light: { x: 0.6, y: 0.4, height: 1.1, strength: 1 },
     backdrop: 'void',
+    // what the support check found before the click: the browser's encoder, writing VP9
+    via: { path: 'encoder', codec: 'vp9' },
   }
 }
 
@@ -91,8 +100,10 @@ beforeEach(() => {
   h.outputs.length = 0
   h.sourceConfig = null
   h.canEncode = true
+  h.canEncodeCalls = []
   h.dispose.mockClear()
   h.draw.mockClear()
+  h.onFinalize = null
   vi.stubGlobal('VideoEncoder', function VideoEncoder() {})
   vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({} as unknown as RenderingContext)
 })
@@ -104,8 +115,10 @@ afterEach(() => {
 
 describe('exportSpecimenWebm with the browser encoder', () => {
   it('hands the encoder every frame, stamped, for exactly seven seconds', async () => {
-    const { blob, path } = await exportSpecimenWebm(request())
+    const { blob, path, via } = await exportSpecimenWebm(request())
     expect(path).toBe('encoder')
+    // the result says how the loop was made, so the panel can word its next promise by it
+    expect(via).toEqual({ path: 'encoder', codec: 'vp9' })
     expect(h.added).toHaveLength(WEBM_FRAMES)
     h.added.forEach(([timestamp, duration], i) => {
       expect(timestamp).toBeCloseTo(i / WEBM_FPS, 9)
@@ -117,6 +130,43 @@ describe('exportSpecimenWebm with the browser encoder', () => {
     expect(blob.type).toBe('video/webm')
     expect(h.outputs[0].state).toBe('finalized')
     expect(h.dispose).toHaveBeenCalledTimes(1)
+  })
+
+  it("starts from the support check's verdict: a VP8 verdict writes VP8, confirmed once by the encoder library", async () => {
+    // the library would pick VP9 if it were asked to choose from scratch
+    h.canEncode = true
+    const { path } = await exportSpecimenWebm({ ...request(), via: { path: 'encoder', codec: 'vp8' } })
+    expect(path).toBe('encoder')
+    expect(h.sourceConfig).toMatchObject({ codec: 'vp8' })
+    expect(h.canEncodeCalls).toEqual(['vp8'])
+  })
+
+  it("falls back to the other codec where the library will not write the check's choice", async () => {
+    // some browsers' support check over-reports; the library test-encodes before it agrees
+    h.canEncode = (codec) => codec === 'vp8'
+    const { path, via } = await exportSpecimenWebm(request())
+    expect(path).toBe('encoder')
+    expect(via).toEqual({ path: 'encoder', codec: 'vp8' })
+    expect(h.sourceConfig).toMatchObject({ codec: 'vp8' })
+    expect(h.canEncodeCalls).toEqual(['vp9', 'vp8'])
+  })
+
+  it('says so in words, before taking a GL context, where the library writes neither codec and there is no recorder', async () => {
+    h.canEncode = false
+    await expect(exportSpecimenWebm(request())).rejects.toThrow(/PNG export still works/)
+    expect(h.added).toHaveLength(0)
+    expect(h.draw).not.toHaveBeenCalled()
+    expect(h.dispose).not.toHaveBeenCalled()
+  })
+
+  it('runs the support check itself when the request carries no verdict', async () => {
+    const Encoder = Object.assign(function VideoEncoder() {}, {
+      isConfigSupported: async (config: VideoEncoderConfig) => ({ supported: config.codec === 'vp8', config }),
+    })
+    vi.stubGlobal('VideoEncoder', Encoder)
+    await exportSpecimenWebm({ ...request(), via: undefined })
+    expect(h.sourceConfig).toMatchObject({ codec: 'vp8' })
+    expect(h.canEncodeCalls).toEqual(['vp8'])
   })
 
   it('keeps the transparency when the backdrop is transparent', async () => {
@@ -133,6 +183,15 @@ describe('exportSpecimenWebm with the browser encoder', () => {
     await expect(done).rejects.toMatchObject({ name: 'AbortError' })
     expect(h.added.length).toBeLessThan(WEBM_FRAMES)
     expect(h.outputs[0].state).toBe('canceled')
+    expect(h.dispose).toHaveBeenCalledTimes(1)
+  })
+
+  it('honours a cancel that lands while the file is being finished', async () => {
+    const controller = new AbortController()
+    // the click arrives after the last frame, while finalize is still writing
+    h.onFinalize = () => controller.abort()
+    const done = exportSpecimenWebm(request(), undefined, controller.signal)
+    await expect(done).rejects.toMatchObject({ name: 'AbortError' })
     expect(h.dispose).toHaveBeenCalledTimes(1)
   })
 })
@@ -154,16 +213,16 @@ describe('the WebM support check', () => {
     return asked
   }
 
-  it('asks the encoder for a WebM codec at the frame size the export writes', async () => {
+  it('asks the encoder for a WebM codec at the frame size the export writes, and names it', async () => {
     const asked = encoderAnswering((codec) => codec.startsWith('vp09'))
-    await expect(probeWebmSupport()).resolves.toEqual({ ok: true })
+    await expect(probeWebmSupport()).resolves.toEqual({ ok: true, via: { path: 'encoder', codec: 'vp9' } })
     expect(asked[0]).toMatchObject({ codec: 'vp09.00.50.08', ...webmFrameSize(), framerate: WEBM_FPS, bitrate: 9_000_000 })
     expect(webmFrameSize()).toEqual({ width: 1440, height: 2010 })
   })
 
   it('tries VP8 when VP9 is refused', async () => {
     const asked = encoderAnswering((codec) => codec === 'vp8')
-    await expect(probeWebmSupport()).resolves.toEqual({ ok: true })
+    await expect(probeWebmSupport()).resolves.toEqual({ ok: true, via: { path: 'encoder', codec: 'vp8' } })
     expect(asked.map((c) => c.codec)).toEqual(['vp09.00.50.08', 'vp8'])
   })
 
@@ -180,16 +239,16 @@ describe('the WebM support check', () => {
     vi.stubGlobal('MediaRecorder', { isTypeSupported: (type: string) => type === 'video/webm' })
     Object.defineProperty(HTMLCanvasElement.prototype, 'captureStream', { configurable: true, writable: true, value: () => null })
     try {
-      await expect(probeWebmSupport()).resolves.toEqual({ ok: true })
+      await expect(probeWebmSupport()).resolves.toEqual({ ok: true, via: { path: 'recorder', mimeType: 'video/webm' } })
     } finally {
       delete (HTMLCanvasElement.prototype as { captureStream?: unknown }).captureStream
     }
   })
 
-  it('says so in words when the encoder cannot write WebM and there is no recorder', async () => {
-    h.canEncode = false
-    await expect(exportSpecimenWebm(request())).rejects.toThrow(/PNG export still works/)
+  it('says so in words when the encoder cannot write WebM and there is no recorder, before taking a GL context', async () => {
+    // an encoder with no WebM codec and no recorder: the support check finds no way
+    await expect(exportSpecimenWebm({ ...request(), via: undefined })).rejects.toThrow(/PNG export still works/)
     expect(h.added).toHaveLength(0)
-    expect(h.dispose).toHaveBeenCalledTimes(1)
+    expect(h.dispose).not.toHaveBeenCalled()
   })
 })
