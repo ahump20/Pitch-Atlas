@@ -65,17 +65,18 @@ const TONE_CLASS = {
   bad: 'text-[#FF5A6B]',
 } as const
 
-const LG_QUERY = '(min-width: 1024px)'
-function subscribeLg(cb: () => void) {
+// side by side only from 1280 px: at 1024 the stage column is too narrow for the overlaid look-for panel
+const WIDE_QUERY = '(min-width: 1280px)'
+function subscribeWide(cb: () => void) {
   if (typeof window === 'undefined' || !window.matchMedia) return () => {}
-  const mq = window.matchMedia(LG_QUERY)
+  const mq = window.matchMedia(WIDE_QUERY)
   mq.addEventListener('change', cb)
   return () => mq.removeEventListener('change', cb)
 }
 function useWide(): boolean {
   return useSyncExternalStore(
-    subscribeLg,
-    () => (typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(LG_QUERY).matches : false),
+    subscribeWide,
+    () => (typeof window !== 'undefined' && window.matchMedia ? window.matchMedia(WIDE_QUERY).matches : false),
     () => false,
   )
 }
@@ -290,11 +291,11 @@ export function SoftballFlightLabPage() {
             <SegmentedToggle options={RULE_OPTIONS} value={rule} onChange={setRule} className="border-bone/25" aria-label="Rulebook" />
           </div>
 
-          <div className="mt-5 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-10">
+          <div className="mt-5 grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1fr)_380px] xl:gap-10">
             {/* the stage */}
-            <div className="relative min-w-0 self-start lg:sticky lg:top-20">
+            <div className="relative min-w-0 self-start xl:sticky xl:top-20">
               <div
-                className="relative h-[min(68svh,600px)] min-h-[420px] overflow-hidden rounded-xl border border-bone/12 bg-[#070509] lg:h-[calc(100svh-8rem)] lg:max-h-[860px] lg:min-h-[560px]"
+                className="relative h-[min(68svh,600px)] min-h-[420px] overflow-hidden rounded-xl border border-bone/12 bg-[#070509] xl:h-[calc(100svh-8rem)] xl:max-h-[860px] xl:min-h-[560px]"
                 data-flight-stage="true"
               >
                 <FlightLabStage
@@ -330,8 +331,8 @@ export function SoftballFlightLabPage() {
               </div>
 
               {/* look for + the dock: under the stage on phones, over its foot on desktop */}
-              <div className="mt-5 flex flex-col gap-5 lg:pointer-events-none lg:absolute lg:inset-x-px lg:bottom-px lg:z-30 lg:mt-0 lg:flex-row lg:items-end lg:justify-between lg:rounded-b-xl lg:bg-gradient-to-t lg:from-[#070509]/92 lg:via-[#070509]/70 lg:to-transparent lg:p-6 lg:pt-16">
-                <div className="min-w-0 lg:max-w-[46%]">
+              <div className="mt-5 flex flex-col gap-5 xl:pointer-events-none xl:absolute xl:inset-x-px xl:bottom-px xl:z-30 xl:mt-0 xl:flex-row xl:items-end xl:justify-between xl:rounded-b-xl xl:bg-gradient-to-t xl:from-[#070509]/92 xl:via-[#070509]/70 xl:to-transparent xl:p-6 xl:pt-16">
+                <div className="min-w-0 xl:max-w-[46%]">
                   <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-[#FFC23C]">
                     Look for <ModelMark kind="Model" />
                   </p>
@@ -348,7 +349,7 @@ export function SoftballFlightLabPage() {
                       : `No landing spot puts this arc on your barrel. ${whySentence}`}
                   </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 lg:pointer-events-auto lg:justify-end">
+                <div className="flex flex-wrap items-center gap-3 xl:pointer-events-auto xl:justify-end">
                   <Button arrow disabled={playing} onClick={() => throwLobs([model.selectedIndex])} data-flight-throw="true">
                     Throw
                   </Button>

@@ -545,7 +545,7 @@ function Ruler({ model }: { model: LabModel }) {
       {numbers.map((n) => (
         <Label key={n} position={[0, n * IN, 0]} anchor="end" dx={-8} tone="plain">
           {/* on desktop the look-for panel covers the stage's foot, so the lowest mark steps aside */}
-          <span className={`text-[14px] [text-shadow:0_1px_3px_#000]${n < 12 ? ' lg:hidden' : ''}`}>{n}</span>
+          <span className={`text-[14px] [text-shadow:0_1px_3px_#000]${n < 12 ? ' xl:hidden' : ''}`}>{n}</span>
         </Label>
       ))}
       {!senior ? tag(zone.top, `Shoulder · ${round(zone.top / IN)} in`, `Shoulder ${round(zone.top / IN)}`, 'bone') : null}
