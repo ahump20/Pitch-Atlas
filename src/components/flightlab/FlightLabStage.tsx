@@ -110,6 +110,8 @@ export function FlightLabStage({
               throwRequest={throwRequest}
               onPlaying={onPlaying}
               onReady={markReady}
+              insetTop={insetTop}
+              insetBottom={insetBottom}
             />
           </Suspense>
         </SpecimenBoundary>
