@@ -240,7 +240,7 @@ export function SoftballFlightLabPage() {
     )
   }
 
-  const whySentence = 'You judge a lob where it crosses the plate, but your barrel meets it out front, where a falling lob is still higher.'
+  const whySentence = 'Your eyes judge a lob over the plate. Your barrel meets it out front, where it hasn’t finished falling.'
   const insetTop = wide ? 108 : 92
   const insetBottom = wide ? 250 : 0
 
@@ -277,9 +277,9 @@ export function SoftballFlightLabPage() {
         title="Your zone, at your height."
         sub={
           <>
-            Set your height and where you stand. The lab drops each lob through your strike zone, shows where
-            your barrel meets it, and names the landing spots that are your pitch. It starts on one batter’s
-            measured swing.
+            Set your height and where you stand. Every lob drops through your zone, and the lab shows where your
+            barrel meets it and which landing spots are your pitch. The swing is one batter’s, measured off their
+            own video and scaled to your height. It doesn’t know yours.
           </>
         }
       />
@@ -594,8 +594,9 @@ export function SoftballFlightLabPage() {
       <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20" aria-labelledby="fl-sources">
         <StageTierMarker index="01" label="Every figure, and where it comes from" id="fl-sources" />
         <p className="mb-8 max-w-[68ch] text-base leading-relaxed text-ink-2">
-          Rule lines are quoted from the rule books. The batter, the swing model and the example lobs are the
-          lab’s own inputs, marked as such, so a modelled number never reads as a measured one.
+          Rule lines come from the rule books, each cited to its rule or definition. The batter, the swing model
+          and the example lobs are the lab’s own inputs, tagged that way, so a modelled number never passes for
+          a measured one.
         </p>
 
         <h3 className="mono-label mb-2 text-xs">Rulebooks</h3>
