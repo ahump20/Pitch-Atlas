@@ -34,7 +34,7 @@ import '../../styles/inspector.css'
 */
 const NUDGE = 4
 
-export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtlasEntry; onClose: () => void }) {
+export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: { entry: PitchAtlasEntry; onClose: () => void; onCloseAutoFocus?: (event: Event) => void }) {
   const { display } = entry
   const slug = display.slug
   const accent = accentForSlug(slug)
@@ -146,6 +146,7 @@ export default function SpecimenInspector({ entry, onClose }: { entry: PitchAtla
         overlayClassName="specimen-inspector-overlay"
         // the close button sits in the rail's header, beside the name (InspectorRail)
         showCloseButton={false}
+        onCloseAutoFocus={onCloseAutoFocus}
         // focus lands on the dialog itself, not on the stage, so opening never paints a
         // focus ring around the card; Tab reaches the stage and the rail in order
         onOpenAutoFocus={(event) => {

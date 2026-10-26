@@ -8,7 +8,7 @@ import { createContext, useContext } from 'react'
 */
 export interface InspectorApi {
   slug: string | null
-  open(slug: string): void
+  open(slug: string, opener?: HTMLElement): void
   close(): void
 }
 

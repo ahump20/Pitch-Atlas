@@ -123,6 +123,18 @@ describe('SpecimenInspector', () => {
     expect(screen.getByTestId('search')).toHaveTextContent('')
   })
 
+  it('returns keyboard focus to the card that opened it after Escape', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/" />)
+    const opener = screen.getByRole('button', { name: /Inspect card/ })
+    opener.focus()
+    await user.keyboard('{Enter}')
+    await screen.findByRole('dialog', {}, { timeout: 4000 })
+    await user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+    await waitFor(() => expect(opener).toHaveFocus())
+  })
+
   it('turns the face that is showing: on the sources, the arrow keys tilt the back', async () => {
     const user = userEvent.setup()
     render(<Harness start="/?inspect=four-seam" />)
