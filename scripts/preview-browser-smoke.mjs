@@ -634,9 +634,37 @@ async function checkKnowledgeMarkerWrap(page) {
   await assertNoHorizontalOverflow(page, 'Canon mobile')
 }
 
+// The client renders over the prerendered HTML instead of hydrating it
+// (src/main.tsx), so every prerendered node is replaced once the client root
+// mounts, and until then every control is a dead copy. Over a slow network that
+// mount lands well after `load`: a check that clicks first either hits the
+// dead copy and tests nothing, or loses the node mid-action ("not attached").
+// After parsing, the only thing that removes #app's own children is that mount,
+// so the init script flags it. Every smoke route is prerendered.
+async function watchClientRoot(page) {
+  await page.addInitScript(() => {
+    new MutationObserver((records, observer) => {
+      if (records.some((r) => r.target instanceof Element && r.target.id === 'app' && r.removedNodes.length > 0)) {
+        window.__paClientRoot = true
+        observer.disconnect()
+      }
+    }).observe(document, { childList: true, subtree: true })
+  })
+}
+
+async function waitForClientRoot(page, label) {
+  const mounted = await page
+    .waitForFunction(() => window.__paClientRoot === true, undefined, { timeout: 30_000 })
+    .then(() => true)
+    .catch(() => false)
+  record(mounted, `${label} client root never replaced the prerendered page`)
+  return mounted
+}
+
 async function checkFlightLab(page, viewport, { webgl = true } = {}) {
   // The slow-pitch Flight Lab: the verdict headline leads, Throw runs a lob,
   // and with WebGL switched off the flat schematic is the whole stage.
+  await watchClientRoot(page)
   if (!webgl) {
     await page.addInitScript(() => {
       const getContext = HTMLCanvasElement.prototype.getContext
@@ -649,22 +677,32 @@ async function checkFlightLab(page, viewport, { webgl = true } = {}) {
   }
   await page.setViewportSize(viewport)
   const label = `Flight Lab ${webgl ? '' : 'no-WebGL '}${viewport.width}x${viewport.height}`
+  let thrown = false
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/softball/flight-lab/'), { waitUntil: 'domcontentloaded' })
     await page.locator('h1').waitFor({ state: 'attached' })
     await page.waitForLoadState('load', { timeout: 15_000 }).catch(() => undefined)
-    // Poll rather than wait on selectors: the 3D chunk can be slow on a loaded runner.
+    if (!(await waitForClientRoot(page, label))) return
+    // Poll rather than wait on selectors: the 3D chunk can be slow on a loaded
+    // runner. A lob thrown before the scene is up has nothing to fly in.
     await page
-      .waitForFunction(() => document.querySelector('[data-flight-verdict]')?.textContent?.trim(), undefined, { timeout: 30_000 })
+      .waitForFunction(() => document.querySelector('[data-stage-ready="true"], [data-stage-mode="schematic"]'), undefined, { timeout: 30_000 })
       .catch(() => undefined)
     const throwButton = page.locator('[data-flight-throw]')
     await throwButton.scrollIntoViewIfNeeded()
     await throwButton.click()
+    // Throw disables itself while a lob is in the air, so seeing it go disabled
+    // is the proof the click reached the live button.
+    thrown = await page
+      .waitForFunction(() => document.querySelector('[data-flight-throw]')?.hasAttribute('disabled'), undefined, { timeout: 10_000 })
+      .then(() => true)
+      .catch(() => false)
     await page
       .waitForFunction(() => !document.querySelector('[data-flight-throw]')?.hasAttribute('disabled'), undefined, { timeout: 20_000 })
       .catch(() => undefined)
   })
 
+  record(thrown, `${label} Throw never started a lob`)
   const verdict = (await page.locator('[data-flight-verdict]').first().textContent())?.trim() ?? ''
   record(/your pitch|jams you|too low|too high|illegal|ball|off the end/i.test(verdict), `${label} verdict headline missing (got "${verdict}")`)
   const lookFor = (await page.locator('[data-flight-lookfor]').first().textContent())?.trim() ?? ''
