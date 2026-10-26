@@ -677,6 +677,9 @@ async function checkFlightLab(page, viewport, { webgl = true } = {}) {
   }
   await page.setViewportSize(viewport)
   const label = `Flight Lab ${webgl ? '' : 'no-WebGL '}${viewport.width}x${viewport.height}`
+  // A page that never came up has already failed for that reason, so Throw is
+  // only tried, and only judged, on a live page with its stage up.
+  let ready = false
   let thrown = false
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/softball/flight-lab/'), { waitUntil: 'domcontentloaded' })
@@ -685,9 +688,12 @@ async function checkFlightLab(page, viewport, { webgl = true } = {}) {
     if (!(await waitForClientRoot(page, label))) return
     // Poll rather than wait on selectors: the 3D chunk can be slow on a loaded
     // runner. A lob thrown before the scene is up has nothing to fly in.
-    await page
+    ready = await page
       .waitForFunction(() => document.querySelector('[data-stage-ready="true"], [data-stage-mode="schematic"]'), undefined, { timeout: 30_000 })
-      .catch(() => undefined)
+      .then(() => true)
+      .catch(() => false)
+    record(ready, `${label} stage never became ready`)
+    if (!ready) return
     const throwButton = page.locator('[data-flight-throw]')
     await throwButton.scrollIntoViewIfNeeded()
     await throwButton.click()
@@ -702,7 +708,7 @@ async function checkFlightLab(page, viewport, { webgl = true } = {}) {
       .catch(() => undefined)
   })
 
-  record(thrown, `${label} Throw never started a lob`)
+  if (ready) record(thrown, `${label} Throw never started a lob`)
   const verdict = (await page.locator('[data-flight-verdict]').first().textContent())?.trim() ?? ''
   record(/your pitch|jams you|too low|too high|illegal|ball|off the end/i.test(verdict), `${label} verdict headline missing (got "${verdict}")`)
   const lookFor = (await page.locator('[data-flight-lookfor]').first().textContent())?.trim() ?? ''
