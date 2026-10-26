@@ -36,7 +36,7 @@ describe('Flight Lab page', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Your pitch' })).toBeInTheDocument()
     expect(document.querySelector('[data-flight-lookfor]')?.textContent).toBe('6–37in')
     expect(screen.getByText(/Look for it to land 6 to 37 in past the front of the plate\./)).toBeInTheDocument()
-    expect(screen.getByText(/where a falling lob is still higher/)).toBeInTheDocument()
+    expect(screen.getByText(/Your barrel meets it out front, where it hasn’t finished falling\./)).toBeInTheDocument()
     expect(document.querySelector('[data-stage-mode="schematic"]')).not.toBeNull()
     // no camera switch without WebGL; Throw and Slow stay
     expect(screen.queryByRole('button', { name: 'Catcher' })).not.toBeInTheDocument()
@@ -80,5 +80,15 @@ describe('Flight Lab page', () => {
     expect(text).not.toMatch(/\brpm\b|\bmph\b|spin rate|inches of break/i)
     expect(text).not.toMatch(/NaN|undefined|\[object Object\]/)
     expect(text).toContain('one batter’s measured swing')
+  })
+
+  it('says whose swing it is and how far the rule lines go', () => {
+    setup()
+    // the swing is one batter's, scaled; the lab claims nothing about the visitor's own
+    expect(screen.getByText(/scaled to your height\. It doesn’t know yours\./)).toBeInTheDocument()
+    // the rule lines are paraphrased and cited, so the page must not call them quotes
+    const text = document.body.textContent ?? ''
+    expect(text).not.toMatch(/quoted from the rule books/i)
+    expect(text).toContain('each cited to its rule or definition')
   })
 })
