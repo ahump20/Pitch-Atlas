@@ -12,13 +12,15 @@ import { useCallback, useRef, useState } from 'react'
   re-entry — so offscreen clips stop decoding and a clip that scrolls back in
   resumes correctly.
 
-  Two guards stay in force:
+  Three guards stay in force:
     - Under vitest (`import.meta.env.MODE === 'test'`), play() is a no-op so
       jsdom's unimplemented HTMLMediaElement never fires.
     - A synchronous throw from el.play() is routed through the same
       rejected-promise path as a normal autoplay refusal, so `blocked` is only
-      ever set asynchronously. A `playing` event clears it again, so a later
-      successful re-entry recovers the video from a poster fallback.
+      ever set asynchronously. A later successful play clears it again.
+    - A play() interrupted by pause() rejects with an AbortError. That is the
+      visitor's Pause, or the clip leaving the screen, not a refusal: it must not
+      swap the clip for its poster, or Resume would have nothing left to play.
 */
 export function useAutoplayGuard<T extends HTMLVideoElement>() {
   const ref = useRef<T | null>(null)
@@ -37,7 +39,9 @@ export function useAutoplayGuard<T extends HTMLVideoElement>() {
     if (attempt && typeof attempt.catch === 'function') {
       attempt
         .then(() => setBlocked(false))
-        .catch(() => setBlocked(true))
+        .catch((error: unknown) => {
+          if ((error as { name?: string } | null)?.name !== 'AbortError') setBlocked(true)
+        })
     }
   }, [])
 

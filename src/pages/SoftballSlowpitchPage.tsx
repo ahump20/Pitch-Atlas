@@ -1,3 +1,5 @@
+import type { CSSProperties } from 'react'
+import { Link } from 'react-router-dom'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { canonicalUrl, contentJsonLd, ogImageMeta } from '../lib/seo'
@@ -94,6 +96,30 @@ export function SoftballSlowpitchPage() {
           touch and rules, not power. And the rules themselves vary by league, so the arc number is named, not
           smoothed.
         </p>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-20">
+        <StageTierMarker index="04" label="See your zone at your height" />
+        <p className="mb-8 max-w-[64ch] text-lg leading-relaxed text-ink">
+          Your eyes judge a lob where it crosses the plate. Your barrel meets it out front, where a falling lob
+          is still higher. The flight lab drops each lob through a strike zone set to your height and stance,
+          under your league’s rule book, and names the landing spots that are your pitch.
+        </p>
+        <Link
+          to="/softball/flight-lab"
+          className="rfx-plate group is-edge max-w-xl"
+          style={{ '--gc': 'var(--color-cyan)' } as CSSProperties}
+        >
+          <p className="mono-label text-cyan">Slowpitch · flight lab</p>
+          <h3 className="rfx-platetitle text-2xl">Your zone, at your height</h3>
+          <p className="text-[0.95rem] leading-relaxed text-bone-2">
+            Set your height and where you stand. See where each lob crosses, where your barrel meets it, and
+            what to look for, under USSSA, USA Softball or Senior rules.
+          </p>
+          <div className="mt-auto flex items-center border-t border-white/10 pt-3">
+            <span className="ml-auto mono-label text-cyan transition-colors group-hover:text-bone">Open the lab →</span>
+          </div>
+        </Link>
       </section>
     </>
   )

@@ -176,7 +176,7 @@ export function CraftsmanChapter() {
                     card it wears across the atlas. The whole card routes to its file,
                     so a craftsman opens straight into the studied pitch. */}
                 <div className="mx-auto max-w-[360px]">
-                  <PitchSpecimenCard entry={pitch} />
+                  <PitchSpecimenCard entry={pitch} pauseControl />
                 </div>
               </div>
             ) : null}

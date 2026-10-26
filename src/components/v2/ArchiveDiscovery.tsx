@@ -24,7 +24,7 @@ export function ArchiveDiscovery() {
     <div className="archive-discovery-folio">
       <div className="archive-discovery-specimen">
         <p className="archive-eyebrow">The grip · {pitch.display.specimenNo}</p>
-        <PitchSpecimenCard entry={pitch} maxWidth={290} />
+        <PitchSpecimenCard entry={pitch} maxWidth={290} foil index={4} />
         <p className="archive-reference-credit">Grip demonstration by Austin H.</p>
         <Link to={`/pitch/${pitch.display.slug}#grip-lab`} className="archive-text-link">Inspect the {pitch.display.shortName.toLowerCase()} grip <span aria-hidden="true">↗</span></Link>
       </div>

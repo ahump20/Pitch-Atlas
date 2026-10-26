@@ -1,0 +1,12 @@
+{
+  "origin": "http://127.0.0.1:4173",
+  "timestamp": "2026-10-23T20:27:54.192Z",
+  "webgl": "disabled",
+  "results": [
+    "desktop: hero CTA, composition, compare views, study, zoom/reset, Escape, no WebGL, reduced motion, overflow passed",
+    "mobile: hero CTA, composition, compare views, study, zoom/reset, Escape, no WebGL, reduced motion, overflow passed",
+    "landscape: hero CTA, composition, compare views, study, zoom/reset, Escape, no WebGL, reduced motion, overflow passed",
+    "Recorded index → selection → study → inspection → Back → comparison → specimen → Back: /tmp/pitch-atlas-handoff/archive-system-evidence/page@9db9d557741f4a8aa60f38bcb6a3a88f.webm"
+  ],
+  "errors": []
+}
