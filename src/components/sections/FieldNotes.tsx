@@ -614,7 +614,7 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
   const { community, canonical, display } = entry
   const slug = display.slug
   const live = community.enabled
-  const { status, error, notes, identity, refresh, submit, toggleTried, toggleHelpful, report, claim } =
+  const { status, notes, identity, refresh, submit, toggleTried, toggleHelpful, report, claim } =
     useFieldNotes(slug, live)
 
   // Let failures surface. NoteCard awaits this and shows a retry state if the
@@ -725,9 +725,8 @@ export function FieldNotes({ entry }: { entry: PitchAtlasEntry }) {
             ) : status === 'error' ? (
               <Alert variant="destructive" className="bg-card">
                 <AlertTitle>Couldn't load the field notes.</AlertTitle>
-                <AlertDescription>
-                  Couldn't load the field notes just now: {error}. This is usually a passing hiccup.
-                </AlertDescription>
+                {/* The hook's error text stays out: it repeats the title or carries server detail. */}
+                <AlertDescription>The server didn't answer.</AlertDescription>
                 <Button type="button" onClick={refresh} variant="outline" size="sm" className="mt-3 w-fit font-mono text-xs tracking-wide">
                   <RefreshCwIcon data-icon="inline-start" />
                   Try again
