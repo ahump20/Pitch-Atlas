@@ -408,6 +408,20 @@ describe('the bench', () => {
     expect(screen.getByTestId('search')).toHaveTextContent('?inspect=four-seam&with=circle-change&aspect=grip')
   })
 
+  it('shows a pair from one view, the first pitch\'s own until another is picked, and lights it', async () => {
+    const user = userEvent.setup()
+    // the slider is filed from the side, the cutter from the top
+    render(<Harness start="/?inspect=slider&with=cutter&aspect=grip" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    const views = within(dialog).getByRole('group', { name: 'View both' })
+    const balls = () => [...dialog.querySelectorAll('[data-bench-ball]')].map((b) => b.getAttribute('aria-label'))
+    expect(balls()).toEqual([expect.stringMatching(/side view/), expect.stringMatching(/side view/)])
+    expect(within(views).getByRole('button', { name: 'Side' })).toHaveAttribute('aria-pressed', 'true')
+    await user.click(within(views).getByRole('button', { name: 'Thumb' }))
+    expect(balls()).toEqual([expect.stringMatching(/thumb view/), expect.stringMatching(/thumb view/)])
+    expect(within(views).getByRole('button', { name: 'Thumb' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
   it('on a phone, trades A and B in one stage without rebuilding it', async () => {
     const user = userEvent.setup()
     const matchMedia = window.matchMedia
@@ -420,6 +434,10 @@ describe('the bench', () => {
     const after = dialog.querySelector('[data-bench-ball]')
     expect(after).toHaveAttribute('data-bench-ball', 'cutter')
     expect(after?.closest('figure')).toBe(balls[0].closest('figure'))
+    // a blink, not a turn: B takes A's view, and that view stays lit
+    expect(after?.getAttribute('aria-label')).toMatch(/side view/)
+    const views = within(dialog).getByRole('group', { name: 'View both' })
+    expect(within(views).getByRole('button', { name: 'Side' })).toHaveAttribute('aria-pressed', 'true')
   })
 
   it('says plainly when a pitch has no canonical grip', async () => {

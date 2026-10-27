@@ -6,12 +6,14 @@
   pixels) and the flat drawing (SVG units).
 */
 
-/** A label's centre and size. A zero-size box is hidden and left alone. */
+/** A label's centre and size. A zero-size box is hidden and left alone. A fixed
+    box (a fingertip's dot) never moves: labels go around it. */
 export interface LabelBox {
   x: number
   y: number
   w: number
   h: number
+  fixed?: boolean
 }
 
 export function declutterLabels(
@@ -22,18 +24,41 @@ export function declutterLabels(
   const clamp = (v: number, half: number, size: number) =>
     half * 2 + margin * 2 > size ? size / 2 : Math.min(Math.max(v, margin + half), size - margin - half)
   const placed = boxes.map((b) =>
-    b.w > 0 && b.h > 0
+    b.w > 0 && b.h > 0 && !b.fixed
       ? { x: clamp(b.x, b.w / 2, bounds.width), y: clamp(b.y, b.h / 2, bounds.height) }
       : { x: b.x, y: b.y },
   )
   const live = boxes.flatMap((b, i) => (b.w > 0 && b.h > 0 ? [i] : []))
+  const free = live.filter((i) => !boxes[i].fixed)
+  const pins = live.filter((i) => boxes[i].fixed)
+  const acrossX = (i: number, j: number) => Math.abs(placed[i].x - placed[j].x) < (boxes[i].w + boxes[j].w) / 2
 
   for (let pass = 0; pass < iterations; pass++) {
     let moved = false
-    for (let p = 0; p < live.length; p++) {
-      for (let q = p + 1; q < live.length; q++) {
-        const i = live[p]
-        const j = live[q]
+    // a fixed box never gives way: a label in the way of one goes to the nearest
+    // height that clears every fixed box it crosses
+    for (const m of free) {
+      const blocked = pins
+        .filter((f) => acrossX(m, f))
+        .map((f) => {
+          const reach = (boxes[f].h + boxes[m].h) / 2 + gap
+          return [placed[f].y - reach, placed[f].y + reach]
+        })
+      const inside = (y: number) => blocked.some(([lo, hi]) => y > lo + 1e-6 && y < hi - 1e-6)
+      if (!inside(placed[m].y)) continue
+      const options = blocked
+        .flat()
+        .map((y) => clamp(y, boxes[m].h / 2, bounds.height))
+        .filter((y) => !inside(y))
+      if (!options.length) continue
+      const from = placed[m].y
+      placed[m].y = options.reduce((a, b) => (Math.abs(b - from) < Math.abs(a - from) ? b : a))
+      moved = true
+    }
+    for (let p = 0; p < free.length; p++) {
+      for (let q = p + 1; q < free.length; q++) {
+        const i = free[p]
+        const j = free[q]
         const a = placed[i]
         const b = placed[j]
         if (Math.abs(a.x - b.x) >= (boxes[i].w + boxes[j].w) / 2) continue

@@ -178,7 +178,7 @@ export function BenchBody({
 }: {
   entries: PitchAtlasEntry[]
   aspect: BenchAspect
-  /** null: each pitch's own default view */
+  /** null: the first pitch's own default view, which a pair shares */
   orientation: GripView | null
   hand: Handedness
   onChange: (change: BenchChange) => void
@@ -201,7 +201,6 @@ export function BenchBody({
   const setShown = (next: number) => setPicked({ keys, shown: next, finger })
   const setFinger = (next: GripContactModel['finger'] | null) => setPicked({ keys, shown, finger: next })
 
-  const viewOf = (entry: PitchAtlasEntry) => orientation ?? entry.canonical.gripModel.defaultView
   const contactLabel = (entry: PitchAtlasEntry) => entry.canonical.gripModel.contacts.find((c) => c.finger === finger)?.label
   const toggleLink = () => {
     link.setLinked(!linked)
@@ -214,7 +213,9 @@ export function BenchBody({
 
   // a phone gets one ball, and A and B take turns in it
   const onStage = pair && narrow ? [shown] : entries.map((_, i) => i)
-  const sharedView = orientation ?? (pair ? null : viewOf(entries[0]))
+  // a pair is seen from one view, the one picked or else A's own, so on a phone
+  // B blinks in where A was instead of turning
+  const sharedView = orientation ?? entries[0].canonical.gripModel.defaultView
   const fingers = fingerRows(entries)
   const anyFiled = entries.some((e) => e.canonical.gripModel.status === 'filed')
 
@@ -247,7 +248,7 @@ export function BenchBody({
                 key={position}
                 entry={entry}
                 slot={pair ? slotOf(index) : undefined}
-                view={viewOf(entry)}
+                view={sharedView}
                 hand={hand}
                 activeContact={finger ? contactLabel(entry) : undefined}
                 still={still}

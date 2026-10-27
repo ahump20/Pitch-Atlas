@@ -73,4 +73,38 @@ describe('declutterLabels', () => {
     expect(placed[0].x).toBe(150)
     expect(placed[1]).toEqual({ x: 150, y: 150 })
   })
+
+  it('never moves a fixed box: the label beside it takes the whole push', () => {
+    const boxes = [
+      { x: 150, y: 150, w: 10, h: 10, fixed: true },
+      { x: 150, y: 152, w: 100, h: 20 },
+    ]
+    const [dot, plate] = declutterLabels(boxes, bounds, { gap: 4 })
+    expect(dot).toEqual({ x: 150, y: 150 })
+    expect(plate.y - dot.y).toBeCloseTo((10 + 20) / 2 + 4)
+  })
+
+  it('leaves fixed boxes alone, even touching each other or past the frame', () => {
+    const boxes = [
+      { x: 100, y: 100, w: 10, h: 10, fixed: true },
+      { x: 102, y: 101, w: 10, h: 10, fixed: true },
+      { x: 2, y: 299, w: 10, h: 10, fixed: true },
+    ]
+    expect(declutterLabels(boxes, bounds)).toEqual([
+      { x: 100, y: 100 },
+      { x: 102, y: 101 },
+      { x: 2, y: 299 },
+    ])
+  })
+
+  it('hops a label to the far side of a fixed box when the frame leaves no room on the near side', () => {
+    const boxes = [
+      { x: 150, y: 280, w: 10, h: 10, fixed: true },
+      { x: 150, y: 284, w: 100, h: 20 },
+    ]
+    const [dot, plate] = declutterLabels(boxes, bounds, { gap: 4, margin: 4 })
+    expect(plate.y).toBeLessThan(dot.y)
+    expect(dot.y - plate.y).toBeCloseTo((10 + 20) / 2 + 4)
+  })
 })
+
