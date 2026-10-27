@@ -134,6 +134,19 @@ describe('schematic finger labels', () => {
     expect(container.querySelector('[data-grip-anchor]')).toBeNull()
   })
 
+  it("keeps a name that only just misses room past its fingertip on that side, instead of laying it across the next finger", () => {
+    const cutter = PITCHES.find((p) => p.display.slug === 'cutter')!
+    const contacts = cutter.canonical.gripModel.contacts
+    const { container } = render(
+      <SeamSchematic grip={contacts} referenceContacts={contacts} view="top" surface="stage" />,
+    )
+    const middle = [...container.querySelectorAll('[data-grip-label]')].find((g) => g.textContent === 'MIDDLE PRESSURE')!
+    const rect = middle.querySelector('rect')!
+    const dot = middle.querySelector('circle[data-grip-anchor]')!
+    // the middle fingertip points left, toward the edge, so its name runs left of the dot
+    expect(num(rect, 'x') + num(rect, 'width')).toBeLessThanOrEqual(num(dot, 'cx'))
+  })
+
   it('names the cutter fingers on plates in the top view', () => {
     const cutter = PITCHES.find((p) => p.display.slug === 'cutter')!
     const contacts = cutter.canonical.gripModel.contacts
