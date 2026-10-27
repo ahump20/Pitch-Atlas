@@ -49,6 +49,34 @@ describe('the orbit link', () => {
     expect(b).toHaveBeenCalledWith({ azimuth: 2, polar: 1 })
   })
 
+  it('a stage that joins a linked bench starts at the angle already turned', () => {
+    const link = createOrbitLink()
+    link.subscribe('a', vi.fn())
+    link.drive('a')
+    link.publish('a', { azimuth: 0.7, polar: 1.1 })
+    const b = vi.fn()
+    link.subscribe('b', b)
+    expect(b).toHaveBeenCalledWith({ azimuth: 0.7, polar: 1.1 })
+  })
+
+  it('a stage that joins unlinked, or after Reset, keeps its own angle', () => {
+    const unlinked = createOrbitLink()
+    unlinked.drive('a')
+    unlinked.publish('a', { azimuth: 0.7, polar: 1.1 })
+    unlinked.setLinked(false)
+    const b = vi.fn()
+    unlinked.subscribe('b', b)
+    expect(b).not.toHaveBeenCalled()
+
+    const reset = createOrbitLink()
+    reset.drive('a')
+    reset.publish('a', { azimuth: 0.7, polar: 1.1 })
+    reset.reset()
+    const c = vi.fn()
+    reset.subscribe('b', c)
+    expect(c).not.toHaveBeenCalled()
+  })
+
   it('resets every stage, linked or not, and forgets a stage that left', () => {
     const link = createOrbitLink()
     const one = vi.fn()

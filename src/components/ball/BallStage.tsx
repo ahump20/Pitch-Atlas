@@ -70,6 +70,7 @@ export function BallStage({
       view={faceGrip ? view : undefined}
       referenceContacts={entry.canonical.gripModel.contacts}
       surface={surface}
+      activeContact={activeContact}
       title={`A ${entry.canonical.name} specimen. The seam is the closed figure-eight curve laid on the ball, the same cover for every pitch.`}
     />
   )

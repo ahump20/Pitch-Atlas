@@ -2,8 +2,8 @@
   Two ball stages on one camera. Each stage's orbit controls report where the reader
   turned them; while the link is on, the other stage takes the same angle. Only the
   stage the reader is actually dragging (the driver) publishes, and a stage never
-  hears its own pose back, so one turn can never echo between the two. Linking again
-  brings the other stage to the angle last turned. Reset fans out to every stage,
+  hears its own pose back, so one turn can never echo between the two. Linking again,
+  or a second stage joining, brings it to the angle last turned. Reset fans out to every stage,
   linked or not, so the pair always comes home together.
   No React: the canvases subscribe from inside their own render loops.
 */
@@ -50,6 +50,8 @@ export function createOrbitLink(): OrbitLink {
     },
     subscribe(id, apply) {
       receivers.set(id, apply)
+      // a stage that joins a linked bench starts at the angle the other already holds
+      if (linked && last) apply(last)
       return () => {
         if (receivers.get(id) === apply) receivers.delete(id)
       }

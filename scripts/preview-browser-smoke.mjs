@@ -677,12 +677,15 @@ async function checkReducedMotionInspectorScroll(page) {
 // with a GPU.
 async function checkBench(page, viewport, { reduced = false } = {}) {
   await disableWebGL(page)
+  await watchClientRoot(page)
   if (reduced) await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize(viewport)
   const label = `Bench ${reduced ? 'reduced-motion ' : ''}${viewport.width}x${viewport.height}`
   const phone = viewport.width < 640
   const unexpected = await collectConsole(page, async () => {
     await page.goto(route('/repertoire/?family=breaking'), { waitUntil: 'domcontentloaded' })
+    // the prerendered row is a plain link until the client mounts and the filter applies
+    if (!(await waitForClientRoot(page, label))) return
     const row = page.locator('a[href*="/pitch/slider"]').first()
     await row.waitFor({ state: 'visible', timeout: 20_000 })
     // the page scrolls smoothly and late fonts shift it, so read the spot once it holds still
@@ -733,6 +736,8 @@ async function checkBench(page, viewport, { reduced = false } = {}) {
     await index.click()
     record(await index.getAttribute('aria-pressed') === 'true', `${label} the Index row did not stay picked`)
     record(await dialog.locator('.bench-finger[data-dim]').count() >= 1, `${label} picking a finger faded no other rows`)
+    record(await dialog.locator('[data-bench-ball] [data-grip-finger][data-active]').count() >= (phone ? 1 : 2),
+      `${label} picking a finger lit it on ${phone ? 'the ball' : 'both balls'}`)
 
     await dialog.getByRole('group', { name: 'Aspect' }).getByRole('button', { name: 'Flight' }).click()
     await dialog.locator('.bench-flight svg').waitFor({ state: 'visible' })

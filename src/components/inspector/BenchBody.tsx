@@ -14,6 +14,8 @@ import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { FINGER_NAME, fingerRows, releaseSequence, shapeLabel } from '../../lib/specimenReads'
 import type { Aspect } from './inspectorContext'
 import '../../styles/bench.css'
+// the controls' base (.specimen-seg, .specimen-action) lives with the inspector, and /compare has no inspector
+import '../../styles/inspector.css'
 
 /*
   The bench's working surface for one specimen or two: the stage (the ball in the
@@ -102,8 +104,9 @@ function SpecimenStage({
         {unfiled || still ? (
           <SeamSchematic
             className="h-full w-full"
-            spinAxis={entry.motion.spinAxis}
-            gyro={entry.motion.gyro}
+            // no spin arrow: the authored vector's side disagrees with the shape words
+            showAxis={false}
+            activeContact={activeContact}
             grip={unfiled ? undefined : gm.contacts}
             handedness={hand}
             view={unfiled ? undefined : view}
@@ -142,11 +145,12 @@ function Row({ name, children, dim }: { name: ReactNode; children: ReactNode; di
   )
 }
 
-function ContactCell({ contact, unfiled }: { contact?: GripContactModel; unfiled: boolean }) {
-  if (unfiled) return <span className="bench-cell bench-cell-quiet">Not filed</span>
-  if (!contact) return <span className="bench-cell bench-cell-quiet">No contact</span>
+function ContactCell({ who, contact, unfiled }: { who: ReactNode; contact?: GripContactModel; unfiled: boolean }) {
+  if (unfiled) return <span className="bench-cell bench-cell-quiet">{who}Not filed</span>
+  if (!contact) return <span className="bench-cell bench-cell-quiet">{who}No contact</span>
   return (
     <span className="bench-cell">
+      {who}
       <strong>{contact.label}</strong>
       <span>{contact.seamRelation}</span>
       <span className="bench-cell-quiet">{contact.pressureRole}</span>
@@ -303,11 +307,15 @@ export function BenchBody({
     </div>
   ) : null
 
+  // the column heads are drawn for the eye; in a pair each cell names its pitch for a screen reader
+  const who = (i: number) => (pair ? <span className="sr-only">{entries[i].display.shortName}: </span> : null)
+
   // the reference hand's one badge, at the head of everything it wrote
   const handRow = (
     <Row name="Reference hand">
-      {entries.map((e) => (
+      {entries.map((e, i) => (
         <span key={e.display.slug} className="bench-cell">
+          {who(i)}
           <GripSourceBadge provenance={e.canonical.gripModel.provenance} />
           {e.canonical.gripModel.status === 'unfiled' ? (
             <span className="bench-cell-quiet">{e.canonical.gripModel.provenance.value}</span>
@@ -322,10 +330,11 @@ export function BenchBody({
   const claimRow = (name: string, pick: (e: PitchAtlasEntry) => Claim<string> | undefined, dim?: boolean) =>
     entries.some((e) => pick(e)) ? (
       <Row name={name} dim={dim}>
-        {entries.map((e) => {
+        {entries.map((e, i) => {
           const claim = pick(e)
           return (
             <span key={e.display.slug} className="bench-cell">
+              {who(i)}
               {claim ? <RefractorClaim claim={claim} proseClassName="text-[14px] leading-relaxed text-bone" /> : <span className="bench-cell-quiet">None on file</span>}
             </span>
           )
@@ -358,7 +367,7 @@ export function BenchBody({
                 ) : null}
               </span>
               {entries.map((e, i) => (
-                <ContactCell key={e.display.slug} contact={contacts[i]} unfiled={e.canonical.gripModel.status === 'unfiled'} />
+                <ContactCell key={e.display.slug} who={who(i)} contact={contacts[i]} unfiled={e.canonical.gripModel.status === 'unfiled'} />
               ))}
             </button>
           )
@@ -369,8 +378,9 @@ export function BenchBody({
         {handRow}
         {(['Hold', 'Pressure', 'Leave'] as const).map((step, n) => (
           <Row key={step} name={step}>
-            {entries.map((e) => (
+            {entries.map((e, i) => (
               <span key={e.display.slug} className="bench-cell">
+                {who(i)}
                 {e.canonical.gripModel.status === 'unfiled' ? (
                   <span className="bench-cell-quiet">Not filed</span>
                 ) : (
@@ -386,8 +396,9 @@ export function BenchBody({
     ) : (
       <>
         <Row name="Shape">
-          {entries.map((e) => (
+          {entries.map((e, i) => (
             <span key={e.display.slug} className="bench-cell">
+              {who(i)}
               <strong>{shapeLabel(e)}</strong>
               <RefractorClaim claim={e.canonical.physics.shape} proseClassName="text-[14px] leading-relaxed text-bone" />
             </span>
