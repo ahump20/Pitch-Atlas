@@ -202,6 +202,9 @@ export default defineConfig({
     chunkSizeWarningLimit: 800,
     rolldownOptions: {
       output: {
+        // keep licence comments (/*! ... */, @license): the hand model's MIT notice
+        // has to ship with the site, and so do the dependencies' own
+        comments: { legal: true },
         codeSplitting: {
           groups: [
             {
