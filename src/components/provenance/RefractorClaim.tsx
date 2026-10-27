@@ -68,10 +68,12 @@ export function RefractorClaim({
   claim,
   proseClassName = 'text-[15px] leading-relaxed text-bone-2',
   className = '',
+  tone = 'void',
 }: {
   claim: Claim<string>
   proseClassName?: string
   className?: string
+  tone?: keyof typeof SOURCE_TONE
 }) {
   return (
     <div className={`flex flex-col gap-2 ${className}`}>
@@ -81,20 +83,30 @@ export function RefractorClaim({
         {claim.source ? (
           <>
             <span aria-hidden="true" className="text-ink-3">/</span>
-            <RefractorSource source={claim.source} />
+            <RefractorSource source={claim.source} tone={tone} />
           </>
         ) : null}
       </div>
-      {claim.note ? <RefractorNote>{claim.note}</RefractorNote> : null}
+      {claim.note ? <RefractorNote tone={tone}>{claim.note}</RefractorNote> : null}
     </div>
   )
 }
 
-/** A claim's caveat on the void: what the line can and cannot claim. */
-export function RefractorNote({ children, className = '' }: { children: string; className?: string }) {
+const NOTE_TONE = { void: 'text-ink-3', panel: 'text-bone-3' } as const
+
+/** A claim's caveat: what the line can and cannot claim. `tone` follows the ground, as on the source line. */
+export function RefractorNote({
+  children,
+  className = '',
+  tone = 'void',
+}: {
+  children: string
+  className?: string
+  tone?: keyof typeof NOTE_TONE
+}) {
   return (
     <p
-      className={`max-w-[64ch] border-l-2 pl-3 font-mono text-[10px] leading-relaxed text-ink-3 ${className}`}
+      className={`max-w-[64ch] border-l-2 pl-3 font-mono text-[10px] leading-relaxed ${NOTE_TONE[tone]} ${className}`}
       style={{ borderColor: 'color-mix(in srgb, var(--color-cyan) 38%, transparent)' }}
     >
       {children}
