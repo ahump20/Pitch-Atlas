@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import type { PitchAtlasEntry, RepertoireEntry } from '../../data/types'
+import type { RepertoireEntry } from '../../data/types'
 import { ACCENT, FALLBACK_ACCENT } from '../refractor/accents'
 import { RefractorBall } from '../refractor/RefractorBall'
-import { gripEntryFor, gripEntryForRepertoire } from '../../data/grips'
+import { gripEntryForRepertoire } from '../../data/grips'
 import { pitchBySlug } from '../../data/pitches'
 import { STATUS_LABEL, isEdgeStatus } from '../index/statusBadgeMeta'
-import { FAMILY_ACCENT } from './family-accent'
 import { useOpenInPlace } from '../inspector/inspectorContext'
 
 /*
@@ -25,71 +24,6 @@ import { useOpenInPlace } from '../inspector/inspectorContext'
   is a true thing about a living set. The leather field wears the felt pass —
   the case lining showing between sleeves.
 */
-
-/* The binder tab dips the same inkwell as the index rows and the header ledger.
-   This used to be a hand-copied subset of FAMILY_ACCENT carrying only three of the
-   five families, so specialty and banned silently fell through to the bone default
-   and the set drifted every time one file was edited and the other wasn't. */
-const FAMILY_TAB: Record<string, string> = FAMILY_ACCENT
-
-export function PocketCard({ entry }: { entry: PitchAtlasEntry }) {
-  const { display, canonical, motion } = entry
-  const accent = ACCENT[display.slug] ?? FALLBACK_ACCENT
-  const grip = gripEntryFor(display.slug)
-  const still = grip?.photos[0]?.src ?? grip?.clip?.poster
-  const tab = FAMILY_TAB[canonical.family] ?? '#D8CFB8'
-
-  return (
-    <Link to={`/pitch/${display.slug}`} viewTransition className="pocket-lift" aria-label={`Open the ${display.shortName} specimen`}>
-      <span className="pocket-card">
-        <span className="pocket-inner">
-          <span className="pocket-face">
-            {still ? (
-              <img src={still} alt="" loading="lazy" decoding="async" draggable={false} />
-            ) : (
-              <RefractorBall
-                spinAxis={motion.spinAxis}
-                gyro={motion.gyro}
-                accent={accent}
-                id={`pocket-${display.slug}`}
-                gripPoints={canonical.fingerPlacement}
-              />
-            )}
-            <i className="pocket-vnum" aria-hidden="true">
-              {display.specimenNo}
-            </i>
-            <i className="pocket-tab" style={{ background: tab }} aria-hidden="true" />
-          </span>
-          <span className="pocket-name">{display.shortName}</span>
-        </span>
-      </span>
-    </Link>
-  )
-}
-
-/* a filler card: the checklist / set-ad card a real pack ships with */
-export function FillerCard({ to, label, note, ghost }: { to: string; label: string; note: string; ghost?: boolean }) {
-  return (
-    <Link to={to} viewTransition className="pocket-lift" aria-label={label}>
-      <span className={`pocket-card ${ghost ? 'is-ghost' : 'is-filler'}`}>
-        <span className="pocket-inner">
-          <span
-            className="rfx-athletic block"
-            style={{ fontSize: 'clamp(13px,2vw,19px)', lineHeight: 0.95, color: ghost ? 'var(--color-bone-2)' : '#211D17' }}
-          >
-            {label}
-          </span>
-          <span
-            className="block font-mono uppercase"
-            style={{ fontSize: 8, letterSpacing: '0.14em', color: ghost ? '#8A8576' : 'rgba(33,29,23,.6)' }}
-          >
-            {note}
-          </span>
-        </span>
-      </span>
-    </Link>
-  )
-}
 
 /*
   One Pitch Index entry in a binder sleeve. The face is honest by construction:

@@ -1321,10 +1321,6 @@
     transform: scale(1.045) translate3d(-0.6%, -0.4%, 0);
     animation: presentation-settle 6s cubic-bezier(.2,.7,.2,1) 1 both;
   }
-  .presentation-heritage img {
-    filter: saturate(.72) contrast(1.08) brightness(.76);
-    transform: scale(1.025);
-  }
   @keyframes presentation-settle {
     to { transform: scale(1.02) translate3d(0, 0, 0); }
   }
@@ -2429,9 +2425,6 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     content: ""; position: absolute; inset: 0; border-radius: 10px; pointer-events: none;
     background: linear-gradient(118deg, transparent 30%, rgba(255,255,255,.075) 42%, rgba(255,255,255,.02) 55%, transparent 62%);
   }
-  .pocket-lift { display: block; transition: transform .22s cubic-bezier(.2,.8,.2,1), filter .22s ease; }
-  .pocket:hover .pocket-lift { transform: translateY(-4px); filter: drop-shadow(0 10px 14px rgba(0,0,0,.55)); }
-  @media (prefers-reduced-motion: reduce) { .pocket:hover .pocket-lift { transform: none; filter: none; } }
 
   /* the compact pocket card: a thin rainbow-holo frame, photo or schematic face,
      varsity number, name strip. No video in a pocket — motion is the hero's job.
@@ -2460,27 +2453,12 @@ input[type="checkbox"], input[type="radio"] { accent-color: var(--ctl-accent); }
     color: #F6F1E6; -webkit-text-stroke: 1px #000;
     text-shadow: 2px 2px 0 rgba(0,0,0,.75);
   }
-  .pocket-tab {
-    position: absolute; top: 0; right: 8px; z-index: 2; width: 10px; height: 20px;
-    border-radius: 0 0 3px 3px; box-shadow: inset 0 -1px 0 rgba(0,0,0,.5);
-  }
   .pocket-name {
     flex: 0 0 auto; padding: 5px 5px 6px; text-align: center;
     font-family: var(--font-athletic); text-transform: uppercase;
     font-size: clamp(9px, 1.5vw, 13px); letter-spacing: .05em; line-height: 1; color: #F2ECDD;
     background: linear-gradient(180deg, rgba(246,241,230,.1), transparent 60%), #17120C;
     border-top: 1px solid rgba(246,241,230,.22);
-  }
-  /* filler cards: the checklist/ad cards real packs shipped with — cream stock */
-  .pocket-card.is-filler { background: rgba(246,241,230,.18); }
-  .pocket-card.is-filler .pocket-inner {
-    background: radial-gradient(110% 90% at 50% 0%, rgba(255,252,242,.5), transparent 55%), #E9DFC8;
-    align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 10px 8px;
-  }
-  .pocket-card.is-ghost { background: transparent; box-shadow: inset 0 0 0 1px rgba(246,241,230,.22); }
-  .pocket-card.is-ghost .pocket-inner {
-    background: transparent; border: 1px dashed rgba(246,241,230,.3); border-radius: 7px;
-    align-items: center; justify-content: center; gap: 6px; text-align: center; padding: 10px 8px;
   }
 
   /* ── the red thread (SeamGuide.tsx): section-scoped seam stitching that draws
