@@ -38,10 +38,13 @@ legacy source it was migrated from; it is left untouched and no longer receives
 uploads. Two dead ids appear in older prose: `1f94fe08-…` and `aa4ea331-…`.
 Both are gone (`aa4ea331` 404s).
 
-Canonical checkout: `~/Pitch-Atlas/Pitch-Atlas-living-media` (this repo). The
-folder above it, `~/Pitch-Atlas`, is an unversioned older copy whose
-`.design-sync/` is the clobbered variant described below; it now carries a pointer
-back here.
+Canonical source: GitHub `ahump20/Pitch-Atlas`, branch `main`, never a local
+folder. Folders differ by machine, so check `git remote -v` before trusting one.
+The 2026-09-22 re-sync ran from `~/Pitch-Atlas/Pitch-Atlas-living-media`, with an
+unversioned older copy at `~/Pitch-Atlas` above it whose `.design-sync/` is the
+clobbered variant described below (it carries a pointer back). That layout is
+another machine's: on the M3 laptop `~/Pitch-Atlas` has been a git clone of this
+repo since 2026-06-04 and the nested folder does not exist (checked 2026-10-23).
 
 ## Re-sync to the artifact — the flow (2026-09-22)
 1. `npm run design-sync -- --skip-build --remote .design-sync/.cache/remote-sync.json`

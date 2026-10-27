@@ -16,4 +16,4 @@
 - [ ] No copied instructional prose
 - [ ] No fake community posts, fake adoption counts, or fake verified badges
 - [ ] No medical, injury-prevention, workload, or youth-prescription claims
-- [ ] README, UI copy, and data model preserve: “Sourced, not corrected”
+- [ ] README and UI copy still carry the mission; the data model still carries provenance underneath it
