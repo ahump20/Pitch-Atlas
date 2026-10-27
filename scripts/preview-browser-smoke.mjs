@@ -715,6 +715,11 @@ async function checkBench(page, viewport, { reduced = false } = {}) {
     await dialog.getByLabel('Compare with').selectOption('cutter')
     await page.waitForURL(/with=cutter/)
     record(await page.evaluate(() => history.length) === depth, `${label} aspect or partner added a history entry`)
+    // the address moves a beat before the pair is drawn; wait for the pair itself
+    await (phone
+      ? dialog.getByRole('group', { name: 'Pitch on the stage' })
+      : dialog.locator('[data-bench-ball]').nth(1)
+    ).waitFor({ state: 'attached', timeout: 5_000 }).catch(() => {})
     record(await dialog.locator('[data-bench-ball]').count() === (phone ? 1 : 2), `${label} pair shows the wrong number of balls`)
     record(await dialog.getByRole('button', { name: /^(Unlink|Link|Reset)$/ }).count() === 0,
       `${label} offers Link or Reset on a schematic, which cannot turn`)
