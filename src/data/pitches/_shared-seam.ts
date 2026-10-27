@@ -9,7 +9,7 @@ import { claim } from '../sources'
 */
 export const sharedSeam: SeamGeometryReference = {
   equationPlain: 'x = 2 sin t + sin 3t,   y = 2 cos t - cos 3t,   z = 2√2 cos 2t',
-  parameterization: 't from 0 to 2π, each point normalized to the ball radius, the whole curve rotated by the spin-axis quaternion.',
+  parameterization: 't from 0 to 2π, each point normalized to the ball radius; the same curve on every specimen, never turned to a pitch\'s spin axis.',
   stitchCount: claim('108 double stitches, 216 individual', 'wiki-baseball-ball', 'reputable-analysis', {
     note: 'A manufacturing convention, not a number written into the rulebook, which fixes only weight and circumference.',
   }),

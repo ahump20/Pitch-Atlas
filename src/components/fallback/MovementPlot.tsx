@@ -8,8 +8,8 @@ import type { PitchMotion } from '../../data/types'
   and a catcher's left, so a catcher's view would mirror it; the words say the
   pitcher's view to match. A spinless reference ball sits at the center; the real pitch
   crosses offset toward how it moves — up if it rides, down if it drops, toward the arm
-  side or the glove side. The seam ball is our own geometry, oriented to the pitch's
-  spin axis. The poles are labeled words. This is a schematic of DIRECTION — which way
+  side or the glove side. The seam ball is our own geometry, the same cover for every
+  pitch. The poles are labeled words. This is a schematic of DIRECTION — which way
   the pitch breaks — never a measured magnitude. No numbers.
 */
 

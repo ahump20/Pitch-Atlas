@@ -4,10 +4,11 @@
 .specimen-inspector, .bench { --rail-control: 40px; }
 @media (any-pointer: coarse) { .specimen-inspector, .bench { --rail-control: 44px; } }
 
-/* the header carries its controls on a row of their own under the name and Close */
+/* the header carries its controls on a row of their own under the name and Close; the
+   segs below outrank inspector.css's two-column .specimen-seg, which loads after this file */
 .specimen-rail-head { flex-wrap: wrap; row-gap: 12px; }
 .bench-head-controls { flex-basis: 100%; display: grid; gap: 10px; }
-.bench-aspects { grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); }
+.specimen-seg.bench-aspects { grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); }
 .bench-with { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 12px; font: 10px/1.6 var(--font-mono); letter-spacing: .13em; text-transform: uppercase; color: #c4a777;
   --ctl-bg: #0b0a09; --ctl-text: #efe6d6; --ctl-border: #a38a5e66; --ctl-accent: var(--color-cyan); }
 .bench-with .rfx-select { min-height: var(--rail-control); padding-block: 6px; font-size: 12px; letter-spacing: .02em; text-transform: none;
@@ -30,10 +31,10 @@
 .bench-ball > svg { display: block; width: 100%; height: 100%; }
 .bench-chip { position: absolute; left: 10px; bottom: 10px; padding: 4px 9px; border: 1px solid #a38a5e59; border-radius: 999px; background: #0b0a09e0; font: 9px/1.4 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: #d9ccb3; pointer-events: none; }
 .bench-chip.is-static { position: static; flex: none; }
-.bench-ab { grid-template-columns: 1fr 1fr; }
+.specimen-seg.bench-ab { grid-template-columns: 1fr 1fr; }
 .bench-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .bench-toolbar .specimen-seg { min-width: 132px; }
-.bench-seg-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); min-width: 186px; }
+.specimen-seg.bench-seg-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); min-width: 186px; }
 .bench-toolbar .specimen-action { min-height: var(--rail-control); }
 
 /* the flight figure keeps its square and its labels on the dark stage */

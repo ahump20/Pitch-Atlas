@@ -207,10 +207,13 @@ export const fourSeam: PitchAtlasEntry = {
       pitcher: 'Spencer Strider',
       context: 'The carry case. Elite ride from a flat approach, the pitch hitters swing under.',
       verifiedPro: true,
+      // Savant's page shows the ride; the low release and the flat approach are theScore's
+      // Statcast read, and Savant puts his arm angle high, so "low slot" was never true.
       distinction: claim(
-        'Big ride from a low, flat slot. The ball stays on a flatter plane than the eye expects, so it finishes above where the swing is aimed — carry as a weapon at the top.',
-        'savant-strider',
-        'official-data',
+        'Big ride from a low release. The ball stays on a flatter plane than the eye expects, so it finishes above where the swing is aimed — carry as a weapon at the top.',
+        'thescore-strider',
+        'reputable-analysis',
+        { note: "Paraphrased from theScore's Statcast read of his release height, approach angle and ride." },
       ),
       rights: 'original',
     },
@@ -220,7 +223,7 @@ export const fourSeam: PitchAtlasEntry = {
       context: 'The axis-cleanup case. He raised his slot, cut the arm-side run, and converted that lost run into ride.',
       verifiedPro: true,
       distinction: claim(
-        'He raised his arm slot, traded away arm-side run, and converted it into pure ride — the same pitch, recut for carry.',
+        'He raised his arm slot, traded away arm-side run, and converted it into ride — the same pitch, recut for carry.',
         'savant-greene',
         'official-data',
       ),

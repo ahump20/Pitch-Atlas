@@ -1,36 +1,38 @@
 import type { PitchAtlasEntry } from '../data/types'
-import { magnusForceRender, magnusStrength } from './physics'
+import { magnusStrength } from './physics'
 
 /*
   The flight figure's geometry (TunnelPlot draws it). The endpoint is the sourced
   shape bucket; the side and the rise a path bends toward come from those same words;
-  the authored spin vector only sets how hard it bends and how late it leaves the
-  shared line. Layout units, never a measurement.
+  the authored spin vector only sets how late it leaves the shared line. Layout units,
+  never a measurement.
 */
-export const W = 520
-export const H = 470
+export const W = 360
+export const H = 380
 export const CX = W / 2
-export const CY = H / 2 + 18
-const COL = 130 // horizontal direction offset
-const ROW = 118 // vertical direction offset
-export const CLAMP = 178
+export const CY = 232
+const COL = 96 // horizontal direction offset
+const ROW = 76 // vertical direction offset
+export const CLAMP = 124
+/** half the length of the vertical axis through the spinless endpoint */
+export const AXIS = 100
 // the shared release sits at the top of the frame: one point both pitches leave from.
-export const RELEASE_Y = CY - CLAMP - 6
+export const RELEASE_Y = 24
 // the tunnel window sits where two well-tunneled pitches still look like one pitch:
-// below the release, above center, on the line every path shares before it splits.
-export const TUNNEL_Y = CY - 150
+// below the release and above every endpoint, so each path falls from it, a ride
+// included (a ride falls less; it never climbs back toward the mound).
+export const TUNNEL_Y = 80
 
 export interface Spot {
   entry: PitchAtlasEntry
   /** endpoint, in the sourced break direction. */
   x: number
   y: number
-  /** the point on the straight line where the path starts to bow away from it. */
-  baseX: number
-  baseY: number
-  /** the control point of the late-splitting path (where it bows away from the shared line). */
-  ctrlX: number
-  ctrlY: number
+  /** the cubic's control points, from the release to the endpoint */
+  c1x: number
+  c1y: number
+  c2x: number
+  c2y: number
 }
 
 const sideOf = (dir: PitchAtlasEntry['motion']['horizontalDir']) => (dir === 'arm-side' ? 1 : dir === 'glove-side' ? -1 : 0)
@@ -38,27 +40,27 @@ const sideOf = (dir: PitchAtlasEntry['motion']['horizontalDir']) => (dir === 'ar
 const riseOf = (shape: PitchAtlasEntry['motion']['verticalShape']) => (shape === 'ride' ? 1 : shape === 'drop' ? -1 : 0)
 
 /*
-  One pitch's path geometry. The endpoint is the sourced shape bucket, mirrored for
-  handedness. A full-Magnus pitch leaves the straight line sooner and bows harder; a
-  gyro stays on it longer and bows less. The bow points the way the shape words say.
+  One pitch's path, mirrored for handedness. A spinless ball would fall straight from
+  the release to the centre. A pitch's break adds to that line as the square of the
+  way travelled (a full-Magnus pitch) up toward the cube (a near-pure gyro, which holds
+  the line longest), so every path leaves the release on the shared line and bends
+  late, toward the side and the rise its shape words name. The first control point
+  sits a third of the way down the spinless line; the second between that line and
+  the endpoint.
 */
 export function plot(entry: PitchAtlasEntry, handFactor: number, nudge = 0): Spot {
   const m = entry.motion
-  const side = sideOf(m.horizontalDir)
-  const rise = riseOf(m.verticalShape)
-  const endX = Math.max(CX - CLAMP, Math.min(CX + CLAMP, CX + side * handFactor * COL + nudge))
-  const endY = CY - rise * ROW
-
-  const force = magnusForceRender(m.spinAxis)
-  const strength = Math.max(0, Math.min(1, magnusStrength(m.spinAxis)))
-
-  const splitT = 0.52 + (1 - strength) * 0.26 // 0.52 (full Magnus) .. ~0.78 (pure gyro)
-  const baseX = CX + (endX - CX) * splitT
-  const baseY = TUNNEL_Y + (endY - TUNNEL_Y) * splitT
-
-  const bow = 26 + strength * 30
-  const ctrlX = baseX + side * handFactor * Math.abs(force.x) * bow
-  const ctrlY = baseY - rise * Math.abs(force.y) * bow
-
-  return { entry, x: endX, y: endY, baseX, baseY, ctrlX, ctrlY }
+  const x = Math.max(CX - CLAMP, Math.min(CX + CLAMP, CX + sideOf(m.horizontalDir) * handFactor * COL + nudge))
+  const y = CY - riseOf(m.verticalShape) * ROW
+  // 0 for full Magnus .. 0.6 for a pure gyro; past 0.6 a late ride would hook back up
+  const late = 0.6 * (1 - Math.max(0, Math.min(1, magnusStrength(m.spinAxis))))
+  return {
+    entry,
+    x,
+    y,
+    c1x: CX,
+    c1y: RELEASE_Y + (CY - RELEASE_Y) / 3,
+    c2x: (CX + (1 + late) * CX + (1 - late) * x) / 3,
+    c2y: (RELEASE_Y + (1 + late) * CY + (1 - late) * y) / 3,
+  }
 }

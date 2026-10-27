@@ -2,8 +2,8 @@ import { cn } from '@/lib/utils'
 
 /**
  * Pitch Atlas SegmentedToggle — one component over the app's existing mono
- * segmented control (the RHP/LHP and view switches in MovementMap, GripCompare,
- * and TunnelPlot), so adoption preserves parity rather than reskinning. Renders
+ * segmented control (the RHP/LHP and view switches in MovementMap and
+ * GripCompare), so adoption preserves parity rather than reskinning. Renders
  * the existing shell (inline-flex, clipped corners, hairline border) with one
  * `.rfx-seg` <button> per option; the option whose value matches `value` carries
  * the on-state via `aria-pressed="true"`, which the `.rfx-seg` CSS keys on for

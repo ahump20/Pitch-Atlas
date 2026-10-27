@@ -100,4 +100,11 @@ the original build's model functions in Node.
 - The bat's make and model, which would move the sweet spot.
 - A 240 fps side-on clip for the full barrel path.
 - What happens to the standalone worker.
-- Whether this retires the Flight Room branch.
+
+## Whether this retires the Flight Room branch
+
+Decided by Austin, 2026-10-26. The Flight Room stays on its branch (`flight-room`),
+unmerged and undeleted. Baseball flight is the pitch bench's Flight aspect: an
+illustrative path for one pitch or a pair, drawn from the mound, with no numbers and
+the line that a grip does not guarantee the shape. The bench does not link to this
+lab, which stays the slow-pitch batter's room.
