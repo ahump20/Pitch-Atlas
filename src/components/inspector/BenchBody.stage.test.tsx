@@ -37,4 +37,32 @@ describe('the bench stage label', () => {
     expect(screen.queryByText('Reference model')).toBeNull()
     vi.mocked(console.error).mockRestore()
   })
+
+  it('on a phone, a filed pitch back from an unfiled one says schematic while its model reloads', async () => {
+    const original = window.matchMedia
+    window.matchMedia = ((query: string) => ({
+      matches: query === '(max-width: 639px)',
+      media: query,
+      addEventListener: () => {},
+      removeEventListener: () => {},
+    })) as unknown as typeof window.matchMedia
+    const chip = () => document.querySelector('.bench-ball .bench-chip')?.textContent
+    try {
+      render(
+        <MemoryRouter>
+          <BenchBody entries={[pitchBySlug('slider')!, pitchBySlug('eephus')!]} aspect="grip" orientation={null} hand="right" onChange={() => {}} />
+        </MemoryRouter>,
+      )
+      fireEvent.click(await screen.findByTestId('model-frame'))
+      expect(chip()).toBe('Reference model')
+      fireEvent.click(screen.getByRole('button', { name: /^B · / }))
+      expect(chip()).toBe('No canonical grip on file')
+      fireEvent.click(screen.getByRole('button', { name: /^A · / }))
+      expect(chip()).toBe('Seam-informed schematic')
+      fireEvent.click(await screen.findByTestId('model-frame'))
+      expect(chip()).toBe('Reference model')
+    } finally {
+      window.matchMedia = original
+    }
+  })
 })
