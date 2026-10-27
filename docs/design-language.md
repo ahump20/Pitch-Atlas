@@ -5,7 +5,7 @@
 > rule here. Fix it to the rule, don't invent a new look.
 
 The signature is the **holographic refractor**: a dark void field, a rainbow-foil
-collectible-card aesthetic applied with restraint, athletic Anton type, and a strict
+collectible-card aesthetic applied with restraint, athletic Anton beside an editorial serif, and a strict
 "the read lives on a matte plate, never on the patterned foil" discipline. Foil is
 decoration; the numbers keep their source and confidence labels.
 
@@ -26,7 +26,7 @@ per route:
 
 | Tell | Heritage (retire) | Refractor (canon) |
 |---|---|---|
-| Headings | `.display` / Newsreader serif | `.rfx-stitle` / `.rfx-banner` / Anton |
+| Card names, tool and section titles | `.display` / Newsreader serif | `.rfx-stitle` / `.rfx-banner` / Anton |
 | Cards | flat `bg-paper` plate, `border-l-navy`, corner ticks | `.rfx-card` foil / `.rfx-entry` row |
 | Eyebrows | bare `.mono-label` | `.rfx-skick` (cyan rule + label) |
 | Community | `.rfx-community` cream-token remap band-aid | real refractor surfaces |
@@ -49,20 +49,23 @@ heritage component is gone, then delete it. Do not add new dependencies on it.
 
 ## 2. Type
 
-Three families, one job each. **Newsreader serif is retired from headings and titles.**
+Four families, one job each. The split below is what pitch-atlas.com ships (read
+heading by heading in a browser, 2026-10-26); where this file and the site disagreed,
+the site won and this section changed.
 
 | Role | Family | Class / token |
 |---|---|---|
-| Hero / section / card titles | **Anton** (athletic) | `.rfx-athletic`, `.rfx-stitle`, `.rfx-banner`, `--font-athletic` |
+| Editorial page heroes: home, Compare, Lost Pitches, Craftsmen, Learn lessons, Movement Map, About, Grips, Softball; the bench's dialog title; "voice" lines inside a page ("Get to know the hold.") | **Newsreader** (serif) | `.display`, `--font-display` |
+| Index, specimen and tool heroes (the Pitch Index, each pitch chapter, Sources), section titles, card names, hall titles | **Anton** (athletic) | `.rfx-athletic`, `.rfx-stitle`, `.rfx-banner`, `--font-athletic` |
 | Body, prose, card reads | **Hanken Grotesk** | `--font-prose` (default `body`) |
-| Labels, tags, source badges, eyebrows, stat labels | **Martian Mono** | `--font-mono`, `.mono-label`, `.rfx-skick` |
+| Labels, tags, source badges, eyebrows, stat labels, list-section labels | **Martian Mono** | `--font-mono`, `.mono-label`, `.rfx-skick` |
 
+- The serif is the atlas talking: a page's opening line, or a sentence set apart
+  inside one. The athletic face names things: a pitch, a section, a card, a tool.
 - Anton headings skew (`transform: skewX(-5deg)` via `.rfx-stitle`) and may carry a holo
   accent word (`.rfx-holo`) — use the holo on at most one word per heading.
-- `.display` (Newsreader) is allowed in exactly one place: long-form **editorial
-  pull-quotes** inside chapter prose, where the serif is the deliberate "voice." It is
-  NOT allowed for a heading, a card name, a hall title, a hero, or a tool label.
-- Body prose default is Hanken via `body`. Don't set serif on prose.
+- Never serif on a card name, a hall title or a tool label, and never on body prose:
+  prose is Hanken via `body`.
 
 ## 3. Color & accent
 
@@ -193,14 +196,14 @@ seam→cyan affordance, ticks recolored. Same content, same density, one family.
 
 ## Verification gate (done = visitor-verified on the live URL)
 
-1. **Type:** zero `.display`/Newsreader on any heading, card name, hall title, hero, or
-   tool label (grep `className="display` / `text-navy` in headings → none in those roles).
+1. **Type:** each heading wears the family §2 gives its role: no Newsreader on a card
+   name, hall title or tool label; no `text-navy` in any heading.
 2. **Cards:** every card-like surface is Tier A/B/C; no `bg-paper`-plate look; no duplicate
    `SpecimenCard`.
 3. **Eyebrows/controls:** `.rfx-skick` eyebrows; `.rfx-*` controls; no light browser controls.
 4. **No band-aids regress:** community sections off `.rfx-community`; no new cream→void
    dependencies.
 5. **Four-state + no failure signatures** in served HTML.
-6. **Tour at desktop (3-up) and true 320px** (headless): one hero, one card family, Anton
-   headings, no leftover serif/navy-plate islands.
+6. **Tour at desktop (3-up) and true 320px** (headless): one hero, one card family,
+   headings in their §2 family, no navy-plate islands.
 7. `npm run typecheck` clean · `npm run test` green · `npm run build` prerenders all routes.

@@ -25,6 +25,8 @@ const CY = 120
 // The plaster silhouette tones — the 2D twin of the 3D specimen hand.
 const FINGER_STAGE = '#C8BEAC'
 const FINGER_PAPER = '#8A8174'
+// the picked-out finger, in the 3D hand's highlight (Hand.tsx)
+const FINGER_ACTIVE = '#4B92DB'
 
 export interface SeamSchematicProps {
   className?: string
@@ -43,6 +45,8 @@ export interface SeamSchematicProps {
   handedness?: Handedness
   surface?: 'paper' | 'stage'
   title?: string
+  /** The contact (by label) the reader picked out: its finger takes the 3D hand's highlight. */
+  activeContact?: string
 }
 
 function spinePath(points: ProjectedSpine['points']): string {
@@ -68,6 +72,7 @@ export function SeamSchematic({
   referenceContacts,
   surface = 'paper',
   title = 'A four-seam specimen. The seam is drawn as the closed figure-eight curve laid on the ball and oriented to the near-horizontal backspin axis.',
+  activeContact,
 }: SeamSchematicProps) {
   const uid = useId()
   const gradId = `leather-${uid}`
@@ -184,10 +189,11 @@ export function SeamSchematic({
             <path
               key={`hb-${f.label}`}
               data-grip-finger={f.label}
+              data-active={f.label === activeContact || undefined}
               d={spinePath(f.points)}
               fill="none"
-              stroke={fingerTone}
-              strokeOpacity="0.22"
+              stroke={f.label === activeContact ? FINGER_ACTIVE : fingerTone}
+              strokeOpacity={f.label === activeContact ? 0.55 : 0.22}
               strokeWidth={f.strokeWidth}
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -221,9 +227,10 @@ export function SeamSchematic({
             <g key={`hf-${f.label}`}>
               <path
                 data-grip-finger={f.label}
+                data-active={f.label === activeContact || undefined}
                 d={spinePath(f.points)}
                 fill="none"
-                stroke={fingerTone}
+                stroke={f.label === activeContact ? FINGER_ACTIVE : fingerTone}
                 strokeOpacity="0.92"
                 strokeWidth={f.strokeWidth}
                 strokeLinecap="round"
@@ -233,9 +240,9 @@ export function SeamSchematic({
               <circle
                 cx={f.contact.x}
                 cy={f.contact.y}
-                r="2.6"
-                fill="var(--color-ink)"
-                opacity="0.35"
+                r={f.label === activeContact ? 3.4 : 2.6}
+                fill={f.label === activeContact ? FINGER_ACTIVE : 'var(--color-ink)'}
+                opacity={f.label === activeContact ? 0.95 : 0.35}
               />
             </g>
           ))}

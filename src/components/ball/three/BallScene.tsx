@@ -10,6 +10,7 @@ import { canvasEvents } from './canvasEvents'
 import { v } from '../../../lib/seam'
 import { gripViewQuaternion } from '../../../lib/gripView'
 import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
+import type { OrbitLink, StageId } from '../orbitLink'
 
 /*
   The 3D specimen. frameloop is on-demand: while the spin is active a ~30 fps
@@ -82,6 +83,59 @@ function SpinGroup({
   return <group ref={groupRef}>{children}</group>
 }
 
+/* the orbit controls as the link uses them (drei's makeDefault puts them in the store) */
+interface LinkedControls {
+  target: THREE.Vector3
+  getAzimuthalAngle(): number
+  getPolarAngle(): number
+  update(): void
+  reset(): void
+  addEventListener(type: 'start' | 'change', listener: () => void): void
+  removeEventListener(type: 'start' | 'change', listener: () => void): void
+}
+
+/*
+  Joins this stage's camera to the bench's other stage (orbitLink). A drag here is
+  published as an angle; an angle from the other stage moves this camera, around the
+  same target at the same distance, without publishing it back.
+*/
+function OrbitLinkBridge({ link, id }: { link: OrbitLink; id: StageId }) {
+  const controls = useThree((s) => s.controls) as unknown as LinkedControls | null
+  const camera = useThree((s) => s.camera)
+  const invalidate = useThree((s) => s.invalidate)
+  useEffect(() => {
+    if (!controls) return
+    let applying = false
+    const onStart = () => link.drive(id)
+    const onChange = () => {
+      if (!applying) link.publish(id, { azimuth: controls.getAzimuthalAngle(), polar: controls.getPolarAngle() })
+    }
+    const quietly = (move: () => void) => {
+      applying = true
+      move()
+      applying = false
+      invalidate()
+    }
+    controls.addEventListener('start', onStart)
+    controls.addEventListener('change', onChange)
+    const offPose = link.subscribe(id, ({ azimuth, polar }) =>
+      quietly(() => {
+        const radius = camera.position.distanceTo(controls.target)
+        camera.position.setFromSphericalCoords(radius, polar, azimuth).add(controls.target)
+        controls.update()
+      }),
+    )
+    const offReset = link.onReset(() => quietly(() => controls.reset()))
+    return () => {
+      controls.removeEventListener('start', onStart)
+      controls.removeEventListener('change', onChange)
+      offPose()
+      offReset()
+    }
+  }, [controls, camera, invalidate, link, id])
+  return null
+}
+
 export default function BallScene({
   entry,
   spin,
@@ -94,6 +148,8 @@ export default function BallScene({
   interactive = true,
   distance = 6.4,
   activeContact,
+  link,
+  linkId = 'a',
   onReady,
 }: {
   entry: PitchAtlasEntry
@@ -113,6 +169,9 @@ export default function BallScene({
    *  of the frustum. Larger = further back = more of the hand in frame. */
   distance?: number
   activeContact?: string
+  /** the bench's shared camera: turning this ball turns the other stage's too */
+  link?: OrbitLink
+  linkId?: StageId
   onReady?: () => void
 }) {
   const placement = entry.canonical.gripModel.contacts
@@ -162,6 +221,7 @@ export default function BallScene({
           rotateSpeed={0.55}
         />
       ) : null}
+      {interactive && link ? <OrbitLinkBridge link={link} id={linkId} /> : null}
     </Canvas>
   )
 }

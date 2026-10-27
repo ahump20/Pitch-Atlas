@@ -6,6 +6,9 @@ import { REPERTOIRE, REPERTOIRE_FAMILIES, repertoireByFamily } from '../../data/
 import { gripEntryForRepertoire } from '../../data/grips'
 import { IndexLedger } from './IndexLedger'
 import { PitchIndex } from './PitchIndex'
+import { InspectorContext } from '../inspector/inspectorContext'
+import { useInspectorParam } from '../inspector/useInspector'
+import type { ReactNode } from 'react'
 
 function LocationProbe() {
   const location = useLocation()
@@ -234,5 +237,53 @@ describe('IndexLedger', () => {
         within(row as HTMLElement).getByText(String(repertoireByFamily(fam.family).length)),
       ).toBeInTheDocument()
     }
+  })
+})
+
+/* the bench's address without its dialog: what a click on the list asks for */
+function BenchAddress({ children }: { children: ReactNode }) {
+  const api = useInspectorParam()
+  return <InspectorContext.Provider value={api}>{children}</InspectorContext.Provider>
+}
+
+describe('PitchIndex opens a filed pitch in place', () => {
+  const sliderRow = () =>
+    screen.getAllByRole('link').find((link) => link.getAttribute('href') === '/pitch/slider' && link.classList.contains('rfx-entry'))!
+
+  function renderWithBench(initialEntry: string) {
+    return render(
+      <MemoryRouter initialEntries={[initialEntry]}>
+        <BenchAddress>
+          <PitchIndex />
+          <LocationProbe />
+        </BenchAddress>
+      </MemoryRouter>,
+    )
+  }
+
+  it('a plain click opens the bench over the list on the grip, the filters kept', async () => {
+    const user = userEvent.setup()
+    renderWithBench('/repertoire?family=breaking')
+    expect(sliderRow()).toHaveAttribute('aria-haspopup', 'dialog')
+    await user.click(sliderRow())
+    expect(screen.getByTestId('location-search')).toHaveTextContent('?family=breaking&inspect=slider&aspect=grip')
+    expect(screen.getByRole('searchbox', { name: /search the pitch index/i })).toBeInTheDocument()
+  })
+
+  it('a modified click is left to the browser and the chapter link', async () => {
+    const user = userEvent.setup()
+    renderWithBench('/repertoire?family=breaking')
+    await user.keyboard('{Meta>}')
+    await user.click(sliderRow())
+    await user.keyboard('{/Meta}')
+    expect(screen.getByTestId('location-search')).toHaveTextContent('?family=breaking')
+    expect(screen.getByTestId('location-search')).not.toHaveTextContent('inspect')
+  })
+
+  it('a basic file still opens its own page', () => {
+    renderWithBench('/repertoire')
+    const basic = screen.getAllByRole('link').find((link) => link.getAttribute('href')?.startsWith('/repertoire/'))
+    expect(basic).toBeDefined()
+    expect(basic).not.toHaveAttribute('aria-haspopup')
   })
 })

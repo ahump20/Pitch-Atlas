@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
+import { PITCHES, pitchBySlug } from '../../data/pitches'
 import type { PitchAtlasEntry } from '../../data/types'
 import type { TiltEngine } from '../../hooks/useCardTilt'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -14,10 +15,17 @@ import { INSPECTOR_SEED } from './export/composeCard'
 import { FinishPanel, type AmbientSettings, type LightSettings } from './FinishPanel'
 import { materialFor, writeFinishPref, type FinishFace } from './finishPrefs'
 import { InspectorHeader, InspectorRail } from './InspectorRail'
+import { BenchBody } from './BenchBody'
+import { useInspectorApi, type Aspect, type InspectorApi } from './inspectorContext'
 import '../../styles/inspector.css'
 
 /*
-  The expanded specimen: the card, large, in a dark room, with a compact rail. The
+  The bench: one specimen looked at four ways (the card, the grip, the release, the
+  flight), or two set side by side. The header names it and holds Close, the aspect
+  switch and the second pitch; the card aspect is the room below, and the other three
+  are the bench body the /compare page shares.
+
+  The card aspect: the card, large, in a dark room, with a compact rail. The
   front is the same RefractorCard the page shows (same face resolver, same material
   program) in inspector mode, so it can be grabbed on both axes and glides home with
   inertia; the back is the same SpecimenBack the filed set flips to. The flip turns
@@ -34,7 +42,100 @@ import '../../styles/inspector.css'
 */
 const NUDGE = 4
 
+const ASPECT_LABEL: Record<Aspect, string> = { card: 'Card', grip: 'Grip', release: 'Release', flight: 'Flight' }
+const ASPECT_NOTE: Record<Exclude<Aspect, 'card'>, string> = {
+  grip: 'Where each finger meets the seam, finger by finger.',
+  release: 'How the hold becomes the release.',
+  flight: 'An illustrative flight drawn from the mound, beside the sourced shape words.',
+}
+
+function BenchControls({ api, entry }: { api: InspectorApi; entry: PitchAtlasEntry }) {
+  const aspects = (Object.keys(ASPECT_LABEL) as Aspect[]).filter((a) => !(api.partner && a === 'card'))
+  return (
+    <>
+      <div className="specimen-seg bench-aspects" role="group" aria-label="Aspect" style={{ '--n': aspects.length } as CSSProperties}>
+        {aspects.map((a) => (
+          <button key={a} type="button" aria-pressed={api.aspect === a} onClick={() => api.set({ aspect: a })}>
+            {ASPECT_LABEL[a]}
+          </button>
+        ))}
+      </div>
+      <label className="bench-with">
+        <span>Compare with</span>
+        <select className="rfx-select" value={api.partner ?? ''} onChange={(event) => api.set({ partner: event.target.value || null })}>
+          <option value="">No second pitch</option>
+          {PITCHES.filter((p) => p.display.slug !== entry.display.slug).map((p) => (
+            <option key={p.display.slug} value={p.display.slug}>
+              {p.display.shortName}
+            </option>
+          ))}
+        </select>
+      </label>
+    </>
+  )
+}
+
 export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: { entry: PitchAtlasEntry; onClose: () => void; onCloseAutoFocus?: (event: Event) => void }) {
+  const api = useInspectorApi()
+  const reduced = useReducedMotion()
+  const partner = api?.partner ? pitchBySlug(api.partner) : undefined
+  const aspect: Aspect = api?.aspect ?? 'card'
+  const name = entry.display.shortName
+  const header = (
+    <InspectorHeader entry={entry} partner={partner}>
+      {api ? <BenchControls api={api} entry={entry} /> : null}
+    </InspectorHeader>
+  )
+  return (
+    <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent
+        className={`specimen-inspector${aspect === 'card' ? '' : ' is-bench'}`}
+        overlayClassName="specimen-inspector-overlay"
+        // the close button sits in the header, beside the name (InspectorRail)
+        showCloseButton={false}
+        onCloseAutoFocus={onCloseAutoFocus}
+        // focus lands on the dialog itself, not on the stage, so opening never paints a
+        // focus ring around the card; Tab reaches the header, the stage and the rail in order
+        onOpenAutoFocus={(event) => {
+          event.preventDefault()
+          ;(event.currentTarget as HTMLElement | null)?.focus?.()
+        }}
+      >
+        {aspect === 'card' || !api ? (
+          <>
+            <DialogTitle className="sr-only">Inspect card: {name}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {reduced
+                ? 'An enlarged specimen. F flips it to its sources, R resets it.'
+                : 'An enlarged specimen you can turn in the light. Drag or use the arrow keys to tilt it, F flips it to its sources, Space pauses the turn, R resets it.'}
+            </DialogDescription>
+            <CardRoom entry={entry} header={header} />
+          </>
+        ) : (
+          <>
+            <DialogTitle className="sr-only">
+              {partner ? `${name} and ${partner.display.shortName}` : name}: {ASPECT_LABEL[aspect].toLowerCase()}
+            </DialogTitle>
+            <DialogDescription className="sr-only">{ASPECT_NOTE[aspect]}</DialogDescription>
+            <div className="bench" data-count={partner ? 2 : 1}>
+              {header}
+              <BenchBody
+                entries={partner ? [entry, partner] : [entry]}
+                aspect={aspect}
+                orientation={api.orientation}
+                hand={api.hand}
+                onChange={(change) => api.set(change)}
+                onSwap={partner ? () => api.set({ slug: partner.display.slug, partner: entry.display.slug }) : undefined}
+              />
+            </div>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function CardRoom({ entry, header }: { entry: PitchAtlasEntry; header: ReactNode }) {
   const { display } = entry
   const slug = display.slug
   const accent = accentForSlug(slug)
@@ -140,105 +241,83 @@ export default function SpecimenInspector({ entry, onClose, onCloseAutoFocus }: 
   const tuned = tuneFace === 'front' ? front : back
 
   return (
-    <Dialog open onOpenChange={(open) => { if (!open) onClose() }}>
-      <DialogContent
-        className="specimen-inspector"
-        overlayClassName="specimen-inspector-overlay"
-        // the close button sits in the rail's header, beside the name (InspectorRail)
-        showCloseButton={false}
-        onCloseAutoFocus={onCloseAutoFocus}
-        // focus lands on the dialog itself, not on the stage, so opening never paints a
-        // focus ring around the card; Tab reaches the stage and the rail in order
-        onOpenAutoFocus={(event) => {
-          event.preventDefault()
-          ;(event.currentTarget as HTMLElement | null)?.focus?.()
-        }}
+    <div className="specimen-inspector-grid">
+      {/* first in the page, as an upright phone draws it: the name and Close, then the card */}
+      {header}
+      <div
+        ref={stageRef}
+        className={`specimen-stage${gold ? ' is-ember' : ''}`}
+        tabIndex={0}
+        role="group"
+        aria-label={`${display.shortName} specimen, ${face === 'front' ? 'front' : 'sources'} showing. ${reduced ? 'F flips, R resets.' : 'Arrow keys tilt, F flips, Space pauses, R resets.'}`}
+        onKeyDown={onKeyDown}
       >
-        <DialogTitle className="sr-only">Inspect card: {display.shortName}</DialogTitle>
-        <DialogDescription className="sr-only">
-          {reduced
-            ? 'An enlarged specimen. F flips it to its sources, R resets it.'
-            : 'An enlarged specimen you can turn in the light. Drag or use the arrow keys to tilt it, F flips it to its sources, Space pauses the turn, R resets it.'}
-        </DialogDescription>
-        <div className="specimen-inspector-grid">
-          {/* first in the page, as an upright phone draws it: the name and Close, then the card */}
-          <InspectorHeader entry={entry} />
-          <div
-            ref={stageRef}
-            className={`specimen-stage${gold ? ' is-ember' : ''}`}
-            tabIndex={0}
-            role="group"
-            aria-label={`${display.shortName} specimen, ${face === 'front' ? 'front' : 'sources'} showing. ${reduced ? 'F flips, R resets.' : 'Arrow keys tilt, F flips, Space pauses, R resets.'}`}
-            onKeyDown={onKeyDown}
-          >
-            <div className={`v2-flip specimen-rig${face === 'back' ? ' is-flipped' : ''}`}>
-              <div className="v2-flip-inner">
-                <div className="v2-face" inert={face === 'back' ? true : undefined} aria-hidden={face === 'back'}>
-                  <RefractorCard
-                    index={INSPECTOR_SEED}
-                    gold={gold}
-                    accent={accent}
-                    vnum={display.specimenNo}
-                    name={display.shortName}
-                    face={resolvedFace.face}
-                    faceSource={resolvedFace.faceSource}
-                    cue={resolvedFace.cue}
-                    confidence={resolvedFace.confidence}
-                    maxWidth={560}
-                    foil
-                    mode="inspector"
-                    material={front}
-                    // the drift runs only while the front is the face showing
-                    ambient={!paused && !exporting && face === 'front'}
-                    ambientAmplitude={ambient.amplitude}
-                    ambientSpeed={ambient.speed}
-                    onEngine={setFrontEngine}
-                    className="is-inspected"
-                  />
-                </div>
-                <div className="v2-face v2-face-back" inert={face === 'front' ? true : undefined} aria-hidden={face === 'front'}>
-                  <SpecimenBack entry={entry} flipped={face === 'back'} foil seed={INSPECTOR_SEED} material={back} onEngine={setBackEngine} />
-                </div>
-              </div>
+        <div className={`v2-flip specimen-rig${face === 'back' ? ' is-flipped' : ''}`}>
+          <div className="v2-flip-inner">
+            <div className="v2-face" inert={face === 'back' ? true : undefined} aria-hidden={face === 'back'}>
+              <RefractorCard
+                index={INSPECTOR_SEED}
+                gold={gold}
+                accent={accent}
+                vnum={display.specimenNo}
+                name={display.shortName}
+                face={resolvedFace.face}
+                faceSource={resolvedFace.faceSource}
+                cue={resolvedFace.cue}
+                confidence={resolvedFace.confidence}
+                maxWidth={560}
+                foil
+                mode="inspector"
+                material={front}
+                // the drift runs only while the front is the face showing
+                ambient={!paused && !exporting && face === 'front'}
+                ambientAmplitude={ambient.amplitude}
+                ambientSpeed={ambient.speed}
+                onEngine={setFrontEngine}
+                className="is-inspected"
+              />
+            </div>
+            <div className="v2-face v2-face-back" inert={face === 'front' ? true : undefined} aria-hidden={face === 'front'}>
+              <SpecimenBack entry={entry} flipped={face === 'back'} foil seed={INSPECTOR_SEED} material={back} onEngine={setBackEngine} />
             </div>
           </div>
-
-          <InspectorRail
-            entry={entry}
-            face={face}
-            onFace={setFace}
-            finishOpen={finishOpen}
-            onToggleFinish={() => setFinishOpen((open) => !open)}
-            motionAvailable={!reduced}
-            onReset={reset}
-            onStudy={onStudy}
-          >
-            {finishOpen ? (
-              <FinishPanel
-                id="specimen-finish"
-                face={tuneFace}
-                onFace={setTuneFace}
-                material={tuned}
-                onMaterial={(next) => updateMaterial(tuneFace, next)}
-                onResetFinish={() => resetFinish(tuneFace)}
-                light={light}
-                onLight={applyLight}
-                ambient={ambient}
-                onAmbient={(patch) => setAmbient((prev) => ({ ...prev, ...patch }))}
-              />
-            ) : null}
-            <ExportPanel
-              entry={entry}
-              face={face}
-              front={front}
-              back={back}
-              engine={engine}
-              stageRef={stageRef}
-              onBusy={setExporting}
-            />
-          </InspectorRail>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+
+      <InspectorRail
+        entry={entry}
+        face={face}
+        onFace={setFace}
+        finishOpen={finishOpen}
+        onToggleFinish={() => setFinishOpen((open) => !open)}
+        motionAvailable={!reduced}
+        onReset={reset}
+        onStudy={onStudy}
+      >
+        {finishOpen ? (
+          <FinishPanel
+            id="specimen-finish"
+            face={tuneFace}
+            onFace={setTuneFace}
+            material={tuned}
+            onMaterial={(next) => updateMaterial(tuneFace, next)}
+            onResetFinish={() => resetFinish(tuneFace)}
+            light={light}
+            onLight={applyLight}
+            ambient={ambient}
+            onAmbient={(patch) => setAmbient((prev) => ({ ...prev, ...patch }))}
+          />
+        ) : null}
+        <ExportPanel
+          entry={entry}
+          face={face}
+          front={front}
+          back={back}
+          engine={engine}
+          stageRef={stageRef}
+          onBusy={setExporting}
+        />
+      </InspectorRail>
+    </div>
   )
 }

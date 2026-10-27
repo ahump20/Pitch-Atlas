@@ -98,13 +98,15 @@ describe('comparison specimen navigation', () => {
     </CompareProvider></MemoryRouter></UnheadProvider>)
     expect(screen.getAllByRole('link', { name: 'Study Four-seam' })).toHaveLength(1)
     expect(screen.getAllByRole('link', { name: 'Study Slider' })).toHaveLength(1)
-    expect(screen.getByRole('link', { name: 'Study Slider' })).toHaveAttribute('href', '/pitch/slider#grip-lab')
+    // each aspect sends the reader to the same part of the chapter
+    const section = view === 'grips' ? 'grip-lab' : view === 'cues' ? 'release' : 'movement'
+    expect(screen.getByRole('link', { name: 'Study Slider' })).toHaveAttribute('href', `/pitch/slider#${section}`)
     await user.click(screen.getByRole('link', { name: 'Study Slider' }))
     expect(screen.getByRole('button', { name: 'Browser Back' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Browser Back' }))
     expect(screen.getByTestId('pair')).toHaveTextContent(JSON.stringify(selection))
     expect(screen.getByTestId('url').textContent).toBe(url.slice(url.indexOf('?')))
-    expect(screen.getByRole('button', { name: view === 'grips' ? 'Grips' : view === 'cues' ? 'Cues' : 'Movement' })).toHaveAttribute('aria-pressed', 'true')
+    expect(screen.getByRole('button', { name: view === 'grips' ? 'Grip' : view === 'cues' ? 'Release' : 'Flight' })).toHaveAttribute('aria-pressed', 'true')
     expect(screen.getByRole('link', { name: 'Study Slider' })).toBeInTheDocument()
   })
 })

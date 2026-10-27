@@ -14,6 +14,7 @@ import { PipProvider } from '../embeds/pip'
 import { EggProvider } from '../eggs/EggProvider'
 import { TidbitReveal } from '../eggs/TidbitReveal'
 import { FoundIndex } from '../eggs/FoundIndex'
+import { SpecimenInspectorHost } from '../inspector/SpecimenInspectorHost'
 
 /*
   The shell every route renders inside. The dark void is the global field, with
@@ -86,6 +87,8 @@ export function RootLayout() {
       <TooltipProvider delayDuration={150}>
         <PipProvider>
         <EggProvider>
+        {/* the bench opens over any page, so the list it was opened from stays put behind it */}
+        <SpecimenInspectorHost>
         <div className="relative z-10">
           <a
             href="#main"
@@ -105,10 +108,11 @@ export function RootLayout() {
           <TidbitReveal />
           <FoundIndex />
         </div>
+        <CompareTray />
+        </SpecimenInspectorHost>
         </EggProvider>
         </PipProvider>
       </TooltipProvider>
-      <CompareTray />
       </CompareProvider>
     </div>
   )

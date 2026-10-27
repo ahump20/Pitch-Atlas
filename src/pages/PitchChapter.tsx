@@ -35,6 +35,7 @@ import { PitchConnections } from '../components/pitch/PitchConnections'
 import { ExternalMediaRail } from '../components/media/ExternalMediaRail'
 import { GripAudioCue } from '../components/media/GripAudioCue'
 import { NotFound } from './NotFound'
+import { releaseSequence, shapeLabel } from '../lib/specimenReads'
 
 /*
   One pitch, one page — the card opened up into a full chapter, in the refractor
@@ -50,16 +51,6 @@ const PITCH_SLUG_ALIASES: Record<string, string> = {
   'twelve-six-curveball': 'twelve-six',
   '12-6-curveball': 'twelve-six',
   'split-finger-fastball': 'splitter',
-}
-
-/** A short shape label — the direction the pitch breaks, in words, never a number. */
-function shapeLabel(entry: PitchAtlasEntry) {
-  const m = entry.motion
-  if (m.indeterminateBreak) return 'Erratic flutter'
-  const v = m.verticalShape === 'ride' ? 'Rides' : m.verticalShape === 'drop' ? 'Drops' : 'Holds flat'
-  const h =
-    m.horizontalDir === 'arm-side' ? 'arm-side run' : m.horizontalDir === 'glove-side' ? 'glove-side sweep' : null
-  return h ? `${v} · ${h}` : v
 }
 
 /** Collect every distinct cited source on the page for the colophon, in render order. */
@@ -294,18 +285,9 @@ function SectionHead({
 /* ── Release Room ────────────────────────────────────────────────────────── */
 function ReleaseSection({ entry, accentColor }: { entry: PitchAtlasEntry; accentColor: string }) {
   const { canonical } = entry
-  const gm = canonical.gripModel
-  const sequence = [
-    { label: 'Hold', copy: gm.palmGapCue },
-    {
-      label: 'Pressure',
-      copy:
-        gm.contacts.find((c) => c.finger === gm.primaryPressureFinger)?.pressureRole ?? gm.thumbRole,
-    },
-    { label: 'Leave', copy: gm.releaseCue },
-  ]
+  const sequence = releaseSequence(entry)
   return (
-    <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
+    <section id="release" className="study-anchor border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
       <SectionHead kicker="Release Room" title="Translate the hold into a release" accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           Grip shape only matters if the release makes sense. Read pressure, thumb support, and ball depth
@@ -338,7 +320,7 @@ function MovementSection({ entry, accentColor }: { entry: PitchAtlasEntry; accen
   const p = canonical.physics
 
   return (
-    <section className="border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
+    <section id="movement" className="study-anchor border-t border-bone/8 py-[clamp(34px,5vw,64px)]">
       <SectionHead kicker="Movement" title={display.foundationCaption} accentColor={accentColor}>
         <p className="mt-3.5 max-w-[62ch] text-[15px] leading-relaxed text-bone-2">
           The read is shape, not a gauge. The spin words explain why it moves that way, and every prose

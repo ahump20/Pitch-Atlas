@@ -14,6 +14,7 @@ import { projectSeam, splitRuns } from '../../lib/seam2d'
 import { accentForSlug } from '../refractor/accents'
 import { FAMILY_ACCENT } from './family-accent'
 import { BinderSheet, RepertoirePocket } from './BinderSheet'
+import { useOpenInPlace } from '../inspector/inspectorContext'
 import { Badge } from '../ui/badge'
 import { Button } from '../ui/button'
 import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
@@ -220,10 +221,13 @@ function EntryRow({ entry, accent }: { entry: RepertoireEntry; accent: string })
   const rest = restFor(entry.id)
   // a filed pitch wears its own specimen world; a basic file wears the family ink
   const markTint = entry.filedSlug ? accentForSlug(entry.filedSlug).c3 : accent
+  const openInPlace = useOpenInPlace(entry.filedSlug, { aspect: 'grip' })
   return (
     <div className="archive-index-entry">
     <Link
       to={filed ? `/pitch/${entry.filedSlug}` : `/repertoire/${entry.id}`}
+      onClick={openInPlace}
+      aria-haspopup={openInPlace ? 'dialog' : undefined}
       className={`rfx-entry ${filed ? 'is-filed' : ''}`}
       style={{ '--gc': accent, viewTransitionName: `pi-${entry.id}` } as CSSProperties}
     >

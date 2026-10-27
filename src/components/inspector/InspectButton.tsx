@@ -10,7 +10,7 @@ export function InspectButton({ slug, className = '' }: { slug: string; classNam
       type="button"
       className={`specimen-action ${className}`}
       aria-haspopup="dialog"
-      onClick={(event) => api.open(slug, event.currentTarget)}
+      onClick={(event) => api.open(slug, { opener: event.currentTarget })}
     >
       <Maximize2 size={14} aria-hidden="true" />
       Inspect card<span className="sr-only"> {slug.replaceAll('-', ' ')}</span>

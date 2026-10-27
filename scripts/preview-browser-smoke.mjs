@@ -479,7 +479,8 @@ async function disableWebGL(page) {
   await page.addInitScript(() => {
     const getContext = HTMLCanvasElement.prototype.getContext
     HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
-      if (String(type).toLowerCase().startsWith('webgl')) return null
+      // 'experimental-webgl' too, or detection still finds a context
+      if (/webgl/i.test(String(type))) return null
       return getContext.call(this, type, ...args)
     }
   })
@@ -669,6 +670,94 @@ async function checkReducedMotionInspectorScroll(page) {
   }
 }
 
+// The bench: a filed row opens in place over the list, the aspects and the pair share
+// one history entry, and Close lands on the same row of the same filtered list. Software
+// WebGL takes tens of seconds to draw the hand, so this walk runs on the seam-informed
+// schematic, where Link and Reset step aside; the linked 3D drag is checked in a browser
+// with a GPU.
+async function checkBench(page, viewport, { reduced = false } = {}) {
+  await disableWebGL(page)
+  await watchClientRoot(page)
+  if (reduced) await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.setViewportSize(viewport)
+  const label = `Bench ${reduced ? 'reduced-motion ' : ''}${viewport.width}x${viewport.height}`
+  const phone = viewport.width < 640
+  const unexpected = await collectConsole(page, async () => {
+    await page.goto(route('/repertoire/?family=breaking'), { waitUntil: 'domcontentloaded' })
+    // the prerendered row is a plain link until the client mounts and the filter applies
+    if (!(await waitForClientRoot(page, label))) return
+    const row = page.locator('a[href*="/pitch/slider"]').first()
+    await row.waitFor({ state: 'visible', timeout: 20_000 })
+    // the page scrolls smoothly and late fonts shift it, so read the spot once it holds still
+    await page.evaluate(() => document.fonts.ready)
+    await row.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }))
+    const listUrl = page.url()
+    const scrollY = await page.evaluate(() => new Promise((resolve) => {
+      let last = -1
+      let still = 0
+      const tick = () => {
+        still = window.scrollY === last ? still + 1 : 0
+        last = window.scrollY
+        if (still >= 10) resolve(last)
+        else requestAnimationFrame(tick)
+      }
+      tick()
+    }))
+    await row.click()
+    const dialog = page.getByRole('dialog')
+    await dialog.waitFor({ state: 'visible', timeout: 15_000 })
+    const opened = new URL(page.url()).searchParams
+    record(opened.get('inspect') === 'slider' && opened.get('aspect') === 'grip' && opened.get('family') === 'breaking',
+      `${label} did not open Slider's grip over the filtered list (${page.url()})`)
+    record((await dialog.locator('.bench-chip').first().textContent()) === 'Seam-informed schematic',
+      `${label} stage without WebGL is not the seam-informed schematic`)
+    const depth = await page.evaluate(() => history.length)
+
+    await dialog.getByRole('group', { name: 'Aspect' }).getByRole('button', { name: 'Release' }).click()
+    await page.waitForURL(/aspect=release/)
+    await dialog.getByLabel('Compare with').selectOption('cutter')
+    await page.waitForURL(/with=cutter/)
+    record(await page.evaluate(() => history.length) === depth, `${label} aspect or partner added a history entry`)
+    // the address moves a beat before the pair is drawn; wait for the pair itself
+    await (phone
+      ? dialog.getByRole('group', { name: 'Pitch on the stage' })
+      : dialog.locator('[data-bench-ball]').nth(1)
+    ).waitFor({ state: 'attached', timeout: 5_000 }).catch(() => {})
+    record(await dialog.locator('[data-bench-ball]').count() === (phone ? 1 : 2), `${label} pair shows the wrong number of balls`)
+    record(await dialog.getByRole('button', { name: /^(Unlink|Link|Reset)$/ }).count() === 0,
+      `${label} offers Link or Reset on a schematic, which cannot turn`)
+    if (phone) {
+      await dialog.getByRole('group', { name: 'Pitch on the stage' }).getByRole('button', { name: /Cutter/ }).click()
+      record(await dialog.locator('[data-bench-ball="cutter"]').count() === 1, `${label} A/B switch did not put the Cutter on the stage`)
+    }
+
+    await dialog.getByRole('group', { name: 'Aspect' }).getByRole('button', { name: 'Grip' }).click()
+    const index = dialog.getByRole('button', { name: /^Index/ })
+    await index.click()
+    record(await index.getAttribute('aria-pressed') === 'true', `${label} the Index row did not stay picked`)
+    record(await dialog.locator('.bench-finger[data-dim]').count() >= 1, `${label} picking a finger faded no other rows`)
+    record(await dialog.locator('[data-bench-ball] [data-grip-finger][data-active]').count() >= (phone ? 1 : 2),
+      `${label} picking a finger lit it on ${phone ? 'the ball' : 'both balls'}`)
+
+    await dialog.getByRole('group', { name: 'Aspect' }).getByRole('button', { name: 'Flight' }).click()
+    await dialog.locator('.bench-flight svg').waitFor({ state: 'visible' })
+    record(await dialog.locator('[data-flight]').count() === 2, `${label} flight does not draw both paths`)
+    record(includesText(await dialog.innerText(), /illustrative/i), `${label} flight is not labeled Illustrative`)
+    const numbers = (await dialog.innerText()).match(/\d+\s?(mph|rpm|in\b|inches|°)/g)
+    record(!numbers, `${label} shows pitch numbers: ${numbers?.join(', ')}`)
+    await assertNoHorizontalOverflow(page, label)
+
+    await dialog.getByRole('button', { name: 'Close' }).click()
+    await dialog.waitFor({ state: 'detached', timeout: 5_000 })
+    record(page.url() === listUrl, `${label} Close left ${page.url()}, not ${listUrl}`)
+    const back = await page.waitForFunction((y) => Math.abs(window.scrollY - y) <= 2, scrollY, { timeout: 5_000 }).then(() => true, () => false)
+    record(back, `${label} Close did not restore the list's scroll`)
+    record(await page.evaluate(() => document.activeElement?.getAttribute('href')?.includes('/pitch/slider') ?? false),
+      `${label} Close did not return focus to the Slider row`)
+  })
+  record(unexpected.length === 0, `${label} console warnings/errors: ${unexpected.join(' | ')}`)
+}
+
 async function checkSupportAndPrivacy(page, viewport) {
   await page.setViewportSize(viewport)
 
@@ -836,7 +925,7 @@ async function withPage(callback) {
   const page = await browser.newPage()
   page.setDefaultTimeout(15_000)
   page.setDefaultNavigationTimeout(30_000)
-  console.log(`Smoke ${++smokeStep}/27: ${callback.name || "responsive route"}`)
+  console.log(`Smoke ${++smokeStep}/30: ${callback.name || "responsive route"}`)
   try {
     const priorFailures = failures.length
     await callback(page)
@@ -868,6 +957,9 @@ try {
   await withPage(checkInspectorReturnFocus)
   await withPage(checkReducedMotionInspectorScroll)
   await withPage(checkInspectorCardFits)
+  await withPage((page) => checkBench(page, { width: 1280, height: 900 }))
+  await withPage((page) => checkBench(page, { width: 390, height: 844 }))
+  await withPage((page) => checkBench(page, { width: 1280, height: 900 }, { reduced: true }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 1280, height: 900 }))
   await withPage((page) => checkSupportAndPrivacy(page, { width: 390, height: 844 }))
   await withPage(checkKnowledgeMarkerWrap)
