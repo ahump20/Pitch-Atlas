@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -63,14 +63,21 @@ export function BallStage({
   // three.js takes a lost context without throwing, so no boundary sees it: show the
   // schematic, and build the scene afresh once the browser hands the context back
   const [build, setBuild] = useState(0)
+  const contextLost = useRef(false)
   useEffect(() => {
     const el = ref.current
     if (!el) return
     const lost = () => {
+      contextLost.current = true
       setReady(false)
       onDrawn?.(false)
     }
-    const restored = () => setBuild((n) => n + 1)
+    // a fresh boundary too, so a scene that threw while the context was gone gets its retry
+    const restored = () => {
+      contextLost.current = false
+      setReady(false)
+      setBuild((n) => n + 1)
+    }
     // the canvas's context events do not bubble; the capture phase still passes here
     el.addEventListener('webglcontextlost', lost, true)
     el.addEventListener('webglcontextrestored', restored, true)
@@ -107,10 +114,9 @@ export function BallStage({
     >
       {!ready && <div className="absolute inset-0" data-stage-loading="true">{schematic('h-full w-full')}</div>}
       <div className="relative h-full w-full" style={{ opacity: ready ? 1 : 0 }}>
-      <SpecimenBoundary fallback={schematic('h-full w-full')} onFail={() => onDrawn?.(false)}>
+      <SpecimenBoundary key={build} fallback={schematic('h-full w-full')} onFail={() => onDrawn?.(false)}>
         <Suspense fallback={schematic('h-full w-full')}>
           <BallScene
-            key={build}
             entry={entry}
             spin={autoSpin && !reduced}
             active={inView}
@@ -124,7 +130,12 @@ export function BallStage({
             activeContact={activeContact}
             link={link}
             linkId={linkId}
-            onReady={() => { setReady(true); onDrawn?.(true) }}
+            onReady={() => {
+              // a first frame already on its way when the context went draws nothing
+              if (contextLost.current) return
+              setReady(true)
+              onDrawn?.(true)
+            }}
           />
         </Suspense>
       </SpecimenBoundary>

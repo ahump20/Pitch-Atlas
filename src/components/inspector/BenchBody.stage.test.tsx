@@ -49,6 +49,28 @@ describe('the bench stage label', () => {
     expect(container.querySelector('[data-stage-loading]')).toBeNull()
   })
 
+  it('ignores a first frame that lands after the context is lost', async () => {
+    const { container } = bench(['slider'])
+    const frame = await screen.findByTestId('model-frame')
+    fireEvent(frame, new Event('webglcontextlost'))
+    // the frame scheduled before the loss lands late
+    fireEvent.click(frame)
+    expect(screen.getByText('Seam-informed schematic')).toBeInTheDocument()
+    expect(container.querySelector('[data-stage-loading] svg')).not.toBeNull()
+  })
+
+  it('a restored context retries a scene that threw', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    const { container } = bench(['slider'])
+    fireEvent.click(await screen.findByTestId('model-frame'))
+    fireEvent.click(screen.getByTestId('break-scene'))
+    expect(screen.getByText('Seam-informed schematic')).toBeInTheDocument()
+    fireEvent(container.querySelector('[data-bench-ball] svg')!, new Event('webglcontextrestored'))
+    fireEvent.click(await screen.findByTestId('model-frame'))
+    expect(screen.getByText('Reference model')).toBeInTheDocument()
+    vi.mocked(console.error).mockRestore()
+  })
+
   it('names the schematic again when the scene throws after its first frame', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     bench(['slider'])
