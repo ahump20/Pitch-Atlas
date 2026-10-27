@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { createMemoryRouter, Outlet, RouterProvider } from 'react-router-dom'
 import { createHead, UnheadProvider } from '@unhead/react/client'
@@ -102,5 +102,52 @@ describe('Shape Lab reference and URL state', () => {
     expect(params.get('tilt')).toBe('270')
     expect(params.get('keep')).toBe('lesson')
     expect(screen.queryByRole('link', { name: 'Inspect grip' })).not.toBeInTheDocument()
+  })
+})
+
+/*
+  Where the viewer stands. The lab has no hand toggle: 3:00 is arm side and it is
+  drawn on the right, on the dial and on the plot. A right-hander's arm side is the
+  third-base side, his right from the mound and a catcher's left. So the lab is a
+  right-hander's view from the mound, and its words have to say so.
+*/
+describe('Shape Lab point of view', () => {
+  const plotOf = () => screen.getByRole('img', { name: /shape of a custom pitch/i })
+  const offsetOf = (svg: Element) => {
+    const balls = [...svg.querySelectorAll('circle[r="17"]')]
+    const spinless = Number(balls.find((c) => c.getAttribute('stroke-dasharray'))!.getAttribute('cx'))
+    const pitch = Number(balls.find((c) => c.getAttribute('fill')?.startsWith('url('))!.getAttribute('cx'))
+    return Math.sign(pitch - spinless)
+  }
+
+  it('names a right-hander’s view from the mound in the intro, the caption, and the plot, never the catcher’s', () => {
+    setup('/sandbox?tilt=90')
+    const intro = screen.getByText(/Turn the clock and watch the seam ball/).textContent!
+    expect(intro).toMatch(/the way a right-handed pitcher sees it from the mound/)
+    expect(screen.getByText('Pitcher’s eye')).toBeInTheDocument()
+    expect(plotOf().getAttribute('aria-label')).toMatch(/as a right-handed pitcher sees it from the mound/)
+    expect(document.body.textContent).not.toMatch(/catcher/i)
+  })
+
+  it('names the pitcher’s view in the search description and the structured data', async () => {
+    setup('/sandbox')
+    await waitFor(() => {
+      expect(document.head.querySelector('meta[name="description"]')).not.toBeNull()
+      expect(document.head.querySelector('script[type="application/ld+json"]')).not.toBeNull()
+    })
+    const description = document.head.querySelector('meta[name="description"]')!.getAttribute('content')!
+    expect(description).toMatch(/as the pitcher sees it/)
+    expect(description).not.toMatch(/catcher/i)
+    const graph = JSON.parse(document.head.querySelector('script[type="application/ld+json"]')!.textContent!)
+    expect(graph['@graph'][0].description).toBe(description)
+  })
+
+  it('keeps the drawing: 3:00 run lands on the right, 9:00 sweep on the left', () => {
+    setup('/sandbox?tilt=90')
+    expect(screen.getByRole('button', { name: '3:00 run' })).toHaveAttribute('aria-pressed', 'true')
+    expect(offsetOf(plotOf())).toBe(1)
+    cleanup()
+    setup('/sandbox?tilt=270')
+    expect(offsetOf(plotOf())).toBe(-1)
   })
 })

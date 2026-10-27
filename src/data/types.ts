@@ -379,12 +379,12 @@ export interface PitchMotion {
   forceLabel: string
   /** Gyro-dominant pitch (slider): shows the red dot toward the viewer, short force arrow. */
   gyro?: boolean
-  /** Catcher's-eye vertical shape: it rides above a spinless ball, drops below it, or stays flat.
+  /** Vertical shape: it rides above a spinless ball, drops below it, or stays flat.
       A direction, never a measured magnitude. */
   verticalShape: 'ride' | 'drop' | 'flat'
-  /** Catcher's-eye direction of the horizontal shape. */
+  /** Direction of the horizontal shape, named for the pitcher's own arm and glove sides. */
   horizontalDir: 'arm-side' | 'glove-side' | 'none'
-  /** Which shape diagram the Foundation renders: the four-seam's carry side-view, or the catcher's-eye shape plot. */
+  /** Which shape diagram the Foundation renders: the four-seam's carry side-view, or the shape plot (a right-hander's view from the mound). */
   breakView: 'carry' | 'movement'
   /** Set when the pitch has no fixed shape or direction (the knuckleball). The specimen
       card then leads with its shape words, never a spurious headline. */

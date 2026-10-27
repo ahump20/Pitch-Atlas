@@ -3,11 +3,14 @@ import { projectSeam, splitRuns } from '../../lib/seam2d'
 import type { PitchMotion } from '../../data/types'
 
 /*
-  The shape plot, told from the catcher's eye. A spinless reference ball sits at the
-  center; the real pitch crosses offset toward how it moves — up if it rides, down if it
-  drops, toward the arm side or the glove side. The seam ball is our own geometry,
-  oriented to the pitch's spin axis. The poles are labeled words. This is a schematic of
-  DIRECTION — which way the pitch breaks — never a measured magnitude. No numbers.
+  The shape plot, drawn as a right-handed pitcher sees it from the mound: ARM on the
+  right, GLOVE on the left. A right-hander's arm side is the third-base side, his right
+  and a catcher's left, so a catcher's view would mirror it; the words say the
+  pitcher's view to match. A spinless reference ball sits at the center; the real pitch
+  crosses offset toward how it moves — up if it rides, down if it drops, toward the arm
+  side or the glove side. The seam ball is our own geometry, oriented to the pitch's
+  spin axis. The poles are labeled words. This is a schematic of DIRECTION — which way
+  the pitch breaks — never a measured magnitude. No numbers.
 */
 
 const VB_W = 360
@@ -43,7 +46,7 @@ export function MovementPlot({ className = '', motion, pitchName = 'pitch' }: Mo
   const horizWord =
     motion.horizontalDir === 'arm-side' ? 'runs arm-side' : motion.horizontalDir === 'glove-side' ? 'sweeps glove-side' : 'stays true'
 
-  const title = `Catcher's-eye shape of a ${pitchName}. Against a spinless ball at center, it ${ivbWord} and ${horizWord}. A schematic of direction, not a measured magnitude.`
+  const title = `Shape of a ${pitchName} as a right-handed pitcher sees it from the mound. Against a spinless ball at center, it ${ivbWord} and ${horizWord}. A schematic of direction, not a measured magnitude.`
 
   return (
     <svg
