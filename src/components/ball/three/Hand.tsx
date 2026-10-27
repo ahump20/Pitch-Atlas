@@ -1,37 +1,29 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
-import { tubeFromSpine } from '../../../lib/taperedTube'
 import { declutterLabels, lineNearBox, plateSide } from '../../../lib/labelLayout'
 import { Html } from '@react-three/drei'
-import { solveHand, type FingerSpine, type HandSolution } from '../../../lib/gripPose'
+import { rigHand } from '../../../lib/handRig'
+import { buildHandMesh, DIGIT_ORDER, makeSkinMaterial, paintHand, type Digit } from './handMesh'
 import type { GripContactModel, Handedness } from '../../../data/types'
 
 /*
-  The specimen hand. Fingers, knuckles, and a palm from the grip-pose solver,
-  swept as warm soft-roughness flesh — a hand on a ball, not a skinless cast and
-  not a literal portrait. The same solver feeds the 2D schematic, so the hand and
-  the fallback can never disagree about where a finger sits.
+  The specimen hand: a real, rigged human hand (wrist, palm, three bones a finger),
+  bent by the grip fit in handRig.ts so each authored contact sits under the right
+  part of the right finger — the pad, the inside edge, the nail. The fit decides
+  everything behind the contacts (wrist, palm, the fingers nothing holds); none of
+  that is labelled or claimed. The labelled, sourced part of this render is still
+  exactly the authored contacts: each one's dot sits on the leather where gripPose
+  puts it, and the flat fallback draws the same points.
 
-  This used to render each contact as an independent tube, which is why it read
-  as macaroni: nothing connected the fingers, so at any size above a card crop
-  the eye found five loose sausages and no hand. solveHand now converges them on
-  knuckles seated on a palm, and the fingers with no authored contact fold in
-  beside them. Those parts carry no label and no claim — the labeled, sourced
-  part of this render is still exactly the authored contacts.
-
-  Pressure reads as emphasis, not a number: the primary finger runs slightly
-  thicker, gets a pad-flatten cue where it meets the leather, and presses a
-  softer, deeper contact shadow into the cover. Each fingertip carries its label
-  pin; the pin opens the sourced pressure role and cue on hover, or when its
-  prose chip is active.
+  Pressure reads as emphasis, not a number: the pressing finger presses a softer,
+  deeper contact shadow into the cover. Each fingertip carries its label pin; the
+  pin opens the sourced pressure role and cue on hover, or when its prose chip is
+  active.
 */
 
-// Warm skin tone, soft and a little ruddy on the pressing finger. Faint warmth
-// comes from a sheen tint, not literal subsurface.
-const SKIN = '#D7B79A'
-const SKIN_DEEP = '#C99E80'
 const ACTIVE_TINT = '#4B92DB'
+const ACTIVE = new THREE.Color(ACTIVE_TINT)
 // a label's plate starts this far (px) from its fingertip dot's centre; no plate
 // comes within half of PIN_CLEAR of a dot
 const PIN_GAP = 8
@@ -66,71 +58,17 @@ function makeContactShadowTexture(): THREE.CanvasTexture {
 interface FingerRender {
   key: string
   label: string
+  digit: Digit
   pressureRole?: string
   cue?: string
-  tube: THREE.BufferGeometry
-  tipCap: { position: THREE.Vector3; radius: number }
-  /** The pad-flatten cue: a squashed cap right at the contact, so the pressing
-      fingertip reads as flesh giving against the leather instead of a hard ball. */
-  pad: { position: THREE.Vector3; quaternion: THREE.Quaternion; radius: number }
+  /** Where the finger meets the leather: the authored contact. */
+  dot: THREE.Vector3
   shadow: { position: THREE.Vector3; quaternion: THREE.Quaternion; radius: number; opacity: number }
   labelPos: THREE.Vector3
-  /** A point back up the finger: with the tip it says which way the finger points on screen. */
+  /** A point back up the finger: with the dot it says which way the finger points on screen. */
   reach: THREE.Vector3
-  /** The finger's spine, tip first: what a label must not lie across. */
+  /** The finger's line, fingertip first: what a label must not lie across. */
   spine: THREE.Vector3[]
-  primary: boolean
-}
-
-function toV3(p: { x: number; y: number; z: number }): THREE.Vector3 {
-  return new THREE.Vector3(p.x, p.y, p.z)
-}
-
-function buildFinger(contact: GripContactModel, spine: FingerSpine): FingerRender {
-  const pts = spine.points.map(toV3)
-  const curve = /* centripetal, not uniform: the spine's samples bunch tightly through the hug
-     arc and stretch out over the reach, and a uniform Catmull-Rom overshoots at
-     that change of spacing — enough of a loop to fold the swept tube through
-     itself and show a notch out of the finger */
-  new THREE.CatmullRomCurve3(pts, false, 'centripetal')
-  const shaftRadius = spine.radii[Math.floor(spine.radii.length / 2)]
-  const tipRadius = spine.radii[0]
-  const tube = tubeFromSpine(curve, spine.radii, 48)
-
-  const normal = toV3(spine.contactNormal)
-  const shadowQ = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal)
-  const padQ = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), normal)
-  const tier = contact.pressureTier ?? 'support'
-  // the pressing finger flattens harder against the leather than a light one
-  const padRadius = tipRadius * (tier === 'primary' ? 1.18 : tier === 'light' ? 0.86 : 1.0)
-  const contactOnLeather = toV3(spine.contact)
-
-  return {
-    key: contact.label,
-    label: contact.label,
-    pressureRole: contact.pressureRole,
-    cue: contact.cue,
-    tube,
-    tipCap: { position: pts[0], radius: tipRadius },
-    pad: {
-      // sit the pad on the cover and up into the fingertip, which now rides its
-      // own radius above the leather — a pad left flat on the surface leaves a
-      // dark nick between the two
-      position: contactOnLeather.clone().multiplyScalar(1 + tipRadius * 0.34),
-      quaternion: padQ,
-      radius: padRadius,
-    },
-    shadow: {
-      position: normal.clone().multiplyScalar(1.004),
-      quaternion: shadowQ,
-      radius: shaftRadius * 1.9,
-      opacity: SHADOW_OPACITY[tier] ?? 0.22,
-    },
-    labelPos: pts[0].clone().add(normal.clone().multiplyScalar(0.3)),
-    reach: pts[Math.min(4, pts.length - 1)],
-    spine: pts,
-    primary: tier === 'primary',
-  }
 }
 
 /* The fingertip label: a compact plate that opens the sourced pressure role and
@@ -182,92 +120,6 @@ function FingerPin({
   )
 }
 
-/* The back of the hand. A loft, not an extrusion: the solver's cross-sections
-   swept knuckles-to-heel, each a superellipse so the mass stays flat like a hand
-   with edges that roll instead of a slab's machined corner. Both ends round off
-   and close, so the wrist reads as the heel of a hand rather than a cut. */
-const PALM_RINGS = 26
-const PALM_RADIAL = 22
-/* 2/n on a superellipse: 1 is an ellipse, lower is squarer. A palm is flatter
-   through the middle than an ellipse and still round at the edges. */
-const PALM_SQUARE = 0.68
-
-function buildPalm(palm: HandSolution['palm']): THREE.BufferGeometry {
-  const across = toV3(palm.across)
-  const wrist = toV3(palm.wrist)
-  const out = toV3(palm.out)
-  const origin = toV3(palm.origin)
-  const outward = new THREE.Vector3().crossVectors(wrist, out).dot(across) > 0
-  const sections = palm.sections
-  const last = sections.length - 1
-
-  const position: number[] = []
-  const index: number[] = []
-  const stride = PALM_RADIAL + 1
-  const scratch = new THREE.Vector3()
-
-  for (let i = 0; i <= PALM_RINGS; i++) {
-    const t = i / PALM_RINGS
-    const f = t * last
-    const lo = Math.min(last, Math.floor(f))
-    const hi = Math.min(last, lo + 1)
-    const k = f - lo
-    const lerp = (a: number, b: number) => a + (b - a) * k
-    const y = lerp(sections[lo].y, sections[hi].y)
-    const cup = lerp(sections[lo].cup, sections[hi].cup)
-    // round both ends off instead of capping them flat
-    // the knuckle edge stays nearly full — the fingers root there, and tapering
-    // it to a point left them looking attached to nothing
-    const close =
-      Math.sin(Math.min(1, t / 0.04) * (Math.PI / 2)) *
-      Math.sin(Math.min(1, (1 - t) / 0.16) * (Math.PI / 2))
-    const hw = lerp(sections[lo].halfWidth, sections[hi].halfWidth) * close
-    const ht = lerp(sections[lo].halfThickness, sections[hi].halfThickness) * close
-
-    for (let j = 0; j <= PALM_RADIAL; j++) {
-      const theta = (j / PALM_RADIAL) * Math.PI * 2
-      const c = Math.cos(theta)
-      const s = Math.sin(theta)
-      const x = Math.sign(c) * Math.pow(Math.abs(c), PALM_SQUARE) * hw
-      const z = Math.sign(s) * Math.pow(Math.abs(s), PALM_SQUARE) * ht
-      scratch
-        .copy(origin)
-        .addScaledVector(across, x)
-        .addScaledVector(wrist, y)
-        .addScaledVector(out, z + cup)
-      position.push(scratch.x, scratch.y, scratch.z)
-    }
-  }
-
-  for (let i = 0; i < PALM_RINGS; i++) {
-    for (let j = 0; j < PALM_RADIAL; j++) {
-      const a = i * stride + j
-      const b = a + stride
-      // Mirroring the hand can reverse its frame; keep the outer skin visible.
-      if (outward) index.push(a, b, a + 1, b, b + 1, a + 1)
-      else index.push(a, a + 1, b, b, a + 1, b + 1)
-    }
-  }
-
-  const geo = new THREE.BufferGeometry()
-  geo.setAttribute('position', new THREE.Float32BufferAttribute(position, 3))
-  geo.setIndex(index)
-  geo.computeVertexNormals()
-  return geo
-}
-
-/* The palm's frame as a rotation. The third axis comes from the other two rather
-   than from palm.out, so a mirrored left hand still hands Three a right-handed
-   basis. */
-function palmQuaternion(palm: HandSolution['palm']): THREE.Quaternion {
-  const across = toV3(palm.across)
-  const wrist = toV3(palm.wrist)
-  const up = new THREE.Vector3().crossVectors(across, wrist).normalize()
-  return new THREE.Quaternion().setFromRotationMatrix(
-    new THREE.Matrix4().makeBasis(across, wrist, up),
-  )
-}
-
 export function Hand({
   contacts,
   handedness = 'right',
@@ -283,23 +135,51 @@ export function Hand({
   activeContact?: string
   occluders?: RefObject<THREE.Object3D>[]
 }) {
-  const hand = useMemo(() => solveHand(contacts, { handedness }), [contacts, handedness])
-  const fingers = useMemo(
-    () => hand.fingers.map((spine, i) => buildFinger(contacts[i], spine)),
-    [hand, contacts],
+  const hand = useMemo(() => rigHand(contacts), [contacts])
+  const handMesh = useMemo(() => buildHandMesh(hand, handedness), [hand, handedness])
+  const material = useMemo(() => makeSkinMaterial(), [])
+  const mirror = useMemo(
+    () => (p: THREE.Vector3) => (handedness === 'left' ? new THREE.Vector3(-p.x, p.y, p.z) : p.clone()),
+    [handedness],
   )
-  const palmGeo = useMemo(() => buildPalm(hand.palm), [hand])
-  const thenar = useMemo(() => {
-    if (!hand.thumbRoot) return null
-    // The heel of the thumb, bridging the palm's thumb-side edge to where the
-    // thumb leaves it.
-    const heel = hand.palm.sections[hand.palm.sections.length - 3]
-    const edge = toV3(hand.palm.origin)
-      .addScaledVector(toV3(hand.palm.wrist), heel.y)
-      .addScaledVector(toV3(hand.palm.across), -heel.halfWidth)
-      .addScaledVector(toV3(hand.palm.out), heel.cup - 0.08)
-    return { position: edge, quaternion: palmQuaternion(hand.palm) }
-  }, [hand])
+  const fingers = useMemo<FingerRender[]>(
+    () =>
+      hand.contacts.map((c, i) => {
+        const contact = contacts[i]
+        const normal = mirror(c.normal)
+        const tier = contact.pressureTier ?? 'support'
+        const spine = c.line.map(mirror)
+        return {
+          key: contact.label,
+          label: contact.label,
+          digit: c.digit,
+          pressureRole: contact.pressureRole,
+          cue: contact.cue,
+          dot: normal.clone().multiplyScalar(1.004),
+          shadow: {
+            position: normal.clone().multiplyScalar(1.004),
+            quaternion: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal),
+            radius: 0.3,
+            opacity: SHADOW_OPACITY[tier] ?? 0.22,
+          },
+          labelPos: normal.clone().multiplyScalar(1.3),
+          reach: spine[2] ?? spine[spine.length - 1],
+          spine,
+        }
+      }),
+    [hand, contacts, mirror],
+  )
+  // the digits no label names, and the back of the hand: still nothing a plate may cover
+  const others = useMemo(
+    () => [...hand.free.map((line) => line.map(mirror)), [hand.position[0], hand.position[11]].map(mirror)],
+    [hand, mirror],
+  )
+
+  // skin tone, with the chosen finger tinted the way its prose chip is
+  useLayoutEffect(() => {
+    const digit = fingers.find((f) => f.label === activeContact)?.digit
+    paintHand(handMesh, digit ? DIGIT_ORDER.indexOf(digit) : -1, ACTIVE)
+  }, [handMesh, fingers, activeContact])
 
   const shadowTex = useMemo(() => makeContactShadowTexture(), [])
 
@@ -311,7 +191,7 @@ export function Hand({
      up and down and kept inside the stage; the dots hold still, so no plate
      covers a fingertip, and a plate pushed off its dot keeps a hairline to it. */
   const invalidate = useThree((s) => s.invalidate)
-  const fingerGroups = useRef<(THREE.Group | null)[]>([])
+  const handGroup = useRef<THREE.Group>(null)
   const pinEls = useRef<(HTMLDivElement | null)[]>([])
   const dotEls = useRef<(HTMLSpanElement | null)[]>([])
   const tetherEls = useRef<(SVGLineElement | null)[]>([])
@@ -326,40 +206,42 @@ export function Hand({
     }
   }, [pins, invalidate])
   useFrame(({ camera, size }) => {
-    if (!pins) return
+    const group = handGroup.current
+    if (!pins || !group) return
     camera.updateMatrixWorld()
-    const onScreen = (v: THREE.Vector3, group: THREE.Group) => {
+    group.updateWorldMatrix(true, false)
+    const onScreen = (v: THREE.Vector3) => {
       projected.copy(v).applyMatrix4(group.matrixWorld).project(camera)
       return { x: ((projected.x + 1) / 2) * size.width, y: ((1 - projected.y) / 2) * size.height }
     }
     // every finger as it shows on screen: a stretch the ball hides is not in a plate's way
-    const eye = new THREE.Vector3()
-    const drawn = fingers.map((f, i) => {
-      const group = fingerGroups.current[i]
-      if (!group) return { points: [], shows: [] }
-      group.updateWorldMatrix(true, false)
-      group.worldToLocal(camera.getWorldPosition(eye))
-      // hidden where the line from the eye meets the ball (the unit sphere) before the point
-      const shows = f.spine.map((p) => {
-        const d = p.clone().sub(eye)
-        const a = d.lengthSq()
-        const b = 2 * eye.dot(d)
-        const disc = b * b - 4 * a * (eye.lengthSq() - 1)
-        const t = (-b - Math.sqrt(disc)) / (2 * a)
-        return !(disc > 0 && t > 0 && t < 1)
-      })
-      return { points: f.spine.map((p) => onScreen(p, group)), shows }
-    })
+    const eye = group.worldToLocal(camera.getWorldPosition(new THREE.Vector3()))
+    // hidden where the line from the eye meets the ball (a hair inside the cover, so a
+    // contact on the rim still shows) before the point
+    const behindBall = (p: THREE.Vector3) => {
+      const d = p.clone().sub(eye)
+      const a = d.lengthSq()
+      const b = 2 * eye.dot(d)
+      const disc = b * b - 4 * a * (eye.lengthSq() - 0.97)
+      const t = (-b - Math.sqrt(disc)) / (2 * a)
+      return disc > 0 && t > 0 && t < 1
+    }
+    const drawn = [...fingers.map((f) => f.spine), ...others].map((line) => ({
+      points: line.map(onScreen),
+      shows: line.map((p) => !behindBall(p)),
+    }))
     const fit = (v: number, half: number, span: number) => Math.min(Math.max(v, 4 + half), span - 4 - half)
     const seen = fingers.map((f, i) => {
       const el = pinEls.current[i]
-      const group = fingerGroups.current[i]
+      if (!el) return null
+      // a contact round the far side of the ball has nothing to point at from here
+      const hidden = behindBall(f.dot)
+      el.style.visibility = hidden ? 'hidden' : ''
       // an occluded pin is display:none and measures 0: it is left out
-      if (!el || !group || !el.offsetWidth) return null
-      group.updateWorldMatrix(true, false)
-      const origin = onScreen(f.labelPos, group)
-      const tip = onScreen(f.pad.position, group)
-      const back = onScreen(f.reach, group)
+      if (hidden || !el.offsetWidth) return null
+      const origin = onScreen(f.labelPos)
+      const tip = onScreen(f.dot)
+      const back = onScreen(f.reach)
       const w = el.offsetWidth
       const h = el.offsetHeight
       const name = el.querySelector<HTMLElement>('[data-finger-pin]')
@@ -451,54 +333,18 @@ export function Hand({
     })
   })
 
-  useEffect(
-    () => () => {
-      fingers.forEach((f) => f.tube.dispose())
-    },
-    [fingers],
-  )
-  useEffect(() => () => palmGeo.dispose(), [palmGeo])
+  useEffect(() => () => handMesh.geometry.dispose(), [handMesh])
+  useEffect(() => () => material.dispose(), [material])
   useEffect(() => () => shadowTex.dispose(), [shadowTex])
 
   return (
-    <group>
-      {/* the back of the hand and the heel of the thumb — rendered mass, never
-          labeled and never claimed */}
-      <mesh geometry={palmGeo}>
-        <meshPhysicalMaterial
-          color={SKIN}
-          roughness={0.68}
-          metalness={0}
-          sheen={0.45}
-          sheenRoughness={0.7}
-          sheenColor="#E8C7AE"
-        />
-      </mesh>
-
-      {thenar ? (
-        <mesh position={thenar.position} quaternion={thenar.quaternion} scale={[0.26, 0.4, 0.22]}>
-          <sphereGeometry args={[1, 20, 14]} />
-          <meshPhysicalMaterial
-            color={SKIN}
-            roughness={0.66}
-            metalness={0}
-            sheen={0.45}
-            sheenRoughness={0.65}
-            sheenColor="#E8C7AE"
-          />
-        </mesh>
-      ) : null}
+    <group ref={handGroup}>
+      <mesh geometry={handMesh.geometry} material={material} />
 
       {fingers.map((f, i) => {
         const active = activeContact === f.label
-        const skin = f.primary ? SKIN_DEEP : SKIN
         return (
-          <group
-            key={f.key}
-            ref={(g) => {
-              fingerGroups.current[i] = g
-            }}
-          >
+          <group key={f.key}>
             {/* soft radial contact shadow pressed into the leather — pressure as
                 emphasis, falling off into the cover instead of a hard edge */}
             <mesh position={f.shadow.position} quaternion={f.shadow.quaternion}>
@@ -508,53 +354,6 @@ export function Hand({
                 transparent
                 opacity={active ? f.shadow.opacity + 0.08 : f.shadow.opacity}
                 depthWrite={false}
-              />
-            </mesh>
-
-            {/* the finger: a warm soft-skin tube along the solved spine */}
-            <mesh geometry={f.tube}>
-              <meshPhysicalMaterial
-                color={skin}
-                roughness={0.62}
-                metalness={0}
-                sheen={0.5}
-                sheenRoughness={0.6}
-                sheenColor="#E8C7AE"
-                clearcoat={0.06}
-                emissive={active ? ACTIVE_TINT : '#000000'}
-                emissiveIntensity={active ? 0.16 : 0}
-              />
-            </mesh>
-            <mesh position={f.tipCap.position}>
-              <sphereGeometry args={[f.tipCap.radius, 20, 14]} />
-              <meshPhysicalMaterial
-                color={skin}
-                roughness={0.62}
-                metalness={0}
-                sheen={0.5}
-                sheenRoughness={0.6}
-                sheenColor="#E8C7AE"
-                emissive={active ? ACTIVE_TINT : '#000000'}
-                emissiveIntensity={active ? 0.16 : 0}
-              />
-            </mesh>
-
-            {/* pad-flatten cue: a squashed cap where the fingertip presses, so the
-                flesh reads as giving against the leather */}
-            <mesh
-              position={f.pad.position}
-              quaternion={f.pad.quaternion}
-              scale={[f.pad.radius, f.pad.radius * 0.4, f.pad.radius]}
-            >
-              <sphereGeometry args={[1, 18, 12]} />
-              <meshPhysicalMaterial
-                color={skin}
-                roughness={0.55}
-                metalness={0}
-                sheen={0.55}
-                sheenColor="#EBCBB2"
-                emissive={active ? ACTIVE_TINT : '#000000'}
-                emissiveIntensity={active ? 0.12 : 0}
               />
             </mesh>
 

@@ -1,5 +1,5 @@
 import { seamPoint, v, type Vec3 } from './seam'
-import type { GripView, SeamAnchoredPoint } from '../data/types'
+import type { GripView, Handedness, SeamAnchoredPoint } from '../data/types'
 
 type Quaternion = [number, number, number, number]
 const multiply = (a: Quaternion, b: Quaternion): Quaternion => [
@@ -10,12 +10,21 @@ const multiply = (a: Quaternion, b: Quaternion): Quaternion => [
 ]
 const turn = (axis: Vec3, angle: number): Quaternion => [axis.x*Math.sin(angle/2), axis.y*Math.sin(angle/2), axis.z*Math.sin(angle/2), Math.cos(angle/2)]
 
-/** Presentation only. SVG and Three consume the same rotation; no seam/contact data changes. */
-export function gripViewQuaternion(placement: SeamAnchoredPoint[], view: GripView, faceGrip = true): Quaternion {
+/** Presentation only. SVG and Three consume the same rotation; no seam/contact data changes.
+    A left hand is the right one mirrored in x, so it is faced on its mirrored
+    contacts. The 3D hand also passes where its wrist sits: the side view then turns
+    away from the wrist, so the fingers show in profile instead of the back of the
+    hand filling the frame. The drawing has no solid hand to see past and keeps one turn. */
+export function gripViewQuaternion(
+  placement: SeamAnchoredPoint[],
+  view: GripView,
+  { faceGrip = true, handedness = 'right', wrist }: { faceGrip?: boolean; handedness?: Handedness; wrist?: Vec3 } = {},
+): Quaternion {
   let faced: Quaternion = [0, 0, 0, 1]
   if (faceGrip && placement.length) {
     const lead = placement.filter(p => p.finger !== 'thumb')
-    const mean = (lead.length ? lead : placement).reduce((sum, p) => v.add(sum, seamPoint(p.seamT * Math.PI * 2)), { x: 0, y: 0, z: 0 })
+    const sum = (lead.length ? lead : placement).reduce((sum, p) => v.add(sum, seamPoint(p.seamT * Math.PI * 2)), { x: 0, y: 0, z: 0 })
+    const mean = handedness === 'left' ? { ...sum, x: -sum.x } : sum
     if (v.length(mean) > 1e-6) {
       const from = v.normalize(mean), to = v.normalize({ x: 0, y: .22, z: 1 })
       const axis = v.cross(from, to), w = 1 + v.dot(from, to)
@@ -29,7 +38,8 @@ export function gripViewQuaternion(placement: SeamAnchoredPoint[], view: GripVie
       faced = multiply(turn({ x: 0, y: 0, z: 1 }, .05), faced)
     }
   }
-  const [x,y,z] = view === 'side' ? [-.2,-.64,.03] : view === 'thumb' ? [.78,.16,.04] : [-.08,.02,.04]
+  const away = view === 'side' && wrist && rotateByQuaternion(wrist, faced).x > 0 ? -1 : 1
+  const [x,y,z] = view === 'side' ? [-.2,-.64*away,.03*away] : view === 'thumb' ? [.78,.16,.04] : [-.08,.02,.04]
   return multiply(multiply(multiply(turn({x:1,y:0,z:0},x), turn({x:0,y:1,z:0},y)), turn({x:0,y:0,z:1},z)), faced)
 }
 export function rotateByQuaternion(point: Vec3, q: Quaternion): Vec3 {

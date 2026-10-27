@@ -93,9 +93,9 @@ export function SeamSchematic({
 
   const rotate = useMemo(() => {
     if (!view) return undefined
-    const q = gripViewQuaternion(referenceContacts ?? grip ?? [], view)
+    const q = gripViewQuaternion(referenceContacts ?? grip ?? [], view, { handedness })
     return (point: Vec3) => rotateByQuaternion(point, q)
-  }, [view, referenceContacts, grip])
+  }, [view, referenceContacts, grip, handedness])
   const projected = useMemo(() => projectSeam(CX, CY, R, SEG, rotate), [rotate])
   const runs = useMemo(() => splitRuns(projected), [projected])
   const stitches = useMemo(
