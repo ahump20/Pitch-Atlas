@@ -154,9 +154,10 @@ export function SeamSchematic({
       const tip = f.points[0] ?? f.contact
       const back = f.points[Math.min(4, f.points.length - 1)] ?? f.contact
       const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : f.contact.x < CX ? -1 : 1
-      // with no room past the tip, the plate turns back over the finger
-      const fits = (side: number) => Math.abs(f.contact.x + side * (PIN_GAP + w) - CX) <= CX - 1
-      const side = fits(lean) || !fits(-lean) ? lean : -lean
+      // a plate that only just misses room past the tip squeezes in there and is
+      // lifted clear of its dot; with no room at all it turns back over the finger
+      const spill = (side: number) => Math.abs(f.contact.x + side * (PIN_GAP + w) - CX) - (CX - 1)
+      const side = spill(lean) <= PIN_GAP + PIN_R || spill(-lean) > 0 ? lean : -lean
       return { text, x: f.contact.x + side * (PIN_GAP + w / 2), y: f.contact.y, w, h: LABEL_H }
     })
     const pins = front.map((f) => ({ x: f.contact.x, y: f.contact.y, w: PIN_R * 2 + 1, h: PIN_R * 2 + 1, fixed: true }))

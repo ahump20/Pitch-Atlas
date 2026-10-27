@@ -340,8 +340,9 @@ export function Hand({
       const h = el.offsetHeight
       const row = el.querySelector<HTMLElement>('[data-finger-pin]')?.offsetHeight ?? h
       const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : tip.x < size.width / 2 ? -1 : 1
-      const fits = (side: number) => Math.abs(tip.x + side * (PIN_GAP + w) - size.width / 2) <= size.width / 2 - 4
-      const side = fits(lean) || !fits(-lean) ? lean : -lean
+      // as on the flat drawing: only just missing room past the tip still beats crossing the hand
+      const spill = (side: number) => Math.abs(tip.x + side * (PIN_GAP + w) - size.width / 2) - (size.width / 2 - 4)
+      const side = spill(lean) <= PIN_GAP + PIN_CLEAR / 2 || spill(-lean) > 0 ? lean : -lean
       return { origin, tip, w, h, row, side, want: { x: tip.x + side * (PIN_GAP + w / 2), y: tip.y + (h - row) / 2 } }
     })
     const none = { x: 0, y: 0, w: 0, h: 0 }
