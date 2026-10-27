@@ -31,6 +31,7 @@ export function BallStage({
   activeContact,
   link,
   linkId,
+  onDrawn,
   className = '',
 }: {
   entry: PitchAtlasEntry
@@ -51,6 +52,8 @@ export function BallStage({
   activeContact?: string
   link?: OrbitLink
   linkId?: StageId
+  /** true once the model's first frame is on screen, false if it fails; until the first frame the visitor sees the schematic */
+  onDrawn?: (drawn: boolean) => void
   className?: string
 }) {
   const webgl = useWebGLSupport()
@@ -85,7 +88,7 @@ export function BallStage({
     >
       {!ready && <div className="absolute inset-0" data-stage-loading="true">{schematic('h-full w-full')}</div>}
       <div className="relative h-full w-full" style={{ opacity: ready ? 1 : 0 }}>
-      <SpecimenBoundary fallback={schematic('h-full w-full')}>
+      <SpecimenBoundary fallback={schematic('h-full w-full')} onFail={() => onDrawn?.(false)}>
         <Suspense fallback={schematic('h-full w-full')}>
           <BallScene
             entry={entry}
@@ -101,7 +104,7 @@ export function BallStage({
             activeContact={activeContact}
             link={link}
             linkId={linkId}
-            onReady={() => setReady(true)}
+            onReady={() => { setReady(true); onDrawn?.(true) }}
           />
         </Suspense>
       </SpecimenBoundary>
