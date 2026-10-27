@@ -4,6 +4,7 @@ import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildLacing } from '../../lib/seam2d'
 import { solveHand, projectHand, type ProjectedSpine, type ProjectedPoint } from '../../lib/gripPose'
 import { gripViewQuaternion, rotateByQuaternion } from '../../lib/gripView'
+import { declutterLabels } from '../../lib/labelLayout'
 import type { GripContactModel, GripView, Handedness } from '../../data/types'
 
 /*
@@ -27,6 +28,14 @@ const FINGER_STAGE = '#C8BEAC'
 const FINGER_PAPER = '#8A8174'
 // the picked-out finger, in the 3D hand's highlight (Hand.tsx)
 const FINGER_ACTIVE = '#4B92DB'
+
+// Finger labels wear the 3D pin's plate: stage ink, bone type, the highlight dot.
+// Martian Mono advances 0.7em per glyph, so a plate is sized without measuring.
+const LABEL_FONT = 7.5
+const LABEL_TRACK = 0.8
+const LABEL_PAD = 3.5
+const LABEL_DOT = 1.6
+const LABEL_H = 11.5
 
 export interface SeamSchematicProps {
   className?: string
@@ -129,6 +138,24 @@ export function SeamSchematic({
   }, [grip, handedness, rotate])
 
   const fingers = hand?.fingers ?? []
+
+  // each name sits just above its fingertip, then the crowd is pulled apart and
+  // kept inside the drawing
+  const labels = useMemo(() => {
+    if (!showLabels || !hand) return []
+    const front = hand.fingers.filter((f) => f.contact.front)
+    const boxes = front.map((f) => {
+      const text = f.label.toUpperCase()
+      return {
+        x: f.points[0]?.x ?? f.contact.x,
+        y: (f.points[0]?.y ?? f.contact.y) - 12,
+        w: LABEL_PAD * 2 + LABEL_DOT * 2 + 2.5 + text.length * (LABEL_FONT * 0.7 + LABEL_TRACK),
+        h: LABEL_H,
+      }
+    })
+    const placed = declutterLabels(boxes, { width: CX * 2, height: CY * 2 }, { gap: 1.5, margin: 1 })
+    return front.map((f, i) => ({ label: f.label, text: f.label.toUpperCase(), w: boxes[i].w, ...placed[i] }))
+  }, [hand, showLabels])
 
   const fingerTone = stageSurface ? FINGER_STAGE : FINGER_PAPER
 
@@ -250,27 +277,38 @@ export function SeamSchematic({
 
       {/* the labels ride outside the clip — a name cut in half by the rim is
           worse than a name that overhangs it */}
-      {showLabels && fingers
-        .filter((f) => f.contact.front)
-        .map((f) => (
-          <g key={`hl-${f.label}`}>
+      {labels.map((l) => {
+        const active = l.label === activeContact
+        return (
+          <g key={`hl-${l.label}`} data-grip-label={l.label}>
+            <rect
+              x={(l.x - l.w / 2).toFixed(2)}
+              y={(l.y - LABEL_H / 2).toFixed(2)}
+              width={l.w.toFixed(2)}
+              height={LABEL_H}
+              rx="2"
+              fill="var(--color-stage)"
+              fillOpacity=".86"
+              stroke={active ? 'var(--color-powder)' : '#F6F1E6'}
+              strokeOpacity={active ? 0.7 : 0.2}
+              strokeWidth=".6"
+            />
+            <circle cx={l.x - l.w / 2 + LABEL_PAD + LABEL_DOT} cy={l.y} r={active ? LABEL_DOT * 1.3 : LABEL_DOT} fill={FINGER_ACTIVE} />
             <text
-              x={f.points[0]?.x ?? f.contact.x}
-              y={(f.points[0]?.y ?? f.contact.y) - 9}
-              fill="#34271F"
-              stroke="#FBF8F0"
-              strokeWidth=".5"
-              paintOrder="stroke"
+              x={l.x - l.w / 2 + LABEL_PAD + LABEL_DOT * 2 + 2.5}
+              y={l.y}
+              dominantBaseline="central"
+              fill="#F6F1E6"
               fontWeight="600"
               fontFamily="var(--font-mono)"
-              fontSize="7.5"
-              letterSpacing="0.8"
-              textAnchor="middle"
+              fontSize={LABEL_FONT}
+              letterSpacing={LABEL_TRACK}
             >
-              {f.label.toUpperCase()}
+              {l.text}
             </text>
           </g>
-        ))}
+        )
+      })}
     </svg>
   )
 }

@@ -100,6 +100,8 @@ export function SpecimenBack({
                     surface="stage"
                     showAxis={false}
                     showStitches={false}
+                    // a 44px twin: names would be specks
+                    showLabels={false}
                     title=""
                   />
                 </span>
