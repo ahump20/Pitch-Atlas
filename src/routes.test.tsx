@@ -179,6 +179,22 @@ describe('Pitch chapters', () => {
     renderRoute('/pitch/does-not-exist')
     expect(await screen.findByText('That file is not in the atlas.', {}, COLD_LOAD)).toBeInTheDocument()
   })
+
+  // a master's note says what its line can and cannot claim (a trimmed quote, a paraphrase), so it ships with the line
+  const notedMasters = PITCHES.flatMap((p) =>
+    p.masterVariants.flatMap((v) =>
+      [v.distinction, v.quote?.source ? v.quote : undefined, ...(v.accolades ?? []).map((a) => a.claim)].flatMap((c) =>
+        c?.note ? [{ slug: p.display.slug, note: c.note }] : [],
+      ),
+    ),
+  )
+  it.each([...new Set(notedMasters.map((n) => n.slug))])('shows every master file note on /pitch/%s', async (slug) => {
+    renderRoute(`/pitch/${slug}`)
+    await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
+    for (const { note } of notedMasters.filter((n) => n.slug === slug)) {
+      expect(screen.getAllByText(note).length).toBeGreaterThan(0)
+    }
+  })
 })
 
 describe('The Craftsmen', () => {
