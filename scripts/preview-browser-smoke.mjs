@@ -784,9 +784,12 @@ async function checkSupportAndPrivacy(page, viewport) {
 }
 
 async function checkKnowledgeMarkerWrap(page) {
+  await watchClientRoot(page)
   await page.setViewportSize({ width: 390, height: 844 })
   const messages = await collectConsole(page, async () => {
     await page.goto(route('/learn/canon/'), { waitUntil: 'domcontentloaded' })
+    // a prerendered marker removed by the mount mid-measure reads as blank style
+    await waitForClientRoot(page, 'Canon mobile')
     await page.locator('h1').waitFor({ state: 'visible' })
     await page.locator('[data-stage-tier-marker] h2').first().waitFor({ state: 'visible' })
   })
