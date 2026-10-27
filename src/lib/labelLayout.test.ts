@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { declutterLabels, type LabelBox } from './labelLayout'
+import { declutterLabels, lineNearBox, plateSide, type LabelBox } from './labelLayout'
 
 const bounds = { width: 300, height: 300 }
 
@@ -108,3 +108,23 @@ describe('declutterLabels', () => {
   })
 })
 
+
+describe('plateSide', () => {
+  const box = { x: 100, y: 100, w: 40, h: 10 }
+  it('sees a finger that runs straight through a plate, and not one the ball hides', () => {
+    const finger = [{ x: 60, y: 80 }, { x: 140, y: 120 }]
+    expect(lineNearBox(finger, box, 0)).toBe(true)
+    expect(lineNearBox(finger, box, 0, (i) => i === 0)).toBe(false)
+    expect(lineNearBox([{ x: 60, y: 80 }, { x: 140, y: 80 }], box, 2)).toBe(false)
+    expect(lineNearBox([{ x: 60, y: 80 }, { x: 140, y: 80 }], box, 20)).toBe(true)
+  })
+
+  it('runs the way the finger points unless that lies across another finger and the other side is clear', () => {
+    const room = () => -10
+    expect(plateSide(1, room, 4, () => false)).toBe(1)
+    expect(plateSide(1, room, 4, (side) => side === 1)).toBe(-1)
+    expect(plateSide(1, room, 4, () => true)).toBe(1)
+    // no room the other way: it stays on the finger it crosses
+    expect(plateSide(1, (side) => (side === 1 ? -10 : 30), 4, (side) => side === 1)).toBe(1)
+  })
+})

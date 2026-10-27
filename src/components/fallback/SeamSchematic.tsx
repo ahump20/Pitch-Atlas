@@ -4,7 +4,7 @@ import { SPIN_AXIS, SEAM_VIEW_TILT, v, type Vec3 } from '../../lib/seam'
 import { projectSeam, splitRuns, buildLacing } from '../../lib/seam2d'
 import { solveHand, projectHand, type ProjectedSpine, type ProjectedPoint } from '../../lib/gripPose'
 import { gripViewQuaternion, rotateByQuaternion } from '../../lib/gripView'
-import { declutterLabels } from '../../lib/labelLayout'
+import { declutterLabels, lineNearBox, plateSide } from '../../lib/labelLayout'
 import type { GripContactModel, GripView, Handedness } from '../../data/types'
 
 /*
@@ -143,8 +143,9 @@ export function SeamSchematic({
   const fingers = hand?.fingers ?? []
 
   // each name rides beside a dot on its fingertip, running on past the tip the
-  // way the finger points; a crowd is pulled apart and kept inside the drawing,
-  // and the dots hold still, so no plate covers a fingertip
+  // way the finger points, or the other way off another finger; a crowd is pulled
+  // apart and kept inside the drawing, and the dots hold still, so no plate
+  // covers a fingertip
   const labels = useMemo(() => {
     if (!showLabels || !hand) return []
     const front = hand.fingers.filter((f) => f.contact.front)
@@ -155,10 +156,17 @@ export function SeamSchematic({
       const back = f.points[Math.min(4, f.points.length - 1)] ?? f.contact
       const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : f.contact.x < CX ? -1 : 1
       // a plate that only just misses room past the tip squeezes in there and is
-      // lifted clear of its dot; with no room at all it turns back over the finger
+      // lifted clear of its dot; with no room at all it turns back over the finger.
+      // Either way it moves off another finger when the other side is clear.
       const spill = (side: number) => Math.abs(f.contact.x + side * (PIN_GAP + w) - CX) - (CX - 1)
-      const side = spill(lean) <= PIN_GAP + PIN_R || spill(-lean) > 0 ? lean : -lean
-      return { text, x: f.contact.x + side * (PIN_GAP + w / 2), y: f.contact.y, w, h: LABEL_H }
+      const box = (side: number) => ({ x: f.contact.x + side * (PIN_GAP + w / 2), y: f.contact.y, w, h: LABEL_H })
+      const crossed = (side: number) =>
+        front.some(
+          (o) =>
+            o !== f &&
+            lineNearBox(o.points, box(side), o.strokeWidth / 2, (j) => Math.hypot(o.points[j].x - CX, o.points[j].y - CY) <= R),
+        )
+      return { text, ...box(plateSide(lean, spill, PIN_GAP + PIN_R, crossed)) }
     })
     const pins = front.map((f) => ({ x: f.contact.x, y: f.contact.y, w: PIN_R * 2 + 1, h: PIN_R * 2 + 1, fixed: true }))
     const placed = declutterLabels([...plates, ...pins], { width: CX * 2, height: CY * 2 }, { gap: 1.5, margin: 1 })

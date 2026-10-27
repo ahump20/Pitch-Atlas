@@ -16,6 +16,54 @@ export interface LabelBox {
   fixed?: boolean
 }
 
+/** Which side of its fingertip a name runs (-1 left, 1 right): the way the finger
+    points (`lean`), unless only the other side has room, or the plate would lie
+    across another finger while the other side is clear. `spill` is how far a
+    plate on that side runs past the frame; one within `slack` still squeezes in. */
+export function plateSide(
+  lean: number,
+  spill: (side: number) => number,
+  slack: number,
+  crossed: (side: number) => boolean,
+): number {
+  const side = spill(lean) <= slack || spill(-lean) > 0 ? lean : -lean
+  return crossed(side) && spill(-side) <= slack && !crossed(-side) ? -side : side
+}
+
+/** Whether a drawn line (a finger) comes within `pad` of a box. Only segments
+    whose two ends both show count: a finger behind the ball, or past the
+    drawing's rim, is not in the way. */
+export function lineNearBox(
+  points: { x: number; y: number }[],
+  box: LabelBox,
+  pad: number,
+  shows: (i: number) => boolean = () => true,
+): boolean {
+  const x0 = box.x - box.w / 2 - pad
+  const x1 = box.x + box.w / 2 + pad
+  const y0 = box.y - box.h / 2 - pad
+  const y1 = box.y + box.h / 2 + pad
+  return points.some((b, i) => {
+    if (i === 0 || !shows(i) || !shows(i - 1)) return false
+    const a = points[i - 1]
+    // clip the segment to the box one edge at a time; anything left over is inside
+    let lo = 0
+    let hi = 1
+    for (const [p, q] of [
+      [a.x - b.x, a.x - x0],
+      [b.x - a.x, x1 - a.x],
+      [a.y - b.y, a.y - y0],
+      [b.y - a.y, y1 - a.y],
+    ]) {
+      if (p === 0) {
+        if (q < 0) return false
+      } else if (p < 0) lo = Math.max(lo, q / p)
+      else hi = Math.min(hi, q / p)
+    }
+    return lo <= hi
+  })
+}
+
 export function declutterLabels(
   boxes: LabelBox[],
   bounds: { width: number; height: number },
