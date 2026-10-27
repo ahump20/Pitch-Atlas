@@ -415,13 +415,13 @@ function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVarian
       <h3 className="rfx-athletic rfx-skew text-2xl text-bone">{variant.pitcher}</h3>
       {person && <Link className="archive-text-link" to={`/craftsmen/${person.slug}`}>The person behind this hold →</Link>}
       <p className="mt-2 text-[12.5px] leading-relaxed text-bone-2">{variant.context}</p>
-      <RefractorClaim claim={variant.distinction} proseClassName="text-[13px] leading-relaxed text-bone" className="mt-4 border-t border-white/8 pt-4" />
+      <RefractorClaim claim={variant.distinction} proseClassName="text-[13px] leading-relaxed text-bone" className="mt-4 border-t border-white/8 pt-4" tone="panel" />
       {variant.accolades && variant.accolades.length > 0 ? (
         <div className="mt-4">
           {variant.accolades.map((n) => (
             <div key={n.label} className="border-t border-white/8 py-2">
               <p className="text-[12.5px] leading-relaxed text-bone-2">
-                <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-ink-3">
+                <span className="font-mono text-[9px] uppercase tracking-[0.06em] text-bone-3">
                   {n.label}
                   {' · '}
                 </span>
@@ -432,11 +432,11 @@ function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVarian
                 {n.claim.source ? (
                   <>
                     <span aria-hidden="true" className="text-ink-3">/</span>
-                    <RefractorSource source={n.claim.source} />
+                    <RefractorSource source={n.claim.source} tone="panel" />
                   </>
                 ) : null}
               </div>
-              {n.claim.note ? <RefractorNote className="mt-1.5">{n.claim.note}</RefractorNote> : null}
+              {n.claim.note ? <RefractorNote className="mt-1.5" tone="panel">{n.claim.note}</RefractorNote> : null}
             </div>
           ))}
         </div>
@@ -449,9 +449,9 @@ function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVarian
           <figcaption className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1">
             <ConfidenceDot confidence={variant.quote.confidence} />
             <span aria-hidden="true" className="text-ink-3">/</span>
-            <RefractorSource source={variant.quote.source} />
+            <RefractorSource source={variant.quote.source} tone="panel" />
           </figcaption>
-          {variant.quote.note ? <RefractorNote className="mt-2">{variant.quote.note}</RefractorNote> : null}
+          {variant.quote.note ? <RefractorNote className="mt-2" tone="panel">{variant.quote.note}</RefractorNote> : null}
         </figure>
       ) : null}
     </article>
