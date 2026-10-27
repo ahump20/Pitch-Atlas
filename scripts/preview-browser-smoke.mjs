@@ -685,9 +685,21 @@ async function checkBench(page, viewport, { reduced = false } = {}) {
     await page.goto(route('/repertoire/?family=breaking'), { waitUntil: 'domcontentloaded' })
     const row = page.locator('a[href*="/pitch/slider"]').first()
     await row.waitFor({ state: 'visible', timeout: 20_000 })
-    await row.evaluate((el) => el.scrollIntoView({ block: 'center' }))
+    // the page scrolls smoothly and late fonts shift it, so read the spot once it holds still
+    await page.evaluate(() => document.fonts.ready)
+    await row.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }))
     const listUrl = page.url()
-    const scrollY = await page.evaluate(() => window.scrollY)
+    const scrollY = await page.evaluate(() => new Promise((resolve) => {
+      let last = -1
+      let still = 0
+      const tick = () => {
+        still = window.scrollY === last ? still + 1 : 0
+        last = window.scrollY
+        if (still >= 10) resolve(last)
+        else requestAnimationFrame(tick)
+      }
+      tick()
+    }))
     await row.click()
     const dialog = page.getByRole('dialog')
     await dialog.waitFor({ state: 'visible', timeout: 15_000 })
