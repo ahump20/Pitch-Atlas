@@ -184,15 +184,20 @@ describe('Pitch chapters', () => {
   const notedMasters = PITCHES.flatMap((p) =>
     p.masterVariants.flatMap((v) =>
       [v.distinction, v.quote?.source ? v.quote : undefined, ...(v.accolades ?? []).map((a) => a.claim)].flatMap((c) =>
-        c?.note ? [{ slug: p.display.slug, note: c.note }] : [],
+        c?.note ? [{ slug: p.display.slug, pitcher: v.pitcher, note: c.note }] : [],
       ),
     ),
   )
   it.each([...new Set(notedMasters.map((n) => n.slug))])('shows every master file note on /pitch/%s', async (slug) => {
     renderRoute(`/pitch/${slug}`)
     await screen.findByRole('heading', { level: 1 }, COLD_LOAD)
-    for (const { note } of notedMasters.filter((n) => n.slug === slug)) {
-      expect(screen.getAllByText(note).length).toBeGreaterThan(0)
+    for (const { pitcher, note } of notedMasters.filter((n) => n.slug === slug)) {
+      // under its own pitcher's card, not just somewhere on the page
+      const cards = screen
+        .getAllByRole('heading', { level: 3, name: pitcher })
+        .flatMap((h) => h.closest('article') ?? [])
+      expect(cards.length, pitcher).toBeGreaterThan(0)
+      expect(cards.some((card) => within(card).queryAllByText(note).length > 0), `${pitcher}: ${note}`).toBe(true)
     }
   })
 })

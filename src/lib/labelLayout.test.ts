@@ -1,0 +1,76 @@
+import { describe, expect, it } from 'vitest'
+import { declutterLabels, type LabelBox } from './labelLayout'
+
+const bounds = { width: 300, height: 300 }
+
+function overlaps(a: LabelBox, b: LabelBox, gap: number) {
+  return Math.abs(a.x - b.x) < (a.w + b.w) / 2 && Math.abs(a.y - b.y) < (a.h + b.h) / 2 + gap - 1e-6
+}
+
+describe('declutterLabels', () => {
+  it('leaves labels that already sit apart and inside the frame where they are', () => {
+    const boxes = [
+      { x: 80, y: 60, w: 100, h: 20 },
+      { x: 200, y: 200, w: 100, h: 20 },
+    ]
+    expect(declutterLabels(boxes, bounds)).toEqual([
+      { x: 80, y: 60 },
+      { x: 200, y: 200 },
+    ])
+  })
+
+  it('splits two stacked labels evenly, first above second when they share a point', () => {
+    const boxes = [
+      { x: 150, y: 150, w: 120, h: 20 },
+      { x: 150, y: 150, w: 120, h: 20 },
+    ]
+    const [a, b] = declutterLabels(boxes, bounds, { gap: 4 })
+    expect(a.y).toBeLessThan(b.y)
+    expect(b.y - a.y).toBeCloseTo(24)
+    expect((a.y + b.y) / 2).toBeCloseTo(150)
+  })
+
+  it('separates a crowded cluster so no two labels touch', () => {
+    const boxes = [
+      { x: 140, y: 120, w: 130, h: 20 },
+      { x: 150, y: 126, w: 150, h: 20 },
+      { x: 160, y: 118, w: 90, h: 20 },
+      { x: 60, y: 250, w: 70, h: 20 },
+    ]
+    const placed = declutterLabels(boxes, bounds, { gap: 4 }).map((p, i) => ({ ...boxes[i], ...p }))
+    for (let i = 0; i < placed.length; i++) {
+      for (let j = i + 1; j < placed.length; j++) {
+        expect(overlaps(placed[i], placed[j], 4), `${i} vs ${j}`).toBe(false)
+      }
+    }
+    expect(placed[3]).toMatchObject({ x: 60, y: 250 })
+  })
+
+  it('pulls a label that hangs off an edge back inside the frame', () => {
+    const [p] = declutterLabels([{ x: 290, y: 4, w: 130, h: 20 }], bounds, { margin: 4 })
+    expect(p.x).toBe(300 - 4 - 65)
+    expect(p.y).toBe(4 + 10)
+  })
+
+  it('keeps pushed labels inside the frame at the bottom edge', () => {
+    const boxes = [
+      { x: 150, y: 290, w: 100, h: 20 },
+      { x: 150, y: 292, w: 100, h: 20 },
+    ]
+    const placed = declutterLabels(boxes, bounds, { gap: 4, margin: 4 })
+    for (const p of placed) expect(p.y).toBeLessThanOrEqual(300 - 4 - 10)
+    expect(placed[1].y - placed[0].y).toBeGreaterThanOrEqual(24 - 1e-6)
+  })
+
+  it('centres a label wider than the frame and skips hidden ones', () => {
+    const placed = declutterLabels(
+      [
+        { x: 10, y: 150, w: 400, h: 20 },
+        { x: 150, y: 150, w: 0, h: 0 },
+      ],
+      bounds,
+    )
+    expect(placed[0].x).toBe(150)
+    expect(placed[1]).toEqual({ x: 150, y: 150 })
+  })
+})

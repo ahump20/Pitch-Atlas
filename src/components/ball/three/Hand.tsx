@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState, type RefObject } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject } from 'react'
 import * as THREE from 'three'
+import { useFrame, useThree } from '@react-three/fiber'
 import { tubeFromSpine } from '../../../lib/taperedTube'
+import { declutterLabels } from '../../../lib/labelLayout'
 import { Html } from '@react-three/drei'
 import { solveHand, type FingerSpine, type HandSolution } from '../../../lib/gripPose'
 import type { GripContactModel, Handedness } from '../../../data/types'
@@ -128,18 +130,23 @@ function FingerPin({
   pressureRole,
   cue,
   active,
+  onResize,
 }: {
   label: string
   pressureRole?: string
   cue?: string
   active: boolean
+  /** The pin grew or shrank: the scene draws a frame so the pins re-space. */
+  onResize?: () => void
 }) {
   const [hover, setHover] = useState(false)
   const open = (hover || active) && Boolean(cue || pressureRole)
+  useLayoutEffect(() => onResize?.(), [open, onResize])
 
   return (
     <div className="flex flex-col items-center gap-1 select-none">
       <span
+        data-finger-pin={label}
         onPointerEnter={() => setHover(true)}
         onPointerLeave={() => setHover(false)}
         className={`pointer-events-auto flex items-center gap-1 whitespace-nowrap rounded-sm border bg-stage/85 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone transition-colors ${
@@ -295,6 +302,47 @@ export function Hand({
 
   const shadowTex = useMemo(() => makeContactShadowTexture(), [])
 
+  /* Adjacent fingertips project onto almost the same spot (index and middle
+     from above, or any grip on a phone-width stage), so each frame the pins are
+     nudged apart up and down and kept inside the stage. */
+  const invalidate = useThree((s) => s.invalidate)
+  const fingerGroups = useRef<(THREE.Group | null)[]>([])
+  const pinEls = useRef<(HTMLDivElement | null)[]>([])
+  const projected = useMemo(() => new THREE.Vector3(), [])
+  useEffect(() => {
+    if (!pins) return
+    let live = true
+    // the label font lands after the first frame and widens every pin
+    document.fonts?.ready.then(() => live && invalidate())
+    return () => {
+      live = false
+    }
+  }, [pins, invalidate])
+  useFrame(({ camera, size }) => {
+    if (!pins) return
+    camera.updateMatrixWorld()
+    const boxes = fingers.map((f, i) => {
+      const el = pinEls.current[i]
+      const group = fingerGroups.current[i]
+      // an occluded pin is display:none and measures 0: it is left out
+      if (!el || !group || !el.offsetWidth) return { x: 0, y: 0, w: 0, h: 0 }
+      group.updateWorldMatrix(true, false)
+      projected.copy(f.labelPos).applyMatrix4(group.matrixWorld).project(camera)
+      return {
+        x: ((projected.x + 1) / 2) * size.width,
+        y: ((1 - projected.y) / 2) * size.height,
+        w: el.offsetWidth,
+        h: el.offsetHeight,
+      }
+    })
+    declutterLabels(boxes, size).forEach((p, i) => {
+      const el = pinEls.current[i]
+      if (el && boxes[i].w) {
+        el.style.transform = `translate(${(p.x - boxes[i].x).toFixed(1)}px, ${(p.y - boxes[i].y).toFixed(1)}px)`
+      }
+    })
+  })
+
   useEffect(
     () => () => {
       fingers.forEach((f) => f.tube.dispose())
@@ -333,11 +381,16 @@ export function Hand({
         </mesh>
       ) : null}
 
-      {fingers.map((f) => {
+      {fingers.map((f, i) => {
         const active = activeContact === f.label
         const skin = f.primary ? SKIN_DEEP : SKIN
         return (
-          <group key={f.key}>
+          <group
+            key={f.key}
+            ref={(g) => {
+              fingerGroups.current[i] = g
+            }}
+          >
             {/* soft radial contact shadow pressed into the leather — pressure as
                 emphasis, falling off into the cover instead of a hard edge */}
             <mesh position={f.shadow.position} quaternion={f.shadow.quaternion}>
@@ -399,7 +452,20 @@ export function Hand({
 
             {pins ? (
               <Html position={f.labelPos} center occlude={occluders} zIndexRange={[20, 0]}>
-                <FingerPin label={f.label} pressureRole={f.pressureRole} cue={f.cue} active={active} />
+                <div
+                  ref={(el) => {
+                    pinEls.current[i] = el
+                    if (el) invalidate()
+                  }}
+                >
+                  <FingerPin
+                    label={f.label}
+                    pressureRole={f.pressureRole}
+                    cue={f.cue}
+                    active={active}
+                    onResize={invalidate}
+                  />
+                </div>
               </Html>
             ) : null}
           </group>
