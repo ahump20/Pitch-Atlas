@@ -479,7 +479,8 @@ async function disableWebGL(page) {
   await page.addInitScript(() => {
     const getContext = HTMLCanvasElement.prototype.getContext
     HTMLCanvasElement.prototype.getContext = function patchedGetContext(type, ...args) {
-      if (String(type).toLowerCase().startsWith('webgl')) return null
+      // 'experimental-webgl' too, or detection still finds a context
+      if (/webgl/i.test(String(type))) return null
       return getContext.call(this, type, ...args)
     }
   })
@@ -719,7 +720,7 @@ async function checkBench(page, viewport, { reduced = false } = {}) {
     await dialog.getByRole('group', { name: 'Aspect' }).getByRole('button', { name: 'Flight' }).click()
     await dialog.locator('.bench-flight svg').waitFor({ state: 'visible' })
     record(await dialog.locator('[data-flight]').count() === 2, `${label} flight does not draw both paths`)
-    record(includesText(await dialog.innerText(), /Illustrative/), `${label} flight is not labeled Illustrative`)
+    record(includesText(await dialog.innerText(), /illustrative/i), `${label} flight is not labeled Illustrative`)
     const numbers = (await dialog.innerText()).match(/\d+\s?(mph|rpm|in\b|inches|°)/g)
     record(!numbers, `${label} shows pitch numbers: ${numbers?.join(', ')}`)
     await assertNoHorizontalOverflow(page, label)
