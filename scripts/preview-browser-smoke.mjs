@@ -582,10 +582,13 @@ async function checkInspectorClose(page, viewport) {
 }
 
 async function checkInspectorReturnFocus(page) {
+  await watchClientRoot(page)
   await disableWebGL(page)
   await page.emulateMedia({ reducedMotion: 'reduce' })
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto(route('/'), { waitUntil: 'domcontentloaded' })
+  // The prerendered opener cannot handle Enter until the client replaces it.
+  if (!await waitForClientRoot(page, 'Inspector focus')) return
   const opener = page.getByRole('button', { name: 'Inspect card four seam' }).first()
   await opener.focus()
   const scrollY = await page.evaluate(() => window.scrollY)
