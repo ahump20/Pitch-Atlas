@@ -2,13 +2,13 @@ import { lazy, Suspense, useCallback, useRef, type ReactNode } from 'react'
 import { pitchBySlug } from '../../data/pitches'
 import { SpecimenBoundary } from '../ball/SpecimenBoundary'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '../ui/dialog'
-import { InspectorContext } from './inspectorContext'
+import { InspectorContext, type OpenOptions } from './inspectorContext'
 import { useInspectorParam } from './useInspector'
 
 /*
-  Mounts the inspector where cards offer it (the home page) and hands every card
-  underneath the handle to open it. The inspector itself is a lazy chunk: nothing
-  of it loads until a visitor opens a card or arrives on an ?inspect= link.
+  Mounts the bench on every page (RootLayout) and hands everything underneath the
+  handle to open it. The bench itself is a lazy chunk: nothing of it loads until a
+  visitor opens a pitch or arrives on an ?inspect= link.
 
   If that chunk cannot be fetched (offline on a first visit, or a new deploy has
   replaced the file an open page still points at), the boundary keeps the page up
@@ -39,9 +39,10 @@ function InspectorUnavailable({ onClose, onCloseAutoFocus }: { onClose: () => vo
 export function SpecimenInspectorHost({ children }: { children: ReactNode }) {
   const api = useInspectorParam()
   const openerRef = useRef<HTMLElement | null>(null)
-  const open = (slug: string, opener?: HTMLElement) => {
-    openerRef.current = opener ?? null
-    api.open(slug)
+  const open = (slug: string, options: OpenOptions = {}) => {
+    // a control inside the open bench (no opener) leaves the way back where it was
+    if (options.opener || !api.slug) openerRef.current = options.opener ?? null
+    api.open(slug, options)
   }
   // These URL-driven dialogs have no Radix DialogTrigger. Keep the actual card's
   // button so Escape, Close and browser Back return to the collection in place.
@@ -57,7 +58,7 @@ export function SpecimenInspectorHost({ children }: { children: ReactNode }) {
     <InspectorContext.Provider value={{ ...api, open }}>
       {children}
       {entry ? (
-        <SpecimenBoundary key={entry.display.slug} fallback={<InspectorUnavailable onClose={api.close} onCloseAutoFocus={restoreFocus} />}>
+        <SpecimenBoundary fallback={<InspectorUnavailable onClose={api.close} onCloseAutoFocus={restoreFocus} />}>
           <Suspense fallback={null}>
             <SpecimenInspector entry={entry} onClose={api.close} onCloseAutoFocus={restoreFocus} />
           </Suspense>
