@@ -191,6 +191,11 @@ export function Hand({
      up and down and kept inside the stage; the dots hold still, so no plate
      covers a fingertip, and a plate pushed off its dot keeps a hairline to it. */
   const invalidate = useThree((s) => s.invalidate)
+  // One fixed home for the pins, the canvas's own box. Left to itself drei re-homes a
+  // pin once the canvas connects its events, and since React 19.3 that remount can
+  // leave the first pin's root empty: its label never shows.
+  const gl = useThree((s) => s.gl)
+  const pinHome = useMemo(() => ({ current: gl.domElement.parentElement! }), [gl])
   const handGroup = useRef<THREE.Group>(null)
   const pinEls = useRef<(HTMLDivElement | null)[]>([])
   const dotEls = useRef<(HTMLSpanElement | null)[]>([])
@@ -358,7 +363,7 @@ export function Hand({
             </mesh>
 
             {pins ? (
-              <Html position={f.labelPos} occlude={occluders} zIndexRange={[20, 0]}>
+              <Html position={f.labelPos} occlude={occluders} zIndexRange={[20, 0]} portal={pinHome}>
                 <div
                   ref={(el) => {
                     pinEls.current[i] = el
