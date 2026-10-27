@@ -5,13 +5,17 @@ import { Component, type ReactNode } from 'react'
   schematic instead of a blank stage. The page never depends on the GPU.
 */
 export class SpecimenBoundary extends Component<
-  { children: ReactNode; fallback: ReactNode },
+  { children: ReactNode; fallback: ReactNode; onFail?: () => void },
   { failed: boolean }
 > {
   state = { failed: false }
 
   static getDerivedStateFromError() {
     return { failed: true }
+  }
+
+  componentDidCatch() {
+    this.props.onFail?.()
   }
 
   render() {

@@ -88,11 +88,17 @@ function SpecimenStage({
 }) {
   const gm = entry.canonical.gripModel
   const unfiled = gm.status === 'unfiled'
-  const chip = unfiled ? 'No canonical grip on file' : still ? 'Seam-informed schematic' : 'Reference model'
+  // the 3D stage shows the schematic while it loads and again if the model fails,
+  // so the chip names the model only while its frame is on screen
+  const [drawn, setDrawn] = useState(false)
+  // the model unmounts for the schematic or an unfiled pitch, and loads again after
+  if ((still || unfiled) && drawn) setDrawn(false)
+  const schematic = still || !drawn
+  const chip = unfiled ? 'No canonical grip on file' : schematic ? 'Seam-informed schematic' : 'Reference model'
   const name = entry.canonical.name
   const label = unfiled
     ? `${name}: no canonical grip on file, the seam drawn alone.`
-    : `${name}, ${hand}-handed, ${view} view, ${still ? 'a seam-informed schematic' : `the reference model${linked ? ', turning with the other ball' : ''}. Drag to turn it`}.`
+    : `${name}, ${hand}-handed, ${view} view, ${schematic ? 'a seam-informed schematic' : `the reference model${linked ? ', turning with the other ball' : ''}. Drag to turn it`}.`
   return (
     <figure className="bench-specimen" style={edge(entry)}>
       {slot ? (
@@ -126,6 +132,7 @@ function SpecimenStage({
             activeContact={activeContact}
             link={link}
             linkId={linkId}
+            onDrawn={setDrawn}
             className="h-full w-full"
           />
         )}
