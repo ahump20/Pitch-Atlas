@@ -126,6 +126,55 @@ describe('schematic finger labels', () => {
     }
   })
 
+  it('never lays a name across another finger when the other side of its fingertip is clear', () => {
+    type Box = { x: number; y: number; w: number; h: number }
+    // a finger as drawn: its stroke, only where it shows inside the ball's rim
+    const across = (line: ReturnType<typeof fingerLine>, b: Box, rim: { x: number; y: number; r: number }) =>
+      line.points.some((q, k) => {
+        if (k === 0) return false
+        const p = line.points[k - 1]
+        for (let t = 0; t <= 1; t += 0.05) {
+          const x = p.x + (q.x - p.x) * t
+          const y = p.y + (q.y - p.y) * t
+          const pad = line.width / 2
+          if (Math.hypot(x - rim.x, y - rim.y) <= rim.r && x > b.x - pad && x < b.x + b.w + pad && y > b.y - pad && y < b.y + b.h + pad)
+            return true
+        }
+        return false
+      })
+    const crossing: string[] = []
+    for (const p of filed) {
+      const contacts = p.canonical.gripModel.contacts
+      for (const view of ['top', 'side', 'thumb'] as const) {
+        for (const handedness of ['right', 'left'] as const) {
+          const { container, unmount } = render(
+            <SeamSchematic grip={contacts} referenceContacts={contacts} view={view} handedness={handedness} surface="stage" />,
+          )
+          const clip = container.querySelector('clipPath circle')!
+          const rim = { x: num(clip, 'cx'), y: num(clip, 'cy'), r: num(clip, 'r') }
+          const groups = [...container.querySelectorAll('[data-grip-label]')]
+          const names = groups.map((g) => g.getAttribute('data-grip-label')!)
+          const dots = groups.map((g) => g.querySelector('circle[data-grip-anchor]')!)
+          const overOther = (b: Box, own: string) => names.some((n) => n !== own && across(fingerLine(container, n), b, rim))
+          for (const [k, g] of groups.entries()) {
+            const rect = g.querySelector('rect')!
+            const box = { x: num(rect, 'x'), y: num(rect, 'y'), w: num(rect, 'width'), h: num(rect, 'height') }
+            const dot = { x: num(dots[k], 'cx'), y: num(dots[k], 'cy') }
+            if (!overOther(box, names[k]) || (dot.x > box.x && dot.x < box.x + box.w)) continue
+            // the same plate on the other side of its dot, level with it
+            const right = box.x >= dot.x
+            const gap = right ? box.x - dot.x : dot.x - box.x - box.w
+            const mirror = { x: right ? dot.x - gap - box.w : dot.x + gap, y: dot.y - box.h / 2, w: box.w, h: box.h }
+            const roomy = mirror.x >= 0 && mirror.x + mirror.w <= 240
+            if (roomy && !overOther(mirror, names[k])) crossing.push(`${p.display.slug} ${view} ${handedness}: ${names[k]}`)
+          }
+          unmount()
+        }
+      }
+    }
+    expect(crossing).toEqual([])
+  })
+
   it('leaves the tiny card-back drawing without names or pins', () => {
     const slider = PITCHES.find((p) => p.display.slug === 'slider')!
     const contacts = slider.canonical.gripModel.contacts

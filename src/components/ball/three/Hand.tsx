@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type RefObject }
 import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { tubeFromSpine } from '../../../lib/taperedTube'
-import { declutterLabels } from '../../../lib/labelLayout'
+import { declutterLabels, lineNearBox, plateSide } from '../../../lib/labelLayout'
 import { Html } from '@react-three/drei'
 import { solveHand, type FingerSpine, type HandSolution } from '../../../lib/gripPose'
 import type { GripContactModel, Handedness } from '../../../data/types'
@@ -77,6 +77,8 @@ interface FingerRender {
   labelPos: THREE.Vector3
   /** A point back up the finger: with the tip it says which way the finger points on screen. */
   reach: THREE.Vector3
+  /** The finger's spine, tip first: what a label must not lie across. */
+  spine: THREE.Vector3[]
   primary: boolean
 }
 
@@ -126,6 +128,7 @@ function buildFinger(contact: GripContactModel, spine: FingerSpine): FingerRende
     },
     labelPos: pts[0].clone().add(normal.clone().multiplyScalar(0.3)),
     reach: pts[Math.min(4, pts.length - 1)],
+    spine: pts,
     primary: tier === 'primary',
   }
 }
@@ -302,7 +305,8 @@ export function Hand({
 
   /* Each label's dot sits on its fingertip, where the finger meets the leather,
      and the plate runs on past the tip the way the finger points (back over the
-     finger when the stage has no room). Every frame the plates are pulled apart
+     finger when the stage has no room, and the other way when it would lie across
+     another finger and that side is clear). Every frame the plates are pulled apart
      up and down and kept inside the stage; the dots hold still, so no plate
      covers a fingertip, and a plate pushed off its dot keeps a hairline to it. */
   const invalidate = useThree((s) => s.invalidate)
@@ -327,6 +331,24 @@ export function Hand({
       projected.copy(v).applyMatrix4(group.matrixWorld).project(camera)
       return { x: ((projected.x + 1) / 2) * size.width, y: ((1 - projected.y) / 2) * size.height }
     }
+    // every finger as it shows on screen: a stretch the ball hides is not in a plate's way
+    const eye = new THREE.Vector3()
+    const drawn = fingers.map((f, i) => {
+      const group = fingerGroups.current[i]
+      if (!group) return { points: [], shows: [] }
+      group.updateWorldMatrix(true, false)
+      group.worldToLocal(camera.getWorldPosition(eye))
+      // hidden where the line from the eye meets the ball (the unit sphere) before the point
+      const shows = f.spine.map((p) => {
+        const d = p.clone().sub(eye)
+        const a = d.lengthSq()
+        const b = 2 * eye.dot(d)
+        const disc = b * b - 4 * a * (eye.lengthSq() - 1)
+        const t = (-b - Math.sqrt(disc)) / (2 * a)
+        return !(disc > 0 && t > 0 && t < 1)
+      })
+      return { points: f.spine.map((p) => onScreen(p, group)), shows }
+    })
     const seen = fingers.map((f, i) => {
       const el = pinEls.current[i]
       const group = fingerGroups.current[i]
@@ -340,10 +362,14 @@ export function Hand({
       const h = el.offsetHeight
       const row = el.querySelector<HTMLElement>('[data-finger-pin]')?.offsetHeight ?? h
       const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : tip.x < size.width / 2 ? -1 : 1
-      // as on the flat drawing: only just missing room past the tip still beats crossing the hand
+      // as on the flat drawing: only just missing room past the tip still beats
+      // crossing the hand, and a plate moves off another finger when the other side is clear
       const spill = (side: number) => Math.abs(tip.x + side * (PIN_GAP + w) - size.width / 2) - (size.width / 2 - 4)
-      const side = spill(lean) <= PIN_GAP + PIN_CLEAR / 2 || spill(-lean) > 0 ? lean : -lean
-      return { origin, tip, w, h, row, side, want: { x: tip.x + side * (PIN_GAP + w / 2), y: tip.y + (h - row) / 2 } }
+      const want = (side: number) => ({ x: tip.x + side * (PIN_GAP + w / 2), y: tip.y + (h - row) / 2 })
+      const crossed = (side: number) =>
+        drawn.some((d, k) => k !== i && lineNearBox(d.points, { ...want(side), w, h }, PIN_CLEAR / 2, (j) => d.shows[j]))
+      const side = plateSide(lean, spill, PIN_GAP + PIN_CLEAR / 2, crossed)
+      return { origin, tip, w, h, row, side, want: want(side) }
     })
     const none = { x: 0, y: 0, w: 0, h: 0 }
     const placed = declutterLabels(
