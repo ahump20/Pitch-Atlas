@@ -166,7 +166,8 @@ const b64 = (Typed, rows) => Buffer.from(new Typed(rows.flat()).buffer).toString
 const weightBytes = W.map((w) => {
   const sum = w.reduce((a, b) => a + b, 0)
   const q = w.map((x) => Math.round((x / sum) * 255))
-  q[0] += 255 - q.reduce((a, b) => a + b, 0)
+  // the rounding error goes on the heaviest slot: slot 0 can round to 0 and would wrap
+  q[q.indexOf(Math.max(...q))] += 255 - q.reduce((a, b) => a + b, 0)
   return q
 })
 
