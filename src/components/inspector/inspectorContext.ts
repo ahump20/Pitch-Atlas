@@ -1,4 +1,5 @@
-import { createContext, useContext } from 'react'
+import { createContext, useContext, type MouseEvent } from 'react'
+import { pitchBySlug } from '../../data/pitches'
 import type { GripView, Handedness } from '../../data/types'
 
 /*
@@ -45,4 +46,19 @@ export const InspectorContext = createContext<InspectorApi | null>(null)
 
 export function useInspectorApi(): InspectorApi | null {
   return useContext(InspectorContext)
+}
+
+/*
+  A plain click on a link to a filed pitch opens the bench over the page instead, so
+  the list it was clicked in stays where it was. A modified or middle click (a new
+  tab, a new window) still follows the link, and so does a page without JavaScript.
+*/
+export function useOpenInPlace(slug: string | null | undefined, options: Omit<OpenOptions, 'opener'> = {}) {
+  const api = useInspectorApi()
+  if (!api || !slug || pitchBySlug(slug)?.display.slug !== slug) return undefined
+  return (event: MouseEvent<HTMLElement>) => {
+    if (event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
+    event.preventDefault()
+    api.open(slug, { ...options, opener: event.currentTarget })
+  }
 }

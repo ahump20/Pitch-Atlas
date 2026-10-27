@@ -108,16 +108,18 @@ describe('SpecimenInspector', () => {
     expect(within(dialog).getByRole('button', { name: /Export WebM/ })).toBeDisabled()
   })
 
-  it('opens from the Inspect button, adds to the comparison, and Escape closes it and clears the URL', async () => {
+  it('opens from the Inspect button, sets a second pitch beside it, and Escape closes it and clears the URL', async () => {
     const user = userEvent.setup()
     render(<Harness start="/" />)
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Inspect card/ }))
     expect(screen.getByTestId('search')).toHaveTextContent('?inspect=twelve-six')
     const dialog = await screen.findByRole('dialog', {}, OPEN)
-    const compare = within(dialog).getByRole('button', { name: /Compare twelve six/ })
-    await user.click(compare)
-    expect(within(dialog).getByRole('button', { name: /Selected twelve six/ })).toHaveAttribute('aria-pressed', 'true')
+    // one way to pair two pitches: the header's Compare with, which lands on the hands
+    await user.selectOptions(within(dialog).getByRole('combobox', { name: 'Compare with' }), 'cutter')
+    expect(screen.getByTestId('search')).toHaveTextContent('?inspect=twelve-six&with=cutter&aspect=grip')
+    expect(within(dialog).getByRole('heading', { level: 2, name: '12-6 curveball and Cutter' })).toBeInTheDocument()
+    expect(within(dialog).queryByRole('button', { name: 'Card' })).not.toBeInTheDocument()
     await user.keyboard('{Escape}')
     await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     expect(screen.getByTestId('search')).toHaveTextContent('')
@@ -213,7 +215,7 @@ describe('SpecimenInspector', () => {
     expect(within(heading.closest('.specimen-rail-head') as HTMLElement).getByText('Breaking')).toBeInTheDocument()
   })
 
-  it('reads and tabs in the order it is seen on every screen: the name and Close, then the card, then the rail', async () => {
+  it('reads and tabs in the order it is seen on every screen: the name and Close, the way to look, then the card, then the rail', async () => {
     const user = userEvent.setup()
     render(<Harness start="/?inspect=four-seam" />)
     const dialog = await screen.findByRole('dialog', {}, OPEN)
@@ -223,6 +225,9 @@ describe('SpecimenInspector', () => {
     expect(heading.compareDocumentPosition(stage) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     await user.tab()
     expect(within(dialog).getByRole('button', { name: 'Close' })).toHaveFocus()
+    await user.tab()
+    expect(within(dialog).getByRole('button', { name: 'Card' })).toHaveFocus()
+    within(dialog).getByRole('combobox', { name: 'Compare with' }).focus()
     await user.tab()
     expect(stage).toHaveFocus()
     // a header element outside sectioning content is the page's banner landmark (the
@@ -348,6 +353,80 @@ describe('SpecimenInspector', () => {
     expect(window.localStorage.getItem('pa:finish:four-seam:front')).toContain('"preset":"powder-refractor"')
     await user.click(within(dialog).getByRole('button', { name: /Reset this face/ }))
     expect(window.localStorage.getItem('pa:finish:four-seam:front')).toBeNull()
+  })
+})
+
+describe('the bench', () => {
+  const dims = (dialog: HTMLElement) => [...dialog.querySelectorAll<HTMLElement>('.bench-finger')].map((row) => row.hasAttribute('data-dim'))
+
+  it('switches aspect in place and shows the hand finger by finger, sourced and model lines told apart', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=slider" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    await user.click(within(dialog).getByRole('button', { name: 'Grip' }))
+    expect(screen.getByTestId('search')).toHaveTextContent('?inspect=slider&aspect=grip')
+    // jsdom has no WebGL: the hand is drawn on the seam schematic, and the stage says so
+    expect(within(dialog).getByText('Seam-informed schematic')).toBeInTheDocument()
+    // one model badge for the hand, and the hold keeps its own source line
+    expect(dialog.querySelectorAll('[data-grip-source-badge]')).toHaveLength(1)
+    expect(within(dialog).getByText('Reference hand')).toBeInTheDocument()
+    const index = within(dialog).getByRole('button', { name: /^Index/ })
+    await user.click(index)
+    expect(index).toHaveAttribute('aria-pressed', 'true')
+    const states = dims(dialog)
+    expect(states.filter((dim) => !dim)).toHaveLength(1)
+    expect(states.length).toBeGreaterThan(1)
+    expect(within(dialog).getByRole('link', { name: /Study grip/ })).toHaveAttribute('href', '/pitch/slider#grip-lab')
+  })
+
+  it('reads the release as hold, pressure and leave beside the sourced mechanics', async () => {
+    render(<Harness start="/?inspect=four-seam&aspect=release" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    for (const step of ['Hold', 'Pressure', 'Leave', 'Mechanics']) expect(within(dialog).getByText(step)).toBeInTheDocument()
+    expect(within(dialog).getByRole('link', { name: /Study release/ })).toHaveAttribute('href', '/pitch/four-seam#release')
+  })
+
+  it('draws the flight as an illustration from the mound, with no figure in it', async () => {
+    render(<Harness start="/?inspect=sweeper&aspect=flight" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    expect(within(dialog).getByText('Illustrative')).toBeInTheDocument()
+    expect(within(dialog).getByText(/A grip does not guarantee this shape/)).toBeInTheDocument()
+    expect(within(dialog).getByRole('img', { name: /Illustrative flight of the Sweeper, drawn from the mound/ })).toBeInTheDocument()
+    expect(dialog.textContent).not.toMatch(/\d+\s?(mph|rpm|in\b|inches|°)/)
+  })
+
+  it('sets a pair side by side, one row per finger, and swaps them in place', async () => {
+    const user = userEvent.setup()
+    render(<Harness start="/?inspect=circle-change&with=four-seam&aspect=grip" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    expect(dialog.querySelectorAll('[data-bench-ball]')).toHaveLength(2)
+    expect(dialog.querySelectorAll('[data-grip-source-badge]')).toHaveLength(2)
+    // the circle change puts a ring finger on the ball; the four-seam does not
+    const ring = within(dialog).getByRole('button', { name: /^Ring/ })
+    expect(within(ring).getByText('No contact')).toBeInTheDocument()
+    await user.click(within(dialog).getByRole('button', { name: 'Swap' }))
+    expect(screen.getByTestId('search')).toHaveTextContent('?inspect=four-seam&with=circle-change&aspect=grip')
+  })
+
+  it('on a phone, trades A and B in one stage without rebuilding it', async () => {
+    const user = userEvent.setup()
+    const matchMedia = window.matchMedia
+    window.matchMedia = ((query: string) => ({ ...matchMedia(query), matches: query === '(max-width: 639px)' })) as typeof window.matchMedia
+    render(<Harness start="/?inspect=slider&with=cutter&aspect=grip" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    const balls = dialog.querySelectorAll('[data-bench-ball]')
+    expect(balls).toHaveLength(1)
+    await user.click(within(dialog).getByRole('button', { name: 'B · Cutter' }))
+    const after = dialog.querySelector('[data-bench-ball]')
+    expect(after).toHaveAttribute('data-bench-ball', 'cutter')
+    expect(after?.closest('figure')).toBe(balls[0].closest('figure'))
+  })
+
+  it('says plainly when a pitch has no canonical grip', async () => {
+    render(<Harness start="/?inspect=eephus&aspect=grip" />)
+    const dialog = await screen.findByRole('dialog', {}, OPEN)
+    expect(within(dialog).getByText('No canonical grip on file')).toBeInTheDocument()
+    expect(dialog.querySelector('[data-grip-unfiled]')).not.toBeNull()
   })
 })
 

@@ -3,20 +3,20 @@ import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { familyOverline } from '../../data/family'
 import type { PitchAtlasEntry } from '../../data/types'
-import { CompareButton } from '../compare/CompareButton'
 import { PauseMotionButton } from '../refractor/PauseMotionButton'
 import { DialogClose } from '../ui/dialog'
 import type { FinishFace } from './finishPrefs'
 
 /*
-  The compact control rail beside the enlarged specimen (below it on phones). Six
-  jobs: Front / Sources, Study grip, Compare, Finish, Export, Pause / Reset. Pause and
+  The compact control rail beside the enlarged specimen (below it on phones). Five
+  jobs: Front / Sources, Study grip, Finish, Export, Pause / Reset (Compare lives in
+  the header, beside the aspects, so the bench has one way to pair two pitches). Pause and
   Reset steer the view rather than the card, so they sit beside the face switch in one
   view row, as quiet icon buttons whose names say what they do. Everything routes
-  through what already exists: the grip lab anchor, the compare selection, the motion
-  preference (the site's own Pause, so a pause here holds every clip on the site).
-  Study grip is the one primary; Compare and Finish sit in an even pair; every control
-  in the rail stands one height; the keys follow the last link.
+  through what already exists: the grip lab anchor and the motion preference (the
+  site's own Pause, so a pause here holds every clip on the site). Study grip is the
+  one primary; every control in the rail stands one height; the keys follow the last
+  link.
 
   The header (InspectorHeader) says what the card does not: the full name, and the
   family when the name does not already say it. It is the viewer's own grid cell rather
@@ -25,20 +25,31 @@ import type { FinishFace } from './finishPrefs'
   under the disc. The viewer renders it before the stage, so Tab and a screen reader meet
   the name and Close first, in the order an upright phone draws them; it is a plain
   block, since a header element outside sectioning content would announce itself as the
-  page's banner.
+  page's banner. Under Close sit the bench's own controls (which aspect, and what to
+  set beside it), so Tab meets the name, Close, then the way to look.
 */
-export function InspectorHeader({ entry }: { entry: PitchAtlasEntry }) {
-  const overline = familyOverline(entry)
+export function InspectorHeader({ entry, partner, children }: { entry: PitchAtlasEntry; partner?: PitchAtlasEntry; children?: ReactNode }) {
+  const overline = partner ? null : familyOverline(entry)
   return (
     <div className="specimen-rail-head">
       <div className="specimen-rail-title">
         {overline ? <p className="archive-eyebrow">{overline}</p> : null}
-        <h2>{entry.canonical.name}</h2>
+        <h2>
+          {entry.canonical.name}
+          {partner ? (
+            <>
+              {' '}
+              <span className="bench-pair-name">and</span>{' '}
+              {partner.canonical.name}
+            </>
+          ) : null}
+        </h2>
       </div>
       <DialogClose className="specimen-close">
         <X size={18} aria-hidden="true" />
         <span className="sr-only">Close</span>
       </DialogClose>
+      {children ? <div className="bench-head-controls">{children}</div> : null}
     </div>
   )
 }
@@ -84,7 +95,6 @@ export function InspectorRail({
         Study grip <span aria-hidden="true">→</span>
       </Link>
       <div className="specimen-rail-actions">
-        <CompareButton slug={display.slug} />
         <button type="button" className="specimen-action" aria-expanded={finishOpen} aria-controls="specimen-finish" onClick={onToggleFinish}>
           Finish
           <ChevronDown size={14} aria-hidden="true" className="specimen-chevron" />

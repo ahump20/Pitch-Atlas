@@ -5,6 +5,7 @@ import { useReducedMotion } from '../../hooks/useReducedMotion'
 import { useInView } from '../../hooks/useInView'
 import { SpecimenBoundary } from './SpecimenBoundary'
 import type { GripView, Handedness, PitchAtlasEntry } from '../../data/types'
+import type { OrbitLink, StageId } from './orbitLink'
 
 /*
   A 3D specimen stage that degrades safely: no WebGL or a thrown context falls
@@ -28,6 +29,8 @@ export function BallStage({
   interactive = true,
   distance,
   activeContact,
+  link,
+  linkId,
   className = '',
 }: {
   entry: PitchAtlasEntry
@@ -46,6 +49,8 @@ export function BallStage({
    *  hand stays in frame. Defaults to the Grip Lab's framing. */
   distance?: number
   activeContact?: string
+  link?: OrbitLink
+  linkId?: StageId
   className?: string
 }) {
   const webgl = useWebGLSupport()
@@ -93,6 +98,8 @@ export function BallStage({
             interactive={interactive}
             distance={distance}
             activeContact={activeContact}
+            link={link}
+            linkId={linkId}
             onReady={() => setReady(true)}
           />
         </Suspense>

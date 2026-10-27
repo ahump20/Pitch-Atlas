@@ -7,6 +7,7 @@ import { gripEntryFor, gripEntryForRepertoire } from '../../data/grips'
 import { pitchBySlug } from '../../data/pitches'
 import { STATUS_LABEL, isEdgeStatus } from '../index/statusBadgeMeta'
 import { FAMILY_ACCENT } from './family-accent'
+import { useOpenInPlace } from '../inspector/inspectorContext'
 
 /*
   The nine-pocket binder sheet — the plastic collector page every card kid knows.
@@ -106,11 +107,12 @@ export function RepertoirePocket({ entry }: { entry: RepertoireEntry }) {
   const edge = isEdgeStatus(entry.status)
   const status = STATUS_LABEL[entry.status]
   const open = entry.filedSlug ? 'Open specimen' : 'Basic file'
+  const openInPlace = useOpenInPlace(entry.filedSlug, { aspect: 'grip' })
 
   /* no photograph, no authored schematic -> the honest slip */
   if (!still && !filed) {
     return (
-      <Link to={to} viewTransition className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
+      <Link to={to} viewTransition className="pocket-pull" aria-label={`${entry.name}: ${open}`} aria-haspopup={openInPlace ? 'dialog' : undefined} onClick={openInPlace}>
         <span className={`pocket-slip ${edge ? 'is-edge' : ''}`}>
           <span
             className="font-mono uppercase"
@@ -133,7 +135,7 @@ export function RepertoirePocket({ entry }: { entry: RepertoireEntry }) {
   }
 
   return (
-    <Link to={to} viewTransition className="pocket-pull" aria-label={`${entry.name}: ${open}`}>
+    <Link to={to} viewTransition className="pocket-pull" aria-label={`${entry.name}: ${open}`} aria-haspopup={openInPlace ? 'dialog' : undefined} onClick={openInPlace}>
       <span className="pocket-card">
         <span className="pocket-inner">
           <span className="pocket-face">
