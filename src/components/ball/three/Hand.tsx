@@ -306,7 +306,8 @@ export function Hand({
   /* Each label's dot sits on its fingertip, where the finger meets the leather,
      and the plate runs on past the tip the way the finger points (back over the
      finger when the stage has no room, and the other way when it would lie across
-     another finger and that side is clear). Every frame the plates are pulled apart
+     another finger and that side is clear; when both sides would, it sits above or
+     below the dot instead). Every frame the plates are pulled apart
      up and down and kept inside the stage; the dots hold still, so no plate
      covers a fingertip, and a plate pushed off its dot keeps a hairline to it. */
   const invalidate = useThree((s) => s.invalidate)
@@ -349,6 +350,7 @@ export function Hand({
       })
       return { points: f.spine.map((p) => onScreen(p, group)), shows }
     })
+    const fit = (v: number, half: number, span: number) => Math.min(Math.max(v, 4 + half), span - 4 - half)
     const seen = fingers.map((f, i) => {
       const el = pinEls.current[i]
       const group = fingerGroups.current[i]
@@ -360,21 +362,63 @@ export function Hand({
       const back = onScreen(f.reach, group)
       const w = el.offsetWidth
       const h = el.offsetHeight
-      const row = el.querySelector<HTMLElement>('[data-finger-pin]')?.offsetHeight ?? h
+      const name = el.querySelector<HTMLElement>('[data-finger-pin]')
+      const row = name?.offsetHeight ?? h
+      const nameW = name?.offsetWidth ?? w
       const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : tip.x < size.width / 2 ? -1 : 1
+      // which way the finger points up or down the screen; above when it runs level
+      const drop = Math.abs(tip.y - back.y) > 1 ? Math.sign(tip.y - back.y) : -1
+      // a plate this size beside its dot on `side` (rise 0), its card hanging below, or
+      // above (rise -1) or below (1) the dot, running from it toward `side` (0 centres it)
+      const at = (side: number, rise: number, pw = nameW, ph = row) =>
+        rise
+          ? { x: fit(tip.x + side * Math.max(0, pw / 2 - PIN_CLEAR), pw / 2, size.width), y: tip.y + rise * (PIN_CLEAR + ph / 2) }
+          : { x: tip.x + side * (PIN_GAP + pw / 2), y: tip.y + (ph - row) / 2 }
+      // the open card of the chosen finger has its say in where its plate goes; a card
+      // opened by hovering has none, so it never moves its name out from under the pointer
+      const [dw, dh] = activeContact === f.label ? [w, h] : [nameW, row]
       // as on the flat drawing: only just missing room past the tip still beats
       // crossing the hand, and a plate moves off another finger when the other side is clear
-      const spill = (side: number) => Math.abs(tip.x + side * (PIN_GAP + w) - size.width / 2) - (size.width / 2 - 4)
-      const want = (side: number) => ({ x: tip.x + side * (PIN_GAP + w / 2), y: tip.y + (h - row) / 2 })
-      const crossed = (side: number) =>
-        drawn.some((d, k) => k !== i && lineNearBox(d.points, { ...want(side), w, h }, PIN_CLEAR / 2, (j) => d.shows[j]))
-      const side = plateSide(lean, spill, PIN_GAP + PIN_CLEAR / 2, crossed)
-      return { origin, tip, w, h, row, side, want: want(side) }
+      const spill = (side: number) => Math.abs(tip.x + side * (PIN_GAP + dw) - size.width / 2) - (size.width / 2 - 4)
+      const crossed = (side: number, rise = 0) =>
+        drawn.some(
+          (d, k) =>
+            k !== i &&
+            lineNearBox(d.points, { ...at(side, rise, dw, dh), w: dw, h: dh }, PIN_CLEAR / 2, (j) => d.shows[j]),
+        )
+      let side = plateSide(lean, spill, PIN_GAP + PIN_CLEAR / 2, crossed)
+      let rise = 0
+      // both sides lie across another finger: above or below the dot instead, past the tip first
+      if (crossed(side)) {
+        const room = (r: number) => (r < 0 ? tip.y - PIN_CLEAR - dh >= 4 : tip.y + PIN_CLEAR + dh <= size.height - 4)
+        const spot = [drop, -drop]
+          .flatMap((r) => [0, lean, -lean].map((s) => ({ s, r })))
+          .find(({ s, r }) => room(r) && !crossed(s, r))
+        if (spot) {
+          side = spot.s
+          rise = spot.r
+        }
+      }
+      // an open card hangs off its name, away from the dot (above the name when there
+      // is no room below), and runs whichever way fits the stage
+      const spot = at(side, rise)
+      const up = rise < 0 || (!rise && tip.y - row / 2 + h > size.height - 4)
+      const from = (a: number) => spot.x + (a > 0 ? -nameW / 2 : a < 0 ? nameW / 2 - w : -w / 2)
+      const align = (side ? [side, -side, 0] : [0, 1, -1]).find((a) => from(a) >= 4 && from(a) + w <= size.width - 4) ?? side
+      const want = { x: from(align) + w / 2, y: spot.y + (up ? row - h : h - row) / 2 }
+      return { origin, tip, w, h, row, align, up, want }
     })
     const none = { x: 0, y: 0, w: 0, h: 0 }
     const placed = declutterLabels(
       [
-        ...seen.map((p) => (p ? { ...p.want, w: p.w, h: p.h } : none)),
+        // a plate with its card open holds still, inside the stage, and the rest make way
+        ...seen.map((p) =>
+          !p
+            ? none
+            : p.h > p.row
+              ? { x: fit(p.want.x, p.w / 2, size.width), y: fit(p.want.y, p.h / 2, size.height), w: p.w, h: p.h, fixed: true }
+              : { ...p.want, w: p.w, h: p.h },
+        ),
         ...seen.map((p) => (p ? { ...p.tip, w: PIN_CLEAR, h: PIN_CLEAR, fixed: true } : none)),
       ],
       size,
@@ -385,7 +429,9 @@ export function Hand({
       const left = placed[i].x - p.w / 2
       const top = placed[i].y - p.h / 2
       el.style.transform = `translate(${(left - p.origin.x).toFixed(1)}px, ${(top - p.origin.y).toFixed(1)}px)`
-      el.style.alignItems = p.side > 0 ? 'flex-start' : 'flex-end'
+      el.style.alignItems = p.align > 0 ? 'flex-start' : p.align < 0 ? 'flex-end' : 'center'
+      // a card above its name puts the name at the bottom of the plate
+      el.style.flexDirection = p.up ? 'column-reverse' : ''
       // the dot and the hairline are drawn from the plate's corner
       const dot = { x: p.tip.x - left, y: p.tip.y - top }
       const dotEl = dotEls.current[i]
@@ -395,8 +441,9 @@ export function Hand({
       const moved = Math.abs(placed[i].x - p.want.x) > 0.5 || Math.abs(placed[i].y - p.want.y) > 0.5
       line.style.visibility = moved ? 'visible' : 'hidden'
       if (!moved) return
+      const mid = p.up ? p.h - p.row / 2 : p.row / 2
       const end =
-        dot.x <= 0 ? { x: 0, y: p.row / 2 } : dot.x >= p.w ? { x: p.w, y: p.row / 2 } : { x: dot.x, y: dot.y < 0 ? 0 : p.h }
+        dot.x <= 0 ? { x: 0, y: mid } : dot.x >= p.w ? { x: p.w, y: mid } : { x: dot.x, y: dot.y < 0 ? 0 : p.h }
       line.setAttribute('x1', dot.x.toFixed(1))
       line.setAttribute('y1', dot.y.toFixed(1))
       line.setAttribute('x2', end.x.toFixed(1))
