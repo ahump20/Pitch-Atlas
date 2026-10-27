@@ -85,14 +85,19 @@ export function RefractorClaim({
           </>
         ) : null}
       </div>
-      {claim.note ? (
-        <p
-          className="max-w-[64ch] border-l-2 pl-3 font-mono text-[10px] leading-relaxed text-ink-3"
-          style={{ borderColor: 'color-mix(in srgb, var(--color-cyan) 38%, transparent)' }}
-        >
-          {claim.note}
-        </p>
-      ) : null}
+      {claim.note ? <RefractorNote>{claim.note}</RefractorNote> : null}
     </div>
+  )
+}
+
+/** A claim's caveat on the void: what the line can and cannot claim. */
+export function RefractorNote({ children, className = '' }: { children: string; className?: string }) {
+  return (
+    <p
+      className={`max-w-[64ch] border-l-2 pl-3 font-mono text-[10px] leading-relaxed text-ink-3 ${className}`}
+      style={{ borderColor: 'color-mix(in srgb, var(--color-cyan) 38%, transparent)' }}
+    >
+      {children}
+    </p>
   )
 }

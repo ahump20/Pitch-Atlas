@@ -25,7 +25,7 @@ import { useReducedMotion } from '../hooks/useReducedMotion'
 import { accentButton, accentForSlug, accentInk } from '../components/refractor/accents'
 import { gripEntryFor } from '../data/grips'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
-import { ConfidenceDot, RefractorClaim, RefractorSource } from '../components/provenance/RefractorClaim'
+import { ConfidenceDot, RefractorClaim, RefractorNote, RefractorSource } from '../components/provenance/RefractorClaim'
 import { CONFIDENCE_COLOR } from '../components/provenance/refractorClaimMeta'
 import { CONFIDENCE_META } from '../data/types'
 import { FieldNotes } from '../components/sections/FieldNotes'
@@ -415,18 +415,7 @@ function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVarian
       <h3 className="rfx-athletic rfx-skew text-2xl text-bone">{variant.pitcher}</h3>
       {person && <Link className="archive-text-link" to={`/craftsmen/${person.slug}`}>The person behind this hold →</Link>}
       <p className="mt-2 text-[12.5px] leading-relaxed text-bone-2">{variant.context}</p>
-      <div className="mt-4 border-t border-white/8 pt-4">
-        <p className="text-[13px] leading-relaxed text-bone">{variant.distinction.value}</p>
-        <div className="mt-3 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          <ConfidenceDot confidence={variant.distinction.confidence} />
-          {variant.distinction.source ? (
-            <>
-              <span aria-hidden="true" className="text-ink-3">/</span>
-              <RefractorSource source={variant.distinction.source} />
-            </>
-          ) : null}
-        </div>
-      </div>
+      <RefractorClaim claim={variant.distinction} proseClassName="text-[13px] leading-relaxed text-bone" className="mt-4 border-t border-white/8 pt-4" />
       {variant.accolades && variant.accolades.length > 0 ? (
         <div className="mt-4">
           {variant.accolades.map((n) => (
@@ -447,6 +436,7 @@ function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVarian
                   </>
                 ) : null}
               </div>
+              {n.claim.note ? <RefractorNote className="mt-1.5">{n.claim.note}</RefractorNote> : null}
             </div>
           ))}
         </div>
@@ -461,6 +451,7 @@ function MasterCard({ variant, accentColor, pitchSlug }: { variant: MasterVarian
             <span aria-hidden="true" className="text-ink-3">/</span>
             <RefractorSource source={variant.quote.source} />
           </figcaption>
+          {variant.quote.note ? <RefractorNote className="mt-2">{variant.quote.note}</RefractorNote> : null}
         </figure>
       ) : null}
     </article>
