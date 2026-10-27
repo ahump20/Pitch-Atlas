@@ -32,6 +32,10 @@ import type { GripContactModel, Handedness } from '../../../data/types'
 const SKIN = '#D7B79A'
 const SKIN_DEEP = '#C99E80'
 const ACTIVE_TINT = '#4B92DB'
+// a label's plate starts this far (px) from its fingertip dot's centre; no plate
+// comes within half of PIN_CLEAR of a dot
+const PIN_GAP = 8
+const PIN_CLEAR = 12
 
 const SHADOW_OPACITY: Record<string, number> = {
   primary: 0.36,
@@ -71,6 +75,8 @@ interface FingerRender {
   pad: { position: THREE.Vector3; quaternion: THREE.Quaternion; radius: number }
   shadow: { position: THREE.Vector3; quaternion: THREE.Quaternion; radius: number; opacity: number }
   labelPos: THREE.Vector3
+  /** A point back up the finger: with the tip it says which way the finger points on screen. */
+  reach: THREE.Vector3
   primary: boolean
 }
 
@@ -119,12 +125,14 @@ function buildFinger(contact: GripContactModel, spine: FingerSpine): FingerRende
       opacity: SHADOW_OPACITY[tier] ?? 0.22,
     },
     labelPos: pts[0].clone().add(normal.clone().multiplyScalar(0.3)),
+    reach: pts[Math.min(4, pts.length - 1)],
     primary: tier === 'primary',
   }
 }
 
-/* The fingertip label pin: a compact finger label that opens the sourced
-   pressure role and one-line cue on hover, or when its prose chip is active. */
+/* The fingertip label: a compact plate that opens the sourced pressure role and
+   one-line cue on hover, or when its prose chip is active. Its dot is drawn on
+   the fingertip itself (see the pins in Hand). */
 function FingerPin({
   label,
   pressureRole,
@@ -144,25 +152,15 @@ function FingerPin({
   useLayoutEffect(() => onResize?.(), [open, onResize])
 
   return (
-    <div className="flex flex-col items-center gap-1 select-none">
+    <>
       <span
         data-finger-pin={label}
         onPointerEnter={() => setHover(true)}
         onPointerLeave={() => setHover(false)}
-        className={`pointer-events-auto flex items-center gap-1 whitespace-nowrap rounded-sm border bg-stage/85 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone transition-colors ${
+        className={`pointer-events-auto whitespace-nowrap rounded-sm border bg-stage/85 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-[0.12em] text-bone transition-colors ${
           active ? 'border-powder/70' : 'border-bone/20'
         }`}
       >
-        <span
-          aria-hidden="true"
-          className="rounded-full transition-all"
-          style={{
-            backgroundColor: ACTIVE_TINT,
-            width: active ? 8 : 6,
-            height: active ? 8 : 6,
-            boxShadow: active ? `0 0 0 3px color-mix(in srgb, ${ACTIVE_TINT} 30%, transparent)` : 'none',
-          }}
-        />
         {label}
       </span>
       {open ? (
@@ -177,7 +175,7 @@ function FingerPin({
           ) : null}
         </span>
       ) : null}
-    </div>
+    </>
   )
 }
 
@@ -302,12 +300,16 @@ export function Hand({
 
   const shadowTex = useMemo(() => makeContactShadowTexture(), [])
 
-  /* Adjacent fingertips project onto almost the same spot (index and middle
-     from above, or any grip on a phone-width stage), so each frame the pins are
-     nudged apart up and down and kept inside the stage. */
+  /* Each label's dot sits on its fingertip, where the finger meets the leather,
+     and the plate runs on past the tip the way the finger points (back over the
+     finger when the stage has no room). Every frame the plates are pulled apart
+     up and down and kept inside the stage; the dots hold still, so no plate
+     covers a fingertip, and a plate pushed off its dot keeps a hairline to it. */
   const invalidate = useThree((s) => s.invalidate)
   const fingerGroups = useRef<(THREE.Group | null)[]>([])
   const pinEls = useRef<(HTMLDivElement | null)[]>([])
+  const dotEls = useRef<(HTMLSpanElement | null)[]>([])
+  const tetherEls = useRef<(SVGLineElement | null)[]>([])
   const projected = useMemo(() => new THREE.Vector3(), [])
   useEffect(() => {
     if (!pins) return
@@ -321,25 +323,57 @@ export function Hand({
   useFrame(({ camera, size }) => {
     if (!pins) return
     camera.updateMatrixWorld()
-    const boxes = fingers.map((f, i) => {
+    const onScreen = (v: THREE.Vector3, group: THREE.Group) => {
+      projected.copy(v).applyMatrix4(group.matrixWorld).project(camera)
+      return { x: ((projected.x + 1) / 2) * size.width, y: ((1 - projected.y) / 2) * size.height }
+    }
+    const seen = fingers.map((f, i) => {
       const el = pinEls.current[i]
       const group = fingerGroups.current[i]
       // an occluded pin is display:none and measures 0: it is left out
-      if (!el || !group || !el.offsetWidth) return { x: 0, y: 0, w: 0, h: 0 }
+      if (!el || !group || !el.offsetWidth) return null
       group.updateWorldMatrix(true, false)
-      projected.copy(f.labelPos).applyMatrix4(group.matrixWorld).project(camera)
-      return {
-        x: ((projected.x + 1) / 2) * size.width,
-        y: ((1 - projected.y) / 2) * size.height,
-        w: el.offsetWidth,
-        h: el.offsetHeight,
-      }
+      const origin = onScreen(f.labelPos, group)
+      const tip = onScreen(f.pad.position, group)
+      const back = onScreen(f.reach, group)
+      const w = el.offsetWidth
+      const h = el.offsetHeight
+      const row = el.querySelector<HTMLElement>('[data-finger-pin]')?.offsetHeight ?? h
+      const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : tip.x < size.width / 2 ? -1 : 1
+      const fits = (side: number) => Math.abs(tip.x + side * (PIN_GAP + w) - size.width / 2) <= size.width / 2 - 4
+      const side = fits(lean) || !fits(-lean) ? lean : -lean
+      return { origin, tip, w, h, row, side, want: { x: tip.x + side * (PIN_GAP + w / 2), y: tip.y + (h - row) / 2 } }
     })
-    declutterLabels(boxes, size).forEach((p, i) => {
+    const none = { x: 0, y: 0, w: 0, h: 0 }
+    const placed = declutterLabels(
+      [
+        ...seen.map((p) => (p ? { ...p.want, w: p.w, h: p.h } : none)),
+        ...seen.map((p) => (p ? { ...p.tip, w: PIN_CLEAR, h: PIN_CLEAR, fixed: true } : none)),
+      ],
+      size,
+    )
+    seen.forEach((p, i) => {
       const el = pinEls.current[i]
-      if (el && boxes[i].w) {
-        el.style.transform = `translate(${(p.x - boxes[i].x).toFixed(1)}px, ${(p.y - boxes[i].y).toFixed(1)}px)`
-      }
+      if (!p || !el) return
+      const left = placed[i].x - p.w / 2
+      const top = placed[i].y - p.h / 2
+      el.style.transform = `translate(${(left - p.origin.x).toFixed(1)}px, ${(top - p.origin.y).toFixed(1)}px)`
+      el.style.alignItems = p.side > 0 ? 'flex-start' : 'flex-end'
+      // the dot and the hairline are drawn from the plate's corner
+      const dot = { x: p.tip.x - left, y: p.tip.y - top }
+      const dotEl = dotEls.current[i]
+      if (dotEl) dotEl.style.transform = `translate(${(dot.x - dotEl.offsetWidth / 2).toFixed(1)}px, ${(dot.y - dotEl.offsetHeight / 2).toFixed(1)}px)`
+      const line = tetherEls.current[i]
+      if (!line) return
+      const moved = Math.abs(placed[i].x - p.want.x) > 0.5 || Math.abs(placed[i].y - p.want.y) > 0.5
+      line.style.visibility = moved ? 'visible' : 'hidden'
+      if (!moved) return
+      const end =
+        dot.x <= 0 ? { x: 0, y: p.row / 2 } : dot.x >= p.w ? { x: p.w, y: p.row / 2 } : { x: dot.x, y: dot.y < 0 ? 0 : p.h }
+      line.setAttribute('x1', dot.x.toFixed(1))
+      line.setAttribute('y1', dot.y.toFixed(1))
+      line.setAttribute('x2', end.x.toFixed(1))
+      line.setAttribute('y2', end.y.toFixed(1))
     })
   })
 
@@ -451,19 +485,45 @@ export function Hand({
             </mesh>
 
             {pins ? (
-              <Html position={f.labelPos} center occlude={occluders} zIndexRange={[20, 0]}>
+              <Html position={f.labelPos} occlude={occluders} zIndexRange={[20, 0]}>
                 <div
                   ref={(el) => {
                     pinEls.current[i] = el
                     if (el) invalidate()
                   }}
+                  className="relative flex w-max select-none flex-col gap-1"
                 >
+                  <svg aria-hidden="true" className="pointer-events-none absolute left-0 top-0 overflow-visible" width="1" height="1">
+                    <line
+                      ref={(el) => {
+                        tetherEls.current[i] = el
+                      }}
+                      stroke="#F6F1E6"
+                      strokeOpacity="0.55"
+                      strokeWidth="1"
+                      style={{ visibility: 'hidden' }}
+                    />
+                  </svg>
                   <FingerPin
                     label={f.label}
                     pressureRole={f.pressureRole}
                     cue={f.cue}
                     active={active}
                     onResize={invalidate}
+                  />
+                  <span
+                    ref={(el) => {
+                      dotEls.current[i] = el
+                    }}
+                    data-finger-anchor={f.label}
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-0 top-0 rounded-full transition-[width,height,box-shadow]"
+                    style={{
+                      backgroundColor: ACTIVE_TINT,
+                      width: active ? 8 : 6,
+                      height: active ? 8 : 6,
+                      boxShadow: `0 0 0 1.5px var(--color-stage)${active ? `, 0 0 0 4.5px color-mix(in srgb, ${ACTIVE_TINT} 30%, transparent)` : ''}`,
+                    }}
                   />
                 </div>
               </Html>

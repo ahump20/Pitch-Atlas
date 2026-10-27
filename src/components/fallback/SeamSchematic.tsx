@@ -34,8 +34,11 @@ const FINGER_ACTIVE = '#4B92DB'
 const LABEL_FONT = 7.5
 const LABEL_TRACK = 0.8
 const LABEL_PAD = 3.5
-const LABEL_DOT = 1.6
 const LABEL_H = 11.5
+// the dot sits where the finger meets the leather, ringed in stage ink so it
+// reads on white leather; its plate starts just clear of it
+const PIN_R = 2.6
+const PIN_GAP = PIN_R + 2.2
 
 export interface SeamSchematicProps {
   className?: string
@@ -139,22 +142,42 @@ export function SeamSchematic({
 
   const fingers = hand?.fingers ?? []
 
-  // each name sits just above its fingertip, then the crowd is pulled apart and
-  // kept inside the drawing
+  // each name rides beside a dot on its fingertip, running on past the tip the
+  // way the finger points; a crowd is pulled apart and kept inside the drawing,
+  // and the dots hold still, so no plate covers a fingertip
   const labels = useMemo(() => {
     if (!showLabels || !hand) return []
     const front = hand.fingers.filter((f) => f.contact.front)
-    const boxes = front.map((f) => {
+    const plates = front.map((f) => {
       const text = f.label.toUpperCase()
-      return {
-        x: f.points[0]?.x ?? f.contact.x,
-        y: (f.points[0]?.y ?? f.contact.y) - 12,
-        w: LABEL_PAD * 2 + LABEL_DOT * 2 + 2.5 + text.length * (LABEL_FONT * 0.7 + LABEL_TRACK),
-        h: LABEL_H,
-      }
+      const w = LABEL_PAD * 2 + text.length * (LABEL_FONT * 0.7 + LABEL_TRACK)
+      const tip = f.points[0] ?? f.contact
+      const back = f.points[Math.min(4, f.points.length - 1)] ?? f.contact
+      const lean = Math.abs(tip.x - back.x) > 1 ? Math.sign(tip.x - back.x) : f.contact.x < CX ? -1 : 1
+      // with no room past the tip, the plate turns back over the finger
+      const fits = (side: number) => Math.abs(f.contact.x + side * (PIN_GAP + w) - CX) <= CX - 1
+      const side = fits(lean) || !fits(-lean) ? lean : -lean
+      return { text, x: f.contact.x + side * (PIN_GAP + w / 2), y: f.contact.y, w, h: LABEL_H }
     })
-    const placed = declutterLabels(boxes, { width: CX * 2, height: CY * 2 }, { gap: 1.5, margin: 1 })
-    return front.map((f, i) => ({ label: f.label, text: f.label.toUpperCase(), w: boxes[i].w, ...placed[i] }))
+    const pins = front.map((f) => ({ x: f.contact.x, y: f.contact.y, w: PIN_R * 2 + 1, h: PIN_R * 2 + 1, fixed: true }))
+    const placed = declutterLabels([...plates, ...pins], { width: CX * 2, height: CY * 2 }, { gap: 1.5, margin: 1 })
+    return front.map((f, i) => {
+      const at = placed[i]
+      const round = (v: number) => Math.round(v * 100) / 100
+      const w = round(plates[i].w)
+      const left = round(at.x - plates[i].w / 2)
+      const top = round(at.y - LABEL_H / 2)
+      const pin = { x: round(f.contact.x), y: round(f.contact.y) }
+      // a plate pushed off its dot keeps a hairline back to it, from its nearest edge
+      const moved = Math.abs(at.x - plates[i].x) > 0.25 || Math.abs(at.y - plates[i].y) > 0.25
+      const end =
+        pin.x <= left
+          ? { x: left, y: round(top + LABEL_H / 2) }
+          : pin.x >= left + w
+            ? { x: round(left + w), y: round(top + LABEL_H / 2) }
+            : { x: pin.x, y: pin.y < top ? top : round(top + LABEL_H) }
+      return { label: f.label, text: plates[i].text, w, left, top, pin, tether: moved ? end : null }
+    })
   }, [hand, showLabels])
 
   const fingerTone = stageSurface ? FINGER_STAGE : FINGER_PAPER
@@ -281,10 +304,22 @@ export function SeamSchematic({
         const active = l.label === activeContact
         return (
           <g key={`hl-${l.label}`} data-grip-label={l.label}>
+            {l.tether ? (
+              <line
+                data-grip-tether=""
+                x1={l.pin.x}
+                y1={l.pin.y}
+                x2={l.tether.x}
+                y2={l.tether.y}
+                stroke="#F6F1E6"
+                strokeOpacity=".55"
+                strokeWidth=".6"
+              />
+            ) : null}
             <rect
-              x={(l.x - l.w / 2).toFixed(2)}
-              y={(l.y - LABEL_H / 2).toFixed(2)}
-              width={l.w.toFixed(2)}
+              x={l.left}
+              y={l.top}
+              width={l.w}
               height={LABEL_H}
               rx="2"
               fill="var(--color-stage)"
@@ -293,10 +328,18 @@ export function SeamSchematic({
               strokeOpacity={active ? 0.7 : 0.2}
               strokeWidth=".6"
             />
-            <circle cx={l.x - l.w / 2 + LABEL_PAD + LABEL_DOT} cy={l.y} r={active ? LABEL_DOT * 1.3 : LABEL_DOT} fill={FINGER_ACTIVE} />
+            <circle
+              data-grip-anchor=""
+              cx={l.pin.x}
+              cy={l.pin.y}
+              r={active ? PIN_R * 1.3 : PIN_R}
+              fill={FINGER_ACTIVE}
+              stroke="var(--color-stage)"
+              strokeWidth=".9"
+            />
             <text
-              x={l.x - l.w / 2 + LABEL_PAD + LABEL_DOT * 2 + 2.5}
-              y={l.y}
+              x={l.left + LABEL_PAD}
+              y={l.top + LABEL_H / 2}
               dominantBaseline="central"
               fill="#F6F1E6"
               fontWeight="600"
