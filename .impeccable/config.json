@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "src/styles/bench.css"
+        ],
+        "createdAt": "2026-10-27T03:59:09.338Z",
+        "reason": "design system: docs/design-language.md L115 sets a left family-accent edge keyed to the family color; the approved 2026-10-26 bench plan specifies a 2px family-accent edge on each stage name (docs/superpowers/plans/2026-10-26-pitch-workbench.md L192)"
+      }
+    ]
+  }
+}
