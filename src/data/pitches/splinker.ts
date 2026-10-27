@@ -147,7 +147,7 @@ export const splinker: PitchAtlasEntry = {
 
   motion: {
     // Low-spin sinker axis tilted arm-side and down: a short, leaned force arrow,
-    // so the catcher's-eye plot shows arm-side run plus sink. verticalShape 'flat'
+    // so the shape plot shows arm-side run plus sink. verticalShape 'flat'
     // = it neither carries like a four-seam nor drops like a true splitter; it
     // holds the line, then dives late, sitting close to flat off a spinless ball.
     spinAxis: { x: 0.74, y: -0.36, z: 0.57 },

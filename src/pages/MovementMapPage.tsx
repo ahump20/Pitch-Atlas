@@ -14,7 +14,7 @@ export function MovementMapPage() {
   useSeoMeta({
     title: `The shape map: every pitch by direction | ${SITE.siteName}`,
     description:
-      "Every filed pitch on one catcher's-eye field by shape language: ride, drop, arm-side run, and glove-side sweep.",
+      'Every filed pitch on one field, as the pitcher sees it, by shape language: ride, drop, arm-side run, and glove-side sweep.',
     ogTitle: `The shape map | ${SITE.siteName}`,
     ogDescription: 'Every filed pitch by direction and character.',
     ogUrl: canonicalUrl('/movement-map'),
@@ -28,7 +28,7 @@ export function MovementMapPage() {
           url: canonicalUrl('/movement-map'),
           name: 'The shape map: every pitch by direction',
           description:
-            "Every filed pitch on one catcher's-eye field by shape language: ride, drop, arm-side run, and glove-side sweep.",
+            'Every filed pitch on one field, as the pitcher sees it, by shape language: ride, drop, arm-side run, and glove-side sweep.',
           breadcrumb: [{ name: 'The Atlas', to: '/' }, { name: 'Shape map' }],
         })}
       />
@@ -40,9 +40,9 @@ export function MovementMapPage() {
         title="Every pitch, by direction."
         sub={
           <>
-            One catcher's-eye field: whether each filed pitch rides or drops, and whether it runs or
-            sweeps, against a spinless ball at center. Flip the handedness to see the mirror; a slider runs
-            the other way for the other arm.
+            One field, as the pitcher sees it from the mound: whether each filed pitch rides or drops,
+            and whether it runs or sweeps, against a spinless ball at center. Flip the handedness to
+            see the mirror; a slider runs the other way for the other arm.
           </>
         }
       />
