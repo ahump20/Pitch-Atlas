@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { SeamSchematic } from '../fallback/SeamSchematic'
 import { useWebGLSupport } from '../../hooks/useWebGLSupport'
 import { useReducedMotion } from '../../hooks/useReducedMotion'
@@ -8,9 +8,9 @@ import type { GripView, Handedness, PitchAtlasEntry } from '../../data/types'
 import type { OrbitLink, StageId } from './orbitLink'
 
 /*
-  A 3D specimen stage that degrades safely: no WebGL or a thrown context falls
-  back to the 2D seam schematic drawn from the same seam-point function, and the
-  canvas pauses when scrolled off screen. Used by the Grip Lab (faced, grip on)
+  A 3D specimen stage that degrades safely: no WebGL, a thrown context or a lost
+  one falls back to the 2D seam schematic drawn from the same seam-point function,
+  and the canvas pauses when scrolled off screen. Used by the Grip Lab (faced, grip on)
   and the physics disclosure (spin + vectors, mounted only when open). The hero
   keeps its own dissolve wrapper.
 */
@@ -60,6 +60,25 @@ export function BallStage({
   const reduced = useReducedMotion()
   const { ref, inView } = useInView<HTMLDivElement>()
   const [ready, setReady] = useState(false)
+  // three.js takes a lost context without throwing, so no boundary sees it: show the
+  // schematic, and build the scene afresh once the browser hands the context back
+  const [build, setBuild] = useState(0)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const lost = () => {
+      setReady(false)
+      onDrawn?.(false)
+    }
+    const restored = () => setBuild((n) => n + 1)
+    // the canvas's context events do not bubble; the capture phase still passes here
+    el.addEventListener('webglcontextlost', lost, true)
+    el.addEventListener('webglcontextrestored', restored, true)
+    return () => {
+      el.removeEventListener('webglcontextlost', lost, true)
+      el.removeEventListener('webglcontextrestored', restored, true)
+    }
+  }, [ref, onDrawn])
 
   const schematic = (cn: string) => (
     <SeamSchematic
@@ -91,6 +110,7 @@ export function BallStage({
       <SpecimenBoundary fallback={schematic('h-full w-full')} onFail={() => onDrawn?.(false)}>
         <Suspense fallback={schematic('h-full w-full')}>
           <BallScene
+            key={build}
             entry={entry}
             spin={autoSpin && !reduced}
             active={inView}
