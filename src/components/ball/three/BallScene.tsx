@@ -9,6 +9,7 @@ import { FirstFrame } from './FirstFrame'
 import { canvasEvents } from './canvasEvents'
 import { v } from '../../../lib/seam'
 import { gripViewQuaternion } from '../../../lib/gripView'
+import { rigHand } from '../../../lib/handRig'
 import type { GripView, Handedness, PitchAtlasEntry, SeamAnchoredPoint } from '../../../data/types'
 import type { OrbitLink, StageId } from '../orbitLink'
 
@@ -30,14 +31,21 @@ function FaceGroup({
   faceGrip,
   view,
   placement,
+  handedness,
+  wrist,
   children,
 }: {
   faceGrip: boolean
   view: GripView
   placement: SeamAnchoredPoint[]
+  handedness: Handedness
+  wrist?: THREE.Vector3
   children: ReactNode
 }) {
-  const quaternion = useMemo(() => new THREE.Quaternion(...gripViewQuaternion(placement, view, faceGrip)), [faceGrip, placement, view])
+  const quaternion = useMemo(
+    () => new THREE.Quaternion(...gripViewQuaternion(placement, view, { faceGrip, handedness, wrist })),
+    [faceGrip, placement, view, handedness, wrist],
+  )
   return <group quaternion={quaternion}>{children}</group>
 }
 
@@ -175,6 +183,12 @@ export default function BallScene({
   onReady?: () => void
 }) {
   const placement = entry.canonical.gripModel.contacts
+  // the fitted hand is kept per pitch, so the Hand below reuses this fit
+  const wrist = useMemo(() => {
+    if (!grip || !placement.length) return undefined
+    const w = rigHand(placement).position[0]
+    return new THREE.Vector3(handedness === 'left' ? -w.x : w.x, w.y, w.z)
+  }, [grip, placement, handedness])
   return (
     <Canvas
       events={canvasEvents}
@@ -197,7 +211,7 @@ export default function BallScene({
       <FirstFrame onReady={onReady} />
 
       <group>
-        <FaceGroup faceGrip={faceGrip} view={view} placement={placement}>
+        <FaceGroup faceGrip={faceGrip} view={view} placement={placement} handedness={handedness} wrist={wrist}>
           <SpinGroup axis={entry.motion.spinAxis} active={spin && active}>
             <Ball
               fingerPlacement={placement}
