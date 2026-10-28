@@ -12,9 +12,9 @@ import { ClaimProse } from '../components/provenance/ClaimProse'
 import { ConfidenceLabel } from '../components/provenance/ConfidenceLabel'
 import { SourceBadge } from '../components/provenance/SourceBadge'
 import { useWebGLSupport } from '../hooks/useWebGLSupport'
-import { EXAMPLE_LOBS, FLIGHT_LAB_NOTES, FLIGHT_LAB_RULEBOOKS, MEASURED_BATTER } from '../data/softball'
+import { EXAMPLE_LOBS, FLIGHT_LAB_NOTES, FLIGHT_LAB_RULEBOOKS, MEASURED_BATTER, SLOWPITCH_ARSENAL } from '../data/softball'
 import type { Claim } from '../data/types'
-import { BAT_DIAMETER_IN, type BoxPosition, type LobParams, type RuleKey } from '../lib/slowpitch'
+import { BAT_DIAMETER_IN, IN, PLATE, isPitchKind, seamFor, type BoxPosition, type LobParams, type PitchKind, type RuleKey } from '../lib/slowpitch'
 import { FlightLabStage } from '../components/flightlab/FlightLabStage'
 import { ArcGauge, FieldRow, ModelMark, Readout, SliderRow } from '../components/flightlab/controls'
 import { DEFAULT_SETTINGS, useLabSettings } from '../components/flightlab/labSettings'
@@ -29,6 +29,7 @@ import {
   heightLabel,
   isRuleKey,
   lookForRange,
+  pitchFor,
   round,
   sideLabel,
   signed,
@@ -36,6 +37,19 @@ import {
   type LobKey,
   type ThrowRequest,
 } from '../components/flightlab/model'
+import {
+  CALLABLE,
+  NEW_SCORE,
+  addToScore,
+  deal as dealPitch,
+  judgeCalls,
+  useBestStreak,
+  type Calls,
+  type Deal,
+  type Judged,
+  type Score,
+  type SwingCall,
+} from '../components/flightlab/callThePitch'
 
 /*
   The slow-pitch Flight Lab. A batter sets their height and stance, picks a
@@ -44,6 +58,11 @@ import {
   through the lab model) feeds the 3D scene, the flat schematic and every word
   here. The default batter is one batter's measured swing and is never named.
   No spin, speed or break figure is ever shown.
+
+  The arsenal lays a spin over every lob: the knuckler, backspin, topspin and
+  side spin. Spin reads as the ball turning, the ring it turns in and the same
+  throw drawn with no spin. Call the pitch hides the pitch's name and asks the
+  visitor to read it.
 */
 
 const PAGE_TITLE = 'Flight lab: your slow-pitch strike zone'
@@ -57,6 +76,12 @@ const BOX_OPTIONS: { value: BoxPosition; label: string }[] = [
   { value: 'back', label: 'Back' },
 ]
 const COMPARE_TOGGLE = COMPARE_OPTIONS.map((n) => ({ value: String(n), label: n === 0 ? 'Off' : String(n) }))
+const SWING_OPTIONS: { value: SwingCall; label: string }[] = [
+  { value: 'swing', label: 'Swing' },
+  { value: 'take', label: 'Take' },
+]
+/** What the stage shows while a call is open: the spin, never its name or colour. */
+const MASKED_PITCH = { ...pitchFor('lob'), color: '#f6f1e6' }
 
 const TONE_CLASS = {
   good: 'text-[#FFC23C]',
@@ -149,6 +174,94 @@ function SourceRow({ label, claim, mark }: { label: string; claim: Claim<unknown
   )
 }
 
+function CallPanel({
+  dealt,
+  calls,
+  judged,
+  score,
+  best,
+  playing,
+  answer,
+  onDeal,
+  onSpin,
+  onSwing,
+}: {
+  dealt: Deal | null
+  calls: Calls
+  judged: Judged | null
+  score: Score
+  best: number
+  playing: boolean
+  /** The truth, read only once both calls are in. */
+  answer: string
+  onDeal: () => void
+  onSpin: (kind: PitchKind) => void
+  onSwing: (call: SwingCall) => void
+}) {
+  const open = dealt !== null && judged === null
+  const spinOptions = CALLABLE.map((k) => ({ value: k, label: pitchFor(k).name }))
+  return (
+    <div className="flex min-w-0 flex-col gap-4" data-flight-call="true">
+      <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 font-mono text-xs uppercase tracking-[0.12em] text-bone-2">
+        <span className="text-[#FFC23C]">Call the pitch</span>
+        <span>
+          <span className="text-bone tabular-nums">{score.points}</span> pts
+        </span>
+        <span>
+          Streak <span className="text-bone tabular-nums">{score.streak}</span>
+        </span>
+        <span>
+          Best <span className="text-bone tabular-nums">{best}</span>
+        </span>
+      </div>
+      {open ? (
+        <>
+          <div className="flex flex-col gap-2">
+            <SegmentedToggle
+              options={spinOptions}
+              value={calls.spin ?? ''}
+              onChange={(v) => isPitchKind(v) && onSpin(v)}
+              className="border-bone/25 self-start"
+              aria-label="What spin is it"
+            />
+            <SegmentedToggle
+              options={SWING_OPTIONS}
+              value={calls.swing ?? ''}
+              onChange={(v) => onSwing(v as SwingCall)}
+              className="border-bone/25 self-start"
+              aria-label="Swing or take"
+            />
+          </div>
+          <p className="font-mono text-xs uppercase tracking-[0.12em] text-bone-2">
+            {playing ? 'Read it in the air for double' : 'Read the seams'}
+          </p>
+        </>
+      ) : null}
+      {judged ? (
+        <div className="flex flex-col gap-1" role="status" data-flight-call-result="true">
+          <p className="display text-[1.75rem] leading-tight text-bone">{answer}</p>
+          <p className="font-mono text-sm text-bone-2">
+            <span className={judged.spinRight ? 'text-[#FFC23C]' : 'text-[#FF5A6B]'}>
+              {judged.spinRight ? '✓' : '✗'} {pitchFor(calls.spin ?? 'lob').name}
+              {judged.spinRight && calls.early ? ' · in the air' : ''}
+            </span>
+            <span className="mx-2 text-bone-3">/</span>
+            <span className={judged.swingRight ? 'text-[#FFC23C]' : 'text-[#FF5A6B]'}>
+              {judged.swingRight ? '✓' : '✗'} {calls.swing === 'swing' ? 'Swing' : 'Take'}
+            </span>
+            <span className="ml-3 text-bone">+{judged.points}</span>
+          </p>
+        </div>
+      ) : null}
+      {open ? null : (
+        <Button arrow className="self-start" disabled={playing} onClick={onDeal} data-flight-deal="true">
+          {dealt ? 'Next pitch' : 'Deal'}
+        </Button>
+      )}
+    </div>
+  )
+}
+
 function lobLine(p: LobParams): string {
   return `Peaks at ${fixed(p.apex)} ft, lands ${round(p.land)} in past the front of the plate, ${sideLabel(p.side)}.`
 }
@@ -168,6 +281,18 @@ export function SoftballFlightLabPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const rawRule = searchParams.get('rule')
   const rule: RuleKey = isRuleKey(rawRule) ? rawRule : 'usssa'
+  const rawPitch = searchParams.get('pitch')
+  const chosenPitch: PitchKind = isPitchKind(rawPitch) ? rawPitch : 'lob'
+
+  // Call the pitch: a dealt pitch overrides the chosen one until the game is put away.
+  const [calling, setCalling] = useState(false)
+  const [dealt, setDealt] = useState<Deal | null>(null)
+  const [calls, setCalls] = useState<Calls>({})
+  const [judged, setJudged] = useState<Judged | null>(null)
+  const [score, setScore] = useState<Score>(NEW_SCORE)
+  const [best, raiseBest] = useBestStreak()
+  // every knuckler thrown starts its seams somewhere new
+  const [knucklesThrown, setKnucklesThrown] = useState(0)
 
   const [settings, updateSettings, resetSettings] = useLabSettings()
   const [params, setParams] = useState<Record<LobKey, LobParams>>(defaultLobParams)
@@ -185,10 +310,16 @@ export function SoftballFlightLabPage() {
     () => ({ heightIn: settings.heightIn, toesIn: settings.toesIn, box: settings.box, batIn: MEASURED_BATTER.bat.value.lengthIn }),
     [settings.heightIn, settings.toesIn, settings.box],
   )
+  const pitchKind: PitchKind = calling && dealt ? dealt.pitch : chosenPitch
+  const lobKey: LobKey = calling && dealt ? dealt.lob : selectedKey
+  const seam = calling && dealt ? dealt.seam : seamFor(knucklesThrown)
   const model = useMemo(
-    () => buildLabModel({ rule, stance, compareIn: settings.compareIn, params, selected: selectedKey }),
-    [rule, stance, settings.compareIn, params, selectedKey],
+    () => buildLabModel({ rule, stance, compareIn: settings.compareIn, params, selected: lobKey, pitch: pitchKind, seam }),
+    [rule, stance, settings.compareIn, params, lobKey, pitchKind, seam],
   )
+  // while a call is open the stage turns the ball but hides which pitch it is
+  const masked = calling && dealt !== null && judged === null
+  const stageModel = useMemo(() => (masked ? { ...model, pitch: MASKED_PITCH } : model), [masked, model])
 
   const sel = model.selected
   const reading = sel.reading
@@ -197,6 +328,9 @@ export function SoftballFlightLabPage() {
   const hot = reading.lookFor.hot
   const barrel = reading.barrel
   const crossing = sel.flight.land.z > 0
+  const pitch = model.pitch
+  const knuckled = sel.flight.knuckled
+  const offSpotIn = Math.hypot(sel.flight.land.x - sel.flight.aim.x, sel.flight.land.z - sel.flight.aim.z) / IN
   const defaults = EXAMPLE_LOBS.find((l) => l.key === selectedKey)?.params.value
   const tuned = defaults ? JSON.stringify(defaults) !== JSON.stringify(params[selectedKey]) : false
   const measured = MEASURED_BATTER.stance.value
@@ -207,17 +341,64 @@ export function SoftballFlightLabPage() {
     settings.compareIn === DEFAULT_SETTINGS.compareIn
 
   // one quiet announcement once the sliders settle, not one per tick
-  const statusText = `${sel.name}: ${verdict.word}. ${range ? `Look for ${range.replace('–', ' to ')} inches past the front of the plate.` : 'No landing spot reaches your barrel.'}`
+  const statusText = masked
+    ? 'A pitch is in. Call the spin, then swing or take.'
+    : `${pitch.key === 'lob' ? '' : `${pitch.name}, `}${sel.name}: ${verdict.word}. ${range ? `Look for ${range.replace('–', ' to ')} inches past the front of the plate.` : 'No landing spot reaches your barrel.'}`
   const [announced, setAnnounced] = useState(statusText)
   useEffect(() => {
     const id = window.setTimeout(() => setAnnounced(statusText), 600)
     return () => window.clearTimeout(id)
   }, [statusText])
 
-  const throwLobs = useCallback((indices: number[]) => {
+  const throwLobs = useCallback(
+    (indices: number[]) => {
+      if (pitchKind === 'knuckler' && !(calling && dealt)) setKnucklesThrown((n) => n + 1)
+      throwCount.current += 1
+      setThrowRequest({ id: throwCount.current, indices })
+    },
+    [pitchKind, calling, dealt],
+  )
+
+  const setPitch = (next: string) => {
+    if (!isPitchKind(next)) return
+    setSearchParams(
+      (current) => {
+        const p = new URLSearchParams(current)
+        if (next === 'lob') p.delete('pitch')
+        else p.set('pitch', next)
+        return p
+      },
+      { replace: true, preventScrollReset: true },
+    )
+    setThrowRequest(undefined)
+  }
+
+  const dealNext = () => {
+    const d = dealPitch((dealt?.n ?? 0) + 1)
+    setDealt(d)
+    setCalls({})
+    setJudged(null)
     throwCount.current += 1
-    setThrowRequest({ id: throwCount.current, indices })
-  }, [])
+    setThrowRequest({ id: throwCount.current, indices: [EXAMPLE_LOBS.findIndex((l) => l.key === d.lob)] })
+  }
+  const finishCalls = (next: Calls) => {
+    setCalls(next)
+    if (!dealt || !next.spin || !next.swing) return
+    const j = judgeCalls(dealt, { spin: next.spin, swing: next.swing, early: next.early }, verdict.tone === 'good')
+    setJudged(j)
+    const s2 = addToScore(score, j)
+    setScore(s2)
+    raiseBest(s2.streak)
+  }
+  const callSpin = (kind: PitchKind) => finishCalls({ ...calls, spin: kind, early: playing })
+  const callSwing = (call: SwingCall) => finishCalls({ ...calls, swing: call })
+  const toggleCalling = () => {
+    setCalling((on) => !on)
+    setDealt(null)
+    setCalls({})
+    setJudged(null)
+    setThrowRequest(undefined)
+  }
 
   const pick = (key: LobKey) => {
     setSelectedKey(key)
@@ -299,7 +480,7 @@ export function SoftballFlightLabPage() {
                 data-flight-stage="true"
               >
                 <FlightLabStage
-                  model={model}
+                  model={stageModel}
                   view={view}
                   slow={slow}
                   throwRequest={throwRequest}
@@ -315,14 +496,18 @@ export function SoftballFlightLabPage() {
                 />
                 <div className="pointer-events-none absolute left-4 top-4 right-4 md:left-6 md:top-5">
                   <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-bone-2">
-                    <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: sel.color }} />
-                    {sel.name}
+                    {masked ? null : (
+                      <>
+                        <span aria-hidden="true" className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: sel.color }} />
+                        {pitch.key === 'lob' ? sel.name : `${pitch.name} · ${sel.name}`}
+                      </>
+                    )}
                   </p>
                   <h2
-                    className={`display mt-1 text-[2.25rem] leading-[1.02] md:text-[3.25rem] ${TONE_CLASS[verdict.tone]}`}
+                    className={`display mt-1 text-[2.25rem] leading-[1.02] md:text-[3.25rem] ${masked ? 'text-bone' : TONE_CLASS[verdict.tone]}`}
                     data-flight-verdict="true"
                   >
-                    {verdict.word}
+                    {masked ? 'What was it?' : verdict.word}
                   </h2>
                   <p className="sr-only" role="status">
                     {announced}
@@ -332,6 +517,22 @@ export function SoftballFlightLabPage() {
 
               {/* look for + the dock: under the stage on phones, over its foot on desktop */}
               <div className="mt-5 flex flex-col gap-5 xl:pointer-events-none xl:absolute xl:inset-x-px xl:bottom-px xl:z-30 xl:mt-0 xl:flex-row xl:items-end xl:justify-between xl:rounded-b-xl xl:bg-gradient-to-t xl:from-[#070509]/92 xl:via-[#070509]/70 xl:to-transparent xl:p-6 xl:pt-16">
+                {calling ? (
+                  <div className="min-w-0 xl:pointer-events-auto xl:max-w-[60%]">
+                    <CallPanel
+                      dealt={dealt}
+                      calls={calls}
+                      judged={judged}
+                      score={score}
+                      best={best}
+                      playing={playing}
+                      answer={`${pitch.name} · ${verdict.word}`}
+                      onDeal={dealNext}
+                      onSpin={callSpin}
+                      onSwing={callSwing}
+                    />
+                  </div>
+                ) : (
                 <div className="min-w-0 xl:max-w-[46%]">
                   <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-[#FFC23C]">
                     Look for <ModelMark kind="Model" />
@@ -349,10 +550,18 @@ export function SoftballFlightLabPage() {
                       : `No landing spot puts this arc on your barrel. ${whySentence}`}
                   </p>
                 </div>
+                )}
                 <div className="flex flex-wrap items-center gap-3 xl:pointer-events-auto xl:justify-end">
-                  <Button arrow disabled={playing} onClick={() => throwLobs([model.selectedIndex])} data-flight-throw="true">
-                    Throw
-                  </Button>
+                  {calling ? null : (
+                    <Button arrow disabled={playing} onClick={() => throwLobs([model.selectedIndex])} data-flight-throw="true">
+                      Throw
+                    </Button>
+                  )}
+                  <div className="inline-flex overflow-hidden rounded-lg border border-bone/25">
+                    <button type="button" className="rfx-seg" aria-pressed={calling} onClick={toggleCalling} data-flight-call-toggle="true">
+                      Call the pitch
+                    </button>
+                  </div>
                   <div className="inline-flex overflow-hidden rounded-lg border border-bone/25">
                     <button type="button" className="rfx-seg" aria-pressed={slow} onClick={() => setSlow((s) => !s)}>
                       Slow
@@ -372,7 +581,11 @@ export function SoftballFlightLabPage() {
             </div>
 
             {/* the rail */}
-            <aside aria-label="Lab controls" className="flex min-w-0 flex-col gap-8">
+            <aside
+              aria-label="Lab controls"
+              className={`flex min-w-0 flex-col gap-8 transition-[opacity,filter] ${masked ? 'pointer-events-none opacity-30 blur-[3px]' : ''}`}
+              inert={masked}
+            >
               <RailSection
                 id="fl-you"
                 title="You"
@@ -442,6 +655,33 @@ export function SoftballFlightLabPage() {
                 </div>
               </RailSection>
 
+              <RailSection id="fl-arsenal" title="Arsenal">
+                <div className="flex flex-col gap-1.5" role="group" aria-label="Pitch">
+                  {SLOWPITCH_ARSENAL.map((p) => {
+                    const on = p.key === pitch.key
+                    return (
+                      <button
+                        key={p.key}
+                        type="button"
+                        aria-pressed={on}
+                        onClick={() => setPitch(p.key)}
+                        data-flight-pitch={p.key}
+                        className={`flex min-h-[48px] w-full items-center gap-3 rounded-lg border px-3 py-2 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan ${
+                          on ? 'border-cyan/60 bg-cyan/[0.07]' : 'border-transparent hover:border-bone/20'
+                        }`}
+                      >
+                        <span aria-hidden="true" className="h-3 w-3 shrink-0 rounded-full border-2" style={{ borderColor: p.color }} />
+                        <span className="display text-lg leading-tight text-bone">{p.name}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+                <p className="mt-4 text-[0.95rem] leading-relaxed text-bone">{pitch.read}</p>
+                <div className="mt-3">
+                  <ClaimProse claim={pitch.what} proseClassName="text-sm leading-relaxed text-bone-2" />
+                </div>
+              </RailSection>
+
               <RailSection id="fl-pitches" title="Pitches">
                 <ul className="flex flex-col gap-1.5">
                   {model.lobs.map((lob, i) => {
@@ -476,7 +716,7 @@ export function SoftballFlightLabPage() {
                   disabled={playing}
                   onClick={() => throwLobs(model.lobs.map((_, i) => i))}
                 >
-                  Throw all six
+                  {pitch.key === 'lob' ? 'Throw all six' : `Throw all six as ${pitch.key === 'knuckler' ? 'knucklers' : pitch.name.toLowerCase()}`}
                 </Button>
                 <p className="mt-3 flex flex-wrap items-center gap-2 text-xs leading-snug text-bone-2">
                   <ModelMark kind="Example" /> Example arcs, set by hand to teach, not measured from a pitcher.
@@ -538,6 +778,8 @@ export function SoftballFlightLabPage() {
                     { k: 'Over the plate', v: 'Short', u: 'lands in front', show: !crossing },
                     { k: 'At your barrel', v: barrel ? round(barrel.heightIn) : '', u: barrel ? `in, ${round(barrel.outFrontIn)} in out` : '', show: Boolean(barrel) },
                     { k: 'Falling at', v: `${fixed(reading.fallingAngleDeg, 0)}°`, u: '', show: crossing },
+                    { k: 'Aimed at', v: round((sel.flight.aim.z - PLATE.front) / IN), u: 'in past the front', show: knuckled },
+                    { k: 'Wandered', v: round(offSpotIn), u: 'in off its spot', show: knuckled },
                     {
                       k: 'Strike window',
                       v:
@@ -608,14 +850,14 @@ export function SoftballFlightLabPage() {
           ])}
         </ul>
 
-        <h3 className="mono-label mb-2 text-xs">Bat, sweet spot and air</h3>
+        <h3 className="mono-label mb-2 text-xs">Bat, sweet spot, air and seams</h3>
         <ul className="mb-10">
           {FLIGHT_LAB_NOTES.map((n) => (
             <SourceRow
               key={n.label}
               label={n.label}
               claim={n.claim}
-              mark={/lift and drag|sweet spot/i.test(n.label) ? 'Model' : undefined}
+              mark={/lift and drag|sweet spot|knuckler/i.test(n.label) ? 'Model' : undefined}
             />
           ))}
         </ul>
@@ -650,6 +892,14 @@ export function SoftballFlightLabPage() {
             claim={{ ...MEASURED_BATTER.barrelAngleDeg, value: `${MEASURED_BATTER.barrelAngleDeg.value}° below level.` }}
             mark="Model"
           />
+        </ul>
+
+        <h3 className="mono-label mb-2 text-xs">The arsenal</h3>
+        <ul className="mb-10">
+          {SLOWPITCH_ARSENAL.flatMap((p) => [
+            <SourceRow key={`${p.key}-what`} label={p.name} claim={p.what} mark={p.key === 'lob' ? 'Example' : undefined} />,
+            <SourceRow key={`${p.key}-spin`} label={`${p.name}: its spin`} claim={{ ...p.spin, value: p.read }} mark="Model" />,
+          ])}
         </ul>
 
         <h3 className="mono-label mb-2 text-xs">The example lobs</h3>

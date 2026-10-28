@@ -20,6 +20,7 @@ import {
 } from '../../../lib/slowpitch'
 import {
   SLOW_RATE,
+  SPIN_VIEW_RATE,
   fixed,
   nearPlateTimeScale,
   round,
@@ -44,6 +45,8 @@ const AMBER = '#ffc23c'
 const BONE = '#f6f1e6'
 /** The ball drawn at a readable size away from the zone close-up, metres. */
 const BALL_SHOW = 0.105
+/** Ring and bead, in ball radii: the ring lies in the plane the ball turns in, the bead rides it. */
+const RING_R = 1.42
 const LIVE_SEGMENTS = 110
 const RADIAL = 6
 
@@ -583,9 +586,13 @@ function softballParts() {
     seam: new THREE.TubeGeometry(curve, 200, 0.024, 6, true),
     skinMat: new THREE.MeshStandardMaterial({ color: '#d9e83a', roughness: 0.6 }),
     seamMat: new THREE.MeshStandardMaterial({ color: '#c62d28', roughness: 0.75 }),
+    ring: new THREE.TorusGeometry(RING_R, 0.045, 6, 64),
+    bead: new THREE.SphereGeometry(0.17, 12, 8),
     dispose() {
       this.skin.dispose()
       this.seam.dispose()
+      this.ring.dispose()
+      this.bead.dispose()
       this.skinMat.dispose()
       this.seamMat.dispose()
     },
@@ -600,6 +607,31 @@ function pathCurve(flight: Flight) {
   const end = new THREE.Vector3(p[last * 3], p[last * 3 + 1], p[last * 3 + 2])
   if (pts[pts.length - 1].distanceTo(end) > 1e-4) pts.push(end)
   return new THREE.CatmullRomCurve3(pts, false, 'centripetal')
+}
+
+/** The same throw with no spin, dashed: the path this pitch's spin bent away from. */
+function GhostPath({ flight, color }: { flight: Flight; color: string }) {
+  const line = useMemo(() => {
+    const g = flight.ghost
+    const pts: THREE.Vector3[] = []
+    const n = g.length / 3
+    for (let i = 0; i < n; i += 4) pts.push(new THREE.Vector3(g[i * 3], g[i * 3 + 1], g[i * 3 + 2]))
+    pts.push(new THREE.Vector3(g[(n - 1) * 3], g[(n - 1) * 3 + 1], g[(n - 1) * 3 + 2]))
+    const geo = new THREE.BufferGeometry().setFromPoints(pts)
+    const mat = new THREE.LineDashedMaterial({ color, dashSize: 0.09, gapSize: 0.07, transparent: true, opacity: 0.7, depthWrite: false })
+    const l = new THREE.Line(geo, mat)
+    l.computeLineDistances()
+    l.renderOrder = 2
+    return l
+  }, [flight, color])
+  useEffect(
+    () => () => {
+      line.geometry.dispose()
+      ;(line.material as THREE.Material).dispose()
+    },
+    [line],
+  )
+  return <primitive object={line} />
 }
 
 interface ThrowState {
@@ -646,10 +678,19 @@ function LobPath({
       }),
   )
   const axis = useMemo(() => new THREE.Vector3(...flight.spinAxis), [flight])
+  // the ring faces along the spin axis; the bead starts on it, square to the axis
+  const ringQ = useMemo(() => new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), axis), [axis])
+  const bead = useMemo(() => {
+    const ref = Math.abs(axis.y) > 0.9 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(0, 1, 0)
+    return new THREE.Vector3().crossVectors(axis, ref).normalize().multiplyScalar(RING_R)
+  }, [axis])
+  useEffect(() => {
+    spin.current?.quaternion.identity()
+  }, [flight])
   const tmpQ = useMemo(() => new THREE.Quaternion(), [])
   const at = useMemo<[number, number, number]>(() => [0, 0, 0], [])
 
-  const ghostVisible = view === 'zone' ? selected : true
+  const ghostVisible = view === 'zone' || view === 'ball' ? selected : true
 
   useFrame((_, delta) => {
     const g = ballGroup.current
@@ -666,7 +707,7 @@ function LobPath({
     g.position.set(at[0], at[1], at[2])
     g.scale.setScalar(ballScaleRef.current ?? BALL_SHOW)
     if (thrown && t < flight.duration && flight.spinRate > 0 && spin.current) {
-      tmpQ.setFromAxisAngle(axis, flight.spinRate * Math.min(delta, 0.05) * 0.25)
+      tmpQ.setFromAxisAngle(axis, flight.spinRate * Math.min(delta, 0.05) * SPIN_VIEW_RATE)
       spin.current.quaternion.premultiply(tmpQ)
     }
     if (thrown && live.current) {
@@ -697,10 +738,17 @@ function LobPath({
       <mesh ref={live} geometry={liveGeo} visible={false} renderOrder={4}>
         <meshBasicMaterial color={lob.color} transparent opacity={0.92} depthWrite={false} toneMapped={false} />
       </mesh>
+      {selected && model.pitch.key !== 'lob' ? <GhostPath flight={flight} color={model.pitch.color} /> : null}
       <group ref={ballGroup} visible={false}>
+        <mesh geometry={ball.ring} quaternion={ringQ} renderOrder={5}>
+          <meshBasicMaterial color={model.pitch.color} transparent opacity={0.85} depthWrite={false} toneMapped={false} />
+        </mesh>
         <group ref={spin}>
           <mesh geometry={ball.skin} material={ball.skinMat} />
           <mesh geometry={ball.seam} material={ball.seamMat} />
+          <mesh geometry={ball.bead} position={bead} renderOrder={6}>
+            <meshBasicMaterial color={model.pitch.color} toneMapped={false} />
+          </mesh>
         </group>
       </group>
       <mesh ref={shadow} rotation={[-Math.PI / 2, 0, 0]} visible={false}>
@@ -1058,10 +1106,22 @@ interface Inset {
   bottom: number
 }
 
-function cameraTarget(view: CameraView, model: LabModel, aspect: number, inset: Inset = { top: 0, bottom: 0 }): CamTarget {
+function cameraTarget(
+  view: CameraView,
+  model: LabModel,
+  aspect: number,
+  inset: Inset = { top: 0, bottom: 0 },
+  ballAt?: THREE.Vector3,
+): CamTarget {
   const portrait = aspect < 1
   const up = new THREE.Vector3(0, 1, 0)
   switch (view) {
+    case 'ball': {
+      // Ride beside the ball, a step ahead of it and a touch above, so it comes at you turning.
+      const at = ballAt ?? new THREE.Vector3(RELEASE.x, RELEASE.y, RELEASE.z)
+      const off = portrait ? new THREE.Vector3(0.42, 0.14, 0.72) : new THREE.Vector3(0.5, 0.12, 0.62)
+      return { pos: at.clone().add(off), look: at.clone(), up, fov: portrait ? 30 : 22, k: 14 }
+    }
     case 'zone': {
       const top = model.zone.top + 0.34
       const bottom = -0.08
@@ -1168,6 +1228,7 @@ function Director({
   const playingCb = useRef(onPlaying)
   const live = useRef({ model, view, slow, active })
   const insetRef = useRef<Inset>({ top: 0, bottom: 0 })
+  const ballTmp = useMemo(() => new THREE.Vector3(), [])
   useEffect(() => {
     playingCb.current = onPlaying
     live.current = { model, view, slow, active }
@@ -1179,7 +1240,7 @@ function Director({
     if (cam.current) return
     const t = cameraTarget(view, model, size.width / Math.max(1, size.height), insetRef.current)
     cam.current = { pos: t.pos.clone(), look: t.look.clone(), up: t.up.clone(), fov: t.fov }
-    ballScaleRef.current = view === 'zone' ? BALL_RADIUS : BALL_SHOW
+    ballScaleRef.current = view === 'zone' || view === 'ball' ? BALL_RADIUS : BALL_SHOW
   }, [view, model, size, ballScaleRef])
 
   // A new throw request starts the clock; clearing it puts the ball back in the hand.
@@ -1242,16 +1303,30 @@ function Director({
       moving = true
     }
 
-    const target = cameraTarget(v, m, size.width / Math.max(1, size.height), insetRef.current)
+    let ballAt: THREE.Vector3 | undefined
+    if (v === 'ball') {
+      const leadIndex = st.indices.has(m.selectedIndex) || st.indices.size === 0 ? m.selectedIndex : [...st.indices][0]
+      const leadFlight = m.lobs[leadIndex]?.flight ?? m.lobs[m.selectedIndex].flight
+      const t = st.id === 0 ? 0 : Math.min(st.playhead, leadFlight.duration)
+      const p = positionAt(leadFlight, t)
+      ballAt = ballTmp.set(p[0], p[1], p[2])
+    }
+    const target = cameraTarget(v, m, size.width / Math.max(1, size.height), insetRef.current, ballAt)
     const k = 1 - Math.exp(-delta * target.k)
     const before = c.pos.distanceTo(target.pos) + c.look.distanceTo(target.look) + c.up.distanceTo(target.up) + Math.abs(c.fov - target.fov) * 0.01
-    c.pos.lerp(target.pos, k)
-    c.look.lerp(target.look, k)
+    if (v === 'ball' && st.playing) {
+      // A ball in flight outruns any easing: ride it exactly.
+      c.pos.copy(target.pos)
+      c.look.copy(target.look)
+    } else {
+      c.pos.lerp(target.pos, k)
+      c.look.lerp(target.look, k)
+    }
     c.up.lerp(target.up, k)
     c.fov += (target.fov - c.fov) * (1 - Math.exp(-delta * 3))
     if (before > 1e-4) moving = true
 
-    const wantBall = v === 'zone' ? BALL_RADIUS : BALL_SHOW
+    const wantBall = v === 'zone' || v === 'ball' ? BALL_RADIUS : BALL_SHOW
     const b = ballScaleRef.current ?? wantBall
     if (Math.abs(b - wantBall) > 1e-5) {
       ballScaleRef.current = b + (wantBall - b) * (1 - Math.exp(-delta * 5))

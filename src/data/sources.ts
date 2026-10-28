@@ -48,6 +48,9 @@ const RETRIEVED_12 = '2026-09-23'
 // The slow-pitch Flight Lab's rule books and references, each fetched and its
 // text read on 2026-10-24.
 const RETRIEVED_FLIGHT_LAB = '2026-10-24'
+// The Flight Lab's slow-pitch arsenal (knuckler, backspin, topspin, side spin)
+// was sourced 2026-10-28, each page fetched and its text read.
+const RETRIEVED_ARSENAL = '2026-10-28'
 
 export const SOURCES = {
   'mlb-active-spin': {
@@ -1700,6 +1703,32 @@ export const SOURCES = {
     label: 'Jeffrey R. Kensrud, Determining Aerodynamic Properties of Sports Balls in Situ (M.S. thesis, Washington State University)',
     url: 'https://baseball.physics.illinois.edu/kensrudthesis.pdf',
     retrievedAt: RETRIEVED_FLIGHT_LAB,
+  },
+
+  // --- Slow-pitch Flight Lab: the arsenal (each URL fetched and read 2026-10-28) ---
+  'sb-slopitchcentral-knuckler': {
+    id: 'sb-slopitchcentral-knuckler',
+    label: 'Slo-Pitch Central glossary — Knuckler (minimal or no spin; moves unpredictably)',
+    url: 'https://slopitchcentral.com/glossary/knuckler',
+    retrievedAt: RETRIEVED_ARSENAL,
+  },
+  'sb-slopitchcentral-backspin': {
+    id: 'sb-slopitchcentral-backspin',
+    label: 'Slo-Pitch Central glossary — Backspin pitch (slower descent; weak contact or pop-ups)',
+    url: 'https://slopitchcentral.com/glossary/backspin-pitch',
+    retrievedAt: RETRIEVED_ARSENAL,
+  },
+  'sb-slopitchcentral-tumbler': {
+    id: 'sb-slopitchcentral-tumbler',
+    label: 'Slo-Pitch Central glossary — Tumbler (forward spin) pitch (often drops more sharply)',
+    url: 'https://slopitchcentral.com/glossary/tumbler-forward-spin-pitch',
+    retrievedAt: RETRIEVED_ARSENAL,
+  },
+  'sb-nelson-strauss-knuckleball': {
+    id: 'sb-nelson-strauss-knuckleball',
+    label: 'Nicholas J. Nelson and Eric Strauss, Dynamical Chaos in a Simple Model of a Knuckleball (arXiv:2009.05140)',
+    url: 'https://arxiv.org/abs/2009.05140',
+    retrievedAt: RETRIEVED_ARSENAL,
   },
 
   // --- Softball craftsmen: the legends + the new wave ---
