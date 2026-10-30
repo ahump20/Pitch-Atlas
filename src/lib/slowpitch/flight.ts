@@ -27,6 +27,15 @@ import {
   spin factor. That fit and the constant drag coefficient come from baseball
   aerodynamics; on a softball they are approximate. Spin is a model input only:
   it shapes the path, and no spin figure is ever shown to a visitor.
+
+  A knuckler barely turns, so Magnus has almost nothing to work with; what moves
+  it is the seams. As the ball creeps round, the seam pattern facing the air
+  changes and pushes it sideways and up or down. That push follows Nelson and
+  Strauss's knuckleball model: a force 1/2 rho A v^2 times C sin 4(angle), the
+  four-fold beat of the seams passing a point, with C = 0.25. Their model is
+  for a baseball; on a 12 in softball it is a model input, not a measurement.
+  The pitcher aims the knuckler as if it had no seams; where it actually goes
+  is the seams' doing.
 */
 
 /** A lob described the way a batter reads it. */
@@ -39,8 +48,29 @@ export interface LobParams {
   side: number
   /** Backspin, rpm. A model input, never shown. */
   rpm: number
-  /** Tilt of the spin axis off pure backspin, degrees. */
+  /** Tilt of the spin axis off pure backspin, degrees: 180 is topspin, 90 side spin. */
   push: number
+  /** Knuckle strength: the seam-force coefficient C (0 or absent: no knuckle). */
+  knuckle?: number
+  /** Where the seams start, radians. Each knuckler thrown starts somewhere new. */
+  seam?: number
+}
+
+/** A knuckler's seam force: its strength and where the seams start. */
+export interface KnuckleInput {
+  c: number
+  seam: number
+}
+
+/**
+ * The seam-force coefficients at seam angle `phi`: sideways and up, from
+ * C sin 4 phi on one axis and C sin 4 psi on the other. The second axis tumbles
+ * at half the rate from its own start, an assumption: the model this follows
+ * turns the ball about one axis at a time.
+ */
+export function knuckleCoefficients(c: number, phi: number, seam: number): [number, number] {
+  const psi = seam * 2.3 + (phi - seam) * 0.5
+  return [c * Math.sin(4 * phi), c * Math.sin(4 * psi)]
 }
 
 /** Integrator step, s. */
@@ -60,10 +90,19 @@ export function liftCoefficient(spinFactor: number): number {
  * (rad/s, or null for no spin): gravity, drag against the motion, and Magnus
  * lift along spin x velocity.
  */
-export function acceleration(v: Vec3, spin: Vec3 | null): Vec3 {
+export function acceleration(v: Vec3, spin: Vec3 | null, knuckle?: { c: number; phi: number; seam: number }): Vec3 {
   const speed = length(v)
   const drag = AERO_K * DRAG_COEFFICIENT * speed
   const a: Vec3 = [-drag * v[0], -drag * v[1] - GRAVITY, -drag * v[2]]
+  if (knuckle && knuckle.c > 0 && speed > 1e-6) {
+    // Sideways is level and square to the flight; up is square to both.
+    const dir = scale(v, 1 / speed)
+    const side = normalize(cross([0, 1, 0], dir))
+    const up = cross(dir, side)
+    const [g, h] = knuckleCoefficients(knuckle.c, knuckle.phi, knuckle.seam)
+    const k = AERO_K * speed * speed
+    for (let i = 0; i < 3; i++) a[i] += k * (g * side[i] + h * up[i])
+  }
   if (spin) {
     const lift = cross(spin, scale(v, 1 / speed))
     const wPerp = length(lift)
@@ -99,7 +138,7 @@ export interface Integration {
  * Midpoint (RK2) step for velocity, trapezoid for position; the final step is cut
  * back to land exactly on the ground.
  */
-export function integrateToGround(v0: Vec3, spin: Vec3 | null, sample: boolean): Integration {
+export function integrateToGround(v0: Vec3, spin: Vec3 | null, sample: boolean, knuckle?: KnuckleInput): Integration {
   let p: Vec3 = [RELEASE.x, RELEASE.y, RELEASE.z]
   let v: Vec3 = [...v0]
   let t = 0
@@ -108,9 +147,13 @@ export function integrateToGround(v0: Vec3, spin: Vec3 | null, sample: boolean):
   const times = [0]
   const points: number[] = [...p]
 
+  // The seams turn with the ball: the angle runs at the spin rate from its start.
+  const turn = spin ? length(spin) : 0
+  const seamAt = (time: number) => (knuckle && knuckle.c > 0 ? { c: knuckle.c, phi: knuckle.seam + turn * time, seam: knuckle.seam } : undefined)
+
   for (let step = 0; step < MAX_STEPS; step++) {
-    const a1 = acceleration(v, spin)
-    const a2 = acceleration([v[0] + a1[0] * DT * 0.5, v[1] + a1[1] * DT * 0.5, v[2] + a1[2] * DT * 0.5], spin)
+    const a1 = acceleration(v, spin, seamAt(t))
+    const a2 = acceleration([v[0] + a1[0] * DT * 0.5, v[1] + a1[1] * DT * 0.5, v[2] + a1[2] * DT * 0.5], spin, seamAt(t + DT * 0.5))
     const vNext: Vec3 = [v[0] + a2[0] * DT, v[1] + a2[1] * DT, v[2] + a2[2] * DT]
     const pNext: Vec3 = [
       p[0] + (v[0] + vNext[0]) * 0.5 * DT,
@@ -211,6 +254,14 @@ export interface Flight {
   spinCarryIn: number
   /** How far spin moved the landing spot across the plate, inches. */
   spinDriftIn: number
+  /** Where the throw was aimed to land: the asked-for spot, metres. A knuckler's
+      seams take it somewhere else; every other pitch lands here. */
+  aim: { x: number; z: number }
+  /** True when the seams, not just spin, shaped this path. */
+  knuckled: boolean
+  /** The same throw with no spin and no seams, sampled flat xyz, metres: the
+      path spin bent this one away from. */
+  ghost: Float32Array
   /** False when no throw the solver found peaks and lands where asked; the
       path drawn is the closest it got. */
   converged: boolean
@@ -231,6 +282,7 @@ export function solveLob(params: LobParams): Flight {
   const tGuess = vUp / GRAVITY + Math.sqrt((2 * (apexY - BALL_RADIUS)) / GRAVITY)
   const v0: Vec3 = [(landX - RELEASE.x) / tGuess, vUp, (landZ - RELEASE.z) / tGuess]
 
+  // The aim ignores the seams: nobody can aim a knuckler's dance.
   const miss = (v: Vec3): Vec3 => {
     const r = integrateToGround(v, spinVector(v, params), false)
     return [r.end[0] - landX, r.apexHeight - apexY, r.end[2] - landZ]
@@ -261,8 +313,9 @@ export function solveLob(params: LobParams): Flight {
   if (!converged) converged = worst(miss(v0)) < 2 * TOLERANCE
 
   const spin = spinVector(v0, params)
-  const path = integrateToGround(v0, spin, true)
-  const still = integrateToGround(v0, null, false)
+  const knuckle = params.knuckle && params.knuckle > 0 ? { c: params.knuckle, seam: params.seam ?? 0 } : undefined
+  const path = integrateToGround(v0, spin, true, knuckle)
+  const still = integrateToGround(v0, null, true)
 
   const count = path.times.length
   const times = Float32Array.from(path.times)
@@ -311,6 +364,9 @@ export function solveLob(params: LobParams): Flight {
     crossing,
     spinCarryIn: (path.end[2] - still.end[2]) / IN,
     spinDriftIn: (path.end[0] - still.end[0]) / IN,
+    aim: { x: landX, z: landZ },
+    knuckled: Boolean(knuckle),
+    ghost: Float32Array.from(still.points),
     converged,
   }
 }

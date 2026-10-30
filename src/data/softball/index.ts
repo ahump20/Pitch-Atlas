@@ -13,6 +13,7 @@ export type {
   SlowpitchNote,
   FlightLabRulebook,
   FlightLabLob,
+  FlightLabPitch,
   MeasuredBatter,
   MeasuredSwing,
 } from './types'
@@ -21,4 +22,4 @@ export { SOFTBALL_CRAFTSMEN, softballCraftsmanBySlug } from './craftsmen'
 export { SOFTBALL_PITCHES, softballPitchBySlug } from './pitches'
 export { WINDMILL_PHASES, FUNDAMENTAL_BLOCKS } from './fundamentals'
 export { SLOWPITCH_NOTES, SLOWPITCH_CRAFT, SLOWPITCH_FORMATS } from './slowpitch'
-export { FLIGHT_LAB_RULEBOOKS, EXAMPLE_LOBS, MEASURED_BATTER, FLIGHT_LAB_NOTES } from './flightLab'
+export { FLIGHT_LAB_RULEBOOKS, EXAMPLE_LOBS, MEASURED_BATTER, FLIGHT_LAB_NOTES, SLOWPITCH_ARSENAL } from './flightLab'

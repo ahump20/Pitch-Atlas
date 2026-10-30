@@ -1,5 +1,5 @@
 import type { Claim } from '../types'
-import type { ArcRule, LobParams, RuleKey, Stance } from '../../lib/slowpitch'
+import type { ArcRule, LobParams, PitchKind, PitchSpinInput, RuleKey, Stance } from '../../lib/slowpitch'
 
 /*
   The softball data model. A deliberately lighter record than the baseball
@@ -110,6 +110,20 @@ export interface FlightLabLob {
   color: string
   /** Peak, landing, side and the internal spin inputs (rpm is never shown). */
   params: Claim<LobParams>
+}
+
+/** One pitch in the lab's slow-pitch arsenal: a spin laid over any lob. */
+export interface FlightLabPitch {
+  key: PitchKind
+  name: string
+  /** Colour of the ring the ball turns in, in every view. */
+  color: string
+  /** What the batter sees, in the lab's own words. No figures. */
+  read: string
+  /** What the pitch is, sourced. */
+  what: Claim<string>
+  /** The spin the model throws it with. Set by hand; the rpm is never shown. */
+  spin: Claim<PitchSpinInput>
 }
 
 /** The proportions of the measured swing, as fractions of standing height
