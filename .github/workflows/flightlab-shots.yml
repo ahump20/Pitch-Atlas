@@ -1,0 +1,66 @@
+name: flightlab-shots
+
+on:
+  push:
+    branches:
+      - flight-lab-arsenal-shots
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: branch
+            ref: ''
+            pitches: lob,knuckler,backspin
+            game: game
+            views: Zone,Ball
+          - name: main
+            ref: main
+            pitches: lob
+            game: nogame
+            views: Zone
+    steps:
+      - uses: actions/checkout@v7
+      - name: Use main's code
+        if: matrix.ref == 'main'
+        shell: bash
+        run: |
+          cp scripts/flightlab-shots.mjs /tmp/shots.mjs
+          git fetch origin main --depth=1
+          git checkout -f origin/main -- .
+          mkdir -p scripts && cp /tmp/shots.mjs scripts/flightlab-shots.mjs
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Shoot
+        shell: bash
+        run: |
+          cp scripts/flightlab-shots.mjs /tmp/shots.mjs
+          npx vite build --minify false > build.log 2>&1
+          npx vite preview --port 4173 --strictPort > preview.log 2>&1 &
+          for i in $(seq 1 30); do curl -sf http://localhost:4173/ > /dev/null && break; sleep 1; done
+          node /tmp/shots.mjs http://localhost:4173 /tmp/out/${{ matrix.name }} ${{ matrix.pitches }} ${{ matrix.game }} ${{ matrix.views }} 2>&1 | tee /tmp/out-${{ matrix.name }}.log || true
+          cp /tmp/out-${{ matrix.name }}.log /tmp/out/${{ matrix.name }}/run.log || true
+      - name: Commit shots back
+        if: always()
+        shell: bash
+        run: |
+          git stash -u || true
+          git fetch origin flight-lab-arsenal-shots
+          git checkout -f -B pushback origin/flight-lab-arsenal-shots
+          mkdir -p "shots3/${{ matrix.name }}"
+          cp -r /tmp/out/${{ matrix.name }}/. "shots3/${{ matrix.name }}/" || true
+          git config user.name "flightlab-shots"
+          git config user.email "flightlab-shots@users.noreply.github.com"
+          git add -f shots3
+          git commit -m "Flight Lab screenshots: ${{ matrix.name }}" || exit 0
+          for i in 1 2 3 4; do git push origin HEAD:flight-lab-arsenal-shots && break; git pull --rebase origin flight-lab-arsenal-shots; done
