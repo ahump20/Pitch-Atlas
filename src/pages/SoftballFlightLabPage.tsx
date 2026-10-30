@@ -479,7 +479,7 @@ export function SoftballFlightLabPage() {
             {/* the stage */}
             <div className="relative min-w-0 self-start xl:sticky xl:top-20">
               <div
-                className="relative h-[min(68svh,600px)] min-h-[420px] overflow-hidden rounded-xl border border-bone/12 bg-[#070509] xl:h-[calc(100svh-8rem)] xl:max-h-[860px] xl:min-h-[560px]"
+                className="relative h-[min(68svh,600px)] min-h-[420px] scroll-mt-20 overflow-hidden rounded-xl border border-bone/12 bg-[#070509] xl:h-[calc(100svh-8rem)] xl:max-h-[860px] xl:min-h-[560px]"
                 data-flight-stage="true"
                 ref={stageRef}
               >
