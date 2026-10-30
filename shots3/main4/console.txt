@@ -1,0 +1,14 @@
+[lob 1440] warning: THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[lob 1440] stage mode: scene
+[lob 1440] pageerror: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at commitDeletionEffectsOnFiber (http://localhost:4173/assets/react-three-8eBXgxVo.js:6828:130)
+    at recursivelyTraverseMutationEffects (http://localhost:4173/assets/react-three-8eBXgxVo.js:6946:4)
+    at commitMutationEffectsOnFiber (http://localhost:4173/assets/react-three-8eBXgxVo.js:7074:5)
+    at flushMutationEffects (http://localhost:4173/assets/react-three-8eBXgxVo.js:8248:6)
+    at commitRoot (http://localhost:4173/assets/react-three-8eBXgxVo.js:8224:285)
+    at completeRoot (http://localhost:4173/assets/react-three-8eBXgxVo.js:8194:4)
+    at completeRootWhenReady (http://localhost:4173/assets/react-three-8eBXgxVo.js:7841:3)
+    at performWorkOnRoot (http://localhost:4173/assets/react-three-8eBXgxVo.js:7813:6)
+    at performSyncWorkOnRoot (http://localhost:4173/assets/react-three-8eBXgxVo.js:8572:3)
+    at flushSyncWorkAcrossRoots_impl (http://localhost:4173/assets/react-three-8eBXgxVo.js:8495:389)
