@@ -61,6 +61,8 @@ async function collectConsole(page, callback) {
       messages.push(`${message.type()}: ${message.text()}${sourceUrl ? ` @ ${sourceUrl}` : ''}`)
     }
   })
+  // An error thrown out of a commit or an effect reaches no console call, only the page.
+  page.on('pageerror', (error) => messages.push(`pageerror: ${error.message}`))
   await callback()
   // Benign noise we never want to fail a deploy on. The last entry is a
   // Cloudflare preview-edge artifact: production serves a single enforcing CSP
@@ -894,6 +896,12 @@ async function checkFlightLab(page, viewport, { webgl = true } = {}) {
     await page
       .waitForFunction(() => !document.querySelector('[data-flight-throw]')?.hasAttribute('disabled'), undefined, { timeout: 20_000 })
       .catch(() => undefined)
+    // Every camera, so labels that mount and unmount with a view do it cleanly.
+    const cameras = page.getByRole('group', { name: 'Camera' }).getByRole('button')
+    for (const camera of await cameras.all()) {
+      await camera.click()
+      await page.waitForTimeout(400)
+    }
   })
 
   if (ready) record(thrown, `${label} Throw never started a lob`)
