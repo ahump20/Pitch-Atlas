@@ -690,7 +690,8 @@ function LobPath({
   const tmpQ = useMemo(() => new THREE.Quaternion(), [])
   const at = useMemo<[number, number, number]>(() => [0, 0, 0], [])
 
-  const ghostVisible = view === 'zone' || view === 'ball' ? selected : true
+  // Riding the ball, its own tubes would fill the frame; the dashed no-spin line stays.
+  const ghostVisible = view === 'ball' ? false : view === 'zone' ? selected : true
 
   useFrame((_, delta) => {
     const g = ballGroup.current
@@ -700,7 +701,7 @@ function LobPath({
     const visible = thrown || (selected && st.id === 0)
     g.visible = visible
     if (shadow.current) shadow.current.visible = visible
-    if (live.current) live.current.visible = thrown
+    if (live.current) live.current.visible = thrown && view !== 'ball'
     if (!visible) return
     const t = thrown ? Math.min(st.playhead, flight.duration) : 0
     positionAt(flight, t, at)
@@ -1284,6 +1285,8 @@ function Director({
     if (!st || !c) return
     const delta = Math.min(rawDelta, 0.05)
     let moving = false
+    // The balls drew this frame at the playhead as it stood before this step; the Ball camera aims there.
+    const drawnAt = st.playhead
 
     if (st.playing) {
       const lead = m.lobs[m.selectedIndex]
@@ -1307,7 +1310,7 @@ function Director({
     if (v === 'ball') {
       const leadIndex = st.indices.has(m.selectedIndex) || st.indices.size === 0 ? m.selectedIndex : [...st.indices][0]
       const leadFlight = m.lobs[leadIndex]?.flight ?? m.lobs[m.selectedIndex].flight
-      const t = st.id === 0 ? 0 : Math.min(st.playhead, leadFlight.duration)
+      const t = st.id === 0 ? 0 : Math.min(drawnAt, leadFlight.duration)
       const p = positionAt(leadFlight, t)
       ballAt = ballTmp.set(p[0], p[1], p[2])
     }

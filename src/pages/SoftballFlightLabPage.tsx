@@ -305,6 +305,7 @@ export function SoftballFlightLabPage() {
   const markSceneLost = useCallback(() => setSceneLost(true), [])
   const [throwRequest, setThrowRequest] = useState<ThrowRequest | undefined>(undefined)
   const throwCount = useRef(0)
+  const stageRef = useRef<HTMLDivElement>(null)
 
   const stance = useMemo(
     () => ({ heightIn: settings.heightIn, toesIn: settings.toesIn, box: settings.box, batIn: MEASURED_BATTER.bat.value.lengthIn }),
@@ -380,6 +381,8 @@ export function SoftballFlightLabPage() {
     setJudged(null)
     throwCount.current += 1
     setThrowRequest({ id: throwCount.current, indices: [EXAMPLE_LOBS.findIndex((l) => l.key === d.lob)] })
+    // On a phone the call buttons sit under the stage: bring the ball back on screen.
+    stageRef.current?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' })
   }
   const finishCalls = (next: Calls) => {
     setCalls(next)
@@ -478,6 +481,7 @@ export function SoftballFlightLabPage() {
               <div
                 className="relative h-[min(68svh,600px)] min-h-[420px] overflow-hidden rounded-xl border border-bone/12 bg-[#070509] xl:h-[calc(100svh-8rem)] xl:max-h-[860px] xl:min-h-[560px]"
                 data-flight-stage="true"
+                ref={stageRef}
               >
                 <FlightLabStage
                   model={stageModel}
