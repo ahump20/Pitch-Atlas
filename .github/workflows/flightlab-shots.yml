@@ -48,7 +48,7 @@ jobs:
           npx vite build --minify false > build.log 2>&1
           npx vite preview --port 4173 --strictPort > preview.log 2>&1 &
           for i in $(seq 1 30); do curl -sf http://localhost:4173/ > /dev/null && break; sleep 1; done
-          node /tmp/shots.mjs http://localhost:4173 /tmp/out/${{ matrix.name }} ${{ matrix.pitches }} ${{ matrix.game }} ${{ matrix.views }} 2>&1 | tee /tmp/out-${{ matrix.name }}.log || true
+          node scripts/flightlab-shots.mjs http://localhost:4173 /tmp/out/${{ matrix.name }} ${{ matrix.pitches }} ${{ matrix.game }} ${{ matrix.views }} 2>&1 | tee /tmp/out-${{ matrix.name }}.log || true
           cp /tmp/out-${{ matrix.name }}.log /tmp/out/${{ matrix.name }}/run.log || true
       - name: Commit shots back
         if: always()
