@@ -16,16 +16,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - name: branch
+          - name: branch4
             ref: ''
-            pitches: lob,knuckler,backspin
-            game: game
-            views: Zone,Ball
-          - name: main
+            pitches: lob
+            game: nogame
+            views: Zone,Catcher
+          - name: main4
             ref: main
             pitches: lob
             game: nogame
-            views: Zone
+            views: Zone,Catcher
     steps:
       - uses: actions/checkout@v7
       - name: Use main's code
