@@ -18,7 +18,7 @@ import { sendSafetyContact } from '../lib/safety-contact'
 const HELP_ROWS = [
   {
     label: 'Report a problem with a note or post',
-    text: 'Every field note and discussion post carries a Report action. Use it. Reports go to a moderation queue, and a post reported by enough separate accounts is hidden pending review. In the iOS app you can also block a contributor outright.',
+    text: 'Every report enters the moderation queue. In iOS, reporting immediately hides the item from your feed. For reports still open after 22 hours, scheduled safeguards hide the content and restrict its contributor. You can also block a contributor in iOS.',
   },
   {
     label: 'Delete your account',
@@ -78,12 +78,8 @@ export function SupportPage() {
         })}
       />
       <SectionHero
-        eyebrow="Support"
-        title={
-          <>
-            Something off? <span className="rfx-holo">Flag it.</span>
-          </>
-        }
+        eyebrow=""
+        title="Support"
         sub={
           <p>
             Pitch Atlas is a sourced archive for how pitchers grip and shape a baseball. It is

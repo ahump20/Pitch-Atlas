@@ -348,7 +348,7 @@ describe('Privacy and support', () => {
 
   it('renders the support page with report, deletion, and contact routes', async () => {
     renderRoute('/support')
-    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Flag it.')
+    expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Support')
     expect(screen.getByText('Report a problem with a note or post')).toBeInTheDocument()
     expect(screen.getByText('Delete your account')).toBeInTheDocument()
     expect(screen.getByRole('heading', { name: 'Contact developer' })).toBeInTheDocument()
