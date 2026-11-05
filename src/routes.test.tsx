@@ -351,7 +351,10 @@ describe('Privacy and support', () => {
     expect(await screen.findByRole('heading', { level: 1 }, COLD_LOAD)).toHaveTextContent('Flag it.')
     expect(screen.getByText('Report a problem with a note or post')).toBeInTheDocument()
     expect(screen.getByText('Delete your account')).toBeInTheDocument()
-    expect(screen.getAllByText(/in-product Report flow/).length).toBeGreaterThan(0)
+    expect(screen.getByRole('heading', { name: 'Contact developer' })).toBeInTheDocument()
+    expect(screen.getByLabelText('Message')).toBeInTheDocument()
+    expect(screen.getByLabelText('Reply email (optional)')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Send message' })).toBeDisabled()
     // no fabricated contact details
     expect(screen.queryByText(/@pitch-atlas\.com/)).not.toBeInTheDocument()
   })

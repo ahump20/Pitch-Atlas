@@ -14,9 +14,13 @@ import { SectionHero } from '../components/layout/SectionHero'
   a freshness claim.
 */
 
-const POLICY_DATE = '2026-08-31'
+const POLICY_DATE = '2026-11-04'
 
 const COLLECTED_ROWS = [
+  {
+    label: 'Developer contact',
+    text: 'Your message, optional reply email address, and contribution account ID. These are held in a private developer inbox to handle support, safety reports and appeals; they are not published or used for advertising.',
+  },
   {
     label: 'Account',
     text: 'A random account ID. If you claim the account: your email address, or your Apple identifier if you used Sign in with Apple in the iOS app. Nothing else identifies you.',
@@ -67,7 +71,7 @@ export function PrivacyPage() {
         sub={
           <p>
             Pitch Atlas is a reference first. Reading it requires no account and sets no advertising
-            or cross-site tracking cookies. Community submissions are the only personal data you
+            or cross-site tracking cookies. Community submissions and messages to the developer are the personal data you
             intentionally file with Pitch Atlas.
           </p>
         }
@@ -112,7 +116,7 @@ export function PrivacyPage() {
           <div className="md:col-span-5">
             <p className="rfx-skick">Community accounts</p>
             <h2 className="rfx-stitle mt-3 max-w-[15ch] text-[clamp(28px,5vw,52px)]">
-              An account exists only if you post.
+              Community and contact sessions.
             </h2>
             <p className="mt-4 max-w-[50ch] text-[15px] leading-relaxed text-ink-2">
               Field Notes and the discussion threads are optional. Accounts and submissions are
@@ -122,7 +126,7 @@ export function PrivacyPage() {
           <div className="md:col-span-7">
             <p className="max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
               Reading notes and threads needs no account. The first time you post, mark a note, or
-              file a report, an anonymous account is created for you: a random ID with no email
+              file a report, or submit a developer contact message, an anonymous account is created for you: a random ID with no email
               behind it. You can later claim that account with your email so your notes follow you
               across devices; in the iOS app you can also sign in with an emailed link or with
               Sign in with Apple.
@@ -173,10 +177,10 @@ export function PrivacyPage() {
               and the account itself.
             </p>
             <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-              Moderation works on reports: every note and post carries a Report action, reports go
-              to a review queue, and a post reported by enough separate accounts is hidden pending
-              review. Abusive language and rapid-fire posting are blocked at the database, not just
-              the form. The iOS app additionally lets you block another contributor.
+              Every report enters a private review queue. Automated safeguards hide reported content
+              and restrict its contributor before the 24-hour deadline while a moderator decides
+              the report. Confirmed violations lead to removal and community ejection. Images
+              are held for review before publication. The iOS app also lets you block contributors.
             </p>
           </div>
         </div>
@@ -186,9 +190,10 @@ export function PrivacyPage() {
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
           <p className="rfx-skick">Contact</p>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-            Report a problem with any note or post through its in-product Report action. That is
-            the fastest route to a human review. Questions about how the archive itself is built and
-            sourced are answered on the{' '}
+            Use the Report action on a note or post for content concerns. For support, privacy requests,
+            or appeals, send Austin Humphrey a private message through the <Link to="/support" className="text-seam underline">Contact developer form</Link>.
+            Account deletion removes the sender link from contact messages; messages and optional reply
+            addresses remain in the private inbox until the developer removes them. Questions about sources are answered on the{' '}
             <Link to="/about" className="text-seam underline decoration-seam/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-current">
               About page
             </Link>{' '}

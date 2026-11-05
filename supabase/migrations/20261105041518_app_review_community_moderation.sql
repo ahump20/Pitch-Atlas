@@ -60,19 +60,19 @@ grant select on private.community_content_quarantines, private.community_restric
   private.safety_contacts, private.community_moderation_runs to service_role;
 
 create function private.community_author_visible(p_user uuid)
-returns boolean language sql stable security definer set search_path='' as $$
+returns boolean language sql stable security definer set search_path = '' as $$
   select not exists (select 1 from private.community_restrictions r
     where r.user_id=p_user and r.active);
 $$;
-revoke all on function private.community_author_visible(uuid) from public;
+revoke execute on function private.community_author_visible(uuid) from public;
 grant execute on function private.community_author_visible(uuid) to anon, authenticated, service_role;
 
 create function private.community_content_visible(p_kind text,p_id uuid)
-returns boolean language sql stable security definer set search_path='' as $$
+returns boolean language sql stable security definer set search_path = '' as $$
   select not exists (select 1 from private.community_content_quarantines q
     where q.content_kind=p_kind and q.content_id=p_id and q.active);
 $$;
-revoke all on function private.community_content_visible(text,uuid) from public;
+revoke execute on function private.community_content_visible(text,uuid) from public;
 grant execute on function private.community_content_visible(text,uuid) to anon,authenticated,service_role;
 create policy community_content_visible on public.discussion_posts as restrictive
   for select to anon,authenticated using(private.community_content_visible('discussion',id));
@@ -111,7 +111,7 @@ returns table (id uuid,pitch_slug text,author_id uuid,display_name text,tweak te
   claimed_result_note text,sample_size integer,evidence_url text,evidence_label text,
   source_tier text,note text,adoption_count integer,helpful_count integer,
   base_rank numeric,created_at timestamptz)
-language sql stable security definer set search_path='' as $$
+language sql stable security definer set search_path = '' as $$
   select f.id,f.pitch_slug,f.author_id,f.display_name,f.tweak,f.player_level,
     f.arm_slot,f.velocity_band,f.intent,f.claimed_result_kind,f.claimed_result_note,
     f.sample_size,f.evidence_url,f.evidence_label,f.source_tier,f.note,
@@ -139,7 +139,7 @@ create policy community_media_approved on public.discussion_media as restrictive
   for select to anon, authenticated using (moderation_state='approved');
 
 create function private.community_media_object_visible(p_path text)
-returns boolean language sql stable security definer set search_path='' as $$
+returns boolean language sql stable security definer set search_path = '' as $$
   select exists (
     select 1 from public.discussion_media m
     join public.discussion_posts p on p.id=m.post_id
@@ -153,14 +153,14 @@ returns boolean language sql stable security definer set search_path='' as $$
       and not private.blocked_between((select auth.uid()),p.author_id)
   );
 $$;
-revoke all on function private.community_media_object_visible(text) from public;
+revoke execute on function private.community_media_object_visible(text) from public;
 grant execute on function private.community_media_object_visible(text) to anon,authenticated,service_role;
 drop policy discussion_media_object_read on storage.objects;
 create policy discussion_media_object_read on storage.objects for select to anon,authenticated
   using (bucket_id='discussion-media' and private.community_media_object_visible(name));
 
 create function public.submit_safety_contact(p_message text,p_reply_email text default null)
-returns uuid language plpgsql security definer set search_path='' as $$
+returns uuid language plpgsql security definer set search_path = '' as $$
 declare
   sender uuid := (select auth.uid());
   message_text text := pg_catalog.btrim(p_message);
@@ -186,7 +186,7 @@ begin
     values(sender,message_text,reply_address) returning id into receipt;
   return receipt;
 end $$;
-revoke all on function public.submit_safety_contact(text,text) from public,anon;
+revoke execute on function public.submit_safety_contact(text,text) from public,anon;
 grant execute on function public.submit_safety_contact(text,text) to authenticated;
 
 -- Every report enters the queue on its first submission. No global-hide
@@ -208,7 +208,7 @@ revoke all on private.community_report_queue from public,anon,authenticated;
 grant select on private.community_report_queue to service_role;
 
 create function private.quarantine_community_report(p_kind text,p_report uuid,p_subject uuid)
-returns void language plpgsql security definer set search_path='' as $$
+returns void language plpgsql security definer set search_path = '' as $$
 begin
   insert into private.community_content_quarantines(report_kind,report_id,content_kind,content_id)
     select report_kind,report_id,content_kind,content_id from private.community_report_queue
@@ -224,10 +224,10 @@ begin
     values(p_kind,p_report,p_subject,'deadline_quarantine',
       'Reversible community quarantine before the 24-hour deadline; no violation finding.');
 end $$;
-revoke all on function private.quarantine_community_report(text,uuid,uuid) from public,anon,authenticated;
+revoke execute on function private.quarantine_community_report(text,uuid,uuid) from public,anon,authenticated;
 
 create function public.enforce_community_report_deadlines()
-returns integer language plpgsql security definer set search_path='' as $$
+returns integer language plpgsql security definer set search_path = '' as $$
 declare r record; n integer:=0; overdue integer;
 begin
   perform pg_catalog.pg_advisory_xact_lock(20261105032000);
@@ -254,15 +254,16 @@ begin
   if n>0 or overdue>0 then perform pg_catalog.pg_notify('community_moderation',json_build_object('quarantined',n,'overdue_contacts',overdue)::text); end if;
   return n;
 end $$;
-revoke all on function public.enforce_community_report_deadlines() from public,anon,authenticated;
 grant execute on function public.enforce_community_report_deadlines() to service_role;
+revoke execute on function public.enforce_community_report_deadlines() from public,anon,authenticated;
+
 
 -- Service-only moderation: confirmed violations eject the contributor from all
 -- community reads/writes (including already-issued JWTs), without deleting user
 -- data. Dismissing the last open report lifts a deadline-only quarantine. It
 -- never reverses an ejection or silently republishes separately-hidden content.
 create function public.moderate_community_report(p_kind text,p_report_id uuid,p_decision text,p_reason text)
-returns void language plpgsql security definer set search_path='' as $$
+returns void language plpgsql security definer set search_path = '' as $$
 declare subject uuid; target uuid; media_target uuid; note_target uuid;
 begin
   perform pg_catalog.pg_advisory_xact_lock(20261105032000);
@@ -298,11 +299,12 @@ begin
   insert into private.community_moderation_events(report_kind,report_id,subject_id,action,reason)
     values(p_kind,p_report_id,subject,p_decision,btrim(p_reason));
 end $$;
-revoke all on function public.moderate_community_report(text,uuid,text,text) from public,anon,authenticated;
 grant execute on function public.moderate_community_report(text,uuid,text,text) to service_role;
+revoke execute on function public.moderate_community_report(text,uuid,text,text) from public,anon,authenticated;
+
 
 create function public.review_community_media(p_media_id uuid,p_approve boolean,p_reason text)
-returns void language plpgsql security definer set search_path='' as $$
+returns void language plpgsql security definer set search_path = '' as $$
 declare owner uuid;
 begin
   if p_approve is null or p_reason is null or char_length(btrim(p_reason)) not between 10 and 1000 then
@@ -318,13 +320,14 @@ begin
   insert into private.community_moderation_events(report_kind,report_id,subject_id,action,reason)
     values('media',p_media_id,owner,case when p_approve then 'approved' else 'rejected' end,btrim(p_reason));
 end $$;
-revoke all on function public.review_community_media(uuid,boolean,text) from public,anon,authenticated;
 grant execute on function public.review_community_media(uuid,boolean,text) to service_role;
+revoke execute on function public.review_community_media(uuid,boolean,text) from public,anon,authenticated;
+
 
 -- Acknowledge contact only after an operator actually reads it. This records
 -- an inbox decision; it never claims an email was sent.
 create function public.review_safety_contact(p_contact_id uuid,p_status text,p_reason text)
-returns void language plpgsql security definer set search_path='' as $$
+returns void language plpgsql security definer set search_path = '' as $$
 declare sender uuid;
 begin
   if p_status not in ('reviewed','closed') or p_reason is null
@@ -337,8 +340,9 @@ begin
   insert into private.community_moderation_events(report_kind,report_id,subject_id,action,reason)
     values('contact',p_contact_id,sender,p_status,btrim(p_reason));
 end $$;
-revoke all on function public.review_safety_contact(uuid,text,text) from public,anon,authenticated;
 grant execute on function public.review_safety_contact(uuid,text,text) to service_role;
+revoke execute on function public.review_safety_contact(uuid,text,text) from public,anon,authenticated;
+
 
 -- Run every ten minutes. Starting at 22h leaves margin for the existing one-hour
 -- signed URL lifetime and scheduling delay, while ordinary access closes at once.

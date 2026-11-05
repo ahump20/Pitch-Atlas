@@ -349,6 +349,7 @@ function Composer({
         // the notice and skip the 'Filed ✓' confirmation since it didn't all land.
         setErr(result.mediaError)
       } else {
+        if (files.length > 0) toast.success('Media sent for review')
         setSent(true)
         window.clearTimeout(sentTimer.current)
         sentTimer.current = window.setTimeout(() => setSent(false), 2000)
