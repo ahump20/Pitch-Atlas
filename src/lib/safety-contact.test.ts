@@ -15,6 +15,13 @@ describe('developer contact', () => {
     await expect(sendSafetyContact('A report with enough detail.', 'invalid')).rejects.toThrow('valid reply email')
     expect(mocks.ensureSession).not.toHaveBeenCalled()
   })
+  it('counts Unicode code points like the contact RPC', async () => {
+    await expect(sendSafetyContact('⚾'.repeat(8), '')).rejects.toThrow('10 and 4000')
+    await expect(sendSafetyContact('😀'.repeat(8), '')).rejects.toThrow('10 and 4000')
+    mocks.rpc.mockResolvedValue({ data: '12345678-1234-4321-8123-123456789abc', error: null })
+    await expect(sendSafetyContact('😀'.repeat(4000), '')).resolves.toBeTypeOf('string')
+    await expect(sendSafetyContact('😀'.repeat(4001), '')).rejects.toThrow('10 and 4000')
+  })
   it('returns only a server receipt and trims optional contact data', async () => {
     const receipt = '12345678-1234-4321-8123-123456789abc'
     mocks.rpc.mockResolvedValue({ data: receipt, error: null })

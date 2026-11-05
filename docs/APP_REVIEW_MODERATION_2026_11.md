@@ -11,6 +11,8 @@ Owner: Austin Humphrey. This identifies the product owner; it does not establish
 - The two-hour margin covers the existing one-hour signed-image URL lifetime plus scheduling time. Previously cached/downloaded images cannot be recalled.
 - A deadline quarantine is not a finding of misconduct. A moderator's confirmed violation removes the target and ejects the contributor from community participation. Dismissing the final open report lifts only a temporary quarantine; it never reverses an ejection. User accounts and records are not deleted.
 - Contact messages, including optional reply addresses, are private. Anonymous contribution sessions can contact the developer without posting or accepting the media terms. Exact retries within ten minutes return the same receipt; five distinct messages per session per hour are accepted. Contact remains available to restricted contributors for appeals.
+- Finalized media paths are immutable, including writes made by the Storage service for signed uploads. A private path-digest ledger remains after content/account cleanup; normal Storage API garbage collection can still delete objects. Timestamp-only bookkeeping is allowed. New uploads must use fresh UUID paths with `upsert=false`.
+- Deleting a report or its parent reconciles temporary quarantine without reversing confirmed ejection. Restricted contributors cannot create new reports. Account deletion removes the sender link from both private contacts and contact-review audit events.
 
 ## Operator access and daily workflow
 
@@ -60,3 +62,9 @@ If the scheduler is down, an administrator can run `select public.enforce_commun
 `supabase/tests/community-moderation.sql` uses generated fixture identities and a rollback transaction. Hosted execution requires the preflight to find no preexisting due reports and serializes report writes during its short transaction; otherwise use an isolated database. It checks the first-report queue, valid/private/idempotent/rate-limited contact, denied client image approval, prepublication object reads, deadline quarantine, existing-session write denial, false-report reversal, confirmed ejection, and cascading removal when a generated fixture account is deleted. The current production author columns are NOT NULL; content quarantine also protects targets independently of the author restriction.
 
 This change does not create a way to prevent a determined person from making a new anonymous identity. It blocks the reported contributor's existing identity and tokens, preserves evidence and appeal contact, and does not falsely classify a new identity automatically. Human operational coverage must still be confirmed before claiming complete App Review compliance.
+
+### November 5 deployment evidence
+
+Production migration versions are `20261105041518` and `20261105054452`. The full hosted rollback acceptance passed after the second migration, with no fixture pitch or banned-term rows retained. The scheduler was active and its 05:40 UTC execution succeeded. These are point-in-time results, not a promise of future delivery or review.
+
+The local concurrency suite passed all six moderation/deletion cases and both media finalization/replacement orders. It also checks reuse denial after trusted local object cleanup. Run `MODERATION_TEST_PORT=55440 python3 supabase/tests/community-moderation-concurrency.py` against an isolated fixture database; the script always connects to localhost and creates/cleans only generated fixtures. Hosted Storage deletion must use its API; the rollback SQL suite does not bypass the hosted direct-delete protection. Storage HTTP upload behavior was inspected in Supabase's upstream implementation, not tested with production file uploads.

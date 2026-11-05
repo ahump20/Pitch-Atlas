@@ -4,7 +4,8 @@ import { supabase } from './supabase'
 export async function sendSafetyContact(message: string, replyEmail: string): Promise<string> {
   const text = message.trim()
   const email = replyEmail.trim()
-  if (text.length < 10 || text.length > 4000) {
+  const characterCount = Array.from(text).length
+  if (characterCount < 10 || characterCount > 4000) {
     throw new Error('Enter a message between 10 and 4000 characters.')
   }
   if (email && (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {

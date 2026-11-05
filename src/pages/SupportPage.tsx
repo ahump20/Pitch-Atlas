@@ -36,6 +36,7 @@ export function SupportPage() {
   const [sending, setSending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [receipt, setReceipt] = useState<string | null>(null)
+  const messageLength = Array.from(message.trim()).length
 
   async function contactDeveloper(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -120,7 +121,7 @@ export function SupportPage() {
           <form onSubmit={contactDeveloper} className="mt-6 grid max-w-2xl gap-4">
             <label className="grid gap-2 text-ink" htmlFor="support-message">
               Message
-              <textarea id="support-message" name="message" required minLength={10} maxLength={4000}
+              <textarea id="support-message" name="message" required
                 rows={6} value={message} onChange={(event) => setMessage(event.target.value)}
                 disabled={sending} className="w-full rounded border border-ink/30 bg-transparent p-3 text-ink" />
             </label>
@@ -130,7 +131,7 @@ export function SupportPage() {
                 value={replyEmail} onChange={(event) => setReplyEmail(event.target.value)} disabled={sending}
                 className="w-full rounded border border-ink/30 bg-transparent p-3 text-ink" />
             </label>
-            <button type="submit" disabled={sending || message.trim().length < 10}
+            <button type="submit" disabled={sending || messageLength < 10}
               className="w-fit rounded bg-seam px-5 py-3 font-bold text-paper disabled:opacity-50">
               {sending ? 'Sending…' : 'Send message'}
             </button>
