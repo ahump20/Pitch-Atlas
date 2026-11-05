@@ -102,6 +102,9 @@ const clientCallablePublicDefinerFunctions = new Set<string>([
   'block_user',
   'unblock_user',
   'my_blocked_users',
+  // Authenticated-only write into a private inbox; validated, rate-limited,
+  // idempotent and never exposes message reads. SQL acceptance tests verify ACLs.
+  'submit_safety_contact',
   // Read-only, fixed-column projection that applies private moderation filters
   // without exposing those columns through PostgREST.
   'list_public_field_notes',

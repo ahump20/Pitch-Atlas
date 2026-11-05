@@ -772,7 +772,8 @@ async function checkSupportAndPrivacy(page, viewport) {
     })
 
     const body = await pageText(page)
-    record(includesText(body, path === '/support/' ? /flag it/i : /what the atlas holds/i), `${label} body did not render`)
+    const heading = await page.locator('h1').innerText()
+    record(includesText(heading, path === '/support/' ? /^support$/i : /what the atlas holds/i), `${label} heading did not render`)
     record(!/[\u2014\u2013]/.test(body), `${label} contains a long dash`)
     record(!/@pitch-atlas\.com/.test(body), `${label} contains fabricated contact details`)
     record(!body.includes('Loading...'), `${label} is stuck in a loading state`)

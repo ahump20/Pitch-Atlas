@@ -1,22 +1,24 @@
 import { Link } from 'react-router-dom'
+import { useState, type FormEvent } from 'react'
 import { useSeoMeta } from '@unhead/react'
 import { SITE } from '../config/site'
 import { canonicalUrl, contentJsonLd } from '../lib/seo'
 import { StructuredData } from '../components/seo/StructuredData'
 import { Breadcrumb } from '../components/layout/Breadcrumb'
 import { SectionHero } from '../components/layout/SectionHero'
+import { sendSafetyContact } from '../lib/safety-contact'
 
 /*
   The support page the iOS app's Account screen links to. Short and factual:
   what the product is, how to flag a problem, how to delete an account. The
-  contact route is the in-product Report flow. No invented email, phone, or
-  address appears here.
+  contact form writes to the developer's private moderation inbox and returns
+  an actual receipt. No account sign-in screen or existing post is required.
 */
 
 const HELP_ROWS = [
   {
     label: 'Report a problem with a note or post',
-    text: 'Every field note and discussion post carries a Report action. Use it. Reports go to a moderation queue, and a post reported by enough separate accounts is hidden pending review. In the iOS app you can also block a contributor outright.',
+    text: 'Every report enters the moderation queue. In iOS, reporting immediately hides the item from your feed. For reports still open after 22 hours, scheduled safeguards hide the content and restrict its contributor. You can also block a contributor in iOS.',
   },
   {
     label: 'Delete your account',
@@ -29,6 +31,31 @@ const HELP_ROWS = [
 ]
 
 export function SupportPage() {
+  const [message, setMessage] = useState('')
+  const [replyEmail, setReplyEmail] = useState('')
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [receipt, setReceipt] = useState<string | null>(null)
+  const messageLength = Array.from(message.trim()).length
+
+  async function contactDeveloper(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (sending) return
+    setSending(true)
+    setError(null)
+    setReceipt(null)
+    try {
+      const id = await sendSafetyContact(message, replyEmail)
+      setReceipt(id)
+      setMessage('')
+      setReplyEmail('')
+    } catch (failure) {
+      setError(failure instanceof Error ? failure.message : 'Your message was not confirmed. Try again.')
+    } finally {
+      setSending(false)
+    }
+  }
+
   useSeoMeta({
     title: `Support | ${SITE.siteName}`,
     description:
@@ -52,12 +79,8 @@ export function SupportPage() {
         })}
       />
       <SectionHero
-        eyebrow="Support"
-        title={
-          <>
-            Something off? <span className="rfx-holo">Flag it.</span>
-          </>
-        }
+        eyebrow=""
+        title="Support"
         sub={
           <p>
             Pitch Atlas is a sourced archive for how pitchers grip and shape a baseball. It is
@@ -93,10 +116,30 @@ export function SupportPage() {
 
       <section className="border-t border-ink/15">
         <div className="mx-auto max-w-[1320px] px-5 py-16 md:px-8 md:py-20">
-          <p className="rfx-skick">Contact</p>
+          <h2 className="rfx-athletic text-ink">Contact developer</h2>
+          <p className="mt-2 text-ink-2">Austin Humphrey</p>
+          <form onSubmit={contactDeveloper} className="mt-6 grid max-w-2xl gap-4">
+            <label className="grid gap-2 text-ink" htmlFor="support-message">
+              Message
+              <textarea id="support-message" name="message" required
+                rows={6} value={message} onChange={(event) => setMessage(event.target.value)}
+                disabled={sending} className="w-full rounded border border-ink/30 bg-transparent p-3 text-ink" />
+            </label>
+            <label className="grid gap-2 text-ink" htmlFor="support-email">
+              Reply email (optional)
+              <input id="support-email" name="reply-email" type="email" autoComplete="email" maxLength={254}
+                value={replyEmail} onChange={(event) => setReplyEmail(event.target.value)} disabled={sending}
+                className="w-full rounded border border-ink/30 bg-transparent p-3 text-ink" />
+            </label>
+            <button type="submit" disabled={sending || messageLength < 10}
+              className="w-fit rounded bg-seam px-5 py-3 font-bold text-paper disabled:opacity-50">
+              {sending ? 'Sending…' : 'Send message'}
+            </button>
+            {error && <p role="alert" className="text-ink">{error}</p>}
+            {receipt && <p role="status" className="break-words text-ink">Message sent. Receipt: {receipt}</p>}
+          </form>
           <p className="mt-4 max-w-[64ch] text-[16px] leading-relaxed text-ink-2">
-            Report issues through the in-product Report flow on any note or post. Every report is
-            reviewed. For how the archive handles your data, read the{' '}
+            Your message and optional reply email are private and used for support and moderation. Read the{' '}
             <Link to="/privacy" className="text-seam underline decoration-seam/40 underline-offset-2 transition-colors hover:text-ink hover:decoration-current">
               privacy policy
             </Link>
