@@ -121,6 +121,11 @@ function Label({
   tone?: 'bone' | 'amber' | 'bad' | 'plain'
   children: ReactNode
 }) {
+  // One fixed home, the canvas's own box. Left to itself drei re-homes a tag once the
+  // canvas connects its events, and since React 19.3 that remount leaves the first tag
+  // empty and makes every tag up at load throw on the first change of camera.
+  const gl = useThree((s) => s.gl)
+  const home = useMemo(() => ({ current: gl.domElement.parentElement! }), [gl])
   const wide = translate({ anchor, dx, dy })
   const small = narrow ? translate({ anchor, dx, dy, ...narrow }) : wide
   const toneClass =
@@ -132,7 +137,7 @@ function Label({
           ? 'text-bone border-transparent px-0'
           : 'bg-[rgba(7,5,9,0.8)] text-bone border-bone/30'
   return (
-    <Html position={position} zIndexRange={[20, 0]} wrapperClass="pointer-events-none" style={{ pointerEvents: 'none' }}>
+    <Html position={position} zIndexRange={[20, 0]} portal={home} wrapperClass="pointer-events-none" style={{ pointerEvents: 'none' }}>
       <span
         className={`fl-tag ${narrow?.hide ? 'hidden sm:block' : 'block'} select-none whitespace-nowrap rounded-[3px] border px-2 py-[3px] font-mono text-[12px] uppercase leading-none tracking-[0.06em] [transform:var(--fl-tn)] sm:[transform:var(--fl-t)] ${toneClass}`}
         style={{ '--fl-t': wide, '--fl-tn': small } as CSSProperties}
