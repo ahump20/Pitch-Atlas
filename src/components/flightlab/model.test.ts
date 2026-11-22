@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { DEFAULT_STANCE, IN } from '../../lib/slowpitch'
-import { buildLabModel, defaultLobParams, heightLabel, lookForRange, signed } from './model'
+import { buildLabModel, defaultLobParams, heightLabel, lookForRange, sideSpinGlyph, signed } from './model'
 import { DEFAULT_SETTINGS, parseSettings } from './labSettings'
 
 /*
@@ -59,5 +59,53 @@ describe('flight lab settings', () => {
       box: DEFAULT_SETTINGS.box,
       compareIn: 31,
     })
+  })
+})
+
+describe('the arsenal in the lab model', () => {
+  const withPitchModel = (pitch: 'lob' | 'knuckler' | 'backspin' | 'topspin' | 'sidespin', seam = 0) =>
+    buildLabModel({ rule: 'usssa', stance: { ...DEFAULT_STANCE }, compareIn: 0, params: defaultLobParams(), selected: 'belt', pitch, seam })
+
+  it('reads a plain lob exactly as before when no pitch is named', () => {
+    expect(withPitchModel('lob').selected.flight).toBe(base().selected.flight)
+    expect(withPitchModel('lob').pitch.key).toBe('lob')
+  })
+
+  it('throws all six lobs as the chosen pitch', () => {
+    const m = withPitchModel('topspin')
+    expect(m.lobs.every((l) => l.params.push === 180)).toBe(true)
+    expect(m.lobs.every((l) => l.flight.spinCarryIn < 0)).toBe(true)
+  })
+
+  it('moves the knuckler when its seams start somewhere else, and keeps its aim', () => {
+    const a = withPitchModel('knuckler', 0).selected.flight
+    const b = withPitchModel('knuckler', 2).selected.flight
+    expect(a.knuckled).toBe(true)
+    expect(a.aim).toEqual(b.aim)
+    expect(Math.hypot(a.land.x - b.land.x, a.land.z - b.land.z) / IN).toBeGreaterThan(1)
+  })
+})
+
+describe('the side-view spin glyph', () => {
+  const flightOf = (pitch: 'backspin' | 'topspin' | 'sidespin') =>
+    buildLabModel({ rule: 'usssa', stance: { ...DEFAULT_STANCE }, compareIn: 0, params: defaultLobParams(), selected: 'belt', pitch }).selected
+      .flight
+
+  it('turns backspin and topspin opposite ways round the side view', () => {
+    const turn = (pitch: 'backspin' | 'topspin') => {
+      const f = flightOf(pitch)
+      const a = sideSpinGlyph(f, 0).bead
+      const b = sideSpinGlyph(f, 0.02).bead
+      return a[0] * b[1] - a[1] * b[0]
+    }
+    expect(Math.sign(turn('backspin'))).toBe(-Math.sign(turn('topspin')))
+    expect(turn('backspin')).not.toBe(0)
+  })
+
+  it('draws side spin as a ring seen near edge-on, where backspin shows a full circle', () => {
+    // the axis stands up square to a rising release, so the ring tilts with the throw
+    const tallest = (pitch: 'backspin' | 'sidespin') => Math.max(...sideSpinGlyph(flightOf(pitch), 0).ring.map(([, y]) => Math.abs(y)))
+    expect(tallest('backspin')).toBeGreaterThan(0.95)
+    expect(tallest('sidespin')).toBeLessThan(0.6)
   })
 })

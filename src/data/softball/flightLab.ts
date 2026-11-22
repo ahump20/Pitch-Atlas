@@ -1,6 +1,6 @@
-import type { FlightLabLob, FlightLabRulebook, MeasuredBatter, SlowpitchNote } from './types'
+import type { FlightLabLob, FlightLabPitch, FlightLabRulebook, MeasuredBatter, SlowpitchNote } from './types'
 import { claim, secondhand, unverified } from '../sources'
-import { ARC_RULES, BAT_DIAMETER_IN, BATTER_MODEL, DEFAULT_STANCE } from '../../lib/slowpitch'
+import { ARC_RULES, BAT_DIAMETER_IN, BATTER_MODEL, DEFAULT_STANCE, PITCH_SPIN } from '../../lib/slowpitch'
 
 /*
   The slow-pitch Flight Lab's data: the three rulebooks, the six example lobs,
@@ -103,6 +103,66 @@ export const EXAMPLE_LOBS: FlightLabLob[] = [
   { key: 'rainbow', name: 'Rainbow', color: '#6f8cb0', params: unverified({ apex: 11.6, land: 26, side: 0, rpm: 80, push: 0 }, EXAMPLE_ARC) },
 ]
 
+const SPIN_SET = 'Spin set by hand for the model. It shapes the path; it is never shown and was never measured off a pitcher.'
+const GLOSSARY = 'A slow-pitch glossary site, not a rule book or a measurement.'
+
+/**
+ * The arsenal. A pitch is a spin laid over any of the six lobs: the lob says
+ * where it peaks and lands, the pitch says how it turns on the way.
+ */
+export const SLOWPITCH_ARSENAL: FlightLabPitch[] = [
+  {
+    key: 'lob',
+    name: 'Lob',
+    color: '#f6f1e6',
+    read: 'A little backspin. It lands where it’s thrown.',
+    what: unverified('The six example arcs, each with the light backspin it was set with.', EXAMPLE_ARC),
+    spin: unverified(PITCH_SPIN.lob, `${SPIN_SET} Each example lob keeps its own.`),
+  },
+  {
+    key: 'knuckler',
+    name: 'Knuckler',
+    color: '#c9a7ff',
+    read: 'The seams barely turn. It wanders off its spot, a new way every throw.',
+    what: secondhand('Thrown with little or no spin, so it moves unpredictably on the way in.', 'sb-slopitchcentral-knuckler', GLOSSARY),
+    spin: unverified(PITCH_SPIN.knuckler, `${SPIN_SET} Under half a turn on the way in, where the knuckleball model is wildest.`),
+  },
+  {
+    key: 'backspin',
+    name: 'Backspin',
+    color: '#5fd4ff',
+    read: 'The seams roll back at the pitcher. It carries deeper than it looks.',
+    what: secondhand(
+      'Spun backward out of the hand, it comes down slower and is harder to hit cleanly, often popped up.',
+      'sb-slopitchcentral-backspin',
+      GLOSSARY,
+    ),
+    spin: unverified(PITCH_SPIN.backspin, SPIN_SET),
+  },
+  {
+    key: 'topspin',
+    name: 'Topspin',
+    color: '#ff9b3d',
+    read: 'The seams roll toward you. It dives short of where it looks.',
+    what: secondhand(
+      'Released with forward spin, the tumbler, it often drops more sharply than a standard pitch.',
+      'sb-slopitchcentral-tumbler',
+      GLOSSARY,
+    ),
+    spin: unverified(PITCH_SPIN.topspin, SPIN_SET),
+  },
+  {
+    key: 'sidespin',
+    name: 'Side spin',
+    color: '#7cf0b0',
+    read: 'The ball spins like a top. It drifts across the plate.',
+    what: claim('Spin about an upright axis pushes the ball sideways: the Magnus force acts across the flight.', 'sb-snexplores-curve', 'reputable-analysis', {
+      note: 'Explained on baseballs and fastpitch. No slow-pitch source on file names a side-spin lob, so its place in this arsenal is the lab’s.',
+    }),
+    spin: unverified(PITCH_SPIN.sidespin, SPIN_SET),
+  },
+]
+
 const MEASURED = 'One batter’s measured swing, calibrated off home plate in their own video.'
 
 /** The default batter. A real swing, never named, never pictured. */
@@ -152,6 +212,18 @@ export const FLIGHT_LAB_NOTES: SlowpitchNote[] = [
       'sb-russell-sweetspot',
       'reputable-analysis',
       { approximate: true, note: 'It moves an inch or two between bats, so the lab’s 6 in is a middle value, not your bat’s.' },
+    ),
+  },
+  {
+    label: 'Knuckler: the seams push it',
+    claim: claim(
+      'A ball that barely turns is pushed around by its seams, with a force that beats four times a turn; under half a turn on the way in makes the wildest path.',
+      'sb-nelson-strauss-knuckleball',
+      'reputable-analysis',
+      {
+        approximate: true,
+        note: 'A baseball model at big-league speed. The lab runs it on a 12 in softball at slow-pitch speed, so its dance is a model, not a measurement.',
+      },
     ),
   },
   {

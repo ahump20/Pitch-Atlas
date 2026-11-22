@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { BALL_RADIUS, IN, MAT, PLATE, positionAt, progressAt, type Flight } from '../../lib/slowpitch'
 import { useElementSize } from './useElementSize'
-import { nearPlateTimeScale, round, SLOW_RATE, type LabModel, type ThrowRequest } from './model'
+import { nearPlateTimeScale, round, sideSpinGlyph, SLOW_RATE, type LabModel, type ThrowRequest } from './model'
 
 /*
   The Flight Lab, drawn flat: a side view of the zone, the batter's landmarks,
@@ -60,6 +60,31 @@ function Tag({
       >
         {text.toUpperCase()}
       </text>
+    </g>
+  )
+}
+
+/** The ball turning, as the side view sees it: the ring it spins in and a bead riding it. */
+function SpinBall({ flight, t, cx, cy, r, color }: { flight: Flight; t: number; cx: number; cy: number; r: number; color: string }) {
+  const { ring, bead } = sideSpinGlyph(flight, t)
+  const k = r * 1.42
+  // z runs toward the catcher, which is screen left
+  const ringPts = ring.map(([z, y]) => `${(cx - z * k).toFixed(1)},${(cy - y * k).toFixed(1)}`).join(' ')
+  const front = bead[2] >= 0
+  return (
+    <g>
+      <circle cx={cx} cy={cy} r={r} fill="#E8EE6A" stroke="#1a1a0a" strokeOpacity={0.4} />
+      <polyline points={ringPts} fill="none" stroke={color} strokeWidth={Math.max(1.25, r * 0.12)} strokeOpacity={0.85} />
+      <line
+        x1={cx + bead[0] * r}
+        y1={cy + bead[1] * r}
+        x2={cx - bead[0] * r}
+        y2={cy - bead[1] * r}
+        stroke="#c62d28"
+        strokeWidth={Math.max(1.5, r * 0.18)}
+        strokeLinecap="round"
+      />
+      <circle cx={cx - bead[0] * k} cy={cy - bead[1] * k} r={Math.max(2, r * 0.2)} fill={color} fillOpacity={front ? 1 : 0.35} />
     </g>
   )
 }
@@ -186,6 +211,17 @@ export function FlightLabSchematic({
     pts.push(`${X(z).toFixed(1)},${Y(p[i * 3 + 1]).toFixed(1)}`)
   }
 
+  // The same throw with no spin, where this pitch's spin bent it from.
+  const ghostPts: string[] = []
+  if (model.pitch.key !== 'lob') {
+    const g = flight.ghost
+    for (let i = 0; i < g.length / 3; i += 2) {
+      const z = g[i * 3 + 2]
+      if (z < zFar - 2 || z > zNear + 0.5) continue
+      ghostPts.push(`${X(z).toFixed(1)},${Y(g[i * 3 + 1]).toFixed(1)}`)
+    }
+  }
+
   const tagX = x0 + 6
   const landmarkTags: { y: number; text: string; color: string }[] = [
     ...(senior ? [] : [{ y: zone.top, text: narrow ? `Shoulder ${round(zone.top / IN)}` : `Shoulder · ${round(zone.top / IN)} in`, color: BONE }]),
@@ -233,7 +269,7 @@ export function FlightLabSchematic({
             if (z < zFar - 2 || z > zNear + 0.5) continue
             trail.push(`${X(z).toFixed(1)},${Y(lob.flight.positions[i * 3 + 1]).toFixed(1)}`)
           }
-          return { key: lob.key, color: lob.color, x: X(at[2]), y: Y(at[1]), trail: trail.join(' ') }
+          return { key: lob.key, color: lob.color, flight: lob.flight, t: Math.min(thrown.t, lob.flight.duration), x: X(at[2]), y: Y(at[1]), trail: trail.join(' ') }
         })
     : []
 
@@ -340,8 +376,19 @@ export function FlightLabSchematic({
           />
         ) : null}
 
-        {/* the lob */}
+        {/* the lob, and the same throw with no spin */}
         <g clipPath={`url(#${clipId})`}>
+          {ghostPts.length > 1 ? (
+            <polyline
+              points={ghostPts.join(' ')}
+              fill="none"
+              stroke={model.pitch.color}
+              strokeOpacity={0.7}
+              strokeWidth={2}
+              strokeDasharray="6 5"
+              data-flight-ghost="true"
+            />
+          ) : null}
           <polyline
             points={pts.join(' ')}
             fill="none"
@@ -353,7 +400,7 @@ export function FlightLabSchematic({
           {thrownBalls.map((b) => (
             <g key={b.key}>
               <polyline points={b.trail} fill="none" stroke={b.color} strokeWidth={3.5} strokeLinecap="round" />
-              <circle cx={b.x} cy={b.y} r={Math.max(4, R * s)} fill="#E8EE6A" stroke="#1a1a0a" strokeOpacity={0.4} />
+              <SpinBall flight={b.flight} t={b.t} cx={b.x} cy={b.y} r={Math.max(6, R * s)} color={model.pitch.color} />
             </g>
           ))}
         </g>
@@ -368,6 +415,18 @@ export function FlightLabSchematic({
             <circle cx={X(contact.z)} cy={Y(contact.y)} r={3.5} fill={AMBER} />
           </g>
         ) : null}
+
+        {/* the pitch's spin, big enough to read */}
+        <g data-flight-spin-dial={model.pitch.key}>
+          <SpinBall
+            flight={flight}
+            t={thrownBalls.find((b) => b.key === selected.key)?.t ?? 0}
+            cx={W - padR - 30}
+            cy={padT + 34}
+            r={22}
+            color={model.pitch.color}
+          />
+        </g>
 
         {/* ruler */}
         <g>
