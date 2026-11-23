@@ -18,7 +18,7 @@ import { sendSafetyContact } from '../lib/safety-contact'
 const HELP_ROWS = [
   {
     label: 'Report a problem with a note or post',
-    text: 'Every report enters the moderation queue. In iOS, reporting immediately hides the item from your feed. For reports still open after 22 hours, scheduled safeguards hide the content and restrict its contributor. You can also block a contributor in iOS.',
+    text: 'Every report enters the moderation queue. In iOS 1.2, reporting immediately hides the item from your feed. For reports still open after 22 hours, scheduled safeguards hide the content and restrict its contributor. You can also block a contributor in iOS.',
   },
   {
     label: 'Delete your account',
