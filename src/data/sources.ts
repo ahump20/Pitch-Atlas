@@ -386,7 +386,7 @@ export const SOURCES = {
   },
   'tht-gyro-physics': {
     id: 'tht-gyro-physics',
-    label: 'The Hardball Times, The Physics of the Gyro Pitch (Alan Nathan)',
+    label: 'The Hardball Times, The Physics of the Gyro Pitch (David Kagan)',
     url: 'https://tht.fangraphs.com/the-physics-of-the-gyro-pitch/',
     retrievedAt: RETRIEVED,
   },

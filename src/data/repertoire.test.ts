@@ -140,3 +140,20 @@ describe('basic-file study hooks', () => {
     expect(screw.studyFirstSlug).toBe('circle-change')
   })
 })
+
+describe('gyro slider evidence boundaries', () => {
+  it('separates spin geometry, movement and Romo’s visual example', () => {
+    const gyro = entry('gyro-slider')
+    expect(gyro.plain).toContain('football spiral')
+    expect(gyro.grip.value).toMatch(/spin axis.*direction of flight/)
+    expect(gyro.movement.value).toContain('Magnus')
+    expect(gyro.movement.source?.id).toBe('tht-gyro-physics')
+    expect(gyro.movement.source?.label).toContain('David Kagan')
+    expect(gyro.contextNote?.source?.id).toBe('fangraphs-romo-no-dot')
+    expect(gyro.contextNote?.value).toContain('does not establish')
+    expect(gyro.aka).not.toContain('no-dot slider')
+    expect(gyro.notableThrowers).toBeUndefined()
+    expect([gyro.plain, gyro.grip.value, gyro.movement.value, gyro.contextNote?.value].join(' '))
+      .not.toMatch(/end-over-end|near-zero break|why hitters swing/i)
+  })
+})
